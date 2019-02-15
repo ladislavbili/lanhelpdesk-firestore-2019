@@ -25,22 +25,27 @@ export default class StatusesList extends Component{
 
   render(){
     return (
-      <div className="row flex container container-padding center-ver">
-        <div className="col-6">
-          <FormGroup>
-            <InputGroup>
-              <FormControl type="text" onChange={(e)=>this.setState({statusFilter:e.target.value})} />
-              <InputGroup.Addon>
-                <Glyphicon glyph="search" />
-              </InputGroup.Addon>
-            </InputGroup>
-          </FormGroup>
-          <Table striped condensed hover>
-            <thead>
-              <tr className="clickable">
-                <th>Status name</th>
-              </tr>
-            </thead>
+      <div className="content-page card-box">
+      <div className="content">
+      <div className="row flex container-padding center-ver col-xl-12">
+        <div className="col-lg-4 p-0">
+          <div className="input-group">
+            <input
+              type="text"
+              onChange={(e)=>this.setState({statusFilter:e.target.value})}
+              className="form-control"
+              placeholder="Search task name"
+              style={{ width: 200 }}
+            />
+            <div className="input-group-append">
+              <button className="btn btn-white" type="button">
+                <i className="fa fa-search" />
+              </button>
+            </div>
+          </div>
+
+          <div className="table-responsive">
+            <table className="table table-hover mails m-0">
             <tbody>
               <tr className="clickable" onClick={()=>this.props.history.push('/helpdesk/settings/statuses/add')}>
                 <td>+ Add status</td>
@@ -51,9 +56,10 @@ export default class StatusesList extends Component{
                 </tr>
               )}
             </tbody>
-          </Table>
+          </table>
         </div>
-        <div className="col-6 withSeparator">
+        </div>
+        <div className="col-lg-8 p-0">
           {
             this.props.match.params.id && this.props.match.params.id==='add' && <StatusAdd />
           }
@@ -62,6 +68,8 @@ export default class StatusesList extends Component{
           }
         </div>
       </div>
+    </div>
+  </div>
     );
   }
 }

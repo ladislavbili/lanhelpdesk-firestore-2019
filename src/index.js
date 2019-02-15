@@ -14,7 +14,6 @@ import 'react-datepicker/dist/react-datepicker.css';
 import 'react-table/react-table.css';
 
 import "./scss/scss/index.scss";
-import "./scss/custom/index.scss";
 
 const store=createStore();
 const app = firebase.initializeApp(config);

@@ -28,7 +28,7 @@ export default class Sidebar extends Component {
 		return (
 			<div className="left side-menu">
 				<SelectPage />
-				<div className="sidebar-inner slimscrollleft">
+				<div className="">
 					<div id="sidebar-menu">
 						<li className="menu-title" style={{ paddingBottom: '0px !important' }}>
 							Project

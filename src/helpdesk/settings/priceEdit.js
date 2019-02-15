@@ -62,7 +62,7 @@ export default class PriceEdit extends Component{
 
   render(){
     return (
-      <div className="container-padding">
+      <div className="container-padding form-background card-box">
         {
           this.state.loading &&
           <Alert bsStyle="success">

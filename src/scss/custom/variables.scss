@@ -1,1 +1,2 @@
 $header-height: 50px;
+$sidebar-height: calc( 100vh - #{$header-height} );

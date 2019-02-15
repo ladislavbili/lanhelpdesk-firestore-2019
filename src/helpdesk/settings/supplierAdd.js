@@ -13,7 +13,7 @@ export default class SupplierAdd extends Component{
 
   render(){
     return (
-      <div className="container-padding">
+      <div className="container-padding form-background card-box">
         <FormGroup>
           <Col sm={3}>
             <ControlLabel className="center-hor">Supplier name</ControlLabel>

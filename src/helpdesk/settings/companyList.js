@@ -25,43 +25,56 @@ export default class CompaniesList extends Component{
 
   render(){
     return (
-      <div className="row flex container container-padding center-ver">
-        <div className="col-6">
-          <FormGroup>
-            <InputGroup>
-              <FormControl type="text" onChange={(e)=>this.setState({companyFilter:e.target.value})} />
-              <InputGroup.Addon>
-                <Glyphicon glyph="search" />
-              </InputGroup.Addon>
-            </InputGroup>
-          </FormGroup>
-          <Table striped condensed hover>
-            <thead>
-              <tr className="clickable">
-                <th>Company name</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="clickable" onClick={()=>this.props.history.push('/helpdesk/settings/companies/add')}>
-                <td>+ Add company</td>
-              </tr>
-              {this.state.companies.filter((item)=>item.title.toLowerCase().includes(this.state.companyFilter.toLowerCase())).map((company)=>
-                <tr key={company.id} className="clickable" onClick={()=>this.props.history.push('/helpdesk/settings/companies/'+company.id)}>
-                  <td>{company.title}</td>
+			<div className="content-page card-box">
+      <div className="content">
+      <div className="row flex container-padding center-ver col-xl-12">
+        <div className="col-lg-4 p-0">
+          <div className="input-group">
+            <input
+              type="text"
+              onChange={(e)=>this.setState({companyFilter:e.target.value})}
+              className="form-control"
+              placeholder="Search task name"
+              style={{ width: 200 }}
+            />
+            <div className="input-group-append">
+              <button className="btn btn-white" type="button">
+                <i className="fa fa-search" />
+              </button>
+            </div>
+          </div>
+
+          <div className="table-responsive">
+            <table className="table table-hover mails m-0">
+              <thead>
+                <tr className="clickable">
+                  <th>Company name</th>
                 </tr>
-              )}
-            </tbody>
-          </Table>
+              </thead>
+              <tbody>
+                <tr className="clickable" onClick={()=>this.props.history.push('/helpdesk/settings/companies/add')}>
+                  <td>+ Add company</td>
+                </tr>
+                {this.state.companies.filter((item)=>item.title.toLowerCase().includes(this.state.companyFilter.toLowerCase())).map((company)=>
+                  <tr key={company.id} className="clickable" onClick={()=>this.props.history.push('/helpdesk/settings/companies/'+company.id)}>
+                    <td>{company.title}</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div className="col-6 withSeparator">
+        <div className="col-lg-8 p-0">
           {
             this.props.match.params.id && this.props.match.params.id==='add' && <CompanyAdd />
-          }
-          {
-            this.props.match.params.id && this.props.match.params.id!=='add' && this.state.companies.some((item)=>item.id===this.props.match.params.id) && <CompanyEdit match={this.props.match} />
-          }
-        </div>
-      </div>
-    );
-  }
+        }
+        {
+          this.props.match.params.id && this.props.match.params.id!=='add' && this.state.companies.some((item)=>item.id===this.props.match.params.id) && <CompanyEdit match={this.props.match} />
+      }
+    </div>
+  </div>
+  </div>
+  </div>
+);
+}
 }

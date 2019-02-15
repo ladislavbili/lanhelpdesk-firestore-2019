@@ -63,7 +63,7 @@ export default class SupplierInvoiceAdd extends Component{
 
   render(){
     return (
-      <div className="container-padding">
+      <div className="container-padding form-background card-box">
         <FormGroup>
           <Col sm={3}>
             <ControlLabel className="center-hor">Invoice indetifier</ControlLabel>
