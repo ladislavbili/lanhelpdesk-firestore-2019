@@ -1,0 +1,938 @@
+@font-face {
+  font-family: "simple-line-icons";
+  src: url("../fonts/Simple-Line-Icons.eot?-i3a2kk");
+  src: url("../fonts/Simple-Line-Icons.eot?#iefix-i3a2kk") format("embedded-opentype"), url("../fonts/Simple-Line-Icons.ttf?-i3a2kk") format("truetype"), url("../fonts/Simple-Line-Icons.woff2?-i3a2kk") format("woff2"), url("../fonts/Simple-Line-Icons.woff?-i3a2kk") format("woff"), url("../fonts/Simple-Line-Icons.svg?-i3a2kk#simple-line-icons") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* line 22, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-user, .icon-people, .icon-user-female, .icon-user-follow, .icon-user-following, .icon-user-unfollow, .icon-login, .icon-logout, .icon-emotsmile, .icon-phone, .icon-call-end, .icon-call-in, .icon-call-out, .icon-map, .icon-location-pin, .icon-direction, .icon-directions, .icon-compass, .icon-layers, .icon-menu, .icon-list, .icon-options-vertical, .icon-options, .icon-arrow-down, .icon-arrow-left, .icon-arrow-right, .icon-arrow-up, .icon-arrow-up-circle, .icon-arrow-left-circle, .icon-arrow-right-circle, .icon-arrow-down-circle, .icon-check, .icon-clock, .icon-plus, .icon-close, .icon-trophy, .icon-screen-smartphone, .icon-screen-desktop, .icon-plane, .icon-notebook, .icon-mustache, .icon-mouse, .icon-magnet, .icon-energy, .icon-disc, .icon-cursor, .icon-cursor-move, .icon-crop, .icon-chemistry, .icon-speedometer, .icon-shield, .icon-screen-tablet, .icon-magic-wand, .icon-hourglass, .icon-graduation, .icon-ghost, .icon-game-controller, .icon-fire, .icon-eyeglass, .icon-envelope-open, .icon-envelope-letter, .icon-bell, .icon-badge, .icon-anchor, .icon-wallet, .icon-vector, .icon-speech, .icon-puzzle, .icon-printer, .icon-present, .icon-playlist, .icon-pin, .icon-picture, .icon-handbag, .icon-globe-alt, .icon-globe, .icon-folder-alt, .icon-folder, .icon-film, .icon-feed, .icon-drop, .icon-drawar, .icon-docs, .icon-doc, .icon-diamond, .icon-cup, .icon-calculator, .icon-bubbles, .icon-briefcase, .icon-book-open, .icon-basket-loaded, .icon-basket, .icon-bag, .icon-action-undo, .icon-action-redo, .icon-wrench, .icon-umbrella, .icon-trash, .icon-tag, .icon-support, .icon-frame, .icon-size-fullscreen, .icon-size-actual, .icon-shuffle, .icon-share-alt, .icon-share, .icon-rocket, .icon-question, .icon-pie-chart, .icon-pencil, .icon-note, .icon-loop, .icon-home, .icon-grid, .icon-graph, .icon-microphone, .icon-music-tone-alt, .icon-music-tone, .icon-earphones-alt, .icon-earphones, .icon-equalizer, .icon-like, .icon-dislike, .icon-control-start, .icon-control-rewind, .icon-control-play, .icon-control-pause, .icon-control-forward, .icon-control-end, .icon-volume-1, .icon-volume-2, .icon-volume-off, .icon-calender, .icon-bulb, .icon-chart, .icon-ban, .icon-bubble, .icon-camrecorder, .icon-camera, .icon-cloud-download, .icon-cloud-upload, .icon-envelope, .icon-eye, .icon-flag, .icon-heart, .icon-info, .icon-key, .icon-link, .icon-lock, .icon-lock-open, .icon-magnifier, .icon-magnifier-add, .icon-magnifier-remove, .icon-paper-clip, .icon-paper-plane, .icon-power, .icon-refresh, .icon-reload, .icon-settings, .icon-star, .icon-symble-female, .icon-symbol-male, .icon-target, .icon-credit-card, .icon-paypal, .icon-social-tumblr, .icon-social-twitter, .icon-social-facebook, .icon-social-instagram, .icon-social-linkedin, .icon-social-pintarest, .icon-social-github, .icon-social-gplus, .icon-social-reddit, .icon-social-skype, .icon-social-dribbble, .icon-social-behance, .icon-social-foursqare, .icon-social-soundcloud, .icon-social-spotify, .icon-social-stumbleupon, .icon-social-youtube, .icon-social-dropbox {
+  font-family: "simple-line-icons";
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* line 219, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-user:before {
+  content: "\e005";
+}
+
+/* line 223, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-people:before {
+  content: "\e001";
+}
+
+/* line 227, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-user-female:before {
+  content: "\e000";
+}
+
+/* line 231, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-user-follow:before {
+  content: "\e002";
+}
+
+/* line 235, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-user-following:before {
+  content: "\e003";
+}
+
+/* line 239, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-user-unfollow:before {
+  content: "\e004";
+}
+
+/* line 243, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-login:before {
+  content: "\e066";
+}
+
+/* line 247, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-logout:before {
+  content: "\e065";
+}
+
+/* line 251, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-emotsmile:before {
+  content: "\e021";
+}
+
+/* line 255, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-phone:before {
+  content: "\e600";
+}
+
+/* line 259, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-call-end:before {
+  content: "\e048";
+}
+
+/* line 263, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-call-in:before {
+  content: "\e047";
+}
+
+/* line 267, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-call-out:before {
+  content: "\e046";
+}
+
+/* line 271, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-map:before {
+  content: "\e033";
+}
+
+/* line 275, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-location-pin:before {
+  content: "\e096";
+}
+
+/* line 279, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-direction:before {
+  content: "\e042";
+}
+
+/* line 283, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-directions:before {
+  content: "\e041";
+}
+
+/* line 287, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-compass:before {
+  content: "\e045";
+}
+
+/* line 291, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-layers:before {
+  content: "\e034";
+}
+
+/* line 295, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-menu:before {
+  content: "\e601";
+}
+
+/* line 299, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-list:before {
+  content: "\e067";
+}
+
+/* line 303, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-options-vertical:before {
+  content: "\e602";
+}
+
+/* line 307, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-options:before {
+  content: "\e603";
+}
+
+/* line 311, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-arrow-down:before {
+  content: "\e604";
+}
+
+/* line 315, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-arrow-left:before {
+  content: "\e605";
+}
+
+/* line 319, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-arrow-right:before {
+  content: "\e606";
+}
+
+/* line 323, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-arrow-up:before {
+  content: "\e607";
+}
+
+/* line 327, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-arrow-up-circle:before {
+  content: "\e078";
+}
+
+/* line 331, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-arrow-left-circle:before {
+  content: "\e07a";
+}
+
+/* line 335, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-arrow-right-circle:before {
+  content: "\e079";
+}
+
+/* line 339, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-arrow-down-circle:before {
+  content: "\e07b";
+}
+
+/* line 343, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-check:before {
+  content: "\e080";
+}
+
+/* line 347, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-clock:before {
+  content: "\e081";
+}
+
+/* line 351, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-plus:before {
+  content: "\e095";
+}
+
+/* line 355, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-close:before {
+  content: "\e082";
+}
+
+/* line 359, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-trophy:before {
+  content: "\e006";
+}
+
+/* line 363, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-screen-smartphone:before {
+  content: "\e010";
+}
+
+/* line 367, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-screen-desktop:before {
+  content: "\e011";
+}
+
+/* line 371, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-plane:before {
+  content: "\e012";
+}
+
+/* line 375, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-notebook:before {
+  content: "\e013";
+}
+
+/* line 379, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-mustache:before {
+  content: "\e014";
+}
+
+/* line 383, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-mouse:before {
+  content: "\e015";
+}
+
+/* line 387, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-magnet:before {
+  content: "\e016";
+}
+
+/* line 391, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-energy:before {
+  content: "\e020";
+}
+
+/* line 395, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-disc:before {
+  content: "\e022";
+}
+
+/* line 399, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-cursor:before {
+  content: "\e06e";
+}
+
+/* line 403, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-cursor-move:before {
+  content: "\e023";
+}
+
+/* line 407, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-crop:before {
+  content: "\e024";
+}
+
+/* line 411, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-chemistry:before {
+  content: "\e026";
+}
+
+/* line 415, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-speedometer:before {
+  content: "\e007";
+}
+
+/* line 419, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-shield:before {
+  content: "\e00e";
+}
+
+/* line 423, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-screen-tablet:before {
+  content: "\e00f";
+}
+
+/* line 427, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-magic-wand:before {
+  content: "\e017";
+}
+
+/* line 431, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-hourglass:before {
+  content: "\e018";
+}
+
+/* line 435, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-graduation:before {
+  content: "\e019";
+}
+
+/* line 439, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-ghost:before {
+  content: "\e01a";
+}
+
+/* line 443, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-game-controller:before {
+  content: "\e01b";
+}
+
+/* line 447, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-fire:before {
+  content: "\e01c";
+}
+
+/* line 451, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-eyeglass:before {
+  content: "\e01d";
+}
+
+/* line 455, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-envelope-open:before {
+  content: "\e01e";
+}
+
+/* line 459, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-envelope-letter:before {
+  content: "\e01f";
+}
+
+/* line 463, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-bell:before {
+  content: "\e027";
+}
+
+/* line 467, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-badge:before {
+  content: "\e028";
+}
+
+/* line 471, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-anchor:before {
+  content: "\e029";
+}
+
+/* line 475, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-wallet:before {
+  content: "\e02a";
+}
+
+/* line 479, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-vector:before {
+  content: "\e02b";
+}
+
+/* line 483, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-speech:before {
+  content: "\e02c";
+}
+
+/* line 487, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-puzzle:before {
+  content: "\e02d";
+}
+
+/* line 491, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-printer:before {
+  content: "\e02e";
+}
+
+/* line 495, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-present:before {
+  content: "\e02f";
+}
+
+/* line 499, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-playlist:before {
+  content: "\e030";
+}
+
+/* line 503, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-pin:before {
+  content: "\e031";
+}
+
+/* line 507, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-picture:before {
+  content: "\e032";
+}
+
+/* line 511, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-handbag:before {
+  content: "\e035";
+}
+
+/* line 515, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-globe-alt:before {
+  content: "\e036";
+}
+
+/* line 519, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-globe:before {
+  content: "\e037";
+}
+
+/* line 523, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-folder-alt:before {
+  content: "\e039";
+}
+
+/* line 527, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-folder:before {
+  content: "\e089";
+}
+
+/* line 531, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-film:before {
+  content: "\e03a";
+}
+
+/* line 535, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-feed:before {
+  content: "\e03b";
+}
+
+/* line 539, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-drop:before {
+  content: "\e03e";
+}
+
+/* line 543, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-drawar:before {
+  content: "\e03f";
+}
+
+/* line 547, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-docs:before {
+  content: "\e040";
+}
+
+/* line 551, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-doc:before {
+  content: "\e085";
+}
+
+/* line 555, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-diamond:before {
+  content: "\e043";
+}
+
+/* line 559, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-cup:before {
+  content: "\e044";
+}
+
+/* line 563, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-calculator:before {
+  content: "\e049";
+}
+
+/* line 567, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-bubbles:before {
+  content: "\e04a";
+}
+
+/* line 571, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-briefcase:before {
+  content: "\e04b";
+}
+
+/* line 575, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-book-open:before {
+  content: "\e04c";
+}
+
+/* line 579, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-basket-loaded:before {
+  content: "\e04d";
+}
+
+/* line 583, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-basket:before {
+  content: "\e04e";
+}
+
+/* line 587, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-bag:before {
+  content: "\e04f";
+}
+
+/* line 591, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-action-undo:before {
+  content: "\e050";
+}
+
+/* line 595, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-action-redo:before {
+  content: "\e051";
+}
+
+/* line 599, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-wrench:before {
+  content: "\e052";
+}
+
+/* line 603, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-umbrella:before {
+  content: "\e053";
+}
+
+/* line 607, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-trash:before {
+  content: "\e054";
+}
+
+/* line 611, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-tag:before {
+  content: "\e055";
+}
+
+/* line 615, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-support:before {
+  content: "\e056";
+}
+
+/* line 619, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-frame:before {
+  content: "\e038";
+}
+
+/* line 623, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-size-fullscreen:before {
+  content: "\e057";
+}
+
+/* line 627, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-size-actual:before {
+  content: "\e058";
+}
+
+/* line 631, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-shuffle:before {
+  content: "\e059";
+}
+
+/* line 635, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-share-alt:before {
+  content: "\e05a";
+}
+
+/* line 639, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-share:before {
+  content: "\e05b";
+}
+
+/* line 643, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-rocket:before {
+  content: "\e05c";
+}
+
+/* line 647, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-question:before {
+  content: "\e05d";
+}
+
+/* line 651, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-pie-chart:before {
+  content: "\e05e";
+}
+
+/* line 655, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-pencil:before {
+  content: "\e05f";
+}
+
+/* line 659, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-note:before {
+  content: "\e060";
+}
+
+/* line 663, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-loop:before {
+  content: "\e064";
+}
+
+/* line 667, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-home:before {
+  content: "\e069";
+}
+
+/* line 671, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-grid:before {
+  content: "\e06a";
+}
+
+/* line 675, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-graph:before {
+  content: "\e06b";
+}
+
+/* line 679, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-microphone:before {
+  content: "\e063";
+}
+
+/* line 683, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-music-tone-alt:before {
+  content: "\e061";
+}
+
+/* line 687, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-music-tone:before {
+  content: "\e062";
+}
+
+/* line 691, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-earphones-alt:before {
+  content: "\e03c";
+}
+
+/* line 695, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-earphones:before {
+  content: "\e03d";
+}
+
+/* line 699, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-equalizer:before {
+  content: "\e06c";
+}
+
+/* line 703, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-like:before {
+  content: "\e068";
+}
+
+/* line 707, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-dislike:before {
+  content: "\e06d";
+}
+
+/* line 711, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-control-start:before {
+  content: "\e06f";
+}
+
+/* line 715, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-control-rewind:before {
+  content: "\e070";
+}
+
+/* line 719, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-control-play:before {
+  content: "\e071";
+}
+
+/* line 723, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-control-pause:before {
+  content: "\e072";
+}
+
+/* line 727, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-control-forward:before {
+  content: "\e073";
+}
+
+/* line 731, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-control-end:before {
+  content: "\e074";
+}
+
+/* line 735, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-volume-1:before {
+  content: "\e09f";
+}
+
+/* line 739, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-volume-2:before {
+  content: "\e0a0";
+}
+
+/* line 743, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-volume-off:before {
+  content: "\e0a1";
+}
+
+/* line 747, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-calender:before {
+  content: "\e075";
+}
+
+/* line 751, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-bulb:before {
+  content: "\e076";
+}
+
+/* line 755, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-chart:before {
+  content: "\e077";
+}
+
+/* line 759, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-ban:before {
+  content: "\e07c";
+}
+
+/* line 763, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-bubble:before {
+  content: "\e07d";
+}
+
+/* line 767, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-camrecorder:before {
+  content: "\e07e";
+}
+
+/* line 771, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-camera:before {
+  content: "\e07f";
+}
+
+/* line 775, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-cloud-download:before {
+  content: "\e083";
+}
+
+/* line 779, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-cloud-upload:before {
+  content: "\e084";
+}
+
+/* line 783, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-envelope:before {
+  content: "\e086";
+}
+
+/* line 787, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-eye:before {
+  content: "\e087";
+}
+
+/* line 791, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-flag:before {
+  content: "\e088";
+}
+
+/* line 795, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-heart:before {
+  content: "\e08a";
+}
+
+/* line 799, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-info:before {
+  content: "\e08b";
+}
+
+/* line 803, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-key:before {
+  content: "\e08c";
+}
+
+/* line 807, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-link:before {
+  content: "\e08d";
+}
+
+/* line 811, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-lock:before {
+  content: "\e08e";
+}
+
+/* line 815, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-lock-open:before {
+  content: "\e08f";
+}
+
+/* line 819, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-magnifier:before {
+  content: "\e090";
+}
+
+/* line 823, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-magnifier-add:before {
+  content: "\e091";
+}
+
+/* line 827, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-magnifier-remove:before {
+  content: "\e092";
+}
+
+/* line 831, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-paper-clip:before {
+  content: "\e093";
+}
+
+/* line 835, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-paper-plane:before {
+  content: "\e094";
+}
+
+/* line 839, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-power:before {
+  content: "\e097";
+}
+
+/* line 843, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-refresh:before {
+  content: "\e098";
+}
+
+/* line 847, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-reload:before {
+  content: "\e099";
+}
+
+/* line 851, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-settings:before {
+  content: "\e09a";
+}
+
+/* line 855, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-star:before {
+  content: "\e09b";
+}
+
+/* line 859, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-symble-female:before {
+  content: "\e09c";
+}
+
+/* line 863, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-symbol-male:before {
+  content: "\e09d";
+}
+
+/* line 867, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-target:before {
+  content: "\e09e";
+}
+
+/* line 871, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-credit-card:before {
+  content: "\e025";
+}
+
+/* line 875, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-paypal:before {
+  content: "\e608";
+}
+
+/* line 879, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-social-tumblr:before {
+  content: "\e00a";
+}
+
+/* line 883, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-social-twitter:before {
+  content: "\e009";
+}
+
+/* line 887, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-social-facebook:before {
+  content: "\e00b";
+}
+
+/* line 891, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-social-instagram:before {
+  content: "\e609";
+}
+
+/* line 895, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-social-linkedin:before {
+  content: "\e60a";
+}
+
+/* line 899, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-social-pintarest:before {
+  content: "\e60b";
+}
+
+/* line 903, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-social-github:before {
+  content: "\e60c";
+}
+
+/* line 907, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-social-gplus:before {
+  content: "\e60d";
+}
+
+/* line 911, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-social-reddit:before {
+  content: "\e60e";
+}
+
+/* line 915, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-social-skype:before {
+  content: "\e60f";
+}
+
+/* line 919, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-social-dribbble:before {
+  content: "\e00d";
+}
+
+/* line 923, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-social-behance:before {
+  content: "\e610";
+}
+
+/* line 927, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-social-foursqare:before {
+  content: "\e611";
+}
+
+/* line 931, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-social-soundcloud:before {
+  content: "\e612";
+}
+
+/* line 935, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-social-spotify:before {
+  content: "\e613";
+}
+
+/* line 939, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-social-stumbleupon:before {
+  content: "\e614";
+}
+
+/* line 943, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-social-youtube:before {
+  content: "\e008";
+}
+
+/* line 947, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/simple-line-icons/scss/simple-line-icons.scss */
+.icon-social-dropbox:before {
+  content: "\e00c";
+}
+
+/*# sourceMappingURL=../../../../css/icons/simple-line-icons/scss/simple-line-icons.map */

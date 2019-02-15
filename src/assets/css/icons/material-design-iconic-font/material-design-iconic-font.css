@@ -1,0 +1,3914 @@
+/*!
+ *  Material Design Iconic Font 1.0.1 by Sergey Kupletsky (@zavoloklom) - http://zavoloklom.github.io/material-design-iconic-font/
+ *  License - https://github.com/zavoloklom/material-design-iconic-font/blob/gh-pages/License.md (Attribution-ShareAlike 4.0 International license)
+ */
+@font-face {
+  font-family: 'Material Design Iconic Font';
+  src: url("../fonts/Material-Design-Iconic-Font.eot?v=1.0.1");
+  src: url("../fonts/Material-Design-Iconic-Font.eot?#iefix&v=1.0.1") format("embedded-opentype"), url("../fonts/Material-Design-Iconic-Font.woff?v=1.0.1") format("woff"), url("../fonts/Material-Design-Iconic-Font.ttf?v=1.0.1") format("truetype"), url("../fonts/Material-Design-Iconic-Font.svg?v=1.0.1#Material-Design-Iconic-Font") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* line 12, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+[class^="md-"],
+[class*=" md-"] {
+  display: inline-block;
+  font: normal normal normal 14px/1 'Material Design Iconic Font';
+  font-size: inherit;
+  speak: none;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* line 22, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md {
+  line-height: inherit;
+  vertical-align: bottom;
+}
+
+/* line 26, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-lg {
+  font-size: 1.5em;
+  line-height: .5em;
+  vertical-align: -35%;
+}
+
+/* line 31, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-2x {
+  font-size: 2em;
+}
+
+/* line 34, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-3x {
+  font-size: 3em;
+}
+
+/* line 37, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-4x {
+  font-size: 4em;
+}
+
+/* line 40, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-5x {
+  font-size: 5em;
+}
+
+/* line 43, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-border {
+  padding: .2em .25em .15em;
+  border: solid 0.08em grey;
+  border-radius: .1em;
+}
+
+/* line 48, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-border-circle {
+  padding: .2em .25em .15em;
+  border: solid 0.08em grey;
+  border-radius: 50%;
+}
+
+/* line 53, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+[class^="md-"].pull-left,
+[class*=" md-"].pull-left {
+  float: left;
+  margin-right: .3em;
+}
+
+/* line 58, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+[class^="md-"].pull-right,
+[class*=" md-"].pull-right {
+  float: right;
+  margin-left: .3em;
+}
+
+/* line 63, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-spin {
+  -webkit-animation: md-spin 1.5s infinite linear;
+  animation: md-spin 1.5s infinite linear;
+}
+
+/* line 67, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-spin-reverse {
+  -webkit-animation: md-spin-reverse 1.5s infinite linear;
+  animation: md-spin-reverse 1.5s infinite linear;
+}
+
+@-webkit-keyframes md-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+
+@keyframes md-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+
+@-webkit-keyframes md-spin-reverse {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(-359deg);
+    transform: rotate(-359deg);
+  }
+}
+
+@keyframes md-spin-reverse {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(-359deg);
+    transform: rotate(-359deg);
+  }
+}
+
+/* line 111, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-rotate-90 {
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+  -webkit-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+
+/* line 117, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-rotate-180 {
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
+  -webkit-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+
+/* line 123, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-rotate-270 {
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+  -webkit-transform: rotate(270deg);
+  -ms-transform: rotate(270deg);
+  transform: rotate(270deg);
+}
+
+/* line 129, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-flip-horizontal {
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=0, mirror=1);
+  -webkit-transform: scale(-1, 1);
+  -ms-transform: scale(-1, 1);
+  transform: scale(-1, 1);
+}
+
+/* line 135, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-flip-vertical {
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2, mirror=1);
+  -webkit-transform: scale(1, -1);
+  -ms-transform: scale(1, -1);
+  transform: scale(1, -1);
+}
+
+/* line 141, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+:root .md-rotate-90,
+:root .md-rotate-180,
+:root .md-rotate-270,
+:root .md-flip-horizontal,
+:root .md-flip-vertical {
+  filter: none;
+}
+
+/* Material Design Iconic Font uses the Unicode Private Use Area (PUA) to ensure screen
+   readers do not read off random characters that represent icons */
+/* If you do not want use all icons you can disable icon set here */
+/* line 151, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-3d-rotation:before {
+  content: "\f000";
+}
+
+/* line 154, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-accessibility:before {
+  content: "\f001";
+}
+
+/* line 157, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-account-balance:before {
+  content: "\f002";
+}
+
+/* line 160, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-account-balance-wallet:before {
+  content: "\f003";
+}
+
+/* line 163, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-account-box:before {
+  content: "\f004";
+}
+
+/* line 166, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-account-child:before {
+  content: "\f005";
+}
+
+/* line 169, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-account-circle:before {
+  content: "\f006";
+}
+
+/* line 172, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-add-shopping-cart:before {
+  content: "\f007";
+}
+
+/* line 175, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-alarm:before {
+  content: "\f008";
+}
+
+/* line 178, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-alarm-add:before {
+  content: "\f009";
+}
+
+/* line 181, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-alarm-off:before {
+  content: "\f00a";
+}
+
+/* line 184, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-alarm-on:before {
+  content: "\f00b";
+}
+
+/* line 187, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-android:before {
+  content: "\f00c";
+}
+
+/* line 190, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-announcement:before {
+  content: "\f00d";
+}
+
+/* line 193, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-aspect-ratio:before {
+  content: "\f00e";
+}
+
+/* line 196, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-assessment:before {
+  content: "\f00f";
+}
+
+/* line 199, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-assignment:before {
+  content: "\f010";
+}
+
+/* line 202, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-assignment-ind:before {
+  content: "\f011";
+}
+
+/* line 205, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-assignment-late:before {
+  content: "\f012";
+}
+
+/* line 208, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-assignment-return:before {
+  content: "\f013";
+}
+
+/* line 211, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-assignment-returned:before {
+  content: "\f014";
+}
+
+/* line 214, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-assignment-turned-in:before {
+  content: "\f015";
+}
+
+/* line 217, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-autorenew:before {
+  content: "\f016";
+}
+
+/* line 220, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-backup:before {
+  content: "\f017";
+}
+
+/* line 223, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-book:before {
+  content: "\f018";
+}
+
+/* line 226, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-bookmark:before {
+  content: "\f019";
+}
+
+/* line 229, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-bookmark-outline:before {
+  content: "\f01a";
+}
+
+/* line 232, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-bug-report:before {
+  content: "\f01b";
+}
+
+/* line 235, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-cached:before {
+  content: "\f01c";
+}
+
+/* line 238, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-class:before {
+  content: "\f01d";
+}
+
+/* line 241, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-credit-card:before {
+  content: "\f01e";
+}
+
+/* line 244, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-dashboard:before {
+  content: "\f01f";
+}
+
+/* line 247, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-delete:before {
+  content: "\f020";
+}
+
+/* line 250, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-description:before {
+  content: "\f021";
+}
+
+/* line 253, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-dns:before {
+  content: "\f022";
+}
+
+/* line 256, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-done:before {
+  content: "\f023";
+}
+
+/* line 259, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-done-all:before {
+  content: "\f024";
+}
+
+/* line 262, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-event:before {
+  content: "\f025";
+}
+
+/* line 265, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-exit-to-app:before {
+  content: "\f026";
+}
+
+/* line 268, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-explore:before {
+  content: "\f027";
+}
+
+/* line 271, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-extension:before {
+  content: "\f028";
+}
+
+/* line 274, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-face-unlock:before {
+  content: "\f029";
+}
+
+/* line 277, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-favorite:before {
+  content: "\f02a";
+}
+
+/* line 280, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-favorite-outline:before {
+  content: "\f02b";
+}
+
+/* line 283, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-find-in-page:before {
+  content: "\f02c";
+}
+
+/* line 286, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-find-replace:before {
+  content: "\f02d";
+}
+
+/* line 289, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-flip-to-back:before {
+  content: "\f02e";
+}
+
+/* line 292, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-flip-to-front:before {
+  content: "\f02f";
+}
+
+/* line 295, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-get-app:before {
+  content: "\f030";
+}
+
+/* line 298, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-grade:before {
+  content: "\f031";
+}
+
+/* line 301, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-group-work:before {
+  content: "\f032";
+}
+
+/* line 304, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-help:before {
+  content: "\f033";
+}
+
+/* line 307, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-highlight-remove:before {
+  content: "\f034";
+}
+
+/* line 310, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-history:before {
+  content: "\f035";
+}
+
+/* line 313, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-home:before {
+  content: "\f036";
+}
+
+/* line 316, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-https:before {
+  content: "\f037";
+}
+
+/* line 319, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-info:before {
+  content: "\f038";
+}
+
+/* line 322, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-info-outline:before {
+  content: "\f039";
+}
+
+/* line 325, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-input:before {
+  content: "\f03a";
+}
+
+/* line 328, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-invert-colors:before {
+  content: "\f03b";
+}
+
+/* line 331, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-label:before {
+  content: "\f03c";
+}
+
+/* line 334, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-label-outline:before {
+  content: "\f03d";
+}
+
+/* line 337, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-language:before {
+  content: "\f03e";
+}
+
+/* line 340, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-launch:before {
+  content: "\f03f";
+}
+
+/* line 343, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-list:before {
+  content: "\f040";
+}
+
+/* line 346, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-lock:before {
+  content: "\f041";
+}
+
+/* line 349, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-lock-open:before {
+  content: "\f042";
+}
+
+/* line 352, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-lock-outline:before {
+  content: "\f043";
+}
+
+/* line 355, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-loyalty:before {
+  content: "\f044";
+}
+
+/* line 358, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-markunread-mailbox:before {
+  content: "\f045";
+}
+
+/* line 361, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-note-add:before {
+  content: "\f046";
+}
+
+/* line 364, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-open-in-browser:before {
+  content: "\f047";
+}
+
+/* line 367, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-open-in-new:before {
+  content: "\f048";
+}
+
+/* line 370, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-open-with:before {
+  content: "\f049";
+}
+
+/* line 373, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-pageview:before {
+  content: "\f04a";
+}
+
+/* line 376, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-payment:before {
+  content: "\f04b";
+}
+
+/* line 379, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-perm-camera-mic:before {
+  content: "\f04c";
+}
+
+/* line 382, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-perm-contact-cal:before {
+  content: "\f04d";
+}
+
+/* line 385, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-perm-data-setting:before {
+  content: "\f04e";
+}
+
+/* line 388, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-perm-device-info:before {
+  content: "\f04f";
+}
+
+/* line 391, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-perm-identity:before {
+  content: "\f050";
+}
+
+/* line 394, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-perm-media:before {
+  content: "\f051";
+}
+
+/* line 397, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-perm-phone-msg:before {
+  content: "\f052";
+}
+
+/* line 400, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-perm-scan-wifi:before {
+  content: "\f053";
+}
+
+/* line 403, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-picture-in-picture:before {
+  content: "\f054";
+}
+
+/* line 406, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-polymer:before {
+  content: "\f055";
+}
+
+/* line 409, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-print:before {
+  content: "\f056";
+}
+
+/* line 412, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-query-builder:before {
+  content: "\f057";
+}
+
+/* line 415, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-question-answer:before {
+  content: "\f058";
+}
+
+/* line 418, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-receipt:before {
+  content: "\f059";
+}
+
+/* line 421, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-redeem:before {
+  content: "\f05a";
+}
+
+/* line 424, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-report-problem:before {
+  content: "\f05b";
+}
+
+/* line 427, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-restore:before {
+  content: "\f05c";
+}
+
+/* line 430, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-room:before {
+  content: "\f05d";
+}
+
+/* line 433, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-schedule:before {
+  content: "\f05e";
+}
+
+/* line 436, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-search:before {
+  content: "\f05f";
+}
+
+/* line 439, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-settings:before {
+  content: "\f060";
+}
+
+/* line 442, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-settings-applications:before {
+  content: "\f061";
+}
+
+/* line 445, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-settings-backup-restore:before {
+  content: "\f062";
+}
+
+/* line 448, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-settings-bluetooth:before {
+  content: "\f063";
+}
+
+/* line 451, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-settings-cell:before {
+  content: "\f064";
+}
+
+/* line 454, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-settings-display:before {
+  content: "\f065";
+}
+
+/* line 457, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-settings-ethernet:before {
+  content: "\f066";
+}
+
+/* line 460, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-settings-input-antenna:before {
+  content: "\f067";
+}
+
+/* line 463, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-settings-input-component:before {
+  content: "\f068";
+}
+
+/* line 466, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-settings-input-composite:before {
+  content: "\f069";
+}
+
+/* line 469, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-settings-input-hdmi:before {
+  content: "\f06a";
+}
+
+/* line 472, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-settings-input-svideo:before {
+  content: "\f06b";
+}
+
+/* line 475, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-settings-overscan:before {
+  content: "\f06c";
+}
+
+/* line 478, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-settings-phone:before {
+  content: "\f06d";
+}
+
+/* line 481, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-settings-power:before {
+  content: "\f06e";
+}
+
+/* line 484, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-settings-remote:before {
+  content: "\f06f";
+}
+
+/* line 487, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-settings-voice:before {
+  content: "\f070";
+}
+
+/* line 490, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-shop:before {
+  content: "\f071";
+}
+
+/* line 493, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-shopping-basket:before {
+  content: "\f072";
+}
+
+/* line 496, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-shopping-cart:before {
+  content: "\f073";
+}
+
+/* line 499, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-shop-two:before {
+  content: "\f074";
+}
+
+/* line 502, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-speaker-notes:before {
+  content: "\f075";
+}
+
+/* line 505, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-spellcheck:before {
+  content: "\f076";
+}
+
+/* line 508, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-star-rate:before {
+  content: "\f077";
+}
+
+/* line 511, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-stars:before {
+  content: "\f078";
+}
+
+/* line 514, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-store:before {
+  content: "\f079";
+}
+
+/* line 517, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-subject:before {
+  content: "\f07a";
+}
+
+/* line 520, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-swap-horiz:before {
+  content: "\f07b";
+}
+
+/* line 523, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-swap-vert:before {
+  content: "\f07c";
+}
+
+/* line 526, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-swap-vert-circle:before {
+  content: "\f07d";
+}
+
+/* line 529, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-system-update-tv:before {
+  content: "\f07e";
+}
+
+/* line 532, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-tab:before {
+  content: "\f07f";
+}
+
+/* line 535, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-tab-unselected:before {
+  content: "\f080";
+}
+
+/* line 538, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-theaters:before {
+  content: "\f081";
+}
+
+/* line 541, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-thumb-down:before {
+  content: "\f082";
+}
+
+/* line 544, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-thumbs-up-down:before {
+  content: "\f083";
+}
+
+/* line 547, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-thumb-up:before {
+  content: "\f084";
+}
+
+/* line 550, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-toc:before {
+  content: "\f085";
+}
+
+/* line 553, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-today:before {
+  content: "\f086";
+}
+
+/* line 556, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-track-changes:before {
+  content: "\f087";
+}
+
+/* line 559, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-translate:before {
+  content: "\f088";
+}
+
+/* line 562, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-trending-down:before {
+  content: "\f089";
+}
+
+/* line 565, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-trending-neutral:before {
+  content: "\f08a";
+}
+
+/* line 568, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-trending-up:before {
+  content: "\f08b";
+}
+
+/* line 571, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-turned-in:before {
+  content: "\f08c";
+}
+
+/* line 574, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-turned-in-not:before {
+  content: "\f08d";
+}
+
+/* line 577, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-verified-user:before {
+  content: "\f08e";
+}
+
+/* line 580, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-view-agenda:before {
+  content: "\f08f";
+}
+
+/* line 583, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-view-array:before {
+  content: "\f090";
+}
+
+/* line 586, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-view-carousel:before {
+  content: "\f091";
+}
+
+/* line 589, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-view-column:before {
+  content: "\f092";
+}
+
+/* line 592, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-view-day:before {
+  content: "\f093";
+}
+
+/* line 595, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-view-headline:before {
+  content: "\f094";
+}
+
+/* line 598, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-view-list:before {
+  content: "\f095";
+}
+
+/* line 601, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-view-module:before {
+  content: "\f096";
+}
+
+/* line 604, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-view-quilt:before {
+  content: "\f097";
+}
+
+/* line 607, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-view-stream:before {
+  content: "\f098";
+}
+
+/* line 610, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-view-week:before {
+  content: "\f099";
+}
+
+/* line 613, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-visibility:before {
+  content: "\f09a";
+}
+
+/* line 616, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-visibility-off:before {
+  content: "\f09b";
+}
+
+/* line 619, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-wallet-giftcard:before {
+  content: "\f09c";
+}
+
+/* line 622, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-wallet-membership:before {
+  content: "\f09d";
+}
+
+/* line 625, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-wallet-travel:before {
+  content: "\f09e";
+}
+
+/* line 628, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-work:before {
+  content: "\f09f";
+}
+
+/* line 631, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-error:before {
+  content: "\f0a0";
+}
+
+/* line 634, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-warning:before {
+  content: "\f0a1";
+}
+
+/* line 637, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-album:before {
+  content: "\f0a2";
+}
+
+/* line 640, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-av-timer:before {
+  content: "\f0a3";
+}
+
+/* line 643, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-closed-caption:before {
+  content: "\f0a4";
+}
+
+/* line 646, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-equalizer:before {
+  content: "\f0a5";
+}
+
+/* line 649, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-explicit:before {
+  content: "\f0a6";
+}
+
+/* line 652, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-fast-forward:before {
+  content: "\f0a7";
+}
+
+/* line 655, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-fast-rewind:before {
+  content: "\f0a8";
+}
+
+/* line 658, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-games:before {
+  content: "\f0a9";
+}
+
+/* line 661, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-hearing:before {
+  content: "\f0aa";
+}
+
+/* line 664, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-high-quality:before {
+  content: "\f0ab";
+}
+
+/* line 667, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-loop:before {
+  content: "\f0ac";
+}
+
+/* line 670, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-mic:before {
+  content: "\f0ad";
+}
+
+/* line 673, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-mic-none:before {
+  content: "\f0ae";
+}
+
+/* line 676, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-mic-off:before {
+  content: "\f0af";
+}
+
+/* line 679, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-movie:before {
+  content: "\f0b0";
+}
+
+/* line 682, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-my-library-add:before {
+  content: "\f0b1";
+}
+
+/* line 685, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-my-library-books:before {
+  content: "\f0b2";
+}
+
+/* line 688, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-my-library-music:before {
+  content: "\f0b3";
+}
+
+/* line 691, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-new-releases:before {
+  content: "\f0b4";
+}
+
+/* line 694, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-not-interested:before {
+  content: "\f0b5";
+}
+
+/* line 697, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-pause:before {
+  content: "\f0b6";
+}
+
+/* line 700, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-pause-circle-fill:before {
+  content: "\f0b7";
+}
+
+/* line 703, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-pause-circle-outline:before {
+  content: "\f0b8";
+}
+
+/* line 706, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-play-arrow:before {
+  content: "\f0b9";
+}
+
+/* line 709, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-play-circle-fill:before {
+  content: "\f0ba";
+}
+
+/* line 712, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-play-circle-outline:before {
+  content: "\f0bb";
+}
+
+/* line 715, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-playlist-add:before {
+  content: "\f0bc";
+}
+
+/* line 718, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-play-shopping-bag:before {
+  content: "\f0bd";
+}
+
+/* line 721, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-queue:before {
+  content: "\f0be";
+}
+
+/* line 724, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-queue-music:before {
+  content: "\f0bf";
+}
+
+/* line 727, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-radio:before {
+  content: "\f0c0";
+}
+
+/* line 730, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-recent-actors:before {
+  content: "\f0c1";
+}
+
+/* line 733, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-repeat:before {
+  content: "\f0c2";
+}
+
+/* line 736, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-repeat-one:before {
+  content: "\f0c3";
+}
+
+/* line 739, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-replay:before {
+  content: "\f0c4";
+}
+
+/* line 742, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-shuffle:before {
+  content: "\f0c5";
+}
+
+/* line 745, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-skip-next:before {
+  content: "\f0c6";
+}
+
+/* line 748, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-skip-previous:before {
+  content: "\f0c7";
+}
+
+/* line 751, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-snooze:before {
+  content: "\f0c8";
+}
+
+/* line 754, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-stop:before {
+  content: "\f0c9";
+}
+
+/* line 757, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-subtitles:before {
+  content: "\f0ca";
+}
+
+/* line 760, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-surround-sound:before {
+  content: "\f0cb";
+}
+
+/* line 763, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-videocam:before {
+  content: "\f0cc";
+}
+
+/* line 766, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-videocam-off:before {
+  content: "\f0cd";
+}
+
+/* line 769, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-video-collection:before {
+  content: "\f0ce";
+}
+
+/* line 772, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-volume-down:before {
+  content: "\f0cf";
+}
+
+/* line 775, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-volume-mute:before {
+  content: "\f0d0";
+}
+
+/* line 778, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-volume-off:before {
+  content: "\f0d1";
+}
+
+/* line 781, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-volume-up:before {
+  content: "\f0d2";
+}
+
+/* line 784, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-web:before {
+  content: "\f0d3";
+}
+
+/* line 787, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-business:before {
+  content: "\f0d4";
+}
+
+/* line 790, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-call:before {
+  content: "\f0d5";
+}
+
+/* line 793, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-call-end:before {
+  content: "\f0d6";
+}
+
+/* line 796, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-call-made:before {
+  content: "\f0d7";
+}
+
+/* line 799, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-call-merge:before {
+  content: "\f0d8";
+}
+
+/* line 802, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-call-missed:before {
+  content: "\f0d9";
+}
+
+/* line 805, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-call-received:before {
+  content: "\f0da";
+}
+
+/* line 808, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-call-split:before {
+  content: "\f0db";
+}
+
+/* line 811, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-chat:before {
+  content: "\f0dc";
+}
+
+/* line 814, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-clear-all:before {
+  content: "\f0dd";
+}
+
+/* line 817, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-comment:before {
+  content: "\f0de";
+}
+
+/* line 820, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-contacts:before {
+  content: "\f0df";
+}
+
+/* line 823, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-dialer-sip:before {
+  content: "\f0e0";
+}
+
+/* line 826, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-dialpad:before {
+  content: "\f0e1";
+}
+
+/* line 829, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-dnd-on:before {
+  content: "\f0e2";
+}
+
+/* line 832, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-email:before {
+  content: "\f0e3";
+}
+
+/* line 835, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-forum:before {
+  content: "\f0e4";
+}
+
+/* line 838, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-import-export:before {
+  content: "\f0e5";
+}
+
+/* line 841, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-invert-colors-off:before {
+  content: "\f0e6";
+}
+
+/* line 844, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-invert-colors-on:before {
+  content: "\f0e7";
+}
+
+/* line 847, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-live-help:before {
+  content: "\f0e8";
+}
+
+/* line 850, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-location-off:before {
+  content: "\f0e9";
+}
+
+/* line 853, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-location-on:before {
+  content: "\f0ea";
+}
+
+/* line 856, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-message:before {
+  content: "\f0eb";
+}
+
+/* line 859, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-messenger:before {
+  content: "\f0ec";
+}
+
+/* line 862, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-no-sim:before {
+  content: "\f0ed";
+}
+
+/* line 865, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-phone:before {
+  content: "\f0ee";
+}
+
+/* line 868, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-portable-wifi-off:before {
+  content: "\f0ef";
+}
+
+/* line 871, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-quick-contacts-dialer:before {
+  content: "\f0f0";
+}
+
+/* line 874, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-quick-contacts-mail:before {
+  content: "\f0f1";
+}
+
+/* line 877, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-ring-volume:before {
+  content: "\f0f2";
+}
+
+/* line 880, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-stay-current-landscape:before {
+  content: "\f0f3";
+}
+
+/* line 883, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-stay-current-portrait:before {
+  content: "\f0f4";
+}
+
+/* line 886, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-stay-primary-landscape:before {
+  content: "\f0f5";
+}
+
+/* line 889, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-stay-primary-portrait:before {
+  content: "\f0f6";
+}
+
+/* line 892, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-swap-calls:before {
+  content: "\f0f7";
+}
+
+/* line 895, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-textsms:before {
+  content: "\f0f8";
+}
+
+/* line 898, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-voicemail:before {
+  content: "\f0f9";
+}
+
+/* line 901, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-vpn-key:before {
+  content: "\f0fa";
+}
+
+/* line 904, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-add:before {
+  content: "\f0fb";
+}
+
+/* line 907, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-add-box:before {
+  content: "\f0fc";
+}
+
+/* line 910, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-add-circle:before {
+  content: "\f0fd";
+}
+
+/* line 913, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-add-circle-outline:before {
+  content: "\f0fe";
+}
+
+/* line 916, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-archive:before {
+  content: "\f0ff";
+}
+
+/* line 919, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-backspace:before {
+  content: "\f100";
+}
+
+/* line 922, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-block:before {
+  content: "\f101";
+}
+
+/* line 925, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-clear:before {
+  content: "\f102";
+}
+
+/* line 928, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-content-copy:before {
+  content: "\f103";
+}
+
+/* line 931, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-content-cut:before {
+  content: "\f104";
+}
+
+/* line 934, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-content-paste:before {
+  content: "\f105";
+}
+
+/* line 937, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-create:before {
+  content: "\f106";
+}
+
+/* line 940, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-drafts:before {
+  content: "\f107";
+}
+
+/* line 943, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-filter-list:before {
+  content: "\f108";
+}
+
+/* line 946, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-flag:before {
+  content: "\f109";
+}
+
+/* line 949, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-forward:before {
+  content: "\f10a";
+}
+
+/* line 952, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-gesture:before {
+  content: "\f10b";
+}
+
+/* line 955, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-inbox:before {
+  content: "\f10c";
+}
+
+/* line 958, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-link:before {
+  content: "\f10d";
+}
+
+/* line 961, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-mail:before {
+  content: "\f10e";
+}
+
+/* line 964, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-markunread:before {
+  content: "\f10f";
+}
+
+/* line 967, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-redo:before {
+  content: "\f110";
+}
+
+/* line 970, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-remove:before {
+  content: "\f111";
+}
+
+/* line 973, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-remove-circle:before {
+  content: "\f112";
+}
+
+/* line 976, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-remove-circle-outline:before {
+  content: "\f113";
+}
+
+/* line 979, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-reply:before {
+  content: "\f114";
+}
+
+/* line 982, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-reply-all:before {
+  content: "\f115";
+}
+
+/* line 985, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-report:before {
+  content: "\f116";
+}
+
+/* line 988, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-save:before {
+  content: "\f117";
+}
+
+/* line 991, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-select-all:before {
+  content: "\f118";
+}
+
+/* line 994, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-send:before {
+  content: "\f119";
+}
+
+/* line 997, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-sort:before {
+  content: "\f11a";
+}
+
+/* line 1000, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-text-format:before {
+  content: "\f11b";
+}
+
+/* line 1003, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-undo:before {
+  content: "\f11c";
+}
+
+/* line 1006, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-access-alarm:before {
+  content: "\f11d";
+}
+
+/* line 1009, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-access-alarms:before {
+  content: "\f11e";
+}
+
+/* line 1012, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-access-time:before {
+  content: "\f11f";
+}
+
+/* line 1015, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-add-alarm:before {
+  content: "\f120";
+}
+
+/* line 1018, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-airplanemode-off:before {
+  content: "\f121";
+}
+
+/* line 1021, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-airplanemode-on:before {
+  content: "\f122";
+}
+
+/* line 1024, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-battery-20:before {
+  content: "\f123";
+}
+
+/* line 1027, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-battery-30:before {
+  content: "\f124";
+}
+
+/* line 1030, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-battery-50:before {
+  content: "\f125";
+}
+
+/* line 1033, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-battery-60:before {
+  content: "\f126";
+}
+
+/* line 1036, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-battery-80:before {
+  content: "\f127";
+}
+
+/* line 1039, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-battery-90:before {
+  content: "\f128";
+}
+
+/* line 1042, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-battery-alert:before {
+  content: "\f129";
+}
+
+/* line 1045, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-battery-charging-20:before {
+  content: "\f12a";
+}
+
+/* line 1048, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-battery-charging-30:before {
+  content: "\f12b";
+}
+
+/* line 1051, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-battery-charging-50:before {
+  content: "\f12c";
+}
+
+/* line 1054, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-battery-charging-60:before {
+  content: "\f12d";
+}
+
+/* line 1057, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-battery-charging-80:before {
+  content: "\f12e";
+}
+
+/* line 1060, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-battery-charging-90:before {
+  content: "\f12f";
+}
+
+/* line 1063, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-battery-charging-full:before {
+  content: "\f130";
+}
+
+/* line 1066, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-battery-full:before {
+  content: "\f131";
+}
+
+/* line 1069, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-battery-std:before {
+  content: "\f132";
+}
+
+/* line 1072, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-battery-unknown:before {
+  content: "\f133";
+}
+
+/* line 1075, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-bluetooth:before {
+  content: "\f134";
+}
+
+/* line 1078, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-bluetooth-connected:before {
+  content: "\f135";
+}
+
+/* line 1081, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-bluetooth-disabled:before {
+  content: "\f136";
+}
+
+/* line 1084, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-bluetooth-searching:before {
+  content: "\f137";
+}
+
+/* line 1087, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-brightness-auto:before {
+  content: "\f138";
+}
+
+/* line 1090, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-brightness-high:before {
+  content: "\f139";
+}
+
+/* line 1093, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-brightness-low:before {
+  content: "\f13a";
+}
+
+/* line 1096, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-brightness-medium:before {
+  content: "\f13b";
+}
+
+/* line 1099, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-data-usage:before {
+  content: "\f13c";
+}
+
+/* line 1102, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-developer-mode:before {
+  content: "\f13d";
+}
+
+/* line 1105, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-devices:before {
+  content: "\f13e";
+}
+
+/* line 1108, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-dvr:before {
+  content: "\f13f";
+}
+
+/* line 1111, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-gps-fixed:before {
+  content: "\f140";
+}
+
+/* line 1114, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-gps-not-fixed:before {
+  content: "\f141";
+}
+
+/* line 1117, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-gps-off:before {
+  content: "\f142";
+}
+
+/* line 1120, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-location-disabled:before {
+  content: "\f143";
+}
+
+/* line 1123, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-location-searching:before {
+  content: "\f144";
+}
+
+/* line 1126, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-multitrack-audio:before {
+  content: "\f145";
+}
+
+/* line 1129, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-network-cell:before {
+  content: "\f146";
+}
+
+/* line 1132, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-network-wifi:before {
+  content: "\f147";
+}
+
+/* line 1135, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-nfc:before {
+  content: "\f148";
+}
+
+/* line 1138, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-now-wallpaper:before {
+  content: "\f149";
+}
+
+/* line 1141, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-now-widgets:before {
+  content: "\f14a";
+}
+
+/* line 1144, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-screen-lock-landscape:before {
+  content: "\f14b";
+}
+
+/* line 1147, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-screen-lock-portrait:before {
+  content: "\f14c";
+}
+
+/* line 1150, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-screen-lock-rotation:before {
+  content: "\f14d";
+}
+
+/* line 1153, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-screen-rotation:before {
+  content: "\f14e";
+}
+
+/* line 1156, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-sd-storage:before {
+  content: "\f14f";
+}
+
+/* line 1159, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-settings-system-daydream:before {
+  content: "\f150";
+}
+
+/* line 1162, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-signal-cellular-0-bar:before {
+  content: "\f151";
+}
+
+/* line 1165, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-signal-cellular-1-bar:before {
+  content: "\f152";
+}
+
+/* line 1168, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-signal-cellular-2-bar:before {
+  content: "\f153";
+}
+
+/* line 1171, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-signal-cellular-3-bar:before {
+  content: "\f154";
+}
+
+/* line 1174, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-signal-cellular-4-bar:before {
+  content: "\f155";
+}
+
+/* line 1177, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-signal-cellular-connected-no-internet-0-bar:before {
+  content: "\f156";
+}
+
+/* line 1180, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-signal-cellular-connected-no-internet-1-bar:before {
+  content: "\f157";
+}
+
+/* line 1183, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-signal-cellular-connected-no-internet-2-bar:before {
+  content: "\f158";
+}
+
+/* line 1186, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-signal-cellular-connected-no-internet-3-bar:before {
+  content: "\f159";
+}
+
+/* line 1189, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-signal-cellular-connected-no-internet-4-bar:before {
+  content: "\f15a";
+}
+
+/* line 1192, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-signal-cellular-no-sim:before {
+  content: "\f15b";
+}
+
+/* line 1195, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-signal-cellular-null:before {
+  content: "\f15c";
+}
+
+/* line 1198, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-signal-cellular-off:before {
+  content: "\f15d";
+}
+
+/* line 1201, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-signal-wifi-0-bar:before {
+  content: "\f15e";
+}
+
+/* line 1204, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-signal-wifi-1-bar:before {
+  content: "\f15f";
+}
+
+/* line 1207, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-signal-wifi-2-bar:before {
+  content: "\f160";
+}
+
+/* line 1210, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-signal-wifi-3-bar:before {
+  content: "\f161";
+}
+
+/* line 1213, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-signal-wifi-4-bar:before {
+  content: "\f162";
+}
+
+/* line 1216, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-signal-wifi-off:before {
+  content: "\f163";
+}
+
+/* line 1219, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-storage:before {
+  content: "\f164";
+}
+
+/* line 1222, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-usb:before {
+  content: "\f165";
+}
+
+/* line 1225, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-wifi-lock:before {
+  content: "\f166";
+}
+
+/* line 1228, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-wifi-tethering:before {
+  content: "\f167";
+}
+
+/* line 1231, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-attach-file:before {
+  content: "\f168";
+}
+
+/* line 1234, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-attach-money:before {
+  content: "\f169";
+}
+
+/* line 1237, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-border-all:before {
+  content: "\f16a";
+}
+
+/* line 1240, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-border-bottom:before {
+  content: "\f16b";
+}
+
+/* line 1243, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-border-clear:before {
+  content: "\f16c";
+}
+
+/* line 1246, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-border-color:before {
+  content: "\f16d";
+}
+
+/* line 1249, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-border-horizontal:before {
+  content: "\f16e";
+}
+
+/* line 1252, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-border-inner:before {
+  content: "\f16f";
+}
+
+/* line 1255, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-border-left:before {
+  content: "\f170";
+}
+
+/* line 1258, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-border-outer:before {
+  content: "\f171";
+}
+
+/* line 1261, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-border-right:before {
+  content: "\f172";
+}
+
+/* line 1264, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-border-style:before {
+  content: "\f173";
+}
+
+/* line 1267, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-border-top:before {
+  content: "\f174";
+}
+
+/* line 1270, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-border-vertical:before {
+  content: "\f175";
+}
+
+/* line 1273, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-format-align-center:before {
+  content: "\f176";
+}
+
+/* line 1276, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-format-align-justify:before {
+  content: "\f177";
+}
+
+/* line 1279, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-format-align-left:before {
+  content: "\f178";
+}
+
+/* line 1282, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-format-align-right:before {
+  content: "\f179";
+}
+
+/* line 1285, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-format-bold:before {
+  content: "\f17a";
+}
+
+/* line 1288, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-format-clear:before {
+  content: "\f17b";
+}
+
+/* line 1291, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-format-color-fill:before {
+  content: "\f17c";
+}
+
+/* line 1294, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-format-color-reset:before {
+  content: "\f17d";
+}
+
+/* line 1297, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-format-color-text:before {
+  content: "\f17e";
+}
+
+/* line 1300, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-format-indent-decrease:before {
+  content: "\f17f";
+}
+
+/* line 1303, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-format-indent-increase:before {
+  content: "\f180";
+}
+
+/* line 1306, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-format-italic:before {
+  content: "\f181";
+}
+
+/* line 1309, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-format-line-spacing:before {
+  content: "\f182";
+}
+
+/* line 1312, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-format-list-bulleted:before {
+  content: "\f183";
+}
+
+/* line 1315, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-format-list-numbered:before {
+  content: "\f184";
+}
+
+/* line 1318, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-format-paint:before {
+  content: "\f185";
+}
+
+/* line 1321, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-format-quote:before {
+  content: "\f186";
+}
+
+/* line 1324, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-format-size:before {
+  content: "\f187";
+}
+
+/* line 1327, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-format-strikethrough:before {
+  content: "\f188";
+}
+
+/* line 1330, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-format-textdirection-l-to-r:before {
+  content: "\f189";
+}
+
+/* line 1333, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-format-textdirection-r-to-l:before {
+  content: "\f18a";
+}
+
+/* line 1336, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-format-underline:before {
+  content: "\f18b";
+}
+
+/* line 1339, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-functions:before {
+  content: "\f18c";
+}
+
+/* line 1342, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-insert-chart:before {
+  content: "\f18d";
+}
+
+/* line 1345, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-insert-comment:before {
+  content: "\f18e";
+}
+
+/* line 1348, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-insert-drive-file:before {
+  content: "\f18f";
+}
+
+/* line 1351, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-insert-emoticon:before {
+  content: "\f190";
+}
+
+/* line 1354, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-insert-invitation:before {
+  content: "\f191";
+}
+
+/* line 1357, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-insert-link:before {
+  content: "\f192";
+}
+
+/* line 1360, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-insert-photo:before {
+  content: "\f193";
+}
+
+/* line 1363, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-merge-type:before {
+  content: "\f194";
+}
+
+/* line 1366, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-mode-comment:before {
+  content: "\f195";
+}
+
+/* line 1369, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-mode-edit:before {
+  content: "\f196";
+}
+
+/* line 1372, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-publish:before {
+  content: "\f197";
+}
+
+/* line 1375, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-vertical-align-bottom:before {
+  content: "\f198";
+}
+
+/* line 1378, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-vertical-align-center:before {
+  content: "\f199";
+}
+
+/* line 1381, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-vertical-align-top:before {
+  content: "\f19a";
+}
+
+/* line 1384, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-wrap-text:before {
+  content: "\f19b";
+}
+
+/* line 1387, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-attachment:before {
+  content: "\f19c";
+}
+
+/* line 1390, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-cloud:before {
+  content: "\f19d";
+}
+
+/* line 1393, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-cloud-circle:before {
+  content: "\f19e";
+}
+
+/* line 1396, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-cloud-done:before {
+  content: "\f19f";
+}
+
+/* line 1399, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-cloud-download:before {
+  content: "\f1a0";
+}
+
+/* line 1402, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-cloud-off:before {
+  content: "\f1a1";
+}
+
+/* line 1405, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-cloud-queue:before {
+  content: "\f1a2";
+}
+
+/* line 1408, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-cloud-upload:before {
+  content: "\f1a3";
+}
+
+/* line 1411, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-file-download:before {
+  content: "\f1a4";
+}
+
+/* line 1414, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-file-upload:before {
+  content: "\f1a5";
+}
+
+/* line 1417, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-folder:before {
+  content: "\f1a6";
+}
+
+/* line 1420, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-folder-open:before {
+  content: "\f1a7";
+}
+
+/* line 1423, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-folder-shared:before {
+  content: "\f1a8";
+}
+
+/* line 1426, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-cast:before {
+  content: "\f1a9";
+}
+
+/* line 1429, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-cast-connected:before {
+  content: "\f1aa";
+}
+
+/* line 1432, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-computer:before {
+  content: "\f1ab";
+}
+
+/* line 1435, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-desktop-mac:before {
+  content: "\f1ac";
+}
+
+/* line 1438, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-desktop-windows:before {
+  content: "\f1ad";
+}
+
+/* line 1441, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-dock:before {
+  content: "\f1ae";
+}
+
+/* line 1444, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-gamepad:before {
+  content: "\f1af";
+}
+
+/* line 1447, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-headset:before {
+  content: "\f1b0";
+}
+
+/* line 1450, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-headset-mic:before {
+  content: "\f1b1";
+}
+
+/* line 1453, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-keyboard:before {
+  content: "\f1b2";
+}
+
+/* line 1456, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-keyboard-alt:before {
+  content: "\f1b3";
+}
+
+/* line 1459, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-keyboard-arrow-down:before {
+  content: "\f1b4";
+}
+
+/* line 1462, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-keyboard-arrow-left:before {
+  content: "\f1b5";
+}
+
+/* line 1465, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-keyboard-arrow-right:before {
+  content: "\f1b6";
+}
+
+/* line 1468, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-keyboard-arrow-up:before {
+  content: "\f1b7";
+}
+
+/* line 1471, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-keyboard-backspace:before {
+  content: "\f1b8";
+}
+
+/* line 1474, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-keyboard-capslock:before {
+  content: "\f1b9";
+}
+
+/* line 1477, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-keyboard-control:before {
+  content: "\f1ba";
+}
+
+/* line 1480, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-keyboard-hide:before {
+  content: "\f1bb";
+}
+
+/* line 1483, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-keyboard-return:before {
+  content: "\f1bc";
+}
+
+/* line 1486, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-keyboard-tab:before {
+  content: "\f1bd";
+}
+
+/* line 1489, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-keyboard-voice:before {
+  content: "\f1be";
+}
+
+/* line 1492, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-laptop:before {
+  content: "\f1bf";
+}
+
+/* line 1495, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-laptop-chromebook:before {
+  content: "\f1c0";
+}
+
+/* line 1498, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-laptop-mac:before {
+  content: "\f1c1";
+}
+
+/* line 1501, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-laptop-windows:before {
+  content: "\f1c2";
+}
+
+/* line 1504, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-memory:before {
+  content: "\f1c3";
+}
+
+/* line 1507, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-mouse:before {
+  content: "\f1c4";
+}
+
+/* line 1510, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-phone-android:before {
+  content: "\f1c5";
+}
+
+/* line 1513, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-phone-iphone:before {
+  content: "\f1c6";
+}
+
+/* line 1516, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-phonelink:before {
+  content: "\f1c7";
+}
+
+/* line 1519, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-phonelink-off:before {
+  content: "\f1c8";
+}
+
+/* line 1522, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-security:before {
+  content: "\f1c9";
+}
+
+/* line 1525, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-sim-card:before {
+  content: "\f1ca";
+}
+
+/* line 1528, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-smartphone:before {
+  content: "\f1cb";
+}
+
+/* line 1531, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-speaker:before {
+  content: "\f1cc";
+}
+
+/* line 1534, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-tablet:before {
+  content: "\f1cd";
+}
+
+/* line 1537, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-tablet-android:before {
+  content: "\f1ce";
+}
+
+/* line 1540, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-tablet-mac:before {
+  content: "\f1cf";
+}
+
+/* line 1543, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-tv:before {
+  content: "\f1d0";
+}
+
+/* line 1546, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-watch:before {
+  content: "\f1d1";
+}
+
+/* line 1549, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-add-to-photos:before {
+  content: "\f1d2";
+}
+
+/* line 1552, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-adjust:before {
+  content: "\f1d3";
+}
+
+/* line 1555, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-assistant-photo:before {
+  content: "\f1d4";
+}
+
+/* line 1558, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-audiotrack:before {
+  content: "\f1d5";
+}
+
+/* line 1561, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-blur-circular:before {
+  content: "\f1d6";
+}
+
+/* line 1564, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-blur-linear:before {
+  content: "\f1d7";
+}
+
+/* line 1567, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-blur-off:before {
+  content: "\f1d8";
+}
+
+/* line 1570, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-blur-on:before {
+  content: "\f1d9";
+}
+
+/* line 1573, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-brightness-1:before {
+  content: "\f1da";
+}
+
+/* line 1576, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-brightness-2:before {
+  content: "\f1db";
+}
+
+/* line 1579, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-brightness-3:before {
+  content: "\f1dc";
+}
+
+/* line 1582, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-brightness-4:before {
+  content: "\f1dd";
+}
+
+/* line 1585, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-brightness-5:before {
+  content: "\f1de";
+}
+
+/* line 1588, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-brightness-6:before {
+  content: "\f1df";
+}
+
+/* line 1591, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-brightness-7:before {
+  content: "\f1e0";
+}
+
+/* line 1594, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-brush:before {
+  content: "\f1e1";
+}
+
+/* line 1597, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-camera:before {
+  content: "\f1e2";
+}
+
+/* line 1600, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-camera-alt:before {
+  content: "\f1e3";
+}
+
+/* line 1603, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-camera-front:before {
+  content: "\f1e4";
+}
+
+/* line 1606, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-camera-rear:before {
+  content: "\f1e5";
+}
+
+/* line 1609, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-camera-roll:before {
+  content: "\f1e6";
+}
+
+/* line 1612, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-center-focus-strong:before {
+  content: "\f1e7";
+}
+
+/* line 1615, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-center-focus-weak:before {
+  content: "\f1e8";
+}
+
+/* line 1618, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-collections:before {
+  content: "\f1e9";
+}
+
+/* line 1621, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-colorize:before {
+  content: "\f1ea";
+}
+
+/* line 1624, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-color-lens:before {
+  content: "\f1eb";
+}
+
+/* line 1627, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-compare:before {
+  content: "\f1ec";
+}
+
+/* line 1630, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-control-point:before {
+  content: "\f1ed";
+}
+
+/* line 1633, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-control-point-duplicate:before {
+  content: "\f1ee";
+}
+
+/* line 1636, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-crop:before {
+  content: "\f1ef";
+}
+
+/* line 1639, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-crop-3-2:before {
+  content: "\f1f0";
+}
+
+/* line 1642, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-crop-5-4:before {
+  content: "\f1f1";
+}
+
+/* line 1645, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-crop-7-5:before {
+  content: "\f1f2";
+}
+
+/* line 1648, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-crop-16-9:before {
+  content: "\f1f3";
+}
+
+/* line 1651, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-crop-din:before {
+  content: "\f1f4";
+}
+
+/* line 1654, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-crop-free:before {
+  content: "\f1f5";
+}
+
+/* line 1657, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-crop-landscape:before {
+  content: "\f1f6";
+}
+
+/* line 1660, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-crop-original:before {
+  content: "\f1f7";
+}
+
+/* line 1663, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-crop-portrait:before {
+  content: "\f1f8";
+}
+
+/* line 1666, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-crop-square:before {
+  content: "\f1f9";
+}
+
+/* line 1669, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-dehaze:before {
+  content: "\f1fa";
+}
+
+/* line 1672, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-details:before {
+  content: "\f1fb";
+}
+
+/* line 1675, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-edit:before {
+  content: "\f1fc";
+}
+
+/* line 1678, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-exposure:before {
+  content: "\f1fd";
+}
+
+/* line 1681, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-exposure-minus-1:before {
+  content: "\f1fe";
+}
+
+/* line 1684, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-exposure-minus-2:before {
+  content: "\f1ff";
+}
+
+/* line 1687, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-exposure-zero:before {
+  content: "\f200";
+}
+
+/* line 1690, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-exposure-plus-1:before {
+  content: "\f201";
+}
+
+/* line 1693, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-exposure-plus-2:before {
+  content: "\f202";
+}
+
+/* line 1696, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-filter:before {
+  content: "\f203";
+}
+
+/* line 1699, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-filter-1:before {
+  content: "\f204";
+}
+
+/* line 1702, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-filter-2:before {
+  content: "\f205";
+}
+
+/* line 1705, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-filter-3:before {
+  content: "\f206";
+}
+
+/* line 1708, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-filter-4:before {
+  content: "\f207";
+}
+
+/* line 1711, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-filter-5:before {
+  content: "\f208";
+}
+
+/* line 1714, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-filter-6:before {
+  content: "\f209";
+}
+
+/* line 1717, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-filter-7:before {
+  content: "\f20a";
+}
+
+/* line 1720, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-filter-8:before {
+  content: "\f20b";
+}
+
+/* line 1723, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-filter-9:before {
+  content: "\f20c";
+}
+
+/* line 1726, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-filter-9-plus:before {
+  content: "\f20d";
+}
+
+/* line 1729, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-filter-b-and-w:before {
+  content: "\f20e";
+}
+
+/* line 1732, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-filter-center-focus:before {
+  content: "\f20f";
+}
+
+/* line 1735, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-filter-drama:before {
+  content: "\f210";
+}
+
+/* line 1738, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-filter-frames:before {
+  content: "\f211";
+}
+
+/* line 1741, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-filter-hdr:before {
+  content: "\f212";
+}
+
+/* line 1744, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-filter-none:before {
+  content: "\f213";
+}
+
+/* line 1747, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-filter-tilt-shift:before {
+  content: "\f214";
+}
+
+/* line 1750, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-filter-vintage:before {
+  content: "\f215";
+}
+
+/* line 1753, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-flare:before {
+  content: "\f216";
+}
+
+/* line 1756, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-flash-auto:before {
+  content: "\f217";
+}
+
+/* line 1759, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-flash-off:before {
+  content: "\f218";
+}
+
+/* line 1762, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-flash-on:before {
+  content: "\f219";
+}
+
+/* line 1765, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-flip:before {
+  content: "\f21a";
+}
+
+/* line 1768, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-gradient:before {
+  content: "\f21b";
+}
+
+/* line 1771, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-grain:before {
+  content: "\f21c";
+}
+
+/* line 1774, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-grid-off:before {
+  content: "\f21d";
+}
+
+/* line 1777, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-grid-on:before {
+  content: "\f21e";
+}
+
+/* line 1780, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-hdr-off:before {
+  content: "\f21f";
+}
+
+/* line 1783, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-hdr-on:before {
+  content: "\f220";
+}
+
+/* line 1786, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-hdr-strong:before {
+  content: "\f221";
+}
+
+/* line 1789, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-hdr-weak:before {
+  content: "\f222";
+}
+
+/* line 1792, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-healing:before {
+  content: "\f223";
+}
+
+/* line 1795, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-image:before {
+  content: "\f224";
+}
+
+/* line 1798, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-image-aspect-ratio:before {
+  content: "\f225";
+}
+
+/* line 1801, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-iso:before {
+  content: "\f226";
+}
+
+/* line 1804, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-landscape:before {
+  content: "\f227";
+}
+
+/* line 1807, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-leak-add:before {
+  content: "\f228";
+}
+
+/* line 1810, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-leak-remove:before {
+  content: "\f229";
+}
+
+/* line 1813, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-lens:before {
+  content: "\f22a";
+}
+
+/* line 1816, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-looks:before {
+  content: "\f22b";
+}
+
+/* line 1819, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-looks-1:before {
+  content: "\f22c";
+}
+
+/* line 1822, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-looks-2:before {
+  content: "\f22d";
+}
+
+/* line 1825, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-looks-3:before {
+  content: "\f22e";
+}
+
+/* line 1828, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-looks-4:before {
+  content: "\f22f";
+}
+
+/* line 1831, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-looks-5:before {
+  content: "\f230";
+}
+
+/* line 1834, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-looks-6:before {
+  content: "\f231";
+}
+
+/* line 1837, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-loupe:before {
+  content: "\f232";
+}
+
+/* line 1840, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-movie-creation:before {
+  content: "\f233";
+}
+
+/* line 1843, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-nature:before {
+  content: "\f234";
+}
+
+/* line 1846, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-nature-people:before {
+  content: "\f235";
+}
+
+/* line 1849, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-navigate-before:before {
+  content: "\f236";
+}
+
+/* line 1852, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-navigate-next:before {
+  content: "\f237";
+}
+
+/* line 1855, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-palette:before {
+  content: "\f238";
+}
+
+/* line 1858, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-panorama:before {
+  content: "\f239";
+}
+
+/* line 1861, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-panorama-fisheye:before {
+  content: "\f23a";
+}
+
+/* line 1864, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-panorama-horizontal:before {
+  content: "\f23b";
+}
+
+/* line 1867, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-panorama-vertical:before {
+  content: "\f23c";
+}
+
+/* line 1870, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-panorama-wide-angle:before {
+  content: "\f23d";
+}
+
+/* line 1873, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-photo:before {
+  content: "\f23e";
+}
+
+/* line 1876, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-photo-album:before {
+  content: "\f23f";
+}
+
+/* line 1879, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-photo-camera:before {
+  content: "\f240";
+}
+
+/* line 1882, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-photo-library:before {
+  content: "\f241";
+}
+
+/* line 1885, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-portrait:before {
+  content: "\f242";
+}
+
+/* line 1888, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-remove-red-eye:before {
+  content: "\f243";
+}
+
+/* line 1891, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-rotate-left:before {
+  content: "\f244";
+}
+
+/* line 1894, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-rotate-right:before {
+  content: "\f245";
+}
+
+/* line 1897, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-slideshow:before {
+  content: "\f246";
+}
+
+/* line 1900, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-straighten:before {
+  content: "\f247";
+}
+
+/* line 1903, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-style:before {
+  content: "\f248";
+}
+
+/* line 1906, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-switch-camera:before {
+  content: "\f249";
+}
+
+/* line 1909, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-switch-video:before {
+  content: "\f24a";
+}
+
+/* line 1912, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-tag-faces:before {
+  content: "\f24b";
+}
+
+/* line 1915, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-texture:before {
+  content: "\f24c";
+}
+
+/* line 1918, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-timelapse:before {
+  content: "\f24d";
+}
+
+/* line 1921, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-timer:before {
+  content: "\f24e";
+}
+
+/* line 1924, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-timer-3:before {
+  content: "\f24f";
+}
+
+/* line 1927, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-timer-10:before {
+  content: "\f250";
+}
+
+/* line 1930, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-timer-auto:before {
+  content: "\f251";
+}
+
+/* line 1933, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-timer-off:before {
+  content: "\f252";
+}
+
+/* line 1936, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-tonality:before {
+  content: "\f253";
+}
+
+/* line 1939, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-transform:before {
+  content: "\f254";
+}
+
+/* line 1942, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-tune:before {
+  content: "\f255";
+}
+
+/* line 1945, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-wb-auto:before {
+  content: "\f256";
+}
+
+/* line 1948, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-wb-cloudy:before {
+  content: "\f257";
+}
+
+/* line 1951, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-wb-incandescent:before {
+  content: "\f258";
+}
+
+/* line 1954, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-wb-irradescent:before {
+  content: "\f259";
+}
+
+/* line 1957, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-wb-sunny:before {
+  content: "\f25a";
+}
+
+/* line 1960, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-beenhere:before {
+  content: "\f25b";
+}
+
+/* line 1963, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-directions:before {
+  content: "\f25c";
+}
+
+/* line 1966, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-directions-bike:before {
+  content: "\f25d";
+}
+
+/* line 1969, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-directions-bus:before {
+  content: "\f25e";
+}
+
+/* line 1972, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-directions-car:before {
+  content: "\f25f";
+}
+
+/* line 1975, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-directions-ferry:before {
+  content: "\f260";
+}
+
+/* line 1978, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-directions-subway:before {
+  content: "\f261";
+}
+
+/* line 1981, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-directions-train:before {
+  content: "\f262";
+}
+
+/* line 1984, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-directions-transit:before {
+  content: "\f263";
+}
+
+/* line 1987, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-directions-walk:before {
+  content: "\f264";
+}
+
+/* line 1990, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-flight:before {
+  content: "\f265";
+}
+
+/* line 1993, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-hotel:before {
+  content: "\f266";
+}
+
+/* line 1996, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-layers:before {
+  content: "\f267";
+}
+
+/* line 1999, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-layers-clear:before {
+  content: "\f268";
+}
+
+/* line 2002, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-airport:before {
+  content: "\f269";
+}
+
+/* line 2005, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-atm:before {
+  content: "\f26a";
+}
+
+/* line 2008, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-attraction:before {
+  content: "\f26b";
+}
+
+/* line 2011, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-bar:before {
+  content: "\f26c";
+}
+
+/* line 2014, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-cafe:before {
+  content: "\f26d";
+}
+
+/* line 2017, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-car-wash:before {
+  content: "\f26e";
+}
+
+/* line 2020, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-convenience-store:before {
+  content: "\f26f";
+}
+
+/* line 2023, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-drink:before {
+  content: "\f270";
+}
+
+/* line 2026, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-florist:before {
+  content: "\f271";
+}
+
+/* line 2029, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-gas-station:before {
+  content: "\f272";
+}
+
+/* line 2032, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-grocery-store:before {
+  content: "\f273";
+}
+
+/* line 2035, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-hospital:before {
+  content: "\f274";
+}
+
+/* line 2038, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-hotel:before {
+  content: "\f275";
+}
+
+/* line 2041, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-laundry-service:before {
+  content: "\f276";
+}
+
+/* line 2044, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-library:before {
+  content: "\f277";
+}
+
+/* line 2047, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-mall:before {
+  content: "\f278";
+}
+
+/* line 2050, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-movies:before {
+  content: "\f279";
+}
+
+/* line 2053, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-offer:before {
+  content: "\f27a";
+}
+
+/* line 2056, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-parking:before {
+  content: "\f27b";
+}
+
+/* line 2059, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-pharmacy:before {
+  content: "\f27c";
+}
+
+/* line 2062, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-phone:before {
+  content: "\f27d";
+}
+
+/* line 2065, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-pizza:before {
+  content: "\f27e";
+}
+
+/* line 2068, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-play:before {
+  content: "\f27f";
+}
+
+/* line 2071, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-post-office:before {
+  content: "\f280";
+}
+
+/* line 2074, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-print-shop:before {
+  content: "\f281";
+}
+
+/* line 2077, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-restaurant:before {
+  content: "\f282";
+}
+
+/* line 2080, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-see:before {
+  content: "\f283";
+}
+
+/* line 2083, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-shipping:before {
+  content: "\f284";
+}
+
+/* line 2086, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-local-taxi:before {
+  content: "\f285";
+}
+
+/* line 2089, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-location-history:before {
+  content: "\f286";
+}
+
+/* line 2092, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-map:before {
+  content: "\f287";
+}
+
+/* line 2095, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-my-location:before {
+  content: "\f288";
+}
+
+/* line 2098, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-navigation:before {
+  content: "\f289";
+}
+
+/* line 2101, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-pin-drop:before {
+  content: "\f28a";
+}
+
+/* line 2104, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-place:before {
+  content: "\f28b";
+}
+
+/* line 2107, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-rate-review:before {
+  content: "\f28c";
+}
+
+/* line 2110, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-restaurant-menu:before {
+  content: "\f28d";
+}
+
+/* line 2113, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-satellite:before {
+  content: "\f28e";
+}
+
+/* line 2116, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-store-mall-directory:before {
+  content: "\f28f";
+}
+
+/* line 2119, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-terrain:before {
+  content: "\f290";
+}
+
+/* line 2122, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-traffic:before {
+  content: "\f291";
+}
+
+/* line 2125, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-apps:before {
+  content: "\f292";
+}
+
+/* line 2128, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-cancel:before {
+  content: "\f293";
+}
+
+/* line 2131, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-arrow-drop-down-circle:before {
+  content: "\f294";
+}
+
+/* line 2134, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-arrow-drop-down:before {
+  content: "\f295";
+}
+
+/* line 2137, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-arrow-drop-up:before {
+  content: "\f296";
+}
+
+/* line 2140, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-arrow-back:before {
+  content: "\f297";
+}
+
+/* line 2143, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-arrow-forward:before {
+  content: "\f298";
+}
+
+/* line 2146, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-check:before {
+  content: "\f299";
+}
+
+/* line 2149, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-close:before {
+  content: "\f29a";
+}
+
+/* line 2152, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-chevron-left:before {
+  content: "\f29b";
+}
+
+/* line 2155, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-chevron-right:before {
+  content: "\f29c";
+}
+
+/* line 2158, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-expand-less:before {
+  content: "\f29d";
+}
+
+/* line 2161, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-expand-more:before {
+  content: "\f29e";
+}
+
+/* line 2164, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-fullscreen:before {
+  content: "\f29f";
+}
+
+/* line 2167, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-fullscreen-exit:before {
+  content: "\f2a0";
+}
+
+/* line 2170, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-menu:before {
+  content: "\f2a1";
+}
+
+/* line 2173, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-more-horiz:before {
+  content: "\f2a2";
+}
+
+/* line 2176, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-more-vert:before {
+  content: "\f2a3";
+}
+
+/* line 2179, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-refresh:before {
+  content: "\f2a4";
+}
+
+/* line 2182, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-unfold-less:before {
+  content: "\f2a5";
+}
+
+/* line 2185, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-unfold-more:before {
+  content: "\f2a6";
+}
+
+/* line 2188, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-adb:before {
+  content: "\f2a7";
+}
+
+/* line 2191, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-bluetooth-audio:before {
+  content: "\f2a8";
+}
+
+/* line 2194, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-disc-full:before {
+  content: "\f2a9";
+}
+
+/* line 2197, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-dnd-forwardslash:before {
+  content: "\f2aa";
+}
+
+/* line 2200, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-do-not-disturb:before {
+  content: "\f2ab";
+}
+
+/* line 2203, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-drive-eta:before {
+  content: "\f2ac";
+}
+
+/* line 2206, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-event-available:before {
+  content: "\f2ad";
+}
+
+/* line 2209, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-event-busy:before {
+  content: "\f2ae";
+}
+
+/* line 2212, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-event-note:before {
+  content: "\f2af";
+}
+
+/* line 2215, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-folder-special:before {
+  content: "\f2b0";
+}
+
+/* line 2218, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-mms:before {
+  content: "\f2b1";
+}
+
+/* line 2221, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-more:before {
+  content: "\f2b2";
+}
+
+/* line 2224, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-network-locked:before {
+  content: "\f2b3";
+}
+
+/* line 2227, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-phone-bluetooth-speaker:before {
+  content: "\f2b4";
+}
+
+/* line 2230, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-phone-forwarded:before {
+  content: "\f2b5";
+}
+
+/* line 2233, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-phone-in-talk:before {
+  content: "\f2b6";
+}
+
+/* line 2236, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-phone-locked:before {
+  content: "\f2b7";
+}
+
+/* line 2239, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-phone-missed:before {
+  content: "\f2b8";
+}
+
+/* line 2242, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-phone-paused:before {
+  content: "\f2b9";
+}
+
+/* line 2245, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-play-download:before {
+  content: "\f2ba";
+}
+
+/* line 2248, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-play-install:before {
+  content: "\f2bb";
+}
+
+/* line 2251, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-sd-card:before {
+  content: "\f2bc";
+}
+
+/* line 2254, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-sim-card-alert:before {
+  content: "\f2bd";
+}
+
+/* line 2257, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-sms:before {
+  content: "\f2be";
+}
+
+/* line 2260, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-sms-failed:before {
+  content: "\f2bf";
+}
+
+/* line 2263, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-sync:before {
+  content: "\f2c0";
+}
+
+/* line 2266, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-sync-disabled:before {
+  content: "\f2c1";
+}
+
+/* line 2269, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-sync-problem:before {
+  content: "\f2c2";
+}
+
+/* line 2272, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-system-update:before {
+  content: "\f2c3";
+}
+
+/* line 2275, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-tap-and-play:before {
+  content: "\f2c4";
+}
+
+/* line 2278, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-time-to-leave:before {
+  content: "\f2c5";
+}
+
+/* line 2281, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-vibration:before {
+  content: "\f2c6";
+}
+
+/* line 2284, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-voice-chat:before {
+  content: "\f2c7";
+}
+
+/* line 2287, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-vpn-lock:before {
+  content: "\f2c8";
+}
+
+/* line 2290, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-cake:before {
+  content: "\f2c9";
+}
+
+/* line 2293, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-domain:before {
+  content: "\f2ca";
+}
+
+/* line 2296, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-location-city:before {
+  content: "\f2cb";
+}
+
+/* line 2299, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-mood:before {
+  content: "\f2cc";
+}
+
+/* line 2302, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-notifications-none:before {
+  content: "\f2cd";
+}
+
+/* line 2305, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-notifications:before {
+  content: "\f2ce";
+}
+
+/* line 2308, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-notifications-off:before {
+  content: "\f2cf";
+}
+
+/* line 2311, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-notifications-on:before {
+  content: "\f2d0";
+}
+
+/* line 2314, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-notifications-paused:before {
+  content: "\f2d1";
+}
+
+/* line 2317, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-pages:before {
+  content: "\f2d2";
+}
+
+/* line 2320, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-party-mode:before {
+  content: "\f2d3";
+}
+
+/* line 2323, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-group:before {
+  content: "\f2d4";
+}
+
+/* line 2326, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-group-add:before {
+  content: "\f2d5";
+}
+
+/* line 2329, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-people:before {
+  content: "\f2d6";
+}
+
+/* line 2332, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-people-outline:before {
+  content: "\f2d7";
+}
+
+/* line 2335, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-person:before {
+  content: "\f2d8";
+}
+
+/* line 2338, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-person-add:before {
+  content: "\f2d9";
+}
+
+/* line 2341, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-person-outline:before {
+  content: "\f2da";
+}
+
+/* line 2344, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-plus-one:before {
+  content: "\f2db";
+}
+
+/* line 2347, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-poll:before {
+  content: "\f2dc";
+}
+
+/* line 2350, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-public:before {
+  content: "\f2dd";
+}
+
+/* line 2353, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-school:before {
+  content: "\f2de";
+}
+
+/* line 2356, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-share:before {
+  content: "\f2df";
+}
+
+/* line 2359, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-whatshot:before {
+  content: "\f2e0";
+}
+
+/* line 2362, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-check-box:before {
+  content: "\f2e1";
+}
+
+/* line 2365, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-check-box-outline-blank:before {
+  content: "\f2e2";
+}
+
+/* line 2368, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-radio-button-off:before {
+  content: "\f2e3";
+}
+
+/* line 2371, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-radio-button-on:before {
+  content: "\f2e4";
+}
+
+/* line 2374, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-star:before {
+  content: "\f2e5";
+}
+
+/* line 2377, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-star-half:before {
+  content: "\f2e6";
+}
+
+/* line 2380, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/material-design-iconic-font/material-design-iconic-font.scss */
+.md-star-outline:before {
+  content: "\f2e7";
+}
+
+/*# sourceMappingURL=../../../css/icons/material-design-iconic-font/material-design-iconic-font.map */

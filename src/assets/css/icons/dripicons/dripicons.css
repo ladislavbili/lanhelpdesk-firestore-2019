@@ -1,0 +1,1035 @@
+@font-face {
+  font-family: "dripicons-v2";
+  src: url("../fonts/dripicons-v2.eot");
+  src: url("../fonts/dripicons-v2.eot?#iefix") format("embedded-opentype"), url("../fonts/dripicons-v2.woff") format("woff"), url("../fonts/dripicons-v2.ttf") format("truetype"), url("../fonts/dripicons-v2.svg#dripicons-v2") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* line 15, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+[data-icon]:before {
+  font-family: "dripicons-v2" !important;
+  content: attr(data-icon);
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* line 27, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+[class^="dripicons-"]:before,
+[class*=" dripicons-"]:before {
+  font-family: "dripicons-v2" !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* line 39, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-alarm:before {
+  content: "\61";
+}
+
+/* line 42, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-align-center:before {
+  content: "\62";
+}
+
+/* line 45, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-align-justify:before {
+  content: "\63";
+}
+
+/* line 48, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-align-left:before {
+  content: "\64";
+}
+
+/* line 51, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-align-right:before {
+  content: "\65";
+}
+
+/* line 54, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-anchor:before {
+  content: "\66";
+}
+
+/* line 57, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-archive:before {
+  content: "\67";
+}
+
+/* line 60, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-arrow-down:before {
+  content: "\68";
+}
+
+/* line 63, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-arrow-left:before {
+  content: "\69";
+}
+
+/* line 66, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-arrow-right:before {
+  content: "\6a";
+}
+
+/* line 69, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-arrow-thin-down:before {
+  content: "\6b";
+}
+
+/* line 72, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-arrow-thin-left:before {
+  content: "\6c";
+}
+
+/* line 75, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-arrow-thin-right:before {
+  content: "\6d";
+}
+
+/* line 78, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-arrow-thin-up:before {
+  content: "\6e";
+}
+
+/* line 81, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-arrow-up:before {
+  content: "\6f";
+}
+
+/* line 84, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-article:before {
+  content: "\70";
+}
+
+/* line 87, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-backspace:before {
+  content: "\71";
+}
+
+/* line 90, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-basket:before {
+  content: "\72";
+}
+
+/* line 93, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-basketball:before {
+  content: "\73";
+}
+
+/* line 96, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-battery-empty:before {
+  content: "\74";
+}
+
+/* line 99, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-battery-full:before {
+  content: "\75";
+}
+
+/* line 102, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-battery-low:before {
+  content: "\76";
+}
+
+/* line 105, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-battery-medium:before {
+  content: "\77";
+}
+
+/* line 108, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-bell:before {
+  content: "\78";
+}
+
+/* line 111, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-blog:before {
+  content: "\79";
+}
+
+/* line 114, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-bluetooth:before {
+  content: "\7a";
+}
+
+/* line 117, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-bold:before {
+  content: "\41";
+}
+
+/* line 120, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-bookmark:before {
+  content: "\42";
+}
+
+/* line 123, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-bookmarks:before {
+  content: "\43";
+}
+
+/* line 126, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-box:before {
+  content: "\44";
+}
+
+/* line 129, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-briefcase:before {
+  content: "\45";
+}
+
+/* line 132, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-brightness-low:before {
+  content: "\46";
+}
+
+/* line 135, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-brightness-max:before {
+  content: "\47";
+}
+
+/* line 138, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-brightness-medium:before {
+  content: "\48";
+}
+
+/* line 141, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-broadcast:before {
+  content: "\49";
+}
+
+/* line 144, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-browser:before {
+  content: "\4a";
+}
+
+/* line 147, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-browser-upload:before {
+  content: "\4b";
+}
+
+/* line 150, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-brush:before {
+  content: "\4c";
+}
+
+/* line 153, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-calendar:before {
+  content: "\4d";
+}
+
+/* line 156, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-camcorder:before {
+  content: "\4e";
+}
+
+/* line 159, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-camera:before {
+  content: "\4f";
+}
+
+/* line 162, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-card:before {
+  content: "\50";
+}
+
+/* line 165, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-cart:before {
+  content: "\51";
+}
+
+/* line 168, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-checklist:before {
+  content: "\52";
+}
+
+/* line 171, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-checkmark:before {
+  content: "\53";
+}
+
+/* line 174, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-chevron-down:before {
+  content: "\54";
+}
+
+/* line 177, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-chevron-left:before {
+  content: "\55";
+}
+
+/* line 180, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-chevron-right:before {
+  content: "\56";
+}
+
+/* line 183, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-chevron-up:before {
+  content: "\57";
+}
+
+/* line 186, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-clipboard:before {
+  content: "\58";
+}
+
+/* line 189, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-clock:before {
+  content: "\59";
+}
+
+/* line 192, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-clockwise:before {
+  content: "\5a";
+}
+
+/* line 195, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-cloud:before {
+  content: "\30";
+}
+
+/* line 198, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-cloud-download:before {
+  content: "\31";
+}
+
+/* line 201, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-cloud-upload:before {
+  content: "\32";
+}
+
+/* line 204, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-code:before {
+  content: "\33";
+}
+
+/* line 207, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-contract:before {
+  content: "\34";
+}
+
+/* line 210, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-contract-2:before {
+  content: "\35";
+}
+
+/* line 213, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-conversation:before {
+  content: "\36";
+}
+
+/* line 216, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-copy:before {
+  content: "\37";
+}
+
+/* line 219, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-crop:before {
+  content: "\38";
+}
+
+/* line 222, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-cross:before {
+  content: "\39";
+}
+
+/* line 225, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-crosshair:before {
+  content: "\21";
+}
+
+/* line 228, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-cutlery:before {
+  content: "\22";
+}
+
+/* line 231, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-device-desktop:before {
+  content: "\23";
+}
+
+/* line 234, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-device-mobile:before {
+  content: "\24";
+}
+
+/* line 237, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-device-tablet:before {
+  content: "\25";
+}
+
+/* line 240, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-direction:before {
+  content: "\26";
+}
+
+/* line 243, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-disc:before {
+  content: "\27";
+}
+
+/* line 246, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-document:before {
+  content: "\28";
+}
+
+/* line 249, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-document-delete:before {
+  content: "\29";
+}
+
+/* line 252, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-document-edit:before {
+  content: "\2a";
+}
+
+/* line 255, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-document-new:before {
+  content: "\2b";
+}
+
+/* line 258, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-document-remove:before {
+  content: "\2c";
+}
+
+/* line 261, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-dot:before {
+  content: "\2d";
+}
+
+/* line 264, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-dots-2:before {
+  content: "\2e";
+}
+
+/* line 267, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-dots-3:before {
+  content: "\2f";
+}
+
+/* line 270, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-download:before {
+  content: "\3a";
+}
+
+/* line 273, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-duplicate:before {
+  content: "\3b";
+}
+
+/* line 276, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-enter:before {
+  content: "\3c";
+}
+
+/* line 279, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-exit:before {
+  content: "\3d";
+}
+
+/* line 282, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-expand:before {
+  content: "\3e";
+}
+
+/* line 285, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-expand-2:before {
+  content: "\3f";
+}
+
+/* line 288, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-experiment:before {
+  content: "\40";
+}
+
+/* line 291, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-export:before {
+  content: "\5b";
+}
+
+/* line 294, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-feed:before {
+  content: "\5d";
+}
+
+/* line 297, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-flag:before {
+  content: "\5e";
+}
+
+/* line 300, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-flashlight:before {
+  content: "\5f";
+}
+
+/* line 303, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-folder:before {
+  content: "\60";
+}
+
+/* line 306, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-folder-open:before {
+  content: "\7b";
+}
+
+/* line 309, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-forward:before {
+  content: "\7c";
+}
+
+/* line 312, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-gaming:before {
+  content: "\7d";
+}
+
+/* line 315, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-gear:before {
+  content: "\7e";
+}
+
+/* line 318, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-graduation:before {
+  content: "\5c";
+}
+
+/* line 321, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-graph-bar:before {
+  content: "\e000";
+}
+
+/* line 324, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-graph-line:before {
+  content: "\e001";
+}
+
+/* line 327, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-graph-pie:before {
+  content: "\e002";
+}
+
+/* line 330, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-headset:before {
+  content: "\e003";
+}
+
+/* line 333, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-heart:before {
+  content: "\e004";
+}
+
+/* line 336, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-help:before {
+  content: "\e005";
+}
+
+/* line 339, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-home:before {
+  content: "\e006";
+}
+
+/* line 342, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-hourglass:before {
+  content: "\e007";
+}
+
+/* line 345, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-inbox:before {
+  content: "\e008";
+}
+
+/* line 348, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-information:before {
+  content: "\e009";
+}
+
+/* line 351, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-italic:before {
+  content: "\e00a";
+}
+
+/* line 354, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-jewel:before {
+  content: "\e00b";
+}
+
+/* line 357, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-lifting:before {
+  content: "\e00c";
+}
+
+/* line 360, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-lightbulb:before {
+  content: "\e00d";
+}
+
+/* line 363, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-link:before {
+  content: "\e00e";
+}
+
+/* line 366, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-link-broken:before {
+  content: "\e00f";
+}
+
+/* line 369, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-list:before {
+  content: "\e010";
+}
+
+/* line 372, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-loading:before {
+  content: "\e011";
+}
+
+/* line 375, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-location:before {
+  content: "\e012";
+}
+
+/* line 378, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-lock:before {
+  content: "\e013";
+}
+
+/* line 381, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-lock-open:before {
+  content: "\e014";
+}
+
+/* line 384, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-mail:before {
+  content: "\e015";
+}
+
+/* line 387, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-map:before {
+  content: "\e016";
+}
+
+/* line 390, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-media-loop:before {
+  content: "\e017";
+}
+
+/* line 393, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-media-next:before {
+  content: "\e018";
+}
+
+/* line 396, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-media-pause:before {
+  content: "\e019";
+}
+
+/* line 399, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-media-play:before {
+  content: "\e01a";
+}
+
+/* line 402, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-media-previous:before {
+  content: "\e01b";
+}
+
+/* line 405, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-media-record:before {
+  content: "\e01c";
+}
+
+/* line 408, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-media-shuffle:before {
+  content: "\e01d";
+}
+
+/* line 411, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-media-stop:before {
+  content: "\e01e";
+}
+
+/* line 414, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-medical:before {
+  content: "\e01f";
+}
+
+/* line 417, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-menu:before {
+  content: "\e020";
+}
+
+/* line 420, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-message:before {
+  content: "\e021";
+}
+
+/* line 423, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-meter:before {
+  content: "\e022";
+}
+
+/* line 426, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-microphone:before {
+  content: "\e023";
+}
+
+/* line 429, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-minus:before {
+  content: "\e024";
+}
+
+/* line 432, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-monitor:before {
+  content: "\e025";
+}
+
+/* line 435, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-move:before {
+  content: "\e026";
+}
+
+/* line 438, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-music:before {
+  content: "\e027";
+}
+
+/* line 441, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-network-1:before {
+  content: "\e028";
+}
+
+/* line 444, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-network-2:before {
+  content: "\e029";
+}
+
+/* line 447, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-network-3:before {
+  content: "\e02a";
+}
+
+/* line 450, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-network-4:before {
+  content: "\e02b";
+}
+
+/* line 453, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-network-5:before {
+  content: "\e02c";
+}
+
+/* line 456, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-pamphlet:before {
+  content: "\e02d";
+}
+
+/* line 459, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-paperclip:before {
+  content: "\e02e";
+}
+
+/* line 462, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-pencil:before {
+  content: "\e02f";
+}
+
+/* line 465, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-phone:before {
+  content: "\e030";
+}
+
+/* line 468, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-photo:before {
+  content: "\e031";
+}
+
+/* line 471, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-photo-group:before {
+  content: "\e032";
+}
+
+/* line 474, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-pill:before {
+  content: "\e033";
+}
+
+/* line 477, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-pin:before {
+  content: "\e034";
+}
+
+/* line 480, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-plus:before {
+  content: "\e035";
+}
+
+/* line 483, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-power:before {
+  content: "\e036";
+}
+
+/* line 486, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-preview:before {
+  content: "\e037";
+}
+
+/* line 489, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-print:before {
+  content: "\e038";
+}
+
+/* line 492, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-pulse:before {
+  content: "\e039";
+}
+
+/* line 495, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-question:before {
+  content: "\e03a";
+}
+
+/* line 498, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-reply:before {
+  content: "\e03b";
+}
+
+/* line 501, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-reply-all:before {
+  content: "\e03c";
+}
+
+/* line 504, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-return:before {
+  content: "\e03d";
+}
+
+/* line 507, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-retweet:before {
+  content: "\e03e";
+}
+
+/* line 510, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-rocket:before {
+  content: "\e03f";
+}
+
+/* line 513, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-scale:before {
+  content: "\e040";
+}
+
+/* line 516, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-search:before {
+  content: "\e041";
+}
+
+/* line 519, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-shopping-bag:before {
+  content: "\e042";
+}
+
+/* line 522, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-skip:before {
+  content: "\e043";
+}
+
+/* line 525, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-stack:before {
+  content: "\e044";
+}
+
+/* line 528, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-star:before {
+  content: "\e045";
+}
+
+/* line 531, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-stopwatch:before {
+  content: "\e046";
+}
+
+/* line 534, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-store:before {
+  content: "\e047";
+}
+
+/* line 537, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-suitcase:before {
+  content: "\e048";
+}
+
+/* line 540, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-swap:before {
+  content: "\e049";
+}
+
+/* line 543, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-tag:before {
+  content: "\e04a";
+}
+
+/* line 546, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-tag-delete:before {
+  content: "\e04b";
+}
+
+/* line 549, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-tags:before {
+  content: "\e04c";
+}
+
+/* line 552, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-thumbs-down:before {
+  content: "\e04d";
+}
+
+/* line 555, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-thumbs-up:before {
+  content: "\e04e";
+}
+
+/* line 558, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-ticket:before {
+  content: "\e04f";
+}
+
+/* line 561, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-time-reverse:before {
+  content: "\e050";
+}
+
+/* line 564, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-to-do:before {
+  content: "\e051";
+}
+
+/* line 567, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-toggles:before {
+  content: "\e052";
+}
+
+/* line 570, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-trash:before {
+  content: "\e053";
+}
+
+/* line 573, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-trophy:before {
+  content: "\e054";
+}
+
+/* line 576, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-upload:before {
+  content: "\e055";
+}
+
+/* line 579, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-user:before {
+  content: "\e056";
+}
+
+/* line 582, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-user-group:before {
+  content: "\e057";
+}
+
+/* line 585, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-user-id:before {
+  content: "\e058";
+}
+
+/* line 588, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-vibrate:before {
+  content: "\e059";
+}
+
+/* line 591, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-view-apps:before {
+  content: "\e05a";
+}
+
+/* line 594, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-view-list:before {
+  content: "\e05b";
+}
+
+/* line 597, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-view-list-large:before {
+  content: "\e05c";
+}
+
+/* line 600, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-view-thumb:before {
+  content: "\e05d";
+}
+
+/* line 603, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-volume-full:before {
+  content: "\e05e";
+}
+
+/* line 606, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-volume-low:before {
+  content: "\e05f";
+}
+
+/* line 609, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-volume-medium:before {
+  content: "\e060";
+}
+
+/* line 612, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-volume-off:before {
+  content: "\e061";
+}
+
+/* line 615, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-wallet:before {
+  content: "\e062";
+}
+
+/* line 618, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-warning:before {
+  content: "\e063";
+}
+
+/* line 621, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-web:before {
+  content: "\e064";
+}
+
+/* line 624, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-weight:before {
+  content: "\e065";
+}
+
+/* line 627, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-wifi:before {
+  content: "\e066";
+}
+
+/* line 630, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-wrong:before {
+  content: "\e067";
+}
+
+/* line 633, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-zoom-in:before {
+  content: "\e068";
+}
+
+/* line 636, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/icons/dripicons/dripicons.scss */
+.dripicons-zoom-out:before {
+  content: "\e069";
+}
+
+/*# sourceMappingURL=../../../css/icons/dripicons/dripicons.map */
