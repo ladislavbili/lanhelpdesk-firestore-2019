@@ -57,11 +57,11 @@ export default class Prace extends Component {
 		};
 
 		return (
-			<div class="row">
-				<div class="col-md-12">
-					<div class="table-responsive">
-						<table class="table table-centered table-borderless table-hover mb-0">
-							<thead class="thead-light">
+			<div className="row">
+				<div className="col-md-12">
+					<div className="table-responsive">
+						<table className="table table-centered table-borderless table-hover mb-0">
+							<thead className="thead-light">
 								<tr>
 									<th style={tableStyle} width="5%">
 										<input type="checkbox" />
@@ -89,8 +89,8 @@ export default class Prace extends Component {
 										5
 										</td>
 									<td style={tableStyleCenter}>
-										<button class="btn btn-link waves-effect">
-											<i class="fa fa-times" />
+										<button className="btn btn-link waves-effect">
+											<i className="fa fa-times" />
 										</button>
 									</td>
 								</tr>
@@ -100,7 +100,7 @@ export default class Prace extends Component {
 									<td style={tableStyle}>
 										<input
 											type="text"
-											class="form-control mb-2"
+											className="form-control mb-2"
 											id="inlineFormInput"
 											placeholder=""
 											style={{ height: 30 }}
@@ -112,24 +112,24 @@ export default class Prace extends Component {
 									<td style={tableStyle}>
 										<input
 											type="text"
-											class="form-control mb-2"
+											className="form-control mb-2"
 											id="inlineFormInput"
 											placeholder=""
 											style={{ height: 30 }}
 										/>
 									</td>
 									<td style={tableStyleCenter}>
-										<button class="btn btn-link waves-effect">
-											<i class="fa fa-plus" />
+										<button className="btn btn-link waves-effect">
+											<i className="fa fa-plus" />
 										</button>
 									</td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
-					<div class="row justify-content-end">
-						<div class="col-md-3">
-							<p class="text-right">
+					<div className="row justify-content-end">
+						<div className="col-md-3">
+							<p className="text-right">
 								<b>Sub-total:</b> 2930.00
 								</p>
 

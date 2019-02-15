@@ -6,46 +6,46 @@ import avatar from '../../scss/images/users/avatar-1.jpg';
 export default class Comments extends Component {
 	render() {
 		return (
-			<div class="row">
-				<div class="col-sm-12">
-					<ul class="nav nav-tabs tabs" style={{ boxShadow: 'none', padding: 0, background: 'none' }}>
-						<li class="nav-item tab" style={{ background: 'none'}} >
-							<a href="#home-2" data-toggle="tab" aria-expanded="false" class="nav-link active show" style={{ background: 'none' }}>
+			<div className="row">
+				<div className="col-sm-12">
+					<ul className="nav nav-tabs tabs" style={{ boxShadow: 'none', padding: 0, background: 'none' }}>
+						<li className="nav-item tab" style={{ background: 'none'}} >
+							<a href="#home-2" data-toggle="tab" aria-expanded="false" className="nav-link active show" style={{ background: 'none' }}>
 								Add comment
 							</a>
 						</li>
-						<li class="nav-item tab" style={{ background: 'none'}}>
-							<a href="#profile-2" data-toggle="tab" aria-expanded="true" class="nav-link">
+						<li className="nav-item tab" style={{ background: 'none'}}>
+							<a href="#profile-2" data-toggle="tab" aria-expanded="true" className="nav-link">
 								Add mail
 							</a>
 						</li>
 					</ul>
 
-					<div class="tab-content" style={{ boxShadow: 'none', padding: 0, background: 'none' }}>
-						<div class="tab-pane active" id="home-2">
-							<textarea class="form-control m-b-10" rows="2" />
-							<div class="checkbox form-check-inline" style={{ marginLeft:20 }}>
+					<div className="tab-content" style={{ boxShadow: 'none', padding: 0, background: 'none' }}>
+						<div className="tab-pane active" id="home-2">
+							<textarea className="form-control m-b-10" rows="2" />
+							<div className="checkbox form-check-inline" style={{ marginLeft:20 }}>
 								<input type="checkbox" id="inlineCheckbox1" value="option1" />
 								<label for="inlineCheckbox1"> Internal </label>
 							</div>
-							<button class="btn btn-success waves-effect waves-light btn-sm">Send</button>
+							<button className="btn btn-success waves-effect waves-light btn-sm">Send</button>
 						</div>
-						<div class="tab-pane" id="profile-2">
-							<textarea class="form-control" rows="2" />
-							<button class="btn btn-success waves-effect waves-light btn-sm">Send</button>
+						<div className="tab-pane" id="profile-2">
+							<textarea className="form-control" rows="2" />
+							<button className="btn btn-success waves-effect waves-light btn-sm">Send</button>
 						</div>
 					</div>
-					<div class="" style={{borderTop:"1px solid rgba(54, 64, 74, 0.05)", borderBottom:"1px solid rgba(54, 64, 74, 0.05)"}}>
-						<div class="media m-b-30 m-t-30">
+					<div className="" style={{borderTop:"1px solid rgba(54, 64, 74, 0.05)", borderBottom:"1px solid rgba(54, 64, 74, 0.05)"}}>
+						<div className="media m-b-30 m-t-30">
 							<img
-								class="d-flex mr-3 rounded-circle thumb-sm"
+								className="d-flex mr-3 rounded-circle thumb-sm"
 								src={avatar}
 								alt="Generic placeholder image"
 							/>
-							<div class="media-body">
-								<span class="media-meta pull-right">07:23 AM</span>
-								<h4 class="text-primary font-16 m-0">Jonathan Smith</h4>
-								<small class="text-muted">From: jonathan@domain.com</small>
+							<div className="media-body">
+								<span className="media-meta pull-right">07:23 AM</span>
+								<h4 className="text-primary font-16 m-0">Jonathan Smith</h4>
+								<small className="text-muted">From: jonathan@domain.com</small>
 							</div>
 						</div>
 
@@ -74,12 +74,12 @@ export default class Comments extends Component {
 
 						<hr />
 
-						<h4 class="font-13">
+						<h4 className="font-13">
 							{' '}
-							<i class="fa fa-paperclip m-r-10 m-b-10" /> Attachments <span>(0)</span>{' '}
+							<i className="fa fa-paperclip m-r-10 m-b-10" /> Attachments <span>(0)</span>{' '}
 						</h4>
 
-						<div class="row" />
+						<div className="row" />
 					</div>
 				</div>
 			</div>

@@ -1,97 +1,86 @@
 import React, { Component } from 'react';
-import { Button, Modal, Badge, InputGroup, Glyphicon, FormControl, DropdownButton, MenuItem } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { FormGroup, FormControl, Button, Col, ControlLabel, Alert } from 'react-bootstrap';
+import Select from 'react-select';
+import {rebase,database} from '../../index';
+import {toSelArr,snapshotToArray} from '../../helperFunctions';
 
-export default class CompanyEdit extends Component {
-	constructor(props) {
-		super(props);
-	}
-	render() {
-		return (
-			<div className="content-page">
-				<div className="content">
-					<div className="container-fluid">
-						<h4 className="page-title m-b-20">Company Edit</h4>
-						<div className="card-box">
-							<div class="form-group row">
-								<label class="col-2 col-form-label">Active</label>
-								<div class="col-10">
-									<div class="checkbox checkbox-primary checkbox-single m-r-15">
-										<input id="action-checkbox" type="checkbox" />
-										<label for="action-checkbox" />
-									</div>
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-2 col-form-label">Company name</label>
-								<div class="col-10">
-									<input type="text" class="form-control" value="Some text value..." />
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-2 col-form-label">ICO</label>
-								<div class="col-10">
-									<input type="text" class="form-control" value="Some text value..." />
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-2 col-form-label">DIC</label>
-								<div class="col-10">
-									<input type="text" class="form-control" value="Some text value..." />
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-2 col-form-label">IC DPH</label>
-								<div class="col-10">
-									<input type="text" class="form-control" value="Some text value..." />
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-2 col-form-label">Ulica</label>
-								<div class="col-10">
-									<input type="text" class="form-control" value="Some text value..." />
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-2 col-form-label">Mesto</label>
-								<div class="col-10">
-									<input type="text" class="form-control" value="Some text value..." />
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-2 col-form-label">PSC</label>
-								<div class="col-10">
-									<input type="text" class="form-control" value="Some text value..." />
-								</div>
-							</div>
-							<div class="form-group row">
-								<label class="col-2 col-form-label">Krajina</label>
-								<div class="col-10">
-									<input type="text" class="form-control" value="Some text value..." />
-								</div>
-							</div>
-							<div class="d-flex p-2 bd-highlight p-l-0">
-								<div class="p-2 bd-highlight p-l-0">
-									<button
-										onClick={() => this.props.history.goBack()}
-										class="btn btn-danger waves-effect waves-light btn-sm"
-									>
-										Cancel
-									</button>
-								</div>
-								<div class="p-2 bd-highlight">
-									<button
-										onClick={() => this.props.history.goBack()}
-										class="btn btn-success waves-effect waves-light btn-sm"
-									>
-										Save
-									</button>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		);
-	}
+export default class CompanyEdit extends Component{
+  constructor(props){
+    super(props);
+    this.state={
+      pricelists:[],
+      pricelist:null,
+      companyName:'',
+      loading:true,
+      saving:false
+    }
+    this.fetchData.bind(this);
+    this.setData.bind(this);
+    this.fetchData(this.props.match.params.id);
+  }
+
+  fetchData(id){
+    Promise.all([
+      rebase.get('companies/'+id, {
+        context: this,
+      }),
+      database.collection('pricelists').get()
+    ])
+    .then(([company,pricelists])=>this.setData(company,toSelArr(snapshotToArray(pricelists))))
+  }
+
+  setData(company,pricelists){
+    console.log(pricelists);
+    let pricelist=pricelists.find((item)=>item.id===company.pricelist);
+    if(pricelist===undefined && pricelists.length>0){
+      pricelist=pricelists[0];
+    }
+    this.setState({companyName:company.title,pricelists,pricelist,loading:false})
+  }
+
+  componentWillReceiveProps(props){
+    if(this.props.match.params.id!==props.match.params.id){
+      this.setState({loading:true})
+      this.fetchData(props.match.params.id);
+    }
+  }
+
+  render(){
+    return (
+      <div className="container-padding">
+        {
+          this.state.loading &&
+          <Alert bsStyle="success">
+            Loading data...
+          </Alert>
+        }
+        <FormGroup>
+          <Col sm={3}>
+            <ControlLabel className="center-hor">Company name</ControlLabel>
+          </Col>
+          <Col sm={9}>
+            <FormControl type="text" placeholder="Enter company name" value={this.state.companyName} onChange={(e)=>this.setState({companyName:e.target.value})} />
+          </Col>
+        </FormGroup>
+        <FormGroup>
+          <Col sm={3}>
+            <ControlLabel className="center-hor">Pricelist</ControlLabel>
+          </Col>
+          <Col sm={9}>
+            <Select
+              className="supressDefaultSelectStyle"
+              options={this.state.pricelists}
+              value={this.state.pricelist}
+              onChange={e =>{ this.setState({ pricelist: e }); }}
+                />
+          </Col>
+        </FormGroup>
+        <Button bsStyle="success" className="separate" disabled={this.state.saving} onClick={()=>{
+            this.setState({saving:true});
+            rebase.updateDoc('/companies/'+this.props.match.params.id, {title:this.state.companyName,pricelist:this.state.pricelist.id})
+              .then(()=>{this.setState({saving:false})});
+          }}>{this.state.saving?'Saving company...':'Save company'}</Button>
+      </div>
+    );
+  }
 }

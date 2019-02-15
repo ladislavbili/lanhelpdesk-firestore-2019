@@ -26,11 +26,11 @@ export default class Reports extends Component {
 					<div className="container-fluid">
 
 						<div className="row">
-							<div class="col-md-12">
-								<div class="card-box">
+							<div className="col-md-12">
+								<div className="card-box">
 									<h2>Task</h2>
-									<div class="table-responsive">
-										<table class="table table-hover mails m-0">
+									<div className="table-responsive">
+										<table className="table table-hover mails m-0">
 											<thead>
 												<tr>
 
@@ -67,7 +67,7 @@ export default class Reports extends Component {
 											</thead>
 
 											<tbody>
-												<tr class="">
+												<tr className="">
 													<td>152</td>
 
 													<td>
@@ -86,65 +86,65 @@ export default class Reports extends Component {
 											</tbody>
 										</table>
 										<h2>Služby</h2>
-										<div class="table-responsive">
-											<table class="table table-hover mails m-0">
+										<div className="table-responsive">
+											<table className="table table-hover mails m-0">
 												<thead>
 													<tr>
 														<th>
 															ID
-												<span class="tableArrow">
-																<i class="fa fa-arrow-down" />
+												<span className="tableArrow">
+																<i className="fa fa-arrow-down" />
 															</span>
 														</th>
 														<th style={{ width: '35%' }}>
 															Name{' '}
-															<span class="tableArrow">
-																<i class="fa fa-arrow-down" />
+															<span className="tableArrow">
+																<i className="fa fa-arrow-down" />
 															</span>
 														</th>
 														<th>
 															Typ služby
-															<span class="tableArrow">
-																<i class="fa fa-arrow-down" />
+															<span className="tableArrow">
+																<i className="fa fa-arrow-down" />
 															</span>
 														</th>
 														<th>
 															{' '}
 															Cena/Mn.
-															<span class="tableArrow">
-																<i class="fa fa-arrow-down" />
+															<span className="tableArrow">
+																<i className="fa fa-arrow-down" />
 															</span>
 														</th>
 														<th>
 															Mn.
-															<span class="tableArrow">
-																<i class="fa fa-arrow-down" />
+															<span className="tableArrow">
+																<i className="fa fa-arrow-down" />
 															</span>
 														</th>
 														<th>
 															Jednotka
-															<span class="tableArrow">
-																<i class="fa fa-arrow-down" />
+															<span className="tableArrow">
+																<i className="fa fa-arrow-down" />
 															</span>
 														</th>
 
 														<th>
 															Zlava
-															<span class="tableArrow">
-																<i class="fa fa-arrow-down" />
+															<span className="tableArrow">
+																<i className="fa fa-arrow-down" />
 															</span>
 														</th>
 														<th>
 															Spolu
-															<span class="tableArrow">
-																<i class="fa fa-arrow-down" />
+															<span className="tableArrow">
+																<i className="fa fa-arrow-down" />
 															</span>
 														</th>
 													</tr>
 												</thead>
 
 												<tbody>
-													<tr class="">
+													<tr className="">
 														<td>152</td>
 														<td>
 															{' '}
@@ -165,59 +165,59 @@ export default class Reports extends Component {
 										</div>
 
 										<h2>Material</h2>
-										<div class="table-responsive">
-											<table class="table table-hover mails m-0">
+										<div className="table-responsive">
+											<table className="table table-hover mails m-0">
 												<thead>
 													<tr>
 														<th>
 															ID
-												<span class="tableArrow">
-																<i class="fa fa-arrow-down" />
+												<span className="tableArrow">
+																<i className="fa fa-arrow-down" />
 															</span>
 														</th>
 														<th style={{ width: '35%' }}>
 															Name{' '}
-															<span class="tableArrow">
-																<i class="fa fa-arrow-down" />
+															<span className="tableArrow">
+																<i className="fa fa-arrow-down" />
 															</span>
 														</th>
 														<th>
 															{' '}
 															Cena/Mn.
-															<span class="tableArrow">
-																<i class="fa fa-arrow-down" />
+															<span className="tableArrow">
+																<i className="fa fa-arrow-down" />
 															</span>
 														</th>
 														<th>
 															Mn.
-															<span class="tableArrow">
-																<i class="fa fa-arrow-down" />
+															<span className="tableArrow">
+																<i className="fa fa-arrow-down" />
 															</span>
 														</th>
 														<th>
 															Jednotka
-															<span class="tableArrow">
-																<i class="fa fa-arrow-down" />
+															<span className="tableArrow">
+																<i className="fa fa-arrow-down" />
 															</span>
 														</th>
 
 														<th>
 															Zlava
-															<span class="tableArrow">
-																<i class="fa fa-arrow-down" />
+															<span className="tableArrow">
+																<i className="fa fa-arrow-down" />
 															</span>
 														</th>
 														<th>
 															Spolu
-															<span class="tableArrow">
-																<i class="fa fa-arrow-down" />
+															<span className="tableArrow">
+																<i className="fa fa-arrow-down" />
 															</span>
 														</th>
 													</tr>
 												</thead>
 
 												<tbody>
-													<tr class="">
+													<tr className="">
 														<td>152</td>
 														<td>
 															{' '}
@@ -236,14 +236,14 @@ export default class Reports extends Component {
 											</table>
 										</div>
 
-										<div class="d-flex justify-content-between">
-											<div class="p-2">
+										<div className="d-flex justify-content-between">
+											<div className="p-2">
 												<p>Page 1 of 0 ｜ Task number: 0 </p>
 											</div>
-											<div class="p-2">
+											<div className="p-2">
 												<p>1</p>
 											</div>
-											<div class="p-2">
+											<div className="p-2">
 												<p>Items per page: 20</p>
 											</div>
 										</div>

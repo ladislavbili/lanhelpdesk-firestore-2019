@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button, Modal, Badge, InputGroup, Glyphicon, FormControl, ListGroupItem } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Select from 'react-select';
+import SelectPage from '../SelectPage';
 
 export default class Sidebar extends Component {
 	constructor(props) {
@@ -26,27 +27,28 @@ export default class Sidebar extends Component {
 
 		return (
 			<div className="left side-menu">
+				<SelectPage />
 				<div className="sidebar-inner slimscrollleft">
 					<div id="sidebar-menu">
 						<li className="menu-title" style={{ paddingBottom: '0px !important' }}>
 							Project
-							<span class="pull-right">
-								<i class="fa fa-plus" />
+							<span className="pull-right">
+								<i className="fa fa-plus" />
 							</span>
 						</li>
 						<li className="menu-title" style={{ paddingTop: '0px !important' }}>
 							<button
 								type="button"
-								class="btn btn-outline-secondary btn-rounded waves-effect"
+								className="btn btn-outline-secondary btn-rounded waves-effect"
 								style={{ width: 210, textAlign: 'left' }}
 							>
-								<i class="fa fa-folder-open" /> ALL PROJECTS
+								<i className="fa fa-folder-open" /> ALL PROJECTS
 							</button>
 						</li>
 						<hr />
 						<li className="menu-title">
 							FILTERS
-							<span class="pull-right">
+							<span className="pull-right">
 								EDIT
 							</span>
 						</li>
@@ -71,51 +73,6 @@ export default class Sidebar extends Component {
 							</li>
 						</ul>
 						<hr />
-						{/* 
-						<li className="menu-title">
-							Vykazy
-							<span class="pull-right">
-								<i class="fa fa-plus" />
-							</span>
-						</li>
-						<ul className="sidebar-menu">
-							<li />
-							<li>
-								<Link className="" to={{ pathname: `/helpdesk/taskList` }}>
-									Mesačný
-								</Link>
-							</li>
-						</ul>
-						<hr />
-						<li className="menu-title">
-							Archivovane Projekty
-							<span class="pull-right">
-								<i class="fa fa-archived" />
-							</span>
-						</li>
-
-						<ul className="sidebar-menu">
-							<li />
-							<li>
-								<Link className="" to={{ pathname: `/helpdesk/taskList` }}>
-									Orchestra
-								</Link>
-							</li>
-						</ul>
-						<hr />
-				
-						<ul className="sidebar-menu">
-							<li className="menu-title">
-								<i class="fa fa-cog" /> Settings
-							</li>
-							<li className="menu-title">
-								<i class="fa fa fa-exclamation-triangle" /> Alerts
-							</li>
-							<li className="menu-title">
-								<i class="fa fa-envelope" /> Messages
-							</li>
-						</ul>
-						*/}
 					</div>
 				</div>
 			</div>

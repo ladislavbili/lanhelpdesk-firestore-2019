@@ -1,8 +1,8 @@
 //
-// autocomplete.scss
+// autoComplete.scss
 //
  
-.autocomplete-suggestions {
+.autoComplete-suggestions {
     border: 1px solid #f9f9f9;
     background: $white;
     cursor: default;
@@ -11,33 +11,33 @@
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.15);
   }
   
-  .autocomplete-suggestion {
+  .autoComplete-suggestion {
     padding: 5px 10px;
     white-space: nowrap;
     overflow: hidden;
   }
   
-  .autocomplete-no-suggestion {
+  .autoComplete-no-suggestion {
     padding: 5px;
   }
   
-  .autocomplete-selected {
+  .autoComplete-selected {
     background: $gray-200;
     cursor: pointer;
   }
   
-  .autocomplete-suggestions strong {
+  .autoComplete-suggestions strong {
     font-weight: bold;
     color: $dark;
   }
   
-  .autocomplete-group {
+  .autoComplete-group {
     padding: 5px;
     font-weight: $font-weight-medium;
     font-family: $font-family-secondary;
   }
   
-  .autocomplete-group strong {
+  .autoComplete-group strong {
     font-weight: bold;
     font-size: 16px;
     color: $dark;

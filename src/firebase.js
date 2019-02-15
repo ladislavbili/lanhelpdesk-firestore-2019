@@ -1,14 +1,8 @@
-import Rebase from 're-base';
-import firebase from 'firebase';
-
-const config = {
-  apiKey: "AIzaSyD5-VKv5lCnL10njkjFN-zkZ68W-W7nGOk",
-  authDomain: "lansystemsdbtestwork.firebaseapp.com",
-  databaseURL: "https://lansystemsdbtestwork.firebaseio.com",
-  projectId: "lansystemsdbtestwork",
-  storageBucket: "lansystemsdbtestwork.appspot.com",
-  messagingSenderId: "227698643352"
-};
-
-const app = firebase.initializeApp(config);
-export default Rebase.createClass(app.database());
+export default {
+  apiKey: "AIzaSyA5RT7TF__PqmW2B9L3kFldGZJ6ToW-GiQ",
+  authDomain: "lansystems-template-no-theme.firebaseapp.com",
+  databaseURL: "https://lansystems-template-no-theme.firebaseio.com",
+  projectId: "lansystems-template-no-theme",
+  storageBucket: "lansystems-template-no-theme.appspot.com",
+  messagingSenderId: "1016225963535"
+}
