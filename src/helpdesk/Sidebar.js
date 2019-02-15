@@ -1,102 +1,124 @@
 import React, { Component } from 'react';
-import base from '../firebase';
+import { Button, Modal, Badge, InputGroup, Glyphicon, FormControl, ListGroupItem } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Select from 'react-select';
-import { ListGroup, ListGroupItem, Modal } from 'react-bootstrap';
-import ProjectEdit from './ProjectEdit';
-import ProjectAdd from './ProjectAdd';
 
-export default class Tags extends Component{
-  constructor(props){
-    super(props);
-    this.state = {
-      project : {id:'all', title:'All', value:'all', label:'All'},
-      openAddTag:false,
-      projects:[],
-      openEditProject:false,
-      openAddProject:false,
-    }
-    //this.isActive.bind(this);
-  }
+export default class Sidebar extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			openAddStatusModal: false,
+			openAddTaskModal: false,
+			isColumn: false,
+			search: '',
+		};
+	}
+	render() {
+		const projects = [
+			{ value: 'hotline@lansystems.sk', label: 'hotline@lansystems.sk' },
+			{ value: 'Mertel CRM', label: 'Mertel CRM' },
+			{ value: 'All', label: 'All' },
+		];
 
-  componentDidMount(){
-    this.ref = base.bindToState(`hd-projects`, {
-      context: this,
-      state: 'projects',
-      asArray: true
-    });
-  }
+		const selectStyle = {
+			control: styles => ({ ...styles, backgroundColor: 'white', maxHeight: 30 }),
+		};
 
-  componentWillUnmount() {
-    base.removeBinding(this.ref);
-  }
+		return (
+			<div className="left side-menu">
+				<div className="sidebar-inner slimscrollleft">
+					<div id="sidebar-menu">
+						<li className="menu-title" style={{ paddingBottom: '0px !important' }}>
+							Project
+							<span class="pull-right">
+								<i class="fa fa-plus" />
+							</span>
+						</li>
+						<li className="menu-title" style={{ paddingTop: '0px !important' }}>
+							<button
+								type="button"
+								class="btn btn-outline-secondary btn-rounded waves-effect"
+								style={{ width: 210, textAlign: 'left' }}
+							>
+								<i class="fa fa-folder-open" /> ALL PROJECTS
+							</button>
+						</li>
+						<hr />
+						<li className="menu-title">
+							FILTERS
+							<span class="pull-right">
+								EDIT
+							</span>
+						</li>
 
-  isActive(id){
-    return this.props.history.location.pathname.toLowerCase().includes(id) &&! this.props.history.location.pathname.toLowerCase().includes(id+'/');
-  }
+						<ul className="sidebar-menu">
+							<li>
+								<Link className="" to={{ pathname: `/helpdesk/taskList` }}>
+									Riešiť
+								</Link>
+								<Link className="" to={{ pathname: `/helpdesk/taskList` }}>
+									Odložené
+								</Link>
+								<Link className="" to={{ pathname: `/helpdesk/taskList` }}>
+									Zatvorené
+								</Link>
+								<Link className="" to={{ pathname: `/helpdesk/taskList` }}>
+									Zadané
+								</Link>
+								<Link className="" to={{ pathname: `/helpdesk/taskList` }}>
+									Opakujúce
+								</Link>
+							</li>
+						</ul>
+						<hr />
+						{/* 
+						<li className="menu-title">
+							Vykazy
+							<span class="pull-right">
+								<i class="fa fa-plus" />
+							</span>
+						</li>
+						<ul className="sidebar-menu">
+							<li />
+							<li>
+								<Link className="" to={{ pathname: `/helpdesk/taskList` }}>
+									Mesačný
+								</Link>
+							</li>
+						</ul>
+						<hr />
+						<li className="menu-title">
+							Archivovane Projekty
+							<span class="pull-right">
+								<i class="fa fa-archived" />
+							</span>
+						</li>
 
-  render(){
-    let projects=[{id:'all', title:'All'}].concat(this.state.projects).map((project)=>{
-      project.value=project.id;
-      project.label=project.title;
-      return project;
-    });
-    return (
-      <ListGroup className='sidebar fullWidth'>
-        <ListGroupItem className='sidebarItem noColor' >
-          <label>Project</label>
-          <Select
-            options={projects}
-            value={projects.find((item)=>item.id===this.state.project.id)}
-            onChange={e =>{ this.setState({ project: e })}}
-            />
-        </ListGroupItem>
-
-          <Link className='link' to={{pathname: `/helpdesk/filter/all`}}>
-            <ListGroupItem active={this.isActive('/helpdesk/filter/all')} className='sidebarItem' >
-              All tasks
-            </ListGroupItem>
-          </Link>
-          <Link className='link' to={{pathname: `/helpdesk/filter/my`}}>
-            <ListGroupItem active={this.isActive('/helpdesk/filter/my')} className='sidebarItem' >
-              My tasks
-            </ListGroupItem>
-          </Link>
-          <Link className='link' to={{pathname: `/helpdesk/filter/add`}}>
-            <ListGroupItem active={this.isActive('/helpdesk/filter/add')} className='sidebarItem' >
-              + Filter
-            </ListGroupItem>
-          </Link>
-
-          <div style={{borderTop:'solid #337ab7 5px'}}>
-            {this.state.project.id!=='all' && <ListGroupItem onClick={()=>{this.setState({openEditProject:true})}} className='sidebarItem addTagSidebar' >
-              Project settings
-            </ListGroupItem>}
-
-            <ListGroupItem onClick={()=>{this.setState({openAddProject:true})}} className='sidebarItem addTagSidebar' >
-              Add project
-            </ListGroupItem>
-          </div>
-
-          <Modal show={this.state.openEditProject} onHide={()=>{this.setState({openEditProject:false})}}>
-            <Modal.Header closeButton>
-              <Modal.Title>Editing project</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <ProjectEdit closeModal={()=>{this.setState({openEditProject:false})}} id={this.state.project.id} />
-            </Modal.Body>
-          </Modal>
-          <Modal show={this.state.openAddProject} onHide={()=>{this.setState({openAddProject:false})}}>
-            <Modal.Header closeButton>
-              <Modal.Title>Adding project</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <ProjectAdd closeModal={()=>{this.setState({openAddProject:false})}} />
-            </Modal.Body>
-          </Modal>
-
-      </ListGroup>
-    );
-
-  }
+						<ul className="sidebar-menu">
+							<li />
+							<li>
+								<Link className="" to={{ pathname: `/helpdesk/taskList` }}>
+									Orchestra
+								</Link>
+							</li>
+						</ul>
+						<hr />
+				
+						<ul className="sidebar-menu">
+							<li className="menu-title">
+								<i class="fa fa-cog" /> Settings
+							</li>
+							<li className="menu-title">
+								<i class="fa fa fa-exclamation-triangle" /> Alerts
+							</li>
+							<li className="menu-title">
+								<i class="fa fa-envelope" /> Messages
+							</li>
+						</ul>
+						*/}
+					</div>
+				</div>
+			</div>
+		);
+	}
 }

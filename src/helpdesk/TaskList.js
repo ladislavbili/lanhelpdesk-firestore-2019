@@ -1,214 +1,234 @@
 import React, { Component } from 'react';
-import base from '../firebase';
-import ReactTable from 'react-table';
-import { Badge, Glyphicon, Button, Modal } from 'react-bootstrap';
-import TaskEdit from './TaskEdit';
-export default class TaskList extends Component{
+import {
+	Button,
+	Modal,
+	Badge,
+	InputGroup,
+	Glyphicon,
+	FormControl,
+	DropdownButton,
+	MenuItem,
+	Nav,
+	Dropdown,
+} from 'react-bootstrap';
+import TasksBoard from './TasksBoard';
+import TasksRow from './TasksRow';
+import Filter from './Filter';
+import TasksTwo from './TasksTwo';
+import { Link } from 'react-router-dom';
 
-  constructor(props){
-    super(props);
-    this.state = {
-      tasks:[],
-      statuses:[],
-      status:'all',
-      projects:[],
-      users:[],
-      companies:[],
-      openEditTaskModal:false,
-      editedTaskID:null
-    }
-    this.remove.bind(this);
-    this.rebindData.bind(this);
-  }
+const sortTypes = [{ id: 0, name: 'Name' }, { id: 1, name: 'Created' }, { id: 2, name: 'Deadline' }];
 
-  componentWillMount(){
-    this.ref2 = base.bindToState(`hd-tasks`, {
-      context: this,
-      state: 'tasks',
-      asArray: true
-    });
-    this.connections=[];
-    this.connections.push(base.bindToState(`hd-statuses`, {
-      context: this,
-      state: 'statuses',
-      asArray: true
-    }));
-    this.connections.push(base.bindToState(`hd-projects`, {
-      context: this,
-      state: 'projects',
-      asArray: true
-    }));
-    this.connections.push(base.bindToState(`settings-users`, {
-      context: this,
-      state: 'users',
-      asArray: true
-    }));
-    this.connections.push(base.bindToState(`settings-companies`, {
-      context: this,
-      state: 'companies',
-      asArray: true
-    }));
-  }
+export default class TaskListContainer extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			openAddStatusModal: false,
+			openAddTaskModal: false,
+			isColumn: false,
+			search: '',
+			taskListType: 'option3',
+			filterView: false,
+			sortType: 0,
+		};
+	}
+	render() {
+		return (
+			<div className="content-page">
 
-  remove(row){
-    if (window.confirm("Are you sure you want to delete task "+row.original.title+"?")) {
-      base.remove(`hd-tasks/`+row.original.id);
-    } else {
-      return;
-    }
-  }
+				<div className="content" style={{ paddingTop: 0 }}>
 
-  componentWillUnmount() {
-    this.connections.map((item)=>
-      base.removeBinding(item)
-    )
-    base.removeBinding(this.ref2);
-  }
+					<div className="container-fluid">
+						{/*
+						<div className="row">
+							<div className="col-sm-6">
+								<h4 className="page-title" style={{ fontSize: 24 }}>
+									All Tasks
+								</h4>
+							</div>
+						</div>
+						*/}
 
-  rebindData(item){
-    base.removeBinding(this.ref2);
-    if(item.id==='all'){
-      this.ref2 = base.bindToState(`hd-tasks`, {
-        context: this,
-        state: 'tasks',
-        asArray: true
-      });
-    }else{
-      this.ref2 = base.bindToState(`hd-tasks`, {
-        context: this,
-        state: 'tasks',
-        asArray: true,
-        queries: {
-          orderByChild: 'status',
-          equalTo: item.id
-        }
-      });
-    }
-  }
+						<div class="d-flex flex-row align-items-center">
+							{this.state.filterView && (
+								<div className="p2" style={{}}>
+									<div class="button-list" style={{ marginRight: 10 }}>
+										<button type="button" class="btn btn-primary btn-xs waves-effect waves-light">
+											Apply
+									</button>
+										<button type="button" class="btn btn-primary waves-effect waves-light btn-xs">
+											Save
+									</button>
+										<button type="button" class="btn btn-primary waves-effect waves-light btn-xs">
+											Delete
+									</button>
+									</div>
+								</div>
+							)}
 
-  render(){
-    const tableSetting=[
-      {
-        Header: 'ID',
-        accessor: 'id',
-      },{
-        Header: 'Title',
-        accessor: 'title',
-      },{
-        Header: 'Status',
-        accessor: 'status',
-        Cell : row => {
-          let status=this.state.statuses.find((item)=>item.id===row.value);
-          return (
-            <span>{status?status.title:'No status'}</span>
-          )
-        }
-      },{
-        Header: 'Project',
-        accessor: 'project',
-        Cell : row => {
-          let item=this.state.projects.find((item)=>item.id===row.value);
-          return (
-            <span>{item?item.title:'No project'}</span>
-          )
-        }
-      },{
-        Header: 'Requested by',
-        accessor: 'requestedBy',
-        Cell : row => {
-          let item=this.state.users.find((item)=>item.id===row.value);
-          return (
-            <span>{item?item.username:'No user'}</span>
-          )
-        }
-      },{
-        Header: 'Company',
-        accessor: 'company',
-        Cell : row => {
-          let item=this.state.companies.find((item)=>item.id===row.value);
-          return (
-            <span>{item?item.companyName:'No company'}</span>
-          )
-        }
-      },{
-        Header: 'Solver',
-        accessor: 'solver',
-        Cell : row => {
-          let item=this.state.users.find((item)=>item.id===row.value);
-          return (
-            <span>{item?item.username:'No user'}</span>
-          )
-        }
-      },{
-        Header: 'Deadline',
-        accessor: 'deadline',
-        Cell : (row)=> <span>{row.value?row.value:'No deadline'}</span>,
-      },{
-        Header: 'Hours',
-        accessor: 'hours',
-        Cell : (row)=><span>{row.value?row.value:'No hours'}</span>
-        },
-      {
-        Header: '',
-        accessor: 'edit',
-        Cell : row => <span>
-                  <Button
-                    onClick={()=>this.setState({openEditTaskModal:true,editedTaskID:row.original.id})}
-                    bsStyle='warning'>
-                    Edit
-                  </Button>
-                  <Button
-                    style={{marginLeft:5}}
-                    onClick={() => {
-                        this.remove(row)}
-                      }
-                    bsStyle='danger'>Delete</Button>
-                </span>
-        }
-    ];
-    const data =[...this.state.tasks];
-    return (
-      <div style={{padding:15}}>
-        <div style={{padding:15}}>
-          {[{id:'all',title:'All'}].concat(this.state.statuses).map((item)=>
-          <Badge key={item.id} className="statusStyle" style={{backgroundColor:this.state.status===item.id?'#337ab7':'#8db9df'}}
-            >
-            <span style={{margin:'auto'}}
-              onClick={()=>{
-                this.setState({status:item.id});
-                this.rebindData(item);
-              }}
-              >{item.title}</span>
-            {item.id!=='all' &&
-              <Glyphicon style={{marginLeft:5}}
-                glyph="remove-sign"
-                onClick={()=>{
-                  if (window.confirm("Are you sure you want to delete status "+ item.title+"?")) {
-                    base.remove(`hd-statuses/`+item.id);
-                    this.setState({status:'all'});
-                    this.rebindData({id:'all',title:'All'});
-                  } else {
-                    return;
-                  }
-                }
-              }
-              />}
-            </Badge>)}
-          </div>
-          <ReactTable
-            data={data}
-            columns={tableSetting}
-            className="-striped -highlight"
-            />
-          <Modal show={this.state.openEditTaskModal} onHide={()=>{this.setState({openEditTaskModal:false})}}>
-              <Modal.Header closeButton>
-                <Modal.Title>Edit task</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <TaskEdit taskID={this.state.editedTaskID} closeModal={()=>{this.setState({openEditTaskModal:false})}} />
-              </Modal.Body>
-            </Modal>
-        </div>
-      );
-    }
-  }
+							<div className="p2" style={{}}>
+								<button
+									class="btn btn-primary waves-effect waves-light btn-xs"
+									onClick={() => this.setState({ filterView: !this.state.filterView })}
+								>
+									<i class="fa fa-filter" />
+								</button>
+							</div>
+							<div class="p-2">
+								<div class="input-group">
+									<input
+										type="text"
+										class="form-control"
+										placeholder="Search task name"
+										style={{ width: 200 }}
+									/>
+									<div class="input-group-append">
+										<button class="btn btn-white" type="button">
+											<i class="fa fa-search" />
+										</button>
+									</div>
+								</div>
+							</div>
+							<div class="p-2">
+								<Link
+									className=""
+									to={{ pathname: `/helpdesk/TaskListSearch` }}
+									style={{ color: '#1976d2' }}
+								>
+									Global search
+								</Link>
+							</div>
+							<div class="ml-auto p-2 align-self-center">
+								{' '}
+								<button type="button" class="btn btn-link waves-effect">
+									<i
+										class="fas fa-copy"
+										style={{
+											color: '#4a81d4',
+											fontSize: '1.2em',
+										}}
+									/>
+									<span style={{
+										color: '#4a81d4',
+										fontSize: '1.2em',
+									}}> COPY</span>
+								</button>
+							</div>
+							<div class="">
+								{' '}
+								<button type="button" class="btn btn-link waves-effect">
+									<i
+										class="fas fa-print"
+										style={{
+											color: '#4a81d4',
+											fontSize: '1.2em',
+										}}
+									/>
+									<span style={{
+										color: '#4a81d4',
+										fontSize: '1.2em',
+									}}> SERVISNY LIST</span>
+								</button>
+							</div>
+							<div class="">
+								{' '}
+								<button type="button" class="btn btn-link waves-effect">
+									<i
+										class="fas fa-print"
+										style={{
+											color: '#4a81d4',
+											fontSize: '1.2em',
+										}}
+									/>
+									<span style={{
+										color: '#4a81d4',
+										fontSize: '1.2em',
+									}}> CENOVA PONUKA</span>
+								</button>
+							</div>
+							<div class="">
+								<div class="btn-group btn-group-toggle" data-toggle="buttons">
+									<label
+										class={
+											'btn btn-outline-blue waves-effect waves-light' +
+											(this.state.taskListType === 'option1' ? ' active' : '')
+										}
+									>
+										<input
+											type="radio"
+											name="options"
+											id="option1"
+											autocomplete="off"
+											checked={this.state.taskListType === 'option1'}
+											onChange={() => this.setState({ taskListType: 'option1' })}
+										/>
+										<i class="fa fa-list" />
+									</label>
+									<label
+										class={
+											'btn btn-outline-blue waves-effect waves-light' +
+											(this.state.taskListType === 'option2' ? ' active' : '')
+										}
+									>
+										<input
+											type="radio"
+											name="options"
+											id="option2"
+											autocomplete="off"
+											onChange={() => this.setState({ taskListType: 'option2' })}
+											checked={this.state.taskListType === 'option2'}
+										/>
+										<i class="fa fa-map" />
+									</label>
+
+									<label
+										class={
+											'btn btn-outline-blue waves-effect waves-light' +
+											(this.state.taskListType === 'option3' ? ' active' : '')
+										}
+									>
+										<input
+											type="radio"
+											name="options"
+											id="option3"
+											autocomplete="off"
+											onChange={() => this.setState({ taskListType: 'option3' })}
+											checked={this.state.taskListType === 'option3'}
+										/>
+										<i class="fa fa-columns" />
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row m-0">
+						{this.state.filterView && (
+							<div className="col-xl-3">
+								<Filter />
+							</div>
+						)}
+
+						{this.state.taskListType === 'option2' && (
+							<div class={'' + (this.state.filterView ? 'col-xl-9' : 'col-xl-12')}>
+								<TasksRow />{' '}
+							</div>
+						)}
+
+						{this.state.taskListType === 'option1' && (
+							<div class={'' + (this.state.filterView ? 'col-xl-9' : 'col-xl-12')}>
+								<TasksBoard />
+							</div>
+						)}
+
+						{this.state.taskListType === 'option3' && (
+							<div class={'' + (this.state.filterView ? 'col-xl-9' : 'col-xl-12')}>
+								<TasksTwo />
+							</div>
+						)}
+					</div>
+				</div>
+			</div>
+		);
+	}
+}
