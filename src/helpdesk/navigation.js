@@ -38,9 +38,32 @@ export default class Navigation extends Component {
 		return (
 			<div>
 				<div className="row">
-					<Sidebar {...this.props}  className="flex"/>
+						<Sidebar {...this.props} />
 					<div className="flex">
 					<PageHeader {...this.props} />
+						<Route exact path="/helpdesk/Reports" component={Reports} />
+						<Route exact path="/helpdesk/taskList" component={TaskList} />
+						<Route exact path="/helpdesk/taskList/:taskID" component={TaskList} />
+
+						<Route exact path='/helpdesk/settings/statuses' component={StatusList} />
+            <Route exact path='/helpdesk/settings/statuses/:id' component={StatusList} />
+            <Route exact path='/helpdesk/settings/projects' component={ProjectList} />
+            <Route exact path='/helpdesk/settings/projects/:id' component={ProjectList} />
+            <Route exact path='/helpdesk/settings/units' component={UnitList} />
+            <Route exact path='/helpdesk/settings/units/:id' component={UnitList} />
+            <Route exact path='/helpdesk/settings/companies' component={CompanyList} />
+            <Route exact path='/helpdesk/settings/companies/:id' component={CompanyList} />
+            <Route exact path='/helpdesk/settings/workTypes' component={WorkTypeList} />
+            <Route exact path='/helpdesk/settings/workTypes/:id' component={WorkTypeList} />
+            <Route exact path='/helpdesk/settings/users' component={UserList} />
+            <Route exact path='/helpdesk/settings/users/:id' component={UserList} />
+            <Route exact path='/helpdesk/settings/pricelists' component={PriceList} />
+            <Route exact path='/helpdesk/settings/pricelists/:id' component={PriceList} />
+            <Route exact path='/helpdesk/settings/suppliers' component={SupplierList} />
+            <Route exact path='/helpdesk/settings/suppliers/:id' component={SupplierList} />
+            <Route exact path='/helpdesk/settings/supplierInvoices' component={SupplierInvoiceList} />
+            <Route exact path='/helpdesk/settings/supplierInvoices/:id' component={SupplierInvoiceList} />
+
 						<Route exact path="/helpdesk/taskListSearch" component={TaskListSearch} />
 						<Route exact path="/helpdesk/taskTop" component={TaskTop} />
 						<Route exact path="/helpdesk/taskTop2" component={TaskTop2} />
@@ -54,27 +77,6 @@ export default class Navigation extends Component {
 						<Route exact path="/helpdesk/taskSideLeft" component={TaskSideLeft} />
 						<Route exact path="/helpdesk/taskSideLeft2" component={TaskSideLeft2} />
 
-						<Route exact path="/helpdesk/Reports" component={Reports} />
-						<Route exact path="/helpdesk/taskList" component={TaskList} />
-
-							<Route exact path='/helpdesk/settings/statuses' component={StatusList} />
-              <Route exact path='/helpdesk/settings/statuses/:id' component={StatusList} />
-              <Route exact path='/helpdesk/settings/projects' component={ProjectList} />
-              <Route exact path='/helpdesk/settings/projects/:id' component={ProjectList} />
-              <Route exact path='/helpdesk/settings/units' component={UnitList} />
-              <Route exact path='/helpdesk/settings/units/:id' component={UnitList} />
-              <Route exact path='/helpdesk/settings/companies' component={CompanyList} />
-              <Route exact path='/helpdesk/settings/companies/:id' component={CompanyList} />
-              <Route exact path='/helpdesk/settings/workTypes' component={WorkTypeList} />
-              <Route exact path='/helpdesk/settings/workTypes/:id' component={WorkTypeList} />
-              <Route exact path='/helpdesk/settings/users' component={UserList} />
-              <Route exact path='/helpdesk/settings/users/:id' component={UserList} />
-              <Route exact path='/helpdesk/settings/pricelists' component={PriceList} />
-              <Route exact path='/helpdesk/settings/pricelists/:id' component={PriceList} />
-              <Route exact path='/helpdesk/settings/suppliers' component={SupplierList} />
-              <Route exact path='/helpdesk/settings/suppliers/:id' component={SupplierList} />
-              <Route exact path='/helpdesk/settings/supplierInvoices' component={SupplierInvoiceList} />
-              <Route exact path='/helpdesk/settings/supplierInvoices/:id' component={SupplierInvoiceList} />
 						</div>
 				</div>
 			</div>

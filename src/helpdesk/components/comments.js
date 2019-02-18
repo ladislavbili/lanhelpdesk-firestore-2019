@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import { Col } from 'react-bootstrap';
-import avatar from '../../scss/images/users/avatar-1.jpg';
 
 export default class Comments extends Component {
 	render() {
@@ -39,7 +38,7 @@ export default class Comments extends Component {
 						<div className="media m-b-30 m-t-30">
 							<img
 								className="d-flex mr-3 rounded-circle thumb-sm"
-								src={avatar}
+								src="https://i.pinimg.com/originals/08/a9/0a/08a90a48a9386c314f97a07ba1f0db56.jpg"
 								alt="Generic placeholder image"
 							/>
 							<div className="media-body">

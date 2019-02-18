@@ -27,23 +27,6 @@ export default class PageHeader extends Component {
 			<div className="pageHeader">
 
 				<div className="d-flex bd-highlight">
-					{/*
-					<div className="p-2 align-self-center">
-						<div className="input-group" style={{ width: 300, height: 30 }}>
-							<input
-								type="text"
-								style={{ height: 30 }}
-								className="form-control"
-								placeholder="Global search task name"
-							/>
-							<div className="input-group-append">
-								<button className="btn btn-white" type="button">
-									<i className="fa fa-search" />
-								</button>
-							</div>
-						</div>
-					</div>
-					 */}
 					<div className="p-2 align-self-center">
 						<Link className="" to={{ pathname: `/helpdesk/reports` }} style={{ color: 'white' }}>
 							<i className="fa fa-file-pdf mr-1" />

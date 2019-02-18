@@ -19,7 +19,7 @@ export default class InvoiceItems extends Component{
 
   render(){
     return (
-      <div>
+        <div className="container-padding form-background card-box">
           <Table striped condensed hover>
             <thead>
               <tr>

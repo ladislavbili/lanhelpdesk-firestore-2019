@@ -13,7 +13,7 @@ export default class StatusAdd extends Component{
 
   render(){
     return (
-      <div className="container-padding form-background card-box">
+        <div className="container-padding form-background card-box scrollable fit-with-header">
         <FormGroup>
           <Col sm={3}>
             <ControlLabel className="center-hor">Status name</ControlLabel>

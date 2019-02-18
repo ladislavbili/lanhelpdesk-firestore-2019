@@ -25,10 +25,9 @@ export default class ProjectList extends Component{
 
   render(){
     return (
-      <div className="content-page card-box">
-      <div className="content">
-      <div className="row flex container-padding center-ver col-xl-12">
-        <div className="col-lg-4 p-0">
+      <div className="row">
+        <div className="col-lg-4">
+          <div className="card-box fit-with-header scrollable">
           <div className="input-group">
             <input
               type="text"
@@ -64,6 +63,7 @@ export default class ProjectList extends Component{
           </table>
         </div>
         </div>
+        </div>
         <div className="col-lg-8 p-0">
           {
             this.props.match.params.id && this.props.match.params.id==='add' && <ProjectAdd />
@@ -72,8 +72,6 @@ export default class ProjectList extends Component{
             this.props.match.params.id && this.props.match.params.id!=='add' && this.state.projects.some((item)=>item.id===this.props.match.params.id) && <ProjectEdit match={this.props.match} />
           }
         </div>
-      </div>
-      </div>
       </div>
     );
   }

@@ -47,7 +47,7 @@ export default class CompanyEdit extends Component{
 
   render(){
     return (
-      <div className="container-padding form-background card-box">
+      <div className="container-padding form-background card-box scrollable fit-with-header">
         {
           this.state.loading &&
           <Alert bsStyle="success">

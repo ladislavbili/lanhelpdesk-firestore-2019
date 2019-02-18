@@ -211,19 +211,19 @@ export default class TaskListContainer extends Component {
 
 						{this.state.taskListType === 'option2' && (
 							<div className={'' + (this.state.filterView ? 'col-xl-9' : 'col-xl-12')}>
-								<TasksRow />{' '}
+								<TasksRow history={this.props.history} match={this.props.match}/>{' '}
 							</div>
 						)}
 
 						{this.state.taskListType === 'option1' && (
 							<div className={'' + (this.state.filterView ? 'col-xl-9' : 'col-xl-12')}>
-								<TasksBoard />
+								<TasksBoard history={this.props.history} match={this.props.match}/>
 							</div>
 						)}
 
 						{this.state.taskListType === 'option3' && (
 							<div className={'' + (this.state.filterView ? 'col-xl-9' : 'col-xl-12')}>
-								<TasksTwo />
+								<TasksTwo history={this.props.history} match={this.props.match}/>
 							</div>
 						)}
 					</div>
