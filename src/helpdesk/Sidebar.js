@@ -56,19 +56,7 @@ export default class Sidebar extends Component {
 						<ul className="sidebar-menu">
 							<li>
 								<Link className="" to={{ pathname: `/helpdesk/taskList` }}>
-									Riešiť
-								</Link>
-								<Link className="" to={{ pathname: `/helpdesk/taskList` }}>
-									Odložené
-								</Link>
-								<Link className="" to={{ pathname: `/helpdesk/taskList` }}>
-									Zatvorené
-								</Link>
-								<Link className="" to={{ pathname: `/helpdesk/taskList` }}>
-									Zadané
-								</Link>
-								<Link className="" to={{ pathname: `/helpdesk/taskList` }}>
-									Opakujúce
+									All Tasks
 								</Link>
 							</li>
 						</ul>

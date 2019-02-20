@@ -1086,7 +1086,7 @@ label {
 /* line 5, C:/Webprojekty/lanSystemsWebApp/src/assets/scss/_form-components.scss */
 .form-control {
   font-family: inherit;
-  border: 1px solid #E3E3E3;
+  border: 1px solid #cccccc;
   border-radius: 4px;
   color: #565656;
   font-size: 14px;
@@ -8979,7 +8979,7 @@ div.hopscotch-bubble .hopscotch-bubble-arrow-container.down .hopscotch-bubble-ar
 
 
 .form-control {
-  height: 38px;
+  height: 30px;
 }
 
 .table-borderless th,
