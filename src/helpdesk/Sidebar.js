@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Modal, Badge, InputGroup, Glyphicon, FormControl, ListGroupItem } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import Select from 'react-select';
 import SelectPage from '../SelectPage';
 
@@ -55,9 +55,9 @@ export default class Sidebar extends Component {
 
 						<ul className="sidebar-menu">
 							<li>
-								<Link className="" to={{ pathname: `/helpdesk/taskList` }}>
+								<NavLink className="" to={{ pathname: `/helpdesk/taskList` }}>
 									All Tasks
-								</Link>
+								</NavLink>
 							</li>
 						</ul>
 						<hr />
