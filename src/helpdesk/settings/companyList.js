@@ -24,8 +24,8 @@ export default class CompaniesList extends Component{
   }
 
   render(){
-    
-   console.log(this.props);
+
+   console.log(this.props.match.params.id);
    console.log(this.state.companies);
 
     return (
@@ -59,7 +59,7 @@ export default class CompaniesList extends Component{
                   <td>+ Add company</td>
                 </tr>
                 {this.state.companies.filter((item)=>item.title.toLowerCase().includes(this.state.companyFilter.toLowerCase())).map((company)=>
-                  <tr key={company.id} className={"clickable" + this.props.match.params.id === company.id ? " selected-item":""} onClick={()=>this.props.history.push('/helpdesk/settings/companies/'+company.id)}>
+                  <tr key={company.id} className={"clickable" + (this.props.match.params.id === company.id ? " selected-item":"")} onClick={()=>this.props.history.push('/helpdesk/settings/companies/'+company.id)}>
                     <td>{company.title}</td>
                   </tr>
                 )}
@@ -73,7 +73,7 @@ export default class CompaniesList extends Component{
             this.props.match.params.id && this.props.match.params.id==='add' && <CompanyAdd />
         }
         {
-          this.props.match.params.id && this.props.match.params.id!=='add' && this.state.companies.some((item)=>item.id===this.props.match.params.id) && <CompanyEdit match={this.props.match} />
+          this.props.match.params.id && this.props.match.params.id!=='add' && this.state.companies.some((item)=>item.id===this.props.match.params.id) && <CompanyEdit match={this.props.match} history = {this.props.history} />
       }
     </div>
   </div>

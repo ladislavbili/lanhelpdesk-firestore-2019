@@ -79,6 +79,16 @@ export default class CompanyEdit extends Component{
             rebase.updateDoc('/companies/'+this.props.match.params.id, {title:this.state.companyName,pricelist:this.state.pricelist.id})
               .then(()=>{this.setState({saving:false})});
           }}>{this.state.saving?'Saving company...':'Save company'}</Button>
+
+        <Button bsStyle="danger" className="separate" disabled={this.state.saving} onClick={()=>{
+            if(window.confirm("Are you sure?")){
+              rebase.removeDoc('/companies/'+this.props.match.params.id).then(()=>{
+                this.props.history.goBack();
+              });
+            }
+            }}>Delete</Button>
+
+
       </div>
     );
   }

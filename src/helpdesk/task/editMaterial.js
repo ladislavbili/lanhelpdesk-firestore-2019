@@ -51,7 +51,7 @@ export default class EditMaterial extends Component{
     totalPrice=totalPrice.toFixed(3);
 
     return (
-      <Modal show={this.props.isOpen} onHide={this.props.toggle} bsSize="large">
+      <Modal show={this.props.isOpen} className="show" onHide={this.props.toggle} bsSize="large">
         <Modal.Header closeButton>
           <Modal.Title>{'Editing material'}</Modal.Title>
         </Modal.Header>
