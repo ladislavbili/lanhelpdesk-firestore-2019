@@ -25,7 +25,7 @@ export default class CompaniesList extends Component{
 
   render(){
 
-   console.log(this.props.match.params.id);
+   console.log(this.props);
    console.log(this.state.companies);
 
     return (
@@ -55,7 +55,7 @@ export default class CompaniesList extends Component{
                 </tr>
               </thead>
               <tbody>
-                <tr className="clickable" onClick={()=>this.props.history.push('/helpdesk/settings/companies/add')}>
+                <tr className={"clickable" + (this.props.location.pathname === '/helpdesk/settings/companies/add' ? " selected-item":"")} onClick={()=>this.props.history.push('/helpdesk/settings/companies/add')}>
                   <td>+ Add company</td>
                 </tr>
                 {this.state.companies.filter((item)=>item.title.toLowerCase().includes(this.state.companyFilter.toLowerCase())).map((company)=>
