@@ -106,3 +106,10 @@ html{
     padding-left: 0px;
     padding-right: 0px;
 }
+
+.selected-item {
+	background-color: #f4f8fb !important;
+	li {
+		background-color: #f4f8fb !important;
+	}
+}

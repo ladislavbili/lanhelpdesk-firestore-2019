@@ -72,7 +72,7 @@ export default class TasksRow extends Component {
 						{
 							tasks.map((task)=>
 							<ul
-								className={"sortable-list taskList list-unstyled clickable"+(this.props.match.params.taskID===task.id?' active':'')}
+								className={"sortable-list taskList list-unstyled clickable"+(this.props.match.params.taskID===task.id?' active selected-item':'')}
 								id="upcoming"
 								onClick={()=>{this.props.history.push('/helpdesk/taskList/'+task.id)}}
 								key={task.id} >

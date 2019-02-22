@@ -30,7 +30,6 @@ export default class CompanyEdit extends Component{
   }
 
   setData(company,pricelists){
-    console.log(pricelists);
     let pricelist=pricelists.find((item)=>item.id===company.pricelist);
     if(pricelist===undefined && pricelists.length>0){
       pricelist=pricelists[0];
