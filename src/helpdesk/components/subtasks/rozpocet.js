@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import { Col, Tabs, Tab, } from 'react-bootstrap';
 import Select from 'react-select';
+import { rebase } from '../../../index';
 
 
 const tableStyle = {
@@ -13,48 +14,59 @@ const tableStyleCenter = {
 	border: 'none',
 };
 
+const types = [
+	{ value: 'Servis IT', label: 'Servis IT' },
+	{ value: 'Programovanie www', label: 'Programovanie www' },
+];
+
+const selectStyle = {
+	control: base => ({
+		...base,
+		minHeight: 30,
+		backgroundColor: 'white',
+	}),
+	dropdownIndicator: base => ({
+		...base,
+		padding: 4,
+	}),
+	clearIndicator: base => ({
+		...base,
+		padding: 4,
+	}),
+	multiValue: base => ({
+		...base,
+		backgroundColor: 'white',
+	}),
+	valueContainer: base => ({
+		...base,
+		padding: '0px 6px',
+	}),
+	input: base => ({
+		...base,
+		margin: 0,
+		padding: 0,
+		backgroundColor: 'white',
+	}),
+};
+
 const tableStyleCenterNoBorder = {
 	textAlign: 'center',
 	border: 'none',
 };
 
 export default class Rozpocet extends Component {
+	constructor(props){
+		super(props);
+		this.state={
+			editedSubtaskTitle: "",
+			editedSubtaskQuantity: "0",
+			editedSubtaskDiscount:0,
+			editedSubtaskWorkType:null,
+			focusedSubtask: null,
+		}
+	}
 
 	render() {
-		const types = [
-			{ value: 'Servis IT', label: 'Servis IT' },
-			{ value: 'Programovanie www', label: 'Programovanie www' },
-		];
-
-		const selectStyle = {
-			control: base => ({
-				...base,
-				minHeight: 30,
-				backgroundColor: 'white',
-			}),
-			dropdownIndicator: base => ({
-				...base,
-				padding: 4,
-			}),
-			clearIndicator: base => ({
-				...base,
-				padding: 4,
-			}),
-			multiValue: base => ({
-				...base,
-				backgroundColor: 'white',
-			}),
-			valueContainer: base => ({
-				...base,
-				padding: '0px 6px',
-			}),
-			input: base => ({
-				...base,
-				margin: 0,
-				padding: 0,
-				backgroundColor: 'white',
-			}),
-		};
 
 		return (
 			<div className="">
@@ -77,29 +89,121 @@ export default class Rozpocet extends Component {
 									</tr>
 								</thead>
 								<tbody>
-									<tr>
+									{
+										this.props.subtasks.map((subtask)=>
+										<tr>
 										<td style={tableStyle}>
 											<input type="checkbox" />
 										</td>
 										<td style={tableStyle}>
 											<div style={{ background: '#dcf4f9', borderRadius: '5px', padding: 5 }}>
-												Subtask 1 - treba zarovnať nalavo + drag&drop zmena poradia
+												<input
+													className="invisible-input"
+													value={
+														subtask.id === this.state.focusedSubtask
+														? this.state.editedSubtaskTitle
+														: subtask.title
+													}
+													onBlur={() => {
+													//submit
+													this.props.updateSubtask(subtask.id,{title:this.state.editedSubtaskTitle})
+													rebase.updateDoc('taskWorks/'+subtask.id,{title:this.state.editedSubtaskTitle});
+													this.setState({ focusedSubtask: null });
+												}}
+												onFocus={() => {
+													this.setState({
+														editedSubtaskTitle: subtask.title,
+														editedSubtaskQuantity: subtask.quantity?subtask.quantity:'',
+														editedSubtaskWorkType: subtask.workType,
+														editedSubtaskDiscount: subtask.discount,
+														focusedSubtask: subtask.id
+													});
+												}}
+												onChange={e =>{
+													this.setState({ editedSubtaskTitle: e.target.value })}
+												}
+												/>
 											</div>
 										</td>
 										<td style={tableStyle}>
-											Servis IT
+											<Select
+												value={subtask.workType}
+												onChange={(workType)=>{
+													this.props.updateSubtask(subtask.id,{workType})
+													rebase.updateDoc('taskWorks/'+subtask.id,{workType:workType.id});
+												}}
+												options={this.props.workTypes}
+												styles={selectStyle}
+												/>
 										</td>
 										<td style={tableStyle}>
-											5
+											<input
+												type="number"
+												className="invisible-input"
+												value={
+													subtask.id === this.state.focusedSubtask
+													? this.state.editedSubtaskQuantity
+													: subtask.quantity
+												}
+												onBlur={() => {
+												//submit
+												this.props.updateSubtask(subtask.id,{quantity:this.state.editedSubtaskQuantity})
+												rebase.updateDoc('taskWorks/'+subtask.id,{quantity:this.state.editedSubtaskQuantity});
+												this.setState({ focusedSubtask: null });
+											}}
+											onFocus={() => {
+												this.setState({
+													editedSubtaskTitle: subtask.title,
+													editedSubtaskQuantity: subtask.quantity?subtask.quantity:'',
+													editedSubtaskWorkType: subtask.workType,
+													editedSubtaskDiscount: subtask.discount,
+													focusedSubtask: subtask.id
+												});
+											}}
+											onChange={e =>{
+												this.setState({ editedSubtaskQuantity: e.target.value })}
+											}
+											/>
 										</td>
 										<td style={tableStyle}>
-											22,90
+											{subtask.price}
 										</td>
 										<td style={tableStyle}>
-											0 %
+											<input
+												type="number"
+												className="invisible-input"
+												value={
+													parseInt(subtask.id === this.state.focusedSubtask
+													? this.state.editedSubtaskDiscount
+													: subtask.discount)
+												}
+												onBlur={() => {
+													console.log(subtask);
+													console.log(this.state);
+												this.props.updateSubtask(subtask.id,{discount:this.state.editedSubtaskDiscount})
+												rebase.updateDoc('taskWorks/'+subtask.id,{discount:this.state.editedSubtaskDiscount});
+												this.setState({ focusedSubtask: null });
+											}}
+											onFocus={() => {
+												this.setState({
+													editedSubtaskTitle: subtask.title,
+													editedSubtaskQuantity: subtask.quantity?subtask.quantity:'',
+													editedSubtaskWorkType: subtask.workType,
+													editedSubtaskDiscount: subtask.discount,
+													focusedSubtask: subtask.id
+												});
+											}}
+											onChange={e =>{
+												this.setState({ editedSubtaskDiscount: e.target.value })}
+											}
+											/>
 										</td>
 										<td style={tableStyle}>
-											22.9
+											{
+												parseFloat(subtask.price)
+												-
+												parseFloat(subtask.price)*parseInt(subtask.id === this.state.focusedSubtask?(this.state.editedSubtaskDiscount===''?0:this.state.editedSubtaskDiscount):subtask.discount)/100
+											}
 										</td>
 										<td style={tableStyleCenter}>
 											<button className="btn btn-link waves-effect">
@@ -107,6 +211,10 @@ export default class Rozpocet extends Component {
 											</button>
 										</td>
 									</tr>
+								)
+								}
+
+
 									<tr>
 										<td style={tableStyle}>
 										</td>
@@ -117,7 +225,7 @@ export default class Rozpocet extends Component {
 												id="inlineFormInput"
 												placeholder=""
 												style={{ height: 30 }}
-											/>
+												/>
 										</td>
 										<td style={tableStyle} className="p-t-0">
 											<Select options={types} styles={selectStyle} />
@@ -129,7 +237,7 @@ export default class Rozpocet extends Component {
 												id="inlineFormInput"
 												placeholder=""
 												style={{ height: 30 }}
-											/>
+												/>
 										</td>
 										<td style={tableStyle}>
 											<input
@@ -138,7 +246,7 @@ export default class Rozpocet extends Component {
 												id="inlineFormInput"
 												placeholder=""
 												style={{ height: 30 }}
-											/>
+												/>
 										</td>
 										<td style={tableStyle}>
 											<input
@@ -147,7 +255,7 @@ export default class Rozpocet extends Component {
 												id="inlineFormInput"
 												placeholder=""
 												style={{ height: 30 }}
-											/>
+												/>
 										</td>
 										<td style={tableStyle}>
 											<input
@@ -156,7 +264,7 @@ export default class Rozpocet extends Component {
 												id="inlineFormInput"
 												placeholder=""
 												style={{ height: 30 }}
-											/>
+												/>
 										</td>
 										<td style={tableStyleCenter}>
 											<button className="btn btn-link waves-effect">
@@ -176,23 +284,23 @@ export default class Rozpocet extends Component {
 											color: '#4a81d4',
 											fontSize: '1em',
 										}}
-									/>
+										/>
 									<span style={{
-										color: '#4a81d4',
-										fontSize: '1em',
-									}}> Aktualizovať ceny podla cenníka</span>
-								</button>
+											color: '#4a81d4',
+											fontSize: '1em',
+										}}> Aktualizovať ceny podla cenníka</span>
+									</button>
+								</div>
+								<div className="col-md-6">
+									<p className="text-right">
+										<b>Sub-total:</b> 2930.00
+										</p>
+									</div>
+								</div>
 							</div>
-							<div className="col-md-6">
-								<p className="text-right">
-									<b>Sub-total:</b> 2930.00
-								</p>
-							</div>
+
 						</div>
 					</div>
-
-				</div>
-			</div>
-		);
-	}
-}
+				);
+			}
+		}
