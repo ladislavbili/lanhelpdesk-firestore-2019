@@ -3,17 +3,52 @@ import { Button, Modal, Badge, InputGroup, Glyphicon, FormControl, Table } from 
 import Select from 'react-select';
 
 import Comments from '../components/comments.js';
-import Subtasks from '../components/subtasks.js';
-import Items from '../components/items.js';
+import TaskMaterials from '../components/taskMaterials';
+import Subtasks from '../components/subtasks';
 import AddServiceMaterial from './addServiceMaterial';
 import EditService from './editService';
 import EditMaterial from './editMaterial';
 
 import {rebase, database} from '../../index';
-import {toSelArr, snapshotToArray} from '../../helperFunctions';
+import {toSelArr, snapshotToArray, timestampToString} from '../../helperFunctions';
 
 const tableStyle = {
 	border: 'none',
+};
+
+const repeat = [
+	{ value: 'none', label: 'none' },
+	{ value: 'every day', label: 'every day' },
+
+];
+const selectStyle = {
+	control: base => ({
+		...base,
+		minHeight: 30,
+		backgroundColor: 'white',
+	}),
+	dropdownIndicator: base => ({
+		...base,
+		padding: 4,
+	}),
+	clearIndicator: base => ({
+		...base,
+		padding: 4,
+	}),
+	multiValue: base => ({
+		...base,
+		backgroundColor: 'white',
+	}),
+	valueContainer: base => ({
+		...base,
+		padding: '0px 6px',
+	}),
+	input: base => ({
+		...base,
+		margin: 0,
+		padding: 0,
+		backgroundColor: 'white',
+	}),
 };
 
 export default class TasksTwoEdit extends Component {
@@ -47,6 +82,7 @@ export default class TasksTwoEdit extends Component {
 			description:'',
 			status:null,
 			statusChange:null,
+			createdAt:null,
 			deadline:null,
 			project:null,
 			pausal:{value:true,label:'Pausal'},
@@ -190,6 +226,7 @@ export default class TasksTwoEdit extends Component {
 			overtime:task.overtime?{value:true,label:'Áno'}:{value:false,label:'Nie'},
       status:status?status:null,
 			statusChange:task.statusChange?task.statusChange:null,
+			createdAt:task.createdAt?task.createdAt:null,
 			deadline: task.deadline!==null?new Date(task.deadline).toISOString().replace('Z',''):'',
       project:project?project:null,
       company:company?company:null,
@@ -203,41 +240,6 @@ export default class TasksTwoEdit extends Component {
 
 	render() {
 
-		const repeat = [
-			{ value: 'none', label: 'none' },
-			{ value: 'every day', label: 'every day' },
-
-		];
-		const selectStyle = {
-			control: base => ({
-				...base,
-				minHeight: 30,
-				backgroundColor: 'white',
-			}),
-			dropdownIndicator: base => ({
-				...base,
-				padding: 4,
-			}),
-			clearIndicator: base => ({
-				...base,
-				padding: 4,
-			}),
-			multiValue: base => ({
-				...base,
-				backgroundColor: 'white',
-			}),
-			valueContainer: base => ({
-				...base,
-				padding: '0px 6px',
-			}),
-			input: base => ({
-				...base,
-				margin: 0,
-				padding: 0,
-				backgroundColor: 'white',
-			}),
-		};
-
 		let taskWorks= this.state.taskWorks.map((work)=>{
 			let finalUnitPrice=parseFloat(work.price);
 			if(work.extraWork){
@@ -245,8 +247,10 @@ export default class TasksTwoEdit extends Component {
 			}
 			let totalPrice=(finalUnitPrice*parseFloat(work.quantity)*(1-parseFloat(work.discount)/100)).toFixed(3);
 			finalUnitPrice=finalUnitPrice.toFixed(3);
+			let workType= this.state.workTypes.find((item)=>item.id===work.workType);
 			return {
 				...work,
+				workType,
 				unit:this.state.units.find((unit)=>unit.id===work.unit),
 				finalUnitPrice,
 				totalPrice
@@ -301,6 +305,10 @@ export default class TasksTwoEdit extends Component {
 								</div>
 							</div>
 							<div className="row">
+								<div className="col-lg-12 p-10 d-flex flex-row">
+									<p className="text-muted">Created by Branislav Šusta at {this.state.createdAt?(timestampToString(this.state.createdAt)):''}</p>
+									<p className="text-muted ml-auto">{this.state.statusChange?('Status changed at ' + timestampToString(this.state.statusChange)):''}</p>
+								</div>
 
 							</div>
 							<div className="row">
@@ -428,7 +436,22 @@ export default class TasksTwoEdit extends Component {
 							<label className="m-t-5">Popis</label>
 								<textarea class="form-control" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value})} />
 
-							<Subtasks />
+							{false && <TaskMaterials />}
+							<Subtasks
+								subtasks={taskWorks}
+								workTypes={this.state.workTypes}
+								updateSubtask={(id,newData)=>{
+									let newTaskWorks=[...this.state.taskWorks];
+									newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
+									this.setState({taskWorks:newTaskWorks});
+								}}
+								removeSubtask={(id)=>{
+									let newTaskWorks=[...this.state.taskWorks];
+									newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
+									this.setState({taskWorks:newTaskWorks});
+									}
+								}
+								/>
 								<div>
 									<Button bsStyle="primary" disabled={this.state.loading} onClick={()=>this.setState({addItemModal:true})}>+ Service/Material</Button>
 								</div>
@@ -464,7 +487,6 @@ export default class TasksTwoEdit extends Component {
 					        </tbody>
 					      </table>
 
-							{false && <Items />}
 							<AddServiceMaterial
 				        isOpen={this.state.addItemModal}
 				        toggle={()=>this.setState({addItemModal:!this.state.addItemModal})}

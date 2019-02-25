@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Button, Modal, Badge, InputGroup, Glyphicon, FormControl } from 'react-bootstrap';
 import Comments from '../components/comments.js';
-import Subtasks from '../components/subtasks.js';
-import Items from '../components/items.js';
+import Subtasks from '../components/subtasks';
+import Items from '../components/taskMaterials';
 import TasksTwoEdit from '../task/TasksTwoEdit';
 
 const tableStyle = {

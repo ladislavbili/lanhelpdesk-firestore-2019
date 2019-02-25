@@ -3,8 +3,8 @@ import { Button, Modal, Badge, InputGroup, Glyphicon, FormControl } from 'react-
 import { Link } from 'react-router-dom';
 import Select from 'react-select';
 import Comments from '../components/comments.js';
-import Subtasks from '../components/subtasks.js';
-import Items from '../components/items.js';
+import Subtasks from '../components/subtasks';
+import Items from '../components/taskMaterials';
 
 export default class TaskTop3 extends Component {
 	constructor(props) {
