@@ -68,11 +68,10 @@ export default class Prace extends Component {
 						<table className="table table-centered table-borderless table-hover mb-0">
 							<thead className="thead-light">
 								<tr>
-									<th style={tableStyle} width="5%">
-										<input type="checkbox" />
+									<th style={tableStyle}>
 									</th>
 									<th style={tableStyle} width="60%">Názov</th>
-									<th style={tableStyle} width="20%">Typ</th>
+									<th style={tableStyle} width="25%">Typ</th>
 									<th style={tableStyle}>Mn.</th>
 									<th style={tableStyleCenterNoBorder}>Action</th>
 								</tr>
@@ -82,7 +81,10 @@ export default class Prace extends Component {
 									this.props.subtasks.map((subtask)=>
 									<tr>
 										<td style={tableStyle}>
-											<input type="checkbox" />
+											<input type="checkbox" checked={subtask.done} onClick={()=>{
+												this.props.updateSubtask(subtask.id,{done:!subtask.done})
+												rebase.updateDoc('taskWorks/'+subtask.id,{done:!subtask.done});
+												}} />
 										</td>
 										<td style={tableStyle}>
 											<div style={{ background: '#dcf4f9', borderRadius: '5px', padding: 5 }}>
@@ -153,13 +155,12 @@ export default class Prace extends Component {
 										/>
 									</td>
 									<td style={tableStyleCenter}>
-										<button className="btn btn-link waves-effect">
-											<i className="fa fa-times" onClick={()=>{
-													if(window.confirm('Are you sure?')){
-														rebase.removeDoc('taskWorks/'+subtask.id).then(()=>this.props.removeSubtask(subtask.id));
-													}
-
-												}} />
+										<button className="btn btn-link waves-effect" onClick={()=>{
+												if(window.confirm('Are you sure?')){
+													rebase.removeDoc('taskWorks/'+subtask.id).then(()=>this.props.removeSubtask(subtask.id));
+												}
+											}}>
+											<i className="fa fa-times"  />
 											</button>
 										</td>
 									</tr>

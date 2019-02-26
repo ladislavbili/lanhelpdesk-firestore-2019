@@ -438,6 +438,23 @@ export default class TasksTwoEdit extends Component {
 
 							{false && <TaskMaterials />}
 							<Subtasks
+								submitService={this.submitService.bind(this)}
+								updatePrices={(ids)=>{
+									taskWorks.filter((item)=>ids.includes(item.id)).map((item)=>{
+										let price=item.workType.prices.find((item)=>item.pricelist===this.state.company.pricelist.id);
+										if(price === undefined){
+											price = 0;
+										}else{
+											price = price.price;
+										}
+										rebase.updateDoc('taskWorks/'+item.id, {price})
+										.then(()=>{
+											let newTaskWorks=[...this.state.taskWorks];
+								      newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===item.id)]={...newTaskWorks.find((taskWork)=>taskWork.id===item.id),price};
+								      this.setState({taskWorks:newTaskWorks});
+										});
+									})
+								}}
 								subtasks={taskWorks}
 								workTypes={this.state.workTypes}
 								updateSubtask={(id,newData)=>{
@@ -445,6 +462,7 @@ export default class TasksTwoEdit extends Component {
 									newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
 									this.setState({taskWorks:newTaskWorks});
 								}}
+								company={this.state.company}
 								removeSubtask={(id)=>{
 									let newTaskWorks=[...this.state.taskWorks];
 									newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);

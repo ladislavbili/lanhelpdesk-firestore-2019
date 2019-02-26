@@ -104,7 +104,7 @@ export default class Subtasks extends Component {
 								<Prace subtasks={this.props.subtasks} updateSubtask={this.props.updateSubtask} removeSubtask={this.props.removeSubtask} workTypes={this.props.workTypes} />
 							</TabPane>
 							<TabPane tabId="2">
-								<Rozpocet subtasks={this.props.subtasks} updateSubtask={this.props.updateSubtask} removeSubtask={this.props.removeSubtask} workTypes={this.props.workTypes} />
+								<Rozpocet submitService={this.props.submitService} updatePrices={this.props.updatePrices} company={this.props.company} subtasks={this.props.subtasks} updateSubtask={this.props.updateSubtask} removeSubtask={this.props.removeSubtask} workTypes={this.props.workTypes} />
 							</TabPane>
 						</TabContent>
 					</div>
