@@ -3,7 +3,7 @@ import { Button, Modal, Badge, InputGroup, Glyphicon, FormControl, Table } from 
 import Select from 'react-select';
 
 import Comments from '../components/comments.js';
-import TaskMaterials from '../components/taskMaterials';
+import Materials from '../components/materials';
 import Subtasks from '../components/subtasks';
 import AddServiceMaterial from './addServiceMaterial';
 import EditService from './editService';
@@ -436,7 +436,23 @@ export default class TasksTwoEdit extends Component {
 							<label className="m-t-5">Popis</label>
 								<textarea class="form-control" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value})} />
 
-							{false && <TaskMaterials />}
+							<Materials
+								materials={taskMaterials}
+				        submitMaterial={this.submitMaterial.bind(this)}
+								updateMaterial={(id,newData)=>{
+									let newTaskMaterials=[...this.state.taskMaterials];
+									newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
+									this.setState({taskMaterials:newTaskMaterials});
+								}}
+								removeMaterial={(id)=>{
+									let newTaskMaterials=[...this.state.taskMaterials];
+									newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
+									this.setState({taskMaterials:newTaskMaterials});
+								}}
+				        units={this.state.units}
+								company={this.state.company}
+								/>
+
 							<Subtasks
 								submitService={this.submitService.bind(this)}
 								updatePrices={(ids)=>{
@@ -470,73 +486,6 @@ export default class TasksTwoEdit extends Component {
 									}
 								}
 								/>
-								<div>
-									<Button bsStyle="primary" disabled={this.state.loading} onClick={()=>this.setState({addItemModal:true})}>+ Service/Material</Button>
-								</div>
-								<table className="table table-centered table-borderless table-hover mb-0">
-									<thead className="thead-light">
-					          <tr>
-					            <th>Name</th>
-					            <th>Quantity</th>
-					            <th>Price</th>
-					            <th>Discount</th>
-					            <th>Total</th>
-					          </tr>
-					        </thead>
-					        <tbody>
-					          {taskWorks.map((item)=>
-					            <tr key={item.id} className="clickable" onClick={()=>this.setState({openEditServiceModal:true,openService:item})}>
-					              <td>{item.title}</td>
-					              <td>{item.quantity + ' '+ item.unit.title}</td>
-					              <td>{item.finalUnitPrice}</td>
-					              <td>{item.discount + '%'}</td>
-					              <td>{item.totalPrice}</td>
-					            </tr>
-					          )}
-					          {taskMaterials.map((item)=>
-					            <tr key={item.id} className="clickable" onClick={()=>this.setState({openEditMaterialModal:true,openMaterial:item})}>
-					              <td>{item.title}</td>
-					              <td>{item.quantity + ' '+ item.unit.title}</td>
-					              <td>{item.finalUnitPrice}</td>
-					              <td>{item.discount + '%'}</td>
-					              <td>{item.totalPrice}</td>
-					            </tr>
-					          )}
-					        </tbody>
-					      </table>
-
-							<AddServiceMaterial
-				        isOpen={this.state.addItemModal}
-				        toggle={()=>this.setState({addItemModal:!this.state.addItemModal})}
-				        company={this.state.company}
-				        workTypes={this.state.workTypes}
-				        submitMaterial={this.submitMaterial.bind(this)}
-				        submitService={this.submitService.bind(this)}
-				        units={this.state.units}
-				        />
-				      {
-				        this.state.taskWorks.some((item)=>this.state.openService && item.id===this.state.openService.id) &&
-				      <EditService
-				        isOpen={this.state.openEditServiceModal}
-				        units={this.state.units}
-				        workTypes={this.state.workTypes}
-				        company={this.state.company}
-				        service={this.state.openService}
-				        saveService={this.saveService.bind(this)}
-				        toggle={()=>this.setState({openEditServiceModal:!this.state.openEditServiceModal})}
-				        />
-				      }
-
-				      {
-				        this.state.taskMaterials.some((item)=>this.state.openMaterial && item.id===this.state.openMaterial.id) &&
-				      <EditMaterial
-				        isOpen={this.state.openEditMaterialModal}
-				        units={this.state.units}
-				        material={this.state.openMaterial}
-				        saveMaterial={this.saveMaterial.bind(this)}
-				        toggle={()=>this.setState({openEditMaterialModal:!this.state.openEditMaterialModal})}
-				        />
-						}
 							<Comments />
 						</div>
 					</div>

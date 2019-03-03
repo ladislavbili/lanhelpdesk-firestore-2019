@@ -102,7 +102,7 @@ export default class Rozpocet extends Component {
 								<tbody>
 									{
 										this.props.subtasks.map((subtask)=>
-										<tr>
+										<tr key={subtask.id}>
 											<td style={tableStyle}>
 												<input
 													type="checkbox"
@@ -379,8 +379,9 @@ export default class Rozpocet extends Component {
 							</div>
 							<div className="col-md-6">
 								<p className="text-right">
-									<b>Sub-total:</b> 2930.00
-									</p>
+									<b>Sub-total:</b>
+									{this.props.subtasks.map((subtask)=>parseFloat(subtask.totalPrice)).reduce((acc, cur)=> acc+cur,0)}
+								</p>
 								</div>
 							</div>
 						</div>

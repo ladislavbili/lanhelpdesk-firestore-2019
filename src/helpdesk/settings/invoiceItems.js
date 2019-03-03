@@ -64,7 +64,7 @@ export default class InvoiceItems extends Component{
           </Table>
           <Button bsStyle="success" className="separate" onClick={()=>this.setState({addOpened:!this.state.addOpened})} >Add invoice item</Button>
 
-          <Modal show={this.state.addOpened} onHide={()=>this.setState({addOpened:!this.state.addOpened})} bsSize="large">
+          <Modal show={this.state.addOpened} className="show" onHide={()=>this.setState({addOpened:!this.state.addOpened})} bsSize="large">
             <Modal.Header closeButton>
               <Modal.Title>Adding item</Modal.Title>
             </Modal.Header>

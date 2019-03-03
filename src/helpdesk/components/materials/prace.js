@@ -52,10 +52,10 @@ export default class Prace extends Component {
 	constructor(props){
 		super(props);
 		this.state={
-			editedSubtaskTitle: "",
-			editedSubtaskQuantity: "0",
-			editedSubtaskWorkType:null,
-			focusedSubtask: null,
+			editedMaterialTitle: "",
+			editedMaterialQuantity: "0",
+			editedMaterialWorkType:null,
+			focusedMaterial: null,
 		}
 	}
 
@@ -71,93 +71,59 @@ export default class Prace extends Component {
 									<th style={tableStyle}>
 									</th>
 									<th style={tableStyle} width="60%">Názov</th>
-									<th style={tableStyle} width="25%">Typ</th>
 									<th style={tableStyle}>Mn.</th>
 									<th style={tableStyleCenterNoBorder}>Action</th>
 								</tr>
 							</thead>
 							<tbody>
 								{
-									this.props.subtasks.map((subtask)=>
-									<tr key={subtask.id}>
+									this.props.materials.map((material)=>
+									<tr key={material.id}>
 										<td style={tableStyle}>
-											<input type="checkbox" checked={subtask.done} onClick={()=>{
-												this.props.updateSubtask(subtask.id,{done:!subtask.done})
-												rebase.updateDoc('taskWorks/'+subtask.id,{done:!subtask.done});
+											<input type="checkbox" checked={material.done} onClick={()=>{
+												this.props.updateMaterial(material.id,{done:!material.done})
+												rebase.updateDoc('taskMaterials/'+material.id,{done:!material.done});
 												}} />
 										</td>
 										<td style={tableStyle}>
 											<div style={{ background: '#dcf4f9', borderRadius: '5px', padding: 5 }}>
 												<input
 													className="invisible-input"
-													value={
-														subtask.id === this.state.focusedSubtask
-														? this.state.editedSubtaskTitle
-														: subtask.title
-													}
-													onBlur={() => {
-													//submit
-													this.props.updateSubtask(subtask.id,{title:this.state.editedSubtaskTitle})
-													rebase.updateDoc('taskWorks/'+subtask.id,{title:this.state.editedSubtaskTitle});
-													this.setState({ focusedSubtask: null });
-												}}
-												onFocus={() => {
-													this.setState({
-														editedSubtaskTitle: subtask.title,
-														editedSubtaskQuantity: subtask.quantity?subtask.quantity:'',
-														editedSubtaskWorkType: subtask.workType,
-														focusedSubtask: subtask.id
-													});
-												}}
-												onChange={e =>{
-													this.setState({ editedSubtaskTitle: e.target.value })}
-												}
+													value={material.title}
+													disabled={true}
 												/>
 										</div>
-									</td>
-									<td style={tableStyle}>
-										<Select
-											value={subtask.workType}
-											onChange={(workType)=>{
-												this.props.updateSubtask(subtask.id,{workType})
-												rebase.updateDoc('taskWorks/'+subtask.id,{workType:workType.id});
-											}}
-											options={this.props.workTypes}
-											styles={selectStyle}
-											/>
 									</td>
 									<td style={tableStyle}>
 										<input
 											type="number"
 											className="invisible-input"
 											value={
-												subtask.id === this.state.focusedSubtask
-												? this.state.editedSubtaskQuantity
-												: subtask.quantity
+												material.id === this.state.focusedMaterial
+												? this.state.editedMaterialQuantity
+												: material.quantity
 											}
 											onBlur={() => {
 											//submit
-											this.props.updateSubtask(subtask.id,{quantity:this.state.editedSubtaskQuantity})
-											rebase.updateDoc('taskWorks/'+subtask.id,{quantity:this.state.editedSubtaskQuantity});
-											this.setState({ focusedSubtask: null });
+											this.props.updateMaterial(material.id,{quantity:this.state.editedMaterialQuantity})
+											rebase.updateDoc('taskMaterials/'+material.id,{quantity:this.state.editedMaterialQuantity});
+											this.setState({ focusedMaterial: null });
 										}}
 										onFocus={() => {
 											this.setState({
-												editedSubtaskTitle: subtask.title,
-												editedSubtaskQuantity: subtask.quantity?subtask.quantity:'',
-												editedSubtaskWorkType: subtask.workType,
-												focusedSubtask: subtask.id
+												editedMaterialQuantity: material.quantity?material.quantity:'',
+												focusedMaterial: material.id
 											});
 										}}
 										onChange={e =>{
-											this.setState({ editedSubtaskQuantity: e.target.value })}
+											this.setState({ editedMaterialQuantity: e.target.value })}
 										}
 										/>
 									</td>
 									<td style={tableStyleCenter}>
 										<button className="btn btn-link waves-effect" onClick={()=>{
 												if(window.confirm('Are you sure?')){
-													rebase.removeDoc('taskWorks/'+subtask.id).then(()=>this.props.removeSubtask(subtask.id));
+													rebase.removeDoc('taskMaterials/'+material.id).then(()=>this.props.removeMaterial(material.id));
 												}
 											}}>
 											<i className="fa fa-times"  />
@@ -173,7 +139,7 @@ export default class Prace extends Component {
 					<div className="col-md-3">
 						<p className="text-right">
 							<b>Sub-total:</b>
-							{this.props.subtasks.map((subtask)=>parseFloat(subtask.totalPrice)).reduce((acc, cur)=> acc+cur,0)}
+							{this.props.materials.map((material)=>parseFloat(material.totalPrice)).reduce((acc, cur)=> acc+cur,0)}
 						</p>
 
 						</div>
