@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
-import { Col, Tabs, Tab, } from 'react-bootstrap';
+import { Col, Tabs, Tab, Label} from 'react-bootstrap';
 import Select from 'react-select';
-import { rebase } from '../../../index';
+import { rebase } from '../../index';
 
 
 const tableStyle = {
@@ -61,7 +61,6 @@ export default class Rozpocet extends Component {
 		this.state={
 			editedMaterialTitle: "",
 			editedMaterialQuantity: "0",
-			editedMaterialDiscount:0,
 			editedMaterialUnit:null,
 			editedMaterialMargin:null,
 			editedMaterialPrice:null,
@@ -70,7 +69,6 @@ export default class Rozpocet extends Component {
 
 			newTitle:'',
 			newQuantity:1,
-			newDiscount:0,
 			newUnit:null,
 			newMargin,
 			newPrice:0,
@@ -95,9 +93,10 @@ export default class Rozpocet extends Component {
 		}
 		return (
 			<div className="">
+			<h2>Materiál</h2>
 				<div className="row">
 					<div className="col-md-12">
-						<div className="table-responsive">
+						<div>
 							<table className="table table-centered table-borderless table-hover mb-0">
 								<thead className="thead-light">
 									<tr>
@@ -112,7 +111,6 @@ export default class Rozpocet extends Component {
 										<th style={tableStyle} width="10%">Unit</th>
 										<th style={tableStyle}>Margin</th>
 										<th style={tableStyle}>Cena/Mn.</th>
-										<th style={tableStyle}>Zlava</th>
 										<th style={tableStyle}>Cena</th>
 										<th style={tableStyleCenterNoBorder}>Action</th>
 									</tr>
@@ -137,7 +135,7 @@ export default class Rozpocet extends Component {
 												} />
 											</td>
 											<td style={tableStyle}>
-												<div style={{ background: '#dcf4f9', borderRadius: '5px', padding: 5 }}>
+												<div>
 													<input
 														className="invisible-input"
 														value={
@@ -155,7 +153,6 @@ export default class Rozpocet extends Component {
 															this.setState({
 																editedMaterialTitle:material.title,
 																editedMaterialQuantity:material.quantity,
-																editedMaterialDiscount:material.discount,
 																editedMaterialUnit:material.unit,
 																editedMaterialMargin:material.margin,
 																editedMaterialPrice:material.price,
@@ -187,7 +184,6 @@ export default class Rozpocet extends Component {
 														this.setState({
 															editedMaterialTitle:material.title,
 															editedMaterialQuantity:material.quantity,
-															editedMaterialDiscount:material.discount,
 															editedMaterialUnit:material.unit,
 															editedMaterialMargin:material.margin,
 															editedMaterialPrice:material.price,
@@ -218,7 +214,6 @@ export default class Rozpocet extends Component {
 														this.setState({
 															editedMaterialTitle:material.title,
 															editedMaterialQuantity:material.quantity,
-															editedMaterialDiscount:material.discount,
 															editedMaterialUnit:material.unit,
 															editedMaterialMargin:material.margin,
 															editedMaterialPrice:material.price,
@@ -259,7 +254,6 @@ export default class Rozpocet extends Component {
 															this.setState({
 																editedMaterialTitle:material.title,
 																editedMaterialQuantity:material.quantity,
-																editedMaterialDiscount:material.discount,
 																editedMaterialUnit:material.unit,
 																editedMaterialMargin:material.margin,
 																editedMaterialPrice:material.price,
@@ -275,51 +269,15 @@ export default class Rozpocet extends Component {
 											<td style={tableStyle}>
 												{parseFloat(material.id === this.state.focusedMaterial
 														? editedFinalUnitPrice
-														: material.finalUnitPrice)
+														: material.finalUnitPrice).toFixed(2)
 													}
 											</td>
-											<td style={tableStyle}>
-												<input
-													type="number"
-													className="invisible-input"
-													value={
-														parseInt(material.id === this.state.focusedMaterial
-															? this.state.editedMaterialDiscount
-															: material.discount)
-														}
-														onBlur={() => {
-															this.props.updateMaterial(material.id,{discount:this.state.editedMaterialDiscount})
-															rebase.updateDoc('taskMaterials/'+material.id,{discount:this.state.editedMaterialDiscount});
-															this.setState({ focusedMaterial: null });
-														}}
-														onFocus={() => {
-															this.setState({
-																editedMaterialTitle:material.title,
-																editedMaterialQuantity:material.quantity,
-																editedMaterialDiscount:material.discount,
-																editedMaterialUnit:material.unit,
-																editedMaterialMargin:material.margin,
-																editedMaterialPrice:material.price,
-																focusedMaterial: material.id
-															});
-														}}
-														onChange={e =>{
-															this.setState({ editedMaterialDiscount: e.target.value })}
-														}
-														/>
-												</td>
 												<td style={tableStyle}>
 													{
 														(
 														(parseFloat(material.id === this.state.focusedMaterial
 																? editedFinalUnitPrice
-																: material.finalUnitPrice)
-														-
-														parseFloat(material.id === this.state.focusedMaterial
-																? editedFinalUnitPrice
-																: material.finalUnitPrice)*
-														parseInt(material.id === this.state.focusedMaterial?(this.state.editedMaterialDiscount===''?0:this.state.editedMaterialDiscount):material.discount)
-														/100)*
+																: material.finalUnitPrice))*
 														parseInt(material.id === this.state.focusedMaterial?(this.state.editedMaterialQuantity===''?0:this.state.editedMaterialQuantity):material.quantity)
 														)
 														.toFixed(2)
@@ -402,19 +360,8 @@ export default class Rozpocet extends Component {
 											{unitPrice.toFixed(2)}
 										</td>
 										<td style={tableStyle}>
-											<input
-												type="number"
-												value={this.state.newDiscount}
-												onChange={(e)=>this.setState({newDiscount:e.target.value})}
-												className="form-control mb-2"
-												id="inlineFormInput"
-												placeholder=""
-												style={{ height: 30 }}
-												/>
-										</td>
-										<td style={tableStyle}>
 											{
-												((unitPrice-unitPrice*0.01*this.state.newDiscount)*this.state.newQuantity).toFixed(2)
+												(unitPrice*this.state.newQuantity).toFixed(2)
 											}
 										</td>
 										<td style={tableStyleCenter}>
@@ -422,7 +369,6 @@ export default class Rozpocet extends Component {
 												disabled={this.state.newUnit===null}
 												onClick={()=>{
 													let body={
-														discount:this.state.newDiscount!==''?this.state.newDiscount:0,
 											      margin:this.state.newMargin!==''?this.state.newMargin:0,
 											      price:this.state.newPrice!==''?this.state.newPrice:0,
 											      quantity:this.state.newQuantity!==''?this.state.newQuantity:0,
@@ -432,7 +378,6 @@ export default class Rozpocet extends Component {
 													this.setState({
 														newTitle:'',
 														newQuantity:1,
-														newDiscount:0,
 														newMargin:0,
 														newPrice:0,
 													});

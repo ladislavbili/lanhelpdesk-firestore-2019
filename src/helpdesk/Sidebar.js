@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Button, Modal, Badge, InputGroup, Glyphicon, FormControl, ListGroupItem } from 'react-bootstrap';
+import { Button, Badge, InputGroup, Glyphicon, FormControl, ListGroupItem, Modal } from 'react-bootstrap';
 import { Link, NavLink } from 'react-router-dom';
 import Select from 'react-select';
 import SelectPage from '../SelectPage';
+import TaskAdd from './task/taskAdd';
 
 export default class Sidebar extends Component {
 	constructor(props) {
@@ -45,6 +46,12 @@ export default class Sidebar extends Component {
 								<i className="fa fa-folder-open" /> ALL PROJECTS
 							</button>
 						</li>
+							<button
+								className="btn btn-success"
+								style={{ width: '100%' }}
+								onClick={()=>{this.setState({openAddTaskModal:true})}}
+							> Add task
+							</button>
 						<hr />
 						<li className="menu-title">
 							FILTERS
@@ -63,6 +70,19 @@ export default class Sidebar extends Component {
 						<hr />
 					</div>
 				</div>
+				<Modal  bsSize="large" show={this.state.openAddTaskModal} className="show" onHide={()=>this.setState({openAddTaskModal:false})}>
+					<Modal.Body>
+						<TaskAdd toggle={()=>this.setState({openAddTaskModal:!this.state.openAddTaskModal})}/>
+					</Modal.Body>
+					<Modal.Footer>
+						<button
+							className="btn btn-secondary"
+							onClick={()=>{this.setState({openAddTaskModal:false})}}
+						> Close
+						</button>
+					</Modal.Footer>
+				</Modal>
+
 			</div>
 		);
 	}

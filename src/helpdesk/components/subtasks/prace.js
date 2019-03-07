@@ -87,7 +87,7 @@ export default class Prace extends Component {
 												}} />
 										</td>
 										<td style={tableStyle}>
-											<div style={{ background: '#dcf4f9', borderRadius: '5px', padding: 5 }}>
+											<div>
 												<input
 													className="invisible-input"
 													value={

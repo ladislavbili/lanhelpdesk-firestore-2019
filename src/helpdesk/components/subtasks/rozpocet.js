@@ -119,7 +119,7 @@ export default class Rozpocet extends Component {
 												} />
 											</td>
 											<td style={tableStyle}>
-												<div style={{ background: '#dcf4f9', borderRadius: '5px', padding: 5 }}>
+												<div>
 													<input
 														className="invisible-input"
 														value={
@@ -339,7 +339,6 @@ export default class Rozpocet extends Component {
 														price:this.state.newPrice!==''?this.state.newPrice:0,
 														quantity:this.state.newQuantity!==''?this.state.newQuantity:0,
 														title:this.state.newTitle,
-														unit:'cAiHWS2KZbh30cQPKQCy',
 														workType: this.state.newWorkType.id
 													}
 													this.setState({

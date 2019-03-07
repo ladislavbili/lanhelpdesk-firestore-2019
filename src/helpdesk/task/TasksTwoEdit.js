@@ -5,9 +5,6 @@ import Select from 'react-select';
 import Comments from '../components/comments.js';
 import Materials from '../components/materials';
 import Subtasks from '../components/subtasks';
-import AddServiceMaterial from './addServiceMaterial';
-import EditService from './editService';
-import EditMaterial from './editMaterial';
 
 import {rebase, database} from '../../index';
 import {toSelArr, snapshotToArray, timestampToString} from '../../helperFunctions';
@@ -259,7 +256,7 @@ export default class TasksTwoEdit extends Component {
 
 		let taskMaterials= this.state.taskMaterials.map((material)=>{
 			let finalUnitPrice=(parseFloat(material.price)*(1+parseFloat(material.margin)/100));
-			let totalPrice=(finalUnitPrice*parseFloat(material.quantity)*(1-parseFloat(material.discount)/100)).toFixed(3);
+			let totalPrice=(finalUnitPrice*parseFloat(material.quantity)).toFixed(3);
 			finalUnitPrice=finalUnitPrice.toFixed(3);
 			return {
 				...material,
@@ -435,6 +432,39 @@ export default class TasksTwoEdit extends Component {
 
 							<label className="m-t-5">Popis</label>
 								<textarea class="form-control" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value})} />
+									<Subtasks
+										submitService={this.submitService.bind(this)}
+										updatePrices={(ids)=>{
+											taskWorks.filter((item)=>ids.includes(item.id)).map((item)=>{
+												let price=item.workType.prices.find((item)=>item.pricelist===this.state.company.pricelist.id);
+												if(price === undefined){
+													price = 0;
+												}else{
+													price = price.price;
+												}
+												rebase.updateDoc('taskWorks/'+item.id, {price})
+												.then(()=>{
+													let newTaskWorks=[...this.state.taskWorks];
+													newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===item.id)]={...newTaskWorks.find((taskWork)=>taskWork.id===item.id),price};
+													this.setState({taskWorks:newTaskWorks});
+												});
+											})
+										}}
+										subtasks={taskWorks}
+										workTypes={this.state.workTypes}
+										updateSubtask={(id,newData)=>{
+											let newTaskWorks=[...this.state.taskWorks];
+											newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
+											this.setState({taskWorks:newTaskWorks});
+										}}
+										company={this.state.company}
+										removeSubtask={(id)=>{
+											let newTaskWorks=[...this.state.taskWorks];
+											newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
+											this.setState({taskWorks:newTaskWorks});
+											}
+										}
+										/>
 
 							<Materials
 								materials={taskMaterials}
@@ -453,39 +483,7 @@ export default class TasksTwoEdit extends Component {
 								company={this.state.company}
 								/>
 
-							<Subtasks
-								submitService={this.submitService.bind(this)}
-								updatePrices={(ids)=>{
-									taskWorks.filter((item)=>ids.includes(item.id)).map((item)=>{
-										let price=item.workType.prices.find((item)=>item.pricelist===this.state.company.pricelist.id);
-										if(price === undefined){
-											price = 0;
-										}else{
-											price = price.price;
-										}
-										rebase.updateDoc('taskWorks/'+item.id, {price})
-										.then(()=>{
-											let newTaskWorks=[...this.state.taskWorks];
-								      newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===item.id)]={...newTaskWorks.find((taskWork)=>taskWork.id===item.id),price};
-								      this.setState({taskWorks:newTaskWorks});
-										});
-									})
-								}}
-								subtasks={taskWorks}
-								workTypes={this.state.workTypes}
-								updateSubtask={(id,newData)=>{
-									let newTaskWorks=[...this.state.taskWorks];
-									newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
-									this.setState({taskWorks:newTaskWorks});
-								}}
-								company={this.state.company}
-								removeSubtask={(id)=>{
-									let newTaskWorks=[...this.state.taskWorks];
-									newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
-									this.setState({taskWorks:newTaskWorks});
-									}
-								}
-								/>
+
 							<Comments />
 						</div>
 					</div>
