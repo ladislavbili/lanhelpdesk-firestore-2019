@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { Modal } from 'react-bootstrap';
-import { NavLink } from 'react-router-dom';
+import {NavItem, Nav, TabPane, TabContent, NavLink} from 'reactstrap';
+import classnames from 'classnames';
+import { NavLink as Link } from 'react-router-dom';
 import SelectPage from '../SelectPage';
 import TaskAdd from './task/taskAdd';
+import Filter from './components/filter';
 
 export default class Sidebar extends Component {
 	constructor(props) {
@@ -12,6 +14,7 @@ export default class Sidebar extends Component {
 			openAddTaskModal: false,
 			isColumn: false,
 			search: '',
+			activeTab:0
 		};
 	}
 	render() {
@@ -31,30 +34,49 @@ export default class Sidebar extends Component {
 								type="button"
 								className="btn btn-outline-secondary btn-rounded waves-effect"
 								style={{ width: 210, textAlign: 'left' }}
-							>
+								>
 								<i className="fa fa-folder-open" /> ALL PROJECTS
-							</button>
-						</li>
-						<TaskAdd />
-						<hr />
-						<li className="menu-title">
-							FILTERS
-							<span className="pull-right">
-								EDIT
-							</span>
-						</li>
-
-						<ul className="sidebar-menu">
-							<li>
-								<NavLink className="" to={{ pathname: `/helpdesk/taskList` }}>
-									All Tasks
-								</NavLink>
+								</button>
 							</li>
-						</ul>
-						<hr />
+							<TaskAdd />
+							<hr />
+							<Nav tabs>
+								<NavItem>
+									<NavLink
+										className={classnames({ active: this.state.activeTab === 0 })}
+										onClick={() => this.setState({activeTab:0})}
+										>
+										FILTERS
+									</NavLink>
+								</NavItem>
+								<NavItem>
+									<NavLink
+										className={classnames({ active: this.state.activeTab === 1 })}
+										onClick={() => this.setState({activeTab:1})}
+										>
+										EDIT
+									</NavLink>
+								</NavItem>
+							</Nav>
+							<TabContent activeTab={this.state.activeTab} style={{ padding: 20 }}>
+								<TabPane tabId={0}>
+									<Nav vertical>
+										<NavItem>
+											<Link to={{ pathname: `/helpdesk/taskList` }}>Riešiť</Link>
+										</NavItem>
+										<NavItem>
+											<Link to={{ pathname: `/helpdesk/taskList`}} 	>Odlozene</Link>
+										</NavItem>
+
+									</Nav>
+								</TabPane>
+								<TabPane tabId={1}>
+									<Filter />
+								</TabPane>
+							</TabContent>
+						</div>
 					</div>
 				</div>
-			</div>
-		);
+			);
+		}
 	}
-}
