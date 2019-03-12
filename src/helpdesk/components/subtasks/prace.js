@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
-import { Col, Tabs, Tab, } from 'react-bootstrap';
 import Select from 'react-select';
 import { rebase } from '../../../index';
 
@@ -64,7 +62,7 @@ export default class Prace extends Component {
 		return (
 			<div className="row">
 				<div className="col-md-12">
-					<div className="table-responsive">
+					<div >
 						<table className="table table-centered table-borderless table-hover mb-0">
 							<thead className="thead-light">
 								<tr>

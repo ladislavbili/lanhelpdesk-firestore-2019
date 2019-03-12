@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { Button, Modal, Badge, InputGroup, Glyphicon, FormControl } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 import Comments from '../components/comments.js';
 import Subtasks from '../components/subtasks';
 import Items from '../components/taskMaterials';

@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import { Button, Modal, Badge, InputGroup, Glyphicon, FormControl } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 import Select from 'react-select';
 import Comments from '../components/comments.js';
 import Subtasks from '../components/subtasks';
-import Items from '../components/taskMaterials';
 
 export default class TaskSide3 extends Component {
 	constructor(props) {

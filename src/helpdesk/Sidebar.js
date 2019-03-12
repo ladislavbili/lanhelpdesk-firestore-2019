@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Button, Badge, InputGroup, Glyphicon, FormControl, ListGroupItem, Modal } from 'react-bootstrap';
-import { Link, NavLink } from 'react-router-dom';
-import Select from 'react-select';
+import { Modal } from 'react-bootstrap';
+import { NavLink } from 'react-router-dom';
 import SelectPage from '../SelectPage';
 import TaskAdd from './task/taskAdd';
 
@@ -16,16 +15,6 @@ export default class Sidebar extends Component {
 		};
 	}
 	render() {
-		const projects = [
-			{ value: 'hotline@lansystems.sk', label: 'hotline@lansystems.sk' },
-			{ value: 'Mertel CRM', label: 'Mertel CRM' },
-			{ value: 'All', label: 'All' },
-		];
-
-		const selectStyle = {
-			control: styles => ({ ...styles, backgroundColor: 'white', maxHeight: 30 }),
-		};
-
 		return (
 			<div className="left side-menu">
 				<SelectPage />

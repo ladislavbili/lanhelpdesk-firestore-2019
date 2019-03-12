@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { Button, Modal, Badge, InputGroup, Glyphicon, FormControl } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 
 export default class TasksRow2 extends Component {
 	constructor(props) {

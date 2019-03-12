@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Button, Modal, Badge, InputGroup, Glyphicon, FormControl } from 'react-bootstrap';
 
 export default class TasksBoard extends Component {
 	constructor(props) {
@@ -41,7 +40,6 @@ export default class TasksBoard extends Component {
 										</p>
 									</div>
 								</li>
-								<form role="form" />
 							</ul>
 						</div>
 						<div className="row m-l-10 m-r-10">

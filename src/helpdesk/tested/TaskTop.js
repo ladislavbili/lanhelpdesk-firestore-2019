@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import { Button, Modal, Badge, InputGroup, Glyphicon, FormControl } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import Select from 'react-select';
 import Comments from '../components/comments.js';
 import Subtasks from '../components/subtasks';
 import Items from '../components/taskMaterials';
@@ -22,12 +19,6 @@ export default class TaskTop extends Component {
 		};
 	}
 	render() {
-		const statuses = [
-			{ value: 'new', label: 'New' },
-			{ value: 'open', label: 'Open' },
-			{ value: 'pending', label: 'Closed' },
-		];
-
 		return (
 			<div className="content-page">
 				<div className="content">

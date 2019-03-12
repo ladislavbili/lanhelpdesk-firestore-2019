@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { Button, Modal, Badge, InputGroup, Glyphicon, FormControl } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 import Select from 'react-select';
 import Comments from '../components/comments.js';
 import Subtasks from '../components/subtasks';
@@ -9,15 +7,6 @@ import Items from '../components/taskMaterials';
 const tableStyle = {
 	paddingTop: '0',
 	paddingBottom: '0',
-	border: 'none',
-};
-
-const tableStyleCenter = {
-	textAlign: 'center',
-};
-
-const tableStyleCenterNoBorder = {
-	textAlign: 'center',
 	border: 'none',
 };
 

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Button, Modal, Badge, InputGroup, Glyphicon, FormControl, Table } from 'react-bootstrap';
 import Select from 'react-select';
 
 import Comments from '../components/comments.js';
@@ -9,9 +8,6 @@ import Subtasks from '../components/subtasks';
 import {rebase, database} from '../../index';
 import {toSelArr, snapshotToArray, timestampToString} from '../../helperFunctions';
 
-const tableStyle = {
-	border: 'none',
-};
 
 const repeat = [
 	{ value: 'none', label: 'none' },
@@ -448,6 +444,7 @@ export default class TasksTwoEdit extends Component {
 													newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===item.id)]={...newTaskWorks.find((taskWork)=>taskWork.id===item.id),price};
 													this.setState({taskWorks:newTaskWorks});
 												});
+												return null;
 											})
 										}}
 										subtasks={taskWorks}

@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
-import { Col, Tabs, Tab, Label} from 'react-bootstrap';
 import Select from 'react-select';
 import { rebase } from '../../index';
 
@@ -13,11 +11,6 @@ const tableStyleCenter = {
 	textAlign: 'right',
 	border: 'none',
 };
-
-const types = [
-	{ value: 'Servis IT', label: 'Servis IT' },
-	{ value: 'Programovanie www', label: 'Programovanie www' },
-];
 
 const selectStyle = {
 	control: base => ({

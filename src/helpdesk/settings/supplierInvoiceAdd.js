@@ -109,6 +109,7 @@ export default class SupplierInvoiceAdd extends Component{
                       quantity:invoiceItem.quantity,
                     });
                   });
+                  return null;
                 })
                 this.setState({ supplier:null,identifier:0,note:'',invoiceItems:[],saving:false});
               });

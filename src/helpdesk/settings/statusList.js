@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Table, FormGroup, FormControl,InputGroup, Glyphicon } from 'react-bootstrap';
 import {rebase} from '../../index';
 import StatusAdd from './statusAdd';
 import StatusEdit from './statusEdit';

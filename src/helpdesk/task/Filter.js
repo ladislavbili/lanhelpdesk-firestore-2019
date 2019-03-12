@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Button, Modal, Badge, InputGroup, Glyphicon, FormControl } from 'react-bootstrap';
 import Select from 'react-select';
 
 export default class Filter extends Component {
@@ -51,7 +50,7 @@ export default class Filter extends Component {
 			}),
 		};
 		return (
-			<div className="card" style={{ height: '100%', background: 'white' }}>			
+			<div className="card" style={{ height: '100%', background: 'white' }}>
 				<div className="form-group" style={{ margin: 10 }} >
 					<label>Status</label>
 					<Select options={statuses} styles={selectStyle} />

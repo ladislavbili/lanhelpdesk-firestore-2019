@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { FormGroup, FormControl, Button, Col, ControlLabel, Alert } from 'react-bootstrap';
 import Select from 'react-select';
 import {rebase, database} from '../../index';
-import {toSelArr, snapshotToArray, timestampToString} from '../../helperFunctions';
+import {toSelArr, snapshotToArray} from '../../helperFunctions';
 
 const repeat = [
 	{ value: 'none', label: 'none' },

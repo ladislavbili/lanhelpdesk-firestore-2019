@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
-import { Col } from 'react-bootstrap';
 
 import Sidebar from './Sidebar';
 import PageHeader from './PageHeader';

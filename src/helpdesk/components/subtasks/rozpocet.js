@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
-import { Col, Tabs, Tab, } from 'react-bootstrap';
 import Select from 'react-select';
 import { rebase } from '../../../index';
 
@@ -13,11 +11,6 @@ const tableStyleCenter = {
 	textAlign: 'right',
 	border: 'none',
 };
-
-const types = [
-	{ value: 'Servis IT', label: 'Servis IT' },
-	{ value: 'Programovanie www', label: 'Programovanie www' },
-];
 
 const selectStyle = {
 	control: base => ({
@@ -80,7 +73,7 @@ export default class Rozpocet extends Component {
 			<div className="">
 				<div className="row">
 					<div className="col-md-12">
-						<div className="table-responsive">
+						<div>
 							<table className="table table-centered table-borderless table-hover mb-0">
 								<thead className="thead-light">
 									<tr>

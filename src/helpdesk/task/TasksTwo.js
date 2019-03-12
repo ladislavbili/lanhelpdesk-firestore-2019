@@ -1,18 +1,7 @@
 import React, { Component } from 'react';
-import { Button, Modal, Badge, InputGroup, Glyphicon, FormControl } from 'react-bootstrap';
-import Comments from '../components/comments.js';
-import Subtasks from '../components/subtasks';
-import Items from '../components/taskMaterials';
 import TasksTwoEdit from './TasksTwoEdit';
-import TaskTop3 from './TaskTop3';
 import {rebase} from '../../index';
 import {timestampToString} from '../../helperFunctions';
-
-const tableStyle = {
-	border: 'none',
-};
-
-
 
 export default class TasksRow extends Component {
 

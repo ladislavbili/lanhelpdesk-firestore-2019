@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormGroup, FormControl, Button, Col, ControlLabel, Table, Modal, Glyphicon } from 'react-bootstrap';
+import { FormGroup, FormControl, Button, ControlLabel, Table, Modal, Glyphicon } from 'react-bootstrap';
 import Select from 'react-select';
 
 export default class InvoiceItems extends Component{

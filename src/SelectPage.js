@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Navbar, Nav, DropdownButton, MenuItem, Glyphicon, Dropdown } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Navbar, DropdownButton, MenuItem } from 'react-bootstrap';
 
 export default class PageHeader extends Component {
 	constructor() {

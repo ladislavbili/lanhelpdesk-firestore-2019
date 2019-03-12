@@ -1,17 +1,4 @@
 import React, { Component } from 'react';
-import {
-	Button,
-	Modal,
-	Badge,
-	InputGroup,
-	Glyphicon,
-	FormControl,
-	DropdownButton,
-	MenuItem,
-	Nav,
-	Dropdown,
-} from 'react-bootstrap';
-
 import { Link } from 'react-router-dom';
 
 

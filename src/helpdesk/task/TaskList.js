@@ -1,23 +1,9 @@
 import React, { Component } from 'react';
-import {
-	Button,
-	Modal,
-	Badge,
-	InputGroup,
-	Glyphicon,
-	FormControl,
-	DropdownButton,
-	MenuItem,
-	Nav,
-	Dropdown,
-} from 'react-bootstrap';
 import TasksBoard from './TasksBoard';
 import TasksRow from './TasksRow';
 import Filter from './Filter';
 import TasksTwo from './TasksTwo';
 import { Link } from 'react-router-dom';
-
-const sortTypes = [{ id: 0, name: 'Name' }, { id: 1, name: 'Created' }, { id: 2, name: 'Deadline' }];
 
 export default class TaskListContainer extends Component {
 	constructor(props) {

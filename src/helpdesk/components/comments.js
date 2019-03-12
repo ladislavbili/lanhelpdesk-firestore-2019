@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
-import { Col } from 'react-bootstrap';
 
 export default class Comments extends Component {
 	render() {
@@ -39,7 +37,7 @@ export default class Comments extends Component {
 							<img
 								className="d-flex mr-3 rounded-circle thumb-sm"
 								src="https://i.pinimg.com/originals/08/a9/0a/08a90a48a9386c314f97a07ba1f0db56.jpg"
-								alt="Generic placeholder image"
+								alt="Generic placeholder XX"
 							/>
 							<div className="media-body">
 								<span className="media-meta pull-right">07:23 AM</span>

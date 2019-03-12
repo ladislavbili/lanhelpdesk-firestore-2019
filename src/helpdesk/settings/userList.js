@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Table, FormGroup, FormControl,InputGroup, Glyphicon } from 'react-bootstrap';
 import {rebase} from '../../index';
 import UserAdd from './userAdd';
 import UserEdit from './userEdit';
