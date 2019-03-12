@@ -99,11 +99,11 @@ export default class Rozpocet extends Component {
 												onClick={()=>this.setState({selectedIDs:(this.props.materials.length===this.state.selectedIDs.length?[]:this.props.materials.map((item)=>item.id))})} />
 										</th>
 										<th style={tableStyle} width="30%">Názov</th>
-											<th style={tableStyle}>Cena</th>
+											<th style={tableStyle}>Nákupná cena</th>
 										<th style={tableStyle}>Mn.</th>
-										<th style={tableStyle} width="10%">Unit</th>
-										<th style={tableStyle}>Margin</th>
-										<th style={tableStyle}>Cena/Mn.</th>
+										<th style={tableStyle} width="10%">Jednotka</th>
+										<th style={tableStyle}>Marža</th>
+										<th style={tableStyle}>Predajná cena</th>
 										<th style={tableStyle}>Cena</th>
 										<th style={tableStyleCenterNoBorder}>Action</th>
 									</tr>

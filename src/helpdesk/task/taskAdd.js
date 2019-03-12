@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import {rebase, database} from '../../index';
 import {toSelArr, snapshotToArray} from '../../helperFunctions';
+import { Modal } from 'react-bootstrap';
 
 const repeat = [
 	{ value: 'none', label: 'none' },
@@ -44,6 +45,7 @@ export default class TaskEdit extends Component{
     this.state={
       saving:false,
       loading:true,
+			openAddTaskModal:false,
       users:[],
       companies:[],
       workTypes:[],
@@ -89,6 +91,7 @@ export default class TaskEdit extends Component{
     .then(()=>{
       this.setState({
         saving:false,
+				openAddTaskModal:false,
         title:'',
         company:null,
         workHours:'0',
@@ -145,14 +148,27 @@ export default class TaskEdit extends Component{
 
   render(){
     return (
-				<div className="scrollable">
+			<div>
+			<button
+				className="btn btn-success"
+				style={{ width: '100%' }}
+				onClick={()=>{this.setState({openAddTaskModal:true})}}
+			> Add task
+			</button>
+			<Modal  bsSize="large"  className="show" show={this.state.openAddTaskModal} >
+				<Modal.Header>
+					<h1 className="modal-header">Add task</h1>
+					<button type="button" className="close ml-auto" aria-label="Close" onClick={()=>{this.setState({openAddTaskModal:false})}}><span aria-hidden="true">×</span></button>
+				</Modal.Header>
+				<Modal.Body>
+					<div className="scrollable">
 
 						<div className="card-box p-t-0" style={{ maxWidth: 1284, background: '#F9F9F9', borderRadius: 0, padding: "none" }}>
 							<div className="d-flex flex-row">
 								<div className="row">
 									<h1># NEW</h1>
 									<span className="center-hor">
-							    	<input type="text" value={this.state.title} class="form-control hidden-input" onChange={(e)=>this.setState({title:e.target.value})} placeholder="Enter task name" />
+										<input type="text" value={this.state.title} className="form-control hidden-input" onChange={(e)=>this.setState({title:e.target.value})} placeholder="Enter task name" />
 									</span>
 								</div>
 							</div>
@@ -255,11 +271,11 @@ export default class TaskEdit extends Component{
 												<label className="col-5 col-form-label">Typ</label>
 												<div className="col-7">
 													<Select
-					                  value={this.state.workType}
+														value={this.state.workType}
 														styles={selectStyle}
-					                  onChange={(workType)=>this.setState({workType})}
-					                  options={this.state.workTypes}
-					                  />
+														onChange={(workType)=>this.setState({workType})}
+														options={this.state.workTypes}
+														/>
 												</div>
 											</div>
 											<div className="form-group m-b-0 row">
@@ -278,16 +294,21 @@ export default class TaskEdit extends Component{
 								</div>
 							</div>
 
-  						<label className="m-t-5">Popis</label>
-  						<textarea class="form-control" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value})} />
-              <button
-                className="btn btn-success"
-                disabled={this.state.title==="" || this.state.status===null || this.state.project === null|| this.state.company === null||this.state.saving}
-                onClick={this.submitTask.bind(this)}
-                > Add
-              </button>
+							<label className="m-t-5">Popis</label>
+							<textarea className="form-control" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value})} />
 						</div>
 					</div>
+				</Modal.Body>
+				<Modal.Footer>
+					<button
+						className="btn btn-success"
+						disabled={this.state.title==="" || this.state.status===null || this.state.project === null|| this.state.company === null||this.state.saving}
+						onClick={this.submitTask.bind(this)}
+					> Add
+					</button>
+				</Modal.Footer>
+			</Modal>
+		</div>
     );
   }
 }
