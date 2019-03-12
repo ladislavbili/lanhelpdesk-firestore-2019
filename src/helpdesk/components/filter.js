@@ -6,13 +6,6 @@ import {database} from '../../index';
 import {setFilter} from '../../redux/actions';
 import {toSelArr, snapshotToArray} from '../../helperFunctions';
 
-const statuses = [
-  { value: 'new', label: 'New' },
-  { value: 'open', label: 'Open' },
-  { value: 'open', label: 'Pending' },
-  { value: 'pending', label: 'Closed' },
-];
-
 const selectStyle = {
   control: base => ({
     ...base,
@@ -64,22 +57,19 @@ class Filter extends Component {
   }
 
   setData(statuses,users,companies,workTypes){
-    let status = statuses.find((item)=>item.title==='New');
-    if(!status){
-      status=null;
-    }
+
     this.setState({
       statuses,
       users,
       companies,
       workTypes,
-      status,
-      requester:null,
-      company:null,
-      assigned:null,
-      workType:null,
-      statusDateFrom:null,
-      statusDateTo:null,
+      status:{id:null,label:'Žiadny',value:null},
+      requester:{id:null,label:'Žiadny',value:null},
+      company:{id:null,label:'Žiadny',value:null},
+      assigned:{id:null,label:'Žiadny',value:null},
+      workType:{id:null,label:'Žiadny',value:null},
+      statusDateFrom:'',
+      statusDateTo:'',
       loading:false
     });
   }
@@ -98,14 +88,14 @@ class Filter extends Component {
 
     applyFilter(){
       let body={
-        requester:this.state.requester,
-        company:this.state.company,
-        assigned:this.state.assigned,
-        workType:this.state.workType,
-        statusDateFrom:isNaN(new Date(this.state.statusDateFrom).getTime()) ? null : (new Date(this.state.statusDateFrom).getTime()),
-        statusDateTo:isNaN(new Date(this.state.statusDateTo).getTime()) ? null : (new Date(this.state.statusDateTo).getTime()),
+        requester:this.state.requester.id,
+        company:this.state.company.id,
+        assigned:this.state.assigned.id,
+        workType:this.state.workType.id,
+        status:this.state.status.id,
+        statusDateFrom:isNaN(new Date(this.state.statusDateFrom).getTime())||this.state.statusDateFrom === '' ? '' : (new Date(this.state.statusDateFrom).getTime()),
+        statusDateTo:isNaN(new Date(this.state.statusDateTo).getTime())|| this.state.statusDateTo === '' ? '' : (new Date(this.state.statusDateTo).getTime()),
       }
-
       this.props.setFilter(body);
     }
 
@@ -126,7 +116,7 @@ class Filter extends Component {
             <div className="form-group mb-3">
               <label htmlFor="example-input-small">Status</label>
               <Select
-                options={this.state.statuses}
+                options={[{label:'Žiadny',value:null,id:null}].concat(this.state.statuses)}
                 onChange={(newValue)=>this.setState({status:newValue})}
                 value={this.state.status}
                 styles={selectStyle} />
@@ -136,7 +126,7 @@ class Filter extends Component {
             <div className="form-group mb-3">
               <label htmlFor="example-input-small">Zadal</label>
               <Select
-                options={this.state.users}
+                options={[{label:'Žiadny',value:null,id:null}].concat(this.state.users)}
                 onChange={(newValue)=>this.setState({requester:newValue})}
                 value={this.state.requester}
                 styles={selectStyle} />
@@ -146,7 +136,7 @@ class Filter extends Component {
             <div className="form-group mb-3">
               <label htmlFor="example-input-small">Firma</label>
               <Select
-                options={this.state.companies}
+                options={[{label:'Žiadny',value:null,id:null}].concat(this.state.companies)}
                 onChange={(newValue)=>this.setState({company:newValue})}
                 value={this.state.company}
                 styles={selectStyle} />
@@ -156,7 +146,7 @@ class Filter extends Component {
             <div className="form-group mb-3">
               <label htmlFor="example-input-small">Riesi</label>
               <Select
-                options={this.state.users}
+                options={[{label:'Žiadny',value:null,id:null}].concat(this.state.users)}
                 onChange={(newValue)=>this.setState({assigned:newValue})}
                 value={this.state.assigned}
                 styles={selectStyle} />
@@ -192,7 +182,7 @@ class Filter extends Component {
             <div className="form-group mb-3">
               <label htmlFor="example-input-small">Typ práce</label>
               <Select
-                options={this.state.workTypes}
+                options={[{label:'Žiadny',value:null,id:null}].concat(this.state.workTypes)}
                 onChange={(newValue)=>this.setState({workType:newValue})}
                 value={this.state.workType}
                 styles={selectStyle} />

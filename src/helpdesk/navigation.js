@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom';
 
 import Sidebar from './Sidebar';
 import PageHeader from './PageHeader';
-import Reports from './Reports';
+import Reports from './reports';
 
 import TaskList from './task/TaskList';
 import TaskTop3 from './task/TaskTop3';

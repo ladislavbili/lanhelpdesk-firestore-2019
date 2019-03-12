@@ -87,27 +87,29 @@ export default class TaskEdit extends Component{
       overtime: this.state.overtime.value,
     }
 
-    rebase.addToCollection('/tasks', body)
-    .then(()=>{
-      this.setState({
-        saving:false,
-				openAddTaskModal:false,
-        title:'',
-        company:null,
-        workHours:'0',
-        workType:null,
-        requester:null,
-        assigned:null,
-        description:'',
-        status:null,
-        statusChange:null,
-        project:null,
-        pausal:{value:true,label:'Pausal'},
-        overtime:{value:false,label:'Nie'}
-      })
-      this.fetchData();
-      this.props.toggle();
-    });
+		database.collection('metadata').doc('0').get().then((taskMeta)=>{
+			rebase.addToCollection('/tasks', body,(taskMeta.data().taskLastID+1)+"")
+			.then(()=>{
+				rebase.updateDoc('/metadata/0',{taskLastID:taskMeta.data().taskLastID+1})
+				this.setState({
+					saving:false,
+					openAddTaskModal:false,
+					title:'',
+					company:null,
+					workHours:'0',
+					workType:null,
+					requester:null,
+					assigned:null,
+					description:'',
+					status:null,
+					statusChange:null,
+					project:null,
+					pausal:{value:true,label:'Pausal'},
+					overtime:{value:false,label:'Nie'}
+				})
+				this.fetchData();
+			});
+		})
   }
 
   fetchData(){

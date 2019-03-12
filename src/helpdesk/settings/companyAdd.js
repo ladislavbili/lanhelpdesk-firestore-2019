@@ -11,6 +11,7 @@ export default class CompanyAdd extends Component{
       pricelists:[],
       pricelist:null,
       companyName:'',
+      pausal:0,
       loading:true,
       saving:false
     }
@@ -50,6 +51,14 @@ export default class CompanyAdd extends Component{
         </FormGroup>
         <FormGroup>
           <Col sm={3}>
+            <ControlLabel className="center-hor">Paušál</ControlLabel>
+          </Col>
+          <Col sm={9}>
+            <FormControl type="number" placeholder="Enter pausal" value={this.state.pausal} onChange={(e)=>this.setState({pausal:e.target.value})} />
+          </Col>
+        </FormGroup>
+        <FormGroup>
+          <Col sm={3}>
             <ControlLabel className="center-hor">Pricelist</ControlLabel>
           </Col>
           <Col sm={9}>
@@ -64,7 +73,7 @@ export default class CompanyAdd extends Component{
         <Button bsStyle="primary" className="separate" disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
             rebase.addToCollection('/companies', {title:this.state.companyName,pricelist:this.state.pricelist.id})
-              .then(()=>{this.setState({companyName:'',pricelist:this.state.pricelists.length>0?this.state.pricelists[0]:null,saving:false})});
+              .then(()=>{this.setState({companyName:'',pausal:this.state.pausal,pricelist:this.state.pricelists.length>0?this.state.pricelists[0]:null,saving:false})});
           }}>{this.state.saving?'Adding...':'Add company'}</Button>
       </div>
     );

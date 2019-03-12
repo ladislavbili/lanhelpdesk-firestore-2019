@@ -8,6 +8,7 @@ const initialState = {
     workType:null,
     statusDateFrom:'',
     statusDateTo:'',
+    status:null
   }
 };
 

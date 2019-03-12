@@ -11,6 +11,7 @@ export default class CompanyEdit extends Component{
       pricelists:[],
       pricelist:null,
       companyName:'',
+      pausal:0,
       loading:true,
       saving:false
     }
@@ -34,7 +35,7 @@ export default class CompanyEdit extends Component{
     if(pricelist===undefined && pricelists.length>0){
       pricelist=pricelists[0];
     }
-    this.setState({companyName:company.title,pricelists,pricelist,loading:false})
+    this.setState({companyName:company.title,pausal:company.pausal,pricelists,pricelist,loading:false})
   }
 
   componentWillReceiveProps(props){
@@ -63,6 +64,14 @@ export default class CompanyEdit extends Component{
         </FormGroup>
         <FormGroup>
           <Col sm={3}>
+            <ControlLabel className="center-hor">Paušál</ControlLabel>
+          </Col>
+          <Col sm={9}>
+            <FormControl type="number" placeholder="Enter pausal" value={this.state.pausal} onChange={(e)=>this.setState({pausal:e.target.value})} />
+          </Col>
+        </FormGroup>
+        <FormGroup>
+          <Col sm={3}>
             <ControlLabel className="center-hor">Pricelist</ControlLabel>
           </Col>
           <Col sm={9}>
@@ -76,7 +85,7 @@ export default class CompanyEdit extends Component{
         </FormGroup>
         <Button bsStyle="success" className="separate" disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
-            rebase.updateDoc('/companies/'+this.props.match.params.id, {title:this.state.companyName,pricelist:this.state.pricelist.id})
+            rebase.updateDoc('/companies/'+this.props.match.params.id, {title:this.state.companyName,pausal:this.state.pausal,pricelist:this.state.pricelist.id})
               .then(()=>{this.setState({saving:false})});
           }}>{this.state.saving?'Saving company...':'Save company'}</Button>
 

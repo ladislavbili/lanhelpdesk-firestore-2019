@@ -68,7 +68,7 @@ export default class TasksRow extends Component {
 								<li className="" style={{ border: "none", borderBottom: "1px solid #ddd", borderRadius: 0 }}>
 									<div className="checkbox checkbox-primary m-b-0">
 										<input type="checkbox" aria-label="Single checkbox Two" />
-										<label>#ID {task.title}</label>
+										<label>#{task.id} {task.title}</label>
 									</div>
 									<div className="m-t-5">
 										<p className="pull-right text-muted m-b-0 font-13">

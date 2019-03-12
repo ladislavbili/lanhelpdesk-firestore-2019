@@ -269,7 +269,7 @@ export default class TasksTwoEdit extends Component {
 						<div className="card-box p-t-0" style={{ maxWidth: 1284, background: '#F9F9F9', borderRadius: 0, padding: "none" }}>
 							<div className="d-flex flex-row">
 								<div className="row">
-									<h1># 143</h1>
+									<h1># {this.props.match.params.taskID}</h1>
 									<span className="center-hor">
 							    	<input type="text" value={this.state.title} class="form-control hidden-input" onChange={(e)=>this.setState({title:e.target.value})} placeholder="Enter task name" />
 									</span>
