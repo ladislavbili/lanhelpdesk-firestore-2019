@@ -51,7 +51,7 @@ export default class Subtasks extends Component {
 						</Nav>
 						<TabContent activeTab={this.state.activeTab} style={{ padding: "0", backgroundColor: "rgb(249, 249, 249)" }}>
 							<TabPane tabId="1">
-								<Prace subtasks={this.props.subtasks} updateSubtask={this.props.updateSubtask} removeSubtask={this.props.removeSubtask} workTypes={this.props.workTypes} />
+								<Prace submitService={this.props.submitService} company={this.props.company} subtasks={this.props.subtasks} updateSubtask={this.props.updateSubtask} removeSubtask={this.props.removeSubtask} workTypes={this.props.workTypes} />
 							</TabPane>
 							<TabPane tabId="2">
 								<Rozpocet submitService={this.props.submitService} updatePrices={this.props.updatePrices} company={this.props.company} subtasks={this.props.subtasks} updateSubtask={this.props.updateSubtask} removeSubtask={this.props.removeSubtask} workTypes={this.props.workTypes} />

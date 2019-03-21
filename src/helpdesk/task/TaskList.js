@@ -4,15 +4,18 @@ import TasksRow from './TasksRow';
 import Filter from './Filter';
 import TasksTwo from './TasksTwo';
 import { Link } from 'react-router-dom';
+import { connect } from "react-redux";
+import {setSearch} from '../../redux/actions';
 
-export default class TaskListContainer extends Component {
+
+class TaskListContainer extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			openAddStatusModal: false,
 			openAddTaskModal: false,
 			isColumn: false,
-			search: '',
+			search: this.props.search,
 			taskListType: 'option3',
 			filterView: false,
 			sortType: 0,
@@ -65,11 +68,13 @@ export default class TaskListContainer extends Component {
 									<input
 										type="text"
 										className="form-control"
+										value={this.state.search}
+										onChange={(e)=>this.setState({search:e.target.value})}
 										placeholder="Search task name"
 										style={{ width: 200 }}
 									/>
 									<div className="input-group-append">
-										<button className="btn btn-white" type="button">
+										<button className="btn btn-white" type="button" onClick={()=>this.props.setSearch(this.state.search)}>
 											<i className="fa fa-search" />
 										</button>
 									</div>
@@ -218,3 +223,9 @@ export default class TaskListContainer extends Component {
 		);
 	}
 }
+
+const mapStateToProps = ({ filterReducer }) => {
+	return { search:filterReducer.search };
+};
+
+export default connect(mapStateToProps, { setSearch })(TaskListContainer);

@@ -61,24 +61,24 @@ class Reports extends Component {
 			});
 		}
 
-		processWorks(works){
-			let newWorks = works.map((work)=>{
-				let finalUnitPrice=parseFloat(work.price);
-				if(work.extraWork){
-					finalUnitPrice+=finalUnitPrice*parseFloat(work.extraPrice)/100;
-				}
-				finalUnitPrice=(finalUnitPrice*(1-parseFloat(work.discount)/100)).toFixed(2)
-				let totalPrice=(finalUnitPrice*parseFloat(work.quantity)).toFixed(2);
-				let workType= this.state.workTypes.find((item)=>item.id===work.workType);
-				return{...work,
-					task:this.state.tasks.find((task)=>work.task===task.id),
-					workType,
-					finalUnitPrice,
-					totalPrice
+	processWorks(works){
+		let newWorks = works.map((work)=>{
+			let finalUnitPrice=parseFloat(work.price);
+			if(work.extraWork){
+				finalUnitPrice+=finalUnitPrice*parseFloat(work.extraPrice)/100;
+			}
+			finalUnitPrice=(finalUnitPrice*(1-parseFloat(work.discount)/100)).toFixed(2)
+			let totalPrice=(finalUnitPrice*parseFloat(work.quantity)).toFixed(2);
+			let workType= this.state.workTypes.find((item)=>item.id===work.workType);
+			return{...work,
+				task:this.state.tasks.find((task)=>work.task===task.id),
+				workType,
+				finalUnitPrice,
+				totalPrice
 
-				}
-			});
-			return newWorks.filter((work)=>
+			}
+		});
+		newWorks = newWorks.filter((work)=>
 			(this.props.filter.status===null||work.task.status.id===this.props.filter.status) &&
 			(this.props.filter.requester===null||work.task.requester.id===this.props.filter.requester) &&
 			(this.props.filter.company===null||work.task.company===this.props.filter.company) &&
@@ -86,44 +86,72 @@ class Reports extends Component {
 			(this.props.filter.workType===null||work.workType.id===this.props.filter.workType) &&
 			(this.props.filter.statusDateFrom===''||work.task.statusChange >= this.props.filter.statusDateFrom) &&
 			(this.props.filter.statusDateTo===''||work.task.statusChange <= this.props.filter.statusDateTo)
-		);
+			);
+		let groupedWorks = newWorks.filter((item, index)=>{
+			return newWorks.findIndex((item2)=>item2.task.id===item.task.id)===index
+			});
+		return groupedWorks.map((item)=>{
+			let works = newWorks.filter((item2)=>item.task.id===item2.task.id);
+			return{
+				...item,
+				title: works.map((item)=>item.title),
+				workType: works.map((item)=>item.workType),
+				quantity: works.map((item)=>item.quantity),
+				finalUnitPrice: works.map((item)=>item.finalUnitPrice),
+				totalPrice: works.map((item)=>item.totalPrice)
+			}
+		});
 	}
 
 	processMaterials(materials){
-
-
 		let newMaterials = materials.map((material)=>{
 			let finalUnitPrice=(parseFloat(material.price)*(1+parseFloat(material.margin)/100)).toFixed(2);
 			let totalPrice=(finalUnitPrice*parseFloat(material.quantity)).toFixed(2);
-
 			return{...material,
 				task:this.state.tasks.find((task)=>material.task===task.id),
 				unit:this.state.units.find((unit)=>unit.id===material.unit),
 				finalUnitPrice,
 				totalPrice
-
 			}
 		})
-		return newMaterials.filter((material)=>
-		(this.props.filter.status===null||material.task.status.id===this.props.filter.status) &&
-		(this.props.filter.requester===null||material.task.requester.id===this.props.filter.requester) &&
-		(this.props.filter.company===null||material.task.company===this.props.filter.company) &&
-		(this.props.filter.assigned===null||material.task.assigned.id===this.props.filter.assigned) &&
-		(this.props.filter.statusDateFrom===''||material.task.statusChange >= this.props.filter.statusDateFrom) &&
-		(this.props.filter.statusDateTo===''||material.task.statusChange <= this.props.filter.statusDateTo)
-	);
-}
+		newMaterials = newMaterials.filter((material)=>
+			(this.props.filter.status===null||material.task.status.id===this.props.filter.status) &&
+			(this.props.filter.requester===null||material.task.requester.id===this.props.filter.requester) &&
+			(this.props.filter.company===null||material.task.company===this.props.filter.company) &&
+			(this.props.filter.assigned===null||material.task.assigned.id===this.props.filter.assigned) &&
+			(this.props.filter.statusDateFrom===''||material.task.statusChange >= this.props.filter.statusDateFrom) &&
+			(this.props.filter.statusDateTo===''||material.task.statusChange <= this.props.filter.statusDateTo)
+		);
+
+		let groupedMaterials = newMaterials.filter((item, index)=>{
+			return newMaterials.findIndex((item2)=>item2.task.id===item.task.id)===index
+		});
+
+		return groupedMaterials.map((item)=>{
+			let materials = newMaterials.filter((item2)=>item.task.id===item2.task.id);
+			return{
+				...item,
+				title:materials.map((item)=>item.title),
+				unit:materials.map((item)=>item.unit),
+				quantity:materials.map((item)=>item.quantity),
+				finalUnitPrice:materials.map((item)=>item.finalUnitPrice),
+				totalPrice:materials.map((item)=>item.totalPrice),
+			}
+		});
+	}
+
+
 
 	render() {
 		return (
 			<div className="content-page scrollable fit-with-header">
 				<div className="content" style={{ paddingTop: 0 }}>
 					<div className="container-fluid">
-						<div class="d-flex flex-row align-items-center">
-							<div class="p-2">
-								<button type="button" class="btn btn-link waves-effect">
+						<div className="d-flex flex-row align-items-center">
+							<div className="p-2">
+								<button type="button" className="btn btn-link waves-effect">
 									<i
-										class="fa fa-file-pdf"
+										className="fa fa-file-pdf"
 										style={{
 											color: '#4a81d4',
 											fontSize: '1.2em',
@@ -135,10 +163,10 @@ class Reports extends Component {
 										}}> Export</span>
 									</button>
 								</div>
-								<div class="">
-									<button type="button" class="btn btn-link waves-effect">
+								<div className="">
+									<button type="button" className="btn btn-link waves-effect">
 										<i
-											class="fas fa-print"
+											className="fas fa-print"
 											style={{
 												color: '#4a81d4',
 												fontSize: '1.2em',
@@ -151,9 +179,9 @@ class Reports extends Component {
 										</button>
 									</div>
 									<div>
-										<button type="button" class="btn btn-link waves-effect">
+										<button type="button" className="btn btn-link waves-effect">
 											<i
-												class="fas fa-sync"
+												className="fas fa-sync"
 												style={{color: '#4a81d4',fontSize: '1.2em'}}
 												/>
 											<span style={{color: '#4a81d4',fontSize: '1.2em'}}> Aktualizovať ceny podla cenníka</span>
@@ -161,14 +189,14 @@ class Reports extends Component {
 									</div>
 								</div>
 								<div className="row">
-									<div class="col-md-12">
-										<div class="card-box">
+									<div className="col-md-12">
+										<div className="card-box">
 											<h1>Výkaz prác</h1>
 											<hr />
 											<div>
 												<h3>Služby</h3>
-												<div class="table-responsive">
-													<table class="table table-hover mails m-0">
+												<div className="table-responsive">
+													<table className="table table-hover mails m-0">
 														<thead>
 															<tr>
 															<th>ID</th>
@@ -194,11 +222,32 @@ class Reports extends Component {
 																	<td>{item.task.assigned===null?'Nikto':item.task.assigned.email}</td>
 																	<td>{item.task.status.title}</td>
 																	<td>{timestampToString(item.task.statusChange)}</td>
-																	<td>{item.title}</td>
-																	<td>{item.workType.title}</td>
-																	<td>{item.quantity}</td>
-																	<td>{item.finalUnitPrice}</td>
-																	<td>{item.totalPrice}</td>
+																	<td>
+																		{item.title.map((item2,index)=>
+																			<p key={index}>{item2}</p>
+																		)}
+																	</td>
+																	<td>
+																		{item.workType.map((item2,index)=>
+																			<p key={index}>{item2.title}</p>
+																		)}
+																	</td>
+																	<td>
+																		{item.quantity.map((item2,index)=>
+																			<p key={index}>{item2}</p>
+																		)}
+																	</td>
+																	<td>
+																		{item.finalUnitPrice.map((item2,index)=>
+																			<p key={index}>{item2}</p>
+
+																		)}
+																	</td>
+																	<td>
+																		{item.totalPrice.map((item2,index)=>
+																			<p key={index}>{item2}</p>
+																		)}
+																	</td>
 																</tr>
 															)
 														}
@@ -211,7 +260,7 @@ class Reports extends Component {
 											</div>
 											<div>
 												<h3>Material</h3>
-												<table class="table table-hover mails m-0">
+												<table className="table table-hover mails m-0">
 													<thead>
 														<tr>
 														<th>ID</th>
@@ -237,11 +286,31 @@ class Reports extends Component {
 																<td>{material.task.assigned===null?'Nikto':material.task.assigned.email}</td>
 																<td>{material.task.status.title}</td>
 																<td>{timestampToString(material.task.statusChange)}</td>
-																<td>{material.title}</td>
-																<td>{material.unit.title}</td>
-																<td>{material.quantity}</td>
-																<td>{material.finalUnitPrice}</td>
-																<td>{material.totalPrice}</td>
+																	<td>
+																		{material.title.map((item2,index)=>
+																			<p key={index}>{item2}</p>
+																		)}
+																	</td>
+																	<td>
+																		{material.unit.map((item2,index)=>
+																			<p key={index}>{item2.title}</p>
+																		)}
+																	</td>
+																	<td>
+																		{material.quantity.map((item2,index)=>
+																			<p key={index}>{item2}</p>
+																		)}
+																	</td>
+																	<td>
+																		{material.finalUnitPrice.map((item2,index)=>
+																			<p key={index}>{item2}</p>
+																		)}
+																	</td>
+																	<td>
+																		{material.totalPrice.map((item2,index)=>
+																			<p key={index}>{item2}</p>
+																		)}
+																	</td>
 															</tr>
 														)}
 													</tbody>

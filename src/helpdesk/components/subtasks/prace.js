@@ -54,11 +54,18 @@ export default class Prace extends Component {
 			editedSubtaskQuantity: "0",
 			editedSubtaskWorkType:null,
 			focusedSubtask: null,
+
+			newTitle:'',
+			newWorkType:null,
+			newQuantity:0,
+			newExtraWork:false,
+			newDiscount:0,
 		}
 	}
 
 	render() {
-
+		//const afterHours= this.props.company && this.state.newExtraWork ? this.props.company.pricelist.afterHours : 0;
+		//const unitPrice= this.state.newPrice?(this.state.newPrice/100*afterHours+this.state.newPrice):0;
 		return (
 			<div className="row">
 				<div className="col-md-12">
@@ -68,7 +75,7 @@ export default class Prace extends Component {
 								<tr>
 									<th style={tableStyle}>
 									</th>
-									<th style={tableStyle} width="60%">Názov</th>
+									<th style={tableStyle} width="40%">Názov</th>
 									<th style={tableStyle} width="25%">Typ</th>
 									<th style={tableStyle}>Mn.</th>
 									<th style={tableStyleCenterNoBorder}>Action</th>
@@ -164,6 +171,77 @@ export default class Prace extends Component {
 									</tr>
 								)
 							}
+
+							<tr>
+								<td style={tableStyle}>
+								</td>
+								<td style={tableStyle}>
+									<input
+										type="text"
+										className="form-control mb-2"
+										id="inlineFormInput"
+										placeholder=""
+										value={this.state.newTitle}
+										onChange={(e)=>this.setState({newTitle:e.target.value})}
+										style={{ height: 30 }}
+										/>
+								</td>
+								<td style={tableStyle} className="p-t-0">
+									<Select
+										value={this.state.workType}
+										onChange={(workType)=>{
+											let price=0;
+											price = workType.prices.find((item)=>item.pricelist===this.props.company.pricelist.id);
+											if(price === undefined){
+												price = 0;
+											}else{
+												price = price.price;
+											}
+											this.setState({newWorkType:workType,newPrice:price})
+											}
+										}
+										options={this.props.workTypes}
+										styles={selectStyle}
+										/>
+								</td>
+								<td style={tableStyle}>
+									<input
+										type="number"
+										value={this.state.newQuantity}
+										onChange={(e)=>this.setState({newQuantity:e.target.value})}
+										className="form-control mb-2"
+										id="inlineFormInput"
+										placeholder=""
+										style={{ height: 30 }}
+										/>
+								</td>
+								<td style={tableStyleCenter}>
+									<button className="btn btn-link waves-effect"
+										disabled={this.state.newWorkType===null}
+										onClick={()=>{
+											let body={
+												discount:this.state.newDiscount!==''?this.state.newDiscount:0,
+												extraPrice:this.props.company?parseFloat(this.props.company.pricelist.afterHours) : 0,
+												extraWork:this.state.newExtraWork,
+												price:this.state.newPrice!==''?this.state.newPrice:0,
+												quantity:this.state.newQuantity!==''?this.state.newQuantity:0,
+												title:this.state.newTitle,
+												workType: this.state.newWorkType.id
+											}
+											this.setState({
+												newDiscount:0,
+												newExtraWork:false,
+												newQuantity:0,
+												newTitle:'',
+											});
+											this.props.submitService(body);
+											}
+										}
+										>
+										<i className="fa fa-plus" />
+									</button>
+								</td>
+							</tr>
 						</tbody>
 					</table>
 				</div>

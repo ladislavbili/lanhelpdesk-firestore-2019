@@ -85,7 +85,6 @@ export default class Rozpocet extends Component {
 										<th style={tableStyle} width="40%">Názov</th>
 										<th style={tableStyle} width="20%">Typ</th>
 										<th style={tableStyle}>Mn.</th>
-										<th style={tableStyle}>Nadp.</th>
 										<th style={tableStyle}>Cena/Mn.</th>
 										<th style={tableStyle}>Zlava</th>
 										<th style={tableStyle}>Cena</th>
@@ -180,16 +179,6 @@ export default class Rozpocet extends Component {
 														this.setState({ editedSubtaskQuantity: e.target.value })}
 													}
 													/>
-											</td>
-											<td style={tableStyle}>
-												<input
-													type="checkbox"
-													checked={subtask.extraWork}
-													onClick={()=>{
-														this.props.updateSubtask(subtask.id,{extraWork:!subtask.extraWork});
-														rebase.updateDoc('taskWorks/'+subtask.id,{extraWork:!subtask.extraWork});
-													}
-												} />
 											</td>
 											<td style={tableStyle}>
 												{subtask.finalUnitPrice}
@@ -292,15 +281,6 @@ export default class Rozpocet extends Component {
 												placeholder=""
 												style={{ height: 30 }}
 												/>
-										</td>
-										<td style={tableStyle}>
-											<input
-												type="checkbox"
-												checked={this.state.newExtraWork}
-												onClick={()=>{
-													this.setState({newExtraWork:!this.state.newExtraWork})
-												}
-											} />
 										</td>
 										<td style={tableStyle}>
 											{unitPrice}
