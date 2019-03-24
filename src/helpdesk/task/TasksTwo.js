@@ -39,20 +39,21 @@ class TasksRow extends Component {
 	}
 
 	filterTasks(tasks){
-		return tasks.filter((task)=>
-			(this.props.filter.status===null||task.status.id===this.props.filter.status) &&
+		return tasks.filter((task)=>{
+			return (this.props.filter.status===null||task.status.id===this.props.filter.status) &&
 			(this.props.filter.requester===null||task.requester.id===this.props.filter.requester) &&
 			(this.props.filter.company===null||task.company===this.props.filter.company) &&
 			(this.props.filter.assigned===null||task.assigned.id===this.props.filter.assigned) &&
 			(this.props.filter.statusDateFrom===''||task.statusChange >= this.props.filter.statusDateFrom) &&
 			(this.props.filter.statusDateTo===''||task.statusChange <= this.props.filter.statusDateTo) &&
-			(task.status.title+task.title+task.id+
+			(task.status?task.status.title:''+task.title+task.id+
 				(task.deadline?timestampToString(task.deadline):'')+
 				(task.requester?(task.requester.name+' '+task.requester.surname):'')+
 				(task.statusChange?timestampToString(task.statusChange):'')+
 				(task.assigned?(task.assigned.name+' '+task.assigned.surname):'')
 
 				).toLowerCase().includes(this.props.search.toLowerCase())
+				}
 			);
 	}
 

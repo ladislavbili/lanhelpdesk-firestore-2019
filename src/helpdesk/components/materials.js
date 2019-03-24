@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import { rebase } from '../../index';
+import { selectStyle, invisibleSelectStyle} from './selectStyles';
 
 
 const tableStyle = {
@@ -10,36 +11,6 @@ const tableStyle = {
 const tableStyleCenter = {
 	textAlign: 'right',
 	border: 'none',
-};
-
-const selectStyle = {
-	control: base => ({
-		...base,
-		minHeight: 30,
-		backgroundColor: 'white',
-	}),
-	dropdownIndicator: base => ({
-		...base,
-		padding: 4,
-	}),
-	clearIndicator: base => ({
-		...base,
-		padding: 4,
-	}),
-	multiValue: base => ({
-		...base,
-		backgroundColor: 'white',
-	}),
-	valueContainer: base => ({
-		...base,
-		padding: '0px 6px',
-	}),
-	input: base => ({
-		...base,
-		margin: 0,
-		padding: 0,
-		backgroundColor: 'white',
-	}),
 };
 
 const tableStyleCenterNoBorder = {
@@ -65,6 +36,7 @@ export default class Rozpocet extends Component {
 			newUnit:null,
 			newMargin,
 			newPrice:0,
+			marginChanged:false,
 		}
 	}
 
@@ -74,7 +46,11 @@ export default class Rozpocet extends Component {
 			this.setState({newMargin:props.company.pricelist.materialMargin});
 		}
 		if((this.props.units.length!==props.units.length)){
-			this.setState({newUnit:props.units[0]});
+			let newUnit= props.units[0];
+			if(props.defaultUnit!==null){
+				newUnit=props.units.find((item)=>item.id===props.defaultUnit)
+			}
+			this.setState({newUnit});
 		}
 	}
 
@@ -128,9 +104,8 @@ export default class Rozpocet extends Component {
 												} />
 											</td>
 											<td style={tableStyle}>
-												<div>
 													<input
-														className="invisible-input"
+														className="form-control invisible-input"
 														value={
 															material.id === this.state.focusedMaterial
 															? this.state.editedMaterialTitle
@@ -156,7 +131,6 @@ export default class Rozpocet extends Component {
 															this.setState({ editedMaterialTitle: e.target.value })}
 														}
 														/>
-												</div>
 											</td>
 											<td style={tableStyle}>
 												<input
@@ -226,7 +200,7 @@ export default class Rozpocet extends Component {
 														rebase.updateDoc('taskMaterials/'+material.id,{unit:unit.id});
 													}}
 													options={this.props.units}
-													styles={selectStyle}
+													styles={invisibleSelectStyle}
 													/>
 											</td>
 											<td style={tableStyle}>
@@ -335,7 +309,7 @@ export default class Rozpocet extends Component {
 												}
 											}
 											options={this.props.units}
-											styles={selectStyle}
+											styles={invisibleSelectStyle}
 											/>
 									</td>
 									<td style={tableStyle}>
@@ -343,7 +317,7 @@ export default class Rozpocet extends Component {
 											type="number"
 											value={this.state.newMargin}
 											onChange={(e)=>this.setState({newMargin:e.target.value})}
-											className="form-control mb-2"
+											className="invisible-input"
 											id="inlineFormInput"
 											placeholder=""
 											style={{ height: 30 }}
@@ -373,6 +347,7 @@ export default class Rozpocet extends Component {
 														newQuantity:1,
 														newMargin:0,
 														newPrice:0,
+														marginChanged:false
 													});
 													this.props.submitMaterial(body);
 													}
@@ -389,7 +364,7 @@ export default class Rozpocet extends Component {
 							<div className="col-md-6">
 								<p className="text-right">
 									<b>Sub-total:</b>
-									{this.props.materials.map((material)=>parseFloat(material.totalPrice)).reduce((acc, cur)=> acc+cur,0)}
+									{(this.props.materials.map((material)=>parseFloat(material.totalPrice)).reduce((acc, cur)=> acc+cur,0)).toFixed(2)}
 								</p>
 								</div>
 							</div>

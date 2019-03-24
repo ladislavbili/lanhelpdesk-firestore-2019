@@ -59,6 +59,7 @@ export default class TasksTwoEdit extends Component {
 			taskMaterials:[],
 			taskWorks:[],
 			units:[],
+			defaultUnit:null,
 			task:null,
 			openEditServiceModal:false,
 			openService:null,
@@ -176,15 +177,18 @@ export default class TasksTwoEdit extends Component {
         database.collection('pricelists').get(),
         database.collection('users').get(),
         database.collection('taskMaterials').where("task", "==", taskID).get(),
-        database.collection('taskWorks').where("task", "==", taskID).get()
-    ]).then(([task,statuses,projects, companies, workTypes, units, prices, pricelists, users,taskMaterials, taskWorks])=>{
+        database.collection('taskWorks').where("task", "==", taskID).get(),
+				rebase.get('metadata/0', {
+					context: this,
+				})
+    ]).then(([task,statuses,projects, companies, workTypes, units, prices, pricelists, users,taskMaterials, taskWorks,meta])=>{
       this.setData({id:task.id,...task.data()}, toSelArr(snapshotToArray(statuses)), toSelArr(snapshotToArray(projects)),toSelArr(snapshotToArray(users),'email'),
       toSelArr(snapshotToArray(companies)),toSelArr(snapshotToArray(workTypes)),
-      toSelArr(snapshotToArray(units)), snapshotToArray(prices),snapshotToArray(taskMaterials),snapshotToArray(taskWorks),snapshotToArray(pricelists));
+      toSelArr(snapshotToArray(units)), snapshotToArray(prices),snapshotToArray(taskMaterials),snapshotToArray(taskWorks),snapshotToArray(pricelists),meta.defaultUnit);
     });
   }
 
-  setData(task, statuses, projects,users,companies,workTypes,units, prices,taskMaterials,taskWorks,pricelists){
+  setData(task, statuses, projects,users,companies,workTypes,units, prices,taskMaterials,taskWorks,pricelists,defaultUnit){
     let project = projects.find((item)=>item.id===task.project);
     let status = statuses.find((item)=>item.id===task.status);
     let company = companies.find((item)=>item.id===task.company);
@@ -227,7 +231,8 @@ export default class TasksTwoEdit extends Component {
       workType:workType?workType:null,
       requester:requester?requester:null,
       assigned:assigned?assigned:null,
-      loading:false
+      loading:false,
+			defaultUnit
     });
   }
 
@@ -271,7 +276,7 @@ export default class TasksTwoEdit extends Component {
 								<div className="row">
 									<h1># {this.props.match.params.taskID}</h1>
 									<span className="center-hor">
-							    	<input type="text" value={this.state.title} class="form-control hidden-input" onChange={(e)=>this.setState({title:e.target.value})} placeholder="Enter task name" />
+							    	<input type="text" value={this.state.title} className="form-control hidden-input" onChange={(e)=>this.setState({title:e.target.value})} placeholder="Enter task name" />
 									</span>
 								</div>
 								<div className="ml-auto p-2 align-self-center">
@@ -427,7 +432,7 @@ export default class TasksTwoEdit extends Component {
 							</div>
 
 							<label className="m-t-5">Popis</label>
-								<textarea class="form-control" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value})} />
+								<textarea className="form-control" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value})} />
 									<Subtasks
 										submitService={this.submitService.bind(this)}
 										updatePrices={(ids)=>{
@@ -477,6 +482,7 @@ export default class TasksTwoEdit extends Component {
 									this.setState({taskMaterials:newTaskMaterials});
 								}}
 				        units={this.state.units}
+								defaultUnit={this.state.defaultUnit}
 								company={this.state.company}
 								/>
 

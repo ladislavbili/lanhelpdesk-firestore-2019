@@ -10,6 +10,9 @@ export default class PriceEdit extends Component{
       pricelistName:'',
       afterHours:0,
       margin:0,
+      marginExtra:0,
+      defaultPricelist:null,
+      def:false,
       loading:true,
       saving:false,
       workTypes:[],
@@ -27,14 +30,18 @@ export default class PriceEdit extends Component{
           context: this,
           withIds: true,
         }),
+
+        rebase.get('metadata/0', {
+          context: this,
+        }),
         database.collection('workTypes').get(),
         database.collection('prices').get()
-    ]).then(([pricelist, workTypes,prices])=>{
-      this.setData(pricelist,snapshotToArray(prices),snapshotToArray(workTypes),id);
+    ]).then(([pricelist,meta, workTypes,prices])=>{
+      this.setData(pricelist,meta,snapshotToArray(prices),snapshotToArray(workTypes),id);
     });
   }
 
-  setData(pricelist,prices,workTypes, id){
+  setData(pricelist,meta,prices,workTypes, id){
     let types= workTypes.map((type)=>{
       let newType={...type};
       newType.price= prices.find((item)=>item.pricelist===id && item.workType === newType.id);
@@ -48,8 +55,11 @@ export default class PriceEdit extends Component{
       pricelistName:pricelist.title,
       afterHours:pricelist.afterHours,
       margin: pricelist.materialMargin,
+      marginExtra: pricelist.materialMarginExtra,
       workTypes:types,
-      loading:false
+      loading:false,
+      def:meta.defaultPricelist===id,
+      defaultPricelist:meta.defaultPricelist
     });
   }
 
@@ -69,6 +79,8 @@ export default class PriceEdit extends Component{
             Loading data...
           </Alert>
         }
+        <input type="checkbox" id="default" checked={this.state.def} onChange={(e)=>this.setState({def:!this.state.def})} />
+        <ControlLabel className="center-hor" htmlFor="default">Default</ControlLabel>
         <FormGroup>
           <Col sm={3}>
             <ControlLabel className="center-hor">Pricelist name</ControlLabel>
@@ -80,7 +92,7 @@ export default class PriceEdit extends Component{
         <div className="floatingSeparator"></div>
         {
           this.state.workTypes.map((item,index)=>
-          <FormGroup>
+          <FormGroup key={index}>
             <Col sm={3}>
               <ControlLabel className="center-hor">{item.title}</ControlLabel>
             </Col>
@@ -108,14 +120,31 @@ export default class PriceEdit extends Component{
         </FormGroup>
         <FormGroup>
           <Col sm={3}>
-            <ControlLabel className="center-hor">Materials margin percentage</ControlLabel>
+            <ControlLabel className="center-hor">Materials margin percentage 50-</ControlLabel>
           </Col>
           <Col sm={9}>
-            <FormControl type="number" placeholder="Enter materials margin percentage" value={this.state.margin} onChange={(e)=>this.setState({margin:e.target.value})} />
+            <FormControl type="number" placeholder="Enter margin percentage" value={this.state.margin} onChange={(e)=>this.setState({margin:e.target.value})} />
           </Col>
         </FormGroup>
+        <FormGroup>
+          <Col sm={3}>
+            <ControlLabel className="center-hor">Materials margin percentage 50+</ControlLabel>
+          </Col>
+          <Col sm={9}>
+            <FormControl type="number" placeholder="Enter margin percentage" value={this.state.marginExtra} onChange={(e)=>this.setState({marginExtra:e.target.value})} />
+          </Col>
+        </FormGroup>
+
         <Button bsStyle="success" className="separate" disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
+            if(!this.state.def && this.state.defaultPricelist===this.props.match.params.id){
+              this.setState({defaultPricelist:null});
+              rebase.updateDoc('/metadata/0',{defaultPricelist:null});
+            }else if(this.state.def){
+              this.setState({defaultPricelist:this.props.match.params.id});
+              rebase.updateDoc('/metadata/0',{defaultPricelist:this.props.match.params.id});
+            }
+
             this.state.workTypes.filter((item)=>item.price.id!==undefined).map((workType)=>
               rebase.updateDoc('/prices/'+workType.price.id, {price:parseFloat(workType.price.price === "" ? "0": workType.price.price)})
             );
@@ -130,7 +159,7 @@ export default class PriceEdit extends Component{
               })
             )
 
-            rebase.updateDoc('/pricelists/'+this.props.match.params.id, {title:this.state.pricelistName, afterHours:parseFloat(this.state.afterHours===''?'0':this.state.afterHours),materialMargin:parseFloat(this.state.margin===''?'0':this.state.margin)})
+            rebase.updateDoc('/pricelists/'+this.props.match.params.id, {title:this.state.pricelistName, afterHours:parseFloat(this.state.afterHours===''?'0':this.state.afterHours),materialMargin:parseFloat(this.state.margin===''?'0':this.state.margin),materialMarginExtra:parseFloat(this.state.marginExtra===''?'0':this.state.marginExtra)})
               .then(()=>
                 this.setState({saving:false})
               );

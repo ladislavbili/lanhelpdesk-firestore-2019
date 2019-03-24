@@ -1,36 +1,7 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import { rebase } from '../../../index';
-
-const selectStyle = {
-	control: base => ({
-		...base,
-		minHeight: 30,
-		backgroundColor: 'inherit',
-	}),
-	dropdownIndicator: base => ({
-		...base,
-		padding: 4,
-	}),
-	clearIndicator: base => ({
-		...base,
-		padding: 4,
-	}),
-	multiValue: base => ({
-		...base,
-		backgroundColor: 'inherit',
-	}),
-	valueContainer: base => ({
-		...base,
-		padding: '0px 6px',
-	}),
-	input: base => ({
-		...base,
-		margin: 0,
-		padding: 0,
-		backgroundColor: 'inherit',
-	}),
-};
+import { selectStyle, invisibleSelectStyle} from '../selectStyles';
 
 const tableStyle = {
 	border: 'none',
@@ -124,11 +95,17 @@ export default class Prace extends Component {
 										<Select
 											value={subtask.workType}
 											onChange={(workType)=>{
-												this.props.updateSubtask(subtask.id,{workType})
-												rebase.updateDoc('taskWorks/'+subtask.id,{workType:workType.id});
+												let price = workType.prices.find((item)=>item.pricelist===this.props.company.pricelist.id);
+												if(price === undefined){
+														price = 0;
+												}else{
+													price = price.price;
+												}
+												this.props.updateSubtask(subtask.id,{workType:workType.id,price})
+												rebase.updateDoc('taskWorks/'+subtask.id,{workType:workType.id,price});
 											}}
 											options={this.props.workTypes}
-											styles={selectStyle}
+											styles={invisibleSelectStyle}
 											/>
 									</td>
 									<td style={tableStyle}>
@@ -249,7 +226,7 @@ export default class Prace extends Component {
 					<div className="col-md-3">
 						<p className="text-right">
 							<b>Sub-total:</b>
-							{this.props.subtasks.map((subtask)=>parseFloat(subtask.totalPrice)).reduce((acc, cur)=> acc+cur,0)}
+							{(this.props.subtasks.map((subtask)=>parseFloat(subtask.totalPrice)).reduce((acc, cur)=> acc+cur,0)).toFixed(2)}
 						</p>
 
 						</div>

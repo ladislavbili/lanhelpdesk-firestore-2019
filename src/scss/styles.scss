@@ -116,9 +116,19 @@ html{
 
 .invisible-input{
   background-color: inherit;
+  box-shadow: none;
   border-width: 0px;
   width: 100%;
+  padding:4.5px 9px;
 }
+
+.invisible-input:focus{
+  background-color: white;
+  border: 1px solid #cccccc;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  border-radius: 4px;
+}
+
 
 .modal-lg{
   max-width: 1300px;
@@ -130,5 +140,7 @@ html{
 
 .modal-header{
   border-bottom: none;
-
+}
+.separate{
+  margin-top:10px;
 }

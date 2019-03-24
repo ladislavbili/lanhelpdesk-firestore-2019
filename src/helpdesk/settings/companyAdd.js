@@ -21,15 +21,27 @@ export default class CompanyAdd extends Component{
   }
 
   fetchData(){
-    database.collection('pricelists').get().then((pricelists)=>this.setData(toSelArr(snapshotToArray(pricelists))));
+    Promise.all(
+      [
+        database.collection('pricelists').get(),
+        rebase.get('metadata/0', {
+          context: this,
+        })
+      ]).then(([pricelists,meta])=>{
+      this.setData(toSelArr(snapshotToArray(pricelists)),meta);
+    });
   }
 
-  setData(pricelists){
+  setData(pricelists,meta){
     let pricelist = null;
-    if(pricelists.length>0){
-      pricelist=pricelists[0];
-    }
-    this.setState({pricelists,pricelist,loading:false})
+      if(pricelists.length>0){
+        if(meta.defaultPricelist!==null){
+          pricelist=pricelists.find((item)=>item.id===meta.defaultPricelist);
+        }else{
+          pricelist=pricelists[0];
+        }
+      }
+      this.setState({pricelists,pricelist,loading:false})
   }
 
   render(){

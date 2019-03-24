@@ -12,6 +12,7 @@ export default class PriceEdit extends Component{
       margin:0,
       loading:true,
       saving:false,
+      def:false,
       workTypes:[],
     }
     this.setData.bind(this);
@@ -51,6 +52,8 @@ export default class PriceEdit extends Component{
             Loading data...
           </Alert>
         }
+        <input type="checkbox" id="default" checked={this.state.def} onChange={(e)=>this.setState({def:!this.state.def})} />
+        <ControlLabel className="center-hor" htmlFor="default">Default</ControlLabel>
         <FormGroup>
           <Col sm={3}>
             <ControlLabel className="center-hor">Pricelist name</ControlLabel>
@@ -62,7 +65,7 @@ export default class PriceEdit extends Component{
         <div className="floatingSeparator"></div>
         {
           this.state.workTypes.map((item,index)=>
-          <FormGroup>
+          <FormGroup key={index}>
             <Col sm={3}>
               <ControlLabel className="center-hor">{item.title}</ControlLabel>
             </Col>
@@ -105,6 +108,9 @@ export default class PriceEdit extends Component{
               materialMargin:parseFloat(this.state.margin===''?'0':this.state.margin)
             })
               .then((listResponse)=>{
+                if(this.state.def){
+                  rebase.updateDoc('/metadata/0',{defaultPricelist:listResponse.id})
+                }
                 this.state.workTypes.map((workType,index)=>
                   rebase.addToCollection('/prices', {pricelist:listResponse.id,workType:workType.id,price:parseFloat(workType.price.price === "" ? "0": workType.price.price)})
                 );
