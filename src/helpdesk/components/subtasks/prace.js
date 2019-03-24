@@ -57,7 +57,7 @@ export default class Prace extends Component {
 									this.props.subtasks.map((subtask)=>
 									<tr key={subtask.id}>
 										<td style={tableStyle}>
-											<input type="checkbox" checked={subtask.done} onClick={()=>{
+											<input type="checkbox" checked={subtask.done} onChange={()=>{
 												this.props.updateSubtask(subtask.id,{done:!subtask.done})
 												rebase.updateDoc('taskWorks/'+subtask.id,{done:!subtask.done});
 												}} />

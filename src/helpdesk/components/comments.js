@@ -23,7 +23,7 @@ export default class Comments extends Component {
 							<textarea className="form-control m-b-10" rows="2" />
 							<div className="checkbox form-check-inline" style={{ marginLeft:20 }}>
 								<input type="checkbox" id="inlineCheckbox1" value="option1" />
-								<label for="inlineCheckbox1"> Internal </label>
+								<label htmlFor="inlineCheckbox1"> Internal </label>
 							</div>
 							<button className="btn btn-success waves-effect waves-light btn-sm">Send</button>
 						</div>

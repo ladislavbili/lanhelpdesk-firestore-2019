@@ -72,7 +72,7 @@ export default class Rozpocet extends Component {
 										<th style={tableStyle}>
 											<input type="checkbox"
 												checked={this.props.materials.length===this.state.selectedIDs.length}
-												onClick={()=>this.setState({selectedIDs:(this.props.materials.length===this.state.selectedIDs.length?[]:this.props.materials.map((item)=>item.id))})} />
+												onChange={()=>this.setState({selectedIDs:(this.props.materials.length===this.state.selectedIDs.length?[]:this.props.materials.map((item)=>item.id))})} />
 										</th>
 										<th style={tableStyle} width="30%">Názov</th>
 											<th style={tableStyle}>Nákupná cena</th>
@@ -92,7 +92,7 @@ export default class Rozpocet extends Component {
 												<input
 													type="checkbox"
 													checked={this.state.selectedIDs.includes(material.id)}
-													onClick={()=>{
+													onChange={()=>{
 														if(!this.state.selectedIDs.includes(material.id)){
 															this.setState({selectedIDs:[...this.state.selectedIDs,material.id]})
 														}else{
@@ -283,7 +283,18 @@ export default class Rozpocet extends Component {
 											<input
 												type="number"
 												value={this.state.newPrice}
-												onChange={(e)=>this.setState({newPrice:e.target.value})}
+												onChange={(e)=>{
+													let newPrice = e.target.value;
+													if(!this.state.marginChanged){
+														if(newPrice==='' || parseFloat(newPrice) < 50 ){
+															this.setState({newPrice,newMargin:(this.props.company? this.props.company.pricelist.materialMargin : 0)});
+														}else{
+															this.setState({newPrice,newMargin:(this.props.company? this.props.company.pricelist.materialMarginExtra : 0)});
+														}
+													}else{
+														this.setState({newPrice});
+													}
+												}}
 												className="form-control mb-2"
 												id="inlineFormInput"
 												placeholder=""
@@ -316,7 +327,7 @@ export default class Rozpocet extends Component {
 										<input
 											type="number"
 											value={this.state.newMargin}
-											onChange={(e)=>this.setState({newMargin:e.target.value})}
+											onChange={(e)=>this.setState({newMargin:e.target.value,marginChanged:true})}
 											className="invisible-input"
 											id="inlineFormInput"
 											placeholder=""

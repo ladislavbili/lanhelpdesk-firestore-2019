@@ -267,6 +267,7 @@ export default class TasksTwoEdit extends Component {
 			}
 		});
 
+		console.log(this.state.company);
 		return (
 			<div>
 				<div className="row scrollable fit-with-header" style={{}}>

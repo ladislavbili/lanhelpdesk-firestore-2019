@@ -51,7 +51,7 @@ export default class Rozpocet extends Component {
 										<th style={tableStyle}>
 											<input type="checkbox"
 												checked={this.props.subtasks.length===this.state.selectedIDs.length}
-												onClick={()=>this.setState({selectedIDs:(this.props.subtasks.length===this.state.selectedIDs.length?[]:this.props.subtasks.map((item)=>item.id))})} />
+												onChange={()=>this.setState({selectedIDs:(this.props.subtasks.length===this.state.selectedIDs.length?[]:this.props.subtasks.map((item)=>item.id))})} />
 										</th>
 										<th style={tableStyle} width="40%">Názov</th>
 										<th style={tableStyle} width="20%">Typ</th>
@@ -70,7 +70,7 @@ export default class Rozpocet extends Component {
 												<input
 													type="checkbox"
 													checked={this.state.selectedIDs.includes(subtask.id)}
-													onClick={()=>{
+													onChange={()=>{
 														if(!this.state.selectedIDs.includes(subtask.id)){
 															this.setState({selectedIDs:[...this.state.selectedIDs,subtask.id]})
 														}else{
