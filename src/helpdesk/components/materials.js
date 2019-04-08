@@ -52,6 +52,20 @@ export default class Rozpocet extends Component {
 			}
 			this.setState({newUnit});
 		}
+		if(this.props.match.params.taskID!==props.match.params.taskID){
+			let newUnit= props.units[0];
+			if(props.defaultUnit!==null){
+				newUnit=props.units.find((item)=>item.id===props.defaultUnit)
+			}
+			this.setState({
+				newTitle:'',
+				newQuantity:1,
+				newUnit:newUnit,
+				newMargin:props.company? props.company.pricelist.materialMargin : 0,
+				newPrice:0,
+				marginChanged:false,
+			})
+		}
 	}
 
 	render() {
@@ -328,7 +342,7 @@ export default class Rozpocet extends Component {
 											type="number"
 											value={this.state.newMargin}
 											onChange={(e)=>this.setState({newMargin:e.target.value,marginChanged:true})}
-											className="invisible-input"
+											className="form-control"
 											id="inlineFormInput"
 											placeholder=""
 											style={{ height: 30 }}

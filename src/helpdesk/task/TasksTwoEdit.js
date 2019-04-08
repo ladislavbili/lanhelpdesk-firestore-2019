@@ -467,6 +467,7 @@ export default class TasksTwoEdit extends Component {
 											this.setState({taskWorks:newTaskWorks});
 											}
 										}
+										match={this.props.match}
 										/>
 
 							<Materials
@@ -485,6 +486,7 @@ export default class TasksTwoEdit extends Component {
 				        units={this.state.units}
 								defaultUnit={this.state.defaultUnit}
 								company={this.state.company}
+								match={this.props.match}
 								/>
 
 

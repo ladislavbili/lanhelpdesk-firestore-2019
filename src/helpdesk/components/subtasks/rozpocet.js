@@ -27,9 +27,11 @@ export default class Rozpocet extends Component {
 			editedSubtaskDiscount:0,
 			editedSubtaskWorkType:null,
 			focusedSubtask: null,
+			editedSubtaskPrice: 0,
 			selectedIDs:[],
 
 			newTitle:'',
+			newPrice:0,
 			newWorkType:null,
 			newQuantity:0,
 			newExtraWork:false,
@@ -37,9 +39,20 @@ export default class Rozpocet extends Component {
 		}
 	}
 
+	componentWillReceiveProps(props){
+		if(this.props.match.params.taskID!==props.match.params.taskID){
+			this.setState({
+				newTitle:'',
+				newWorkType:null,
+				newQuantity:0,
+				newExtraWork:false,
+				newDiscount:0
+			})
+		}
+	}
+
 	render() {
 		const afterHours= this.props.company && this.state.newExtraWork ? this.props.company.pricelist.afterHours : 0;
-		const unitPrice= this.state.newPrice?(this.state.newPrice/100*afterHours+this.state.newPrice):0;
 		return (
 			<div className="">
 				<div className="row">
@@ -102,6 +115,7 @@ export default class Rozpocet extends Component {
 																editedSubtaskQuantity: subtask.quantity?subtask.quantity:'',
 																editedSubtaskWorkType: subtask.workType,
 																editedSubtaskDiscount: subtask.discount,
+																editedSubtaskPrice: subtask.price,
 																focusedSubtask: subtask.id
 															});
 														}}
@@ -149,6 +163,7 @@ export default class Rozpocet extends Component {
 															editedSubtaskQuantity: subtask.quantity?subtask.quantity:'',
 															editedSubtaskWorkType: subtask.workType,
 															editedSubtaskDiscount: subtask.discount,
+															editedSubtaskPrice: subtask.price,
 															focusedSubtask: subtask.id
 														});
 													}}
@@ -158,7 +173,34 @@ export default class Rozpocet extends Component {
 													/>
 											</td>
 											<td style={tableStyle}>
-												{subtask.finalUnitPrice}
+											<input
+												type="number"
+												className="invisible-input"
+												value={
+													subtask.id === this.state.focusedSubtask
+													? this.state.editedSubtaskPrice
+													: subtask.price
+												}
+												onBlur={() => {
+													//submit
+													this.props.updateSubtask(subtask.id,{price:this.state.editedSubtaskPrice})
+													rebase.updateDoc('taskWorks/'+subtask.id,{price:this.state.editedSubtaskPrice});
+													this.setState({ focusedSubtask: null });
+												}}
+												onFocus={() => {
+													this.setState({
+														editedSubtaskTitle: subtask.title,
+														editedSubtaskQuantity: subtask.quantity?subtask.quantity:'',
+														editedSubtaskWorkType: subtask.workType,
+														editedSubtaskDiscount: subtask.discount,
+														editedSubtaskPrice: subtask.price,
+														focusedSubtask: subtask.id
+													});
+												}}
+												onChange={e =>{
+													this.setState({ editedSubtaskPrice: e.target.value })}
+												}
+												/>
 											</td>
 											<td style={tableStyle}>
 												<input
@@ -180,6 +222,7 @@ export default class Rozpocet extends Component {
 																editedSubtaskQuantity: subtask.quantity?subtask.quantity:'',
 																editedSubtaskWorkType: subtask.workType,
 																editedSubtaskDiscount: subtask.discount,
+																editedSubtaskPrice: subtask.price,
 																focusedSubtask: subtask.id
 															});
 														}}
@@ -191,9 +234,9 @@ export default class Rozpocet extends Component {
 												<td style={tableStyle}>
 													{
 														(
-														(parseFloat(subtask.finalUnitPrice)
+														(parseFloat(subtask.id === this.state.focusedSubtask?(this.state.editedSubtaskPrice===''?0:this.state.editedSubtaskPrice):subtask.finalUnitPrice)
 														-
-														parseFloat(subtask.finalUnitPrice)*
+														parseFloat(subtask.id === this.state.focusedSubtask?(this.state.editedSubtaskPrice===''?0:this.state.editedSubtaskPrice):subtask.finalUnitPrice)*
 														parseInt(subtask.id === this.state.focusedSubtask?(this.state.editedSubtaskDiscount===''?0:this.state.editedSubtaskDiscount):subtask.discount)
 														/100)*
 														parseInt(subtask.id === this.state.focusedSubtask?(this.state.editedSubtaskQuantity===''?0:this.state.editedSubtaskQuantity):subtask.quantity)
@@ -260,7 +303,15 @@ export default class Rozpocet extends Component {
 												/>
 										</td>
 										<td style={tableStyle}>
-											{unitPrice.toFixed(2)}
+										<input
+											type="number"
+											value={this.state.newPrice}
+											onChange={(e)=>this.setState({newPrice:e.target.value})}
+											className="form-control mb-2"
+											id="inlineFormInput"
+											placeholder=""
+											style={{ height: 30 }}
+											/>
 										</td>
 										<td style={tableStyle}>
 											<input
@@ -275,7 +326,7 @@ export default class Rozpocet extends Component {
 										</td>
 										<td style={tableStyle}>
 											{
-												((unitPrice-unitPrice*0.01*this.state.newDiscount)*this.state.newQuantity).toFixed(2)
+												((this.state.newPrice-this.state.newPrice*0.01*this.state.newDiscount)*this.state.newQuantity).toFixed(2)
 											}
 										</td>
 										<td style={tableStyleCenter}>

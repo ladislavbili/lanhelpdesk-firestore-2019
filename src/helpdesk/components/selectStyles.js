@@ -26,13 +26,18 @@ export const selectStyle = {
 		padding: 0,
 		backgroundColor: 'white',
 	}),
+	indicatorSeparator: base => ({
+		...base,
+		width: 0,
+	}),
+
 };
 
 export const invisibleSelectStyle = {
-	control: base => ({
+	control: (base,state) => ({
 		...base,
 		minHeight: 30,
-		backgroundColor: 'inherit',
+		backgroundColor: state.isFocused?'white':'inherit',
 		borderWidth:0
 	}),
 	dropdownIndicator: base => ({
@@ -57,4 +62,9 @@ export const invisibleSelectStyle = {
 		padding: 0,
 		backgroundColor: 'white',
 	}),
+	indicatorSeparator: base => ({
+		...base,
+		width: 0,
+	}),
+
 };

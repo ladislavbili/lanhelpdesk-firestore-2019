@@ -34,6 +34,18 @@ export default class Prace extends Component {
 		}
 	}
 
+	componentWillReceiveProps(props){
+		if(this.props.match.params.taskID!==props.match.params.taskID){
+			this.setState({
+				newTitle:'',
+				newWorkType:null,
+				newQuantity:0,
+				newExtraWork:false,
+				newDiscount:0
+			})
+		}
+	}
+
 	render() {
 		//const afterHours= this.props.company && this.state.newExtraWork ? this.props.company.pricelist.afterHours : 0;
 		//const unitPrice= this.state.newPrice?(this.state.newPrice/100*afterHours+this.state.newPrice):0;

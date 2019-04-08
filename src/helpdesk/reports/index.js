@@ -240,7 +240,6 @@ class Reports extends Component {
 																	<td>
 																		{item.finalUnitPrice.map((item2,index)=>
 																			<p key={index}>{item2}</p>
-
 																		)}
 																	</td>
 																	<td>
@@ -292,13 +291,13 @@ class Reports extends Component {
 																		)}
 																	</td>
 																	<td>
-																		{material.unit.map((item2,index)=>
-																			<p key={index}>{item2.title}</p>
+																		{material.quantity.map((item2,index)=>
+																			<p key={index}>{item2}</p>
 																		)}
 																	</td>
 																	<td>
-																		{material.quantity.map((item2,index)=>
-																			<p key={index}>{item2}</p>
+																		{material.unit.map((item2,index)=>
+																			<p key={index}>{item2.title}</p>
 																		)}
 																	</td>
 																	<td>
