@@ -70,14 +70,13 @@ export default class Rozpocet extends Component {
 												checked={this.props.subtasks.length===this.state.selectedIDs.length}
 												onChange={()=>this.setState({selectedIDs:(this.props.subtasks.length===this.state.selectedIDs.length?[]:this.props.subtasks.map((item)=>item.id))})} />
 										</th>
-										<th style={tableStyle} width="250">Názov</th>
+										<th style={tableStyle}>Názov</th>
 											<th style={tableStyle} width="100">Mn.</th>
 										<th style={tableStyle} width="170">Typ</th>
-										<th style={{...tableStyleCenterNoBorder}} width="124">Action</th>
 										<th style={tableStyle} width="120">Cena/Mn.</th>
 										<th style={tableStyle} width="124">Zlava</th>
 										<th style={tableStyle} width="130">Spolu</th>
-										<th style={tableStyle} width="120"></th>
+										<th style={{...tableStyleCenterNoBorder}} width="124">Action</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -177,21 +176,7 @@ export default class Rozpocet extends Component {
 													styles={invisibleSelectStyle}
 													/>
 											</td>
-											<td style={tableStyleCenter}>
-												<button className="btn btn-link waves-effect">
-													<i className="fa fa-arrow-up"  />
-												</button>
-												<button className="btn btn-link waves-effect">
-														<i className="fa fa-arrow-down"  />
-												</button>
-												<button className="btn btn-link waves-effect" onClick={()=>{
-														if(window.confirm('Are you sure?')){
-															rebase.removeDoc('taskWorks/'+subtask.id).then(()=>this.props.removeSubtask(subtask.id));
-														}
-													}}>
-													<i className="fa fa-times" />
-												</button>
-											</td>
+
 											<td style={{...tableStyle,...tableHighlightBackground}}>
 											<input
 												type="number"
@@ -264,6 +249,21 @@ export default class Rozpocet extends Component {
 														.toFixed(2)
 													}
 												</td>
+												<td style={tableStyleCenter}>
+													<button className="btn btn-link waves-effect">
+														<i className="fa fa-arrow-up"  />
+													</button>
+													<button className="btn btn-link waves-effect">
+															<i className="fa fa-arrow-down"  />
+													</button>
+													<button className="btn btn-link waves-effect" onClick={()=>{
+															if(window.confirm('Are you sure?')){
+																rebase.removeDoc('taskWorks/'+subtask.id).then(()=>this.props.removeSubtask(subtask.id));
+															}
+														}}>
+														<i className="fa fa-times" />
+													</button>
+												</td>
 											</tr>
 										)
 									}
@@ -312,7 +312,35 @@ export default class Rozpocet extends Component {
 												styles={selectStyle}
 												/>
 										</td>
-										<td style={tableStyleCenter}>
+
+										<td style={{...tableStyle,...tableHighlightBackground}}>
+										<input
+											type="number"
+											value={this.state.newPrice}
+											onChange={(e)=>this.setState({newPrice:e.target.value})}
+											className="form-control mb-2"
+											id="inlineFormInput"
+											placeholder=""
+											style={{ height: 30 }}
+											/>
+										</td>
+										<td style={{...tableStyle,...tableHighlightBackground}}>
+											<input
+												type="number"
+												value={this.state.newDiscount}
+												onChange={(e)=>this.setState({newDiscount:e.target.value})}
+												className="form-control mb-2"
+												id="inlineFormInput"
+												placeholder=""
+												style={{ height: 30 }}
+												/>
+										</td>
+										<td style={{...tableStyle, ...tableHighlightBackground}}>
+											{
+												((this.state.newPrice-this.state.newPrice*0.01*this.state.newDiscount)*this.state.newQuantity).toFixed(2)
+											}
+										</td>
+										<td style={{...tableStyleCenter}}>
 											<button className="btn btn-link waves-effect"
 												disabled={this.state.newWorkType===null}
 												onClick={()=>{
@@ -337,33 +365,6 @@ export default class Rozpocet extends Component {
 												>
 												<i className="fa fa-plus" />
 											</button>
-										</td>
-										<td style={{...tableStyle}}>
-										<input
-											type="number"
-											value={this.state.newPrice}
-											onChange={(e)=>this.setState({newPrice:e.target.value})}
-											className="form-control mb-2"
-											id="inlineFormInput"
-											placeholder=""
-											style={{ height: 30 }}
-											/>
-										</td>
-										<td style={tableStyle}>
-											<input
-												type="number"
-												value={this.state.newDiscount}
-												onChange={(e)=>this.setState({newDiscount:e.target.value})}
-												className="form-control mb-2"
-												id="inlineFormInput"
-												placeholder=""
-												style={{ height: 30 }}
-												/>
-										</td>
-										<td style={tableStyle}>
-											{
-												((this.state.newPrice-this.state.newPrice*0.01*this.state.newDiscount)*this.state.newQuantity).toFixed(2)
-											}
 										</td>
 									</tr>
 								</tbody>

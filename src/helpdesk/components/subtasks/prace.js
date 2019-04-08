@@ -58,14 +58,10 @@ export default class Prace extends Component {
 								<tr>
 									<th style={tableStyle} width="25">
 									</th>
-									<th style={tableStyle} width="250">Názov</th>
+									<th style={tableStyle}>Názov</th>
 										<th style={tableStyle} width="100">Mn.</th>
 									<th style={tableStyle} width="170">Typ</th>
 									<th style={{...tableStyleCenterNoBorder}} width="124">Action</th>
-									<th style={tableStyle} width="120"></th>
-									<th style={tableStyle} width="124"></th>
-									<th style={tableStyle} width="130"></th>
-									<th style={tableStyle} width="120"></th>
 								</tr>
 							</thead>
 							<tbody>

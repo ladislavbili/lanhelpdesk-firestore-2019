@@ -92,14 +92,14 @@ export default class Rozpocet extends Component {
 												checked={this.props.materials.length===this.state.selectedIDs.length}
 												onChange={()=>this.setState({selectedIDs:(this.props.materials.length===this.state.selectedIDs.length?[]:this.props.materials.map((item)=>item.id))})} />
 										</th>
-										<th style={tableStyle} width="250">Názov</th>
+										<th style={tableStyle} >Názov</th>
 										<th style={tableStyle} width="100">Mn.</th>
 										<th style={tableStyle} width="170">Jednotka</th>
 										<th style={tableStyle} width="124">Predajná cena</th>
 										<th style={tableStyle} width="120">Cena</th>
-										<th style={tableStyleCenterNoBorder} width="124">Action</th>
 										<th style={tableStyle} width="130">Nákupná cena</th>
 										<th style={tableStyle} width="120">Marža</th>
+										<th style={tableStyleCenterNoBorder} width="124">Action</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -208,23 +208,6 @@ export default class Rozpocet extends Component {
 														.toFixed(2)
 													}
 												</td>
-												<td style={tableStyleCenter}>
-													<button className="btn btn-link waves-effect">
-														<i className="fa fa-arrow-up"  />
-													</button>
-													<button className="btn btn-link waves-effect">
-															<i className="fa fa-arrow-down"  />
-													</button>
-
-													<button className="btn btn-link waves-effect" onClick={()=>{
-															if(window.confirm('Are you sure?')){
-																rebase.removeDoc('taskMaterials/'+material.id).then(()=>this.props.removeMaterial(material.id));
-															}
-
-														}}>
-														<i className="fa fa-times" />
-													</button>
-												</td>
 
 											<td  style={{...tableStyle,...tableHighlightBackground}}>
 												<input
@@ -285,7 +268,23 @@ export default class Rozpocet extends Component {
 														}
 														/>
 											</td>
+											<td style={tableStyleCenter}>
+												<button className="btn btn-link waves-effect">
+													<i className="fa fa-arrow-up"  />
+												</button>
+												<button className="btn btn-link waves-effect">
+														<i className="fa fa-arrow-down"  />
+												</button>
 
+												<button className="btn btn-link waves-effect" onClick={()=>{
+														if(window.confirm('Are you sure?')){
+															rebase.removeDoc('taskMaterials/'+material.id).then(()=>this.props.removeMaterial(material.id));
+														}
+
+													}}>
+													<i className="fa fa-times" />
+												</button>
+											</td>
 
 											</tr>
 										)
@@ -303,28 +302,6 @@ export default class Rozpocet extends Component {
 												placeholder=""
 												value={this.state.newTitle}
 												onChange={(e)=>this.setState({newTitle:e.target.value})}
-												style={{ height: 30 }}
-												/>
-										</td>
-										<td style={tableStyle}>
-											<input
-												type="number"
-												value={this.state.newPrice}
-												onChange={(e)=>{
-													let newPrice = e.target.value;
-													if(!this.state.marginChanged){
-														if(newPrice==='' || parseFloat(newPrice) < 50 ){
-															this.setState({newPrice,newMargin:(this.props.company? this.props.company.pricelist.materialMargin : 0)});
-														}else{
-															this.setState({newPrice,newMargin:(this.props.company? this.props.company.pricelist.materialMarginExtra : 0)});
-														}
-													}else{
-														this.setState({newPrice});
-													}
-												}}
-												className="form-control mb-2"
-												id="inlineFormInput"
-												placeholder=""
 												style={{ height: 30 }}
 												/>
 										</td>
@@ -351,6 +328,36 @@ export default class Rozpocet extends Component {
 											/>
 									</td>
 									<td style={tableStyle}>
+										{unitPrice.toFixed(2)}
+									</td>
+									<td style={tableStyle}>
+										{
+											(unitPrice*this.state.newQuantity).toFixed(2)
+										}
+									</td>
+									<td style={{tableStyle, ...tableHighlightBackground}}>
+										<input
+											type="number"
+											value={this.state.newPrice}
+											onChange={(e)=>{
+												let newPrice = e.target.value;
+												if(!this.state.marginChanged){
+													if(newPrice==='' || parseFloat(newPrice) < 50 ){
+														this.setState({newPrice,newMargin:(this.props.company? this.props.company.pricelist.materialMargin : 0)});
+													}else{
+														this.setState({newPrice,newMargin:(this.props.company? this.props.company.pricelist.materialMarginExtra : 0)});
+													}
+												}else{
+													this.setState({newPrice});
+												}
+											}}
+											className="form-control"
+											id="inlineFormInput"
+											placeholder=""
+											style={{ height: 30 }}
+											/>
+									</td>
+									<td style={{tableStyle, ...tableHighlightBackground}}>
 										<input
 											type="number"
 											value={this.state.newMargin}
@@ -361,15 +368,7 @@ export default class Rozpocet extends Component {
 											style={{ height: 30 }}
 											/>
 									</td>
-										<td style={tableStyle}>
-											{unitPrice.toFixed(2)}
-										</td>
-										<td style={tableStyle}>
-											{
-												(unitPrice*this.state.newQuantity).toFixed(2)
-											}
-										</td>
-										<td style={tableStyleCenter}>
+										<td style={{...tableStyleCenter}}>
 											<button className="btn btn-link waves-effect"
 												disabled={this.state.newUnit===null}
 												onClick={()=>{
