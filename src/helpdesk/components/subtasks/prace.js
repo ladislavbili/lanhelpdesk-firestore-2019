@@ -56,12 +56,16 @@ export default class Prace extends Component {
 						<table className="table table-centered table-borderless table-hover mb-0">
 							<thead className="thead-light">
 								<tr>
-									<th style={tableStyle}>
+									<th style={tableStyle} width="25">
 									</th>
-									<th style={tableStyle} width="40%">Názov</th>
-									<th style={tableStyle} width="25%">Typ</th>
-									<th style={tableStyle}>Mn.</th>
-									<th style={tableStyleCenterNoBorder}>Action</th>
+									<th style={tableStyle} width="250">Názov</th>
+										<th style={tableStyle} width="100">Mn.</th>
+									<th style={tableStyle} width="170">Typ</th>
+									<th style={{...tableStyleCenterNoBorder}} width="124">Action</th>
+									<th style={tableStyle} width="120"></th>
+									<th style={tableStyle} width="124"></th>
+									<th style={tableStyle} width="130"></th>
+									<th style={tableStyle} width="120"></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -104,23 +108,6 @@ export default class Prace extends Component {
 										</div>
 									</td>
 									<td style={tableStyle}>
-										<Select
-											value={subtask.workType}
-											onChange={(workType)=>{
-												let price = workType.prices.find((item)=>item.pricelist===this.props.company.pricelist.id);
-												if(price === undefined){
-														price = 0;
-												}else{
-													price = price.price;
-												}
-												this.props.updateSubtask(subtask.id,{workType:workType.id,price})
-												rebase.updateDoc('taskWorks/'+subtask.id,{workType:workType.id,price});
-											}}
-											options={this.props.workTypes}
-											styles={invisibleSelectStyle}
-											/>
-									</td>
-									<td style={tableStyle}>
 										<input
 											type="number"
 											className="invisible-input"
@@ -148,7 +135,30 @@ export default class Prace extends Component {
 										}
 										/>
 									</td>
+									<td style={tableStyle}>
+										<Select
+											value={subtask.workType}
+											onChange={(workType)=>{
+												let price = workType.prices.find((item)=>item.pricelist===this.props.company.pricelist.id);
+												if(price === undefined){
+														price = 0;
+												}else{
+													price = price.price;
+												}
+												this.props.updateSubtask(subtask.id,{workType:workType.id,price})
+												rebase.updateDoc('taskWorks/'+subtask.id,{workType:workType.id,price});
+											}}
+											options={this.props.workTypes}
+											styles={invisibleSelectStyle}
+											/>
+									</td>
 									<td style={tableStyleCenter}>
+										<button className="btn btn-link waves-effect">
+											<i className="fa fa-arrow-up"  />
+										</button>
+										<button className="btn btn-link waves-effect">
+												<i className="fa fa-arrow-down"  />
+										</button>
 										<button className="btn btn-link waves-effect" onClick={()=>{
 												if(window.confirm('Are you sure?')){
 													rebase.removeDoc('taskWorks/'+subtask.id).then(()=>this.props.removeSubtask(subtask.id));
@@ -175,6 +185,17 @@ export default class Prace extends Component {
 										style={{ height: 30 }}
 										/>
 								</td>
+								<td style={tableStyle}>
+									<input
+										type="number"
+										value={this.state.newQuantity}
+										onChange={(e)=>this.setState({newQuantity:e.target.value})}
+										className="form-control mb-2"
+										id="inlineFormInput"
+										placeholder=""
+										style={{ height: 30 }}
+										/>
+								</td>
 								<td style={tableStyle} className="p-t-0">
 									<Select
 										value={this.state.workType}
@@ -191,17 +212,6 @@ export default class Prace extends Component {
 										}
 										options={this.props.workTypes}
 										styles={selectStyle}
-										/>
-								</td>
-								<td style={tableStyle}>
-									<input
-										type="number"
-										value={this.state.newQuantity}
-										onChange={(e)=>this.setState({newQuantity:e.target.value})}
-										className="form-control mb-2"
-										id="inlineFormInput"
-										placeholder=""
-										style={{ height: 30 }}
 										/>
 								</td>
 								<td style={tableStyleCenter}>
