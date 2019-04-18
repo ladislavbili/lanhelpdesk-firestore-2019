@@ -24,9 +24,6 @@ export default class CompaniesList extends Component{
 
   render(){
 
-   console.log(this.props);
-   console.log(this.state.companies);
-
     return (
       <div className="row">
         <div className="col-lg-4">
