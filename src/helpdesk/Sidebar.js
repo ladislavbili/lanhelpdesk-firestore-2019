@@ -62,10 +62,7 @@ export default class Sidebar extends Component {
 								<TabPane tabId={0}>
 									<Nav vertical>
 										<NavItem>
-											<Link to={{ pathname: `/helpdesk/taskList` }}>Riešiť</Link>
-										</NavItem>
-										<NavItem>
-											<Link to={{ pathname: `/helpdesk/taskList`}} 	>Odlozene</Link>
+											<Link to={{ pathname: `` }}>Všetky</Link>
 										</NavItem>
 
 									</Nav>

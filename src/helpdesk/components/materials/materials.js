@@ -355,7 +355,7 @@ export default class Rozpocet extends Component {
 											type="number"
 											value={this.state.newMargin}
 											onChange={(e)=>this.setState({newMargin:e.target.value,marginChanged:true})}
-											className="form-control"
+											className="form-control invisible-input"
 											id="inlineFormInput"
 											placeholder=""
 											style={{ height: 30 }}

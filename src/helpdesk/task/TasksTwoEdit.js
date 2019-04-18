@@ -8,11 +8,15 @@ import Subtasks from '../components/subtasks';
 import {rebase, database} from '../../index';
 import {toSelArr, snapshotToArray, timestampToString} from '../../helperFunctions';
 
+const taskTypes = [
+	{ value: 0, label: 'Servisný list' },
+	{ value: 1, label: 'Cenová ponuka' },
+];
+
 
 const repeat = [
 	{ value: 'none', label: 'none' },
 	{ value: 'every day', label: 'every day' },
-
 ];
 const selectStyle = {
 	control: base => ({
@@ -108,7 +112,7 @@ export default class TasksTwoEdit extends Component {
       title: this.state.title,
       company: this.state.company?this.state.company.id:null,
       workHours: this.state.workHours,
-      workType: this.state.workType?this.state.workType.id:null,
+      workType: this.state.workType?this.state.workType.value:null,
       requester: this.state.requester?this.state.requester.id:null,
       assigned: this.state.assigned?this.state.assigned.id:null,
       description: this.state.description,
@@ -193,10 +197,9 @@ export default class TasksTwoEdit extends Component {
     let status = statuses.find((item)=>item.id===task.status);
     let company = companies.find((item)=>item.id===task.company);
     company = {...company,pricelist:pricelists.find((item)=>item.id===company.pricelist)};
-    let workType = workTypes.find((item)=>item.id===task.workType);
+    let workType = taskTypes.find((item)=>item.value===task.workType);
     let requester = users.find((item)=>item.id===task.requester);
     let assigned = users.find((item)=>item.id===task.assigned);
-
 
     let newCompanies=companies.map((company)=>{
       let newCompany={...company,pricelist:pricelists.find((item)=>item.id===company.pricelist)};
@@ -267,7 +270,6 @@ export default class TasksTwoEdit extends Component {
 			}
 		});
 
-		console.log(this.state.company);
 		return (
 			<div>
 				<div className="row scrollable fit-with-header" style={{}}>
@@ -412,11 +414,11 @@ export default class TasksTwoEdit extends Component {
 					                  value={this.state.workType}
 														styles={selectStyle}
 					                  onChange={(workType)=>this.setState({workType})}
-					                  options={this.state.workTypes}
+					                  options={taskTypes}
 					                  />
 												</div>
 											</div>
-											<div className="form-group m-b-0 row">
+											{false && <div className="form-group m-b-0 row">
 												<label className="col-5 col-form-label">Mimo pracovných hodín</label>
 												<div className="col-7">
 													<Select
@@ -426,7 +428,7 @@ export default class TasksTwoEdit extends Component {
 														options={[{value:true,label:'Áno'},{value:false,label:'Nie'}]}
 														/>
 												</div>
-											</div>
+											</div>}
 										</div>
 									</div>
 								</div>

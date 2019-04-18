@@ -50,12 +50,14 @@ export default class Rozpocet extends Component {
 				newWorkType:null,
 				newQuantity:0,
 				newExtraWork:false,
-				newDiscount:0
+				newDiscount:0,
+				newPrice:0
 			})
 		}
 	}
 
 	render() {
+		console.log(this.state.newWorkType);
 		const afterHours= this.props.company && this.state.newExtraWork ? this.props.company.pricelist.afterHours : 0;
 		return (
 			<div className="">
@@ -318,7 +320,7 @@ export default class Rozpocet extends Component {
 											type="number"
 											value={this.state.newPrice}
 											onChange={(e)=>this.setState({newPrice:e.target.value})}
-											className="form-control mb-2"
+											className="form-control mb-2 invisible-input"
 											id="inlineFormInput"
 											placeholder=""
 											style={{ height: 30 }}

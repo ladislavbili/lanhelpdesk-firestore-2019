@@ -28,7 +28,11 @@ export default class PageHeader extends Component {
 
 				<div className="d-flex bd-highlight">
 					<div className="p-2 align-self-center">
-						<Link className="" to={{ pathname: `/helpdesk/reports` }} style={{ color: 'white' }}>
+						<Link className="" to={{ pathname: `/helpdesk/taskList` }} className="pl-4" style={{ color: 'white' }}>
+							<i className="fa fa-file-pdf mr-1" />
+							Úlohy
+						</Link>
+						<Link className="" to={{ pathname: `/helpdesk/reports` }} className="pl-4" style={{ color: 'white' }}>
 							<i className="fa fa-file-pdf mr-1" />
 							Vykazy
 						</Link>
