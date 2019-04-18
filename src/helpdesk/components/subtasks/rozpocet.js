@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import { rebase } from '../../../index';
 import { selectStyle, invisibleSelectStyle} from '../selectStyles';
 
 
@@ -43,6 +42,7 @@ export default class Rozpocet extends Component {
 		}
 	}
 
+
 	componentWillReceiveProps(props){
 		if(this.props.match.params.taskID!==props.match.params.taskID){
 			this.setState({
@@ -54,10 +54,21 @@ export default class Rozpocet extends Component {
 				newPrice:0
 			})
 		}
+		if(((this.props.company===null && props.company!==null)||
+		(props.company===null && this.props.company!==null)||
+		(this.props.company!==null && this.props.company.id!==props.company.id))
+		&& this.state.newWorkType ){
+			let price = this.state.newWorkType.prices.find((item)=>props.company!==null && item.pricelist===props.company.pricelist.id);
+			if(price === undefined){
+				price = 0;
+			}else{
+				price = price.price;
+			}
+			this.setState({newPrice:price})
+		}
 	}
 
 	render() {
-		console.log(this.state.newWorkType);
 		const afterHours= this.props.company && this.state.newExtraWork ? this.props.company.pricelist.afterHours : 0;
 		return (
 			<div className="">
@@ -112,7 +123,6 @@ export default class Rozpocet extends Component {
 														onBlur={() => {
 															//submit
 															this.props.updateSubtask(subtask.id,{title:this.state.editedSubtaskTitle})
-															rebase.updateDoc('taskWorks/'+subtask.id,{title:this.state.editedSubtaskTitle});
 															this.setState({ focusedSubtask: null });
 														}}
 														onFocus={() => {
@@ -143,7 +153,6 @@ export default class Rozpocet extends Component {
 													onBlur={() => {
 														//submit
 														this.props.updateSubtask(subtask.id,{quantity:this.state.editedSubtaskQuantity})
-														rebase.updateDoc('taskWorks/'+subtask.id,{quantity:this.state.editedSubtaskQuantity});
 														this.setState({ focusedSubtask: null });
 													}}
 													onFocus={() => {
@@ -165,14 +174,13 @@ export default class Rozpocet extends Component {
 												<Select
 													value={subtask.workType}
 													onChange={(workType)=>{
-														let price = workType.prices.find((item)=>item.pricelist===this.props.company.pricelist.id);
+														let price = workType.prices.find((item)=>this.props.company && item.pricelist===this.props.company.pricelist.id);
 														if(price === undefined){
 																price = 0;
 														}else{
 															price = price.price;
 														}
 														this.props.updateSubtask(subtask.id,{workType:workType.id,price})
-														rebase.updateDoc('taskWorks/'+subtask.id,{workType:workType.id,price});
 													}}
 													options={this.props.workTypes}
 													styles={invisibleSelectStyle}
@@ -191,7 +199,6 @@ export default class Rozpocet extends Component {
 												onBlur={() => {
 													//submit
 													this.props.updateSubtask(subtask.id,{price:this.state.editedSubtaskPrice})
-													rebase.updateDoc('taskWorks/'+subtask.id,{price:this.state.editedSubtaskPrice});
 													this.setState({ focusedSubtask: null });
 												}}
 												onFocus={() => {
@@ -220,7 +227,6 @@ export default class Rozpocet extends Component {
 														}
 														onBlur={() => {
 															this.props.updateSubtask(subtask.id,{discount:this.state.editedSubtaskDiscount})
-															rebase.updateDoc('taskWorks/'+subtask.id,{discount:this.state.editedSubtaskDiscount});
 															this.setState({ focusedSubtask: null });
 														}}
 														onFocus={() => {
@@ -260,7 +266,7 @@ export default class Rozpocet extends Component {
 													</button>
 													<button className="btn btn-link waves-effect" onClick={()=>{
 															if(window.confirm('Are you sure?')){
-																rebase.removeDoc('taskWorks/'+subtask.id).then(()=>this.props.removeSubtask(subtask.id));
+																this.props.removeSubtask(subtask.id);
 															}
 														}}>
 														<i className="fa fa-times" />
@@ -301,7 +307,7 @@ export default class Rozpocet extends Component {
 												value={this.state.workType}
 												onChange={(workType)=>{
 													let price=0;
-													price = workType.prices.find((item)=>item.pricelist===this.props.company.pricelist.id);
+													price = workType.prices.find((item)=>this.props.company!==null && item.pricelist===this.props.company.pricelist.id);
 													if(price === undefined){
 														price = 0;
 													}else{

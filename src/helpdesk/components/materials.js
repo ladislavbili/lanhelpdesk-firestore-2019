@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import { rebase } from '../../index';
 import { selectStyle, invisibleSelectStyle} from './selectStyles';
 
 
@@ -26,6 +25,7 @@ export default class Rozpocet extends Component {
 	constructor(props){
 		super(props);
 		const newMargin= this.props.company? this.props.company.pricelist.materialMargin : 0;
+		const newUnit= this.props.units.find((item)=>item.id===this.props.defaultUnit);
 		this.state={
 			editedMaterialTitle: "",
 			editedMaterialQuantity: "0",
@@ -37,7 +37,7 @@ export default class Rozpocet extends Component {
 
 			newTitle:'',
 			newQuantity:1,
-			newUnit:null,
+			newUnit:newUnit?newUnit:null,
 			newMargin,
 			newPrice:0,
 			marginChanged:false,
@@ -64,7 +64,7 @@ export default class Rozpocet extends Component {
 			this.setState({
 				newTitle:'',
 				newQuantity:1,
-				newUnit:newUnit,
+				newUnit,
 				newMargin:props.company? props.company.pricelist.materialMargin : 0,
 				newPrice:0,
 				marginChanged:false,
@@ -132,7 +132,6 @@ export default class Rozpocet extends Component {
 														onBlur={() => {
 															//submit
 															this.props.updateMaterial(material.id,{title:this.state.editedMaterialTitle})
-															rebase.updateDoc('taskMaterials/'+material.id,{title:this.state.editedMaterialTitle});
 															this.setState({ focusedMaterial: null });
 														}}
 														onFocus={() => {
@@ -162,7 +161,6 @@ export default class Rozpocet extends Component {
 													onBlur={() => {
 														//submit
 														this.props.updateMaterial(material.id,{quantity:this.state.editedMaterialQuantity})
-														rebase.updateDoc('taskMaterials/'+material.id,{quantity:this.state.editedMaterialQuantity});
 														this.setState({ focusedMaterial: null });
 													}}
 													onFocus={() => {
@@ -185,7 +183,6 @@ export default class Rozpocet extends Component {
 													value={material.unit}
 													onChange={(unit)=>{
 														this.props.updateMaterial(material.id,{unit})
-														rebase.updateDoc('taskMaterials/'+material.id,{unit:unit.id});
 													}}
 													options={this.props.units}
 													styles={invisibleSelectStyle}
@@ -221,7 +218,6 @@ export default class Rozpocet extends Component {
 													onBlur={() => {
 														//submit
 														this.props.updateMaterial(material.id,{price:this.state.editedMaterialPrice})
-														rebase.updateDoc('taskMaterials/'+material.id,{price:this.state.editedMaterialPrice});
 														this.setState({ focusedMaterial: null });
 													}}
 													onFocus={() => {
@@ -250,7 +246,6 @@ export default class Rozpocet extends Component {
 														}
 														onBlur={() => {
 															this.props.updateMaterial(material.id,{margin:this.state.editedMaterialMargin})
-															rebase.updateDoc('taskMaterials/'+material.id,{margin:this.state.editedMaterialMargin});
 															this.setState({ focusedMaterial: null });
 														}}
 														onFocus={() => {
@@ -276,11 +271,11 @@ export default class Rozpocet extends Component {
 														<i className="fa fa-arrow-down"  />
 												</button>
 
-												<button className="btn btn-link waves-effect" onClick={()=>{
+												<button className="btn btn-link waves-effect"
+													onClick={()=>{
 														if(window.confirm('Are you sure?')){
-															rebase.removeDoc('taskMaterials/'+material.id).then(()=>this.props.removeMaterial(material.id));
+															this.props.removeMaterial(material.id);
 														}
-
 													}}>
 													<i className="fa fa-times" />
 												</button>

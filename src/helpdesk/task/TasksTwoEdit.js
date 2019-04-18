@@ -186,9 +186,19 @@ export default class TasksTwoEdit extends Component {
 					context: this,
 				})
     ]).then(([task,statuses,projects, companies, workTypes, units, prices, pricelists, users,taskMaterials, taskWorks,meta])=>{
-      this.setData({id:task.id,...task.data()}, toSelArr(snapshotToArray(statuses)), toSelArr(snapshotToArray(projects)),toSelArr(snapshotToArray(users),'email'),
-      toSelArr(snapshotToArray(companies)),toSelArr(snapshotToArray(workTypes)),
-      toSelArr(snapshotToArray(units)), snapshotToArray(prices),snapshotToArray(taskMaterials),snapshotToArray(taskWorks),snapshotToArray(pricelists),meta.defaultUnit);
+      this.setData(
+				{id:task.id,...task.data()},
+				toSelArr(snapshotToArray(statuses)),
+				toSelArr(snapshotToArray(projects)),
+				toSelArr(snapshotToArray(users),'email'),
+      	toSelArr(snapshotToArray(companies)),
+				toSelArr(snapshotToArray(workTypes)),
+      	toSelArr(snapshotToArray(units)),
+				snapshotToArray(prices),
+				snapshotToArray(taskMaterials),
+				snapshotToArray(taskWorks),
+				snapshotToArray(pricelists),
+				meta.defaultUnit);
     });
   }
 
@@ -458,15 +468,18 @@ export default class TasksTwoEdit extends Component {
 										subtasks={taskWorks}
 										workTypes={this.state.workTypes}
 										updateSubtask={(id,newData)=>{
+											rebase.updateDoc('taskWorks/'+id,newData);
 											let newTaskWorks=[...this.state.taskWorks];
 											newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
 											this.setState({taskWorks:newTaskWorks});
 										}}
 										company={this.state.company}
 										removeSubtask={(id)=>{
-											let newTaskWorks=[...this.state.taskWorks];
-											newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
-											this.setState({taskWorks:newTaskWorks});
+											rebase.removeDoc('taskWorks/'+id).then(()=>{
+												let newTaskWorks=[...this.state.taskWorks];
+												newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
+												this.setState({taskWorks:newTaskWorks});
+											});
 											}
 										}
 										match={this.props.match}
@@ -476,14 +489,17 @@ export default class TasksTwoEdit extends Component {
 								materials={taskMaterials}
 				        submitMaterial={this.submitMaterial.bind(this)}
 								updateMaterial={(id,newData)=>{
+									rebase.updateDoc('taskMaterials/'+id,newData);
 									let newTaskMaterials=[...this.state.taskMaterials];
 									newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
 									this.setState({taskMaterials:newTaskMaterials});
 								}}
 								removeMaterial={(id)=>{
-									let newTaskMaterials=[...this.state.taskMaterials];
-									newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
-									this.setState({taskMaterials:newTaskMaterials});
+									this.props.removeMaterial(id).then(()=>{
+										let newTaskMaterials=[...this.state.taskMaterials];
+										newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
+										this.setState({taskMaterials:newTaskMaterials});
+									});
 								}}
 				        units={this.state.units}
 								defaultUnit={this.state.defaultUnit}

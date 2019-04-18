@@ -53,6 +53,9 @@ export default class TaskEdit extends Component{
       workTypes:[],
       statuses:[],
       projects:[],
+			taskWorks:[],
+			taskMaterials:[],
+			hidden:true,
 
       title:'',
       company:null,
@@ -67,8 +70,14 @@ export default class TaskEdit extends Component{
       pausal:{value:true,label:'Pausal'},
       overtime:{value:false,label:'Nie'}
     }
+		this.counter = 0;
     this.fetchData();
   }
+
+	getNewID(){
+		return this.counter++;
+	}
+
 
   submitTask(){
     this.setState({saving:true});
@@ -90,12 +99,24 @@ export default class TaskEdit extends Component{
     }
 
 		database.collection('metadata').doc('0').get().then((taskMeta)=>{
+			this.state.taskWorks.map((item)=>{
+				delete item['id'];
+					rebase.addToCollection('taskWorks',{task:(taskMeta.data().taskLastID+1)+"",...item});
+			})
+
+			this.state.taskMaterials.map((item)=>{
+				delete item['id'];
+				rebase.addToCollection('taskMaterials',{task:(taskMeta.data().taskLastID+1)+"",...item});
+			})
+
+
 			rebase.addToCollection('/tasks', body,(taskMeta.data().taskLastID+1)+"")
 			.then(()=>{
-				rebase.updateDoc('/metadata/0',{taskLastID:taskMeta.data().taskLastID+1})
+				rebase.updateDoc('/metadata/0',{taskLastID:taskMeta.data().taskLastID+1});
 				this.setState({
 					saving:false,
 					openAddTaskModal:false,
+					hidden:true,
 					title:'',
 					company:null,
 					workHours:'0',
@@ -107,7 +128,9 @@ export default class TaskEdit extends Component{
 					statusChange:null,
 					project:null,
 					pausal:{value:true,label:'Pausal'},
-					overtime:{value:false,label:'Nie'}
+					overtime:{value:false,label:'Nie'},
+					taskWorks:[],
+					taskMaterials:[],
 				})
 				this.fetchData();
 			});
@@ -122,23 +145,49 @@ export default class TaskEdit extends Component{
         database.collection('users').get(),
         database.collection('companies').get(),
         database.collection('workTypes').get(),
-    ]).then(([statuses,projects,users, companies, workTypes])=>{
-      this.setData(toSelArr(snapshotToArray(statuses)), toSelArr(snapshotToArray(projects)),toSelArr(snapshotToArray(users),'email'),toSelArr(snapshotToArray(companies)),toSelArr(snapshotToArray(workTypes)));
+        database.collection('units').get(),
+        database.collection('prices').get(),
+        database.collection('pricelists').get(),
+				rebase.get('metadata/0', {
+					context: this,
+				})
+    ]).then(([statuses,projects,users, companies, workTypes,units, prices, pricelists,meta])=>{
+      this.setData(
+				toSelArr(snapshotToArray(statuses)),
+				toSelArr(snapshotToArray(projects)),
+				toSelArr(snapshotToArray(users),'email'),
+				toSelArr(snapshotToArray(companies)),
+				toSelArr(snapshotToArray(workTypes)),
+      	toSelArr(snapshotToArray(units)),
+				snapshotToArray(prices),
+				snapshotToArray(pricelists),
+				meta.defaultUnit
+			);
     });
   }
 
-  setData(statuses, projects,users,companies,workTypes){
+  setData(statuses, projects,users,companies,workTypes,units, prices, pricelists,defaultUnit){
     let status = statuses.find((item)=>item.title==='New');
     if(!status){
       status=null;
     }
+		let newCompanies=companies.map((company)=>{
+			let newCompany={...company,pricelist:pricelists.find((item)=>item.id===company.pricelist)};
+			return newCompany;
+		});
+		let newWorkTypes=workTypes.map((workType)=>{
+			let newWorkType = {...workType, prices:prices.filter((price)=>price.workType===workType.id)}
+			return newWorkType;
+		});
+
     this.setState({
       statuses,
       projects,
       users,
-      companies,
-      workTypes,
+      companies:newCompanies,
+      workTypes:newWorkTypes,
       status,
+      units,
       statusChange:null,
       project:null,
       company:null,
@@ -146,17 +195,47 @@ export default class TaskEdit extends Component{
       workType:null,
       requester:null,
       assigned:null,
-      loading:false
+      loading:false,
+			defaultUnit
     });
   }
 
   render(){
+		let taskWorks= this.state.taskWorks.map((work)=>{
+			let finalUnitPrice=parseFloat(work.price);
+			if(work.extraWork){
+				finalUnitPrice+=finalUnitPrice*parseFloat(work.extraPrice)/100;
+			}
+			let totalPrice=(finalUnitPrice*parseFloat(work.quantity)*(1-parseFloat(work.discount)/100)).toFixed(2);
+			finalUnitPrice=finalUnitPrice.toFixed(2);
+			let workType= this.state.workTypes.find((item)=>item.id===work.workType);
+			return {
+				...work,
+				workType,
+				unit:this.state.units.find((unit)=>unit.id===work.unit),
+				finalUnitPrice,
+				totalPrice
+			}
+		});
+
+		let taskMaterials= this.state.taskMaterials.map((material)=>{
+			let finalUnitPrice=(parseFloat(material.price)*(1+parseFloat(material.margin)/100));
+			let totalPrice=(finalUnitPrice*parseFloat(material.quantity)).toFixed(2);
+			finalUnitPrice=finalUnitPrice.toFixed(2);
+			return {
+				...material,
+				unit:this.state.units.find((unit)=>unit.id===material.unit),
+				finalUnitPrice,
+				totalPrice
+			}
+		});
+
     return (
 			<div>
 			<button
 				className="btn btn-success"
 				style={{ width: '100%' }}
-				onClick={()=>{this.setState({openAddTaskModal:true})}}
+				onClick={()=>{this.setState({openAddTaskModal:true,hidden:false})}}
 			> Add task
 			</button>
 			<Modal  bsSize="large"  className="show" show={this.state.openAddTaskModal} >
@@ -300,7 +379,62 @@ export default class TaskEdit extends Component{
 
 							<label className="m-t-5">Popis</label>
 							<textarea className="form-control" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value})} />
-						</div>
+
+						{!this.state.hidden && <Subtasks
+							submitService={(newService)=>{
+								this.setState({taskWorks:[...this.state.taskWorks,{id:this.getNewID(),...newService}]});
+							}}
+							updatePrices={(ids)=>{
+								let newTaskWorks=[...this.state.taskWorks];
+								taskWorks.filter((item)=>ids.includes(item.id)).map((item)=>{
+									let price=item.workType.prices.find((item)=>item.pricelist===this.state.company.pricelist.id);
+									if(price === undefined){
+										price = 0;
+									}else{
+										price = price.price;
+									}
+									newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===item.id)]={...newTaskWorks.find((taskWork)=>taskWork.id===item.id),price};
+									return null;
+								})
+								this.setState({taskWorks:newTaskWorks});
+							}}
+							subtasks={taskWorks}
+							workTypes={this.state.workTypes}
+							updateSubtask={(id,newData)=>{
+								let newTaskWorks=[...this.state.taskWorks];
+								newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
+								this.setState({taskWorks:newTaskWorks});
+							}}
+							company={this.state.company}
+							removeSubtask={(id)=>{
+								let newTaskWorks=[...this.state.taskWorks];
+								newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
+								this.setState({taskWorks:newTaskWorks});
+							}}
+							match={{params:{taskID:null}}}
+							/>}
+
+						{!this.state.hidden && <Materials
+							materials={taskMaterials}
+							submitMaterial={(newMaterial)=>{
+								this.setState({taskMaterials:[...this.state.taskMaterials,{id:this.getNewID(),...newMaterial}]});
+							}}
+							updateMaterial={(id,newData)=>{
+								let newTaskMaterials=[...this.state.taskMaterials];
+								newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
+								this.setState({taskMaterials:newTaskMaterials});
+							}}
+							removeMaterial={(id)=>{
+								let newTaskMaterials=[...this.state.taskMaterials];
+								newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
+								this.setState({taskMaterials:newTaskMaterials});
+							}}
+							units={this.state.units}
+							defaultUnit={this.state.defaultUnit}
+							company={this.state.company}
+							match={{params:{taskID:null}}}
+							/>}
+					</div>
 					</div>
 				</Modal.Body>
 				<Modal.Footer>

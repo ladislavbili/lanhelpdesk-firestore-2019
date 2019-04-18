@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import { rebase } from '../../../index';
 import { selectStyle, invisibleSelectStyle} from '../selectStyles';
 
 const tableStyle = {
@@ -31,6 +30,7 @@ export default class Prace extends Component {
 			newQuantity:0,
 			newExtraWork:false,
 			newDiscount:0,
+			newPrice:0,
 		}
 	}
 
@@ -43,6 +43,15 @@ export default class Prace extends Component {
 				newExtraWork:false,
 				newDiscount:0
 			})
+		}
+		if(((this.props.company===null && props.company!==null)|| (props.company===null && this.props.company!==null)|| (this.props.company!==null && this.props.company.id!==props.company.id)) && this.state.newWorkType ){
+			let price = this.state.newWorkType.prices.find((item)=>props.company && item.pricelist===props.company.pricelist.id);
+			if(price === undefined){
+				price = 0;
+			}else{
+				price = price.price;
+			}
+			this.setState({newPrice:price})
 		}
 	}
 
@@ -71,7 +80,6 @@ export default class Prace extends Component {
 										<td style={tableStyle}>
 											<input type="checkbox" checked={subtask.done} onChange={()=>{
 												this.props.updateSubtask(subtask.id,{done:!subtask.done})
-												rebase.updateDoc('taskWorks/'+subtask.id,{done:!subtask.done});
 												}} />
 										</td>
 										<td style={tableStyle}>
@@ -86,7 +94,6 @@ export default class Prace extends Component {
 													onBlur={() => {
 													//submit
 													this.props.updateSubtask(subtask.id,{title:this.state.editedSubtaskTitle})
-													rebase.updateDoc('taskWorks/'+subtask.id,{title:this.state.editedSubtaskTitle});
 													this.setState({ focusedSubtask: null });
 												}}
 												onFocus={() => {
@@ -115,7 +122,6 @@ export default class Prace extends Component {
 											onBlur={() => {
 											//submit
 											this.props.updateSubtask(subtask.id,{quantity:this.state.editedSubtaskQuantity})
-											rebase.updateDoc('taskWorks/'+subtask.id,{quantity:this.state.editedSubtaskQuantity});
 											this.setState({ focusedSubtask: null });
 										}}
 										onFocus={() => {
@@ -135,14 +141,13 @@ export default class Prace extends Component {
 										<Select
 											value={subtask.workType}
 											onChange={(workType)=>{
-												let price = workType.prices.find((item)=>item.pricelist===this.props.company.pricelist.id);
+												let price = workType.prices.find((item)=>this.props.company && item.pricelist===this.props.company.pricelist.id);
 												if(price === undefined){
 														price = 0;
 												}else{
 													price = price.price;
 												}
 												this.props.updateSubtask(subtask.id,{workType:workType.id,price})
-												rebase.updateDoc('taskWorks/'+subtask.id,{workType:workType.id,price});
 											}}
 											options={this.props.workTypes}
 											styles={invisibleSelectStyle}
@@ -157,7 +162,7 @@ export default class Prace extends Component {
 										</button>
 										<button className="btn btn-link waves-effect" onClick={()=>{
 												if(window.confirm('Are you sure?')){
-													rebase.removeDoc('taskWorks/'+subtask.id).then(()=>this.props.removeSubtask(subtask.id));
+													this.props.removeSubtask(subtask.id);
 												}
 											}}>
 											<i className="fa fa-times"  />
@@ -197,7 +202,7 @@ export default class Prace extends Component {
 										value={this.state.workType}
 										onChange={(workType)=>{
 											let price=0;
-											price = workType.prices.find((item)=>item.pricelist===this.props.company.pricelist.id);
+											price = workType.prices.find((item)=>this.props.company && item.pricelist===this.props.company.pricelist.id);
 											if(price === undefined){
 												price = 0;
 											}else{
