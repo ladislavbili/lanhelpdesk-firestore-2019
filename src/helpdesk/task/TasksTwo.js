@@ -52,7 +52,9 @@ class TasksRow extends Component {
 				(task.statusChange?timestampToString(task.statusChange):'')+
 				(task.assigned?(task.assigned.name+' '+task.assigned.surname):'')
 
-				).toLowerCase().includes(this.props.search.toLowerCase())
+			).toLowerCase().includes(this.props.search.toLowerCase()) &&
+
+			(this.props.project===null||task.project.id===this.props.project)
 				}
 			);
 	}
@@ -133,8 +135,8 @@ class TasksRow extends Component {
 }
 
 const mapStateToProps = ({ filterReducer }) => {
-	const { filter, search } = filterReducer;
-	return { filter, search };
+	const { project, filter, search } = filterReducer;
+	return { project, filter, search };
 };
 
 export default connect(mapStateToProps, {  })(TasksRow);

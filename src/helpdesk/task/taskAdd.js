@@ -3,6 +3,8 @@ import Select from 'react-select';
 import {rebase, database} from '../../index';
 import {toSelArr, snapshotToArray} from '../../helperFunctions';
 import { Modal } from 'react-bootstrap';
+import Materials from '../components/materials';
+import Subtasks from '../components/subtasks';
 
 const repeat = [
 	{ value: 'none', label: 'none' },

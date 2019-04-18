@@ -279,7 +279,7 @@ export default class TasksTwoEdit extends Component {
 								<div className="row">
 									<h1># {this.props.match.params.taskID}</h1>
 									<span className="center-hor">
-							    	<input type="text" value={this.state.title} className="form-control hidden-input" onChange={(e)=>this.setState({title:e.target.value})} placeholder="Enter task name" />
+							    	<input type="text" value={this.state.title} className="form-control hidden-input" onChange={(e)=>this.setState({title:e.target.value},this.submitTask.bind(this))} placeholder="Enter task name" />
 									</span>
 								</div>
 								<div className="ml-auto p-2 align-self-center">
@@ -326,7 +326,7 @@ export default class TasksTwoEdit extends Component {
 												<div className="col-7">
 													<Select
 														value={this.state.status}
-														onChange={(status)=>this.setState({status,statusChange:(new Date().getTime())})}
+														onChange={(status)=>this.setState({status,statusChange:(new Date().getTime())},this.submitTask.bind(this))}
 														options={this.state.statuses.map((status)=>{return {...status,value:status.id,label:status.title}})}
 														styles={selectStyle}
 														/>
@@ -337,7 +337,7 @@ export default class TasksTwoEdit extends Component {
 												<div className="col-7">
 													<Select
 														value={this.state.project}
-														onChange={(project)=>this.setState({project})}
+														onChange={(project)=>this.setState({project},this.submitTask.bind(this))}
 														options={this.state.projects}
 														styles={selectStyle}
 														/>
@@ -348,7 +348,7 @@ export default class TasksTwoEdit extends Component {
 												<div className="col-7">
 													<Select
 														value={this.state.requester}
-														onChange={(requester)=>this.setState({requester})}
+														onChange={(requester)=>this.setState({requester},this.submitTask.bind(this))}
 														options={this.state.users}
 														styles={selectStyle}
 														/>
@@ -359,7 +359,7 @@ export default class TasksTwoEdit extends Component {
 												<div className="col-7">
 													<Select
 														value={this.state.company}
-														onChange={(company)=>this.setState({company})}
+														onChange={(company)=>this.setState({company},this.submitTask.bind(this))}
 														options={this.state.companies}
 														styles={selectStyle}
 														/>
@@ -370,7 +370,7 @@ export default class TasksTwoEdit extends Component {
 												<div className="col-7">
 													<Select
 														value={this.state.assigned}
-														onChange={(assigned)=>this.setState({assigned})}
+														onChange={(assigned)=>this.setState({assigned},this.submitTask.bind(this))}
 														options={this.state.users}
 														styles={selectStyle}
 														/>
@@ -395,7 +395,7 @@ export default class TasksTwoEdit extends Component {
 														type="datetime-local"
 														value={this.state.deadline}
 														onChange={(e)=>{
-															this.setState({deadline:e.target.value})}
+															this.setState({deadline:e.target.value},this.submitTask.bind(this))}
 														}
 														/>
 												</div>
@@ -413,7 +413,7 @@ export default class TasksTwoEdit extends Component {
 													<Select
 					                  value={this.state.workType}
 														styles={selectStyle}
-					                  onChange={(workType)=>this.setState({workType})}
+					                  onChange={(workType)=>this.setState({workType},this.submitTask.bind(this))}
 					                  options={taskTypes}
 					                  />
 												</div>
@@ -424,7 +424,7 @@ export default class TasksTwoEdit extends Component {
 													<Select
 														value={this.state.overtime}
 														styles={selectStyle}
-														onChange={(overtime)=>this.setState({overtime})}
+														onChange={(overtime)=>this.setState({overtime},this.submitTask.bind(this))}
 														options={[{value:true,label:'Áno'},{value:false,label:'Nie'}]}
 														/>
 												</div>
@@ -435,7 +435,7 @@ export default class TasksTwoEdit extends Component {
 							</div>
 
 							<label className="m-t-5">Popis</label>
-								<textarea className="form-control" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value})} />
+								<textarea className="form-control" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value},this.submitTask.bind(this))} />
 									<Subtasks
 										submitService={this.submitService.bind(this)}
 										updatePrices={(ids)=>{

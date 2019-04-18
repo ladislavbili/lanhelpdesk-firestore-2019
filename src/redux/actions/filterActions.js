@@ -1,4 +1,4 @@
-import {SET_FILTER, SET_SEARCH} from '../types';
+import {SET_FILTER, SET_SEARCH, SET_PROJECT} from '../types';
 
 export const setFilter = (filter) => {
    return (dispatch) => {
@@ -11,3 +11,9 @@ export const setFilter = (filter) => {
       dispatch({ type: SET_SEARCH,search });
     };
   };
+
+  export const setProject = (project) => {
+     return (dispatch) => {
+       dispatch({ type: SET_PROJECT,project });
+     };
+   };

@@ -2,11 +2,36 @@ import React, { Component } from 'react';
 import {NavItem, Nav, TabPane, TabContent, NavLink} from 'reactstrap';
 import classnames from 'classnames';
 import { NavLink as Link } from 'react-router-dom';
+import Select from "react-select";
+import { connect } from "react-redux";
+
 import SelectPage from '../SelectPage';
 import TaskAdd from './task/taskAdd';
 import Filter from './components/filter';
+import ProjectAdd from './projects/projectAdd';
+import {rebase} from '../index';
+import {toSelArr} from '../helperFunctions';
+import {setProject} from '../redux/actions';
 
-export default class Sidebar extends Component {
+const customSelect = {
+	singleValue: (provided, state) => {
+		return { ...provided, marginLeft:30 };
+	},
+	indicatorSeparator:(provided, state) => {
+		return { ...provided, width:0 };
+	},
+	control:(provided, state) => {
+		return { ...provided, borderRadius:50, borderColor:'#6c757d' };
+	},
+	input:(provided, state) => {
+		return { ...provided, marginLeft:30 };
+	},
+	placeholder:(provided, state) => {
+		return { ...provided, marginLeft:30 };
+	},
+}
+
+class Sidebar extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -14,30 +39,50 @@ export default class Sidebar extends Component {
 			openAddTaskModal: false,
 			isColumn: false,
 			search: '',
-			activeTab:0
+			activeTab:0,
+			projects:[{id:null,title:'Dashboard',label:'Dashboard',value:null}],
+			project:{id:null,title:'Dashboard',label:'Dashboard',value:null}
 		};
 	}
+
+	componentWillMount(){
+		this.ref = rebase.listenToCollection('/projects', {
+			context: this,
+			withIds: true,
+			then:content=>{
+				this.setState({
+				projects:toSelArr([{id:null,title:'Dashboard'}].concat(content)),
+				project:toSelArr([{id:null,title:'Dashboard'}].concat(content)).find((item)=>item.id===this.props.project)
+			});
+		},
+		});
+	}
+
 	render() {
 		return (
 			<div className="left side-menu">
 				<SelectPage />
 				<div className="scrollable fit-with-header">
-					<div id="sidebar-menu">
-						<li className="menu-title" style={{ paddingBottom: '0px !important' }}>
+					<div id="sidebar-menu" >
+						<li className="menu-title" style={{ paddingBottom: '0px !important' }} >
 							Project
 							<span className="pull-right">
-								<i className="fa fa-plus" />
+								<ProjectAdd />
 							</span>
 						</li>
 						<li className="menu-title" style={{ paddingTop: '0px !important' }}>
-							<button
-								type="button"
-								className="btn btn-outline-secondary btn-rounded waves-effect"
-								style={{ width: 210, textAlign: 'left' }}
-								>
-								<i className="fa fa-folder-open" /> ALL PROJECTS
-								</button>
-							</li>
+							<Select
+								className="fullWidth"
+								options={this.state.projects}
+								value={this.state.project}
+								styles={customSelect}
+								onChange={e => {
+									this.setState({project:e});
+									this.props.setProject(e.value);
+								}}
+								components={{DropdownIndicator: ({ innerProps, isDisabled }) =>  <i className="fa fa-folder-open" style={{position:'absolute', left:15}} /> }}
+								/>
+						</li>
 							<TaskAdd />
 							<hr />
 							<Nav tabs>
@@ -77,3 +122,9 @@ export default class Sidebar extends Component {
 			);
 		}
 	}
+	const mapStateToProps = ({ filterReducer }) => {
+    const { project } = filterReducer;
+    return { project };
+  };
+
+  export default connect(mapStateToProps, { setProject })(Sidebar);
