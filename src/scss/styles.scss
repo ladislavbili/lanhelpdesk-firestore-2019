@@ -83,6 +83,7 @@ html{
 
 .side-menu{
 	height:100vh;
+  list-style-type: none;
 }
 
 .p-r-20{
@@ -152,4 +153,18 @@ html{
 .commandbar{
   background-color: #8cbae8;
   height: 50px;
+}
+
+.command-search{
+  border-radius: 17px;
+  max-width: 250px;
+}
+
+.commandbar-item{
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.menu-item{
+  padding: 12px 20px 0px 20px;
 }

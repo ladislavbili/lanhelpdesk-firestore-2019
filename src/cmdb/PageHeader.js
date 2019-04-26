@@ -72,15 +72,7 @@ export default class PageHeader extends Component {
 								<Glyphicon glyph="cog" className="headerIcons mt-0" />
 							</Dropdown.Toggle>
 							<Dropdown.Menu>
-								<MenuItem onClick={()=>this.props.history.push(this.getLocation()+'/settings/projects')}>Projects</MenuItem>
 	              <MenuItem onClick={()=>this.props.history.push(this.getLocation()+'/settings/statuses')}>Statuses</MenuItem>
-	              <MenuItem onClick={()=>this.props.history.push(this.getLocation()+'/settings/units')}>Units</MenuItem>
-	              <MenuItem onClick={()=>this.props.history.push(this.getLocation()+'/settings/companies')}>Companies</MenuItem>
-	              <MenuItem onClick={()=>this.props.history.push(this.getLocation()+'/settings/workTypes')}>Work Type</MenuItem>
-	              <MenuItem onClick={()=>this.props.history.push(this.getLocation()+'/settings/users')}>Users</MenuItem>
-	              <MenuItem onClick={()=>this.props.history.push(this.getLocation()+'/settings/pricelists')}>Prices</MenuItem>
-	              <MenuItem onClick={()=>this.props.history.push(this.getLocation()+'/settings/suppliers')}>Supplier</MenuItem>
-	              <MenuItem onClick={()=>this.props.history.push(this.getLocation()+'/settings/supplierInvoices')}>Invoices</MenuItem>
 							</Dropdown.Menu>
 						</Dropdown>
 						<i
