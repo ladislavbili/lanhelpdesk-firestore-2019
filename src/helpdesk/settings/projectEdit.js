@@ -51,6 +51,13 @@ export default class ProjectEdit extends Component{
             rebase.updateDoc('/projects/'+this.props.match.params.id, {title:this.state.projectName})
               .then(()=>{this.setState({saving:false})});
           }}>{this.state.saving?'Saving project...':'Save project'}</Button>
+          <Button bsStyle="danger" className="separate" disabled={this.state.saving} onClick={()=>{
+              if(window.confirm("Are you sure?")){
+                rebase.removeDoc('/projects/'+this.props.match.params.id).then(()=>{
+                  this.props.history.goBack();
+                });
+              }
+              }}>Delete</Button>
       </div>
     );
   }

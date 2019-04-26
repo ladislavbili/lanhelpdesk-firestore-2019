@@ -68,7 +68,7 @@ export default class UnitsList extends Component{
             this.props.match.params.id && this.props.match.params.id==='add' && <UnitAdd />
           }
           {
-            this.props.match.params.id && this.props.match.params.id!=='add' && this.state.units.some((item)=>item.id===this.props.match.params.id) && <UnitEdit match={this.props.match} />
+            this.props.match.params.id && this.props.match.params.id!=='add' && this.state.units.some((item)=>item.id===this.props.match.params.id) && <UnitEdit match={this.props.match} history={this.props.history} />
           }
         </div>
       </div>

@@ -41,6 +41,7 @@ export default class Navigation extends Component {
 					<div className="flex">
 					<PageHeader {...this.props} />
 						<Route exact path="/helpdesk/Reports" component={Reports} />
+						<Route exact path="/helpdesk" component={TaskList} />
 						<Route exact path="/helpdesk/taskList" component={TaskList} />
 						<Route exact path="/helpdesk/taskList/:taskID" component={TaskList} />
 

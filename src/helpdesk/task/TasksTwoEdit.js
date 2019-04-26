@@ -107,6 +107,9 @@ export default class TasksTwoEdit extends Component {
 
 
   submitTask(){
+		if(this.canSave()){
+			return;
+		}
     this.setState({saving:true});
     let body = {
       title: this.state.title,

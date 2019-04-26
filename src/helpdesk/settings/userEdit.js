@@ -113,6 +113,13 @@ export default class UserEdit extends Component{
               .then(()=>{
                 this.setState({saving:false})});
           }}>{this.state.saving?'Saving user...':'Save user'}</Button>
+          <Button bsStyle="danger" className="separate" disabled={this.state.saving} onClick={()=>{
+              if(window.confirm("Are you sure?")){
+                rebase.removeDoc('/users/'+this.props.match.params.id).then(()=>{
+                  this.props.history.goBack();
+                });
+              }
+              }}>Delete</Button>
       </div>
     );
   }

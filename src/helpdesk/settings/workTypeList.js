@@ -68,7 +68,7 @@ export default class WorkTypesList extends Component{
             this.props.match.params.id && this.props.match.params.id==='add' && <WorkTypeAdd />
           }
           {
-            this.props.match.params.id && this.props.match.params.id!=='add' && this.state.workTypes.some((item)=>item.id===this.props.match.params.id) && <WorkTypeEdit match={this.props.match} />
+            this.props.match.params.id && this.props.match.params.id!=='add' && this.state.workTypes.some((item)=>item.id===this.props.match.params.id) && <WorkTypeEdit match={this.props.match} history={this.props.history} />
           }
         </div>
       </div>

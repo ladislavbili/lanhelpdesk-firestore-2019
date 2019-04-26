@@ -63,7 +63,7 @@ export default class StatusesList extends Component{
             this.props.match.params.id && this.props.match.params.id==='add' && <StatusAdd />
           }
           {
-            this.props.match.params.id && this.props.match.params.id!=='add' && this.state.statuses.some((item)=>item.id===this.props.match.params.id) && <StatusEdit match={this.props.match} />
+            this.props.match.params.id && this.props.match.params.id!=='add' && this.state.statuses.some((item)=>item.id===this.props.match.params.id) && <StatusEdit match={this.props.match} history={this.props.history} />
           }
         </div>
   </div>

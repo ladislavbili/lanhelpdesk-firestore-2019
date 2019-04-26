@@ -152,13 +152,30 @@ export default class SupplierInvoiceAdd extends Component{
           newItemID={this.state.newItemID}
           />
 
-        <Button bsStyle="primary" className="separate" disabled={this.state.saving||this.state.loading} onClick={()=>{
+        <Button bsStyle="primary" className="separate" disabled={this.state.saving||this.state.loading||this.state.supplier===undefined} onClick={()=>{
             this.setState({saving:true});
             rebase.updateDoc('/supplierInvoices/'+this.props.match.params.id, {supplier:this.state.supplier.id,identifier:this.state.identifier,note:this.state.note,date:this.state.date!==null?(new Date(this.state.date)).getTime():0})
               .then((response)=>{
                 this.setState({ saving:false});
               });
           }}>{this.state.saving?'Saving...':'Save supplier'}</Button>
+          <Button bsStyle="danger" className="separate" disabled={this.state.saving} onClick={()=>{
+              if(window.confirm("Are you sure?")){
+                this.state.invoiceItems.map((invoiceItem)=>{
+                  rebase.removeDoc('/invoiceItems/'+invoiceItem.id).then(()=>{
+                    database.collection('storedItems').where("invoiceItem", "==", invoiceItem.id).get().then((item)=>{
+                      let data=snapshotToArray(item);
+                      if(data.length===1){
+                        rebase.removeDoc('/storedItems/'+data[0].id);
+                      }
+                    })
+                  });
+                });
+                rebase.removeDoc('/supplierInvoices/'+this.props.match.params.id).then(()=>{
+                  this.props.history.goBack();
+                });
+              }
+              }}>Delete</Button>
       </div>
     );
   }

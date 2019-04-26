@@ -51,6 +51,13 @@ export default class WorkTypeEdit extends Component{
             rebase.updateDoc('/suppliers/'+this.props.match.params.id, {title:this.state.supplierName})
               .then(()=>{this.setState({saving:false})});
           }}>{this.state.saving?'Saving supplier...':'Save supplier'}</Button>
+          <Button bsStyle="danger" className="separate" disabled={this.state.saving} onClick={()=>{
+              if(window.confirm("Are you sure?")){
+                rebase.removeDoc('/suppliers/'+this.props.match.params.id).then(()=>{
+                  this.props.history.goBack();
+                });
+              }
+              }}>Delete</Button>
       </div>
     );
   }

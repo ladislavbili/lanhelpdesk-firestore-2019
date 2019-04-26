@@ -62,11 +62,18 @@ export default class UnitEdit extends Component{
               rebase.updateDoc('/metadata/0',{defaultUnit:null});
             }else if(this.state.def){
               this.setState({defaultUnit:this.props.match.params.id});
-              rebase.updateDoc('/metadata/0',{defaultUnit:this.props.match.params.id});              
+              rebase.updateDoc('/metadata/0',{defaultUnit:this.props.match.params.id});
             }
             rebase.updateDoc('/units/'+this.props.match.params.id, {title:this.state.unitName})
               .then(()=>{this.setState({saving:false})});
           }}>{this.state.saving?'Saving unit...':'Save unit'}</Button>
+          <Button bsStyle="danger" className="separate" disabled={this.state.saving} onClick={()=>{
+              if(window.confirm("Are you sure?")){
+                rebase.removeDoc('/units/'+this.props.match.params.id).then(()=>{
+                  this.props.history.goBack();
+                });
+              }
+              }}>Delete</Button>
       </div>
     );
   }

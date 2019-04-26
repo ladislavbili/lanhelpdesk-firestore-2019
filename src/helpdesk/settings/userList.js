@@ -69,7 +69,7 @@ export default class UsersList extends Component{
             this.props.match.params.id && this.props.match.params.id==='add' && <UserAdd />
           }
           {
-            this.props.match.params.id && this.props.match.params.id!=='add' && this.state.users.some((item)=>item.id===this.props.match.params.id) && <UserEdit match={this.props.match} />
+            this.props.match.params.id && this.props.match.params.id!=='add' && this.state.users.some((item)=>item.id===this.props.match.params.id) && <UserEdit match={this.props.match} history={this.props.history}/>
           }
         </div>
       </div>

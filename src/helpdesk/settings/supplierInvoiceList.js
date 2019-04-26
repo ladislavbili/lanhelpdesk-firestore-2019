@@ -81,7 +81,7 @@ export default class SupplierInvoicesList extends Component{
             this.props.match.params.id && this.props.match.params.id==='add' && <SupplierInvoiceAdd />
           }
           {
-            this.props.match.params.id && this.props.match.params.id!=='add' && this.state.supplierInvoices.some((item)=>item.id===this.props.match.params.id) && <SupplierInvoiceEdit match={this.props.match} />
+            this.props.match.params.id && this.props.match.params.id!=='add' && this.state.supplierInvoices.some((item)=>item.id===this.props.match.params.id) && <SupplierInvoiceEdit match={this.props.match} history={this.props.history} />
           }
         </div>
       </div>

@@ -9,6 +9,7 @@ const initialState = {
     statusDateFrom:'',
     statusDateTo:'',
     status:null,
+    updatedAt:(new Date()).getTime(),
   },
   search:'',
   project:null

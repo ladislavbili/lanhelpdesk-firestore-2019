@@ -99,20 +99,21 @@ export default class TaskEdit extends Component{
     }
 
 		database.collection('metadata').doc('0').get().then((taskMeta)=>{
+			let newID = (taskMeta.data().taskLastID+1)+"";
 			this.state.taskWorks.map((item)=>{
 				delete item['id'];
-					rebase.addToCollection('taskWorks',{task:(taskMeta.data().taskLastID+1)+"",...item});
+					rebase.addToCollection('taskWorks',{task:newID,...item});
 			})
 
 			this.state.taskMaterials.map((item)=>{
 				delete item['id'];
-				rebase.addToCollection('taskMaterials',{task:(taskMeta.data().taskLastID+1)+"",...item});
+				rebase.addToCollection('taskMaterials',{task:newID,...item});
 			})
 
 
-			rebase.addToCollection('/tasks', body,(taskMeta.data().taskLastID+1)+"")
+			rebase.addToCollection('/tasks', body,newID)
 			.then(()=>{
-				rebase.updateDoc('/metadata/0',{taskLastID:taskMeta.data().taskLastID+1});
+				rebase.updateDoc('/metadata/0',{taskLastID:newID});
 				this.setState({
 					saving:false,
 					openAddTaskModal:false,
@@ -133,6 +134,7 @@ export default class TaskEdit extends Component{
 					taskMaterials:[],
 				})
 				this.fetchData();
+				this.props.history.push('/helpdesk/taskList/'+newID);
 			});
 		})
   }

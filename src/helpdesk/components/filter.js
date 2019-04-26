@@ -57,7 +57,6 @@ class Filter extends Component {
   }
 
   setData(statuses,users,companies,workTypes){
-
     this.setState({
       statuses,
       users,
@@ -74,6 +73,29 @@ class Filter extends Component {
     });
   }
 
+  getItemValue(sourceKey,state,id){
+    let value = state[sourceKey].find((item)=>item.id===id);
+    if(value===undefined){
+      value={id:null,label:'Žiadny',value:null};
+    }
+    return value;
+  }
+
+  componentWillReceiveProps(props){
+    if(this.props.filter.updatedAt!==props.filter.updatedAt){
+      let filter = props.filter;
+      this.setState({
+        status:this.getItemValue('statuses',this.state,filter.status),
+        requester:this.getItemValue('users',this.state,filter.requester),
+        company:this.getItemValue('companies',this.state,filter.company),
+        assigned:this.getItemValue('users',this.state,filter.assigned),
+        workType:this.getItemValue('workTypes',this.state,filter.workType),
+        statusDateFrom:filter.statusDateFrom,
+        statusDateTo:filter.statusDateTo,
+      });
+    }
+  }
+
   fetchData(){
     Promise.all(
       [
@@ -86,6 +108,18 @@ class Filter extends Component {
       });
     }
 
+    resetFilter(){
+      this.setState({
+        status:{id:null,label:'Žiadny',value:null},
+        requester:{id:null,label:'Žiadny',value:null},
+        company:{id:null,label:'Žiadny',value:null},
+        assigned:{id:null,label:'Žiadny',value:null},
+        workType:{id:null,label:'Žiadny',value:null},
+        statusDateFrom:'',
+        statusDateTo:'',
+      })
+    }
+
     applyFilter(){
       let body={
         requester:this.state.requester.id,
@@ -95,11 +129,13 @@ class Filter extends Component {
         status:this.state.status.id,
         statusDateFrom:isNaN(new Date(this.state.statusDateFrom).getTime())||this.state.statusDateFrom === '' ? '' : (new Date(this.state.statusDateFrom).getTime()),
         statusDateTo:isNaN(new Date(this.state.statusDateTo).getTime())|| this.state.statusDateTo === '' ? '' : (new Date(this.state.statusDateTo).getTime()),
+        updatedAt:(new Date()).getTime()
       }
       this.props.setFilter(body);
     }
 
     render() {
+      console.log(this.state);
       return (
 
         <Nav vertical>
@@ -107,7 +143,7 @@ class Filter extends Component {
             <div className="btn-group mb-2">
               <button type="button" className="btn btn-light btn-xs" onClick={this.applyFilter.bind(this)}>Apply</button>
               <button type="button" className="btn btn-light btn-xs">Save</button>
-              <button type="button" className="btn btn-light btn-xs">Reset</button>
+              <button type="button" className="btn btn-light btn-xs" onClick={this.resetFilter.bind(this)}>Reset</button>
               <button type="button" className="btn btn-light btn-xs">Delete</button>
             </div>
           </NavItem>

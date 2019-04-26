@@ -68,7 +68,7 @@ export default class SuppliersList extends Component{
             this.props.match.params.id && this.props.match.params.id==='add' && <SupplierAdd />
           }
           {
-            this.props.match.params.id && this.props.match.params.id!=='add' && this.state.suppliers.some((item)=>item.id===this.props.match.params.id) && <SupplierEdit match={this.props.match} />
+            this.props.match.params.id && this.props.match.params.id!=='add' && this.state.suppliers.some((item)=>item.id===this.props.match.params.id) && <SupplierEdit match={this.props.match} history={this.props.history}/>
           }
         </div>
       </div>

@@ -68,7 +68,7 @@ export default class ProjectList extends Component{
             this.props.match.params.id && this.props.match.params.id==='add' && <ProjectAdd />
           }
           {
-            this.props.match.params.id && this.props.match.params.id!=='add' && this.state.projects.some((item)=>item.id===this.props.match.params.id) && <ProjectEdit match={this.props.match} />
+            this.props.match.params.id && this.props.match.params.id!=='add' && this.state.projects.some((item)=>item.id===this.props.match.params.id) && <ProjectEdit match={this.props.match} history={this.props.history}/>
           }
         </div>
       </div>

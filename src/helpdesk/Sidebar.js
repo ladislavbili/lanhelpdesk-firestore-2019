@@ -11,7 +11,7 @@ import Filter from './components/filter';
 import ProjectAdd from './projects/projectAdd';
 import {rebase} from '../index';
 import {toSelArr} from '../helperFunctions';
-import {setProject} from '../redux/actions';
+import {setProject, setFilter} from '../redux/actions';
 
 const customSelect = {
 	singleValue: (provided, state) => {
@@ -83,7 +83,7 @@ class Sidebar extends Component {
 								components={{DropdownIndicator: ({ innerProps, isDisabled }) =>  <i className="fa fa-folder-open" style={{position:'absolute', left:15}} /> }}
 								/>
 						</li>
-							<TaskAdd />
+							<TaskAdd history={this.props.history} />
 							<hr />
 							<Nav tabs>
 								<NavItem>
@@ -107,7 +107,18 @@ class Sidebar extends Component {
 								<TabPane tabId={0}>
 									<Nav vertical>
 										<NavItem>
-											<Link to={{ pathname: `` }}>Všetky</Link>
+											<Link to={{ pathname: `` }} onClick={()=>{
+													this.props.setFilter({
+														status:null,
+														requester:null,
+														company:null,
+														assigned:null,
+														workType:null,
+														statusDateFrom:'',
+														statusDateTo:'',
+														updatedAt:(new Date()).getTime()
+													});
+												}}>Všetky</Link>
 										</NavItem>
 
 									</Nav>
@@ -127,4 +138,4 @@ class Sidebar extends Component {
     return { project };
   };
 
-  export default connect(mapStateToProps, { setProject })(Sidebar);
+  export default connect(mapStateToProps, { setProject,setFilter })(Sidebar);

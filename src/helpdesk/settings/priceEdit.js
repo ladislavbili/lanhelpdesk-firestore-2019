@@ -164,6 +164,18 @@ export default class PriceEdit extends Component{
                 this.setState({saving:false})
               );
           }}>{this.state.saving?'Saving prices...':'Save prices'}</Button>
+          <Button bsStyle="danger" className="separate" disabled={this.state.saving} onClick={()=>{
+              if(window.confirm("Are you sure?")){
+                rebase.removeDoc('/pricelists/'+this.props.match.params.id);
+                if(this.state.defaultPricelist===this.props.match.params.id){
+                  rebase.updateDoc('/metadata/0',{defaultPricelist:null});
+                }
+                this.state.workTypes.filter((item)=>item.price.id!==undefined).map((workType)=>
+                  rebase.removeDoc('/prices/'+workType.price.id)
+                );
+                this.props.history.goBack();
+              }
+              }}>Delete</Button>
       </div>
     );
   }

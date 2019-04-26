@@ -68,7 +68,7 @@ export default class PriceList extends Component{
             this.props.match.params.id && this.props.match.params.id==='add' && <PriceAdd />
           }
           {
-            this.props.match.params.id && this.props.match.params.id!=='add' && this.state.pricelist.some((item)=>item.id===this.props.match.params.id) && <PriceEdit match={this.props.match} />
+            this.props.match.params.id && this.props.match.params.id!=='add' && this.state.pricelist.some((item)=>item.id===this.props.match.params.id) && <PriceEdit match={this.props.match} history={this.props.history}/>
           }
         </div>
       </div>
