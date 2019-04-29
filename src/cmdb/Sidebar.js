@@ -8,8 +8,9 @@ import { connect } from "react-redux";
 import SelectPage from '../SelectPage';
 import {rebase} from '../index';
 import {toSelArr} from '../helperFunctions';
-import {setProject, setFilter} from '../redux/actions';
-import ProjectAdd from './projects/projectAdd';
+import {setCompany, setFilter} from '../redux/actions';
+import CompanyAdd from './companies/companyAdd';
+import ItemAdd from './sidebarItemAdd';
 
 const customSelect = {
 	singleValue: (provided, state) => {
@@ -33,23 +34,39 @@ class Sidebar extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			projects:[{id:null,title:'All',label:'All',value:null}],
-			project:{id:null,title:'All',label:'All',value:null},
-			openAddItem:false
+			companies:[{id:null,title:'All',label:'All',value:null}],
+			company:{id:null,title:'All',label:'All',value:null},
+			openAddItem:false,
+			sidebarItems:[]
 		};
+
 	}
 
 	componentWillMount(){
-		this.ref = rebase.listenToCollection('/cmdb-projects', {
+		this.ref = rebase.listenToCollection('/companies', {
 			context: this,
 			withIds: true,
 			then:content=>{
 				this.setState({
-				projects:toSelArr([{id:null,title:'All'}].concat(content)),
-				project:toSelArr([{id:null,title:'All'}].concat(content)).find((item)=>item.id===this.props.project)
-			});
-		},
+				companies:toSelArr([{id:null,title:'All'}].concat(content)),
+				company:toSelArr([{id:null,title:'All'}].concat(content)).find((item)=>item.id===this.props.company)
+				});
+			},
 		});
+		this.ref1 = rebase.listenToCollection('/cmdb-sidebar', {
+			context: this,
+			withIds: true,
+			then:content=>{
+				this.setState({
+				sidebarItems:content
+				});
+			},
+		});
+	}
+
+	componentWillUnmount(){
+		rebase.removeBinding(this.ref);
+		rebase.removeBinding(this.ref1);
 	}
 
 	render() {
@@ -60,20 +77,20 @@ class Sidebar extends Component {
 					<div className="commandbar"  >
 					</div>
 					<li className="pb-0 menu-item" >
-						Project
+						Companies
 						<span className="pull-right">
-							<ProjectAdd />
+							<CompanyAdd />
 						</span>
 					</li>
 					<li className="menu-item">
 						<Select
 							className="fullWidth"
-							options={this.state.projects}
-							value={this.state.project}
+							options={this.state.companies}
+							value={this.state.company}
 							styles={customSelect}
 							onChange={e => {
-								this.setState({project:e});
-								this.props.setProject(e.value);
+								this.setState({company:e});
+								this.props.setCompany(e.value);
 							}}
 							components={{DropdownIndicator: ({ innerProps, isDisabled }) =>  <i className="fa fa-folder-open" style={{position:'absolute', left:15}} /> }}
 							/>
@@ -81,14 +98,14 @@ class Sidebar extends Component {
 					<Nav vertical>
 						<NavItem>
 							<Link to={{ pathname: `/cmdb/all` }}>IP list</Link>
-							<Link to={{ pathname: `/cmdb/0` }}>Servers</Link>
-							<Link to={{ pathname: `/cmdb/1` }}>Routers</Link>
-							<Link to={{ pathname: `/cmdb/2` }}>PCs</Link>
-							<Link to={{ pathname: `/cmdb/3` }}>Domains</Link>
-							<Link to={{ pathname: `/cmdb/4` }}>E-mails</Link>
+							{
+								this.state.sidebarItems.map((item)=>
+								<Link key={item.id} to={{ pathname: `/cmdb/`+item.id }}>{item.title}</Link>
+							)}
 							<Link to={{ pathname: `` }} onClick={()=>{this.setState({openAddItem:true})}}>+Add new</Link>
 						</NavItem>
 					</Nav>
+					<ItemAdd opened={this.state.openAddItem} toggle={()=>this.setState({openAddItem:false})} />
 				</div>
 
 			</div>
@@ -96,8 +113,8 @@ class Sidebar extends Component {
 		}
 	}
 	const mapStateToProps = ({ filterReducer }) => {
-    const { project } = filterReducer;
-    return { project };
+    const { company } = filterReducer;
+    return { company };
   };
 
-  export default connect(mapStateToProps, { setProject,setFilter })(Sidebar);
+  export default connect(mapStateToProps, { setCompany,setFilter })(Sidebar);

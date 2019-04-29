@@ -1,4 +1,4 @@
-import {SET_FILTER, SET_SEARCH, SET_PROJECT} from '../types'
+import {SET_FILTER, SET_SEARCH, SET_PROJECT,SET_COMPANY} from '../types'
 
 const initialState = {
   filter: {
@@ -9,10 +9,11 @@ const initialState = {
     statusDateFrom:'',
     statusDateTo:'',
     status:null,
-    updatedAt:(new Date()).getTime(),
+    updatedAt:(new Date()).getTime()
   },
   search:'',
-  project:null
+  project:null,
+  company:null,
 };
 
 export default function filterReducer(state = initialState, action) {
@@ -31,6 +32,11 @@ export default function filterReducer(state = initialState, action) {
       return {
         ...state,
         project: action.project,
+      };
+    case SET_COMPANY:
+      return {
+        ...state,
+        company: action.company,
       };
     default:
       return state;

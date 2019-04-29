@@ -38,7 +38,7 @@ export default class PageHeader extends Component {
 							<i className="fa fa-file-pdf mr-1" />
 							Návody
 						</Link>
-						<Link className="" to={{ pathname: `/cmdb` }} className="pl-4" style={{ color: 'white' }}>
+						<Link className="" to={{ pathname: `/cmdb/all` }} className="pl-4" style={{ color: 'white' }}>
 							<i className="fa fa-file-pdf mr-1" />
 							CMDB
 						</Link>
