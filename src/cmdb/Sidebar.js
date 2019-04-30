@@ -10,7 +10,6 @@ import {rebase} from '../index';
 import {toSelArr} from '../helperFunctions';
 import {setCompany, setFilter} from '../redux/actions';
 import CompanyAdd from './companies/companyAdd';
-import ItemAdd from './sidebarItemAdd';
 
 const customSelect = {
 	singleValue: (provided, state) => {
@@ -35,9 +34,7 @@ class Sidebar extends Component {
 		super(props);
 		this.state = {
 			companies:[{id:null,title:'All',label:'All',value:null}],
-			company:{id:null,title:'All',label:'All',value:null},
-			openAddItem:false,
-			sidebarItems:[]
+			company:{id:null,title:'All',label:'All',value:null}
 		};
 
 	}
@@ -53,20 +50,10 @@ class Sidebar extends Component {
 				});
 			},
 		});
-		this.ref1 = rebase.listenToCollection('/cmdb-sidebar', {
-			context: this,
-			withIds: true,
-			then:content=>{
-				this.setState({
-				sidebarItems:content
-				});
-			},
-		});
 	}
 
 	componentWillUnmount(){
 		rebase.removeBinding(this.ref);
-		rebase.removeBinding(this.ref1);
 	}
 
 	render() {
@@ -97,15 +84,9 @@ class Sidebar extends Component {
 					</li>
 					<Nav vertical>
 						<NavItem>
-							<Link key='all' to={{ pathname: `/cmdb/all` }}>IP list</Link>
-							{
-								this.state.sidebarItems.map((item)=>
-								<Link key={item.id} to={{ pathname: `/cmdb/`+item.id }}>{item.title}</Link>
-							)}
-							<Link to={{ pathname: `` }} key='add' onClick={()=>{this.setState({openAddItem:true})}}>+Add new</Link>
+							<Link to={{ pathname: `/cmdb/servers` }}>Servers</Link>
 						</NavItem>
 					</Nav>
-					<ItemAdd opened={this.state.openAddItem} toggle={()=>this.setState({openAddItem:false})} />
 				</div>
 
 			</div>

@@ -3,8 +3,9 @@ import { Route } from 'react-router-dom';
 
 import Sidebar from './Sidebar';
 import PageHeader from './PageHeader';
-import List from './list';
+import ServerList from './servers';
 import StatusList from './statuses';
+import ServerAdd from './servers/serverAdd';
 
 export default class Navigation extends Component {
 	render() {
@@ -14,8 +15,9 @@ export default class Navigation extends Component {
 						<Sidebar {...this.props} />
 					<div className="flex">
 						<PageHeader {...this.props} />
-						<Route exact path='/cmdb/:id' component={List} />
 						<Route exact path='/cmdb/settings/statuses' component={StatusList} />
+						<Route exact path='/cmdb/servers' component={ServerList} />
+						<Route exact path='/cmdb/settings/status/add' component={ServerAdd} />
 					</div>
 				</div>
 			</div>
