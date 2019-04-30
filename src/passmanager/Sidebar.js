@@ -54,7 +54,6 @@ class Sidebar extends Component {
 	}
 
 	render() {
-		console.log(this.state.folders);
 		return (
 			<div className="left side-menu">
 				<SelectPage />

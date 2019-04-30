@@ -81,9 +81,9 @@ export default class Sidebar extends Component {
 								{
 									this.getData().map((item)=>
 										<tr key={item.id}>
-											<td>{item.title}</td>
+											<td className="clickable" onClick={()=>this.props.history.push('/passmanager/'+this.props.match.params.id+'/edit/'+item.id)}>{item.title}</td>
 											<td><a href={item.URL} target="_blank">{item.URL}</a></td>
-											<td>{item.login}</td>
+											<td className="clickable" onClick={()=>this.props.history.push('/passmanager/'+this.props.match.params.id+'/edit/'+item.id)}>{item.login}</td>
 											<td className="row">
 												{
 													item.shown &&
