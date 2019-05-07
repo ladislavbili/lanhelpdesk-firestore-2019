@@ -8,6 +8,7 @@ import Rebase from 're-base';
 import Navigation from './navigation';
 
 import config from './firebase';
+import configFirestore from './firestore';
 import createStore from './redux/store';
 
 import 'react-datepicker/dist/react-datepicker.css';
@@ -27,6 +28,12 @@ const settings = { };
 db.settings(settings);
 export let rebase = Rebase.createClass(db);
 export let database = db;
+
+const appFirestore = firebase.initializeApp(configFirestore, "otherApp");
+const dbFirestore = firebase.firestore(appFirestore);
+
+export let rebaseFirestore = Rebase.createClass(dbFirestore);
+export let firebaseFirestore = dbFirestore;
 
 const Root = () => {
   return(
