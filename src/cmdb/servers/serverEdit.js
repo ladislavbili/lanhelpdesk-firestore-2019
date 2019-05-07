@@ -6,8 +6,7 @@ import Select from 'react-select';
 import IPList from '../ipList';
 import TextareaList from '../textareaList';
 
-
-export default class ServerAdd extends Component{
+export default class ServerEdit extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -21,6 +20,7 @@ export default class ServerAdd extends Component{
       backupTasks:[],
       diskArray:[],
     }
+
     this.setData.bind(this);
     this.getData.bind(this);
     this.getData();
@@ -30,16 +30,34 @@ export default class ServerAdd extends Component{
     Promise.all([
       database.collection('cmdb-statuses').get(),
       database.collection('companies').get(),
+      database.collection('cmdb-servers').doc(this.props.match.params.id).get(),
+      database.collection('cmdb-IPlist').where("serverID", "==", this.props.match.params.id).get(),
+      database.collection('cmdb-server-backups').where("serverID", "==", this.props.match.params.id).get(),
+      database.collection('cmdb-server-storage').where("serverID", "==", this.props.match.params.id).get(),
     ])
-    .then(([statuses,companies])=>{
-      this.setData(toSelArr(snapshotToArray(statuses)),toSelArr(snapshotToArray(companies)));
+    .then(([statuses,companies,server,ipList,backups,storages])=>{
+      this.setData(
+        toSelArr(snapshotToArray(statuses)),
+        toSelArr(snapshotToArray(companies)),
+        {id:server.id,...server.data()},
+        toSelArr(snapshotToArray(ipList)),
+        toSelArr(snapshotToArray(backups)),
+        toSelArr(snapshotToArray(storages)),
+    );
     });
   }
 
-  setData(statuses,companies){
+  setData(statuses,companies,server,ipList,backups,storages){
     this.setState({
       statuses,
-      companies
+      companies,
+      backupTasks:backups,
+      title:server.title,
+      company:companies.find((item)=>item.id===server.company),
+      status:statuses.find((item)=>item.id===server.status),
+      IPlist:ipList,
+      backupTasks:backups,
+      diskArray:storages
     });
   }
 

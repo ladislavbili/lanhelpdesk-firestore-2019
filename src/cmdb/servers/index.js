@@ -99,10 +99,10 @@ export default class Sidebar extends Component {
 							<tbody>
 								{
 									this.getData().map((item)=>
-										<tr key={item.id}>
+										<tr key={item.id} className="clickable" onClick={()=>this.props.history.push('/cmdb/servers/'+item.id)}>
 												<td>{item.title}</td>
 												<td>{item.company}</td>
-												<td>{item.IP}</td>
+												<td>{item.IP.map((item2)=><span key={item2}>{item2}<br/></span>)}</td>
 												<td>{item.status}</td>
 										</tr>
 									)
