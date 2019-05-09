@@ -14,6 +14,7 @@ export default class ServerAdd extends Component{
       editGateway:'',
       editDNS:'',
       editItemID:null,
+      editFake: true,
 
       newNIC:'',
       newIP:'',
@@ -57,7 +58,8 @@ export default class ServerAdd extends Component{
                         mask:this.state.editMask,
                         gateway:this.state.editGateway,
                         DNS:this.state.editDNS,
-                        id:this.state.editItemID
+                        id:this.state.editItemID,
+                        fake:this.state.editFake,
                       }
                       let newData = [...this.props.items];
                       newData[index]=body;
@@ -72,6 +74,7 @@ export default class ServerAdd extends Component{
                         editGateway:item.gateway,
                         editDNS:item.DNS,
                         editItemID:item.id,
+                        editFake:item.fake,
                       });
                     }}
                     onChange={e =>{
@@ -95,7 +98,8 @@ export default class ServerAdd extends Component{
                         mask:this.state.editMask,
                         gateway:this.state.editGateway,
                         DNS:this.state.editDNS,
-                        id:this.state.editItemID
+                        id:this.state.editItemID,
+                        fake:this.state.editFake,
                       }
                       let newData = [...this.props.items];
                       newData[index]=body;
@@ -110,6 +114,7 @@ export default class ServerAdd extends Component{
                         editGateway:item.gateway,
                         editDNS:item.DNS,
                         editItemID:item.id,
+                        editFake:item.fake,
                       });
                     }}
                     onChange={e =>{
@@ -136,7 +141,8 @@ export default class ServerAdd extends Component{
                         mask:this.state.editMask,
                         gateway:this.state.editGateway,
                         DNS:this.state.editDNS,
-                        id:this.state.editItemID
+                        id:this.state.editItemID,
+                        fake:this.state.editFake,
                       }
                       let newData = [...this.props.items];
                       newData[index]=body;
@@ -151,6 +157,7 @@ export default class ServerAdd extends Component{
                         editGateway:item.gateway,
                         editDNS:item.DNS,
                         editItemID:item.id,
+                        editFake:item.fake,
                       });
                     }}
                     />
@@ -174,7 +181,8 @@ export default class ServerAdd extends Component{
                         mask:this.state.editMask,
                         gateway:this.state.editGateway,
                         DNS:this.state.editDNS,
-                        id:this.state.editItemID
+                        id:this.state.editItemID,
+                        fake:this.state.editFake,
                       }
                       let newData = [...this.props.items];
                       newData[index]=body;
@@ -189,6 +197,7 @@ export default class ServerAdd extends Component{
                         editGateway:item.gateway,
                         editDNS:item.DNS,
                         editItemID:item.id,
+                        editFake:item.fake,
                       });
                     }}
                     />
@@ -212,7 +221,8 @@ export default class ServerAdd extends Component{
                         mask:this.state.editMask,
                         gateway:this.state.editGateway,
                         DNS:this.state.editDNS,
-                        id:this.state.editItemID
+                        id:this.state.editItemID,
+                        fake:this.state.editFake,
                       }
                       let newData = [...this.props.items];
                       newData[index]=body;
@@ -227,6 +237,7 @@ export default class ServerAdd extends Component{
                         editGateway:item.gateway,
                         editDNS:item.DNS,
                         editItemID:item.id,
+                        editFake:item.fake,
                       });
                     }}
                     />
@@ -314,7 +325,8 @@ export default class ServerAdd extends Component{
                     mask:this.state.newMask,
                     gateway:this.state.newGateway,
                     DNS:this.state.newDNS,
-                    id:this.state.newItemID
+                    id:this.state.newItemID,
+                    fake:true
                   }
                   this.setState({
                     newNIC:'',

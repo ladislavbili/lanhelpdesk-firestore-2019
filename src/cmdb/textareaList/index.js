@@ -9,6 +9,7 @@ export default class TextareaList extends Component{
     this.state={
       editText:'',
       editID:null,
+      editFake:null,
       newID:0,
     }
   }
@@ -16,7 +17,7 @@ export default class TextareaList extends Component{
   render(){
     return (
       <div>
-        <Button color="primary" onClick={()=>{this.props.onChange([{id:this.state.newID,text:""},...this.props.items]);this.setState({newID:this.state.newID+1})}}>{this.props.addLabel}</Button>
+        <Button color="primary" onClick={()=>{this.props.onChange([{id:this.state.newID,text:"",fake:true},...this.props.items]);this.setState({newID:this.state.newID+1})}}>{this.props.addLabel}</Button>
         {
           this.props.items.map((item,index)=>
           <div className="row" key={item.id}>
@@ -35,7 +36,8 @@ export default class TextareaList extends Component{
                 onBlur={() => {
                   let body={
                     text:this.state.editText,
-                    id:this.state.editID
+                    id:this.state.editID,
+                    fake:this.state.editFake,
                   }
                   let newData = [...this.props.items];
                   newData[index]=body;
@@ -45,6 +47,7 @@ export default class TextareaList extends Component{
                 onFocus={() => {
                   this.setState({
                     editText:item.text,
+                    editFake:item.fake,
                     editID:item.id,
                   });
                 }}

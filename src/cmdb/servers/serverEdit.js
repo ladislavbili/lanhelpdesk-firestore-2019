@@ -13,6 +13,7 @@ export default class ServerEdit extends Component{
       saving:false,
       companies:[],
       statuses:[],
+      originalIPList:[],
       title:'',
       company:null,
       status:null,
@@ -31,7 +32,7 @@ export default class ServerEdit extends Component{
       database.collection('cmdb-statuses').get(),
       database.collection('companies').get(),
       database.collection('cmdb-servers').doc(this.props.match.params.id).get(),
-      database.collection('cmdb-IPlist').where("serverID", "==", this.props.match.params.id).get(),
+      database.collection('cmdb-IPList').where("serverID", "==", this.props.match.params.id).get(),
       database.collection('cmdb-server-backups').where("serverID", "==", this.props.match.params.id).get(),
       database.collection('cmdb-server-storage').where("serverID", "==", this.props.match.params.id).get(),
     ])
@@ -40,9 +41,9 @@ export default class ServerEdit extends Component{
         toSelArr(snapshotToArray(statuses)),
         toSelArr(snapshotToArray(companies)),
         {id:server.id,...server.data()},
-        toSelArr(snapshotToArray(ipList)),
-        toSelArr(snapshotToArray(backups)),
-        toSelArr(snapshotToArray(storages)),
+        snapshotToArray(ipList),
+        snapshotToArray(backups),
+        snapshotToArray(storages),
     );
     });
   }
@@ -55,9 +56,10 @@ export default class ServerEdit extends Component{
       title:server.title,
       company:companies.find((item)=>item.id===server.company),
       status:statuses.find((item)=>item.id===server.status),
-      IPlist:ipList,
-      backupTasks:backups,
-      diskArray:storages
+      originalIPList:ipList,
+      IPlist:ipList.map((item)=>{return {...item,fake:false}}),
+      backupTasks:backups.map((item)=>{return {...item,fake:false}}),
+      diskArray:storages.map((item)=>{return {...item,fake:false}}),
     });
   }
 
@@ -121,7 +123,8 @@ export default class ServerEdit extends Component{
 
         <Button color="secondary" onClick={this.props.history.goBack}>Cancel</Button>
 
-        <Button color="primary" disabled={this.state.company===null || this.state.status===null} onClick={()=>{
+        <Button color="success" disabled={this.state.company===null || this.state.status===null} onClick={()=>{
+            let ID = this.props.match.params.id;
             this.setState({saving:true});
             let body = {
               title:this.state.title,
@@ -129,32 +132,53 @@ export default class ServerEdit extends Component{
               status:this.state.status.id,
               IP:this.state.IPlist.map((item)=>item.IP)
             };
-            rebase.addToCollection('/cmdb-servers', body)
-              .then((response)=>{
-                this.state.IPlist.map((item)=>{
-                  delete item['id'];
-                  rebase.addToCollection('/cmdb-IPList',{...item,serverID:response.id});
-                });
+            rebase.updateDoc('/cmdb-servers/'+ID, body);
 
-                this.state.backupTasks.map((item)=>{
-                  rebase.addToCollection('/cmdb-server-backups',{text:item.text,serverID:response.id});
-                });
+            this.state.IPlist.filter((item)=>item.fake).map((item)=>{
+              let newItem={...item};
+              delete newItem['id'];
+              delete newItem['fake'];
+              rebase.addToCollection('/cmdb-IPList',{...newItem,serverID:ID});
+            });
 
-                this.state.diskArray.map((item)=>{
-                  rebase.addToCollection('/cmdb-server-storage',{text:item.text,serverID:response.id});
-                });
+            this.state.IPlist.filter((item)=>!item.fake).map((item)=>{
+              let newItem={...item};
+              delete newItem['id'];
+              delete newItem['fake'];
+              rebase.updateDoc('/cmdb-IPList/'+item.id,{...newItem});
+            });
 
-                  this.setState({
-                  title:'',
-                  company:null,
-                  status:null,
-                  IPlist:[],
-                  backupTasks:[],
-                  diskArray:[],
-                  saving:false});
-                  //this.props.history.goBack();
-              });
-          }}>{this.state.saving?'Adding...':'Add server'}</Button>
+            let currentIDs=this.state.IPlist.filter((item)=>!item.fake).map((item)=>item.id);
+            this.state.originalIPList.filter((item)=>!currentIDs.includes(item.id)).map((item)=>{
+              rebase.removeDoc('/cmdb-IPList/'+item.id);
+            });
+
+            this.state.backupTasks.filter((item)=>item.fake).map((item)=>{
+              rebase.addToCollection('/cmdb-server-backups',{text:item.text,serverID:ID});
+            });
+            this.state.backupTasks.filter((item)=>!item.fake).map((item)=>{
+              rebase.updateDoc('/cmdb-server-backups/'+item.id,{text:item.text,serverID:ID});
+            });
+
+            this.state.diskArray.filter((item)=>item.fake).map((item)=>{
+              rebase.addToCollection('/cmdb-server-storage',{text:item.text,serverID:ID});
+            });
+            this.state.diskArray.filter((item)=>!item.fake).map((item)=>{
+              rebase.updateDoc('/cmdb-server-storage/'+item.id,{text:item.text,serverID:ID});
+            });
+
+            this.setState({
+              title:'',
+              company:null,
+              status:null,
+              IPlist:[],
+              backupTasks:[],
+              diskArray:[],
+              saving:false
+            });
+
+            this.props.history.goBack();
+          }}>{this.state.saving?'Saving...':'Save server'}</Button>
         </div>
       </div>
     );

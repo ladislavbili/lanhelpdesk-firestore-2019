@@ -115,6 +115,7 @@ export default class ServerAdd extends Component{
               .then((response)=>{
                 this.state.IPlist.map((item)=>{
                   delete item['id'];
+                  delete item['fake'];
                   rebase.addToCollection('/cmdb-IPList',{...item,serverID:response.id});
                 });
 
@@ -134,7 +135,7 @@ export default class ServerAdd extends Component{
                   backupTasks:[],
                   diskArray:[],
                   saving:false});
-                  //this.props.history.goBack();
+                  this.props.history.goBack();
               });
           }}>{this.state.saving?'Adding...':'Add server'}</Button>
         </div>
