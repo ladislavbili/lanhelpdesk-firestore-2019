@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "bootstrap": "^4.3.0",
+    "ckeditor4-react": "^0.1.0",
     "firebase": "^5.7.1",
     "html-to-draftjs": "^1.4.0",
     "moment": "^2.24.0",
@@ -25,6 +26,7 @@
     "react-scripts": "^2.1.1",
     "react-select": "^2.3.0",
     "react-table": "^6.8.6",
+    "react-timeago": "^4.4.0",
     "reactjs-popup": "^1.2.0",
     "reactstrap": "^7.1.0",
     "redux": "^4.0.1",
