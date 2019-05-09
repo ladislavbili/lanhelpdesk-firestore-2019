@@ -3,12 +3,13 @@ import { Button, FormGroup, Progress, Row, Col, Input, InputGroup, InputGroupAdd
 
 import TimeAgo from 'react-timeago'
 
-import { rebaseFirestore } from '../../index';
+import { rebase } from '../../index';
 
 import CKEditor from 'ckeditor4-react';
 
 import PictureUpload from './PictureUpload';
 
+import "../../scss/lanwiki.scss";
 
 export default class Note extends Component{
 
@@ -51,12 +52,11 @@ export default class Note extends Component{
   }
 
   fetchData(id){
-    console.log(id);
-    rebaseFirestore.get('notes/' + id, {
+    rebase.get('lanwiki-notes/' + id, {
       context: this,
     }).then((note) =>
         {
-          rebaseFirestore.get('/tags', {
+          rebase.get('/lanwiki-tags', {
             context: this,
             withIds: true,
           }).then((tags) => this.setState({value: 100, name: note.name, body: note.body, chosenTags: note.tags, dateCreated: note.dateCreated.toLocaleString(), lastUpdated: note.lastUpdated, tags, loading:false})  );
@@ -74,7 +74,7 @@ export default class Note extends Component{
     if (this.state.timeout !== null){
         let lastUpd = Date().toLocaleString();
   //      this.setState({saving:true, value: 45});
-        rebaseFirestore.updateDoc('/notes/'+this.props.match.params.noteID, {name:this.state.name, body:this.state.body, tags: this.state.chosenTags, lastUpdated: lastUpd})
+        rebase.updateDoc('/lanwiki-notes/'+this.props.match.params.noteID, {name:this.state.name, body:this.state.body, tags: this.state.chosenTags, lastUpdated: lastUpd})
         .then(() => {
           this.setState({
             saving:false,
@@ -88,7 +88,7 @@ export default class Note extends Component{
 
   remove(){
     if (window.confirm("Chcete zmazať túto poznámku?")) {
-      rebaseFirestore.removeDoc('/notes/'+this.props.match.params.noteID)
+      rebase.removeDoc('/lanwiki-notes/'+this.props.match.params.noteID)
       .then(() => {
         this.props.history.goBack();
       });
@@ -179,14 +179,22 @@ export default class Note extends Component{
 
           <div className="commandbar">
             <Progress value={this.state.value}>{this.state.value === 100 ? "Loaded" : "Loading"}</Progress>
-            <Button onClick={this.remove.bind(this)}> DELETE </Button>
+            <Button
+              onClick={this.remove.bind(this)}
+              block
+              className='addTag'>
+               DELETE
+             </Button>
           </div>
 
+          <div
+            className="note">
           <FormGroup>
             <InputGroup>
               <Input
                 id="name"
                 placeholder="Názov"
+
                 value={this.state.name}
                 onChange={(e) => this.changeName(e)}
               />
@@ -239,7 +247,7 @@ export default class Note extends Component{
 
             <FormGroup>
                 <Button outline color="secondary" size="sm" onClick={this.toggleModal.bind(this)}>Pridať obrázok z uložiska</Button>
-                <Modal isOpen={this.state.modalOpen} toggle={this.toggleModal.bind(this)} >
+                <Modal className="modalLO" isOpen={this.state.modalOpen} toggle={this.toggleModal.bind(this)} >
                   <ModalHeader toggle={this.toggleModal.bind(this)}>Nahrať obrázok</ModalHeader>
                   <ModalBody>
                     <PictureUpload appendImage={this.appendImage.bind(this)}/>
@@ -261,7 +269,7 @@ export default class Note extends Component{
                   />
             </FormGroup>
 
-
+</div>
 </div>
     );
   }

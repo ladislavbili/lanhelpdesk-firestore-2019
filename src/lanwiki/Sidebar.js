@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import {NavItem, Nav, TabPane, TabContent, NavLink, ListGroup, ListGroupItem, Progress, Button} from 'reactstrap';
+import {NavItem, Nav, ListGroup, ListGroupItem, Progress, Button, Row, Col} from 'reactstrap';
 import { Glyphicon } from 'react-bootstrap';
-import classnames from 'classnames';
 import { NavLink as Link } from 'react-router-dom';
 import Select from "react-select";
 import { connect } from "react-redux";
 
 import SelectPage from '../SelectPage';
-import {rebaseFirestore} from '../index';
+import {rebase} from '../index';
 import {toSelArr} from '../helperFunctions';
 import {setProject, setFilter} from '../redux/actions';
 
@@ -18,13 +17,15 @@ class Sidebar extends Component {
 			tags : [],
 			value: 0,
 		};
+
+		this.compare.bind(this);
 	}
 
 	componentWillMount(){
     this.setState({
       value: 0,
     });
-    this.ref = rebaseFirestore.listenToCollection('/tags', {
+    this.ref = rebase.listenToCollection('/lanwiki-tags', {
       context: this,
       withIds: true,
       then: tags=>{this.setState({tags, value:100})},
@@ -32,19 +33,34 @@ class Sidebar extends Component {
   }
 
   componentWillUnmount() {
-    rebaseFirestore.removeBinding(this.ref);
+    rebase.removeBinding(this.ref);
   }
 
+	compare(a,b) {
+		if (a.name.toLowerCase() < b.name.toLowerCase())
+			return -1;
+		if (a.name.toLowerCase() > b.name.toLowerCase())
+			return 1;
+		return 0;
+	}
+
 	render() {
+
+		let ORDERRED_TAGS = this.state.tags.sort(this.compare);
+
 		return (
 			<div className="left side-menu">
 				<SelectPage />
 				<div className="scrollable fit-with-header">
 					<div className="commandbar">
 						<Progress value={this.state.value}>{this.state.value === 100 ? "Loaded" : "Loading"}</Progress>
-						<Link className='link' to={{pathname: `/lanwiki/tags/add`}}  key={0}>
+							<Button
+								block
+								className='addTag'
+								onClick={() => this.props.history.push(`/lanwiki/tags/add`)}
+								>
 								Add tag +
-						</Link>
+						</Button>
 					</div>
 
 					<Link className='link' to={{pathname: `/lanwiki/notes/all`}}  key={1}>
@@ -58,20 +74,30 @@ class Sidebar extends Component {
 				</Link>
 
 				{
-						this.state.tags
+						ORDERRED_TAGS
 						.map(asset =>
+							<Row>
+								<Col xs={10}>
 										<ListGroupItem
 											className='sidebarItem'
 											key={asset.id}
 											active={window.location.pathname.includes(asset.id)}
+											onClick={() => this.props.history.push(`/lanwiki/notes/${asset.id}`)}
 											>
-											<Link className='link' to={{pathname: `/lanwiki/notes/${asset.id}`}}  key={asset.id + "0"}>
 												{asset.name}
-											</Link>
-											<Link className='link' to={{pathname: `/lanwiki/tags/${asset.id}`}} key={asset.id}>
-													<Glyphicon glyph="cog"/>
-											</Link>
 										</ListGroupItem>
+								 </Col>
+								 <Col xs={2}>
+									 <ListGroupItem
+										 className='sidebarItem'
+										 key={asset.id}
+										 active={window.location.pathname.includes(`/lanwiki/tags/${asset.id}`)}
+										 onClick={() => this.props.history.push(`/lanwiki/tags/${asset.id}`)}
+										 >
+													<Glyphicon glyph="cog"/>
+											</ListGroupItem>
+									</Col>
+								</Row>
 								)
 					}
 

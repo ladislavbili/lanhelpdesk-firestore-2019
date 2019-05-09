@@ -9,6 +9,8 @@ import ListNotes from './Notes/NoteList';
 import TagEdit from './Tags/TagEdit';
 import TagAdd from './Tags/TagAdd';
 
+import "../scss/lanwiki.scss";
+
 export default class Navigation extends Component {
 	render() {
 		return (

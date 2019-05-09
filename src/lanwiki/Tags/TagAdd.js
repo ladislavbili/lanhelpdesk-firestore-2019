@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {NavItem, Nav, TabPane, TabContent, NavLink, Button, FormGroup, Progress, Label, Input, InputGroup, ListGroup, ListGroupItem, Table} from 'reactstrap';
 import {hightlightText} from '../../helperFunctions';
 
-import { rebaseFirestore } from '../../index';
+import { rebase } from '../../index';
 
 import classnames from 'classnames';
 
@@ -30,7 +30,7 @@ export default class Sidebar extends Component {
     this.setState({value: 0, saving: true});
     let newRead = this.state.read.map(user => user.id);
     let newWrite = this.state.write.map(user => user.id);
-    rebaseFirestore.addToCollection('/tags', {name:this.state.name, body:this.state.body, read: newRead, write: newWrite, public: this.state.public, active: this.state.active})
+    rebase.addToCollection('/lanwiki-tags', {name:this.state.name, body:this.state.body, read: newRead, write: newWrite, public: this.state.public, active: this.state.active})
     .then(() => {
       this.setState({
         saving:false,
@@ -53,16 +53,16 @@ export default class Sidebar extends Component {
 					<Progress value={this.state.value}>{this.state.value === 100 ? "Loaded" : "Loading"}</Progress>
 					<h2>Add tag</h2>
 				</div>
-				<div className="fit-with-header scrollable col-lg-12">
+				<div className="fit-with-header scrollable col-lg-12 form">
 
 
 					<FormGroup check>
-						<Label check>
 							<Input
 								type="checkbox"
 								checked={this.state.active}
 								onChange={(e) => this.setState({active: e.target.checked})}
-								/>{'    '}
+								/>
+							<Label check>
 							Active
 						</Label>
 					</FormGroup>
@@ -78,8 +78,8 @@ export default class Sidebar extends Component {
 						</FormGroup>
 
 
-						<Button  color="primary" onClick={this.submit.bind(this)} >{!this.state.saving ? "Save":"Saving..."}</Button>
-					
+						<Button  color="primary" className="saveBtn" onClick={this.submit.bind(this)} >{!this.state.saving ? "Save":"Saving..."}</Button>
+
 
 				</div>
 

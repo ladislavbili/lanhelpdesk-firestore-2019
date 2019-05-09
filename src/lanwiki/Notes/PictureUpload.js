@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { rebaseFirestore } from '../../index';
+import { rebase } from '../../index';
 import { Container, Row, Col } from 'reactstrap';
 
 import firebase from 'firebase';
@@ -25,7 +25,7 @@ export default class PictureUpload extends Component{
   }
 
   fetchData(){
-    rebaseFirestore.get('/image-names', {
+    rebase.get('/lanwiki-image-names', {
       context: this,
       withIds: true,
     }).then((names) =>
@@ -34,7 +34,7 @@ export default class PictureUpload extends Component{
 
   loadImages(){
       this.state.names.map(name =>
-        this.state.storageRef.child(`notes/${name.name}`).getDownloadURL().then((url) => {
+        this.state.storageRef.child(`lanwiki-note-pictures/${name.name}`).getDownloadURL().then((url) => {
           if (!this.state.images.includes(url)) {
             this.setState({images: this.state.images.concat([url])});
           }
@@ -54,14 +54,14 @@ export default class PictureUpload extends Component{
       this.setState({ name: filename, progress: 100, isUploading: false });
       firebase
         .storage()
-        .ref("notes")
+        .ref("lanwiki-note-pictures")
         .child(filename)
         .getDownloadURL()
         .then(url => {
           console.log(url);
           this.setState({ images: [...this.state.images, url], names: [...this.state.names, url] });
           this.setState({saving:true});
-          rebaseFirestore.addToCollection('/image-names', {name: filename});
+          rebase.addToCollection('/lanwiki-image-names', {name: filename});
         })
 
     };
@@ -82,7 +82,7 @@ https://firebasestorage.googleapis.com/v0/b/lanwiki.appspot.com/o/notes%2Fbird.j
                 accept="image/*"
                 name="avatar"
                 filename={file => file.name.split('.')[0]}
-                storageRef={firebase.storage().ref("notes")}
+                storageRef={firebase.storage().ref("lanwiki-note-pictures")}
                 onUploadStart={this.handleUploadStart}
                 onUploadError={this.handleUploadError}
                 onUploadSuccess={this.handleUploadSuccess}

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {NavItem, Nav, TabPane, TabContent, NavLink, ListGroup, ListGroupItem, Progress, InputGroup, InputGroupAddon, InputGroupText, Input, Button, Row, Col} from 'reactstrap';
 import TimeAgo from 'react-timeago'
-import { rebaseFirestore } from '../../index';
+import { rebase } from '../../index';
 import {hightlightText} from '../../helperFunctions';
 
 import classnames from 'classnames';
@@ -27,12 +27,12 @@ export default class Sidebar extends Component {
 			this.setState({
 				value: 0,
 			});
-			rebaseFirestore.listenToCollection('/notes', {
+			rebase.listenToCollection('/lanwiki-notes', {
 				context: this,
 				withIds: true,
 				then: notes=> this.setState({notes, value: 100})
 			});
-			rebaseFirestore.listenToCollection('/tags', {
+			rebase.listenToCollection('/lanwiki-tags', {
 				context: this,
 				withIds: true,
 				then: tags=> this.setState({tags, value: 100})
@@ -40,7 +40,7 @@ export default class Sidebar extends Component {
 	}
 
 	createNew(){
-    rebaseFirestore.addToCollection('notes',
+    rebase.addToCollection('lanwiki-notes',
     {name: "Untitled",
       tags: (this.props.match.params.tagID !== "all" ? [this.props.match.params.tagID] : []),
       body: "",
@@ -84,19 +84,21 @@ export default class Sidebar extends Component {
 						<div className="fit-with-header scrollable col-lg-4">
 							<div className="commandbar">
 								<Progress value={this.state.value}>{this.state.value === 100 ? "Loaded" : "Loading"}</Progress>
-								<InputGroup>
+								<InputGroup className="search">
 									<Input placeholder="Search" value={this.state.search} onChange={(e) => this.setState({search: e.target.value})}/>
 								</InputGroup>
 							</div>
-							<ListGroup>
-	              <Button
-	                color="success"
-	                onClick={(e) => {
-	                  e.preventDefault();
-	                  this.createNew();
-	                }}
-	                >New Note +</Button>
 
+
+							<ListGroup className="list">
+								<Button
+									color="success"
+									className="addNote"
+									onClick={(e) => {
+										e.preventDefault();
+										this.createNew();
+									}}
+									>New Note +</Button>
 	              {
 	                this.state.tags.length > 0
 	                &&
@@ -105,6 +107,7 @@ export default class Sidebar extends Component {
 	                      active={this.props.match.params.noteID ? (this.props.match.params.noteID === note.id) : false}
 	                      tag="a"
 	                      href={`/notes/${this.props.match.params.tagID}/` + note.id}
+												className="sidebarItem"
 	                      onClick={(e) => {
 	                        e.preventDefault();
 	                        this.props.history.push(`/lanwiki/notes/${this.props.match.params.tagID}/` + note.id);
@@ -113,12 +116,12 @@ export default class Sidebar extends Component {
 	                      key={note.id}
 	                      >
 	                      <Row>
-	                        <Col xs="9">{hightlightText(note.name, this.state.search, '#00FF04')}</Col>
-	                        <Col xs="3"><small style={{color: 'rgb(180, 180, 180)'}}><TimeAgo date={note.lastUpdated} minPeriod={300}/></small></Col>
+	                        <Col xs="9" className="listName">{hightlightText(note.name, this.state.search, '#81c868')}</Col>
+	                        <Col xs="3" className="listTag"><TimeAgo date={note.lastUpdated} minPeriod={300}/></Col>
 	                      </Row>
 	                      <Row>
-	                        <Col><small style={{color: 'rgb(180, 180, 180)'}}>{this.state.tags.filter(tag =>
-	                          note.tags.includes(tag.id)).map(tag => "| " + tag.name + " ")}</small></Col>
+	                        <Col className="listTime">{this.state.tags.filter(tag =>
+	                          note.tags.includes(tag.id)).map(tag => "| " + tag.name + " ")}</Col>
 	                      </Row>
 	                    </ListGroupItem>
 	                  ))
