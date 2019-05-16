@@ -7,6 +7,7 @@ import HelpdeskNavigation from './helpdesk/navigation';
 import CMDBNavigation from './cmdb/navigation';
 import LanWikiNavigation from './lanwiki/navigation';
 import PassManagerNavigation from './passmanager/navigation';
+import ExpendituresNavigation from './expenditures/navigation';
 
 
 export default class Navigation extends Component {
@@ -19,6 +20,7 @@ export default class Navigation extends Component {
             <Route path='/cmdb' component={CMDBNavigation} />
             <Route path='/lanwiki' component={LanWikiNavigation} />
             <Route path='/passmanager' component={PassManagerNavigation} />
+            <Route path='/expenditures' component={ExpendituresNavigation} />
          </div>
       </div>
     )

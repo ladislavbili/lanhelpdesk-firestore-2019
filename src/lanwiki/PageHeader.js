@@ -19,6 +19,8 @@ export default class PageHeader extends Component {
 			return '/helpdesk';
 		} else if (url.includes('passmanager')) {
 			return '/passmanager';
+		} else if (url.includes('expenditures')) {
+			return '/expenditures';
 		} else {
 			return '/lanwiki';
 		}
@@ -45,6 +47,10 @@ export default class PageHeader extends Component {
 						<Link className="" to={{ pathname: `/passmanager` }} className="pl-4" style={{ color: 'white' }}>
 							<i className="fa fa-file-pdf mr-1" />
 							Heslá
+						</Link>
+						<Link className="" to={{ pathname: `/expenditures` }} className="pl-4" style={{ color: 'white' }}>
+							<i className="fa fa-file-pdf mr-1" />
+							Náklady
 						</Link>
 						<Link className="" to={{ pathname: `/helpdesk/reports` }} className="pl-4" style={{ color: 'white' }}>
 							<i className="fa fa-file-pdf mr-1" />
