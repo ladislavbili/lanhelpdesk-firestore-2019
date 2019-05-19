@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom';
 
 import Sidebar from './Sidebar';
 import PageHeader from '../components/PageHeader';
-import ListExample from './listExample';
+//import ListExample from './listExample';
 
 import ListNotes from './Notes/NoteList';
 import TagEdit from './Tags/TagEdit';

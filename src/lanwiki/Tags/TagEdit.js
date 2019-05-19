@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
-import {NavItem, Nav, TabPane, TabContent, NavLink,  Button, FormGroup, Progress, Label, Input, InputGroup, ListGroup, ListGroupItem, Table} from 'reactstrap';
-import {hightlightText} from '../../helperFunctions';
-
+import {Button, FormGroup, Progress, Label, Input} from 'reactstrap';
 import { rebase } from '../../index';
-
-import classnames from 'classnames';
 
 export default class Sidebar extends Component {
 	constructor(props) {

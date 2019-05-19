@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Nav, MenuItem, Glyphicon, Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap';
+import { Nav, Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap';
 import { Link } from 'react-router-dom';
 
 export default class PageHeader extends Component {
@@ -31,27 +31,27 @@ export default class PageHeader extends Component {
 			<div className="pageHeader">
 				<div className="d-flex bd-highlight" style={{height:'100%'}}>
 					<div className="center-hor">
-						<Link className="" to={{ pathname: `/helpdesk/taskList` }} className="pl-4" style={{ color: 'white' }}>
+						<Link to={{ pathname: `/helpdesk/taskList` }} className="pl-4" style={{ color: 'white' }}>
 							<i className="fa fa-file-pdf mr-1" />
 							Úlohy
 						</Link>
-						<Link className="" to={{ pathname: `/lanwiki` }} className="pl-4" style={{ color: 'white' }}>
+						<Link to={{ pathname: `/lanwiki` }} className="pl-4" style={{ color: 'white' }}>
 							<i className="fa fa-file-pdf mr-1" />
 							Návody
 						</Link>
-						<Link className="" to={{ pathname: `/cmdb/all` }} className="pl-4" style={{ color: 'white' }}>
+						<Link to={{ pathname: `/cmdb/all` }} className="pl-4" style={{ color: 'white' }}>
 							<i className="fa fa-file-pdf mr-1" />
 							CMDB
 						</Link>
-						<Link className="" to={{ pathname: `/passmanager` }} className="pl-4" style={{ color: 'white' }}>
+						<Link to={{ pathname: `/passmanager` }} className="pl-4" style={{ color: 'white' }}>
 							<i className="fa fa-file-pdf mr-1" />
 							Heslá
 						</Link>
-						<Link className="" to={{ pathname: `/expenditures` }} className="pl-4" style={{ color: 'white' }}>
+						<Link to={{ pathname: `/expenditures` }} className="pl-4" style={{ color: 'white' }}>
 							<i className="fa fa-file-pdf mr-1" />
 							Náklady
 						</Link>
-						<Link className="" to={{ pathname: `/helpdesk/reports` }} className="pl-4" style={{ color: 'white' }}>
+						<Link to={{ pathname: `/helpdesk/reports` }} className="pl-4" style={{ color: 'white' }}>
 							<i className="fa fa-file-pdf mr-1" />
 							Vykazy
 						</Link>

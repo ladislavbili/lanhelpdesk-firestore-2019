@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {rebase,database} from '../../index';
-import { Button, Form, FormGroup, Label, Input, FormText, InputGroup, InputGroupAddon, InputGroupText, Alert } from 'reactstrap';
+import { Button,  FormGroup, Label, Input,  InputGroup, InputGroupAddon, InputGroupText, Alert } from 'reactstrap';
 import {toSelArr,snapshotToArray} from '../../helperFunctions';
 import Select from 'react-select';
 
@@ -101,7 +101,7 @@ export default class UnitAdd extends Component{
               Passwords match!
             </Alert>
           }
-          { this.state.password.length>0 && this.state.password!==this.state.passwordConfirm && 
+          { this.state.password.length>0 && this.state.password!==this.state.passwordConfirm &&
             <Alert color="warning">
               Passwords don't match!
             </Alert>

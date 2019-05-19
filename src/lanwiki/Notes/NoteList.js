@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-import {NavItem, Nav, TabPane, TabContent, NavLink, ListGroup, ListGroupItem, Progress, InputGroup, InputGroupAddon, InputGroupText, Input, Button, Row, Col} from 'reactstrap';
+import {ListGroup, ListGroupItem, Progress, InputGroup, Input, Button, Row, Col} from 'reactstrap';
 import TimeAgo from 'react-timeago'
 import { rebase } from '../../index';
 import {hightlightText} from '../../helperFunctions';
-
-import classnames from 'classnames';
 
 import NoteEdit from './NoteEdit';
 

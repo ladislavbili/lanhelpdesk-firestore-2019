@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
-import {toSelArr, snapshotToArray} from '../../helperFunctions';
-import {rebase,database} from '../../index';
-import Select from 'react-select';
+import { Button, FormGroup, Label, Input } from 'reactstrap';
+import {rebase} from '../../index';
 
 export default class ProjectAdd extends Component{
   constructor(props){

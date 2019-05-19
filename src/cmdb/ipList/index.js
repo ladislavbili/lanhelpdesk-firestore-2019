@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import {rebase,database} from '../../index';
-import { Button, Form, FormGroup, Label, Input, FormText, InputGroup, InputGroupAddon, InputGroupText, Alert, Table } from 'reactstrap';
-import {toSelArr, snapshotToArray} from '../../helperFunctions';
-import Select from 'react-select';
+import { Table } from 'reactstrap';
 
 export default class ServerAdd extends Component{
   constructor(props){

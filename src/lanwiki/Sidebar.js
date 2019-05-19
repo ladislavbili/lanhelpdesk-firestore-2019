@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import {NavItem, Nav, ListGroup, ListGroupItem, Progress, Button, Row, Col} from 'reactstrap';
+import {ListGroupItem, Progress, Button, Row, Col} from 'reactstrap';
 import { NavLink as Link } from 'react-router-dom';
-import Select from "react-select";
 import { connect } from "react-redux";
 
 import SelectPage from '../components/SelectPage';
 import {rebase} from '../index';
-import {toSelArr} from '../helperFunctions';
 import {setProject, setFilter} from '../redux/actions';
 
 class Sidebar extends Component {

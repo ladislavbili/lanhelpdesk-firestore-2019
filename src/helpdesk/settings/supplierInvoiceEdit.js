@@ -152,7 +152,7 @@ export default class SupplierInvoiceAdd extends Component{
           }}>{this.state.saving?'Saving...':'Save supplier'}</Button>
         <Button color="danger" className="separate" disabled={this.state.saving} onClick={()=>{
               if(window.confirm("Are you sure?")){
-                this.state.invoiceItems.map((invoiceItem)=>{
+                this.state.invoiceItems.forEach((invoiceItem)=>{
                   rebase.removeDoc('/invoiceItems/'+invoiceItem.id).then(()=>{
                     database.collection('storedItems').where("invoiceItem", "==", invoiceItem.id).get().then((item)=>{
                       let data=snapshotToArray(item);

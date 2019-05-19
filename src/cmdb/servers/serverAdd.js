@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {rebase,database} from '../../index';
-import { Button, Form, FormGroup, Label, Input, FormText, InputGroup, InputGroupAddon, InputGroupText, Alert, Table } from 'reactstrap';
+import { Button,  FormGroup, Label, Input } from 'reactstrap';
 import {toSelArr, snapshotToArray} from '../../helperFunctions';
 import Select from 'react-select';
 import IPList from '../ipList';
@@ -113,17 +113,17 @@ export default class ServerAdd extends Component{
             };
             rebase.addToCollection('/cmdb-servers', body)
               .then((response)=>{
-                this.state.IPlist.map((item)=>{
+                this.state.IPlist.forEach((item)=>{
                   delete item['id'];
                   delete item['fake'];
                   rebase.addToCollection('/cmdb-IPList',{...item,serverID:response.id});
                 });
 
-                this.state.backupTasks.map((item)=>{
+                this.state.backupTasks.forEach((item)=>{
                   rebase.addToCollection('/cmdb-server-backups',{text:item.text,serverID:response.id});
                 });
 
-                this.state.diskArray.map((item)=>{
+                this.state.diskArray.forEach((item)=>{
                   rebase.addToCollection('/cmdb-server-storage',{text:item.text,serverID:response.id});
                 });
 

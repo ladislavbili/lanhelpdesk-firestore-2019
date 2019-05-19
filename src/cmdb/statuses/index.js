@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import {NavItem, Nav, TabPane, TabContent, NavLink} from 'reactstrap';
-import classnames from 'classnames';
 import {rebase} from '../../index';
 import StatusAdd from './statusAdd';
 import StatusEdit from './statusEdit';

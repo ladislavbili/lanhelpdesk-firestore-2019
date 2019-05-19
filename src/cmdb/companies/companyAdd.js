@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormGroup, FormControl, Button, Col, Label, Input } from 'reactstrap';
+import { FormGroup, Button, Label, Input } from 'reactstrap';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import {toSelArr, snapshotToArray} from '../../helperFunctions';
 import {rebase,database} from '../../index';

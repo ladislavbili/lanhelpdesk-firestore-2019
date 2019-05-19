@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import {NavItem, Nav, TabPane, TabContent, NavLink, Button, Input} from 'reactstrap';
-import classnames from 'classnames';
-import {rebase, database} from '../../index';
+import { Button, Input} from 'reactstrap';
+import {rebase} from '../../index';
 
-const attributes=[{title:'Server name',id:'title'},{title:'IP',id:'IP'},{title:'Status',id:'status'},{title:'Company',id:'company'}];
+//const attributes=[{title:'Server name',id:'title'},{title:'IP',id:'IP'},{title:'Status',id:'status'},{title:'Company',id:'company'}];
 
 export default class Sidebar extends Component {
 	constructor(props) {
@@ -82,7 +81,7 @@ export default class Sidebar extends Component {
 									this.getData().map((item)=>
 										<tr key={item.id}>
 											<td className="clickable" onClick={()=>this.props.history.push('/passmanager/'+this.props.match.params.id+'/edit/'+item.id)}>{item.title}</td>
-											<td><a href={item.URL} target="_blank">{item.URL}</a></td>
+											<td><a href={item.URL} target="_blank" without rel="noopener noreferrer">{item.URL}</a></td>
 											<td className="clickable" onClick={()=>this.props.history.push('/passmanager/'+this.props.match.params.id+'/edit/'+item.id)}>{item.login}</td>
 											<td className="row">
 												{

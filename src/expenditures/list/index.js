@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import {NavItem, Nav, TabPane, TabContent, NavLink, Button, Input} from 'reactstrap';
-import classnames from 'classnames';
-import {rebase, database} from '../../index';
-
-const attributes=[{title:'Server name',id:'title'},{title:'IP',id:'IP'},{title:'Status',id:'status'},{title:'Company',id:'company'}];
+import {Button} from 'reactstrap';
+import {rebase} from '../../index';
 
 export default class Sidebar extends Component {
 	constructor(props) {
@@ -87,9 +84,9 @@ export default class Sidebar extends Component {
 									.map((item)=>
 										<tr key={item.id}>
 											<td className="clickable" onClick={()=>this.props.history.push('/expenditures/'+this.props.match.params.id+'/edit/'+item.id)}>{item.startDate}</td>
-											<td><a href={item.URL} target="_blank">{item.title}</a></td>
+											<td>{item.title}</td>
 											<td className="clickable" onClick={()=>this.props.history.push('/expenditures/'+this.props.match.params.id+'/edit/'+item.id)}>{item.repeat}</td>
-											<td><a href={item.URL} target="_blank">{item.price}</a></td>
+											<td>{item.price}</td>
 										</tr>
 									)
 								}

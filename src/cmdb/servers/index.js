@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import {NavItem, Nav, TabPane, TabContent, NavLink, Button} from 'reactstrap';
-import classnames from 'classnames';
-import {rebase, database} from '../../index';
+import {Button} from 'reactstrap';
+import {rebase} from '../../index';
 
 
 export default class Sidebar extends Component {

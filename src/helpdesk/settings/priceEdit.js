@@ -96,7 +96,7 @@ export default class PriceEdit extends Component{
             this.state.workTypes.map((item,index)=>
             <FormGroup key={index}>
               <Label for={item.title}>{item.title}</Label>
-              <Input type="text" name={item.title} id={item.title} placeholder="Enter price" value={this.state.pricelistName} value={item.price.price} onChange={(e)=>{
+              <Input type="text" name={item.title} id={item.title} placeholder="Enter price" value={item.price.price} onChange={(e)=>{
                   let newWorkTypes=[...this.state.workTypes];
                   let newWorkType = {...newWorkTypes[index]};
                   newWorkType.price.price=e.target.value;

@@ -69,7 +69,7 @@ export default class Rozpocet extends Component {
 	}
 
 	render() {
-		const afterHours= this.props.company && this.state.newExtraWork ? this.props.company.pricelist.afterHours : 0;
+		//const afterHours= this.props.company && this.state.newExtraWork ? this.props.company.pricelist.afterHours : 0;
 		return (
 			<div className="">
 				<div className="row">

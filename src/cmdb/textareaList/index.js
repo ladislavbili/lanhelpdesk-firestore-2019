@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import {rebase,database} from '../../index';
-import { Button, Form, FormGroup, Label, Input, FormText, InputGroup, InputGroupAddon, InputGroupText, Alert, Table } from 'reactstrap';
+import { Button, Label, Input } from 'reactstrap';
 
 
 export default class TextareaList extends Component{

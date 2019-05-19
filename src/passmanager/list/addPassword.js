@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {rebase} from '../../index';
-import { Button, Form, FormGroup, Label, Input, FormText, InputGroup, InputGroupAddon, InputGroupText, Alert } from 'reactstrap';
+import { Button,  FormGroup, Label, Input,  InputGroup, InputGroupAddon, InputGroupText, Alert } from 'reactstrap';
 import {toSelArr} from '../../helperFunctions';
 import Select from 'react-select';
 

@@ -100,12 +100,12 @@ export default class TaskEdit extends Component{
 
 		database.collection('metadata').doc('0').get().then((taskMeta)=>{
 			let newID = (taskMeta.data().taskLastID+1)+"";
-			this.state.taskWorks.map((item)=>{
+			this.state.taskWorks.forEach((item)=>{
 				delete item['id'];
 					rebase.addToCollection('taskWorks',{task:newID,...item});
 			})
 
-			this.state.taskMaterials.map((item)=>{
+			this.state.taskMaterials.forEach((item)=>{
 				delete item['id'];
 				rebase.addToCollection('taskMaterials',{task:newID,...item});
 			})

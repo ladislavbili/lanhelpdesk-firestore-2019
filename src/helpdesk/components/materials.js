@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import { selectStyle, invisibleSelectStyle} from './selectStyles';
+import { invisibleSelectStyle} from './selectStyles';
 
 
 const tableStyle = {

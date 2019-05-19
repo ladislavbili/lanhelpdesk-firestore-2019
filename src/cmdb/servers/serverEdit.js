@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {rebase,database} from '../../index';
-import { Button, Form, FormGroup, Label, Input, FormText, InputGroup, InputGroupAddon, InputGroupText, Alert, Table } from 'reactstrap';
+import { Button,  FormGroup, Label, Input } from 'reactstrap';
 import {toSelArr, snapshotToArray} from '../../helperFunctions';
 import Select from 'react-select';
 import IPList from '../ipList';
@@ -52,7 +52,6 @@ export default class ServerEdit extends Component{
     this.setState({
       statuses,
       companies,
-      backupTasks:backups,
       title:server.title,
       company:companies.find((item)=>item.id===server.company),
       status:statuses.find((item)=>item.id===server.status),
@@ -134,14 +133,14 @@ export default class ServerEdit extends Component{
             };
             rebase.updateDoc('/cmdb-servers/'+ID, body);
 
-            this.state.IPlist.filter((item)=>item.fake).map((item)=>{
+            this.state.IPlist.filter((item)=>item.fake).forEach((item)=>{
               let newItem={...item};
               delete newItem['id'];
               delete newItem['fake'];
               rebase.addToCollection('/cmdb-IPList',{...newItem,serverID:ID});
             });
 
-            this.state.IPlist.filter((item)=>!item.fake).map((item)=>{
+            this.state.IPlist.filter((item)=>!item.fake).forEach((item)=>{
               let newItem={...item};
               delete newItem['id'];
               delete newItem['fake'];
@@ -149,21 +148,21 @@ export default class ServerEdit extends Component{
             });
 
             let currentIDs=this.state.IPlist.filter((item)=>!item.fake).map((item)=>item.id);
-            this.state.originalIPList.filter((item)=>!currentIDs.includes(item.id)).map((item)=>{
+            this.state.originalIPList.filter((item)=>!currentIDs.includes(item.id)).forEach((item)=>{
               rebase.removeDoc('/cmdb-IPList/'+item.id);
             });
 
-            this.state.backupTasks.filter((item)=>item.fake).map((item)=>{
+            this.state.backupTasks.filter((item)=>item.fake).forEach((item)=>{
               rebase.addToCollection('/cmdb-server-backups',{text:item.text,serverID:ID});
             });
-            this.state.backupTasks.filter((item)=>!item.fake).map((item)=>{
+            this.state.backupTasks.filter((item)=>!item.fake).forEach((item)=>{
               rebase.updateDoc('/cmdb-server-backups/'+item.id,{text:item.text,serverID:ID});
             });
 
-            this.state.diskArray.filter((item)=>item.fake).map((item)=>{
+            this.state.diskArray.filter((item)=>item.fake).forEach((item)=>{
               rebase.addToCollection('/cmdb-server-storage',{text:item.text,serverID:ID});
             });
-            this.state.diskArray.filter((item)=>!item.fake).map((item)=>{
+            this.state.diskArray.filter((item)=>!item.fake).forEach((item)=>{
               rebase.updateDoc('/cmdb-server-storage/'+item.id,{text:item.text,serverID:ID});
             });
 

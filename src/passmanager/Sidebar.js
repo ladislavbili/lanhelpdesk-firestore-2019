@@ -1,34 +1,12 @@
 import React, { Component } from 'react';
-import {NavItem, Nav, TabPane, TabContent, NavLink} from 'reactstrap';
-import classnames from 'classnames';
+import {NavItem, Nav } from 'reactstrap';
 import { NavLink as Link } from 'react-router-dom';
-import Select from "react-select";
-import { connect } from "react-redux";
 
 import SelectPage from '../components/SelectPage';
 import {rebase} from '../index';
-import {toSelArr} from '../helperFunctions';
 import FolderAdd from './folders/folderAdd';
 
-const customSelect = {
-	singleValue: (provided, state) => {
-		return { ...provided, marginLeft:30 };
-	},
-	indicatorSeparator:(provided, state) => {
-		return { ...provided, width:0 };
-	},
-	control:(provided, state) => {
-		return { ...provided, borderRadius:50, borderColor:'#6c757d' };
-	},
-	input:(provided, state) => {
-		return { ...provided, marginLeft:30 };
-	},
-	placeholder:(provided, state) => {
-		return { ...provided, marginLeft:30 };
-	},
-}
-
-class Sidebar extends Component {
+export default class Sidebar extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -73,8 +51,3 @@ class Sidebar extends Component {
 			);
 		}
 	}
-	const mapStateToProps = ({  }) => {
-    return {  };
-  };
-
-  export default connect(mapStateToProps, { })(Sidebar);

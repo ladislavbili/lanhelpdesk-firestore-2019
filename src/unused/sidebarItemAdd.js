@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import { Button,  FormGroup, Label, Input, FormText } from 'reactstrap';
 import { Modal } from 'react-bootstrap';
 import Select from "react-select";
 import {rebase} from '../index';

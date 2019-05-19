@@ -6,7 +6,21 @@ import PageHeader from '../components/PageHeader';
 import Reports from './reports';
 
 import TaskList from './task/TaskList';
+import TaskTop3 from './task/TaskTop3';
 
+/*
+import TaskListSearch from './tested/TaskListSearch';
+import TaskTop from './tested/TaskTop';
+import TaskTop2 from './tested/TaskTop2';
+import TaskTop4 from './tested/TaskTop4';
+import TaskTopChiptask from './tested/TaskTopChiptask';
+import TaskSideLeft2 from './tested/TaskSideLeft2';
+import TaskSide from './tested/TaskSide';
+import TaskSide2 from './tested/TaskSide2';
+import TaskSide3 from './tested/TaskSide3';
+import TasksTwoEditRow from './tested/TasksTwoEditRow';
+import TaskSideLeft from './tested/TaskSideLeft';
+*/
 import StatusList from './settings/statusList';
 import ProjectList from './settings/projectList';
 import UnitList from './settings/unitList';
@@ -60,6 +74,20 @@ export default class Navigation extends Component {
           <Route exact path='/helpdesk/settings/suppliers/:id' component={SupplierList} />
           <Route exact path='/helpdesk/settings/supplierInvoices' component={SupplierInvoiceList} />
           <Route exact path='/helpdesk/settings/supplierInvoices/:id' component={SupplierInvoiceList} />
+
+					<Route exact path="/helpdesk/taskListSearch" component={TaskListSearch} />
+					<Route exact path="/helpdesk/taskTop" component={TaskTop} />
+					<Route exact path="/helpdesk/taskTop2" component={TaskTop2} />
+					<Route exact path="/helpdesk/taskTop3" component={TaskTop3} />
+					<Route exact path="/helpdesk/taskTop4" component={TaskTop4} />
+					<Route exact path="/helpdesk/TaskTopChiptask" component={TaskTopChiptask} />
+					<Route exact path="/helpdesk/taskSide" component={TaskSide} />
+					<Route exact path="/helpdesk/taskSide2" component={TaskSide2} />
+					<Route exact path="/helpdesk/taskSide3" component={TaskSide3} />
+					<Route exact path="/helpdesk/tasksTwoEditRow" component={TasksTwoEditRow} />
+					<Route exact path="/helpdesk/taskSideLeft" component={TaskSideLeft} />
+					<Route exact path="/helpdesk/taskSideLeft2" component={TaskSideLeft2} />
+
 				</div>
 			</div>
 		</div>
