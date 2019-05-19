@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { FormGroup, FormControl, Button, Col, ControlLabel } from 'react-bootstrap';
+import { Button, FormGroup, Label,Input } from 'reactstrap';
 import {rebase} from '../../index';
 
 export default class StatusAdd extends Component{
   constructor(props){
     super(props);
     this.state={
-      statusName:'',
+      title:'',
       saving:false
     }
   }
@@ -15,17 +15,13 @@ export default class StatusAdd extends Component{
     return (
         <div className="container-padding form-background card-box scrollable fit-with-header">
         <FormGroup>
-          <Col sm={3}>
-            <ControlLabel className="center-hor">Status name</ControlLabel>
-          </Col>
-          <Col sm={9}>
-            <FormControl type="text" placeholder="Enter status name" value={this.state.statusName} onChange={(e)=>this.setState({statusName:e.target.value})} />
-          </Col>
+          <Label for="name">Status name</Label>
+          <Input type="text" name="name" id="name" placeholder="Enter status name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
         </FormGroup>
-        <Button bsStyle="primary" className="separate" disabled={this.state.saving} onClick={()=>{
+        <Button color="primary" className="separate" disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
-            rebase.addToCollection('/statuses', {title:this.state.statusName})
-              .then(()=>{this.setState({statusName:'',saving:false})});
+            rebase.addToCollection('/statuses', {title:this.state.title})
+              .then(()=>{this.setState({title:'',saving:false})});
           }}>{this.state.saving?'Adding...':'Add status'}</Button>
       </div>
     );

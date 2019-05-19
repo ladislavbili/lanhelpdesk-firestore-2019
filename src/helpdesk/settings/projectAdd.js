@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormGroup, FormControl, Button, Col, ControlLabel } from 'react-bootstrap';
+import { Button, FormGroup, Label,Input } from 'reactstrap';
 import {rebase} from '../../index';
 
 export default class ProjectAdd extends Component{
@@ -15,14 +15,10 @@ export default class ProjectAdd extends Component{
     return (
         <div className="container-padding form-background card-box scrollable fit-with-header">
         <FormGroup>
-          <Col sm={3}>
-            <ControlLabel className="center-hor">Project name</ControlLabel>
-          </Col>
-          <Col sm={9}>
-            <FormControl type="text" placeholder="Enter project name" value={this.state.projectName} onChange={(e)=>this.setState({projectName:e.target.value})} />
-          </Col>
+          <Label for="name">Project name</Label>
+          <Input type="text" name="name" id="name" placeholder="Enter project name" value={this.state.projectName} onChange={(e)=>this.setState({projectName:e.target.value})} />
         </FormGroup>
-        <Button bsStyle="primary" className="separate" disabled={this.state.saving} onClick={()=>{
+        <Button color="primary" className="separate" disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
             rebase.addToCollection('/projects', {title:this.state.projectName})
               .then(()=>{this.setState({projectName:'',saving:false})});

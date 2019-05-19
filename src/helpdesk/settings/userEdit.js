@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormGroup, FormControl, Button, Col, ControlLabel } from 'react-bootstrap';
+import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
 import Select from 'react-select';
 import {rebase, database} from '../../index';
 import {snapshotToArray, isEmail} from '../../helperFunctions';
@@ -13,6 +13,7 @@ export default class UserEdit extends Component{
       surname:'',
       email:'',
       company:null,
+      loading:true,
       saving:false,
       companies:[]
     }
@@ -48,6 +49,7 @@ export default class UserEdit extends Component{
       name:data.name,
       surname:data.surname,
       email:data.email,
+      loading:false
     })
   }
 
@@ -62,58 +64,51 @@ export default class UserEdit extends Component{
 
   render(){
     return(
+
         <div className="container-padding form-background card-box scrollable fit-with-header">
-        <FormGroup>
-          <Col sm={3}>
-            <ControlLabel className="center-hor">Username</ControlLabel>
-          </Col>
-          <Col sm={9}>
-            <FormControl type="text" placeholder="Enter username" value={this.state.username} onChange={(e)=>this.setState({username:e.target.value})} />
-          </Col>
-        </FormGroup>
-        <FormGroup>
-          <Col sm={3}>
-            <ControlLabel className="center-hor">Name</ControlLabel>
-          </Col>
-          <Col sm={9}>
-            <FormControl type="text" placeholder="Enter name" value={this.state.name} onChange={(e)=>this.setState({name:e.target.value})} />
-          </Col>
-        </FormGroup>
-        <FormGroup>
-          <Col sm={3}>
-            <ControlLabel className="center-hor">Surname</ControlLabel>
-          </Col>
-          <Col sm={9}>
-            <FormControl type="text" placeholder="Enter surname" value={this.state.surname} onChange={(e)=>this.setState({surname:e.target.value})} />
-          </Col>
-        </FormGroup>
-        <FormGroup>
-          <Col sm={3}>
-            <ControlLabel className="center-hor">E-mail</ControlLabel>
-          </Col>
-          <Col sm={9}>
-            <FormControl type="text" placeholder="Enter e-mail" value={this.state.email} onChange={(e)=>this.setState({email:e.target.value})} />
-          </Col>
-        </FormGroup>
-        <div style={{fontSize:1}}>A</div>
-          <Select
-            className="supressDefaultSelectStyle"
-            options={
-              this.state.companies.map(company => {
-              company.label = company.title;
-              company.value = company.id;
-              return company;
-              })}
-            value={this.state.company}
-            onChange={e =>{ this.setState({ company: e }); }}
-            />
-        <Button bsStyle="primary" className="separate" disabled={this.state.saving|| this.state.companies.length===0||!isEmail(this.state.email)} onClick={()=>{
+          {
+            this.state.loading &&
+            <Alert color="success">
+              Loading data...
+            </Alert>
+          }
+          <FormGroup>
+            <Label for="username">Username</Label>
+            <Input type="text" name="username" id="username" placeholder="Enter username" value={this.state.username} onChange={(e)=>this.setState({username:e.target.value})} />
+          </FormGroup>
+          <FormGroup>
+            <Label for="name">Name</Label>
+            <Input type="text" name="name" id="name" placeholder="Enter name" value={this.state.name} onChange={(e)=>this.setState({name:e.target.value})} />
+          </FormGroup>
+          <FormGroup>
+            <Label for="surname">Surname</Label>
+            <Input type="text" name="surname" id="surname" placeholder="Enter surname" value={this.state.surname} onChange={(e)=>this.setState({surname:e.target.value})} />
+          </FormGroup>
+          <FormGroup>
+            <Label for="email">E-mail</Label>
+            <Input type="email" name="email" id="email" placeholder="Enter email" value={this.state.email} onChange={(e)=>this.setState({email:e.target.value})} />
+          </FormGroup>
+          <FormGroup>
+            <Label for="company">Company</Label>
+            <Select
+              className="supressDefaultSelectStyle"
+              options={
+                this.state.companies.map(company => {
+                company.label = company.title;
+                company.value = company.id;
+                return company;
+                })}
+              value={this.state.company}
+              onChange={e =>{ this.setState({ company: e }); }}
+              />
+          </FormGroup>
+          <Button color="primary" disabled={this.state.saving|| this.state.companies.length===0||!isEmail(this.state.email)} onClick={()=>{
             this.setState({saving:true});
             rebase.updateDoc('/users/'+this.props.match.params.id, {username:this.state.username,name:this.state.name,surname:this.state.surname,email:this.state.email,company:this.state.company.id})
               .then(()=>{
                 this.setState({saving:false})});
           }}>{this.state.saving?'Saving user...':'Save user'}</Button>
-          <Button bsStyle="danger" className="separate" disabled={this.state.saving} onClick={()=>{
+        <Button color="danger"  disabled={this.state.saving} onClick={()=>{
               if(window.confirm("Are you sure?")){
                 rebase.removeDoc('/users/'+this.props.match.params.id).then(()=>{
                   this.props.history.goBack();

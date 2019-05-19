@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormGroup, FormControl, Button, Col, ControlLabel } from 'react-bootstrap';
+import { Button, FormGroup, Label,Input } from 'reactstrap';
 import Select from 'react-select';
 import InvoiceItems from './invoiceItems';
 import {rebase, database} from '../../index';
@@ -44,42 +44,26 @@ export default class SupplierInvoiceAdd extends Component{
   render(){
     return (
         <div className="container-padding form-background card-box scrollable fit-with-header">
-        <FormGroup>
-          <Col sm={3}>
-            <ControlLabel className="center-hor">Invoice indetifier</ControlLabel>
-          </Col>
-          <Col sm={9}>
-            <FormControl type="number" placeholder="Supplier invoice indetifier" value={this.state.identifier} onChange={(e)=>this.setState({identifier:e.target.value})} />
-          </Col>
-        </FormGroup>
-        <FormGroup>
-          <Col sm={3}>
-            <ControlLabel className="center-hor">Supplier</ControlLabel>
-          </Col>
-          <Col sm={9}>
-            <Select
-              value={this.state.supplier}
-              onChange={(supplier)=>this.setState({supplier})}
-              options={this.state.suppliers}
-              />
-          </Col>
-        </FormGroup>
-        <FormGroup>
-          <Col sm={3}>
-            <ControlLabel className="center-hor">Date</ControlLabel>
-          </Col>
-          <Col sm={9}>
-            <FormControl type="datetime-local" placeholder="Enter date" value={this.state.date} onChange={(e)=>{this.setState({date:e.target.value})}} />
-          </Col>
-        </FormGroup>
-        <FormGroup>
-          <Col sm={3}>
-            <ControlLabel className="center-hor">Note</ControlLabel>
-          </Col>
-          <Col sm={9}>
-            <FormControl componentclassName="textarea" placeholder="Enter note" value={this.state.note} onChange={(e)=>this.setState({note:e.target.value})} />
-          </Col>
-        </FormGroup>
+          <FormGroup>
+            <Label for="name">Invoice indetifier</Label>
+            <Input type="text" name="identifier" id="identifier" placeholder="Enter identifier" value={this.state.identifier} onChange={(e)=>this.setState({identifier:e.target.value})} />
+          </FormGroup>
+          <FormGroup>
+            <Label for="name">Supplier</Label>
+              <Select
+                value={this.state.supplier}
+                onChange={(supplier)=>this.setState({supplier})}
+                options={this.state.suppliers}
+                />
+          </FormGroup>
+          <FormGroup>
+            <Label for="name">Date</Label>
+            <Input type="datetime-local" name="date" id="date" placeholder="Enter date" value={this.state.date} onChange={(e)=>this.setState({date:e.target.value})} />
+          </FormGroup>
+          <FormGroup>
+            <Label for="name">Note</Label>
+            <Input type="textarea" name="note" id="note" placeholder="Enter note" value={this.state.note} onChange={(e)=>this.setState({note:e.target.value})} />
+          </FormGroup>
 
         <InvoiceItems
           units={this.state.units}
@@ -91,7 +75,7 @@ export default class SupplierInvoiceAdd extends Component{
           newItemID={this.state.newItemID}
           />
 
-        <Button bsStyle="primary" className="separate" disabled={this.state.saving||this.state.loading} onClick={()=>{
+        <Button color="primary" className="separate" disabled={this.state.saving||this.state.loading} onClick={()=>{
             this.setState({saving:true});
             rebase.addToCollection('/supplierInvoices', {supplier:this.state.supplier.id,identifier:this.state.identifier,note:this.state.note,date:this.state.date!==null?(new Date(this.state.date)).getTime():0})
               .then((response)=>{
@@ -113,7 +97,7 @@ export default class SupplierInvoiceAdd extends Component{
                 })
                 this.setState({ supplier:null,identifier:0,note:'',invoiceItems:[],saving:false});
               });
-          }}>{this.state.saving?'Adding...':'Add supplier'}</Button>
+          }}>{this.state.saving?'Adding...':'Add invoice'}</Button>
       </div>
     );
   }

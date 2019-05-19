@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { FormGroup, FormControl, Button, Col, ControlLabel } from 'react-bootstrap';
-import { Modal } from 'react-bootstrap';
+import { Button, FormGroup, Label,Input } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import {rebase} from '../../index';
 
 export default class StatusEdit extends Component{
@@ -36,35 +36,27 @@ export default class StatusEdit extends Component{
 
   render(){
     return (
-          <Modal className="show" show={this.props.opened} >
-            <Modal.Header>
-              <h1 className="modal-header">Add status</h1>
-              <button type="button" className="close ml-auto" aria-label="Close" onClick={this.props.toggle}><span aria-hidden="true">×</span></button>
-            </Modal.Header>
-            <Modal.Body>
-              <FormGroup>
-                <Col sm={3}>
-                  <ControlLabel className="center-hor">Status name</ControlLabel>
-                </Col>
-                <Col sm={9}>
-                  <FormControl type="text" placeholder="Enter status name" disabled={this.state.loading} value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
-                </Col>
+      <Modal isOpen={this.props.opened} toggle={this.props.toggle} >
+          <ModalHeader toggle={this.props.toggle}>Edit status</ModalHeader>
+          <ModalBody>
+            <FormGroup>
+                <Label for="name">Status name</Label>
+                <Input type="text" name="name" id="name" placeholder="Enter status name" disabled={this.state.loading} value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
               </FormGroup>
-            </Modal.Body>
-
-            <Modal.Footer>
-              <Button bsStyle="danger" className="mr-auto" disabled={this.state.saving} onClick={this.props.toggle}>
+            </ModalBody>
+            <ModalFooter>
+              <Button color="danger" className="mr-auto" disabled={this.state.saving} onClick={this.props.toggle}>
                 Close
               </Button>
 
-              <Button bsStyle="primary" disabled={this.state.saving||this.state.loading} onClick={()=>{
-                this.setState({saving:true});
-                rebase.updateDoc('/cmdb-statuses/'+this.props.id, {title:this.state.title})
+              <Button color="primary" disabled={this.state.saving||this.state.loading} onClick={()=>{
+                  this.setState({saving:true});
+                  rebase.updateDoc('/cmdb-statuses/'+this.props.id, {title:this.state.title})
                   .then(()=>{this.setState({saving:false})});
                 }}>
                 {this.state.saving?'Saving...':'Save status'}
               </Button>
-            </Modal.Footer>
+            </ModalFooter>
           </Modal>
     );
   }

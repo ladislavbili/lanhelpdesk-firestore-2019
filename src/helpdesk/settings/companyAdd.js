@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormGroup, FormControl, Button, Col, ControlLabel, Alert } from 'react-bootstrap';
+import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
 import Select from 'react-select';
 import {toSelArr, snapshotToArray} from '../../helperFunctions';
 import {rebase,database} from '../../index';
@@ -49,40 +49,30 @@ export default class CompanyAdd extends Component{
       <div className="container-padding form-background card-box scrollable fit-with-header">
         {
           this.state.loading &&
-          <Alert bsStyle="success">
+          <Alert color="success">
             Loading data...
           </Alert>
         }
         <FormGroup>
-          <Col sm={3}>
-            <ControlLabel className="center-hor">Company name</ControlLabel>
-          </Col>
-          <Col sm={9}>
-            <FormControl type="text" placeholder="Enter company name" value={this.state.companyName} onChange={(e)=>this.setState({companyName:e.target.value})} />
-          </Col>
+          <Label for="name">Company name</Label>
+          <Input name="name" id="name" type="text" placeholder="Enter company name" value={this.state.companyName} onChange={(e)=>this.setState({companyName:e.target.value})} />
         </FormGroup>
         <FormGroup>
-          <Col sm={3}>
-            <ControlLabel className="center-hor">Paušál</ControlLabel>
-          </Col>
-          <Col sm={9}>
-            <FormControl type="number" placeholder="Enter pausal" value={this.state.pausal} onChange={(e)=>this.setState({pausal:e.target.value})} />
-          </Col>
+          <Label for="pausal">Paušál</Label>
+          <Input name="pausal" id="pausal" type="number" placeholder="Enter pausal" value={this.state.pausal} onChange={(e)=>this.setState({pausal:e.target.value})} />
         </FormGroup>
         <FormGroup>
-          <Col sm={3}>
-            <ControlLabel className="center-hor">Pricelist</ControlLabel>
-          </Col>
-          <Col sm={9}>
-            <Select
-              className="supressDefaultSelectStyle"
-              options={this.state.pricelists}
-              value={this.state.pricelist}
-              onChange={e =>{ this.setState({ pricelist: e }); }}
-                />
-          </Col>
+          <Label for="pricelist">Pricelist</Label>
+          <Select
+            id="pricelist"
+            name="pausal"
+            className="supressDefaultSelectStyle"
+            options={this.state.pricelists}
+            value={this.state.pricelist}
+            onChange={e =>{ this.setState({ pricelist: e }); }}
+              />
         </FormGroup>
-        <Button bsStyle="primary" className="separate" disabled={this.state.saving} onClick={()=>{
+        <Button color="primary" className="separate" disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
             rebase.addToCollection('/companies', {title:this.state.companyName,pricelist:this.state.pricelist.id})
               .then(()=>{this.setState({companyName:'',pausal:this.state.pausal,pricelist:this.state.pricelists.length>0?this.state.pricelists[0]:null,saving:false})});

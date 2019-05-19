@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormGroup, FormControl, Button, Col, ControlLabel, Alert } from 'react-bootstrap';
+import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
 import {rebase, database} from '../../index';
 import {snapshotToArray} from '../../helperFunctions';
 
@@ -75,67 +75,53 @@ export default class PriceEdit extends Component{
         <div className="container-padding form-background card-box scrollable fit-with-header">
         {
           this.state.loading &&
-          <Alert bsStyle="success">
+          <Alert color="success">
             Loading data...
           </Alert>
         }
-        <input type="checkbox" id="default" checked={this.state.def} onChange={(e)=>this.setState({def:!this.state.def})} />
-        <ControlLabel className="center-hor" htmlFor="default">Default</ControlLabel>
-        <FormGroup>
-          <Col sm={3}>
-            <ControlLabel className="center-hor">Pricelist name</ControlLabel>
-          </Col>
-          <Col sm={9}>
-            <FormControl type="text" placeholder="Enter pricelist name" value={this.state.pricelistName} onChange={(e)=>this.setState({pricelistName:e.target.value})} />
-          </Col>
+        <FormGroup check>
+          <Label check>
+            <Input type="checkbox" checked={this.state.def} onChange={(e)=>this.setState({def:!this.state.def})}/>
+            Default
+          </Label>
         </FormGroup>
+
+        <FormGroup>
+          <Label for="name">Pricelist name</Label>
+          <Input type="text" name="name" id="name" placeholder="Enter pricelist name" value={this.state.pricelistName} onChange={(e)=>this.setState({pricelistName:e.target.value})} />
+        </FormGroup>
+
         <div className="floatingSeparator"></div>
-        {
-          this.state.workTypes.map((item,index)=>
-          <FormGroup key={index}>
-            <Col sm={3}>
-              <ControlLabel className="center-hor">{item.title}</ControlLabel>
-            </Col>
-            <Col sm={9}>
-              <FormControl type="number" placeholder="Enter pricelist name" value={item.price.price} onChange={(e)=>{
+          {
+            this.state.workTypes.map((item,index)=>
+            <FormGroup key={index}>
+              <Label for={item.title}>{item.title}</Label>
+              <Input type="text" name={item.title} id={item.title} placeholder="Enter price" value={this.state.pricelistName} value={item.price.price} onChange={(e)=>{
                   let newWorkTypes=[...this.state.workTypes];
                   let newWorkType = {...newWorkTypes[index]};
                   newWorkType.price.price=e.target.value;
                   newWorkTypes[index] = newWorkType;
                   this.setState({workTypes:newWorkTypes});
                 }} />
-            </Col>
-          </FormGroup>
-          )
-        }
+            </FormGroup>
+            )
+          }
 
-        <div className="floatingSeparator"></div>
         <FormGroup>
-          <Col sm={3}>
-            <ControlLabel className="center-hor">After hours percentage</ControlLabel>
-          </Col>
-          <Col sm={9}>
-            <FormControl type="number" placeholder="Enter after hours percentage" value={this.state.afterHours} onChange={(e)=>this.setState({afterHours:e.target.value})} />
-          </Col>
-        </FormGroup>
-        <FormGroup>
-          <Col sm={3}>
-            <ControlLabel className="center-hor">Materials margin percentage 50-</ControlLabel>
-          </Col>
-          <Col sm={9}>
-            <FormControl type="number" placeholder="Enter margin percentage" value={this.state.margin} onChange={(e)=>this.setState({margin:e.target.value})} />
-          </Col>
-        </FormGroup>
-        <FormGroup>
-          <Col sm={3}>
-            <ControlLabel className="center-hor">Materials margin percentage 50+</ControlLabel>
-          </Col>
-          <Col sm={9}>
-            <FormControl type="number" placeholder="Enter margin percentage" value={this.state.marginExtra} onChange={(e)=>this.setState({marginExtra:e.target.value})} />
-          </Col>
+          <Label for="afterPer">After hours percentage</Label>
+          <Input type="text" name="afterPer" id="afterPer" placeholder="Enter after hours percentage" value={this.state.afterHours} onChange={(e)=>this.setState({afterHours:e.target.value})} />
         </FormGroup>
 
-        <Button bsStyle="success" className="separate" disabled={this.state.saving} onClick={()=>{
+        <FormGroup>
+          <Label for="materMarg">Materials margin percentage 50-</Label>
+          <Input type="text" name="materMarg" id="materMarg" placeholder="Enter materials margin percentage" value={this.state.margin} onChange={(e)=>this.setState({margin:e.target.value})} />
+        </FormGroup>
+        <FormGroup>
+          <Label for="materMarg">Materials margin percentage 50+</Label>
+          <Input type="text" name="materMarg" id="materMarg" placeholder="Enter materials margin percentage" value={this.state.marginExtra} onChange={(e)=>this.setState({marginExtra:e.target.value})} />
+        </FormGroup>
+
+        <Button color="success" className="separate" disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
             if(!this.state.def && this.state.defaultPricelist===this.props.match.params.id){
               this.setState({defaultPricelist:null});
@@ -164,7 +150,7 @@ export default class PriceEdit extends Component{
                 this.setState({saving:false})
               );
           }}>{this.state.saving?'Saving prices...':'Save prices'}</Button>
-          <Button bsStyle="danger" className="separate" disabled={this.state.saving} onClick={()=>{
+        <Button color="danger" className="separate" disabled={this.state.saving} onClick={()=>{
               if(window.confirm("Are you sure?")){
                 rebase.removeDoc('/pricelists/'+this.props.match.params.id);
                 if(this.state.defaultPricelist===this.props.match.params.id){

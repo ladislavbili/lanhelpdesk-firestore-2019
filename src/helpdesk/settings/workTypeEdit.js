@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { FormGroup, FormControl, Button, Col, ControlLabel, Alert } from 'react-bootstrap';
+import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
 import {rebase} from '../../index';
 
 export default class WorkTypeEdit extends Component{
   constructor(props){
     super(props);
     this.state={
-      workTypeName:'',
+      title:'',
       loading:true,
       saving:false
     }
@@ -17,7 +17,7 @@ export default class WorkTypeEdit extends Component{
   }
 
   setData(data){
-    this.setState({workTypeName:data.title,loading:false})
+    this.setState({title:data.title,loading:false})
   }
 
   componentWillReceiveProps(props){
@@ -34,24 +34,21 @@ export default class WorkTypeEdit extends Component{
         <div className="container-padding form-background card-box scrollable fit-with-header">
         {
           this.state.loading &&
-          <Alert bsStyle="success">
+          <Alert color="success">
             Loading data...
           </Alert>
         }
         <FormGroup>
-          <Col sm={3}>
-            <ControlLabel className="center-hor">WorkType name</ControlLabel>
-          </Col>
-          <Col sm={9}>
-            <FormControl type="text" placeholder="Enter work type name" value={this.state.workTypeName} onChange={(e)=>this.setState({workTypeName:e.target.value})} />
-          </Col>
+          <Label for="name">WorkType name</Label>
+          <Input type="text" name="name" id="name" placeholder="Enter work type name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
         </FormGroup>
-        <Button bsStyle="success" className="separate" disabled={this.state.saving} onClick={()=>{
+
+        <Button color="success" className="separate" disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
-            rebase.updateDoc('/workTypes/'+this.props.match.params.id, {title:this.state.workTypeName})
+            rebase.updateDoc('/workTypes/'+this.props.match.params.id, {title:this.state.title})
               .then(()=>{this.setState({saving:false})});
           }}>{this.state.saving?'Saving work type...':'Save work type'}</Button>
-          <Button bsStyle="danger" className="separate" disabled={this.state.saving} onClick={()=>{
+        <Button color="danger" className="separate" disabled={this.state.saving} onClick={()=>{
               if(window.confirm("Are you sure?")){
                 rebase.removeDoc('/workTypes/'+this.props.match.params.id).then(()=>{
                   this.props.history.goBack();

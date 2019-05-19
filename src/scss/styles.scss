@@ -8,6 +8,11 @@
 .pageHeader{
 	background-color: #1976d2;
 	height: $header-height;
+  padding: 4px 10px;
+  h1{
+    color:white;
+    font-size: 27px;
+  }
 }
 
 .hidden-input{
@@ -171,4 +176,12 @@ html{
 
 .alert{
   opacity:100;
+}
+
+.headerIcons{
+  font-size:22px;
+  background-color: #1976d2;
+  border-width: 0;
+  margin-right: 15px;
+  color: white;
 }

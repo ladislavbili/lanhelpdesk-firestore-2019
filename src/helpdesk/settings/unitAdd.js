@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { FormGroup, FormControl, Button, Col, ControlLabel } from 'react-bootstrap';
+import { Button, FormGroup, Label,Input } from 'reactstrap';
 import {rebase} from '../../index';
 
 export default class UnitAdd extends Component{
   constructor(props){
     super(props);
     this.state={
-      unitName:'',
+      title:'',
       def:false,
       saving:false
     }
@@ -15,19 +15,22 @@ export default class UnitAdd extends Component{
   render(){
     return (
         <div className="container-padding form-background card-box scrollable fit-with-header">
-          <input type="checkbox" id="default" checked={this.state.def} onChange={(e)=>this.setState({def:!this.state.def})} />
-          <ControlLabel className="center-hor" htmlFor="default">Default</ControlLabel>
-        <FormGroup>
-          <Col sm={3}>
-            <ControlLabel className="center-hor">Unit name</ControlLabel>
-          </Col>
-          <Col sm={9}>
-            <FormControl type="text" placeholder="Enter unit name" value={this.state.unitName} onChange={(e)=>this.setState({unitName:e.target.value})} />
-          </Col>
+
+        <FormGroup check>
+          <Label check>
+            <Input type="checkbox" checked={this.state.def} onChange={(e)=>this.setState({def:!this.state.def})}/>
+            Default
+          </Label>
         </FormGroup>
-        <Button bsStyle="primary" className="separate" disabled={this.state.saving} onClick={()=>{
+
+        <FormGroup>
+          <Label for="name">Unit name</Label>
+          <Input type="text" name="name" id="name" placeholder="Enter unit name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
+        </FormGroup>
+
+        <Button color="primary" className="separate" disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
-            rebase.addToCollection('/units', {title:this.state.unitName})
+            rebase.addToCollection('/units', {title:this.state.title})
               .then((response)=>{
                 if(this.state.def){
                   rebase.updateDoc('/metadata/0',{defaultUnit:response.id})

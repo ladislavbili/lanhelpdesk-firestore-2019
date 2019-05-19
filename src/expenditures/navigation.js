@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 
 import Sidebar from './Sidebar';
-import PageHeader from './PageHeader';
+import PageHeader from '../components/PageHeader';
 import List from './list';
 import AddPassword from './list/addPassword';
 import EditPassword from './list/editPassword';

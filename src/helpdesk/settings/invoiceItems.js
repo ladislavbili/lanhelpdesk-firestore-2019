@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { FormGroup, FormControl, Button, ControlLabel, Table, Modal, Glyphicon } from 'react-bootstrap';
+import { Button, FormGroup, Label,Input } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import Select from 'react-select';
 
 export default class InvoiceItems extends Component{
@@ -20,7 +21,7 @@ export default class InvoiceItems extends Component{
   render(){
     return (
         <div className="container-padding form-background card-box">
-          <Table striped condensed hover>
+          <table className="table table-centered table-borderless table-hover mb-0">
             <thead>
               <tr>
                 <th>Item name</th>
@@ -51,35 +52,34 @@ export default class InvoiceItems extends Component{
                           sn:item.sn,
                         });
                     }}>
-                      <Glyphicon glyph="pencil" className="center-hor" /></Button>
+                      <i className="fa fa-edit" />
+                    </Button>
                     <Button className="no-border inherit-background" onClick={()=>{
                         if(window.confirm('Are you sure?')){
                             this.props.deleteItem(item.id);
                         }
-                      }}><Glyphicon glyph="trash" className="center-hor" /></Button>
+                      }}><i className="fa fa-trash" /></Button>
                 </td>
                 </tr>
               )}
             </tbody>
-          </Table>
-          <Button bsStyle="success" className="separate" onClick={()=>this.setState({addOpened:!this.state.addOpened})} >Add invoice item</Button>
+          </table>
+          <Button color="success" className="separate" onClick={()=>this.setState({addOpened:!this.state.addOpened})} >Add invoice item</Button>
 
-          <Modal show={this.state.addOpened} className="show" onHide={()=>this.setState({addOpened:!this.state.addOpened})} bsSize="large">
-            <Modal.Header closeButton>
-              <Modal.Title>Adding item</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
+          <Modal isOpen={this.state.addOpened} toggle={()=>this.setState({addOpened:!this.state.addOpened})} >
+              <ModalHeader toggle={()=>this.setState({addOpened:!this.state.addOpened})}>Add item</ModalHeader>
+              <ModalBody>
               <div className="container-padding">
                 <FormGroup>
-                  <ControlLabel className="center-hor">Name</ControlLabel>
-                  <FormControl type="text" placeholder="Enter name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
+                  <Label for="title">Name</Label>
+                  <Input type="text" name="title" id="title" placeholder="Enter title" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
                 </FormGroup>
                 <FormGroup>
-                  <ControlLabel className="center-hor">Quantity</ControlLabel>
-                  <FormControl type="number" placeholder="Enter quantity" value={this.state.quantity} onChange={(e)=>this.setState({quantity:e.target.value})} />
+                  <Label for="quantity">Quantity</Label>
+                  <Input type="text" name="quantity" id="quantity" placeholder="Enter quantity" value={this.state.quantity} onChange={(e)=>this.setState({quantity:e.target.value})} />
                 </FormGroup>
                 <FormGroup>
-                  <ControlLabel className="center-hor">Unit</ControlLabel>
+                  <Label for="unit">Unit</Label>
                   <Select
                     value={this.state.unit}
                     onChange={(unit)=>this.setState({unit})}
@@ -87,17 +87,17 @@ export default class InvoiceItems extends Component{
                     />
                 </FormGroup>
                 <FormGroup>
-                  <ControlLabel className="center-hor">Price</ControlLabel>
-                  <FormControl type="number" placeholder="Enter price" value={this.state.price} onChange={(e)=>this.setState({price:e.target.value})} />
+                  <Label for="price">Price</Label>
+                  <Input type="text" name="price" id="price" placeholder="Enter price" value={this.state.price} onChange={(e)=>this.setState({price:e.target.value})} />
                 </FormGroup>
                 <FormGroup>
-                  <ControlLabel className="center-hor">SN</ControlLabel>
-                  <FormControl type="text" placeholder="Enter SN" value={this.state.sn} onChange={(e)=>this.setState({sn:e.target.value})} />
+                  <Label for="sn">SN</Label>
+                  <Input type="text" name="sn" id="sn" placeholder="Enter SN" value={this.state.sn} onChange={(e)=>this.setState({sn:e.target.value})} />
                 </FormGroup>
               </div>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button bsStyle="success" disabled={this.props.disabled||this.state.unit===null} onClick={()=>{
+            </ModalBody>
+            <ModalFooter>
+              <Button color="success" disabled={this.props.disabled||this.state.unit===null} onClick={()=>{
                   this.props.addItem({id:this.props.newItemID,title:this.state.title,unit:this.state.unit.id,quantity:this.state.quantity,price:this.state.price,sn:this.state.sn});
                   this.setState({
                     addOpened:false,
@@ -108,25 +108,23 @@ export default class InvoiceItems extends Component{
                   });
                 }}>Add</Button>
                 <Button onClick={()=>this.setState({addOpened:!this.state.addOpened})}>Close</Button>
-              </Modal.Footer>
+              </ModalFooter>
             </Modal>
 
-          <Modal show={this.state.editOpened} onHide={()=>this.setState({editOpened:!this.state.editOpened})} bsSize="large">
-            <Modal.Header closeButton>
-              <Modal.Title>Editing item</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
+            <Modal isOpen={this.state.editOpened} toggle={()=>this.setState({editOpened:!this.state.editOpened})} >
+              <ModalHeader toggle={()=>this.setState({editOpened:!this.state.editOpened})}>Edditing item</ModalHeader>
+              <ModalBody>
               <div className="container-padding">
                 <FormGroup>
-                  <ControlLabel className="center-hor">Name</ControlLabel>
-                  <FormControl type="text" placeholder="Enter name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
+                  <Label for="title">Name</Label>
+                  <Input type="text" name="title" id="title" placeholder="Enter title" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
                 </FormGroup>
                 <FormGroup>
-                  <ControlLabel className="center-hor">Quantity</ControlLabel>
-                  <FormControl type="number" placeholder="Enter quantity" value={this.state.quantity} onChange={(e)=>this.setState({quantity:e.target.value})} />
+                  <Label for="quantity">Quantity</Label>
+                  <Input type="text" name="quantity" id="quantity" placeholder="Enter quantity" value={this.state.quantity} onChange={(e)=>this.setState({quantity:e.target.value})} />
                 </FormGroup>
                 <FormGroup>
-                  <ControlLabel className="center-hor">Unit</ControlLabel>
+                  <Label for="unit">Unit</Label>
                   <Select
                     value={this.state.unit}
                     onChange={(unit)=>this.setState({unit})}
@@ -134,17 +132,17 @@ export default class InvoiceItems extends Component{
                     />
                 </FormGroup>
                 <FormGroup>
-                  <ControlLabel className="center-hor">Price</ControlLabel>
-                  <FormControl type="number" placeholder="Enter price" value={this.state.price} onChange={(e)=>this.setState({price:e.target.value})} />
+                  <Label for="price">Price</Label>
+                  <Input type="text" name="price" id="price" placeholder="Enter price" value={this.state.price} onChange={(e)=>this.setState({price:e.target.value})} />
                 </FormGroup>
                 <FormGroup>
-                  <ControlLabel className="center-hor">SN</ControlLabel>
-                  <FormControl type="text" placeholder="Enter SN" value={this.state.sn} onChange={(e)=>this.setState({sn:e.target.value})} />
+                  <Label for="sn">SN</Label>
+                  <Input type="text" name="sn" id="sn" placeholder="Enter SN" value={this.state.sn} onChange={(e)=>this.setState({sn:e.target.value})} />
                 </FormGroup>
               </div>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button bsStyle="primary" disabled={this.props.disabled||this.state.unit===null} onClick={()=>{
+            </ModalBody>
+            <ModalFooter>
+              <Button color="primary" disabled={this.props.disabled||this.state.unit===null} onClick={()=>{
                   this.props.editItem({id:this.state.editedID,title:this.state.title,unit:this.state.unit.id,quantity:this.state.quantity,price:this.state.price,sn:this.state.sn});
                   this.setState({
                     editOpened:false,
@@ -155,7 +153,7 @@ export default class InvoiceItems extends Component{
                   });
                 }}>Edit</Button>
               <Button onClick={()=>this.setState({editOpened:!this.state.editOpened})}>Close</Button>
-              </Modal.Footer>
+              </ModalFooter>
             </Modal>
       </div>
     );

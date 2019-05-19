@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { FormGroup, FormControl, Button, Col, ControlLabel } from 'react-bootstrap';
-import { Modal } from 'react-bootstrap';
+import { FormGroup, FormControl, Button, Col, Label, Input } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import {toSelArr, snapshotToArray} from '../../helperFunctions';
 import {rebase,database} from '../../index';
 import Select from 'react-select';
@@ -54,52 +54,39 @@ export default class ProjectAdd extends Component{
         <i className="fa fa-plus clickable" onClick={()=>{
             this.setState({opened:true});
           }} />
-          <Modal className="show" show={this.state.opened} >
-            <Modal.Header>
-              <h1 className="modal-header">Add company</h1>
-              <button type="button" className="close ml-auto" aria-label="Close" onClick={this.toggle.bind(this)}><span aria-hidden="true">×</span></button>
-            </Modal.Header>
-            <Modal.Body>
+        <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
+            <ModalHeader toggle={this.toggle.bind(this)}>Add company</ModalHeader>
+            <ModalBody>
               <FormGroup>
-                <Col sm={3}>
-                  <ControlLabel className="center-hor">Company name</ControlLabel>
-                </Col>
-                <Col sm={9}>
-                  <FormControl type="text" placeholder="Enter company name" value={this.state.companyName} onChange={(e)=>this.setState({companyName:e.target.value})} />
-                </Col>
+                <Label for="name">Company name</Label>
+                <Input name="name" id="name" type="text" placeholder="Enter company name" value={this.state.companyName} onChange={(e)=>this.setState({companyName:e.target.value})} />
               </FormGroup>
               <FormGroup>
-                <Col sm={3}>
-                  <ControlLabel className="center-hor">Paušál</ControlLabel>
-                </Col>
-                <Col sm={9}>
-                  <FormControl type="number" placeholder="Enter pausal" value={this.state.pausal} onChange={(e)=>this.setState({pausal:e.target.value})} />
-                </Col>
+                <Label for="pausal">Paušál</Label>
+                <Input name="pausal" id="pausal" type="number" placeholder="Enter pausal" value={this.state.pausal} onChange={(e)=>this.setState({pausal:e.target.value})} />
               </FormGroup>
               <FormGroup>
-                <Col sm={3}>
-                  <ControlLabel className="center-hor">Pricelist</ControlLabel>
-                </Col>
-                <Col sm={9}>
-                  <Select
-                    className="supressDefaultSelectStyle"
-                    options={this.state.pricelists}
-                    value={this.state.pricelist}
-                    onChange={e =>{ this.setState({ pricelist: e }); }}
-                      />
-                </Col>
+                <Label for="pricelist">Pricelist</Label>
+                <Select
+                  id="pricelist"
+                  name="pausal"
+                  className="supressDefaultSelectStyle"
+                  options={this.state.pricelists}
+                  value={this.state.pricelist}
+                  onChange={e =>{ this.setState({ pricelist: e }); }}
+                    />
               </FormGroup>
-              </Modal.Body>
-              <Modal.Footer>
-              <Button bsStyle="danger" className="mr-auto" disabled={this.state.saving} onClick={this.toggle.bind(this)}>
+            </ModalBody>
+            <ModalFooter>
+              <Button color="danger" className="mr-auto" disabled={this.state.saving} onClick={this.toggle.bind(this)}>
                 Close
               </Button>
-              <Button bsStyle="primary" className="separate" disabled={this.state.saving||this.state.loading||this.state.pricelist===undefined||this.state.companyName===""} onClick={()=>{
+              <Button color="primary" className="separate" disabled={this.state.saving||this.state.loading||this.state.pricelist===undefined||this.state.companyName===""} onClick={()=>{
                   this.setState({saving:true});
                   rebase.addToCollection('/companies', {title:this.state.companyName,pricelist:this.state.pricelist.id})
                     .then(()=>{this.setState({companyName:'',pausal:this.state.pausal,pricelist:this.state.pricelists.length>0?this.state.pricelists[0]:null,saving:false})});
                 }}>{this.state.saving?'Adding...':'Add company'}</Button>
-            </Modal.Footer>
+            </ModalFooter>
           </Modal>
           </div>
     );

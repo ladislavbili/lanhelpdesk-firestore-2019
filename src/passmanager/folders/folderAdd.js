@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal } from 'react-bootstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import {toSelArr, snapshotToArray} from '../../helperFunctions';
 import {rebase,database} from '../../index';
@@ -26,12 +26,9 @@ export default class ProjectAdd extends Component{
           <i className="fa fa-plus clickable pr-2"  />
           Folder
         </Button>
-          <Modal className="show" show={this.state.opened} >
-            <Modal.Header>
-              <h1 className="modal-header">Add folder</h1>
-              <button type="button" className="close ml-auto" aria-label="Close" onClick={this.toggle.bind(this)}><span aria-hidden="true">×</span></button>
-            </Modal.Header>
-            <Modal.Body>
+        <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
+            <ModalHeader toggle={this.toggle.bind(this)}>Add folder</ModalHeader>
+            <ModalBody>
               <FormGroup>
                 <Label>Folder name</Label>
                 <Input type="text" placeholder="Enter folder name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
@@ -41,8 +38,8 @@ export default class ProjectAdd extends Component{
                 <Input type="textarea" placeholder="Enter folder description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value})} />
               </FormGroup>
 
-              </Modal.Body>
-              <Modal.Footer>
+              </ModalBody>
+              <ModalFooter>
               <Button color="danger" className="mr-auto" disabled={this.state.saving} onClick={this.toggle.bind(this)}>
                 Close
               </Button>
@@ -51,7 +48,7 @@ export default class ProjectAdd extends Component{
                   rebase.addToCollection('/pass-folders', {title:this.state.title,description:this.state.description})
                     .then(()=>{this.setState({title:'',description:'',saving:false})});
                 }}>{this.state.saving?'Adding...':'Add folder'}</Button>
-            </Modal.Footer>
+            </ModalFooter>
           </Modal>
           </div>
     );

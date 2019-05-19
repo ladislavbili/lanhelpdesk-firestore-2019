@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormGroup, FormControl, Button, Col, ControlLabel, Alert } from 'react-bootstrap';
+import { Button, FormGroup, Label,Input,Alert } from 'reactstrap';
 import {rebase} from '../../index';
 
 export default class ProjectEdit extends Component{
@@ -34,24 +34,20 @@ export default class ProjectEdit extends Component{
         <div className="container-padding form-background card-box scrollable fit-with-header">
         {
           this.state.loading &&
-          <Alert bsStyle="success">
+          <Alert color="success">
             Loading data...
           </Alert>
         }
         <FormGroup>
-          <Col sm={3}>
-            <ControlLabel className="center-hor">Project name</ControlLabel>
-          </Col>
-          <Col sm={9}>
-            <FormControl type="text" placeholder="Enter project name" value={this.state.projectName} onChange={(e)=>this.setState({projectName:e.target.value})} />
-          </Col>
+          <Label for="name">Project name</Label>
+          <Input type="text" name="name" id="name" placeholder="Enter project name" value={this.state.projectName} onChange={(e)=>this.setState({projectName:e.target.value})} />
         </FormGroup>
-        <Button bsStyle="success" className="separate" disabled={this.state.saving} onClick={()=>{
+        <Button color="success" className="separate" disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
             rebase.updateDoc('/projects/'+this.props.match.params.id, {title:this.state.projectName})
               .then(()=>{this.setState({saving:false})});
           }}>{this.state.saving?'Saving project...':'Save project'}</Button>
-          <Button bsStyle="danger" className="separate" disabled={this.state.saving} onClick={()=>{
+        <Button color="danger" className="separate" disabled={this.state.saving} onClick={()=>{
               if(window.confirm("Are you sure?")){
                 rebase.removeDoc('/projects/'+this.props.match.params.id).then(()=>{
                   this.props.history.goBack();

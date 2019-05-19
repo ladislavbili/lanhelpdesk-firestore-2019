@@ -5,7 +5,7 @@ import { NavLink as Link } from 'react-router-dom';
 import Select from "react-select";
 import { connect } from "react-redux";
 
-import SelectPage from '../SelectPage';
+import SelectPage from '../components/SelectPage';
 import {rebase} from '../index';
 import {toSelArr} from '../helperFunctions';
 import {setCompany, setFilter} from '../redux/actions';

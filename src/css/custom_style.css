@@ -65,10 +65,7 @@
   cursor : pointer;
 }*/
 
-.headerIcons{
-  font-size:22px;
-  margin-top: 7px;
-}
+
 
 .statusStyle{
   font-size:15;
@@ -734,4 +731,3 @@ select.form-control {
   -ms-user-select: none;
   user-select: none
 }
-

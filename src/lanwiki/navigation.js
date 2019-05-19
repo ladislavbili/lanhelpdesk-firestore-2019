@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 
 import Sidebar from './Sidebar';
-import PageHeader from './PageHeader';
+import PageHeader from '../components/PageHeader';
 import ListExample from './listExample';
 
 import ListNotes from './Notes/NoteList';

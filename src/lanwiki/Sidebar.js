@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import {NavItem, Nav, ListGroup, ListGroupItem, Progress, Button, Row, Col} from 'reactstrap';
-import { Glyphicon } from 'react-bootstrap';
 import { NavLink as Link } from 'react-router-dom';
 import Select from "react-select";
 import { connect } from "react-redux";
 
-import SelectPage from '../SelectPage';
+import SelectPage from '../components/SelectPage';
 import {rebase} from '../index';
 import {toSelArr} from '../helperFunctions';
 import {setProject, setFilter} from '../redux/actions';
@@ -94,7 +93,7 @@ class Sidebar extends Component {
 										 active={window.location.pathname.includes(`/lanwiki/tags/${asset.id}`)}
 										 onClick={() => this.props.history.push(`/lanwiki/tags/${asset.id}`)}
 										 >
-													<Glyphicon glyph="cog"/>
+										 		<i className="fa fa-cog"/>
 											</ListGroupItem>
 									</Col>
 								</Row>

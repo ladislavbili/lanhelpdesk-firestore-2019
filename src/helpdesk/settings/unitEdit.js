@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { FormGroup, FormControl, Button, Col, ControlLabel, Alert } from 'react-bootstrap';
+import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
 import {rebase} from '../../index';
 
 export default class UnitEdit extends Component{
   constructor(props){
     super(props);
     this.state={
-      unitName:'',
+      title:'',
       defaultUnit:null,
       def:false,
       loading:true,
@@ -24,7 +24,7 @@ export default class UnitEdit extends Component{
   }
 
   setData(data,id){
-    this.setState({unitName:data.title,loading:false,def:this.state.defaultUnit?id===this.state.defaultUnit:false})
+    this.setState({title:data.title,loading:false,def:this.state.defaultUnit?id===this.state.defaultUnit:false})
   }
 
   componentWillReceiveProps(props){
@@ -41,21 +41,24 @@ export default class UnitEdit extends Component{
         <div className="container-padding form-background card-box scrollable fit-with-header">
         {
           this.state.loading &&
-          <Alert bsStyle="success">
+          <Alert color="success">
             Loading data...
           </Alert>
         }
-        <input type="checkbox" id="default" checked={this.state.def} onChange={(e)=>this.setState({def:!this.state.def})} />
-        <ControlLabel className="center-hor" htmlFor="default">Default</ControlLabel>
-        <FormGroup>
-          <Col sm={3}>
-            <ControlLabel className="center-hor">Unit name</ControlLabel>
-          </Col>
-          <Col sm={9}>
-            <FormControl type="text" placeholder="Enter unit name" value={this.state.unitName} onChange={(e)=>this.setState({unitName:e.target.value})} />
-          </Col>
+
+        <FormGroup check>
+          <Label check>
+            <Input type="checkbox" checked={this.state.def} onChange={(e)=>this.setState({def:!this.state.def})}/>
+            Default
+          </Label>
         </FormGroup>
-        <Button bsStyle="success" className="separate" disabled={this.state.saving} onClick={()=>{
+
+        <FormGroup>
+          <Label for="name">Unit name</Label>
+          <Input type="text" name="name" id="name" placeholder="Enter unit name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
+        </FormGroup>
+
+        <Button color="success" className="separate" disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
             if(!this.state.def && this.state.defaultUnit===this.props.match.params.id){
               this.setState({defaultUnit:null});
@@ -64,10 +67,10 @@ export default class UnitEdit extends Component{
               this.setState({defaultUnit:this.props.match.params.id});
               rebase.updateDoc('/metadata/0',{defaultUnit:this.props.match.params.id});
             }
-            rebase.updateDoc('/units/'+this.props.match.params.id, {title:this.state.unitName})
+            rebase.updateDoc('/units/'+this.props.match.params.id, {title:this.state.title})
               .then(()=>{this.setState({saving:false})});
           }}>{this.state.saving?'Saving unit...':'Save unit'}</Button>
-          <Button bsStyle="danger" className="separate" disabled={this.state.saving} onClick={()=>{
+        <Button color="danger" className="separate" disabled={this.state.saving} onClick={()=>{
               if(window.confirm("Are you sure?")){
                 rebase.removeDoc('/units/'+this.props.match.params.id).then(()=>{
                   this.props.history.goBack();

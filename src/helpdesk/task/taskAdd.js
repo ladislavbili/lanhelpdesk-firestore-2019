@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import {rebase, database} from '../../index';
 import {toSelArr, snapshotToArray} from '../../helperFunctions';
-import { Modal } from 'react-bootstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import Materials from '../components/materials';
 import Subtasks from '../components/subtasks';
 
@@ -240,14 +240,10 @@ export default class TaskEdit extends Component{
 				onClick={()=>{this.setState({openAddTaskModal:true,hidden:false})}}
 			> Add task
 			</button>
-			<Modal  bsSize="large"  className="show" show={this.state.openAddTaskModal} >
-				<Modal.Header>
-					<h1 className="modal-header">Add task</h1>
-					<button type="button" className="close ml-auto" aria-label="Close" onClick={()=>{this.setState({openAddTaskModal:false})}}><span aria-hidden="true">×</span></button>
-				</Modal.Header>
-				<Modal.Body>
+			<Modal size="lg" isOpen={this.state.openAddTaskModal} toggle={()=>{this.setState({openAddTaskModal:!this.state.openAddTaskModal})}} >
+					<ModalHeader toggle={()=>{this.setState({openAddTaskModal:!this.state.openAddTaskModal})}}>Add task</ModalHeader>
+					<ModalBody>
 					<div className="scrollable">
-
 						<div className="card-box p-t-0" style={{ maxWidth: 1284, background: '#F9F9F9', borderRadius: 0, padding: "none" }}>
 							<div className="d-flex flex-row">
 								<div className="row">
@@ -438,15 +434,15 @@ export default class TaskEdit extends Component{
 							/>}
 					</div>
 					</div>
-				</Modal.Body>
-				<Modal.Footer>
+				</ModalBody>
+				<ModalFooter>
 					<button
 						className="btn btn-success"
 						disabled={this.state.title==="" || this.state.status===null || this.state.project === null|| this.state.company === null||this.state.saving}
 						onClick={this.submitTask.bind(this)}
 					> Add
 					</button>
-				</Modal.Footer>
+				</ModalFooter>
 			</Modal>
 		</div>
     );
