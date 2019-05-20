@@ -9,15 +9,9 @@ import Navigation from './navigation';
 
 import config from './firebase';
 import createStore from './redux/store';
-
 import 'react-datepicker/dist/react-datepicker.css';
-import './css/custom_style.css';
-import 'react-table/react-table.css';
-import "./css/bootstrap/bootstrap-2.min.css";
-import "./css/bootstrap.min.css";
-import "./css/icons.css";
-import "./css/style.css";
 
+import 'bootstrap/dist/css/bootstrap.min.css';
 import "./scss/index.scss";
 
 const store=createStore();

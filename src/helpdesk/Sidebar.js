@@ -63,7 +63,7 @@ class Sidebar extends Component {
 			<div className="left side-menu">
 				<SelectPage />
 				<div className="scrollable fit-with-header">
-					<div id="sidebar-menu" >
+					<div id="sidebar-menu" className="sidebar-content" >
 						<li className="menu-title" style={{ paddingBottom: '0px !important' }} >
 							Project
 							<span className="pull-right">
@@ -103,7 +103,7 @@ class Sidebar extends Component {
 									</NavLink>
 								</NavItem>
 							</Nav>
-							<TabContent activeTab={this.state.activeTab} style={{ padding: 20 }}>
+							<TabContent activeTab={this.state.activeTab} style={{ paddingRight: 20 }}>
 								<TabPane tabId={0}>
 									<Nav vertical>
 										<NavItem>

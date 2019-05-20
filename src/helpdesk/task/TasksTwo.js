@@ -88,8 +88,7 @@ class TasksRow extends Component {
 								onClick={()=>{this.props.history.push('/helpdesk/taskList/'+task.id)}}
 								key={task.id} >
 								<li className="" style={{ border: "none", borderBottom: "1px solid #ddd", borderRadius: 0 }}>
-									<div className="checkbox checkbox-primary m-b-0">
-										<input type="checkbox" aria-label="Single checkbox Two" />
+									<div className="m-b-0">
 										<label>#{task.id} {task.title}</label>
 									</div>
 									<div className="m-t-5">

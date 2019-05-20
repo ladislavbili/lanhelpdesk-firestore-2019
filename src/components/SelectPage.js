@@ -5,7 +5,9 @@ export default class PageHeader extends Component {
 	render() {
 		return (
 			<div className="pageHeader">
-				<h1>Lansystems</h1>
+				<div style={{marginTop:10,marginBottom:5}}>
+					<h1>Lansystems</h1>
+				</div>
 			</div>
 		);
 	}

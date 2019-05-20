@@ -74,7 +74,7 @@ class TaskListContainer extends Component {
 										style={{ width: 200 }}
 									/>
 									<div className="input-group-append">
-										<button className="btn btn-white" type="button" onClick={()=>this.props.setSearch(this.state.search)}>
+										<button className="btn btn-search" type="button" onClick={()=>this.props.setSearch(this.state.search)}>
 											<i className="fa fa-search" />
 										</button>
 									</div>

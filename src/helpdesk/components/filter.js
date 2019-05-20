@@ -137,7 +137,6 @@ class Filter extends Component {
     render() {
       console.log(this.state);
       return (
-
         <Nav vertical>
           <NavItem>
             <div className="btn-group mb-2">
