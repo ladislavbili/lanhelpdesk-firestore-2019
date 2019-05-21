@@ -35,18 +35,6 @@ export default class AddFolder extends Component{
       context: this,
       withIds: true,
       then:content=>{
-    /*    let folders=toSelArr(content);
-        let folder = this.state.folder;
-        if(folder===null){
-          folder=folders.find((item)=>item.id===this.props.match.params.id);
-          if(folder===undefined){
-            if(folders.length!==0){
-              folder=folders[0];
-            }else{
-              folder=null;
-            }
-          }
-        }*/
         let folders = content.map(f => {
           let newF = {...f};
           newF["value"] = f.id;
@@ -66,8 +54,6 @@ export default class AddFolder extends Component{
   }
 
   render(){
-    console.log(this.state);
-
     return (
         <div className="container-padding form-background card-box scrollable fit-with-header">
           <div className="ml-auto mr-auto" style={{maxWidth:1000}}>
