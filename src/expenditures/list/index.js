@@ -82,10 +82,10 @@ export default class Sidebar extends Component {
 														 	|| i.price.toLowerCase().includes(this.state.search.toLowerCase())
 															|| i.startDate.toLowerCase().includes(this.state.search.toLowerCase()))
 									.map((item)=>
-										<tr key={item.id}>
-											<td className="clickable" onClick={()=>this.props.history.push('/expenditures/'+this.props.match.params.id+'/edit/'+item.id)}>{item.startDate}</td>
+										<tr key={item.id} className="clickable" onClick={()=>this.props.history.push('/expenditures/'+this.props.match.params.id+'/edit/'+item.id)}>
+											<td >{item.startDate}</td>
 											<td>{item.title}</td>
-											<td className="clickable" onClick={()=>this.props.history.push('/expenditures/'+this.props.match.params.id+'/edit/'+item.id)}>{item.repeat}</td>
+											<td>{item.repeat}</td>
 											<td>{item.price}</td>
 										</tr>
 									)

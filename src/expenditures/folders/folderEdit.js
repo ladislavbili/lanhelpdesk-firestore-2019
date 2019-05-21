@@ -1,23 +1,27 @@
 import React, { Component } from 'react';
-import {  ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { Button, FormGroup, Label, Input } from 'reactstrap';
 import {rebase} from '../../index';
 
-export default class ProjectAdd extends Component{
+export default class FolderEdit extends Component{
   constructor(props){
     super(props);
     this.state={
-      title:'',
-      note:'',
+      title: this.props.folder.title,
+      note: this.props.folder.note,
       saving:false,
       opened:false
     }
   }
 
+  toggle(){
+    this.setState({opened:!this.state.opened})
+  }
+
   render(){
     return (
       <div>
-            <ModalHeader>Add folder</ModalHeader>
+            <ModalHeader>Edit folder</ModalHeader>
             <ModalBody>
               <FormGroup>
                 <Label>Title</Label>
@@ -35,11 +39,11 @@ export default class ProjectAdd extends Component{
               </Button>
               <Button color="primary" className="separate" disabled={this.state.saving||this.state.title===""} onClick={()=>{
                   this.setState({saving:true});
-                  rebase.addToCollection('/expenditures-folders', {title:this.state.title, note:this.state.note})
+                  rebase.updateDoc(`/expenditures-folders/${this.props.folder.id}`, {title:this.state.title,note:this.state.note})
                     .then(()=>{this.setState({title:'',note:'',saving:false}); this.props.close();});
-                }}>{this.state.saving?'Adding...':'Add folder'}</Button>
+                }}>{this.state.saving?'Saving...':'Save changes'}</Button>
             </ModalFooter>
-          </div>
+      </div>
     );
   }
 }

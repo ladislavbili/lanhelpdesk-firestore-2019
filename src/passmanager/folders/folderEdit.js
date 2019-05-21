@@ -1,42 +1,46 @@
 import React, { Component } from 'react';
-import {  ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { Button, FormGroup, Label, Input } from 'reactstrap';
 import {rebase} from '../../index';
 
-export default class ProjectAdd extends Component{
+export default class FolderEdit extends Component{
   constructor(props){
     super(props);
     this.state={
-      title:'',
-      note:'',
+      title: this.props.folder.title,
+      description: this.props.folder.description,
       saving:false,
       opened:false
     }
   }
 
+  toggle(){
+    this.setState({opened:!this.state.opened})
+  }
+
   render(){
     return (
       <div>
-            <ModalHeader>Add folder</ModalHeader>
+          <ModalHeader>Edit folder</ModalHeader>
             <ModalBody>
               <FormGroup>
-                <Label>Title</Label>
+                <Label>Folder name</Label>
                 <Input type="text" placeholder="Enter folder name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
               </FormGroup>
               <FormGroup>
-                <Label>Note</Label>
-                <Input type="textarea" placeholder="Enter folder note" value={this.state.note} onChange={(e)=>this.setState({note:e.target.value})} />
+                <Label>Folder description</Label>
+                <Input type="textarea" placeholder="Enter folder description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value})} />
               </FormGroup>
 
-            </ModalBody>
-            <ModalFooter>
+              </ModalBody>
+              <ModalFooter>
               <Button color="danger" className="mr-auto" disabled={this.state.saving} onClick={() => this.props.close()}>
                 Close
               </Button>
               <Button color="primary" className="separate" disabled={this.state.saving||this.state.title===""} onClick={()=>{
                   this.setState({saving:true});
-                  rebase.addToCollection('/expenditures-folders', {title:this.state.title, note:this.state.note})
-                    .then(()=>{this.setState({title:'',note:'',saving:false}); this.props.close();});
+                  rebase.addToCollection('/pass-folders', {title:this.state.title,description:this.state.description})
+                    .then(()=>{this.setState({title:'',description:'',saving:false}); this.props.close();});
                 }}>{this.state.saving?'Adding...':'Add folder'}</Button>
             </ModalFooter>
           </div>
