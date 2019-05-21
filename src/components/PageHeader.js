@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Nav, Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap';
+import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap';
 import { Link } from 'react-router-dom';
 
 export default class PageHeader extends Component {
@@ -21,6 +21,8 @@ export default class PageHeader extends Component {
 			return '/passmanager';
 		} else if (url.includes('expenditures')) {
 			return '/expenditures';
+		} else if (url.includes('projects')) {
+			return '/projects';
 		} else {
 			return '/lanwiki';
 		}
@@ -55,6 +57,10 @@ export default class PageHeader extends Component {
 							<i className="fa fa-file-pdf mr-1" />
 							Vykazy
 						</Link>
+						<Link to={{ pathname: `/projects` }} className="pl-4" style={{ color: 'white' }}>
+							<i className="fa fa-file-pdf mr-1" />
+							Projekty
+						</Link>
 					</div>
 					<div className="ml-auto row center-hor">
 						<i className="headerIcons fa fa-exclamation-triangle"/>
@@ -77,8 +83,6 @@ export default class PageHeader extends Component {
 						<i className="headerIcons fas fa-sign-out-alt" style={{ backgroundColor: '#1976d2', borderWidth: 0, marginRight: 15, color: 'white' }} />
 					</div>
 				</div>
-
-				<Nav pullRight />
 			</div>
 		);
 	}
