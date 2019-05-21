@@ -72,8 +72,7 @@ export default class Comments extends Component {
 						<hr />
 
 						<h4 className="font-13">
-							{' '}
-							<i className="fa fa-paperclip m-r-10 m-b-10" /> Attachments <span>(0)</span>{' '}
+							<i className="fa fa-paperclip m-r-10 m-b-10" /> Attachments <span>(0)</span>
 						</h4>
 
 						<div className="row" />
