@@ -39,9 +39,9 @@ export default class FolderEdit extends Component{
               </Button>
               <Button color="primary" className="separate" disabled={this.state.saving||this.state.title===""} onClick={()=>{
                   this.setState({saving:true});
-                  rebase.addToCollection('/pass-folders', {title:this.state.title,description:this.state.description})
+                  rebase.updateDoc(`/pass-folders/${this.props.folder.id}`, {title:this.state.title,description:this.state.description})
                     .then(()=>{this.setState({title:'',description:'',saving:false}); this.props.close();});
-                }}>{this.state.saving?'Adding...':'Add folder'}</Button>
+                }}>{this.state.saving?'Saving...':'Save changes'}</Button>
             </ModalFooter>
           </div>
     );

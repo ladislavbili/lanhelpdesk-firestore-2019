@@ -44,7 +44,7 @@ export default class Sidebar extends Component {
 					<FolderAdd />
 							{
 								this.state.folders.map((item)=>
-									<Row>
+									<Row key={item.id}>
 										<Col xs={10}>
 												<ListGroupItem
 													className='sidebarItem'
