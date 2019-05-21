@@ -12,10 +12,11 @@ export default class FolderEdit extends Component{
       saving:false,
       opened:false
     }
+    this.remove.bind(this);
   }
 
-  toggle(){
-    this.setState({opened:!this.state.opened})
+  remove(){
+
   }
 
   render(){
@@ -34,14 +35,24 @@ export default class FolderEdit extends Component{
 
               </ModalBody>
               <ModalFooter>
-              <Button color="danger" className="mr-auto" disabled={this.state.saving} onClick={() => this.props.close()}>
+              <Button color="secondary" className="mr-auto" disabled={this.state.saving} onClick={() => this.props.close()}>
                 Close
               </Button>
-              <Button color="primary" className="separate" disabled={this.state.saving||this.state.title===""} onClick={()=>{
+
+              <Button
+                color="primary"
+                className="separate"
+                disabled={this.state.saving||this.state.title===""}
+                onClick={()=> {
                   this.setState({saving:true});
-                  rebase.updateDoc(`/pass-folders/${this.props.folder.id}`, {title:this.state.title,description:this.state.description})
-                    .then(()=>{this.setState({title:'',description:'',saving:false}); this.props.close();});
-                }}>{this.state.saving?'Saving...':'Save changes'}</Button>
+                  rebase.updateDoc(`/pass-folders/${this.props.folder.id}`, {title: this.state.title, description: this.state.description})
+                    .then(() => {
+                      this.setState({title:'',description:'',saving:false});
+                      this.props.close();
+                    });
+                }}>
+                {this.state.saving?'Saving...':'Save changes'}
+              </Button>
             </ModalFooter>
           </div>
     );

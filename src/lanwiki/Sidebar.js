@@ -50,7 +50,7 @@ class Sidebar extends Component {
 				<SelectPage />
 				<div className="scrollable fit-with-header">
 					<div className="commandbar">
-						<Progress value={this.state.value}>{this.state.value === 100 ? "Loaded" : "Loading"}</Progress>
+					{/*	<Progress value={this.state.value}>{this.state.value === 100 ? "Loaded" : "Loading"}</Progress>*/}
 							<Button
 								block
 								className='addTag'

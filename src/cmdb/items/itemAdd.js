@@ -4,10 +4,10 @@ import { Button,  FormGroup, Label, Input } from 'reactstrap';
 import {toSelArr, snapshotToArray} from '../../helperFunctions';
 import Select from 'react-select';
 import IPList from '../ipList';
-import TextareaList from '../textareaList';
+import TextareaListMutable from './textAreaListMutable';
 
 
-export default class ServerAdd extends Component{
+export default class ItemAdd extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -17,9 +17,8 @@ export default class ServerAdd extends Component{
       title:'',
       company:null,
       status:null,
-      IPlist:[],
+      IPlist: [],
       backupTasks:[],
-      diskArray:[],
     }
     this.setData.bind(this);
     this.getData.bind(this);
@@ -51,14 +50,6 @@ export default class ServerAdd extends Component{
     });
   }
 
-  removeDiskArray(index){
-    let newDiskArray = [...this.state.diskArray];
-    newDiskArray.splice(index, index+1);
-    this.setState({
-      diskArray: newDiskArray,
-    });
-  }
-
   render(){
     return (
         <div className="container-padding form-background card-box scrollable fit-with-header">
@@ -87,38 +78,20 @@ export default class ServerAdd extends Component{
             </FormGroup>
 
           <IPList items={this.state.IPlist} onChange={(items)=>this.setState({IPlist:items})} />
-          <TextareaList
+          <TextareaListMutable
             items={this.state.backupTasks}
             onChange={(items)=>this.setState({backupTasks:items})}
             removeItem={this.removeBackupTask.bind(this)}
             width={300}
             rows={6}
-            label={`
-                Názov <br>
-                Zálohované údaje  <br>
-                Rotáciu zálohy  <br>
-                Čas spustenia <br>
-                Notifikačný email <br>
-                Smtp settings pre notifikácie <br>
-            `}
+            label={`Názov
+Zálohované údaje
+Rotáciu zálohy
+Čas spustenia
+Notifikačný email
+Smtp settings pre notifikácie`}
             addLabel="Add backup task"
             />
-          <TextareaList
-            items={this.state.diskArray}
-            onChange={(items)=>this.setState({diskArray:items})}
-            removeItem={this.removeDiskArray.bind(this)}
-            width={300}
-            rows={3}
-            label={`
-              <span>
-              RAID RADIČ <br>
-              POCET HDD <br>
-              Typ a velkost hdd <br>
-            </span>
-            `}
-            addLabel="Add disk array"
-            />
-
 
         <Button color="secondary" onClick={this.props.history.goBack}>Cancel</Button>
 
@@ -130,21 +103,18 @@ export default class ServerAdd extends Component{
               status:this.state.status.id,
               IP:this.state.IPlist.map((item)=>item.IP)
             };
-            rebase.addToCollection('/cmdb-servers', body)
+            rebase.addToCollection('/cmdb-items', body)
               .then((response)=>{
                 this.state.IPlist.forEach((item)=>{
                   delete item['id'];
                   delete item['fake'];
-                  rebase.addToCollection('/cmdb-IPList',{...item,serverID:response.id});
+                  rebase.addToCollection('/cmdb-item-IPList',{...item, itemID:response.id});
                 });
 
                 this.state.backupTasks.forEach((item)=>{
-                  rebase.addToCollection('/cmdb-server-backups',{text:item.text,serverID:response.id});
+                  rebase.addToCollection('/cmdb-item-backups',{text:item.text, textLeft:item.textLeft, itemID:response.id});
                 });
 
-                this.state.diskArray.forEach((item)=>{
-                  rebase.addToCollection('/cmdb-server-storage',{text:item.text,serverID:response.id});
-                });
 
                   this.setState({
                   title:'',
@@ -152,11 +122,10 @@ export default class ServerAdd extends Component{
                   status:null,
                   IPlist:[],
                   backupTasks:[],
-                  diskArray:[],
                   saving:false});
                   this.props.history.goBack();
               });
-          }}>{this.state.saving?'Adding...':'Add server'}</Button>
+          }}>{this.state.saving?'Adding...':'Add item'}</Button>
         </div>
       </div>
     );

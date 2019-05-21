@@ -51,9 +51,14 @@ export default class ProjectAdd extends Component{
   render(){
     return (
       <div>
-        <i className="fa fa-plus clickable" onClick={()=>{
-            this.setState({opened:true});
-          }} />
+          <Button
+            block
+            className='addTag'
+            onClick={() => this.setState({opened:true})}
+            >
+            Add company +
+          </Button>
+
         <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
             <ModalHeader toggle={this.toggle.bind(this)}>Add company</ModalHeader>
             <ModalBody>

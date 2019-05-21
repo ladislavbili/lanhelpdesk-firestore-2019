@@ -61,12 +61,10 @@ class Sidebar extends Component {
 				<SelectPage />
 				<div className="scrollable fit-with-header">
 					<div className="commandbar"  >
+						<CompanyAdd />
 					</div>
 					<li className="pb-0 menu-item" >
 						Companies
-						<span className="pull-right">
-							<CompanyAdd />
-						</span>
 					</li>
 					<li className="menu-item">
 						<Select
@@ -84,6 +82,9 @@ class Sidebar extends Component {
 					<Nav vertical>
 						<NavItem>
 							<Link to={{ pathname: `/cmdb/servers` }}>Servers</Link>
+						</NavItem>
+						<NavItem>
+							<Link to={{ pathname: `/cmdb/items` }}>Items</Link>
 						</NavItem>
 					</Nav>
 				</div>
