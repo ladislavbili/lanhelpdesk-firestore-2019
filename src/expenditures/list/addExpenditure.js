@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
-import {rebase,database} from '../../index';
+import {rebase} from '../../index';
 import { Button,  FormGroup, Label, Input } from 'reactstrap';
-import {toSelArr,snapshotToArray} from '../../helperFunctions';
 import Select from 'react-select';
 
 const REPEAT = [
-  {label: "Denne", value: 1},
-  {label: "Týždenne", value: 2},
-  {label: "Mesačne", value: 3},
-  {label: "Ročne", value: 4},
-  {label: "Podľa potreby", value: 5}
+  {label: "Nie", value: 1},
+  {label: "Denne", value: 2},
+  {label: "Týždenne", value: 3},
+  {label: "Mesačne", value: 4},
+  {label: "Ročne", value: 5}
 ];
 
-export default class UnitAdd extends Component{
+export default class AddFolder extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -24,68 +23,51 @@ export default class UnitAdd extends Component{
       price: 0.00,
       repeat: "",
       startDate: "",
+      startDateDay: "",
+      startDateMonth: "",
+      startDateYear: "",
       note:'',
     }
-    this.fetch.bind(this);
-    this.fetch(this.props.match.params.passID);
   }
 
-  fetch(id){
-    Promise.all([
-      rebase.get('expenditures-instances/'+id, {
-        context: this,
-      }),
-      database.collection('expenditures-folders').get()
-    ])
-    .then(([instance,content])=>{
-        let arr = toSelArr(snapshotToArray(content));
-        let folders = arr.map(f => {
-        let newF = {...f};
-        newF["value"] = f.id;
-        newF["label"] = f.title;
-        return newF;
-      });
-      this.setState({
-        title:  instance.title,
-        folder: folders.filter(f => f.id === instance.folder)[0],
-        price:  instance.price,
-        repeat:  REPEAT.filter(r => r.label === instance.repeat)[0],
-        startDate:  instance.startDate,
-        note: instance.note,
-        folders
-      });
-    });
-  }
-  /*
-  rebase.get('expenditures-instances/'+id, {
-    context: this,
-  }).then((instance) => {
-    rebase.get('expenditures-folders', {
+  componentWillMount(){
+    this.ref1 = rebase.listenToCollection('/expenditures-folders', {
       context: this,
       withIds: true,
-    }).then((content) => {
-      let folders = content.map(f => {
-      let newF = {...f};
-      newF["value"] = f.id;
-      newF["label"] = f.title;
-      return newF;
+      then:content=>{
+    /*    let folders=toSelArr(content);
+        let folder = this.state.folder;
+        if(folder===null){
+          folder=folders.find((item)=>item.id===this.props.match.params.id);
+          if(folder===undefined){
+            if(folders.length!==0){
+              folder=folders[0];
+            }else{
+              folder=null;
+            }
+          }
+        }*/
+        let folders = content.map(f => {
+          let newF = {...f};
+          newF["value"] = f.id;
+          newF["label"] = f.title;
+          return newF;
+        });
+        let folder = folders.filter(f => f.id === this.props.match.params.id)[0];
+        this.setState({
+          folders, folder
+        });
+      },
     });
-      this.setState({
-        title:  instance.title,
-        folder: instance.folder,
-        price:  instance.price,
-        repeat:  instance.repeat,
-        startDate:  instance.startDate,
-        note: instance.note,
-        folders
-      });
-    })
-  });
-  */
+  }
 
+  componentWillUnmount(){
+    rebase.removeBinding(this.ref1);
+  }
 
   render(){
     console.log(this.state);
+
     return (
         <div className="container-padding form-background card-box scrollable fit-with-header">
           <div className="ml-auto mr-auto" style={{maxWidth:1000}}>
@@ -130,22 +112,29 @@ export default class UnitAdd extends Component{
 
         <Button color="secondary" onClick={this.props.history.goBack}>Cancel</Button>
 {"    "}
-        <Button color="primary" disabled={this.state.saving||this.state.loading||this.state.title===""||this.state.folder===null} onClick={()=>{
+        <Button color="primary" disabled={this.state.saving||this.state.title===""||this.state.folder===null} onClick={()=>{
             this.setState({saving:true});
             let body = {
               title: this.state.title,
               folder: this.state.folder.id,
               repeat:this.state.repeat.label,
-              price: this.state.price,
+              price:this.state.price,
               startDate: this.state.startDate,
-              note: this.state.note,
+              note:this.state.note,
             };
-            rebase.updateDoc('expenditures-instances/'+this.props.match.params.passID, body)
+            rebase.addToCollection('/expenditures-instances', body)
               .then((response)=>{
-                this.setState({saving:false});
-                this.props.history.goBack();
+                this.setState({
+                  title: "",
+                  folder:null,
+                  price: 0,
+                  repeat: "",
+                  startDate: "",
+                  note:'',
+                  saving:false});
+                  this.props.history.goBack();
               });
-          }}>{this.state.saving?'Saving...':'Save'}</Button>
+          }}>{this.state.saving?'Adding...':'Add'}</Button>
         </div>
       </div>
     );
