@@ -81,8 +81,8 @@ export default class Sidebar extends Component {
 
 						<div className="fit-with-header scrollable col-lg-4">
 							<div className="commandbar">
-								<Progress value={this.state.value}>{this.state.value === 100 ? "Loaded" : "Loading"}</Progress>
-								<InputGroup className="search">
+							{/*		<Progress value={this.state.value}>{this.state.value === 100 ? "Loaded" : "Loading"}</Progress>*/}
+								<InputGroup >
 									<Input placeholder="Search" value={this.state.search} onChange={(e) => this.setState({search: e.target.value})}/>
 								</InputGroup>
 							</div>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table } from 'reactstrap';
+import { Table, Input } from 'reactstrap';
 
 export default class ServerAdd extends Component{
   constructor(props){
@@ -22,6 +22,7 @@ export default class ServerAdd extends Component{
     }
   }
 
+//className="invisible-input"
 
   render(){
     return (
@@ -40,9 +41,8 @@ export default class ServerAdd extends Component{
           { this.props.items.map((item,index)=>
             <tr key={item.id}>
               <td>
-                <input
+                <Input
                   type="text"
-                  className="invisible-input"
                   value={
                     item.id === this.state.editItemID
                       ? this.state.editNIC
@@ -80,9 +80,8 @@ export default class ServerAdd extends Component{
                     />
               </td>
               <td>
-                <input
+                <Input
                   type="text"
-                  className="invisible-input"
                   value={
                     item.id === this.state.editItemID
                       ? this.state.editIP
@@ -120,9 +119,8 @@ export default class ServerAdd extends Component{
                     />
               </td>
               <td>
-                <input
+                <Input
                   type="text"
-                  className="invisible-input"
                   value={
                     item.id === this.state.editItemID
                       ? this.state.editMask
@@ -160,9 +158,8 @@ export default class ServerAdd extends Component{
                     />
               </td>
               <td>
-                <input
+                <Input
                   type="text"
-                  className="invisible-input"
                   value={
                     item.id === this.state.editItemID
                       ? this.state.editGateway
@@ -200,9 +197,8 @@ export default class ServerAdd extends Component{
                     />
               </td>
               <td>
-                <input
+                <Input
                   type="text"
-                  className="invisible-input"
                   value={
                     item.id === this.state.editItemID
                       ? this.state.editDNS
@@ -257,55 +253,55 @@ export default class ServerAdd extends Component{
           }
           <tr>
             <td>
-              <input
+              <Input
                 type="text"
                 value={this.state.newNIC}
                 onChange={(e)=>this.setState({newNIC:e.target.value})}
-                className="form-control invisible-input"
+                className="form-control"
                 id="inlineFormInput"
                 placeholder=""
                 style={{ height: 30 }}
                 />
             </td>
             <td>
-              <input
+              <Input
                 type="text"
                 value={this.state.newIP}
                 onChange={(e)=>this.setState({newIP:e.target.value})}
-                className="form-control invisible-input"
+                className="form-control"
                 id="inlineFormInput"
                 placeholder=""
                 style={{ height: 30 }}
                 />
             </td>
             <td>
-              <input
+              <Input
                 type="text"
                 value={this.state.newMask}
                 onChange={(e)=>this.setState({newMask:e.target.value})}
-                className="form-control invisible-input"
+                className="form-control"
                 id="inlineFormInput"
                 placeholder=""
                 style={{ height: 30 }}
                 />
             </td>
             <td>
-              <input
+              <Input
                 type="text"
                 value={this.state.newGateway}
                 onChange={(e)=>this.setState({newGateway:e.target.value})}
-                className="form-control invisible-input"
+                className="form-control"
                 id="inlineFormInput"
                 placeholder=""
                 style={{ height: 30 }}
                 />
             </td>
             <td>
-              <input
+              <Input
                 type="text"
                 value={this.state.newDNS}
                 onChange={(e)=>this.setState({newDNS:e.target.value})}
-                className="form-control invisible-input"
+                className="form-control"
                 id="inlineFormInput"
                 placeholder=""
                 style={{ height: 30 }}

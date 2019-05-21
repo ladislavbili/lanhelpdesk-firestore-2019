@@ -104,7 +104,7 @@ export default class Sidebar extends Component {
 		return (
 			<div className="">
 				<div className="commandbar">
-					<Progress value={this.state.value}>{this.state.value === 100 ? "Loaded" : "Loading"}</Progress>
+				{/*		<Progress value={this.state.value}>{this.state.value === 100 ? "Loaded" : "Loading"}</Progress>*/}
 					<h2>Edit tag</h2>
 				</div>
 				<div className="fit-with-header scrollable col-lg-12 form">

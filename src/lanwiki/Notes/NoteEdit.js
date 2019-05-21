@@ -178,7 +178,7 @@ export default class Note extends Component{
       <div >
 
           <div className="commandbar">
-            <Progress value={this.state.value}>{this.state.value === 100 ? "Loaded" : "Loading"}</Progress>
+          	{/*  <Progress value={this.state.value}>{this.state.value === 100 ? "Loaded" : "Loading"}</Progress>*/}
             <Button
               onClick={this.remove.bind(this)}
               block

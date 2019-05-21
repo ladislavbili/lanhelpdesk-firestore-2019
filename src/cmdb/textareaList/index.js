@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Label, Input } from 'reactstrap';
+import { Button, Label, Input, Col } from 'reactstrap';
 
 
 export default class TextareaList extends Component{
@@ -16,17 +16,17 @@ export default class TextareaList extends Component{
   render(){
     return (
       <div>
-        <Button color="primary" onClick={()=>{this.props.onChange([{id:this.state.newID,text:"",fake:true},...this.props.items]);this.setState({newID:this.state.newID+1})}}>{this.props.addLabel}</Button>
         {
           this.props.items.map((item,index)=>
           <div className="row" key={item.id}>
             <Label>
-              <div style={{width:this.props.width?this.props.width:150}} dangerouslySetInnerHTML ={{__html:this.props.label}}/>
+              <div style={{width:this.props.width?this.props.width:150, fontWeight: 50}} dangerouslySetInnerHTML ={{__html:this.props.label}}/>
             </Label>
 
-          <div style={{width:this.props.width?this.props.width:150}}>
+          <div style={{width:this.props.width?1000-this.props.width:150}}>
             <Input
               type="textarea"
+              rows={this.props.rows ? this.props.rows : 3}
               value={
                 item.id === this.state.editID
                   ? this.state.editText
@@ -55,8 +55,11 @@ export default class TextareaList extends Component{
                 }
                 />
             </div>
+              <Button outline color="danger" size="sm" style={{marginBottom: "20px", marginLeft: "900px", width: "100px", border: "0px"}} onClick={()=>{this.props.removeItem(index);}}>Remove</Button>
+
           </div>
         )}
+        <Button color="primary" onClick={()=>{this.props.onChange([{id:this.state.newID,text:"",fake:true},...this.props.items]);this.setState({newID:this.state.newID+1})}}>{this.props.addLabel}</Button>
 
       </div>
     );

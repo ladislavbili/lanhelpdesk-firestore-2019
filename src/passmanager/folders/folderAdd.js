@@ -17,13 +17,16 @@ export default class ProjectAdd extends Component{
   toggle(){
     this.setState({opened:!this.state.opened})
   }
+
   render(){
     return (
       <div>
+
         <Button onClick={this.toggle.bind(this)} color="primary" style={{width:'100%'}}>
           <i className="fa fa-plus clickable pr-2"  />
           Folder
         </Button>
+
         <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
             <ModalHeader toggle={this.toggle.bind(this)}>Add folder</ModalHeader>
             <ModalBody>
@@ -38,13 +41,22 @@ export default class ProjectAdd extends Component{
 
               </ModalBody>
               <ModalFooter>
-              <Button color="danger" className="mr-auto" disabled={this.state.saving} onClick={this.toggle.bind(this)}>
+              <Button color="secondary" className="mr-auto" disabled={this.state.saving} onClick={this.toggle.bind(this)}>
                 Close
               </Button>
-              <Button color="primary" className="separate" disabled={this.state.saving||this.state.title===""} onClick={()=>{
+
+
+              <Button
+                color="primary"
+                className="separate"
+                disabled={this.state.saving||this.state.title===""}
+                onClick={()=>{
                   this.setState({saving:true});
-                  rebase.addToCollection('/pass-folders', {title:this.state.title,description:this.state.description})
-                    .then(()=>{this.setState({title:'',description:'',saving:false})});
+                  rebase.addToCollection('/pass-folders', {title: this.state.title, description: this.state.description})
+                    .then(()=> {
+                      this.setState({title:'',description:'',saving:false});
+                      this.toggle();
+                    });
                 }}>{this.state.saving?'Adding...':'Add folder'}</Button>
             </ModalFooter>
           </Modal>

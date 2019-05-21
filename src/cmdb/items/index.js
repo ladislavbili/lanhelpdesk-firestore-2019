@@ -8,17 +8,17 @@ export default class Sidebar extends Component {
 		super(props);
 		this.state = {
 			search:'',
-			servers:[],
+			items:[],
 			companies:[],
 			statuses:[],
 		};
 	}
 
 	componentWillMount(){
-		this.ref = rebase.listenToCollection('/cmdb-servers', {
+		this.ref = rebase.listenToCollection('/cmdb-items', {
 			context: this,
 			withIds: true,
-			then:content=>{this.setState({servers:content})},
+			then:content=>{this.setState({items:content})},
 		});
 		this.ref2 = rebase.listenToCollection('/cmdb-statuses', {
 			context: this,
@@ -39,27 +39,27 @@ export default class Sidebar extends Component {
 	}
 
 	getData(){
-		let newServers= this.state.servers.map((server)=>{
-			let newServer={...server};
-			let company = this.state.companies.find((item)=>item.id===server.company)
+		let newItems= this.state.items.map((item)=>{
+			let newItem={...item};
+			let company = this.state.companies.find((i)=>i.id===item.company);
 			if(company!==undefined){
-				newServer.company = company.title;
+				newItem.company = company.title;
 			}else{
-				newServer.company = '';
+				newItem.company = '';
 			}
-			let status = this.state.statuses.find((item)=>item.id===server.status)
+			let status = this.state.statuses.find((i)=>i.id===item.status);
 			if(status!==undefined){
-				newServer.status = status.title;
+				newItem.status = status.title;
 			}else{
-				newServer.status = '';
+				newItem.status = '';
 			}
-			return newServer;
+			return newItem;
 		});
-		return newServers.filter((server)=>
-			(server.title.toLowerCase().includes(this.state.search.toLowerCase()))||
-			(server.IP.toLowerCase().includes(this.state.search.toLowerCase()))||
-			(server.company.toLowerCase().includes(this.state.search.toLowerCase()))||
-			(server.status.toLowerCase().includes(this.state.search.toLowerCase()))
+		return newItems.filter((item)=>
+			(item.title.toLowerCase().includes(this.state.search.toLowerCase()))||
+			(item.IP.toLowerCase().includes(this.state.search.toLowerCase()))||
+			(item.company.toLowerCase().includes(this.state.search.toLowerCase()))||
+			(item.status.toLowerCase().includes(this.state.search.toLowerCase()))
 		)
 	}
 
@@ -78,18 +78,18 @@ export default class Sidebar extends Component {
 							placeholder="Search" />
 					</div>
 					<Button color="primary" className="mb-auto mt-auto" onClick={()=>{
-							this.props.history.push('/cmdb/server/add');
+							this.props.history.push('/cmdb/item/add');
 						}}>
 						<i className="fa fa-plus clickable pr-2"/>
-						Server
+						Item
 					</Button>
 				</div>
 				<div className="fit-with-header scrollable">
-					<h1>Servers</h1>
+					<h1>Items</h1>
 						<table className="table table-centered table-borderless table-hover mb-0">
 							<thead className="thead-light">
 								<tr>
-										<th>Server name</th>
+										<th>Item name</th>
 										<th>Company</th>
 										<th>IP</th>
 										<th>Status</th>
@@ -98,7 +98,7 @@ export default class Sidebar extends Component {
 							<tbody>
 								{
 									this.getData().map((item)=>
-										<tr key={item.id} className="clickable" onClick={()=>this.props.history.push('/cmdb/servers/'+item.id)}>
+										<tr key={item.id} className="clickable" onClick={()=>this.props.history.push('/cmdb/items/'+item.id)}>
 												<td>{item.title}</td>
 												<td>{item.company}</td>
 												<td>{item.IP.map((item2)=><span key={item2}>{item2}  </span>)}</td>
