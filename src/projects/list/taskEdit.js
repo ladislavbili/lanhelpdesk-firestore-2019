@@ -21,10 +21,12 @@ export default class TaskEdit extends Component{
       deadline:'',
       description:'',
       status:0,
+      tags:[],
 
       saving:false,
       loading:true,
       projects:[],
+      allTags:[],
       users:[]
     }
     this.submitTask.bind(this);
@@ -41,13 +43,14 @@ export default class TaskEdit extends Component{
       }),
       database.collection('proj-projects').get(),
       database.collection('users').get(),
+      database.collection('proj-tags').get(),
     ])
-    .then(([task,projects,users])=>{
-      this.setData(task,toSelArr(snapshotToArray(projects)),toSelArr(snapshotToArray(users),'email'),id);
+    .then(([task,projects,users,tags])=>{
+      this.setData(task,toSelArr(snapshotToArray(projects)),toSelArr(snapshotToArray(users),'email'),toSelArr(snapshotToArray(tags)),id);
     });
   }
 
-  setData(task,projects,users,id){
+  setData(task,projects,users,allTags,id){
     let project=projects.find((item)=>item.id=== task.project);
     if(project===undefined){
       project=null;
@@ -60,6 +63,8 @@ export default class TaskEdit extends Component{
     if(assignedTo===undefined){
       assignedTo=null;
     }
+
+    let tags = allTags.filter((item)=>(task.tags!==undefined?task.tags:[]).includes(item.id));
     this.setState({
       title:task.title,
       project,
@@ -69,10 +74,12 @@ export default class TaskEdit extends Component{
       deadline:task.deadline?new Date(task.deadline).toISOString().replace('Z',''):'',
       description:task.description?task.description:'',
       status:task.status,
+      tags,
 
       loading:false,
       users,
-      projects
+      projects,
+      allTags
     });
   }
 
@@ -92,6 +99,7 @@ export default class TaskEdit extends Component{
       assignedBy: this.state.assignedBy?this.state.assignedBy.id:null,
       assignedTo: this.state.assignedTo?this.state.assignedTo.id:null,
       deadline: isNaN(new Date(this.state.deadline).getTime()) ? null : (new Date(this.state.deadline).getTime()),
+      tags: this.state.tags.map((item)=>item.id),
       description: this.state.description,
       status: this.state.status
     }
@@ -158,7 +166,9 @@ export default class TaskEdit extends Component{
             <Label>Tags</Label>
             <Select
               className="supressDefaultSelectStyle"
-              options={this.state.projects}
+              options={this.state.allTags}
+              value={this.state.tags}
+              onChange={(tags)=>this.setState({tags},this.submitTask.bind(this))}
               isMulti
               />
           </FormGroup>
