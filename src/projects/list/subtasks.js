@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import {rebase,database} from '../../index';
 import { Input, Table } from 'reactstrap';
+import {rebase,database} from '../../index';
 import {snapshotToArray} from '../../helperFunctions';
 
 export default class Subtasks extends Component{
@@ -8,7 +8,9 @@ export default class Subtasks extends Component{
     super(props);
     this.state={
       newSubtask:'',
-      subtasks:[]
+      subtasks:[],
+      editedSubtaskTitle:'',
+      focusedSubtask:null,
     }
     this.submitSubtask.bind(this);
     this.deleteSubtask.bind(this);
@@ -67,7 +69,25 @@ export default class Subtasks extends Component{
                     rebase.updateDoc('proj-subtasks/'+item.id,{done:item.done});
                     this.setState({subtasks:newData});
                   }} /></td>
-                <td><Input type="text" value={item.title} className="invisible-input" /></td>
+                <td><Input type="text"
+                  value={this.state.focusedSubtask===item.id?this.state.editedSubtaskTitle:item.title}
+                  onBlur={() => {
+                  rebase.updateDoc('proj-subtasks/'+item.id,{title:this.state.editedSubtaskTitle});
+                  let newSubtasks=[...this.state.subtasks];
+                  newSubtasks[index].title=this.state.editedSubtaskTitle;
+                  this.setState({ focusedSubtask: null, subtasks:newSubtasks });
+                  }}
+                  onFocus={() => {
+                    this.setState({
+                      editedSubtaskTitle: item.title,
+                      focusedSubtask: item.id
+                    });
+                  }}
+                  onChange={e =>{
+                    this.setState({ editedSubtaskTitle: e.target.value })}
+                  }
+
+                  className="invisible-input" /></td>
                 <td>
                   <button
                     className="btn"
@@ -80,8 +100,7 @@ export default class Subtasks extends Component{
             )
           }
             <tr>
-              <td></td>
-              <td><Input type="text" value={this.state.newSubtask} onChange={(e)=>this.setState({newSubtask:e.target.value})} /></td>
+              <td colSpan={2}><Input type="text" value={this.state.newSubtask} onChange={(e)=>this.setState({newSubtask:e.target.value})} /></td>
               <td>
                 <button
                   className="btn"

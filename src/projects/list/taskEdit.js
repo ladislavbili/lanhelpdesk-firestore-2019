@@ -5,6 +5,7 @@ import {toSelArr,snapshotToArray} from '../../helperFunctions';
 import Select from 'react-select';
 import Subtasks from './subtasks';
 import Comments from './comments';
+import Attachements from './attachements';
 
 const statuses = [{id:0,title:'New',color:'#1087e2'},{id:1,title:'Open',color:'#155724'},{id:2,title:'Pending',color:'#f3ba0d'},{id:3,title:'Closed',color:'#e2e3e5'}]
 
@@ -22,6 +23,7 @@ export default class TaskEdit extends Component{
       description:'',
       status:0,
       tags:[],
+      attachements:[],
 
       saving:false,
       loading:true,
@@ -74,6 +76,7 @@ export default class TaskEdit extends Component{
       deadline:task.deadline?new Date(task.deadline).toISOString().replace('Z',''):'',
       description:task.description?task.description:'',
       status:task.status,
+      attachements:task.attachements?task.attachements:[],
       tags,
 
       loading:false,
@@ -101,7 +104,8 @@ export default class TaskEdit extends Component{
       deadline: isNaN(new Date(this.state.deadline).getTime()) ? null : (new Date(this.state.deadline).getTime()),
       tags: this.state.tags.map((item)=>item.id),
       description: this.state.description,
-      status: this.state.status
+      status: this.state.status,
+      attachements:this.state.attachements,
     }
 
     rebase.updateDoc('/proj-tasks/'+this.props.id, body).then(()=>this.setState({saving:false}));
@@ -174,49 +178,8 @@ export default class TaskEdit extends Component{
           </FormGroup>
 
           <Subtasks id={this.props.id} />
-          <Table>
-            <thead>
-              <tr>
-                <th>Attachements</th>
-                <th style={{width:20}}></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <button
-                    className="btn"
-                    type="button"
-                    >
-                    <i className="fa fa-plus primary-color" /> new file
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Thornton.jpg</td>
-                  <td>
-                    <button
-                      className="btn"
-                      type="button"
-                      >
-                      <i className="fa fa-trash primary-color" />
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Ottekr.jpg</td>
-                  <td>
-                    <button
-                      className="btn"
-                      type="button"
-                      >
-                      <i className="fa fa-trash primary-color" />
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </Table>
-            <Comments id={this.props.id} />
+          <Attachements id={this.props.id} attachements={this.state.attachements} onChange={(attachements)=>this.setState({attachements},this.submitTask.bind(this))} />
+          <Comments id={this.props.id} />
           </div>
           {/*TOOLBAR*/}
           <div style={{width:70,borderLeft:'darkgrey 3px solid', marginLeft:5, flex:1 ,flexDirection:'column', padding:5}}>

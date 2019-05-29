@@ -120,7 +120,7 @@ export default class Sidebar extends Component {
 							<Input type="checkbox"
 								id="check-new"
 								checked={this.state.statuses.includes(0)}
-								onClick={()=>{
+								onChange={()=>{
 									this.setState({
 										statuses: this.state.statuses.includes(0)?this.state.statuses.filter((item)=>item!==0):[...this.state.statuses,0]
 									})
@@ -136,7 +136,7 @@ export default class Sidebar extends Component {
 							<Input type="checkbox"
 								id="check-open"
 								checked={this.state.statuses.includes(1)}
-								onClick={()=>{
+								onChange={()=>{
 									this.setState({
 										statuses: this.state.statuses.includes(1)?this.state.statuses.filter((item)=>item!==1):[...this.state.statuses,1]
 									})
@@ -152,7 +152,7 @@ export default class Sidebar extends Component {
 							<Input type="checkbox"
 								id="check-pending"
 								checked={this.state.statuses.includes(2)}
-								onClick={()=>{
+								onChange={()=>{
 									this.setState({
 										statuses: this.state.statuses.includes(2)?this.state.statuses.filter((item)=>item!==2):[...this.state.statuses,2]
 									})
@@ -168,7 +168,7 @@ export default class Sidebar extends Component {
 							<Input type="checkbox"
 								id="check-close"
 								checked={this.state.statuses.includes(3)}
-								onClick={()=>{
+								onChange={()=>{
 									this.setState({
 										statuses: this.state.statuses.includes(3)?this.state.statuses.filter((item)=>item!==3):[...this.state.statuses,3]
 									})
