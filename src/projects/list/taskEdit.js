@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {rebase,database} from '../../index';
-import { FormGroup, Label, Input, Table } from 'reactstrap';
+import { FormGroup, Label, Input } from 'reactstrap';
 import {toSelArr,snapshotToArray} from '../../helperFunctions';
 import Select from 'react-select';
 import Subtasks from './subtasks';
@@ -179,7 +179,7 @@ export default class TaskEdit extends Component{
 
           <Subtasks id={this.props.id} />
           <Attachements id={this.props.id} attachements={this.state.attachements} onChange={(attachements)=>this.setState({attachements},this.submitTask.bind(this))} />
-          <Comments id={this.props.id} />
+          <Comments id={this.props.id} users={this.state.users} />
           </div>
           {/*TOOLBAR*/}
           <div style={{width:70,borderLeft:'darkgrey 3px solid', marginLeft:5, flex:1 ,flexDirection:'column', padding:5}}>

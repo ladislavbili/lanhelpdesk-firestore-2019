@@ -58,7 +58,6 @@ export default class PictureUpload extends Component{
         .child(filename)
         .getDownloadURL()
         .then(url => {
-          console.log(url);
           this.setState({ images: [...this.state.images, url], names: [...this.state.names, url] });
           this.setState({saving:true});
           rebase.addToCollection('/lanwiki-image-names', {name: filename});

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {ListGroupItem, Progress, Button, Row, Col} from 'reactstrap';
+import {ListGroupItem, Button, Row, Col} from 'reactstrap';
 import { NavLink as Link } from 'react-router-dom';
 import { connect } from "react-redux";
 

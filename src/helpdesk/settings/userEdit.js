@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
 import Select from 'react-select';
+import firebase from 'firebase';
 import {rebase, database} from '../../index';
 import {snapshotToArray, isEmail} from '../../helperFunctions';
 
@@ -15,6 +16,8 @@ export default class UserEdit extends Component{
       company:null,
       loading:true,
       saving:false,
+      passReseted:false,
+      passResetEnded:true,
       companies:[]
     }
     this.setData.bind(this);
@@ -86,7 +89,7 @@ export default class UserEdit extends Component{
           </FormGroup>
           <FormGroup>
             <Label for="email">E-mail</Label>
-            <Input type="email" name="email" id="email" placeholder="Enter email" value={this.state.email} onChange={(e)=>this.setState({email:e.target.value})} />
+            <Input type="email" name="email" id="email" disabled={true} placeholder="Enter email" value={this.state.email} onChange={(e)=>this.setState({email:e.target.value})} />
           </FormGroup>
           <FormGroup>
             <Label for="company">Company</Label>
@@ -108,13 +111,21 @@ export default class UserEdit extends Component{
               .then(()=>{
                 this.setState({saving:false})});
           }}>{this.state.saving?'Saving user...':'Save user'}</Button>
-        <Button color="danger"  disabled={this.state.saving} onClick={()=>{
+        <Button color="danger"  disabled={true} onClick={()=>{
               if(window.confirm("Are you sure?")){
                 rebase.removeDoc('/users/'+this.props.match.params.id).then(()=>{
                   this.props.history.goBack();
                 });
               }
-              }}>Delete</Button>
+            }}
+            >Delete</Button>
+          <Button color="warning"  disabled={this.state.saving||this.state.passReseted} onClick={()=>{
+              this.setState({passReseted:true,passResetEnded:false})
+              firebase.auth().sendPasswordResetEmail(this.state.email).then(()=>{
+                this.setState({passResetEnded:true})
+              })
+            }}
+            >{this.state.passResetEnded?(this.state.passReseted?'Password reseted!':"Reset user's password"):"Resetting..."}</Button>
       </div>
     );
   }

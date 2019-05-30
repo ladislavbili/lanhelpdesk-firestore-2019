@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Input, Table, Label, Button, FormGroup } from 'reactstrap';
+import { Input, Label, Button, FormGroup } from 'reactstrap';
+import { connect } from "react-redux";
 import {rebase,database} from '../../index';
 import {snapshotToArray, timestampToString} from '../../helperFunctions';
 
-export default class Comments extends Component{
+class Comments extends Component{
 
 constructor(props){
   super(props);
@@ -17,8 +18,14 @@ constructor(props){
 
 getData(id){
     database.collection('proj-comments').where("task", "==", id).get()
-  .then((comments)=>{
-    this.setState({comments:snapshotToArray(comments)})
+  .then((data)=>{
+    let comments = snapshotToArray(data).map((item)=>{
+      return {
+        ...item,
+        user:this.props.users.find((user)=>user.id===item.user)
+      };
+  });
+    this.setState({comments});
   });
 }
 
@@ -33,6 +40,7 @@ getData(id){
             <Button color="primary" disabled={this.state.newComment===''||this.state.saving} onClick={()=>{
                 this.setState({saving:true});
                 let body={
+                  user:this.props.userID,
                   comment:this.state.newComment,
                   createdAt: (new Date()).getTime(),
                   task:this.props.id
@@ -53,8 +61,8 @@ getData(id){
                   />
                 <div className="media-body">
                   <span className="media-meta pull-right">{timestampToString(comment.createdAt)}</span>
-                  <h4 className="text-primary font-16 m-0">Jonathan Smith</h4>
-                  <small className="text-muted">From: jonathan@domain.com</small>
+                  <h4 className="text-primary font-16 m-0">{comment.user!==undefined?(comment.user.name + ' '+comment.user.surname):'Unknown sender'}</h4>
+                  <small className="text-muted">From: {comment.user!==undefined?(comment.user.email):'Unknown sender'}</small>
                 </div>
               </div>
               <div  dangerouslySetInnerHTML={{__html: comment.comment.replace(/(?:\r\n|\r|\n)/g, '<br>') }}>
@@ -66,3 +74,10 @@ getData(id){
     );
   }
 }
+
+const mapStateToProps = ({ userReducer }) => {
+	const { id } = userReducer;
+	return { userID:id };
+};
+
+export default connect(mapStateToProps, { })(Comments);

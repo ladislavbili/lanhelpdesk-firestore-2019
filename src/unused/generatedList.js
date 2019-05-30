@@ -20,12 +20,10 @@ export default class Sidebar extends Component {
 		this.ref2=null;
 		this.ref3=null;
 		this.fetchData.bind(this);
-			console.log(this.props.match.params);
 		this.fetchData(this.props.match.params.id);
 	}
 
 	componentWillReceiveProps(props){
-		console.log(props.match.params);
 		if(this.props.match.params.id!==props.match.params.id){
 			this.fetchData(props.match.params.id);
 		}

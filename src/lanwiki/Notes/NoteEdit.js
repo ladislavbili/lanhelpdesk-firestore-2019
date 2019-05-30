@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, FormGroup, Progress, Row, Col, Input, InputGroup, ButtonDropdown, ButtonGroup, DropdownToggle, DropdownMenu, DropdownItem, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Button, FormGroup, Row, Col, Input, InputGroup, ButtonDropdown, ButtonGroup, DropdownToggle, DropdownMenu, DropdownItem, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 import TimeAgo from 'react-timeago'
 
@@ -96,7 +96,6 @@ export default class Note extends Component{
   }
 
   changeName(e){
-      console.log(this.state);
      this.setState({
        name: e.target.value,
      });

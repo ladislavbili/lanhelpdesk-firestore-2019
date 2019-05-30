@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Label, Input, Col } from 'reactstrap';
+import { Button, Label, Input } from 'reactstrap';
 
 
 export default class TextareaList extends Component{

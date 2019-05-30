@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Button, FormGroup, Progress, Label, Input} from 'reactstrap';
+import {Button, FormGroup, Label, Input} from 'reactstrap';
 import { rebase } from '../../index';
 
 export default class Sidebar extends Component {

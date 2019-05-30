@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import { connect } from "react-redux";
+import firebase from 'firebase';
+import {deleteUserData} from '../redux/actions';
 
-export default class PageHeader extends Component {
+class PageHeader extends Component {
 	constructor() {
 		super();
 		this.state = {
@@ -80,10 +83,22 @@ export default class PageHeader extends Component {
 			      </Dropdown>
 
 
-						<i className="headerIcons fas fa-sign-out-alt" style={{ backgroundColor: '#1976d2', borderWidth: 0, marginRight: 15, color: 'white' }} />
+						<i className="headerIcons clickable fas fa-sign-out-alt" style={{ backgroundColor: '#1976d2', borderWidth: 0, marginRight: 15, color: 'white' }} onClick={()=>{
+								if(window.confirm('Are you sure you want to log out?')){
+									this.props.deleteUserData();
+									firebase.auth().signOut();
+								}
+							}} />
 					</div>
 				</div>
 			</div>
 		);
 	}
 }
+
+
+const mapStateToProps = () => {
+	return {  };
+};
+
+export default connect(mapStateToProps, { deleteUserData })(PageHeader);

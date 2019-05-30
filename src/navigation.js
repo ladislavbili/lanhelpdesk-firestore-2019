@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
 import {Route} from 'react-router-dom';
-
+import { connect } from "react-redux";
+import firebase from 'firebase';
+import {rebase} from './index';
+import {setUserID,deleteUserData, setUserData} from './redux/actions';
 
 import Reroute from './reroute';
 import HelpdeskNavigation from './helpdesk/navigation';
@@ -9,21 +12,49 @@ import LanWikiNavigation from './lanwiki/navigation';
 import PassManagerNavigation from './passmanager/navigation';
 import ExpendituresNavigation from './expenditures/navigation';
 import ProjectsNavigation from './projects/navigation';
+import Login from './login';
 
-export default class Navigation extends Component {
+
+class Navigation extends Component {
+  constructor(props){
+    super(props);
+      firebase.auth().onAuthStateChanged((user) => {
+      if(user!==null){
+        rebase.get('users/'+user.uid, {
+          context: this,
+        }).then((userData)=>this.props.setUserData(userData));
+        this.props.setUserID(user.uid);
+      }else{
+        this.props.deleteUserData();
+      }
+    });
+  }
   render(){
-    return(
-      <div>
-          <div>
-            <Route exact path='/' component={Reroute} />
-            <Route path='/helpdesk' component={HelpdeskNavigation} />
-            <Route path='/cmdb' component={CMDBNavigation} />
-            <Route path='/lanwiki' component={LanWikiNavigation} />
-            <Route path='/passmanager' component={PassManagerNavigation} />
-            <Route path='/expenditures' component={ExpendituresNavigation} />
-            <Route path='/projects' component={ProjectsNavigation} />
-         </div>
-      </div>
-    )
+    if(this.props.loggedIn){
+      return(
+        <div>
+          <Route exact path='/' component={Reroute} />
+          <Route path='/helpdesk' component={HelpdeskNavigation} />
+          <Route path='/cmdb' component={CMDBNavigation} />
+          <Route path='/lanwiki' component={LanWikiNavigation} />
+          <Route path='/passmanager' component={PassManagerNavigation} />
+          <Route path='/expenditures' component={ExpendituresNavigation} />
+          <Route path='/projects' component={ProjectsNavigation} />
+        </div>
+      )
+    }else{
+      return(
+        <div>
+          <Route path='/' component={Login} />
+        </div>
+      )
+    }
   }
 }
+
+const mapStateToProps = ({ userReducer }) => {
+	const { loggedIn } = userReducer;
+	return { loggedIn };
+};
+
+export default connect(mapStateToProps, {setUserID,deleteUserData, setUserData})(Navigation);

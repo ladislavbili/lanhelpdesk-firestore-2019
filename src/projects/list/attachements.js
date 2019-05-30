@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import { Input, Table, Label, Button, FormGroup } from 'reactstrap';
-import {rebase,database} from '../../index';
+import { Table} from 'reactstrap';
 import firebase from 'firebase';
-import {snapshotToArray, timestampToString} from '../../helperFunctions';
 
 export default class Attachements extends Component{
 
@@ -25,7 +23,7 @@ export default class Attachements extends Component{
     let storageRef = firebase.storage().ref();
     let paths = this.state.files.map((item)=>item.ref);
 
-    attachements.filter((path)=>!paths.includes(path)).map((path) =>{
+    attachements.filter((path)=>!paths.includes(path)).forEach((path) =>{
       Promise.all([
         storageRef.child(path).getDownloadURL(),
         storageRef.child(path).getMetadata()
@@ -96,7 +94,7 @@ export default class Attachements extends Component{
             {
               this.state.files.map((file)=>
                 <tr key={file.path}>
-                  <td><a href={file.url} target="_blank">{file.name}</a></td>
+                  <td><a href={file.url} rel="noopener noreferrer" target="_blank">{file.name}</a></td>
                   <td>
                     <button
                       className="btn"

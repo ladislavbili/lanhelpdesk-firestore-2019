@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {ListGroup, ListGroupItem, Progress, InputGroup, Input, Button, Row, Col} from 'reactstrap';
+import {ListGroup, ListGroupItem, InputGroup, Input, Button, Row, Col} from 'reactstrap';
 import TimeAgo from 'react-timeago'
 import { rebase } from '../../index';
 import {hightlightText} from '../../helperFunctions';

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Label, Input, Col } from 'reactstrap';
+import { Button, Input } from 'reactstrap';
 
 
 export default class TextareaList extends Component{
@@ -16,7 +16,6 @@ export default class TextareaList extends Component{
   }
 
   render(){
-    console.log(this.props.items);
     return (
       <div>
         {
@@ -85,7 +84,6 @@ export default class TextareaList extends Component{
                   });
                 }}
                 onChange={e =>{
-                  console.log(e.target.value);
                   this.setState({ editText: e.target.value });}
                 }
                 />
