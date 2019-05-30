@@ -16,6 +16,7 @@ import UserList from './settings/userList';
 import PriceList from './settings/priceList';
 import SupplierList from './settings/supplierList';
 import SupplierInvoiceList from './settings/supplierInvoiceList';
+import TagList from './settings/tagList';
 
 
 export default class Navigation extends Component {
@@ -35,6 +36,7 @@ export default class Navigation extends Component {
 						{title:'Users',link:'users'},
 						{title:'Prices',link:'pricelists'},
 						{title:'Supplier',link:'suppliers'},
+						{title:'Tags',link:'tags'},
 						{title:'Invoices',link:'supplierInvoices'}]
 					} />
 					<Route exact path="/helpdesk/Reports" component={Reports} />
@@ -60,6 +62,8 @@ export default class Navigation extends Component {
           <Route exact path='/helpdesk/settings/suppliers/:id' component={SupplierList} />
           <Route exact path='/helpdesk/settings/supplierInvoices' component={SupplierInvoiceList} />
           <Route exact path='/helpdesk/settings/supplierInvoices/:id' component={SupplierInvoiceList} />
+					<Route exact path='/helpdesk/settings/tags' component={TagList} />
+          <Route exact path='/helpdesk/settings/tags/:id' component={TagList} />
 				</div>
 			</div>
 		</div>

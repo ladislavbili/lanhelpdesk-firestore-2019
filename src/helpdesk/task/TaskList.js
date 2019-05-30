@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import TasksBoard from './TasksBoard';
 import TasksRow from './TasksRow';
-import Filter from './Filter';
 import TasksTwo from './TasksTwo';
-import { Link } from 'react-router-dom';
+import {Button} from 'reactstrap';
 import { connect } from "react-redux";
-import {setSearch} from '../../redux/actions';
+import {setSearch, setFilter} from '../../redux/actions';
 
 
 class TaskListContainer extends Component {
@@ -28,15 +27,6 @@ class TaskListContainer extends Component {
 				<div className="content" style={{ paddingTop: 0 }}>
 
 					<div className="container-fluid">
-						{/*
-						<div className="row">
-							<div className="col-sm-6">
-								<h4 className="page-title" style={{ fontSize: 24 }}>
-									All Tasks
-								</h4>
-							</div>
-						</div>
-						*/}
 
 						<div className="d-flex flex-row align-items-center">
 							{this.state.filterView && (
@@ -56,12 +46,6 @@ class TaskListContainer extends Component {
 							)}
 
 							<div className="p2" style={{}}>
-								<button
-									className="btn btn-primary waves-effect waves-light btn-xs"
-									onClick={() => this.setState({ filterView: !this.state.filterView })}
-								>
-									<i className="fa fa-filter" />
-								</button>
 							</div>
 							<div className="p-2">
 								<div className="input-group">
@@ -81,13 +65,23 @@ class TaskListContainer extends Component {
 								</div>
 							</div>
 							<div className="p-2">
-								<Link
-									className=""
-									to={{ pathname: `/helpdesk/TaskListSearch` }}
-									style={{ color: '#1976d2' }}
-								>
+								<Button
+									onClick={()=>{
+										let body={
+											requester:null,
+											company:null,
+											assigned:null,
+											workType:null,
+											status:null,
+							        statusDateFrom:'',
+							        statusDateTo:'',
+							        updatedAt:(new Date()).getTime()
+							      }
+							      this.props.setFilter(body);
+									}}
+									color="link">
 									Global search
-								</Link>
+								</Button>
 							</div>
 							<div className="ml-auto p-2 align-self-center">
 								{' '}
@@ -194,12 +188,6 @@ class TaskListContainer extends Component {
 					</div>
 
 					<div className="row m-0">
-						{this.state.filterView && (
-							<div className="col-xl-3">
-								<Filter />
-							</div>
-						)}
-
 						{this.state.taskListType === 'option2' && (
 							<div className={'' + (this.state.filterView ? 'col-xl-9' : 'col-xl-12')}>
 								<TasksRow history={this.props.history} match={this.props.match}/>{' '}
@@ -228,4 +216,4 @@ const mapStateToProps = ({ filterReducer }) => {
 	return { search:filterReducer.search };
 };
 
-export default connect(mapStateToProps, { setSearch })(TaskListContainer);
+export default connect(mapStateToProps, { setSearch, setFilter })(TaskListContainer);

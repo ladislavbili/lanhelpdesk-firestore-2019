@@ -43,6 +43,10 @@ html{
 	height: calc(  #{$height-without-header} - 22px );
 }
 
+.fit-with-header-and-command-bar{
+	height: calc(  #{$height-without-header} - 44.5px );
+}
+
 .card-box{
   border: 1px solid rgba(54, 64, 74, 0.05);
   margin-bottom: 0px;

@@ -5,6 +5,7 @@ import Comments from '../components/comments.js';
 import Materials from '../components/materials';
 import Subtasks from '../components/subtasks';
 
+import {invisibleSelectStyle} from '../components/selectStyles';
 import {rebase, database} from '../../index';
 import {toSelArr, snapshotToArray, timestampToString} from '../../helperFunctions';
 
@@ -63,6 +64,7 @@ export default class TasksTwoEdit extends Component {
 			taskMaterials:[],
 			taskWorks:[],
 			units:[],
+			allTags:[],
 			defaultUnit:null,
 			task:null,
 			openEditServiceModal:false,
@@ -82,7 +84,9 @@ export default class TasksTwoEdit extends Component {
 			statusChange:null,
 			createdAt:null,
 			deadline:null,
+			reminder:null,
 			project:null,
+			tags:[],
 			pausal:{value:true,label:'Pausal'},
 			overtime:{value:true,label:'Áno'},
 
@@ -121,10 +125,12 @@ export default class TasksTwoEdit extends Component {
       description: this.state.description,
       status: this.state.status?this.state.status.id:null,
 			deadline: isNaN(new Date(this.state.deadline).getTime()) ? null : (new Date(this.state.deadline).getTime()),
+			reminder: isNaN(new Date(this.state.reminder).getTime()) ? null : (new Date(this.state.reminder).getTime()),
       statusChange: this.state.statusChange,
       project: this.state.project?this.state.project.id:null,
       pausal: this.state.pausal.value,
       overtime: this.state.overtime.value,
+			tags: this.state.tags.map((item)=>item.id)
     }
     rebase.updateDoc('/tasks/'+this.state.task.id, body)
     .then(()=>{
@@ -183,17 +189,19 @@ export default class TasksTwoEdit extends Component {
         database.collection('prices').get(),
         database.collection('pricelists').get(),
         database.collection('users').get(),
+				database.collection('help-tags').get(),
         database.collection('taskMaterials').where("task", "==", taskID).get(),
         database.collection('taskWorks').where("task", "==", taskID).get(),
 				rebase.get('metadata/0', {
 					context: this,
 				})
-    ]).then(([task,statuses,projects, companies, workTypes, units, prices, pricelists, users,taskMaterials, taskWorks,meta])=>{
+    ]).then(([task,statuses,projects, companies, workTypes, units, prices, pricelists, users, tags, taskMaterials, taskWorks,meta])=>{
       this.setData(
 				{id:task.id,...task.data()},
 				toSelArr(snapshotToArray(statuses)),
 				toSelArr(snapshotToArray(projects)),
 				toSelArr(snapshotToArray(users),'email'),
+				toSelArr(snapshotToArray(tags)),
       	toSelArr(snapshotToArray(companies)),
 				toSelArr(snapshotToArray(workTypes)),
       	toSelArr(snapshotToArray(units)),
@@ -205,7 +213,7 @@ export default class TasksTwoEdit extends Component {
     });
   }
 
-  setData(task, statuses, projects,users,companies,workTypes,units, prices,taskMaterials,taskWorks,pricelists,defaultUnit){
+  setData(task, statuses, projects,users,tags,companies,workTypes,units, prices,taskMaterials,taskWorks,pricelists,defaultUnit){
     let project = projects.find((item)=>item.id===task.project);
     let status = statuses.find((item)=>item.id===task.status);
     let company = companies.find((item)=>item.id===task.company);
@@ -222,6 +230,10 @@ export default class TasksTwoEdit extends Component {
       let newWorkType = {...workType, prices:prices.filter((price)=>price.workType===workType.id)}
       return newWorkType;
     });
+		let taskTags=[];
+		if(task.tags){
+			taskTags=tags.filter((tag)=>task.tags.includes(tag.id));
+		}
 
     this.setState({
       task,
@@ -241,6 +253,7 @@ export default class TasksTwoEdit extends Component {
 			statusChange:task.statusChange?task.statusChange:null,
 			createdAt:task.createdAt?task.createdAt:null,
 			deadline: task.deadline!==null?new Date(task.deadline).toISOString().replace('Z',''):'',
+			reminder: task.reminder?new Date(task.reminder).toISOString().replace('Z',''):'',
       project:project?project:null,
       company:company?company:null,
       workHours:isNaN(parseInt(task.workHours))?0:parseInt(task.workHours),
@@ -248,7 +261,9 @@ export default class TasksTwoEdit extends Component {
       requester:requester?requester:null,
       assigned:assigned?assigned:null,
       loading:false,
-			defaultUnit
+			defaultUnit,
+			allTags:tags,
+			tags:taskTags
     });
   }
 
@@ -285,7 +300,7 @@ export default class TasksTwoEdit extends Component {
 
 		return (
 			<div>
-				<div className="row scrollable fit-with-header" style={{}}>
+				<div className="row scrollable fit-with-header-and-command-bar" style={{}}>
 					<div className="col-lg-12">
 						<div className="card-box p-t-0" style={{ maxWidth: 1284, background: '#F9F9F9', borderRadius: 0, padding: "none" }}>
 							<div className="d-flex flex-row">
@@ -326,10 +341,17 @@ export default class TasksTwoEdit extends Component {
 
 							</div>
 							<div className="row">
-								<div className="col-lg-12">
-									<strong>Tagy: </strong>
-									<span className="label label-info m-r-5">Po pracovných hodínach</span>
-									<span className="label label-success m-r-5">Telefonovať</span>
+								<div className="col-lg-12 row">
+									<strong className="center-hor">Tagy: </strong>
+									<div style={{flex:1,marginBottom:5}}>
+										<Select
+											value={this.state.tags}
+											isMulti
+											onChange={(tags)=>this.setState({tags},this.submitTask.bind(this))}
+											options={this.state.allTags}
+											styles={invisibleSelectStyle}
+											/>
+									</div>
 								</div>
 								<div className="col-lg-12 p-0">
 									<div className="col-lg-6">
@@ -391,14 +413,25 @@ export default class TasksTwoEdit extends Component {
 											</div>
 										</div>
 									</div>
+
 									<div className="col-lg-6">
 										<div className="m-t-20">
+
 											<div className="form-group m-b-0 row">
 												<label className="col-5 col-form-label">Pripomienka</label>
 												<div className="col-7">
-													<Select styles={selectStyle} />
+													<input
+														className='form-control'
+														placeholder="Status change date"
+														type="datetime-local"
+														value={this.state.reminder}
+														onChange={(e)=>{
+															this.setState({reminder:e.target.value},this.submitTask.bind(this))}
+														}
+														/>
 												</div>
 											</div>
+
 											<div className="form-group m-b-0 row">
 												<label className="col-5 col-form-label">Deadline</label>
 												<div className="col-7">
@@ -413,6 +446,7 @@ export default class TasksTwoEdit extends Component {
 														/>
 												</div>
 											</div>
+
 											<div className="form-group m-b-0 row">
 												<label className="col-5 col-form-label">Opakovanie</label>
 												<div className="col-7">
@@ -510,8 +544,7 @@ export default class TasksTwoEdit extends Component {
 								match={this.props.match}
 								/>
 
-
-							<Comments />
+							<Comments id={this.state.task?this.state.task.id:null} users={this.state.users} />
 						</div>
 					</div>
 				</div>
