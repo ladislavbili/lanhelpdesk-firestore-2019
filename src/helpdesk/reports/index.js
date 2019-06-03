@@ -79,11 +79,11 @@ class Reports extends Component {
 			}
 		});
 		newWorks = newWorks.filter((work)=>
-			(this.props.filter.status===null||work.task.status.id===this.props.filter.status) &&
-			(this.props.filter.requester===null||work.task.requester.id===this.props.filter.requester) &&
+			(this.props.filter.status===null||(work.task.status&&work.task.status.id===this.props.filter.status)) &&
+			(this.props.filter.requester===null||(work.task.requester&&work.task.requester.id===this.props.filter.requester)) &&
 			(this.props.filter.company===null||work.task.company===this.props.filter.company) &&
-			(this.props.filter.assigned===null||work.task.assigned.id===this.props.filter.assigned) &&
-			(this.props.filter.workType===null||work.workType.id===this.props.filter.workType) &&
+			(this.props.filter.assigned===null||(work.task.assigned&&work.task.assigned.id===this.props.filter.assigned)) &&
+			(this.props.filter.workType===null||(work.workType.id===this.props.filter.workType)) &&
 			(this.props.filter.statusDateFrom===''||work.task.statusChange >= this.props.filter.statusDateFrom) &&
 			(this.props.filter.statusDateTo===''||work.task.statusChange <= this.props.filter.statusDateTo)
 			);
@@ -115,10 +115,10 @@ class Reports extends Component {
 			}
 		})
 		newMaterials = newMaterials.filter((material)=>
-			(this.props.filter.status===null||material.task.status.id===this.props.filter.status) &&
-			(this.props.filter.requester===null||material.task.requester.id===this.props.filter.requester) &&
+			(this.props.filter.status===null||(material.task.status&& material.task.status.id===this.props.filter.status)) &&
+			(this.props.filter.requester===null||(material.task.requester&& material.task.requester.id===this.props.filter.requester)) &&
 			(this.props.filter.company===null||material.task.company===this.props.filter.company) &&
-			(this.props.filter.assigned===null||material.task.assigned.id===this.props.filter.assigned) &&
+			(this.props.filter.assigned===null||(material.task.assigned&& material.task.assigned.id===this.props.filter.assigned)) &&
 			(this.props.filter.statusDateFrom===''||material.task.statusChange >= this.props.filter.statusDateFrom) &&
 			(this.props.filter.statusDateTo===''||material.task.statusChange <= this.props.filter.statusDateTo)
 		);
@@ -218,8 +218,8 @@ class Reports extends Component {
 																<tr key={index}>
 																	<td>{item.task.id}</td>
 																	<td><Link className="" to={{ pathname: `/helpdesk/taskList/`+item.task.id }} style={{ color: "#1976d2" }}>{item.task.title}</Link></td>
-																	<td>{item.task.requester===null?'Nikto':item.task.requester.email}</td>
-																	<td>{item.task.assigned===null?'Nikto':item.task.assigned.email}</td>
+																	<td>{item.task.requester?item.task.requester.email:'Nikto'}</td>
+																	<td>{item.task.assigned?item.task.assigned.email:'Nikto'}</td>
 																	<td>{item.task.status.title}</td>
 																	<td>{timestampToString(item.task.statusChange)}</td>
 																	<td>
@@ -281,8 +281,8 @@ class Reports extends Component {
 															<tr key={index}>
 																<td>{material.task.id}</td>
 																<td><Link className="" to={{ pathname: `/helpdesk/taskList/`+material.task.id }} style={{ color: "#1976d2" }}>{material.task.title}</Link></td>
-																<td>{material.task.requester===null?'Nikto':material.task.requester.email}</td>
-																<td>{material.task.assigned===null?'Nikto':material.task.assigned.email}</td>
+																<td>{material.task.requester?material.task.requester.email:'Nikto'}</td>
+																<td>{material.task.assigned?material.task.assigned.email:'Nikto'}</td>
 																<td>{material.task.status.title}</td>
 																<td>{timestampToString(material.task.statusChange)}</td>
 																	<td>

@@ -9,12 +9,6 @@ import {invisibleSelectStyle} from '../components/selectStyles';
 import {rebase, database} from '../../index';
 import {toSelArr, snapshotToArray, timestampToString} from '../../helperFunctions';
 
-const taskTypes = [
-	{ value: 0, label: 'Servisný list' },
-	{ value: 1, label: 'Cenová ponuka' },
-];
-
-
 const repeat = [
 	{ value: 'none', label: 'none' },
 	{ value: 'every day', label: 'every day' },
@@ -65,6 +59,7 @@ export default class TasksTwoEdit extends Component {
 			taskWorks:[],
 			units:[],
 			allTags:[],
+			taskTypes:[],
 			defaultUnit:null,
 			task:null,
 			openEditServiceModal:false,
@@ -76,7 +71,6 @@ export default class TasksTwoEdit extends Component {
 			title:'',
 			company:null,
 			workHours:'0',
-			workType:null,
 			requester:null,
 			assigned:null,
 			description:'',
@@ -89,6 +83,7 @@ export default class TasksTwoEdit extends Component {
 			tags:[],
 			pausal:{value:true,label:'Pausal'},
 			overtime:{value:true,label:'Áno'},
+			type:null,
 
 			/////
 			openAddStatusModal: false,
@@ -119,7 +114,6 @@ export default class TasksTwoEdit extends Component {
       title: this.state.title,
       company: this.state.company?this.state.company.id:null,
       workHours: this.state.workHours,
-      workType: this.state.workType?this.state.workType.value:null,
       requester: this.state.requester?this.state.requester.id:null,
       assigned: this.state.assigned?this.state.assigned.id:null,
       description: this.state.description,
@@ -130,8 +124,10 @@ export default class TasksTwoEdit extends Component {
       project: this.state.project?this.state.project.id:null,
       pausal: this.state.pausal.value,
       overtime: this.state.overtime.value,
-			tags: this.state.tags.map((item)=>item.id)
+			tags: this.state.tags.map((item)=>item.id),
+			type: this.state.type?this.state.type.id:null,
     }
+
     rebase.updateDoc('/tasks/'+this.state.task.id, body)
     .then(()=>{
       if(!this.props.columns){
@@ -190,12 +186,13 @@ export default class TasksTwoEdit extends Component {
         database.collection('pricelists').get(),
         database.collection('users').get(),
 				database.collection('help-tags').get(),
+				database.collection('help-taskTypes').get(),
         database.collection('taskMaterials').where("task", "==", taskID).get(),
         database.collection('taskWorks').where("task", "==", taskID).get(),
 				rebase.get('metadata/0', {
 					context: this,
 				})
-    ]).then(([task,statuses,projects, companies, workTypes, units, prices, pricelists, users, tags, taskMaterials, taskWorks,meta])=>{
+    ]).then(([task,statuses,projects, companies, workTypes, units, prices, pricelists, users, tags,taskTypes, taskMaterials, taskWorks,meta])=>{
       this.setData(
 				{id:task.id,...task.data()},
 				toSelArr(snapshotToArray(statuses)),
@@ -205,6 +202,7 @@ export default class TasksTwoEdit extends Component {
       	toSelArr(snapshotToArray(companies)),
 				toSelArr(snapshotToArray(workTypes)),
       	toSelArr(snapshotToArray(units)),
+				toSelArr(snapshotToArray(taskTypes)),
 				snapshotToArray(prices),
 				snapshotToArray(taskMaterials),
 				snapshotToArray(taskWorks),
@@ -213,14 +211,14 @@ export default class TasksTwoEdit extends Component {
     });
   }
 
-  setData(task, statuses, projects,users,tags,companies,workTypes,units, prices,taskMaterials,taskWorks,pricelists,defaultUnit){
+  setData(task, statuses, projects,users,tags,companies,workTypes,units,taskTypes, prices,taskMaterials,taskWorks,pricelists,defaultUnit){
     let project = projects.find((item)=>item.id===task.project);
     let status = statuses.find((item)=>item.id===task.status);
     let company = companies.find((item)=>item.id===task.company);
     company = {...company,pricelist:pricelists.find((item)=>item.id===company.pricelist)};
-    let workType = taskTypes.find((item)=>item.value===task.workType);
     let requester = users.find((item)=>item.id===task.requester);
     let assigned = users.find((item)=>item.id===task.assigned);
+    let type = taskTypes.find((item)=>item.id===task.type);
 
     let newCompanies=companies.map((company)=>{
       let newCompany={...company,pricelist:pricelists.find((item)=>item.id===company.pricelist)};
@@ -245,7 +243,10 @@ export default class TasksTwoEdit extends Component {
       units,
       taskMaterials,
       taskWorks,
-      description:task.description,
+			taskTypes,
+			allTags:tags,
+
+			description:task.description,
       title:task.title,
       pausal:task.pausal?{value:true,label:'Pausal'}:{value:false,label:'Project'},
 			overtime:task.overtime?{value:true,label:'Áno'}:{value:false,label:'Nie'},
@@ -257,13 +258,12 @@ export default class TasksTwoEdit extends Component {
       project:project?project:null,
       company:company?company:null,
       workHours:isNaN(parseInt(task.workHours))?0:parseInt(task.workHours),
-      workType:workType?workType:null,
       requester:requester?requester:null,
       assigned:assigned?assigned:null,
       loading:false,
 			defaultUnit,
-			allTags:tags,
-			tags:taskTags
+			tags:taskTags,
+			type:type?type:null,
     });
   }
 
@@ -458,10 +458,10 @@ export default class TasksTwoEdit extends Component {
 												<label className="col-5 col-form-label">Typ</label>
 												<div className="col-7">
 													<Select
-					                  value={this.state.workType}
+					                  value={this.state.type}
 														styles={selectStyle}
-					                  onChange={(workType)=>this.setState({workType},this.submitTask.bind(this))}
-					                  options={taskTypes}
+					                  onChange={(type)=>this.setState({type},this.submitTask.bind(this))}
+					                  options={this.state.taskTypes}
 					                  />
 												</div>
 											</div>

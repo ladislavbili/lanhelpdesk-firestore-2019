@@ -38,10 +38,13 @@ class Sidebar extends Component {
 			openAddStatusModal: false,
 			openAddTaskModal: false,
 			isColumn: false,
+			filters:[],
 			search: '',
 			activeTab:0,
 			projects:[{id:null,title:'Dashboard',label:'Dashboard',value:null}],
-			project:{id:null,title:'Dashboard',label:'Dashboard',value:null}
+			project:{id:null,title:'Dashboard',label:'Dashboard',value:null},
+			filterID:null,
+			filterData:null,
 		};
 	}
 
@@ -56,6 +59,19 @@ class Sidebar extends Component {
 			});
 		},
 		});
+
+		this.ref2 = rebase.listenToCollection('/help-filters', {
+			context: this,
+			withIds: true,
+			then:content=>{
+					this.setState({filters:content})
+			}
+		});
+	}
+
+	componentWillUnmount() {
+		rebase.removeBinding(this.ref);
+			rebase.removeBinding(this.ref2);
 	}
 
 	render() {
@@ -108,6 +124,7 @@ class Sidebar extends Component {
 									<Nav vertical>
 										<NavItem>
 											<Link to={{ pathname: `` }} onClick={()=>{
+													this.setState({filterID:null,filterData:null});
 													this.props.setFilter({
 														status:null,
 														requester:null,
@@ -120,11 +137,25 @@ class Sidebar extends Component {
 													});
 												}}>Všetky</Link>
 										</NavItem>
+										{
+											this.state.filters.map((item)=>
+											<NavItem key={item.id}>
+												<Link to={{ pathname: `` }} onClick={()=>{
+														this.setState({filterID:item.id,filterData:item});
+														this.props.setFilter({
+															...item.filter,
+															updatedAt:(new Date()).getTime()
+														});
+													}}>{item.title}</Link>
+											</NavItem>
+
+										)
+										}
 
 									</Nav>
 								</TabPane>
 								<TabPane tabId={1}>
-									<Filter />
+									<Filter filterID={this.state.filterID} filterData={this.state.filterData} resetFilter={()=>this.setState({filterID:null,filterData:null})} />
 								</TabPane>
 							</TabContent>
 						</div>

@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import {NavItem, Nav} from 'reactstrap';
 import Select from 'react-select';
 import { connect } from "react-redux";
-import {database} from '../../index';
+
+import {database, rebase} from '../../index';
 import {setFilter} from '../../redux/actions';
 import {toSelArr, snapshotToArray} from '../../helperFunctions';
+import AddFilter from './filterAdd';
 
 const selectStyle = {
   control: base => ({
@@ -44,11 +46,11 @@ class Filter extends Component {
       users:[],
       companies:[],
       workTypes:[],
-      status:[],
-      requester:null,
-      company:null,
-      assigned:null,
-      workType:null,
+      status:{id:null,label:'Žiadny',value:null},
+      requester:{id:null,label:'Žiadny',value:null},
+      company:{id:null,label:'Žiadny',value:null},
+      assigned:{id:null,label:'Žiadny',value:null},
+      workType:{id:null,label:'Žiadny',value:null},
       statusDateFrom:'',
       statusDateTo:'',
       loading:true
@@ -102,22 +104,52 @@ class Filter extends Component {
         database.collection('statuses').get(),
         database.collection('users').get(),
         database.collection('companies').get(),
-        database.collection('workTypes').get(),
+        database.collection('help-taskTypes').get(),
       ]).then(([statuses,users, companies, workTypes])=>{
         this.setData(toSelArr(snapshotToArray(statuses)),toSelArr(snapshotToArray(users),'email'),toSelArr(snapshotToArray(companies)),toSelArr(snapshotToArray(workTypes)));
       });
     }
 
+    deleteFilter(){
+      if(window.confirm("Are you sure?")&& this.props.filterID!==null){
+        rebase.removeDoc('/help-filters/'+this.props.filterID).then(()=>{
+          this.props.resetFilter();
+          this.setState({
+            status:{id:null,label:'Žiadny',value:null},
+            requester:{id:null,label:'Žiadny',value:null},
+            company:{id:null,label:'Žiadny',value:null},
+            assigned:{id:null,label:'Žiadny',value:null},
+            workType:{id:null,label:'Žiadny',value:null},
+            statusDateFrom:'',
+            statusDateTo:'',
+          });
+          this.applyFilter();
+        });
+      }
+    }
+
     resetFilter(){
-      this.setState({
-        status:{id:null,label:'Žiadny',value:null},
-        requester:{id:null,label:'Žiadny',value:null},
-        company:{id:null,label:'Žiadny',value:null},
-        assigned:{id:null,label:'Žiadny',value:null},
-        workType:{id:null,label:'Žiadny',value:null},
-        statusDateFrom:'',
-        statusDateTo:'',
-      })
+      if(this.props.filterID===null){
+        this.setState({
+          status:{id:null,label:'Žiadny',value:null},
+          requester:{id:null,label:'Žiadny',value:null},
+          company:{id:null,label:'Žiadny',value:null},
+          assigned:{id:null,label:'Žiadny',value:null},
+          workType:{id:null,label:'Žiadny',value:null},
+          statusDateFrom:'',
+          statusDateTo:'',
+        })
+      }else{
+        this.setState({
+          status:this.getItemValue('statuses',this.state,this.props.filterData.filter.status),
+          requester:this.getItemValue('users',this.state,this.props.filterData.filter.requester),
+          company:this.getItemValue('companies',this.state,this.props.filterData.filter.company),
+          assigned:this.getItemValue('users',this.state,this.props.filterData.filter.assigned),
+          workType:this.getItemValue('workTypes',this.state,this.props.filterData.filter.workType),
+          statusDateFrom:this.props.filterData.filter.statusDateFrom,
+          statusDateTo:this.props.filterData.filter.statusDateTo,
+        });
+      }
     }
 
     applyFilter(){
@@ -140,9 +172,21 @@ class Filter extends Component {
           <NavItem>
             <div className="btn-group mb-2">
               <button type="button" className="btn btn-light btn-xs" onClick={this.applyFilter.bind(this)}>Apply</button>
-              <button type="button" className="btn btn-light btn-xs">Save</button>
+              <AddFilter
+                filter={{
+                  requester:this.state.requester.id,
+                  company:this.state.company.id,
+                  assigned:this.state.assigned.id,
+                  workType:this.state.workType.id,
+                  status:this.state.status.id,
+                  statusDateFrom:isNaN(new Date(this.state.statusDateFrom).getTime())||this.state.statusDateFrom === '' ? '' : (new Date(this.state.statusDateFrom).getTime()),
+                  statusDateTo:isNaN(new Date(this.state.statusDateTo).getTime())|| this.state.statusDateTo === '' ? '' : (new Date(this.state.statusDateTo).getTime())
+                }}
+                filterID={this.props.filterID}
+                filterData={this.props.filterData}
+              />
               <button type="button" className="btn btn-light btn-xs" onClick={this.resetFilter.bind(this)}>Reset</button>
-              <button type="button" className="btn btn-light btn-xs">Delete</button>
+              <button type="button" className="btn btn-light btn-xs" onClick={this.deleteFilter.bind(this)}>Delete</button>
             </div>
           </NavItem>
 

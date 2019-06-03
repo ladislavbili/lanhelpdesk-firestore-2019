@@ -13,7 +13,7 @@ export default class Subtasks extends Component {
 
 		this.toggle = this.toggle.bind(this);
 		this.state = {
-			activeTab: '2'
+			activeTab: '1'
 		};
 	}
 

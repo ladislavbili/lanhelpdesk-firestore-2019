@@ -7,16 +7,17 @@ import Reports from './reports';
 
 import TaskList from './task/TaskList';
 
-import StatusList from './settings/statusList';
-import ProjectList from './settings/projectList';
-import UnitList from './settings/unitList';
-import CompanyList from './settings/companyList';
-import WorkTypeList from './settings/workTypeList';
-import UserList from './settings/userList';
-import PriceList from './settings/priceList';
-import SupplierList from './settings/supplierList';
-import SupplierInvoiceList from './settings/supplierInvoiceList';
-import TagList from './settings/tagList';
+import StatusList from './settings/statuses';
+import ProjectList from './settings/projects';
+import UnitList from './settings/units';
+import CompanyList from './settings/companies';
+import WorkTypeList from './settings/workTypes';
+import UserList from './settings/users';
+import PriceList from './settings/prices';
+import SupplierList from './settings/suppliers';
+import SupplierInvoiceList from './settings/supplierInvoices';
+import TagList from './settings/tags';
+import TaskTypeList from './settings/taskTypes';
 
 
 export default class Navigation extends Component {
@@ -37,8 +38,10 @@ export default class Navigation extends Component {
 						{title:'Prices',link:'pricelists'},
 						{title:'Supplier',link:'suppliers'},
 						{title:'Tags',link:'tags'},
-						{title:'Invoices',link:'supplierInvoices'}]
+						{title:'Invoices',link:'supplierInvoices'},
+						{title:'Task types',link:'taskTypes'}]
 					} />
+
 					<Route exact path="/helpdesk/Reports" component={Reports} />
 					<Route exact path="/helpdesk" component={TaskList} />
 					<Route exact path="/helpdesk/taskList" component={TaskList} />
@@ -63,7 +66,9 @@ export default class Navigation extends Component {
           <Route exact path='/helpdesk/settings/supplierInvoices' component={SupplierInvoiceList} />
           <Route exact path='/helpdesk/settings/supplierInvoices/:id' component={SupplierInvoiceList} />
 					<Route exact path='/helpdesk/settings/tags' component={TagList} />
-          <Route exact path='/helpdesk/settings/tags/:id' component={TagList} />
+					<Route exact path='/helpdesk/settings/tags/:id' component={TagList} />
+					<Route exact path='/helpdesk/settings/taskTypes' component={TaskTypeList} />
+          <Route exact path='/helpdesk/settings/taskTypes/:id' component={TaskTypeList} />
 				</div>
 			</div>
 		</div>

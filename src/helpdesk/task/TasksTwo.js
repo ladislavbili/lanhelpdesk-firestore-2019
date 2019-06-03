@@ -45,17 +45,23 @@ class TasksRow extends Component {
 	}
 
 	filterTasks(tasks){
+
 		let newTasks=tasks.map((task)=>{
 			return {
 				...task,
+				status:this.state.statuses.find((status)=>status.id===task.status),
+				project:this.state.projects.find((project)=>project.id===task.project),
+				assigned:this.state.users.find((user)=>user.id===task.assigned),
+				requester:this.state.users.find((user)=>user.id===task.requester),
 				tags:this.state.tags.filter((tag)=>task.tags && task.tags.includes(tag.id))
 			}
 		});
 		return newTasks.filter((task)=>{
-			return (this.props.filter.status===null||task.status.id===this.props.filter.status) &&
-			(this.props.filter.requester===null||task.requester.id===this.props.filter.requester) &&
+			return (this.props.filter.status===null||(task.status && task.status.id===this.props.filter.status)) &&
+			(this.props.filter.requester===null||(task.requester && task.requester.id===this.props.filter.requester)) &&
+			(this.props.filter.workType===null||(task.type===this.props.filter.workType)) &&
 			(this.props.filter.company===null||task.company===this.props.filter.company) &&
-			(this.props.filter.assigned===null||task.assigned.id===this.props.filter.assigned) &&
+			(this.props.filter.assigned===null||(task.assigned && task.assigned.id===this.props.filter.assigned)) &&
 			(this.props.filter.statusDateFrom===''||task.statusChange >= this.props.filter.statusDateFrom) &&
 			(this.props.filter.statusDateTo===''||task.statusChange <= this.props.filter.statusDateTo) &&
 			((task.status?task.status.title:'')+task.title+task.id+
@@ -66,7 +72,7 @@ class TasksRow extends Component {
 				(task.assigned?(task.assigned.email+task.assigned.name+' '+task.assigned.surname):'')
 			).toLowerCase().includes(this.props.search.toLowerCase()) &&
 
-			(this.props.project===null||task.project.id===this.props.project)
+			(this.props.project===null||(task.project && task.project.id===this.props.project))
 				}
 			);
 	}
@@ -80,21 +86,12 @@ class TasksRow extends Component {
 	}
 
 	render() {
-		let tasks = this.state.tasks.map((task)=>{
-			let newTask={...task};
-			newTask.status=this.state.statuses.find((status)=>status.id===task.status);
-			newTask.project=this.state.projects.find((project)=>project.id===task.project);
-			newTask.assigned=this.state.users.find((user)=>user.id===task.assigned);
-			newTask.requester=this.state.users.find((user)=>user.id===task.requester);
-			return newTask;
-		})
-
 		return (
 			<div>
 				<div className="row p-0" style={{ background: "white" }}>
 					<div className="col-lg-4 p-0 scrollable fit-with-header">
 						{
-							this.filterTasks(tasks).map((task)=>
+							this.filterTasks(this.state.tasks).map((task)=>
 							<ul
 								className={"sortable-list taskList list-unstyled clickable"+(this.props.match.params.taskID===task.id?' active selected-item':'')}
 								id="upcoming"

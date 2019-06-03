@@ -80,7 +80,7 @@ export default class Rozpocet extends Component {
 		}
 		return (
 			<div className="">
-			<h2>Materiál</h2>
+			<div className="nav-link">Materiál</div>
 				<div className="row">
 					<div className="col-md-12">
 						<div>
