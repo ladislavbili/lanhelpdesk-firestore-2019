@@ -3,19 +3,6 @@
 .fullWidth{
   width: 100% !important;
 }
-/*
-.header {
-  border-radius: 0;
-  border-bottom: 1px solid rgba(0,0,0,.1);
-  height: 50px;
-}*/
-
-body{
-	font-size: 14px;
-	background-color: #ebeff2;
-	color: #797979;
-	font-family: "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
 
 .form-control{
 	font-family: inherit;
@@ -36,8 +23,8 @@ body{
 //TABY V SIDEBARE
 #sidebar-menu > ul > li > a.active {
     background: #f4f8fb !important;
-    border-left: 3px solid #5fbeaa;
-    color: #5fbeaa !important;
+    border-bottom: 3px solid #0078D4;
+    color: #0078D4 !important;
 }
 
 #sidebar-menu, #sidebar-menu ul, #sidebar-menu li, #sidebar-menu a {

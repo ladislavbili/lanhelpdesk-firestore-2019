@@ -1,24 +1,120 @@
 // od grafika
 
+body{
+  font-family: $main-font;
+  background: #F2F1F1;
+  font-size: $main-font-size;
+  background-color: #ebeff2;
+  color: #797979;
+}
 
-/* blue */
-//background: #004578;
-
-
-
-//font-family: Segoe MDL2 Assets;
-
-//font-family: Segoe UI;
-
-.pageHeader{
+.page-header{
 	background-color: #004578;
+  height: $header-height;
+  margin: 0px;
+  padding: 0px;
+  border: 0px;
+
+  .lansystems-title{
+    display: flex!important;
+    height: 100%;
+
+    h1{
+      color:white;
+      font-size: 27px;
+    }
+  }
 }
 
-.lansystemsTitle{
-  margin-top: 10px;
-  margin-bottom: 5px;
+.sidebar{
+  width: $sidebar-width;
+  list-style-type: none;
+  background: #F2F1F1;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  position:relative;
+  top: inherit;
+  width: 240px;
 }
 
-h1{
+.sidebar-title{
+  padding: 10px;
+}
+
+.sidebar-title:hover{
+  background-color: #dedede;
+}
+
+.sidebar-plus-icon{
+  color: #0078D4;
+}
+
+.sidebar-menu-item{
 
 }
+
+.sidebar-btn{
+  width: calc(#{$sidebar-width} - 20px);
+  margin: 10px;
+  height: 30px;
+}
+
+.css-bg1rzq-control{
+    background: #F2F1F1 !important;
+    border-radius: 0px !important;
+    border-width: 0px 0px 2px 0px !important;
+    border-color: #0078D4 !important;
+}
+
+.css-1szy77t-control{
+    background: #F2F1F1 !important;
+    border-radius: 0px !important;
+    border-width: 0px 0px 2px 0px !important;
+    border-color: #0078D4 !important;
+}
+
+.css-kj6f9i-menu{
+    background: #F2F1F1 !important;
+    border-radius: 0px !important;
+    border-width: 0px 0px 2px 0px !important;
+    border-color: #0078D4 !important;
+}
+
+.btn{
+  background-color: #0078D4;
+  border: 0px;
+  border-radius: 0px;
+  color: #FFFFFF;
+  font-weight: 400;
+  font-size: $main-font-size;
+}
+
+.btn:hover{
+  background-color: #004578;
+  color: #FFFFFF;
+}
+
+.btn-link{
+  background-color: inherit;
+  border: 0px;
+  border-radius: 0px;
+  color: #0078D4;
+  font-weight: 400;
+  font-size: $main-font-size;
+}
+
+.btn-link:hover{
+  background-color: #004578;
+  color: #FFFFFF;
+}
+
+hr{
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+
+// /0078D4
+//background: #F2F1F1;
+//background: #3C3C3C;
+//color: #212121;
+//color: #33332D;

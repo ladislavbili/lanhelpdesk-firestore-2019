@@ -4,9 +4,9 @@ export default class PageHeader extends Component {
 
 	render() {
 		return (
-			<div className="pageHeader">
-				<div className="lansystemsTitle">
-					<h1>Lansystems</h1>
+			<div className="page-header">
+				<div className="lansystems-title">
+					<h1 className="center-hor center-ver">Lansystems</h1>
 				</div>
 			</div>
 		);

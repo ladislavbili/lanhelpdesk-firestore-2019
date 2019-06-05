@@ -14,16 +14,6 @@
 .fade:not(.show) {
 }
 
-.pageHeader{
-	background-color: #1976d2;
-	height: $header-height;
-  padding: 4px 10px;
-  h1{
-    color:white;
-    font-size: 27px;
-  }
-}
-
 .hidden-input{
 	background-color: inherit;
 	border-width: 0;
@@ -198,16 +188,10 @@ html{
 
 .headerIcons{
   font-size:22px;
-  background-color: #1976d2;
+  background-color: inherit;
   border-width: 0;
   margin-right: 15px;
   color: white;
-}
-
-.sidebar-content{
-  padding-right: 10px;
-  padding-left: 10px;
-  width: 240px;
 }
 
 .sidebar-tab{

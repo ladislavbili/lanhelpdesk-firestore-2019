@@ -57,7 +57,7 @@ class Sidebar extends Component {
 
 	render() {
 		return (
-			<div className="left side-menu">
+			<div className="sidebar">
 				<SelectPage />
 				<div className="scrollable fit-with-header">
 					<div className="commandbar"  >

@@ -66,6 +66,7 @@ class TaskListContainer extends Component {
 							</div>
 							<div className="p-2">
 								<Button
+									className="btn-link"
 									onClick={()=>{
 										let body={
 											requester:null,
@@ -79,7 +80,7 @@ class TaskListContainer extends Component {
 							      }
 							      this.props.setFilter(body);
 									}}
-									color="link">
+									>
 									Global search
 								</Button>
 							</div>

@@ -33,7 +33,7 @@ class PageHeader extends Component {
 
 	render() {
 		return (
-			<div className="pageHeader">
+			<div className="page-header">
 				<div className="d-flex bd-highlight" style={{height:'100%'}}>
 					<div className="center-hor">
 						<Link to={{ pathname: `/helpdesk/taskList` }} className="pl-4" style={{ color: 'white' }}>
@@ -62,7 +62,7 @@ class PageHeader extends Component {
 						<i className="headerIcons fa fa-exclamation-triangle"/>
 						<i className="headerIcons fa fa-envelope" />
 						<Dropdown isOpen={this.state.settingsOpen} toggle={()=>this.setState({settingsOpen:!this.state.settingsOpen})}>
-			        <DropdownToggle style={{backgroundColor: '#1976d2', borderWidth: 0, padding:0}}>
+			        <DropdownToggle style={{backgroundColor: 'inherit', borderWidth: 0, padding:0}}>
 								<i className="headerIcons fa fa-cog"/>
 			        </DropdownToggle>
 			        <DropdownMenu right>
@@ -76,7 +76,7 @@ class PageHeader extends Component {
 			      </Dropdown>
 
 
-						<i className="headerIcons clickable fas fa-sign-out-alt" style={{ backgroundColor: '#1976d2', borderWidth: 0, marginRight: 15, color: 'white' }} onClick={()=>{
+						<i className="headerIcons clickable fas fa-sign-out-alt" style={{ borderWidth: 0, marginRight: 15, color: 'white' }} onClick={()=>{
 								if(window.confirm('Are you sure you want to log out?')){
 									this.props.deleteUserData();
 									firebase.auth().signOut();

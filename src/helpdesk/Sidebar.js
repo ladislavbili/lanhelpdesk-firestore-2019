@@ -21,7 +21,7 @@ const customSelect = {
 		return { ...provided, width:0 };
 	},
 	control:(provided, state) => {
-		return { ...provided, borderRadius:50, borderColor:'#6c757d' };
+		return { ...provided };
 	},
 	input:(provided, state) => {
 		return { ...provided, marginLeft:30 };
@@ -76,19 +76,12 @@ class Sidebar extends Component {
 
 	render() {
 		return (
-			<div className="left side-menu">
+			<div className="sidebar">
 				<SelectPage />
 				<div className="scrollable fit-with-header">
-					<div id="sidebar-menu" className="sidebar-content" >
-						<li className="menu-title" style={{ paddingBottom: '0px !important' }} >
-							Project
-							<span className="pull-right">
-								<ProjectAdd />
-							</span>
-						</li>
-						<li className="menu-title" style={{ paddingTop: '0px !important' }}>
+					<div id="sidebar-menu" >
+						<li>
 							<Select
-								className="fullWidth"
 								options={this.state.projects}
 								value={this.state.project}
 								styles={customSelect}
@@ -98,6 +91,12 @@ class Sidebar extends Component {
 								}}
 								components={{DropdownIndicator: ({ innerProps, isDisabled }) =>  <i className="fa fa-folder-open" style={{position:'absolute', left:15}} /> }}
 								/>
+						</li>
+						<li className="sidebar-title" >
+							Project
+							<span className="pull-right">
+								<ProjectAdd />
+							</span>
 						</li>
 							<TaskAdd history={this.props.history} />
 							<hr />

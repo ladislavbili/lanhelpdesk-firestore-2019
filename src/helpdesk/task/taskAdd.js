@@ -253,10 +253,9 @@ export default class TaskAdd extends Component{
 		});
 
     return (
-			<div>
+			<div >
 			<button
-				className="btn btn-success"
-				style={{ width: '100%' }}
+				className="btn sidebar-btn"
 				onClick={()=>{this.setState({openAddTaskModal:true,hidden:false})}}
 			> Add task
 			</button>
