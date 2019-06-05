@@ -37,31 +37,24 @@ class PageHeader extends Component {
 				<div className="d-flex bd-highlight" style={{height:'100%'}}>
 					<div className="center-hor">
 						<Link to={{ pathname: `/helpdesk/taskList` }} className="pl-4" style={{ color: 'white' }}>
-							<i className="fa fa-file-pdf mr-1" />
 							Úlohy
 						</Link>
 						<Link to={{ pathname: `/lanwiki` }} className="pl-4" style={{ color: 'white' }}>
-							<i className="fa fa-file-pdf mr-1" />
 							Návody
 						</Link>
 						<Link to={{ pathname: `/cmdb/all` }} className="pl-4" style={{ color: 'white' }}>
-							<i className="fa fa-file-pdf mr-1" />
 							CMDB
 						</Link>
 						<Link to={{ pathname: `/passmanager` }} className="pl-4" style={{ color: 'white' }}>
-							<i className="fa fa-file-pdf mr-1" />
 							Heslá
 						</Link>
 						<Link to={{ pathname: `/expenditures` }} className="pl-4" style={{ color: 'white' }}>
-							<i className="fa fa-file-pdf mr-1" />
 							Náklady
 						</Link>
 						<Link to={{ pathname: `/helpdesk/reports` }} className="pl-4" style={{ color: 'white' }}>
-							<i className="fa fa-file-pdf mr-1" />
-							Vykazy
+								Vykazy
 						</Link>
 						<Link to={{ pathname: `/projects` }} className="pl-4" style={{ color: 'white' }}>
-							<i className="fa fa-file-pdf mr-1" />
 							Projekty
 						</Link>
 					</div>

@@ -5,7 +5,7 @@ export default class PageHeader extends Component {
 	render() {
 		return (
 			<div className="pageHeader">
-				<div style={{marginTop:10,marginBottom:5}}>
+				<div className="lansystemsTitle">
 					<h1>Lansystems</h1>
 				</div>
 			</div>

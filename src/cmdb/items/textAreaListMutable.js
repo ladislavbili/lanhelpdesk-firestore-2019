@@ -27,7 +27,7 @@ export default class TextareaList extends Component{
             <div style={{width: (this.props.width ? this.props.width : 150)}}>
               <Input
                 type="textarea"
-                rows={item.id === this.state.editID ? this.state.editTextLeftHeight : item.textLeftHeight}
+                rows={/*item.id === this.state.editID ? this.state.editTextLeftHeight : item.textLeftHeight*/ 1}
                 value={item.id === this.state.editID
                   ? this.state.editTextLeft
                   : item.textLeft}
@@ -69,7 +69,7 @@ export default class TextareaList extends Component{
           <div style={{width: this.props.width ? 1000-this.props.width-20 : 150}}>
             <Input
               type="textarea"
-              rows={item.id === this.state.editID ? this.state.editTextHeight : item.textHeight}
+              rows={/*item.id === this.state.editID ? this.state.editTextHeight : item.textHeight*/ 1}
               value={
                 item.id === this.state.editID
                   ? this.state.editText
@@ -117,14 +117,13 @@ export default class TextareaList extends Component{
         )}
         <Button color="primary" onClick={()=>{
             this.props.onChange(
-              [
+              [ ...this.props.items,
                 {id: this.state.newID,
                   text:"",
                   textHeight: 1,
                   textLeft: `Názov`,
                   textLeftHeight: 1,
-                  fake:true},
-              ...this.props.items
+                  fake:true}
             ]);
               this.setState({newID:this.state.newID+1})}}>{this.props.addLabel}</Button>
 
