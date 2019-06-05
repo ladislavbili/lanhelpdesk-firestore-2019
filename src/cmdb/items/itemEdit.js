@@ -4,9 +4,9 @@ import { Button,  FormGroup, Label, Input } from 'reactstrap';
 import {toSelArr, snapshotToArray} from '../../helperFunctions';
 import Select from 'react-select';
 import IPList from '../ipList';
-import TextareaList from '../textareaList';
+import TextareaListMutable from './textAreaListMutable';
 
-export default class ServerEdit extends Component{
+export default class ItemEdit extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -19,10 +19,9 @@ export default class ServerEdit extends Component{
       status:null,
       IPlist:[],
       backupTasks:[],
-      diskArray:[],
     }
 
-    this.removeDiskArray.bind(this);
+    console.log("AAAAAAAAAAAAAAAAAAA");
     this.removeBackupTask.bind(this);
     this.setData.bind(this);
     this.getData.bind(this);
@@ -33,36 +32,32 @@ export default class ServerEdit extends Component{
     Promise.all([
       database.collection('cmdb-statuses').get(),
       database.collection('companies').get(),
-      database.collection('cmdb-servers').doc(this.props.match.params.id).get(),
-      database.collection('cmdb-IPList').where("serverID", "==", this.props.match.params.id).get(),
-      database.collection('cmdb-server-backups').where("serverID", "==", this.props.match.params.id).get(),
-      database.collection('cmdb-server-storage').where("serverID", "==", this.props.match.params.id).get(),
+      database.collection('cmdb-items').doc(this.props.match.params.id).get(),
+      database.collection('cmdb-item-IPList').where("itemID", "==", this.props.match.params.id).get(),
+      database.collection('cmdb-item-backups').where("itemID", "==", this.props.match.params.id).get(),
     ])
-    .then(([statuses,companies,server,ipList,backups,storages])=>{
+    .then(([statuses,companies,item,ipList,backups])=>{
       this.setData(
         toSelArr(snapshotToArray(statuses)),
         toSelArr(snapshotToArray(companies)),
-        {id:server.id,...server.data()},
+        {id:item.id,...item.data()},
         snapshotToArray(ipList),
         snapshotToArray(backups),
-        snapshotToArray(storages),
     );
     });
   }
 
-  setData(statuses,companies,server,ipList,backups,storages){
+  setData(statuses,companies,item,ipList,backups,storages){
     this.setState({
       statuses,
       companies,
-      title:server.title,
-      company:companies.find((item)=>item.id===server.company),
-      status:statuses.find((item)=>item.id===server.status),
-      originalIPList:ipList,
-      IPlist:ipList.map((item)=>{return {...item,fake:false}}),
-      backupTasks:backups.map((item)=>{return {...item,fake:false}}),
-      defaultBackupTasks:backups.map((item)=> item.id),
-      diskArray:storages.map((item)=>{return {...item,fake:false}}),
-      defaultDiskArray:storages.map((item)=> item.id),
+      title: item.title,
+      company: companies.find((i)=>i.id===item.company),
+      status: statuses.find((i)=>i.id===item.status),
+      originalIPList: ipList,
+      IPlist: ipList.map((i)=>{return {...i,fake:false}}),
+      backupTasks: backups.map((i)=>{return {...i,fake:false, textHeight: i.text.split("\n").length, textLeftHeight: i.textLeft.split("\n").length}}),
+      defaultBackupTasks: backups.map((i)=> i.id),
     });
   }
 
@@ -71,14 +66,6 @@ export default class ServerEdit extends Component{
     newBackupTasks.splice(index, index+1);
     this.setState({
       backupTasks: newBackupTasks,
-    });
-  }
-
-  removeDiskArray(index){
-    let newDiskArray = [...this.state.diskArray];
-    newDiskArray.splice(index, index+1);
-    this.setState({
-      diskArray: newDiskArray,
     });
   }
 
@@ -110,37 +97,15 @@ export default class ServerEdit extends Component{
             </FormGroup>
 
           <IPList items={this.state.IPlist} onChange={(items)=>this.setState({IPlist:items})} />
-          <TextareaList
+
+          <TextareaListMutable
             items={this.state.backupTasks}
             onChange={(items)=>this.setState({backupTasks:items})}
             removeItem={this.removeBackupTask.bind(this)}
             width={300}
-            rows={6}
-            label={`
-                Názov <br>
-                Zálohované údaje  <br>
-                Rotáciu zálohy  <br>
-                Čas spustenia <br>
-                Notifikačný email <br>
-                Smtp settings pre notifikácie <br>
-            `}
-            addLabel="Add backup task"
-            />
-
-          <TextareaList
-            items={this.state.diskArray}
-            onChange={(items)=>this.setState({diskArray:items})}
-            removeItem={this.removeDiskArray.bind(this)}
-            width={300}
-            rows={3}
-            label={`
-              <span>
-              RAID RADIČ <br>
-              POCET HDD <br>
-              Typ a velkost hdd <br>
-            </span>
-            `}
-            addLabel="Add disk array"
+            rows={1}
+            label={``}
+            addLabel="Add"
             />
 
 
@@ -155,49 +120,37 @@ export default class ServerEdit extends Component{
               status:this.state.status.id,
               IP:this.state.IPlist.map((item)=>item.IP)
             };
-            rebase.updateDoc('/cmdb-servers/'+ID, body);
+            rebase.updateDoc('/cmdb-items/'+ID, body);
 
             this.state.IPlist.filter((item)=>item.fake).forEach((item)=>{
               let newItem={...item};
               delete newItem['id'];
               delete newItem['fake'];
-              rebase.addToCollection('/cmdb-IPList',{...newItem,serverID:ID});
+              rebase.addToCollection('/cmdb-item-IPList',{...newItem,itemID:ID});
             });
 
             this.state.IPlist.filter((item)=>!item.fake).forEach((item)=>{
               let newItem={...item};
               delete newItem['id'];
               delete newItem['fake'];
-              rebase.updateDoc('/cmdb-IPList/'+item.id,{...newItem});
+              rebase.updateDoc('/cmdb-item-IPList/'+item.id,{...newItem});
             });
 
             let currentIDs=this.state.IPlist.filter((item)=>!item.fake).map((item)=>item.id);
             this.state.originalIPList.filter((item)=>!currentIDs.includes(item.id)).forEach((item)=>{
-              rebase.removeDoc('/cmdb-IPList/'+item.id);
+              rebase.removeDoc('/cmdb-item-IPList/'+item.id);
             });
 
             this.state.backupTasks.filter((item)=>item.fake).forEach((item)=>{
-              rebase.addToCollection('/cmdb-server-backups',{text:item.text,serverID:ID});
+              rebase.addToCollection('/cmdb-item-backups',{text:item.text, textLeft:item.textLeft, itemID:ID});
             });
             this.state.backupTasks.filter((item)=>!item.fake).forEach((item)=>{
-              rebase.updateDoc('/cmdb-server-backups/'+item.id,{text:item.text,serverID:ID});
+              rebase.updateDoc('/cmdb-item-backups/'+item.id,{text:item.text, textLeft:item.textLeft, itemID:ID});
             });
 
             let backupTasksID = this.state.backupTasks.map(item => item.id);
             this.state.defaultBackupTasks.filter((item)=> !backupTasksID.includes(item)).forEach((item)=>{
-              rebase.removeDoc('/cmdb-server-backups/'+item);
-            });
-
-            this.state.diskArray.filter((item)=>item.fake).forEach((item)=>{
-              rebase.addToCollection('/cmdb-server-storage',{text:item.text,serverID:ID});
-            });
-            this.state.diskArray.filter((item)=>!item.fake).forEach((item)=>{
-              rebase.updateDoc('/cmdb-server-storage/'+item.id,{text:item.text,serverID:ID});
-            });
-
-            let diskArraysID = this.state.diskArray.map(item => item.id);
-            this.state.defaultDiskArray.filter((item)=> !diskArraysID.includes(item)).forEach((item)=>{
-              rebase.removeDoc('/cmdb-server-storage/'+item);
+              rebase.removeDoc('/cmdb-item-backups/'+item);
             });
 
             this.setState({
@@ -206,7 +159,6 @@ export default class ServerEdit extends Component{
               status:null,
               IPlist:[],
               backupTasks:[],
-              diskArray:[],
               saving:false
             });
 

@@ -83,14 +83,9 @@ export default class ItemAdd extends Component{
             onChange={(items)=>this.setState({backupTasks:items})}
             removeItem={this.removeBackupTask.bind(this)}
             width={300}
-            rows={6}
-            label={`Názov
-Zálohované údaje
-Rotáciu zálohy
-Čas spustenia
-Notifikačný email
-Smtp settings pre notifikácie`}
-            addLabel="Add backup task"
+            rows={1}
+            label={`Názov`}
+            addLabel="Add"
             />
 
         <Button color="secondary" onClick={this.props.history.goBack}>Cancel</Button>
@@ -112,10 +107,8 @@ Smtp settings pre notifikácie`}
                 });
 
                 this.state.backupTasks.forEach((item)=>{
-                  rebase.addToCollection('/cmdb-item-backups',{text:item.text, textLeft:item.textLeft, itemID:response.id});
+                  rebase.addToCollection('/cmdb-item-backups',{text:item.text.replace(/\n$/, ""), textLeft:item.textLeft.replace(/\n$/, ""), itemID:response.id});
                 });
-
-
                   this.setState({
                   title:'',
                   company:null,
