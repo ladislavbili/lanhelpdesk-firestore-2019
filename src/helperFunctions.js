@@ -23,3 +23,10 @@ export const hightlightText = (message,text, color)=>{
   }
   return (<span>{message.substring(0,index)}<span style={{color}}>{message.substring(index,index+text.length)}</span>{message.substring(index+text.length,message.length)}</span>);
 }
+
+
+export const calculateTextAreaHeight = (e) => {
+  const firstHeight = 29;
+  const expansionHeight = 21;
+  return Math.floor((e.target.scrollHeight-firstHeight)/expansionHeight)*expansionHeight + firstHeight;
+}

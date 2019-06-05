@@ -4,7 +4,7 @@ import { Button,  FormGroup, Label, Input } from 'reactstrap';
 import {toSelArr, snapshotToArray} from '../../helperFunctions';
 import Select from 'react-select';
 import IPList from '../ipList';
-import TextareaListMutable from './textAreaListMutable';
+import TextareaListMutable from '../components/textareaListBoth';
 
 
 export default class ItemAdd extends Component{
@@ -42,11 +42,9 @@ export default class ItemAdd extends Component{
     });
   }
 
-  removeBackupTask(index){
-    let newBackupTasks = [...this.state.backupTasks];
-    newBackupTasks.splice(index, index+1);
+  removeBackupTask(id){
     this.setState({
-      backupTasks: newBackupTasks,
+      backupTasks: this.state.backupTasks.filter((item)=>item.id!==id),
     });
   }
 

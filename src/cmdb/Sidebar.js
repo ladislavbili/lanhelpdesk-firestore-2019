@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {NavItem, Nav} from 'reactstrap';
+import {NavItem, Nav, Button} from 'reactstrap';
 import { NavLink as Link } from 'react-router-dom';
 import Select from "react-select";
 import { connect } from "react-redux";
@@ -79,6 +79,12 @@ class Sidebar extends Component {
 							components={{DropdownIndicator: ({ innerProps, isDisabled }) =>  <i className="fa fa-folder-open" style={{position:'absolute', left:15}} /> }}
 							/>
 					</li>
+					<Button
+						color="success"
+						style={{ width: '100%' }}
+						onClick={()=>{this.props.history.push('/cmdb/add')}}
+					> Add items
+					</Button>
 					<Nav vertical>
 						<NavItem>
 							<Link to={{ pathname: `/cmdb/servers` }}>Servers</Link>

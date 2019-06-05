@@ -55,7 +55,7 @@ export default class TextareaList extends Component{
                 }
                 />
             </div>
-              <Button outline color="danger" size="sm" style={{marginBottom: "20px", marginLeft: "900px", width: "100px", border: "0px"}} onClick={()=>{this.props.removeItem(index);}}>Remove</Button>
+              <Button outline color="danger" size="sm" style={{marginBottom: "20px", marginLeft: "900px", width: "100px", border: "0px"}} onClick={()=>{this.props.removeItem(item.id);}}>Remove</Button>
 
           </div>
         )}
