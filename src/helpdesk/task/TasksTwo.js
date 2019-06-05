@@ -112,7 +112,6 @@ class TasksRow extends Component {
 											<i className="fa fa-clock-o" /> <span>{task.statusChange?timestampToString(task.statusChange):'None'}</span>
 										</p>
 										<p className="text-muted m-b-0 font-13">
-											{console.log(task.assignedTo)}
 											<span className="" style={{textOverflow: 'ellipsis'}}>Riesi: {task.assignedTo?task.assignedTo.reduce((total,user)=>total+=user.name+' '+user.surname+', ','').slice(0,-2):'Neznámy používateľ'}</span>
 										</p>
 									</div>
