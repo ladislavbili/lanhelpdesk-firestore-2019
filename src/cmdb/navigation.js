@@ -20,7 +20,7 @@ export default class Navigation extends Component {
 				<div className="row">
 						<Sidebar {...this.props} />
 					<div className="flex">
-						<PageHeader {...this.props} settings={[{link:'statuses',title:'Statuses'}]} />
+						<PageHeader {...this.props} settings={[{link:'statuses', title:'Statuses'}]} />
 
 						<Route exact path='/cmdb/settings/statuses' component={StatusList} />
 						<Route exact path='/cmdb/settings/status/add' component={ServerAdd} />
