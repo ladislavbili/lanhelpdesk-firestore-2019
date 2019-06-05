@@ -97,6 +97,7 @@ export default class TasksTwoEdit extends Component {
     this.saveService.bind(this);
     this.saveMaterial.bind(this);
 		this.canSave.bind(this);
+		this.deleteTask.bind(this);
     this.fetchData(this.props.match.params.taskID);
 	}
 
@@ -104,8 +105,19 @@ export default class TasksTwoEdit extends Component {
 		return this.state.title==="" || this.state.status===null || this.state.project === null||this.state.saving;
 	}
 
+	deleteTask(){
+		if(window.confirm("Are you sure?")){
+			rebase.removeDoc('/help-tasks/'+this.state.task.id);
+			this.state.taskMaterials.forEach((material)=>rebase.removeDoc('/help-task_materials/'+material.id))
+			this.state.taskWorks.forEach((work)=>rebase.removeDoc('/help-task_works/'+work.id))
+			database.collection('help-comments').where("task", "==", this.state.task.id).get()
+			.then((data)=>{
+				snapshotToArray(data).forEach((item)=>rebase.removeDoc('/help-comments/'+item.id));
+			});
+		}
+	}
 
-  submitTask(){
+	submitTask(){
 		if(this.canSave()){
 			return;
 		}
@@ -277,12 +289,15 @@ export default class TasksTwoEdit extends Component {
 			let totalPrice=(finalUnitPrice*parseFloat(work.quantity)*(1-parseFloat(work.discount)/100)).toFixed(3);
 			finalUnitPrice=finalUnitPrice.toFixed(3);
 			let workType= this.state.workTypes.find((item)=>item.id===work.workType);
+			let assignedTo=work.assignedTo?this.state.users.find((item)=>item.id===work.assignedTo):null
+
 			return {
 				...work,
 				workType,
 				unit:this.state.units.find((unit)=>unit.id===work.unit),
 				finalUnitPrice,
-				totalPrice
+				totalPrice,
+				assignedTo:assignedTo?assignedTo:null
 			}
 		});
 
@@ -322,7 +337,7 @@ export default class TasksTwoEdit extends Component {
 											/>
 									</button>
 									{' '}
-									<button type="button" className="btn btn-link waves-effect">
+									<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.deleteTask.bind(this)}>
 										<i
 											className="fas fa-trash"
 											style={{
@@ -483,45 +498,46 @@ export default class TasksTwoEdit extends Component {
 							</div>
 
 							<label className="m-t-5">Popis</label>
-								<textarea className="form-control" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value},this.submitTask.bind(this))} />
-									<Subtasks
-										submitService={this.submitService.bind(this)}
-										updatePrices={(ids)=>{
-											taskWorks.filter((item)=>ids.includes(item.id)).map((item)=>{
-												let price=item.workType.prices.find((item)=>item.pricelist===this.state.company.pricelist.id);
-												if(price === undefined){
-													price = 0;
-												}else{
-													price = price.price;
-												}
-												rebase.updateDoc('help-task_works/'+item.id, {price})
-												.then(()=>{
-													let newTaskWorks=[...this.state.taskWorks];
-													newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===item.id)]={...newTaskWorks.find((taskWork)=>taskWork.id===item.id),price};
-													this.setState({taskWorks:newTaskWorks});
-												});
-												return null;
-											})
-										}}
-										subtasks={taskWorks}
-										workTypes={this.state.workTypes}
-										updateSubtask={(id,newData)=>{
-											rebase.updateDoc('help-task_works/'+id,newData);
-											let newTaskWorks=[...this.state.taskWorks];
-											newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
-											this.setState({taskWorks:newTaskWorks});
-										}}
-										company={this.state.company}
-										removeSubtask={(id)=>{
-											rebase.removeDoc('help-task_works/'+id).then(()=>{
-												let newTaskWorks=[...this.state.taskWorks];
-												newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
-												this.setState({taskWorks:newTaskWorks});
-											});
-											}
+							<textarea className="form-control" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value},this.submitTask.bind(this))} />
+							<Subtasks
+								taskAssigned={this.state.assignedTo}
+								submitService={this.submitService.bind(this)}
+								updatePrices={(ids)=>{
+									taskWorks.filter((item)=>ids.includes(item.id)).map((item)=>{
+										let price=item.workType.prices.find((item)=>item.pricelist===this.state.company.pricelist.id);
+										if(price === undefined){
+											price = 0;
+										}else{
+											price = price.price;
 										}
-										match={this.props.match}
-										/>
+										rebase.updateDoc('help-task_works/'+item.id, {price})
+										.then(()=>{
+											let newTaskWorks=[...this.state.taskWorks];
+											newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===item.id)]={...newTaskWorks.find((taskWork)=>taskWork.id===item.id),price};
+											this.setState({taskWorks:newTaskWorks});
+										});
+										return null;
+									})
+								}}
+								subtasks={taskWorks}
+								workTypes={this.state.workTypes}
+								updateSubtask={(id,newData)=>{
+									rebase.updateDoc('help-task_works/'+id,newData);
+									let newTaskWorks=[...this.state.taskWorks];
+									newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
+									this.setState({taskWorks:newTaskWorks});
+								}}
+								company={this.state.company}
+								removeSubtask={(id)=>{
+									rebase.removeDoc('help-task_works/'+id).then(()=>{
+										let newTaskWorks=[...this.state.taskWorks];
+										newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
+										this.setState({taskWorks:newTaskWorks});
+									});
+									}
+								}
+								match={this.props.match}
+								/>
 
 							<Materials
 								materials={taskMaterials}
@@ -543,7 +559,7 @@ export default class TasksTwoEdit extends Component {
 								defaultUnit={this.state.defaultUnit}
 								company={this.state.company}
 								match={this.props.match}
-								/>
+							/>
 
 							<Comments id={this.state.task?this.state.task.id:null} users={this.state.users} />
 						</div>

@@ -189,7 +189,7 @@ class Filter extends Component {
               <button type="button" className="btn btn-light btn-xs" onClick={this.deleteFilter.bind(this)}>Delete</button>
             </div>
           </NavItem>
-
+          <h5>{this.props.filterID?'Filter: '+this.props.filterData.title:'No filter selected'}</h5>
           <NavItem>
             <div className="form-group mb-3">
               <label htmlFor="example-input-small">Status</label>

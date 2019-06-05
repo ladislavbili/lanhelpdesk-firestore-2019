@@ -5,6 +5,7 @@ import {toSelArr, snapshotToArray} from '../../helperFunctions';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import Materials from '../components/materials';
 import Subtasks from '../components/subtasks';
+import {invisibleSelectStyle} from '../components/selectStyles';
 
 const repeat = [
 	{ value: 'none', label: 'none' },
@@ -41,7 +42,7 @@ const selectStyle = {
 	}),
 };
 
-export default class TaskEdit extends Component{
+export default class TaskAdd extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -55,6 +56,8 @@ export default class TaskEdit extends Component{
       projects:[],
 			taskWorks:[],
 			taskMaterials:[],
+			allTags:[],
+			taskTypes:[],
 			hidden:true,
 
       title:'',
@@ -62,11 +65,13 @@ export default class TaskEdit extends Component{
       workHours:'0',
       workType:null,
       requester:null,
-      assigned:null,
+			assignedTo:[],
       description:'',
       status:null,
       statusChange:null,
       project:null,
+			tags:[],
+			type:null,
       pausal:{value:true,label:'Pausal'},
       overtime:{value:false,label:'Nie'}
     }
@@ -87,7 +92,7 @@ export default class TaskEdit extends Component{
       workHours: this.state.workHours,
       workType: this.state.workType?this.state.workType.id:null,
       requester: this.state.requester?this.state.requester.id:null,
-      assigned: this.state.assigned?this.state.assigned.id:null,
+			assignedTo: this.state.assignedTo.map((item)=>item.id),
       description: this.state.description,
       status: this.state.status?this.state.status.id:null,
       deadline: isNaN(new Date(this.state.deadline).getTime()) ? null : (new Date(this.state.deadline).getTime()),
@@ -96,10 +101,12 @@ export default class TaskEdit extends Component{
       project: this.state.project?this.state.project.id:null,
       pausal: this.state.pausal.value,
       overtime: this.state.overtime.value,
+			tags: this.state.tags.map((item)=>item.id),
+			type: this.state.type?this.state.type.id:null,
     }
 
 		database.collection('metadata').doc('0').get().then((taskMeta)=>{
-			let newID = (taskMeta.data().taskLastID+1)+"";
+			let newID = (parseInt(taskMeta.data().taskLastID)+1)+"";
 			this.state.taskWorks.forEach((item)=>{
 				delete item['id'];
 					rebase.addToCollection('help-task_works',{task:newID,...item});
@@ -123,7 +130,9 @@ export default class TaskEdit extends Component{
 					workHours:'0',
 					workType:null,
 					requester:null,
-					assigned:null,
+					assignedTo:[],
+					tags:[],
+					type:null,
 					description:'',
 					status:null,
 					statusChange:null,
@@ -150,10 +159,12 @@ export default class TaskEdit extends Component{
         database.collection('help-units').get(),
         database.collection('help-prices').get(),
         database.collection('help-pricelists').get(),
+				database.collection('help-tags').get(),
+				database.collection('help-task_types').get(),
 				rebase.get('metadata/0', {
 					context: this,
 				})
-    ]).then(([statuses,projects,users, companies, workTypes,units, prices, pricelists,meta])=>{
+    ]).then(([statuses,projects,users, companies, workTypes,units, prices, pricelists,tags,taskTypes,meta])=>{
       this.setData(
 				toSelArr(snapshotToArray(statuses)),
 				toSelArr(snapshotToArray(projects)),
@@ -163,12 +174,14 @@ export default class TaskEdit extends Component{
       	toSelArr(snapshotToArray(units)),
 				snapshotToArray(prices),
 				snapshotToArray(pricelists),
+				toSelArr(snapshotToArray(tags)),
+				toSelArr(snapshotToArray(taskTypes)),
 				meta.defaultUnit
 			);
     });
   }
 
-  setData(statuses, projects,users,companies,workTypes,units, prices, pricelists,defaultUnit){
+  setData(statuses, projects,users,companies,workTypes,units, prices, pricelists,tags,taskTypes,defaultUnit){
     let status = statuses.find((item)=>item.title==='New');
     if(!status){
       status=null;
@@ -188,6 +201,9 @@ export default class TaskEdit extends Component{
       users,
       companies:newCompanies,
       workTypes:newWorkTypes,
+			taskTypes,
+			allTags:tags,
+
       status,
       units,
       statusChange:null,
@@ -196,8 +212,10 @@ export default class TaskEdit extends Component{
       workHours:0,
       workType:null,
       requester:null,
-      assigned:null,
+      assignedTo:[],
       loading:false,
+			type:null,
+			tags:[],
 			defaultUnit
     });
   }
@@ -211,12 +229,14 @@ export default class TaskEdit extends Component{
 			let totalPrice=(finalUnitPrice*parseFloat(work.quantity)*(1-parseFloat(work.discount)/100)).toFixed(2);
 			finalUnitPrice=finalUnitPrice.toFixed(2);
 			let workType= this.state.workTypes.find((item)=>item.id===work.workType);
+			let assignedTo=work.assignedTo?this.state.users.find((item)=>item.id===work.assignedTo):null
 			return {
 				...work,
 				workType,
 				unit:this.state.units.find((unit)=>unit.id===work.unit),
 				finalUnitPrice,
-				totalPrice
+				totalPrice,
+				assignedTo:assignedTo?assignedTo:null
 			}
 		});
 
@@ -254,11 +274,31 @@ export default class TaskEdit extends Component{
 								</div>
 							</div>
 							<div className="row">
-								<div className="col-lg-12">
-									<strong>Tagy: </strong>
-									<span className="label label-info m-r-5">Po pracovných hodínach</span>
-									<span className="label label-success m-r-5">Telefonovať</span>
+								<div className="col-lg-12 row">
+									<strong className="center-hor">Tagy: </strong>
+									<div style={{flex:1,marginBottom:5}}>
+										<Select
+											value={this.state.tags}
+											isMulti
+											onChange={(tags)=>this.setState({tags})}
+											options={this.state.allTags}
+											styles={invisibleSelectStyle}
+											/>
+									</div>
 								</div>
+								<div className="col-lg-12 row">
+									<strong className="center-hor">Assigned to: </strong>
+									<div style={{flex:1,marginBottom:5}}>
+										<Select
+											value={this.state.assignedTo}
+											isMulti
+											onChange={(users)=>this.setState({assignedTo:users})}
+											options={this.state.users}
+											styles={invisibleSelectStyle}
+											/>
+									</div>
+								</div>
+
 								<div className="col-lg-12 p-0">
 									<div className="col-lg-6">
 										<div className="m-t-20 p-r-20">
@@ -306,17 +346,6 @@ export default class TaskEdit extends Component{
 														/>
 												</div>
 											</div>
-											<div className="form-group m-b-0 row">
-												<label className="col-5 col-form-label">Riesi</label>
-												<div className="col-7">
-													<Select
-														value={this.state.assigned}
-														onChange={(assigned)=>this.setState({assigned})}
-														options={this.state.users}
-														styles={selectStyle}
-														/>
-												</div>
-											</div>
 										</div>
 									</div>
 									<div className="col-lg-6">
@@ -352,21 +381,10 @@ export default class TaskEdit extends Component{
 												<label className="col-5 col-form-label">Typ</label>
 												<div className="col-7">
 													<Select
-														value={this.state.workType}
+														value={this.state.type}
 														styles={selectStyle}
-														onChange={(workType)=>this.setState({workType})}
-														options={this.state.workTypes}
-														/>
-												</div>
-											</div>
-											<div className="form-group m-b-0 row">
-												<label className="col-5 col-form-label">Mimo pracovných hodín</label>
-												<div className="col-7">
-													<Select
-														value={this.state.overtime}
-														styles={selectStyle}
-														onChange={(overtime)=>this.setState({overtime})}
-														options={[{value:true,label:'Áno'},{value:false,label:'Nie'}]}
+														onChange={(type)=>this.setState({type})}
+														options={this.state.taskTypes}
 														/>
 												</div>
 											</div>
@@ -379,6 +397,7 @@ export default class TaskEdit extends Component{
 							<textarea className="form-control" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value})} />
 
 						{!this.state.hidden && <Subtasks
+							taskAssigned={this.state.assignedTo}
 							submitService={(newService)=>{
 								this.setState({taskWorks:[...this.state.taskWorks,{id:this.getNewID(),...newService}]});
 							}}

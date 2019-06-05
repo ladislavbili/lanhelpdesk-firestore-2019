@@ -39,6 +39,7 @@ export default class Rozpocet extends Component {
 			newQuantity:0,
 			newExtraWork:false,
 			newDiscount:0,
+			newAssigned:this.props.taskAssigned.length>0?this.props.taskAssigned[0]:null
 		}
 	}
 
@@ -51,9 +52,21 @@ export default class Rozpocet extends Component {
 				newQuantity:0,
 				newExtraWork:false,
 				newDiscount:0,
-				newPrice:0
+				newPrice:0,
+				newAssigned:null,
 			})
 		}
+
+		if(this.props.taskAssigned.length!==props.taskAssigned.length){
+			if(!props.taskAssigned.some((item)=>item.id===(this.state.newAssigned?this.state.newAssigned.id:null))){
+				if(props.taskAssigned.length>0){
+					this.setState({newAssigned:props.taskAssigned[0]});
+				}else{
+					this.setState({newAssigned:null});
+				}
+			}
+		}
+
 		if(((this.props.company===null && props.company!==null)||
 		(props.company===null && this.props.company!==null)||
 		(this.props.company!==null && this.props.company.id!==props.company.id))
@@ -84,7 +97,8 @@ export default class Rozpocet extends Component {
 												onChange={()=>this.setState({selectedIDs:(this.props.subtasks.length===this.state.selectedIDs.length?[]:this.props.subtasks.map((item)=>item.id))})} />
 										</th>
 										<th style={tableStyle}>Názov</th>
-											<th style={tableStyle} width="100">Mn.</th>
+										<th style={tableStyle} width="100">Mn.</th>
+										<th style={tableStyle} width="170">Rieši</th>
 										<th style={tableStyle} width="170">Typ</th>
 										<th style={tableStyle} width="120">Cena/Mn.</th>
 										<th style={tableStyle} width="124">Zlava</th>
@@ -168,6 +182,16 @@ export default class Rozpocet extends Component {
 													onChange={e =>{
 														this.setState({ editedSubtaskQuantity: e.target.value })}
 													}
+													/>
+											</td>
+											<td style={tableStyle}>
+												<Select
+													value={subtask.assignedTo}
+													onChange={(assignedTo)=>{
+														this.props.updateSubtask(subtask.id,{assignedTo:assignedTo.id})
+													}}
+													options={this.props.taskAssigned}
+													styles={invisibleSelectStyle}
 													/>
 											</td>
 											<td style={tableStyle}>
@@ -304,6 +328,17 @@ export default class Rozpocet extends Component {
 										</td>
 										<td style={tableStyle} className="p-t-0">
 											<Select
+												value={this.state.newAssigned}
+												onChange={(newAssigned)=>{
+													this.setState({newAssigned})
+													}
+												}
+												options={this.props.taskAssigned}
+												styles={selectStyle}
+												/>
+										</td>
+										<td style={tableStyle} className="p-t-0">
+											<Select
 												value={this.state.workType}
 												onChange={(workType)=>{
 													let price=0;
@@ -359,13 +394,15 @@ export default class Rozpocet extends Component {
 														price:this.state.newPrice!==''?this.state.newPrice:0,
 														quantity:this.state.newQuantity!==''?this.state.newQuantity:0,
 														title:this.state.newTitle,
-														workType: this.state.newWorkType.id
+														workType: this.state.newWorkType.id,
+														assignedTo:this.state.newAssigned?this.state.newAssigned.id:null
 													}
 													this.setState({
 														newDiscount:0,
 														newExtraWork:false,
 														newQuantity:0,
 														newTitle:'',
+														assignedTo:this.props.taskAssigned.length>0?this.props.taskAssigned[0]:null
 													});
 													this.props.submitService(body);
 													}
