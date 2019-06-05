@@ -28,17 +28,17 @@ export default class SupplierInvoiceAdd extends Component{
   }
 
   fetchInvoiceItems(){
-    database.collection('invoiceItems').where("invoice", "==", this.props.match.params.id).get().then((response)=>{
+    database.collection('help-invoice_items').where("invoice", "==", this.props.match.params.id).get().then((response)=>{
       this.setState({invoiceItems:snapshotToArray(response)});
     })
   }
 
   fetchData(id){
     Promise.all([
-    database.collection('units').get(),
-    database.collection('suppliers').get(),
-    database.collection('invoiceItems').where("invoice", "==", id).get(),
-    rebase.get('supplierInvoices/'+id, {
+    database.collection('help-units').get(),
+    database.collection('help-suppliers').get(),
+    database.collection('help-invoice_items').where("invoice", "==", id).get(),
+    rebase.get('help-supplier_invoices/'+id, {
       context: this
     })
     ])
@@ -96,7 +96,7 @@ export default class SupplierInvoiceAdd extends Component{
           units={this.state.units}
           invoiceItems={this.state.invoiceItems}
           addItem={(newItem)=>{
-            rebase.addToCollection('/invoiceItems', {
+            rebase.addToCollection('/help-invoice_items', {
               title:newItem.title,
               unit:newItem.unit,
               quantity:parseFloat(newItem.quantity),
@@ -105,26 +105,26 @@ export default class SupplierInvoiceAdd extends Component{
               invoice:this.props.match.params.id
             }).then((response)=>{
               this.fetchInvoiceItems();
-              rebase.addToCollection('/storedItems', {
+              rebase.addToCollection('/help-stored_items', {
                 invoiceItem:response.id,
                 quantity:parseFloat(newItem.quantity),
               });
             });
           }}
           deleteItem={(id)=>{
-            rebase.removeDoc('/invoiceItems/'+id).then(()=>{
+            rebase.removeDoc('/help-invoice_items/'+id).then(()=>{
               this.fetchInvoiceItems();
-              database.collection('storedItems').where("invoiceItem", "==", id).get().then((item)=>{
+              database.collection('help-stored_items').where("invoiceItem", "==", id).get().then((item)=>{
                 let data=snapshotToArray(item);
                 if(data.length===1){
-                  rebase.removeDoc('/storedItems/'+data[0].id);
+                  rebase.removeDoc('/help-stored_items/'+data[0].id);
                 }
               })
           });
           }}
           editItem={(newItem)=>{
             let quantityDifference=newItem.quantity-this.state.invoiceItems.find((item)=>item.id===newItem.id).quantity;
-            rebase.updateDoc('/invoiceItems/'+newItem.id, {
+            rebase.updateDoc('/help-invoice_items/'+newItem.id, {
               title:newItem.title,
               unit:newItem.unit,
               quantity:parseFloat(newItem.quantity),
@@ -132,10 +132,10 @@ export default class SupplierInvoiceAdd extends Component{
               sn:newItem.sn
             }).then((response)=>{
               this.fetchInvoiceItems();
-              database.collection('storedItems').where("invoiceItem", "==", newItem.id).get().then((item)=>{
+              database.collection('help-stored_items').where("invoiceItem", "==", newItem.id).get().then((item)=>{
                 let data=snapshotToArray(item);
                 if(data.length===1){
-                  rebase.updateDoc('/storedItems/'+data[0].id, {quantity:data[0].quantity+quantityDifference});
+                  rebase.updateDoc('/help-stored_items/'+data[0].id, {quantity:data[0].quantity+quantityDifference});
               }
             });
           })}}
@@ -145,7 +145,7 @@ export default class SupplierInvoiceAdd extends Component{
 
         <Button color="primary" className="separate" disabled={this.state.saving||this.state.loading||this.state.supplier===undefined} onClick={()=>{
             this.setState({saving:true});
-            rebase.updateDoc('/supplierInvoices/'+this.props.match.params.id, {supplier:this.state.supplier.id,identifier:this.state.identifier,note:this.state.note,date:this.state.date!==null?(new Date(this.state.date)).getTime():0})
+            rebase.updateDoc('/help-supplier_invoices/'+this.props.match.params.id, {supplier:this.state.supplier.id,identifier:this.state.identifier,note:this.state.note,date:this.state.date!==null?(new Date(this.state.date)).getTime():0})
               .then((response)=>{
                 this.setState({ saving:false});
               });
@@ -153,16 +153,16 @@ export default class SupplierInvoiceAdd extends Component{
         <Button color="danger" className="separate" disabled={this.state.saving} onClick={()=>{
               if(window.confirm("Are you sure?")){
                 this.state.invoiceItems.forEach((invoiceItem)=>{
-                  rebase.removeDoc('/invoiceItems/'+invoiceItem.id).then(()=>{
-                    database.collection('storedItems').where("invoiceItem", "==", invoiceItem.id).get().then((item)=>{
+                  rebase.removeDoc('/help-invoice_items/'+invoiceItem.id).then(()=>{
+                    database.collection('help-stored_items').where("invoiceItem", "==", invoiceItem.id).get().then((item)=>{
                       let data=snapshotToArray(item);
                       if(data.length===1){
-                        rebase.removeDoc('/storedItems/'+data[0].id);
+                        rebase.removeDoc('/help-stored_items/'+data[0].id);
                       }
                     })
                   });
                 });
-                rebase.removeDoc('/supplierInvoices/'+this.props.match.params.id).then(()=>{
+                rebase.removeDoc('/help-supplier_invoices/'+this.props.match.params.id).then(()=>{
                   this.props.history.goBack();
                 });
               }

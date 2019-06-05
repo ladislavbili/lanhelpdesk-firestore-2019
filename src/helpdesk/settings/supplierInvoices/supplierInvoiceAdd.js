@@ -28,8 +28,8 @@ export default class SupplierInvoiceAdd extends Component{
 
   fetchData(){
     Promise.all([
-    database.collection('units').get(),
-    database.collection('suppliers').get()
+    database.collection('help-units').get(),
+    database.collection('help-suppliers').get()
     ])
     .then(([units,suppliers])=>this.setData(toSelArr(snapshotToArray(units)),toSelArr(snapshotToArray(suppliers))));
   }
@@ -77,10 +77,10 @@ export default class SupplierInvoiceAdd extends Component{
 
         <Button color="primary" className="separate" disabled={this.state.saving||this.state.loading} onClick={()=>{
             this.setState({saving:true});
-            rebase.addToCollection('/supplierInvoices', {supplier:this.state.supplier.id,identifier:this.state.identifier,note:this.state.note,date:this.state.date!==null?(new Date(this.state.date)).getTime():0})
+            rebase.addToCollection('/help-supplier_invoices', {supplier:this.state.supplier.id,identifier:this.state.identifier,note:this.state.note,date:this.state.date!==null?(new Date(this.state.date)).getTime():0})
               .then((response)=>{
                 this.state.invoiceItems.map((invoiceItem)=>{
-                  rebase.addToCollection('/invoiceItems', {
+                  rebase.addToCollection('/help-invoice_items', {
                     title:invoiceItem.title,
                     unit:invoiceItem.unit,
                     quantity:invoiceItem.quantity,
@@ -88,7 +88,7 @@ export default class SupplierInvoiceAdd extends Component{
                     sn:invoiceItem.sn,
                     invoice:response.id
                   }).then((response)=>{
-                    rebase.addToCollection('/storedItems', {
+                    rebase.addToCollection('/help-stored_items', {
                       invoiceItem:response.id,
                       quantity:invoiceItem.quantity,
                     });

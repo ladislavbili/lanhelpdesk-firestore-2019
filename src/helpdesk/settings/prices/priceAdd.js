@@ -24,8 +24,8 @@ export default class PriceEdit extends Component{
   loadData(){
     Promise.all(
       [
-        database.collection('workTypes').get(),
-        database.collection('prices').get()
+        database.collection('help-work_types').get(),
+        database.collection('help-prices').get()
     ]).then(([ workTypes,prices])=>{
       this.setData(snapshotToArray(prices),snapshotToArray(workTypes));
     });
@@ -95,7 +95,7 @@ export default class PriceEdit extends Component{
         </FormGroup>
         <Button color="success" disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
-            rebase.addToCollection('/pricelists',
+            rebase.addToCollection('/help-pricelists',
             {
               title:this.state.pricelistName,
               afterHours:parseFloat(this.state.afterHours===''?'0':this.state.afterHours),
@@ -107,7 +107,7 @@ export default class PriceEdit extends Component{
                   rebase.updateDoc('/metadata/0',{defaultPricelist:listResponse.id})
                 }
                 this.state.workTypes.map((workType,index)=>
-                  rebase.addToCollection('/prices', {pricelist:listResponse.id,workType:workType.id,price:parseFloat(workType.price.price === "" ? "0": workType.price.price)})
+                  rebase.addToCollection('/help-prices', {pricelist:listResponse.id,workType:workType.id,price:parseFloat(workType.price.price === "" ? "0": workType.price.price)})
                 );
                 this.setState({saving:false,
                   pricelistName:'',

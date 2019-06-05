@@ -11,7 +11,7 @@ export default class SuppliersList extends Component{
     }
   }
   componentWillMount(){
-    this.ref = rebase.listenToCollection('/suppliers', {
+    this.ref = rebase.listenToCollection('/help-suppliers', {
       context: this,
       withIds: true,
       then:content=>{this.setState({suppliers:content, supplierFilter:''})},

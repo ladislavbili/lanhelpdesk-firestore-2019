@@ -11,7 +11,7 @@ export default class TaskTypesList extends Component{
     }
   }
   componentWillMount(){
-    this.ref = rebase.listenToCollection('/help-taskTypes', {
+    this.ref = rebase.listenToCollection('/help-task_types', {
       context: this,
       withIds: true,
       then:content=>{this.setState({taskTypes:content, taskTypeFilter:''})},

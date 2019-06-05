@@ -102,16 +102,16 @@ export default class TaskEdit extends Component{
 			let newID = (taskMeta.data().taskLastID+1)+"";
 			this.state.taskWorks.forEach((item)=>{
 				delete item['id'];
-					rebase.addToCollection('taskWorks',{task:newID,...item});
+					rebase.addToCollection('help-task_works',{task:newID,...item});
 			})
 
 			this.state.taskMaterials.forEach((item)=>{
 				delete item['id'];
-				rebase.addToCollection('taskMaterials',{task:newID,...item});
+				rebase.addToCollection('help-task_materials',{task:newID,...item});
 			})
 
 
-			rebase.addToCollection('/tasks', body,newID)
+			rebase.addToCollection('/help-tasks', body,newID)
 			.then(()=>{
 				rebase.updateDoc('/metadata/0',{taskLastID:newID});
 				this.setState({
@@ -142,14 +142,14 @@ export default class TaskEdit extends Component{
   fetchData(){
     Promise.all(
       [
-        database.collection('statuses').get(),
-        database.collection('projects').get(),
+        database.collection('help-statuses').get(),
+        database.collection('help-projects').get(),
         database.collection('users').get(),
         database.collection('companies').get(),
-        database.collection('workTypes').get(),
-        database.collection('units').get(),
-        database.collection('prices').get(),
-        database.collection('pricelists').get(),
+        database.collection('help-work_types').get(),
+        database.collection('help-units').get(),
+        database.collection('help-prices').get(),
+        database.collection('help-pricelists').get(),
 				rebase.get('metadata/0', {
 					context: this,
 				})

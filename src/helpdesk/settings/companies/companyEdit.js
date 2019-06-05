@@ -25,7 +25,7 @@ export default class CompanyEdit extends Component{
       rebase.get('companies/'+id, {
         context: this,
       }),
-      database.collection('pricelists').get()
+      database.collection('help-pricelists').get()
     ])
     .then(([company,pricelists])=>this.setData(company,toSelArr(snapshotToArray(pricelists))))
   }

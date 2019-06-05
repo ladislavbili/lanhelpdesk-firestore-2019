@@ -20,7 +20,7 @@ export default class StatusAdd extends Component{
         </FormGroup>
         <Button color="primary" className="separate" disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
-            rebase.addToCollection('/statuses', {title:this.state.title})
+            rebase.addToCollection('/help-statuses', {title:this.state.title})
               .then(()=>{this.setState({title:'',saving:false})});
           }}>{this.state.saving?'Adding...':'Add status'}</Button>
       </div>

@@ -17,17 +17,17 @@ class TasksRow extends Component {
 		}
 	}
 	componentWillMount(){
-		this.ref1 = rebase.listenToCollection('/tasks', {
+		this.ref1 = rebase.listenToCollection('/help-tasks', {
 			context: this,
 			withIds: true,
 			then:content=>{this.setState({tasks:content })},
 		});
-		this.ref2 = rebase.listenToCollection('/statuses', {
+		this.ref2 = rebase.listenToCollection('/help-statuses', {
 			context: this,
 			withIds: true,
 			then:content=>{this.setState({statuses:content })},
 		});
-		this.ref3 = rebase.listenToCollection('/projects', {
+		this.ref3 = rebase.listenToCollection('/help-projects', {
 			context: this,
 			withIds: true,
 			then:content=>{this.setState({projects:content })},
@@ -51,9 +51,9 @@ class TasksRow extends Component {
 				...task,
 				status:this.state.statuses.find((status)=>status.id===task.status),
 				project:this.state.projects.find((project)=>project.id===task.project),
-				assigned:this.state.users.find((user)=>user.id===task.assigned),
 				requester:this.state.users.find((user)=>user.id===task.requester),
-				tags:this.state.tags.filter((tag)=>task.tags && task.tags.includes(tag.id))
+				tags:this.state.tags.filter((tag)=>task.tags && task.tags.includes(tag.id)),
+				assignedTo:this.state.users.filter((user)=>task.assignedTo && task.assignedTo.includes(user.id))
 			}
 		});
 		return newTasks.filter((task)=>{
@@ -61,7 +61,7 @@ class TasksRow extends Component {
 			(this.props.filter.requester===null||(task.requester && task.requester.id===this.props.filter.requester)) &&
 			(this.props.filter.workType===null||(task.type===this.props.filter.workType)) &&
 			(this.props.filter.company===null||task.company===this.props.filter.company) &&
-			(this.props.filter.assigned===null||(task.assigned && task.assigned.id===this.props.filter.assigned)) &&
+			(this.props.filter.assigned===null||(task.assignedTo && task.assignedTo.includes(this.props.filter.assigned))) &&
 			(this.props.filter.statusDateFrom===''||task.statusChange >= this.props.filter.statusDateFrom) &&
 			(this.props.filter.statusDateTo===''||task.statusChange <= this.props.filter.statusDateTo) &&
 			((task.status?task.status.title:'')+task.title+task.id+
@@ -69,7 +69,7 @@ class TasksRow extends Component {
 				(task.requester?(task.requester.email+task.requester.name+' '+task.requester.surname):'')+
 				(task.statusChange?timestampToString(task.statusChange):'')+
 				(task.tags.reduce(((cur,item)=>cur+item.title+' '),''))+
-				(task.assigned?(task.assigned.email+task.assigned.name+' '+task.assigned.surname):'')
+				(task.assignedTo?task.assignedTo.reduce((total,user)=>total+=user.email+user.name+' '+user.surname+' ',''):'')
 			).toLowerCase().includes(this.props.search.toLowerCase()) &&
 
 			(this.props.project===null||(task.project && task.project.id===this.props.project))
@@ -112,7 +112,8 @@ class TasksRow extends Component {
 											<i className="fa fa-clock-o" /> <span>{task.statusChange?timestampToString(task.statusChange):'None'}</span>
 										</p>
 										<p className="text-muted m-b-0 font-13">
-											<span className="">Riesi: {task.assigned?(task.assigned.name+' '+task.assigned.surname):'Neznámy používateľ'}</span>
+											{console.log(task.assignedTo)}
+											<span className="" style={{textOverflow: 'ellipsis'}}>Riesi: {task.assignedTo?task.assignedTo.reduce((total,user)=>total+=user.name+' '+user.surname+', ','').slice(0,-2):'Neznámy používateľ'}</span>
 										</p>
 									</div>
 									<p className="pull-right text-muted m-b-0 font-13">

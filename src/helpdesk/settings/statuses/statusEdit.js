@@ -11,7 +11,7 @@ export default class StatusEdit extends Component{
       saving:false
     }
     this.setData.bind(this);
-    rebase.get('statuses/'+this.props.match.params.id, {
+    rebase.get('help-statuses/'+this.props.match.params.id, {
       context: this,
     }).then((status)=>this.setData(status));
   }
@@ -23,7 +23,7 @@ export default class StatusEdit extends Component{
   componentWillReceiveProps(props){
     if(this.props.match.params.id!==props.match.params.id){
       this.setState({loading:true})
-      rebase.get('statuses/'+props.match.params.id, {
+      rebase.get('help-statuses/'+props.match.params.id, {
         context: this,
       }).then((status)=>this.setData(status));
     }
@@ -44,12 +44,12 @@ export default class StatusEdit extends Component{
         </FormGroup>
         <Button color="success" className="separate" disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
-            rebase.updateDoc('/statuses/'+this.props.match.params.id, {title:this.state.title})
+            rebase.updateDoc('/help-statuses/'+this.props.match.params.id, {title:this.state.title})
               .then(()=>{this.setState({saving:false})});
           }}>{this.state.saving?'Saving status...':'Save status'}</Button>
         <Button color="danger" className="separate" disabled={this.state.saving} onClick={()=>{
               if(window.confirm("Are you sure?")){
-                rebase.removeDoc('/statuses/'+this.props.match.params.id).then(()=>{
+                rebase.removeDoc('/help-statuses/'+this.props.match.params.id).then(()=>{
                   this.props.history.goBack();
                 });
               }

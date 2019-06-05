@@ -20,7 +20,7 @@ export default class WorkTypeAdd extends Component{
         </FormGroup>
         <Button color="primary" className="separate" disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
-            rebase.addToCollection('/workTypes', {title:this.state.title})
+            rebase.addToCollection('/help-work_types', {title:this.state.title})
               .then(()=>{this.setState({title:'',saving:false})});
           }}>{this.state.saving?'Adding...':'Add work type'}</Button>
       </div>

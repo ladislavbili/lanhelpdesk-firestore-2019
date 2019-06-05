@@ -11,7 +11,7 @@ export default class UnitsList extends Component{
     }
   }
   componentWillMount(){
-    this.ref = rebase.listenToCollection('/units', {
+    this.ref = rebase.listenToCollection('/help-units', {
       context: this,
       withIds: true,
       then:content=>{this.setState({units:content, unitFilter:''})},

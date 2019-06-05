@@ -11,7 +11,7 @@ export default class ProjectEdit extends Component{
       saving:false
     }
     this.setData.bind(this);
-    rebase.get('projects/'+this.props.match.params.id, {
+    rebase.get('help-projects/'+this.props.match.params.id, {
       context: this,
     }).then((project)=>this.setData(project));
   }
@@ -23,7 +23,7 @@ export default class ProjectEdit extends Component{
   componentWillReceiveProps(props){
     if(this.props.match.params.id!==props.match.params.id){
       this.setState({loading:true})
-      rebase.get('projects/'+props.match.params.id, {
+      rebase.get('help-projects/'+props.match.params.id, {
         context: this,
       }).then((project)=>this.setData(project));
     }
@@ -44,12 +44,12 @@ export default class ProjectEdit extends Component{
         </FormGroup>
         <Button color="success" className="separate" disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
-            rebase.updateDoc('/projects/'+this.props.match.params.id, {title:this.state.projectName})
+            rebase.updateDoc('/help-projects/'+this.props.match.params.id, {title:this.state.projectName})
               .then(()=>{this.setState({saving:false})});
           }}>{this.state.saving?'Saving project...':'Save project'}</Button>
         <Button color="danger" className="separate" disabled={this.state.saving} onClick={()=>{
               if(window.confirm("Are you sure?")){
-                rebase.removeDoc('/projects/'+this.props.match.params.id).then(()=>{
+                rebase.removeDoc('/help-projects/'+this.props.match.params.id).then(()=>{
                   this.props.history.goBack();
                 });
               }

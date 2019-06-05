@@ -11,7 +11,7 @@ export default class ProjectList extends Component{
     }
   }
   componentWillMount(){
-    this.ref = rebase.listenToCollection('/projects', {
+    this.ref = rebase.listenToCollection('/help-projects', {
       context: this,
       withIds: true,
       then:content=>{this.setState({projects:content, projectFilter:''})},

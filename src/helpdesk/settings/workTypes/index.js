@@ -11,7 +11,7 @@ export default class WorkTypesList extends Component{
     }
   }
   componentWillMount(){
-    this.ref = rebase.listenToCollection('/workTypes', {
+    this.ref = rebase.listenToCollection('/help-work_types', {
       context: this,
       withIds: true,
       then:content=>{this.setState({workTypes:content, workTypeFilter:''})},

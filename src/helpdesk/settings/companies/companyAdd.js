@@ -23,7 +23,7 @@ export default class CompanyAdd extends Component{
   fetchData(){
     Promise.all(
       [
-        database.collection('pricelists').get(),
+        database.collection('help-pricelists').get(),
         rebase.get('metadata/0', {
           context: this,
         })

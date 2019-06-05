@@ -30,7 +30,7 @@ export default class UnitAdd extends Component{
 
         <Button color="primary" className="separate" disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
-            rebase.addToCollection('/units', {title:this.state.title})
+            rebase.addToCollection('/help-units', {title:this.state.title})
               .then((response)=>{
                 if(this.state.def){
                   rebase.updateDoc('/metadata/0',{defaultUnit:response.id})

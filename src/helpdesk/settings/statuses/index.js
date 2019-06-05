@@ -11,7 +11,7 @@ export default class StatusesList extends Component{
     }
   }
   componentWillMount(){
-    this.ref = rebase.listenToCollection('/statuses', {
+    this.ref = rebase.listenToCollection('/help-statuses', {
       context: this,
       withIds: true,
       then:content=>{this.setState({statuses:content, statusFilter:''})},

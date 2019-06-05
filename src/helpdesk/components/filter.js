@@ -101,10 +101,10 @@ class Filter extends Component {
   fetchData(){
     Promise.all(
       [
-        database.collection('statuses').get(),
+        database.collection('help-statuses').get(),
         database.collection('users').get(),
         database.collection('companies').get(),
-        database.collection('help-taskTypes').get(),
+        database.collection('help-task_types').get(),
       ]).then(([statuses,users, companies, workTypes])=>{
         this.setData(toSelArr(snapshotToArray(statuses)),toSelArr(snapshotToArray(users),'email'),toSelArr(snapshotToArray(companies)),toSelArr(snapshotToArray(workTypes)));
       });

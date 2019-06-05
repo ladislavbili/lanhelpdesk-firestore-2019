@@ -49,7 +49,7 @@ class Sidebar extends Component {
 	}
 
 	componentWillMount(){
-		this.ref = rebase.listenToCollection('/projects', {
+		this.ref = rebase.listenToCollection('/help-projects', {
 			context: this,
 			withIds: true,
 			then:content=>{

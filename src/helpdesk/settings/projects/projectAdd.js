@@ -20,7 +20,7 @@ export default class ProjectAdd extends Component{
         </FormGroup>
         <Button color="primary" className="separate" disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
-            rebase.addToCollection('/projects', {title:this.state.projectName})
+            rebase.addToCollection('/help-projects', {title:this.state.projectName})
               .then(()=>{this.setState({projectName:'',saving:false})});
           }}>{this.state.saving?'Adding...':'Add project'}</Button>
       </div>

@@ -11,7 +11,7 @@ export default class PriceList extends Component{
     }
   }
   componentWillMount(){
-    this.ref = rebase.listenToCollection('/pricelists', {
+    this.ref = rebase.listenToCollection('/help-pricelists', {
       context: this,
       withIds: true,
       then:content=>{this.setState({pricelist:content, pricelistFilter:''})},

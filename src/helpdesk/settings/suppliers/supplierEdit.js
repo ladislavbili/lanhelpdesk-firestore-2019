@@ -11,7 +11,7 @@ export default class WorkTypeEdit extends Component{
       saving:false
     }
     this.setData.bind(this);
-    rebase.get('suppliers/'+this.props.match.params.id, {
+    rebase.get('help-suppliers/'+this.props.match.params.id, {
       context: this,
     }).then((workType)=>this.setData(workType));
   }
@@ -23,7 +23,7 @@ export default class WorkTypeEdit extends Component{
   componentWillReceiveProps(props){
     if(this.props.match.params.id!==props.match.params.id){
       this.setState({loading:true})
-      rebase.get('suppliers/'+props.match.params.id, {
+      rebase.get('help-suppliers/'+props.match.params.id, {
         context: this,
       }).then((supplier)=>this.setData(supplier));
     }
@@ -44,12 +44,12 @@ export default class WorkTypeEdit extends Component{
         </FormGroup>
         <Button color="success" className="separate" disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
-            rebase.updateDoc('/suppliers/'+this.props.match.params.id, {title:this.state.title})
+            rebase.updateDoc('/help-suppliers/'+this.props.match.params.id, {title:this.state.title})
               .then(()=>{this.setState({saving:false})});
           }}>{this.state.saving?'Saving supplier...':'Save supplier'}</Button>
         <Button color="danger" className="separate" disabled={this.state.saving} onClick={()=>{
               if(window.confirm("Are you sure?")){
-                rebase.removeDoc('/suppliers/'+this.props.match.params.id).then(()=>{
+                rebase.removeDoc('/help-suppliers/'+this.props.match.params.id).then(()=>{
                   this.props.history.goBack();
                 });
               }

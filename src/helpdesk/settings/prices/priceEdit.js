@@ -26,7 +26,7 @@ export default class PriceEdit extends Component{
   loadData(id){
     Promise.all(
       [
-        rebase.get('pricelists/'+id, {
+        rebase.get('help-pricelists/'+id, {
           context: this,
           withIds: true,
         }),
@@ -34,8 +34,8 @@ export default class PriceEdit extends Component{
         rebase.get('metadata/0', {
           context: this,
         }),
-        database.collection('workTypes').get(),
-        database.collection('prices').get()
+        database.collection('help-work_types').get(),
+        database.collection('help-prices').get()
     ]).then(([pricelist,meta, workTypes,prices])=>{
       this.setData(pricelist,meta,snapshotToArray(prices),snapshotToArray(workTypes),id);
     });
@@ -132,10 +132,10 @@ export default class PriceEdit extends Component{
             }
 
             this.state.workTypes.filter((item)=>item.price.id!==undefined).map((workType)=>
-              rebase.updateDoc('/prices/'+workType.price.id, {price:parseFloat(workType.price.price === "" ? "0": workType.price.price)})
+              rebase.updateDoc('/help-prices/'+workType.price.id, {price:parseFloat(workType.price.price === "" ? "0": workType.price.price)})
             );
             this.state.workTypes.filter((item)=>item.price.id===undefined).map((workType)=>
-              rebase.addToCollection('/prices', {pricelist:this.props.match.params.id,workType:workType.id,price:parseFloat(workType.price.price === "" ? "0": workType.price.price)}).then((response)=>{
+              rebase.addToCollection('/help-prices', {pricelist:this.props.match.params.id,workType:workType.id,price:parseFloat(workType.price.price === "" ? "0": workType.price.price)}).then((response)=>{
                 let index = this.state.workTypes.findIndex((item)=>item.id===workType.id);
                 let newWorkTypes=[...this.state.workTypes];
                 let newWorkType = {...newWorkTypes[index]};
@@ -145,19 +145,19 @@ export default class PriceEdit extends Component{
               })
             )
 
-            rebase.updateDoc('/pricelists/'+this.props.match.params.id, {title:this.state.pricelistName, afterHours:parseFloat(this.state.afterHours===''?'0':this.state.afterHours),materialMargin:parseFloat(this.state.margin===''?'0':this.state.margin),materialMarginExtra:parseFloat(this.state.marginExtra===''?'0':this.state.marginExtra)})
+            rebase.updateDoc('/help-pricelists/'+this.props.match.params.id, {title:this.state.pricelistName, afterHours:parseFloat(this.state.afterHours===''?'0':this.state.afterHours),materialMargin:parseFloat(this.state.margin===''?'0':this.state.margin),materialMarginExtra:parseFloat(this.state.marginExtra===''?'0':this.state.marginExtra)})
               .then(()=>
                 this.setState({saving:false})
               );
           }}>{this.state.saving?'Saving prices...':'Save prices'}</Button>
         <Button color="danger" className="separate" disabled={this.state.saving} onClick={()=>{
               if(window.confirm("Are you sure?")){
-                rebase.removeDoc('/pricelists/'+this.props.match.params.id);
+                rebase.removeDoc('/help-pricelists/'+this.props.match.params.id);
                 if(this.state.defaultPricelist===this.props.match.params.id){
                   rebase.updateDoc('/metadata/0',{defaultPricelist:null});
                 }
                 this.state.workTypes.filter((item)=>item.price.id!==undefined).map((workType)=>
-                  rebase.removeDoc('/prices/'+workType.price.id)
+                  rebase.removeDoc('/help-prices/'+workType.price.id)
                 );
                 this.props.history.goBack();
               }

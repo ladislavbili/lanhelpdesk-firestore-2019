@@ -22,7 +22,7 @@ export default class TaskTypeAdd extends Component{
 
         <Button color="primary" className="separate" disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
-            rebase.addToCollection('/help-taskTypes', {title:this.state.title})
+            rebase.addToCollection('/help-task_types', {title:this.state.title})
               .then((response)=>{
                 this.setState({title:'',saving:false})
               });

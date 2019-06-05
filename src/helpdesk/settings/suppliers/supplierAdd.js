@@ -20,8 +20,8 @@ export default class SupplierAdd extends Component{
           </FormGroup>
         <Button color="primary" disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
-            rebase.addToCollection('/suppliers', {title:this.state.title})
-              .then(()=>{this.setState({supplierName:'',saving:false})});
+            rebase.addToCollection('/help-suppliers', {title:this.state.title})
+              .then(()=>{this.setState({title:'',saving:false})});
           }}>{this.state.saving?'Adding...':'Add supplier'}</Button>
       </div>
     );

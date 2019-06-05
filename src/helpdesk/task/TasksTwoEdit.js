@@ -72,7 +72,7 @@ export default class TasksTwoEdit extends Component {
 			company:null,
 			workHours:'0',
 			requester:null,
-			assigned:null,
+			assignedTo:[],
 			description:'',
 			status:null,
 			statusChange:null,
@@ -115,7 +115,7 @@ export default class TasksTwoEdit extends Component {
       company: this.state.company?this.state.company.id:null,
       workHours: this.state.workHours,
       requester: this.state.requester?this.state.requester.id:null,
-      assigned: this.state.assigned?this.state.assigned.id:null,
+			assignedTo: this.state.assignedTo.map((item)=>item.id),
       description: this.state.description,
       status: this.state.status?this.state.status.id:null,
 			deadline: isNaN(new Date(this.state.deadline).getTime()) ? null : (new Date(this.state.deadline).getTime()),
@@ -128,7 +128,7 @@ export default class TasksTwoEdit extends Component {
 			type: this.state.type?this.state.type.id:null,
     }
 
-    rebase.updateDoc('/tasks/'+this.state.task.id, body)
+    rebase.updateDoc('/help-tasks/'+this.state.task.id, body)
     .then(()=>{
       if(!this.props.columns){
         this.props.history.goBack()
@@ -139,19 +139,19 @@ export default class TasksTwoEdit extends Component {
   }
 
   submitMaterial(body){
-    rebase.addToCollection('taskMaterials',{task:this.props.match.params.taskID,...body}).then((result)=>{
+    rebase.addToCollection('help-task_materials',{task:this.props.match.params.taskID,...body}).then((result)=>{
       this.setState({taskMaterials:[...this.state.taskMaterials, {task:this.props.match.params.taskID,...body,id:result.id}]})
     });
   }
 
   submitService(body){
-    rebase.addToCollection('taskWorks',{task:this.props.match.params.taskID,...body}).then((result)=>{
+    rebase.addToCollection('help-task_works',{task:this.props.match.params.taskID,...body}).then((result)=>{
       this.setState({taskWorks:[...this.state.taskWorks, {task:this.props.match.params.taskID,...body,id:result.id}]})
     });
   }
 
   saveService(body,id){
-    rebase.updateDoc('/taskWorks/'+id,body).then((result)=>{
+    rebase.updateDoc('/help-task_works/'+id,body).then((result)=>{
       let newTaskWorks=[...this.state.taskWorks];
       newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...body};
       this.setState({taskWorks:newTaskWorks,openService:null});
@@ -159,7 +159,7 @@ export default class TasksTwoEdit extends Component {
   }
 
   saveMaterial(body,id){
-    rebase.updateDoc('/taskMaterials/'+id,body).then((result)=>{
+    rebase.updateDoc('/help-task_materials/'+id,body).then((result)=>{
       let newTaskMaterials=[...this.state.taskMaterials];
       newTaskMaterials[newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id)]={...newTaskMaterials.find((taskMaterial)=>taskMaterial.id===id),...body};
       this.setState({taskMaterials:newTaskMaterials,openMaterial:null});
@@ -176,19 +176,19 @@ export default class TasksTwoEdit extends Component {
   fetchData(taskID){
     Promise.all(
       [
-        database.collection('tasks').doc(taskID).get(),
-        database.collection('statuses').get(),
-        database.collection('projects').get(),
+        database.collection('help-tasks').doc(taskID).get(),
+        database.collection('help-statuses').get(),
+        database.collection('help-projects').get(),
         database.collection('companies').get(),
-        database.collection('workTypes').get(),
-        database.collection('units').get(),
-        database.collection('prices').get(),
-        database.collection('pricelists').get(),
+        database.collection('help-work_types').get(),
+        database.collection('help-units').get(),
+        database.collection('help-prices').get(),
+        database.collection('help-pricelists').get(),
         database.collection('users').get(),
 				database.collection('help-tags').get(),
-				database.collection('help-taskTypes').get(),
-        database.collection('taskMaterials').where("task", "==", taskID).get(),
-        database.collection('taskWorks').where("task", "==", taskID).get(),
+				database.collection('help-task_types').get(),
+        database.collection('help-task_materials').where("task", "==", taskID).get(),
+        database.collection('help-task_works').where("task", "==", taskID).get(),
 				rebase.get('metadata/0', {
 					context: this,
 				})
@@ -217,7 +217,7 @@ export default class TasksTwoEdit extends Component {
     let company = companies.find((item)=>item.id===task.company);
     company = {...company,pricelist:pricelists.find((item)=>item.id===company.pricelist)};
     let requester = users.find((item)=>item.id===task.requester);
-    let assigned = users.find((item)=>item.id===task.assigned);
+    let assignedTo = users.filter((user)=>task.assignedTo.includes(user.id));
     let type = taskTypes.find((item)=>item.id===task.type);
 
     let newCompanies=companies.map((company)=>{
@@ -259,7 +259,7 @@ export default class TasksTwoEdit extends Component {
       company:company?company:null,
       workHours:isNaN(parseInt(task.workHours))?0:parseInt(task.workHours),
       requester:requester?requester:null,
-      assigned:assigned?assigned:null,
+      assignedTo,
       loading:false,
 			defaultUnit,
 			tags:taskTags,
@@ -353,6 +353,18 @@ export default class TasksTwoEdit extends Component {
 											/>
 									</div>
 								</div>
+								<div className="col-lg-12 row">
+									<strong className="center-hor">Assigned to: </strong>
+									<div style={{flex:1,marginBottom:5}}>
+										<Select
+											value={this.state.assignedTo}
+											isMulti
+											onChange={(users)=>this.setState({assignedTo:users},this.submitTask.bind(this))}
+											options={this.state.users}
+											styles={invisibleSelectStyle}
+											/>
+									</div>
+								</div>
 								<div className="col-lg-12 p-0">
 									<div className="col-lg-6">
 										<div className="m-t-20 p-r-20">
@@ -396,17 +408,6 @@ export default class TasksTwoEdit extends Component {
 														value={this.state.company}
 														onChange={(company)=>this.setState({company},this.submitTask.bind(this))}
 														options={this.state.companies}
-														styles={selectStyle}
-														/>
-												</div>
-											</div>
-											<div className="form-group m-b-0 row">
-												<label className="col-5 col-form-label">Riesi</label>
-												<div className="col-7">
-													<Select
-														value={this.state.assigned}
-														onChange={(assigned)=>this.setState({assigned},this.submitTask.bind(this))}
-														options={this.state.users}
 														styles={selectStyle}
 														/>
 												</div>
@@ -493,7 +494,7 @@ export default class TasksTwoEdit extends Component {
 												}else{
 													price = price.price;
 												}
-												rebase.updateDoc('taskWorks/'+item.id, {price})
+												rebase.updateDoc('help-task_works/'+item.id, {price})
 												.then(()=>{
 													let newTaskWorks=[...this.state.taskWorks];
 													newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===item.id)]={...newTaskWorks.find((taskWork)=>taskWork.id===item.id),price};
@@ -505,14 +506,14 @@ export default class TasksTwoEdit extends Component {
 										subtasks={taskWorks}
 										workTypes={this.state.workTypes}
 										updateSubtask={(id,newData)=>{
-											rebase.updateDoc('taskWorks/'+id,newData);
+											rebase.updateDoc('help-task_works/'+id,newData);
 											let newTaskWorks=[...this.state.taskWorks];
 											newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
 											this.setState({taskWorks:newTaskWorks});
 										}}
 										company={this.state.company}
 										removeSubtask={(id)=>{
-											rebase.removeDoc('taskWorks/'+id).then(()=>{
+											rebase.removeDoc('help-task_works/'+id).then(()=>{
 												let newTaskWorks=[...this.state.taskWorks];
 												newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
 												this.setState({taskWorks:newTaskWorks});
@@ -526,7 +527,7 @@ export default class TasksTwoEdit extends Component {
 								materials={taskMaterials}
 				        submitMaterial={this.submitMaterial.bind(this)}
 								updateMaterial={(id,newData)=>{
-									rebase.updateDoc('taskMaterials/'+id,newData);
+									rebase.updateDoc('help-task_materials/'+id,newData);
 									let newTaskMaterials=[...this.state.taskMaterials];
 									newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
 									this.setState({taskMaterials:newTaskMaterials});

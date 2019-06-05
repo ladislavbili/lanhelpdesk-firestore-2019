@@ -14,12 +14,12 @@ export default class SupplierInvoicesList extends Component{
     }
   }
   componentWillMount(){
-    this.ref = rebase.listenToCollection('/supplierInvoices', {
+    this.ref = rebase.listenToCollection('/help-supplier_invoices', {
       context: this,
       withIds: true,
       then:content=>{this.setState({supplierInvoices:content})},
     });
-    this.ref2 = rebase.listenToCollection('/suppliers', {
+    this.ref2 = rebase.listenToCollection('/help-suppliers', {
       context: this,
       withIds: true,
       then:content=>{this.setState({suppliers:content})},
