@@ -5,43 +5,14 @@ import Comments from '../components/comments.js';
 import Materials from '../components/materials';
 import Subtasks from '../components/subtasks';
 
-import {invisibleSelectStyle} from '../components/selectStyles';
 import {rebase, database} from '../../index';
 import {toSelArr, snapshotToArray, timestampToString} from '../../helperFunctions';
+import {selectStyle, invisibleSelectStyle} from '../../scss/selectStyles';
 
 const repeat = [
 	{ value: 'none', label: 'none' },
 	{ value: 'every day', label: 'every day' },
 ];
-const selectStyle = {
-	control: base => ({
-		...base,
-		minHeight: 30,
-		backgroundColor: 'white',
-	}),
-	dropdownIndicator: base => ({
-		...base,
-		padding: 4,
-	}),
-	clearIndicator: base => ({
-		...base,
-		padding: 4,
-	}),
-	multiValue: base => ({
-		...base,
-		backgroundColor: 'white',
-	}),
-	valueContainer: base => ({
-		...base,
-		padding: '0px 6px',
-	}),
-	input: base => ({
-		...base,
-		margin: 0,
-		padding: 0,
-		backgroundColor: 'white',
-	}),
-};
 
 export default class TasksTwoEdit extends Component {
 	constructor(props) {
@@ -315,39 +286,33 @@ export default class TasksTwoEdit extends Component {
 
 		return (
 			<div>
-				<div className="row scrollable fit-with-header-and-command-bar" style={{}}>
-					<div className="col-lg-12">
-						<div className="card-box p-t-0" style={{ maxWidth: 1284, background: '#F9F9F9', borderRadius: 0, padding: "none" }}>
+				<div className="row scrollable fit-with-header-and-command-bar">
+						<div className="card-box">
 							<div className="d-flex flex-row">
 								<div className="row">
-									<h1># {this.props.match.params.taskID}</h1>
+									<h1 className="center-hor"># {this.props.match.params.taskID}</h1>
 									<span className="center-hor">
-							    	<input type="text" value={this.state.title} className="form-control hidden-input" onChange={(e)=>this.setState({title:e.target.value},this.submitTask.bind(this))} placeholder="Enter task name" />
+							    	<input type="text" value={this.state.title} className="form-control task-title-input hidden-input" onChange={(e)=>this.setState({title:e.target.value},this.submitTask.bind(this))} placeholder="Enter task name" />
 									</span>
 								</div>
 								<div className="ml-auto p-2 align-self-center">
 									<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.submitTask.bind(this)}>
 										{this.state.saving?'Saving... ':''}
 										<i
-											className="fas fa-save"
-											style={{
-												color: '#4a81d4',
-												fontSize: '1.2em',
-											}}
+											className="fas fa-save commandbar-command-icon icon-M"
 											/>
 									</button>
 									{' '}
 									<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.deleteTask.bind(this)}>
 										<i
-											className="fas fa-trash"
-											style={{
-												color: '#4a81d4',
-												fontSize: '1.2em',
-											}}
+											className="fas fa-trash commandbar-command-icon icon-M"
 											/>
 									</button>
 								</div>
 							</div>
+
+							<hr/>
+
 							<div className="row">
 								<div className="col-lg-12 p-10 d-flex flex-row">
 									<p className="text-muted">Created by Branislav Šusta at {this.state.createdAt?(timestampToString(this.state.createdAt)):''}</p>
@@ -357,8 +322,8 @@ export default class TasksTwoEdit extends Component {
 							</div>
 							<div className="row">
 								<div className="col-lg-12 row">
-									<strong className="center-hor">Tagy: </strong>
-									<div style={{flex:1,marginBottom:5}}>
+									<strong className="center-hor center-ver">Tagy: </strong>
+									<div className="f-1">
 										<Select
 											value={this.state.tags}
 											isMulti
@@ -370,7 +335,7 @@ export default class TasksTwoEdit extends Component {
 								</div>
 								<div className="col-lg-12 row">
 									<strong className="center-hor">Assigned to: </strong>
-									<div style={{flex:1,marginBottom:5}}>
+									<div className="f-1">
 										<Select
 											value={this.state.assignedTo}
 											isMulti
@@ -498,7 +463,8 @@ export default class TasksTwoEdit extends Component {
 							</div>
 
 							<label className="m-t-5">Popis</label>
-							<textarea className="form-control" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value},this.submitTask.bind(this))} />
+							<textarea className="form-control b-r-0" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value},this.submitTask.bind(this))} />
+
 							<Subtasks
 								taskAssigned={this.state.assignedTo}
 								submitService={this.submitService.bind(this)}
@@ -563,7 +529,6 @@ export default class TasksTwoEdit extends Component {
 
 							<Comments id={this.state.task?this.state.task.id:null} users={this.state.users} />
 						</div>
-					</div>
 				</div>
 			</div>
 		);

@@ -51,14 +51,14 @@ class TaskListContainer extends Component {
 								<div className="input-group">
 									<input
 										type="text"
-										className="form-control"
+										className="form-control commandbar-search"
 										value={this.state.search}
 										onChange={(e)=>this.setState({search:e.target.value})}
 										placeholder="Search task name"
 										style={{ width: 200 }}
 									/>
 									<div className="input-group-append">
-										<button className="btn btn-search" type="button" onClick={()=>this.props.setSearch(this.state.search)}>
+										<button className="commandbar-btn-search" type="button" onClick={()=>this.props.setSearch(this.state.search)}>
 											<i className="fa fa-search" />
 										</button>
 									</div>
@@ -86,57 +86,36 @@ class TaskListContainer extends Component {
 							</div>
 							<div className="ml-auto p-2 align-self-center">
 								{' '}
-								<button type="button" className="btn btn-link waves-effect">
+								<button type="button" className="btn-link waves-effect">
 									<i
-										className="fas fa-copy"
-										style={{
-											color: '#4a81d4',
-											fontSize: '1.2em',
-										}}
+										className="fas fa-copy commandbar-command-icon icon-S"
 									/>
-									<span style={{
-										color: '#4a81d4',
-										fontSize: '1.2em',
-									}}> COPY</span>
+									<span className="commandbar-command"> COPY</span>
 								</button>
 							</div>
 							<div className="">
 								{' '}
-								<button type="button" className="btn btn-link waves-effect">
+								<button type="button" className="btn-link waves-effect">
 									<i
-										className="fas fa-print"
-										style={{
-											color: '#4a81d4',
-											fontSize: '1.2em',
-										}}
+										className="fas fa-print commandbar-command-icon icon-S"
 									/>
-									<span style={{
-										color: '#4a81d4',
-										fontSize: '1.2em',
-									}}> SERVISNY LIST</span>
+									<span className="commandbar-command"> SERVISNY LIST</span>
 								</button>
 							</div>
 							<div className="">
 								{' '}
-								<button type="button" className="btn btn-link waves-effect">
+								<button type="button" className="btn-link waves-effect">
 									<i
-										className="fas fa-print"
-										style={{
-											color: '#4a81d4',
-											fontSize: '1.2em',
-										}}
+										className="fas fa-print commandbar-command-icon icon-S"
 									/>
-									<span style={{
-										color: '#4a81d4',
-										fontSize: '1.2em',
-									}}> CENOVA PONUKA</span>
+								<span className="commandbar-command"> CENOVA PONUKA</span>
 								</button>
 							</div>
 							<div className="">
 								<div className="btn-group btn-group-toggle" data-toggle="buttons">
 									<label
 										className={
-											'btn btn-outline-blue waves-effect waves-light' +
+											'btn btn-link btn-outline-blue waves-effect waves-light' +
 											(this.state.taskListType === 'option1' ? ' active' : '')
 										}
 									>
@@ -152,7 +131,7 @@ class TaskListContainer extends Component {
 									</label>
 									<label
 										className={
-											'btn btn-outline-blue waves-effect waves-light' +
+											'btn btn-link btn-outline-blue waves-effect waves-light' +
 											(this.state.taskListType === 'option2' ? ' active' : '')
 										}
 									>
@@ -169,7 +148,7 @@ class TaskListContainer extends Component {
 
 									<label
 										className={
-											'btn btn-outline-blue waves-effect waves-light' +
+											'btn btn-link btn-outline-blue waves-effect waves-light' +
 											(this.state.taskListType === 'option3' ? ' active' : '')
 										}
 									>

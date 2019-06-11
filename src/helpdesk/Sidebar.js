@@ -13,23 +13,7 @@ import {rebase} from '../index';
 import {toSelArr} from '../helperFunctions';
 import {setProject, setFilter} from '../redux/actions';
 
-const customSelect = {
-	singleValue: (provided, state) => {
-		return { ...provided, marginLeft:30 };
-	},
-	indicatorSeparator:(provided, state) => {
-		return { ...provided, width:0 };
-	},
-	control:(provided, state) => {
-		return { ...provided };
-	},
-	input:(provided, state) => {
-		return { ...provided, marginLeft:30 };
-	},
-	placeholder:(provided, state) => {
-		return { ...provided, marginLeft:30 };
-	},
-}
+import {sidebarSelectStyle} from '../scss/selectStyles';
 
 class Sidebar extends Component {
 	constructor(props) {
@@ -46,6 +30,7 @@ class Sidebar extends Component {
 			filterID:null,
 			filterData:null,
 		};
+
 	}
 
 	componentWillMount(){
@@ -84,7 +69,7 @@ class Sidebar extends Component {
 							<Select
 								options={this.state.projects}
 								value={this.state.project}
-								styles={customSelect}
+								styles={sidebarSelectStyle}
 								onChange={e => {
 									this.setState({project:e});
 									this.props.setProject(e.value);

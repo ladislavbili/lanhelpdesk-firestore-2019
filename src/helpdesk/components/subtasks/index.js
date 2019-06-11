@@ -29,20 +29,20 @@ export default class Subtasks extends Component {
 		return (
 			<div className="m-t-30">
 				<div className="row">
-					<div className="col-md-12">
+					<div>
 
 						<Nav tabs>
 							<NavItem>
 								<NavLink
-									className={classnames({ active: this.state.activeTab === '1' })}
+									className={classnames({ active: this.state.activeTab === '1'}, "clickable", "form-tab")}
 									onClick={() => { this.toggle('1'); }}
 								>
 									Sluzby
-            </NavLink>
+            		</NavLink>
 							</NavItem>
 							<NavItem>
 								<NavLink
-									className={classnames({ active: this.state.activeTab === '2' })}
+									className={classnames({ active: this.state.activeTab === '2' }, "clickable", "form-tab-end")}
 									onClick={() => { this.toggle('2'); }}
 								>
 									Rozpocet

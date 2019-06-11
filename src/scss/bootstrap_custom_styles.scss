@@ -4,13 +4,6 @@
   width: 100% !important;
 }
 
-.form-control{
-	font-family: inherit;
-	border: 1px solid #cccccc;
-	border-radius: 4px;
-	color: #565656;
-	font-size: 14px;
-}
 
 .menu-title{
   padding: 12px 20px !important;
@@ -54,23 +47,6 @@
     border-left-color: rgb(74, 129, 212);
 }
 
-.waves-effect {
-    position: relative;
-    cursor: pointer;
-    display: inline-block;
-    overflow: hidden;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
-    vertical-align: middle;
-    z-index: 1;
-    will-change: opacity, transform;
-    -webkit-transition: all 0.3s ease-out;
-    transition: all 0.3s ease-out;
-}
-
 .btn-outline-blue:not(:disabled):not(.disabled).active, .btn-outline-blue:not(:disabled):not(.disabled):active, .show>.btn-outline-blue.dropdown-toggle {
     color: #fff;
     background-color: #4a81d4;
@@ -86,35 +62,9 @@
     font-size: 13px !important;
 }
 
-.text-muted {
-    color: #98a6ad !important;
-}
-
 .m-r-5{
 	margin-right: 5px;
 }
-
-.taskList {
-  min-height: 40px;
-  margin-bottom: 0; }
-
-.taskList li {
-  background-color: #fff;
-  border: 1px solid #dee2e6;
-  padding: 20px;
-  margin-bottom: 15px;
-  border-radius: 3px; }
-
-.taskList li:last-of-type {
-  margin-bottom: 0; }
-
-.taskList li .btn-sm {
-  padding: 2px 8px;
-  font-size: 12px; }
-
-.taskList .checkbox {
-  margin-left: 20px;
-  margin-top: 5px; }
 
 .m-t-30 {
     margin-top: 30px !important;

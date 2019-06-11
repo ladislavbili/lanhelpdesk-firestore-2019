@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import { selectStyle, invisibleSelectStyle} from '../selectStyles';
+import { selectStyle, invisibleSelectStyle} from '../../../scss/selectStyles';
 
 const tableStyle = {
 	border: 'none',
@@ -73,31 +73,30 @@ export default class Prace extends Component {
 			<div className="row">
 				<div className="col-md-12">
 					<div >
-						<table className="table table-centered table-borderless table-hover mb-0">
-							<thead className="thead-light">
+						<table className="table table-centered table-borderless table-hover">
+							<thead >
 								<tr>
-									<th style={tableStyle} width="25">
-									</th>
-									<th style={tableStyle}>Názov</th>
-										<th style={tableStyle} width="100">Mn.</th>
-										<th style={tableStyle} width="170">Rieši</th>
-									<th style={tableStyle} width="170">Typ</th>
-									<th style={{...tableStyleCenterNoBorder}} width="124">Action</th>
+									<th  width="25"></th>
+									<th >Názov</th>
+									<th width="100">Mn.</th>
+									<th width="170">Rieši</th>
+									<th width="170">Typ</th>
+									<th className="t-a-c" width="124">Action</th>
 								</tr>
 							</thead>
 							<tbody>
 								{
 									this.props.subtasks.map((subtask)=>
 									<tr key={subtask.id}>
-										<td style={tableStyle}>
+										<td className="table-checkbox">
 											<input type="checkbox" checked={subtask.done} onChange={()=>{
 												this.props.updateSubtask(subtask.id,{done:!subtask.done})
 												}} />
 										</td>
-										<td style={tableStyle}>
+										<td>
 											<div>
 												<input
-													className="invisible-input"
+													className="form-control hidden-input"
 													value={
 														subtask.id === this.state.focusedSubtask
 														? this.state.editedSubtaskTitle
@@ -122,10 +121,10 @@ export default class Prace extends Component {
 												/>
 										</div>
 									</td>
-									<td style={tableStyle}>
+									<td>
 										<input
 											type="number"
-											className="invisible-input"
+											className="hidden-input table-number-input"
 											value={
 												subtask.id === this.state.focusedSubtask
 												? this.state.editedSubtaskQuantity
@@ -149,7 +148,7 @@ export default class Prace extends Component {
 										}
 										/>
 									</td>
-									<td style={tableStyle}>
+									<td >
 										<Select
 											value={subtask.assignedTo}
 											onChange={(assignedTo)=>{
@@ -159,7 +158,7 @@ export default class Prace extends Component {
 											styles={invisibleSelectStyle}
 											/>
 									</td>
-									<td style={tableStyle}>
+									<td>
 										<Select
 											value={subtask.workType}
 											onChange={(workType)=>{
@@ -175,7 +174,7 @@ export default class Prace extends Component {
 											styles={invisibleSelectStyle}
 											/>
 									</td>
-									<td style={tableStyleCenter}>
+									<td className="t-a-r">
 										<button className="btn btn-link waves-effect">
 											<i className="fa fa-arrow-up"  />
 										</button>
@@ -195,31 +194,29 @@ export default class Prace extends Component {
 							}
 
 							<tr>
-								<td style={tableStyle}>
+								<td>
 								</td>
-								<td style={tableStyle}>
+								<td>
 									<input
 										type="text"
-										className="form-control mb-2"
+										className="form-control"
 										id="inlineFormInput"
 										placeholder=""
 										value={this.state.newTitle}
 										onChange={(e)=>this.setState({newTitle:e.target.value})}
-										style={{ height: 30 }}
 										/>
 								</td>
-								<td style={tableStyle}>
+								<td>
 									<input
 										type="number"
 										value={this.state.newQuantity}
 										onChange={(e)=>this.setState({newQuantity:e.target.value})}
-										className="form-control mb-2"
+										className="form-control table-number-input"
 										id="inlineFormInput"
 										placeholder=""
-										style={{ height: 30 }}
 										/>
 								</td>
-								<td style={tableStyle} className="p-t-0">
+								<td>
 									<Select
 										value={this.state.newAssigned}
 										onChange={(newAssigned)=>{
@@ -230,7 +227,7 @@ export default class Prace extends Component {
 										styles={selectStyle}
 										/>
 								</td>
-								<td style={tableStyle} className="p-t-0">
+								<td>
 									<Select
 										value={this.state.workType}
 										onChange={(workType)=>{
@@ -248,7 +245,7 @@ export default class Prace extends Component {
 										styles={selectStyle}
 										/>
 								</td>
-								<td style={tableStyleCenter}>
+								<td className="t-a-r">
 									<button className="btn btn-link waves-effect"
 										disabled={this.state.newWorkType===null}
 										onClick={()=>{

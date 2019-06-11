@@ -2,14 +2,202 @@
 
 body{
   font-family: $main-font;
-  background: #F2F1F1;
+  background: $main-background-color;
   font-size: $main-font-size;
-  background-color: #ebeff2;
-  color: #797979;
+  color: $main-font-color;
 }
 
+.container-fluid{
+  background-color: $main-background-color;
+}
+
+.content-page > .content {
+    margin-bottom: 0px;
+    margin-top: 0px;
+    padding: 0px;
+    min-height: 300px;
+}
+
+
+//-------------------overflow----------------------
+html{
+	overflow-y: hidden;
+}
+
+.scrollable{
+  overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.fit-with-header{
+	height: $height-without-header;
+}
+.fit-with-header-and-command-bar{
+	height: calc(  #{$height-without-header} - 44.5px );
+}
+//-------------------END-overflow----------------------
+
+//---------------všeobecné-atribúty---------------------
+.text-muted {
+  color: $muted-font-color;
+}
+.center-ver{
+	margin-left: auto;
+	margin-right: auto;
+}
+.center-hor{
+	margin-top: auto;
+	margin-bottom: auto;
+}
+.waves-effect {
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    vertical-align: middle;
+    z-index: 1;
+    will-change: opacity, transform;
+    -webkit-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+}
+.icon-S{
+    font-size: 1em;
+}
+.icon-M{
+    font-size: 1.2em;
+}
+.f-1{
+  flex: 1;
+}
+.b-r-0{
+  border-radius: 0px;
+}
+.t-a-c{
+    text-align: center;
+}
+.t-a-r{
+    text-align: right;
+}
+.t-a-l{
+    text-align: left;
+}
+//---------------END-všeobecné-atribúty-----------------
+
+//---------------všeobecné-elementy---------------------
+.btn{
+  background-color: $basic-button-color;
+  border: 0px;
+  border-radius: 0px;
+  color: #FFFFFF;
+  font-weight: 400;
+  font-size: $main-font-size;
+}
+
+.btn:hover{
+  background-color: $header-color;
+  color: #FFFFFF;
+}
+
+.btn-link{
+  background-color: inherit;
+  border: 0px;
+  border-radius: 0px;
+  color: $basic-button-color;
+  font-weight: 400;
+  font-size: $main-font-size;
+}
+
+.btn-link:hover{
+  background-color: $header-color;
+  color: #FFFFFF;
+}
+
+.label{
+  border-radius: 0px;
+  background-color: $basic-button-color;
+}
+
+hr{
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+th {
+  border: none;
+  color: $contrasting-font-color;
+}
+td {
+  border: none;
+  color: $contrasting-font-color;
+}
+.table-number-input{
+  height: 30px;
+}
+
+.table-checkbox{
+  padding-top: 15px !important;
+}
+
+.form-control{
+	font-family: inherit;
+	border: 1px solid #cccccc;
+  font-size: $main-font-size;
+  border-radius: 0px;
+}
+
+.hidden-input{
+	background-color: inherit;
+	border-width: 0;
+	box-shadow: none;
+  width: 100%;
+}
+
+.hidden-input:focus{
+  background-color: inherit;
+  color: inherit;
+  border-width: 0;
+	box-shadow: none;
+}
+
+.col, .col-1, .col-10, .col-11, .col-12, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-lg, .col-lg-1,
+.col-lg-10, .col-lg-11, .col-lg-12, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-md, .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-sm, .col-sm-1, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5,
+.col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-xl, .col-xl-1, .col-xl-10, .col-xl-11, .col-xl-12, .col-xl-2, .col-xl-3, .col-xl-4, .col-xl-5, .col-xl-6, .col-xl-7, .col-xl-8, .col-xl-9 {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.form-tab{
+  background-color: inherit !important;
+  border-width: 0px 2px 0px 0px !important;
+  border-radius: 0px !important;
+  border-color: $main-font-color !important;
+  margin: 5px;
+}
+.form-tab-end{
+  background-color: inherit !important;
+  border-width: 0px !important;
+  border-radius: 0px !important;
+  margin: 5px;
+}
+
+/*.active .form-tab {
+  font-weight: 900 !important;
+}
+.active .form-tab-end{
+  font-weight: 900 !important;
+}*/
+
+//----------------END-všeobecné-elementy----------------
+
+
+//---------------------header---------------------
 .page-header{
-	background-color: #004578;
+	background-color: $header-color;
   height: $header-height;
   margin: 0px;
   padding: 0px;
@@ -20,16 +208,18 @@ body{
     height: 100%;
 
     h1{
-      color:white;
+      color: #FFF;
       font-size: 27px;
     }
   }
 }
+//------------------END-header----------------------
 
+//---------------------sidebar---------------------
 .sidebar{
   width: $sidebar-width;
   list-style-type: none;
-  background: #F2F1F1;
+  background: $main-background-color;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
   position:relative;
   top: inherit;
@@ -45,7 +235,7 @@ body{
 }
 
 .sidebar-plus-icon{
-  color: #0078D4;
+  color: $basic-button-color;
 }
 
 .sidebar-menu-item{
@@ -58,63 +248,113 @@ body{
   height: 30px;
 }
 
-.css-bg1rzq-control{
-    background: #F2F1F1 !important;
-    border-radius: 0px !important;
-    border-width: 0px 0px 2px 0px !important;
-    border-color: #0078D4 !important;
-}
+//--------------------END-sidebar----------------------
 
-.css-1szy77t-control{
-    background: #F2F1F1 !important;
-    border-radius: 0px !important;
-    border-width: 0px 0px 2px 0px !important;
-    border-color: #0078D4 !important;
-}
-
-.css-kj6f9i-menu{
-    background: #F2F1F1 !important;
-    border-radius: 0px !important;
-    border-width: 0px 0px 2px 0px !important;
-    border-color: #0078D4 !important;
-}
-
-.btn{
-  background-color: #0078D4;
-  border: 0px;
+//---------------------commandbar---------------------
+.commandbar-search{
+  border-width: 0px;
   border-radius: 0px;
-  color: #FFFFFF;
-  font-weight: 400;
-  font-size: $main-font-size;
 }
 
-.btn:hover{
-  background-color: #004578;
-  color: #FFFFFF;
+.commandbar-btn-search{
+	background-color: white;
+	border-width: 0px;
+  border-top: 1px solid $main-background-color;
+	border-radius: 0px;
+	color: $basic-button-color;
+	font-size: 14px;
 }
 
-.btn-link{
-  background-color: inherit;
-  border: 0px;
+.commandbar-command-icon{
+    color: $basic-button-color;
+}
+.commandbar-command{
+    color: $main-font-color;
+}
+
+.commandbar-command-icon:hover{
+    color: #FFF;
+}
+.commandbar-command:hover{
+    color: #FFF;
+}
+
+//------------------END-commandbar----------------------
+
+
+
+//---------------------TaskList----------------------
+.taskList-container{
+  background-color: #FFF;
+}
+
+.taskList {
+  min-height: 40px;
+  margin-bottom: 0;
+}
+
+.taskList li {
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  padding: 20px;
+  margin-bottom: 15px;
   border-radius: 0px;
-  color: #0078D4;
-  font-weight: 400;
-  font-size: $main-font-size;
 }
 
-.btn-link:hover{
-  background-color: #004578;
-  color: #FFFFFF;
+.taskList li:hover{
+  background-color: #f4f8fb;
 }
 
-hr{
-  margin-top: 0px;
+.taskList li:last-of-type {
   margin-bottom: 0px;
 }
 
+.taskList li .btn-sm {
+  padding: 2px 8px;
+  font-size: 12px;
+}
+
+.taskList .checkbox {
+  margin-left: 20px;
+  margin-top: 5px;
+}
+
+.taskList-tags{
+  min-height: 21px;
+}
+
+.selected-item {
+	background-color: #f4f8fb;
+	li {
+		background-color: #f4f8fb;
+	}
+}
+//-------------------END-tasklist-------------------------
+
+//----------------------taskEdit--------------------------
+.task-title-input{
+  font-size: 2.5rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: $main-font-color;
+}
+
+.card-box{
+  border: 1px solid rgba(54, 64, 74, 0.05);
+  margin-bottom: 0px;
+  background-color: #ffffff;
+  max-width: 1284;
+  background: $form-background-color;
+  border-radius: 0px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+//-------------------END-taskEdit-------------------------
+
 
 // /0078D4
-//background: #F2F1F1;
+//background: $main-background-color;
 //background: #3C3C3C;
 //color: #212121;
 //color: #33332D;
