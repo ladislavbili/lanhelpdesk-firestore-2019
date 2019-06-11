@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input } from 'reactstrap';
-import {rebase} from '../index';
-import { calculateTextAreaHeight} from '../helperFunctions';
-import InputSelectList from './components/inputSelectList';
+import {rebase} from '../../index';
+import { calculateTextAreaHeight} from '../../helperFunctions';
+import InputSelectList from '../components/inputSelectList';
 const inputSelectOptions=[{id:'input',title:'Input',value:'input',label:'Input'},{id:'select',title:'Select',value:'select',label:'Select'},{id:'textarea',title:'Text Area',value:'textarea',label:'Text Area'}];
 
 export default class SidebarItemAdd extends Component{

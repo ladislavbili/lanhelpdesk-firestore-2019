@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { FormGroup, Button, Label, Input } from 'reactstrap';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import {toSelArr, snapshotToArray} from '../../helperFunctions';
-import {rebase,database} from '../../index';
+import {toSelArr, snapshotToArray} from '../../../helperFunctions';
+import {rebase,database} from '../../../index';
 import Select from 'react-select';
 
-export default class ProjectAdd extends Component{
+export default class CompanyAdd extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -24,7 +24,7 @@ export default class ProjectAdd extends Component{
     fetchData(){
       Promise.all(
         [
-          database.collection('pricelists').get(),
+          database.collection('help-pricelists').get(),
           rebase.get('metadata/0', {
             context: this,
           })

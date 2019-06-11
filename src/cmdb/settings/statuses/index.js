@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {rebase} from '../../index';
+import {rebase} from '../../../index';
 import StatusAdd from './statusAdd';
 import StatusEdit from './statusEdit';
 

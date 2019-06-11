@@ -8,7 +8,7 @@ import SelectPage from '../components/SelectPage';
 import {rebase} from '../index';
 import {toSelArr} from '../helperFunctions';
 import {setCompany, setFilter} from '../redux/actions';
-import CompanyAdd from './companies/companyAdd';
+import CompanyAdd from './settings/companies/companyAdd';
 
 const customSelect = {
 	singleValue: (provided, state) => {

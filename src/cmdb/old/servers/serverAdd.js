@@ -3,7 +3,7 @@ import {rebase,database} from '../../index';
 import { Button,  FormGroup, Label, Input } from 'reactstrap';
 import {toSelArr, snapshotToArray} from '../../helperFunctions';
 import Select from 'react-select';
-import IPList from '../ipList';
+import IPList from '../components/ipList';
 import TextareaList from '../components/textareaListTextOnly';
 
 
