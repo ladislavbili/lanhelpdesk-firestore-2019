@@ -5,20 +5,24 @@ import { calculateTextAreaHeight} from '../../helperFunctions';
 import InputSelectList from '../components/inputSelectList';
 const inputSelectOptions=[{id:'input',title:'Input',value:'input',label:'Input'},{id:'select',title:'Select',value:'select',label:'Select'},{id:'textarea',title:'Text Area',value:'textarea',label:'Text Area'}];
 
-export default class SidebarItemAdd extends Component{
+export default class SidebarItemEdit extends Component{
   constructor(props){
     super(props);
     this.state={
-      title:'',
+      loading:true,
       saving:false,
+
+      title:'',
       url:'',
       bacupTasksLabel:'',
       backupTasksHeight:29,
-      newAttributeID:0,
       sidebarItems:[],
-      attributes:[]
+      attributes:[],
+      newAttributeID:0
     }
     this.urlInUse.bind(this);
+    this.setData.bind(this);
+    this.setData(this.props.match.params.sidebarID);
   }
 
   componentWillMount(){
@@ -33,9 +37,42 @@ export default class SidebarItemAdd extends Component{
     rebase.removeBinding(this.ref);
   }
 
+  setData(id){
+    let item = this.state.sidebarItems.find((item)=>item.id===id);
+    if(item===undefined){
+      rebase.get('cmdb-sidebar/'+id, {
+        context: this,
+      }).then((item)=>{
+        this.setState({
+          title:item.title,
+          url:item.url,
+          bacupTasksLabel:item.bacupTasksLabel,
+          backupTasksHeight:item.backupTasksHeight,
+          newAttributeID:item.newAttributeID,
+          attributes:item.attributes
+        })
+      });
+    }else{
+      this.setState({
+        title:item.title,
+        url:item.url,
+        bacupTasksLabel:item.bacupTasksLabel,
+        backupTasksHeight:item.backupTasksHeight,
+        newAttributeID:item.newAttributeID,
+        attributes:item.attributes
+      })
+    }
+  }
+
+  componentWillReceiveProps(props){
+    if(this.props.match.params.sidebarID!==props.match.params.sidebarID){
+      this.setData(props.match.params.sidebarID);
+    }
+  }
+
 
   urlInUse(){
-    return this.state.sidebarItems.map((item)=>item.url).includes(this.state.url)||this.state.url===''
+    return this.state.sidebarItems.filter((item)=>item.id!==this.props.match.params.sidebarID).map((item)=>item.url).includes(this.state.url)||this.state.url===''
   }
 
   removeAttribute(id){
@@ -79,11 +116,11 @@ export default class SidebarItemAdd extends Component{
           <Label for="name">Custom attributes</Label>
         <InputSelectList
           items={this.state.attributes}
+          newID={this.state.newAttributeID}
+          increaseID={()=>{this.setState({newAttributeID:this.state.newAttributeID+1})}}
           onChange={(items)=>this.setState({attributes:items})}
           removeItem={this.removeAttribute.bind(this)}
           width={300}
-          newID={this.state.newAttributeID}
-          increaseID={()=>{this.setState({newAttributeID:this.state.newAttributeID+1})}}
           options={inputSelectOptions}
           addLabel="Add"
           />
@@ -94,19 +131,21 @@ export default class SidebarItemAdd extends Component{
         </div>
         <Button color="primary" disabled={this.state.saving||this.urlInUse()} onClick={()=>{
             this.setState({saving:true});
+            let attributes = [...this.state.attributes].map((att)=>{
+              let attribute = {...att};
+              return attribute;
+            });
             let body = {
               title:this.state.title,
               url:this.state.url,
-              newAttributeID:this.state.newAttributeID,
               bacupTasksLabel:this.state.bacupTasksLabel,
-              backupTasksHeight:this.state.backupTasksHeight,
-              attributes:this.state.attributes
+              attributes
               }
-            rebase.addToCollection('/cmdb-sidebar', body)
+              rebase.updateDoc('/cmdb-sidebar/'+this.props.match.params.sidebarID, body)
               .then((response)=>{
-                this.setState({title:'',url:'',saving:false,bacupTasksLabel:'',newAttributeID:0, backupTasksHeight:29,attributes:[]})
+                this.setState({saving:false})
               });
-          }}>{this.state.saving?'Adding...':'Add sidebar item'}</Button>
+          }}>{this.state.saving?'Saving...':'Save sidebar item'}</Button>
       </div>
     );
   }

@@ -5,8 +5,11 @@ import Sidebar from './Sidebar';
 import PageHeader from '../components/PageHeader';
 
 import SidebarItemAdd from './settings/sidebarItemAdd';
+import SidebarItemEdit from './settings/sidebarItemEdit';
 import StatusList from './settings/statuses';
 import ItemList from './items';
+import ItemAdd from './items/itemAdd';
+import ItemEdit from './items/itemEdit';
 
 export default class Navigation extends Component {
 	render() {
@@ -16,9 +19,13 @@ export default class Navigation extends Component {
 						<Sidebar {...this.props} />
 					<div className="flex">
 						<PageHeader {...this.props} settings={[{link:'statuses', title:'Statuses'}]} />
-						
+
 						<Route exact path='/cmdb/add' component={SidebarItemAdd} />
-						<Route exact path='/cmdb/i/:itemID' component={ItemList} />
+						<Route exact path='/cmdb/edit/:sidebarID' component={SidebarItemEdit} />
+						<Route exact path='/cmdb/i/:sidebarID' component={ItemList} />
+						<Route exact path='/cmdb/i/:sidebarID/add' component={ItemAdd} />
+						<Route exact path='/cmdb/i/:sidebarID/:itemID' component={ItemEdit} />
+
 
 						<Route exact path='/cmdb/settings/statuses' component={StatusList} />
 						<Route exact path='/cmdb/settings/status/add' component={StatusList} />

@@ -8,14 +8,9 @@ export default class InputSelectList extends Component{
     super(props);
     this.state={
       editID:null,
-      editFake:null,
-      editInput:'',
-      newID:0,
-
-      newOptionID:0,
-
+      editTitle:'',
       editOptIndex:'',
-      editOptValue:'',
+      editOptTitle:'',
     }
 
     this.onFocus.bind(this);
@@ -25,8 +20,7 @@ export default class InputSelectList extends Component{
   onBlur(){
     let body={
       id:this.state.editID,
-      fake:this.state.editFake,
-      input:this.state.editInput,
+      title:this.state.editTitle,
     }
     let newData = [...this.props.items];
     let index = newData.findIndex((item)=>item.id===body.id);
@@ -38,8 +32,7 @@ export default class InputSelectList extends Component{
   onFocus(item){
     this.setState({
       editID: item.id,
-      editFake: item.fake,
-      editInput: item.label,
+      editTitle: item.label,
     });
   }
 
@@ -54,11 +47,11 @@ export default class InputSelectList extends Component{
                 <Input
                   type="text"
                   value={item.id === this.state.editID
-                    ? this.state.editInput
-                    : item.input}
+                    ? this.state.editTitle
+                    : item.title}
                     onChange={e =>{
                     this.setState({
-                      editInput: e.target.value
+                      editTitle: e.target.value
                      })}}
                   onBlur={this.onBlur.bind(this)}
                   onFocus={()=>this.onFocus(item)}
@@ -86,15 +79,16 @@ export default class InputSelectList extends Component{
                               <Input
                                 type="text"
                                 value={option.id === this.state.editOptIndex
-                                  ? this.state.editOptValue
-                                  : option.value}
+                                  ? this.state.editOptTitle
+                                  : option.title}
                                   onChange={e =>{
                                   this.setState({
-                                    editOptValue: e.target.value
+                                    editOptTitle: e.target.value
                                    })}}
                                 onBlur={()=>{
                                   let newOptions=[...item.options];
-                                  newOptions[newOptions.findIndex((item=>item.id===option.id))].value = this.state.editOptValue;
+                                  newOptions[newOptions.findIndex((item=>item.id===option.id))].title = this.state.editOptTitle;
+                                  newOptions[newOptions.findIndex((item=>item.id===option.id))].label = this.state.editOptTitle;
                                   let newData = [...this.props.items];
                                   let index = newData.findIndex((item2)=>item2.id===item.id);
                                   newData[index]={...newData[index],options:newOptions};
@@ -105,7 +99,7 @@ export default class InputSelectList extends Component{
                                 onFocus={()=>{
                                   this.setState({
                                     editOptIndex: option.id,
-                                    editOptValue: option.value
+                                    editOptTitle: option.title
                                   });
                                 }}
                                 />
@@ -136,11 +130,10 @@ export default class InputSelectList extends Component{
                 </button>
                 {item.type.id==='select' &&
                   <Button color="primary" style={{height:38}} onClick={()=>{
-                    let newOptions=[...item.options,{value:'',id:this.state.newOptionID}];
+                    let newOptions=[...item.options,{title:'',id:item.newOptionID,label:'',value:item.newOptionID}];
                     let newData = [...this.props.items];
                     let index = newData.findIndex((item2)=>item2.id===item.id);
-                    newData[index]={...newData[index],options:newOptions};
-                    this.setState({ newOptionID: this.state.newOptionID+1 });
+                    newData[index]={...newData[index],options:newOptions,newOptionID:item.newOptionID+1};
                     this.props.onChange(newData);
                   }}>Add option</Button>
                 }
@@ -170,15 +163,16 @@ export default class InputSelectList extends Component{
             this.props.onChange(
               [ ...this.props.items,
                 {
-                  id: this.state.newID,
-                  fake:true,
-                  input:"",
+                  id: this.props.newID,
+                  title:"",
                   type: this.props.options[0],
                   options:[],
+                  newOptionID:1,
                   order:this.props.items.length+1
                 }
             ]);
-              this.setState({newID:this.state.newID+1})}}>{this.props.addLabel}</Button>
+            this.props.increaseID();
+              }}>{this.props.addLabel}</Button>
       </div>
     );
   }

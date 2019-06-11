@@ -99,14 +99,16 @@ class Sidebar extends Component {
 					<Nav vertical>
 						{
 							this.state.sidebar.map((item)=>
-							<NavItem>
-								<Link to={{ pathname: `/cmdb/i/`+item.url }}>{item.title}</Link>
+							<NavItem key={item.id} style={{flex:1, display:'flex'}}>
+								<Link style={{width:'calc( 100% - 32px )'}} to={{ pathname: `/cmdb/i/`+item.url }}>{item.title}</Link>
+									<button className="btn btn-link waves-effect" onClick={()=>{
+											this.props.history.push('/cmdb/edit/'+item.id);
+										}}>
+											<i className="fa fa-cog" />
+									</button>
 							</NavItem>
 						)
 						}
-						<NavItem>
-							<Link to={{ pathname: `/cmdb/servers` }}>Servers</Link>
-						</NavItem>
 					</Nav>
 				</div>
 

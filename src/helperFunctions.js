@@ -30,3 +30,20 @@ export const calculateTextAreaHeight = (e) => {
   const expansionHeight = 21;
   return Math.floor((e.target.scrollHeight-firstHeight)/expansionHeight)*expansionHeight + firstHeight;
 }
+
+export const getAttributeDefaultValue = (item) => {
+  switch (item.type.id) {
+    case 'input':
+      return '';
+    case 'textarea':
+      return '';
+    case 'select':
+      return item.options.length>0?item.options[0]:null;
+    default:
+      return '';
+  }
+}
+
+export const htmlFixNewLines = (text) => {
+  return text.replace(/(?:\r\n|\r|\n)/g,'<br>');
+}
