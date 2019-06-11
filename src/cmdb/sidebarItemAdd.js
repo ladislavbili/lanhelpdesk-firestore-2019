@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input } from 'reactstrap';
 import {rebase} from '../index';
-import TextareaListMutable from './components/textareaListBoth';
+import { calculateTextAreaHeight} from '../helperFunctions';
+import InputSelectList from './components/inputSelectList';
+const inputSelectOptions=[{id:'input',title:'Input',value:'input',label:'Input'},{id:'select',title:'Select',value:'select',label:'Select'},{id:'textarea',title:'Text Area',value:'textarea',label:'Text Area'}];
 
 export default class SidebarItemAdd extends Component{
   constructor(props){
@@ -36,7 +38,13 @@ export default class SidebarItemAdd extends Component{
   }
 
   removeAttribute(id){
-    this.setState({attributes: this.state.attributes.filter((item)=>item.id!==id)});
+    let attributes = [...this.state.attributes];
+    let attribute = attributes.find((item)=>item.id===id);
+    attributes = attributes.map((item)=>{
+      return {...item, order:item.order>attribute.order?item.order-1:item.order}
+    });
+    attributes.splice(attributes.findIndex((item)=>item.id===id),1);
+    this.setState({attributes});
   }
 
   render(){
@@ -61,19 +69,19 @@ export default class SidebarItemAdd extends Component{
             style={{height:this.state.backupTasksHeight}}
             value={this.state.bacupTasksLabel}
             onChange={(e)=>{
-              this.setState({bacupTasksLabel:e.target.value, textareaHeight:Math.floor((e.target.scrollHeight-29)/21)*21 + 29});
+              this.setState({bacupTasksLabel:e.target.value, backupTasksHeight:calculateTextAreaHeight(e)});
             }}
           />
         </FormGroup>
 
         <FormGroup>
           <Label for="name">Custom attributes</Label>
-        <TextareaListMutable
+        <InputSelectList
           items={this.state.attributes}
           onChange={(items)=>this.setState({attributes:items})}
           removeItem={this.removeAttribute.bind(this)}
           width={300}
-          label={'Názov'}
+          options={inputSelectOptions}
           addLabel="Add"
           />
 
@@ -83,9 +91,21 @@ export default class SidebarItemAdd extends Component{
         </div>
         <Button color="primary" disabled={this.state.saving||this.urlInUse()} onClick={()=>{
             this.setState({saving:true});
-            rebase.addToCollection('/cmdb-sidebar', {title:this.state.title,url:this.state.url,bacupTasksLabel:this.state.bacupTasksLabel})
+            let attributes = [...this.state.attributes].map((att)=>{
+              let attribute = {...att};
+              delete attribute['id'];
+              delete attribute['fake'];
+              return attribute;
+            });
+            let body = {
+              title:this.state.title,
+              url:this.state.url,
+              bacupTasksLabel:this.state.bacupTasksLabel,
+              attributes
+              }
+            rebase.addToCollection('/cmdb-sidebar', body)
               .then((response)=>{
-                this.setState({title:'',url:'',saving:false,bacupTasksLabel:'', backupTasksHeight:29})
+                this.setState({title:'',url:'',saving:false,bacupTasksLabel:'', backupTasksHeight:29,attributes:[]})
               });
           }}>{this.state.saving?'Adding...':'Add sidebar item'}</Button>
       </div>

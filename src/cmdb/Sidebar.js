@@ -33,7 +33,8 @@ class Sidebar extends Component {
 		super(props);
 		this.state = {
 			companies:[{id:null,title:'All',label:'All',value:null}],
-			company:{id:null,title:'All',label:'All',value:null}
+			company:{id:null,title:'All',label:'All',value:null},
+			sidebar:[]
 		};
 
 	}
@@ -49,10 +50,20 @@ class Sidebar extends Component {
 				});
 			},
 		});
+		this.ref2 = rebase.listenToCollection('/cmdb-sidebar', {
+			context: this,
+			withIds: true,
+			then:content=>{
+				this.setState({
+					sidebar:content
+				});
+			},
+		});
 	}
 
 	componentWillUnmount(){
 		rebase.removeBinding(this.ref);
+		rebase.removeBinding(this.ref2);
 	}
 
 	render() {
@@ -86,11 +97,15 @@ class Sidebar extends Component {
 					> Add items
 					</Button>
 					<Nav vertical>
+						{
+							this.state.sidebar.map((item)=>
+							<NavItem>
+								<Link to={{ pathname: `/cmdb/i/`+item.url }}>{item.title}</Link>
+							</NavItem>
+						)
+						}
 						<NavItem>
 							<Link to={{ pathname: `/cmdb/servers` }}>Servers</Link>
-						</NavItem>
-						<NavItem>
-							<Link to={{ pathname: `/cmdb/items` }}>Items</Link>
 						</NavItem>
 					</Nav>
 				</div>

@@ -25,6 +25,8 @@ export default class Navigation extends Component {
 						<Route exact path='/cmdb/server/add' component={ServerAdd} />
 						<Route exact path='/cmdb/servers/:id' component={ServerEdit} />
 
+						<Route exact path='/cmdb/i/:itemID' component={ServerList} />
+
 						<Route exact path='/cmdb/settings/statuses' component={StatusList} />
 						<Route exact path='/cmdb/settings/status/add' component={ServerAdd} />
 					</div>
