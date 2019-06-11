@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {NavItem, Nav} from 'reactstrap';
+import {NavItem, Nav, Button} from 'reactstrap';
 import { NavLink as Link } from 'react-router-dom';
 import Select from "react-select";
 import { connect } from "react-redux";
@@ -8,7 +8,7 @@ import SelectPage from '../components/SelectPage';
 import {rebase} from '../index';
 import {toSelArr} from '../helperFunctions';
 import {setCompany, setFilter} from '../redux/actions';
-import CompanyAdd from './companies/companyAdd';
+import CompanyAdd from './settings/companies/companyAdd';
 
 const customSelect = {
 	singleValue: (provided, state) => {
@@ -33,7 +33,8 @@ class Sidebar extends Component {
 		super(props);
 		this.state = {
 			companies:[{id:null,title:'All',label:'All',value:null}],
-			company:{id:null,title:'All',label:'All',value:null}
+			company:{id:null,title:'All',label:'All',value:null},
+			sidebar:[]
 		};
 
 	}
@@ -49,10 +50,20 @@ class Sidebar extends Component {
 				});
 			},
 		});
+		this.ref2 = rebase.listenToCollection('/cmdb-sidebar', {
+			context: this,
+			withIds: true,
+			then:content=>{
+				this.setState({
+					sidebar:content
+				});
+			},
+		});
 	}
 
 	componentWillUnmount(){
 		rebase.removeBinding(this.ref);
+		rebase.removeBinding(this.ref2);
 	}
 
 	render() {
@@ -79,13 +90,25 @@ class Sidebar extends Component {
 							components={{DropdownIndicator: ({ innerProps, isDisabled }) =>  <i className="fa fa-folder-open" style={{position:'absolute', left:15}} /> }}
 							/>
 					</li>
+					<Button
+						color="success"
+						style={{ width: '100%' }}
+						onClick={()=>{this.props.history.push('/cmdb/add')}}
+					> Add items
+					</Button>
 					<Nav vertical>
-						<NavItem>
-							<Link to={{ pathname: `/cmdb/servers` }}>Servers</Link>
-						</NavItem>
-						<NavItem>
-							<Link to={{ pathname: `/cmdb/items` }}>Items</Link>
-						</NavItem>
+						{
+							this.state.sidebar.map((item)=>
+							<NavItem key={item.id} style={{flex:1, display:'flex'}}>
+								<Link style={{width:'calc( 100% - 32px )'}} to={{ pathname: `/cmdb/i/`+item.url }}>{item.title}</Link>
+									<button className="btn btn-link waves-effect" onClick={()=>{
+											this.props.history.push('/cmdb/edit/'+item.id);
+										}}>
+											<i className="fa fa-cog" />
+									</button>
+							</NavItem>
+						)
+						}
 					</Nav>
 				</div>
 

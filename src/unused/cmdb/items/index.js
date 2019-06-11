@@ -3,7 +3,7 @@ import {Button} from 'reactstrap';
 import {rebase} from '../../index';
 
 
-export default class ItemList extends Component {
+export default class Sidebar extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -11,37 +11,13 @@ export default class ItemList extends Component {
 			items:[],
 			companies:[],
 			statuses:[],
-			sidebarItem:null
 		};
 	}
 
-	componentWillReceiveProps(props){
-		if(props.match.params.sidebarID!==this.props.match.params.sidebarID){
-			rebase.get('cmdb-sidebar', {
-				context: this,
-				query: (ref) => ref.where('url', '==', ""+props.match.params.sidebarID),
-			}).then((sidebarItem)=>this.setState({sidebarItem:sidebarItem[0]}));
-
-			rebase.removeBinding(this.ref);
-			this.ref = rebase.listenToCollection('/cmdb-items', {
-				context: this,
-				withIds: true,
-				query: (ref) => ref.where('sidebarID', '==', ""+props.match.params.sidebarID),
-				then:content=>{this.setState({items:content})},
-			});
-		}
-	}
-
 	componentWillMount(){
-		rebase.get('cmdb-sidebar', {
-			context: this,
-			query: (ref) => ref.where('url', '==', ""+this.props.match.params.sidebarID),
-		}).then((sidebarItem)=>this.setState({sidebarItem:sidebarItem[0]}));
-
 		this.ref = rebase.listenToCollection('/cmdb-items', {
 			context: this,
 			withIds: true,
-			query: (ref) => ref.where('sidebarID', '==', ""+this.props.match.params.sidebarID),
 			then:content=>{this.setState({items:content})},
 		});
 		this.ref2 = rebase.listenToCollection('/cmdb-statuses', {
@@ -65,13 +41,13 @@ export default class ItemList extends Component {
 	getData(){
 		let newItems= this.state.items.map((item)=>{
 			let newItem={...item};
-			let company = this.state.companies.find((company)=>company.id===item.company)
+			let company = this.state.companies.find((i)=>i.id===item.company);
 			if(company!==undefined){
 				newItem.company = company.title;
 			}else{
 				newItem.company = '';
 			}
-			let status = this.state.statuses.find((status)=>status.id===item.status)
+			let status = this.state.statuses.find((i)=>i.id===item.status);
 			if(status!==undefined){
 				newItem.status = status.title;
 			}else{
@@ -102,18 +78,18 @@ export default class ItemList extends Component {
 							placeholder="Search" />
 					</div>
 					<Button color="primary" className="mb-auto mt-auto" onClick={()=>{
-							this.props.history.push('/cmdb/i/'+this.props.match.params.sidebarID+'/add');
+							this.props.history.push('/cmdb/item/add');
 						}}>
 						<i className="fa fa-plus clickable pr-2"/>
-						{' '+(this.state.sidebarItem?this.state.sidebarItem.title:'item')}
+						Item
 					</Button>
 				</div>
 				<div className="fit-with-header scrollable">
-					<h1>{this.state.sidebarItem?this.state.sidebarItem.title:'Item'}</h1>
+					<h1>Items</h1>
 						<table className="table table-centered table-borderless table-hover mb-0">
 							<thead className="thead-light">
 								<tr>
-										<th>Name</th>
+										<th>Item name</th>
 										<th>Company</th>
 										<th>IP</th>
 										<th>Status</th>
@@ -122,7 +98,7 @@ export default class ItemList extends Component {
 							<tbody>
 								{
 									this.getData().map((item)=>
-										<tr key={item.id} className="clickable" onClick={()=>this.props.history.push('/cmdb/i/'+this.props.match.params.sidebarID+'/'+item.id)}>
+										<tr key={item.id} className="clickable" onClick={()=>this.props.history.push('/cmdb/item/'+item.id)}>
 												<td>{item.title}</td>
 												<td>{item.company}</td>
 												<td>{item.IP.map((item2)=><span key={item2}>{item2}  </span>)}</td>

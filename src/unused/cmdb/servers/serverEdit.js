@@ -4,7 +4,8 @@ import { Button,  FormGroup, Label, Input } from 'reactstrap';
 import {toSelArr, snapshotToArray} from '../../helperFunctions';
 import Select from 'react-select';
 import IPList from '../ipList';
-import TextareaList from '../textareaList';
+import TextareaList from '../components/textareaListTextOnly';
+
 
 export default class ServerEdit extends Component{
   constructor(props){
@@ -66,19 +67,15 @@ export default class ServerEdit extends Component{
     });
   }
 
-  removeBackupTask(index){
-    let newBackupTasks = [...this.state.backupTasks];
-    newBackupTasks.splice(index, index+1);
+  removeBackupTask(id){
     this.setState({
-      backupTasks: newBackupTasks,
+      backupTasks: this.state.backupTasks.filter((item)=>item.id!==id),
     });
   }
 
-  removeDiskArray(index){
-    let newDiskArray = [...this.state.diskArray];
-    newDiskArray.splice(index, index+1);
+  removeDiskArray(id){
     this.setState({
-      diskArray: newDiskArray,
+      diskArray: this.state.diskArray.filter((item)=>item.id!==id),
     });
   }
 

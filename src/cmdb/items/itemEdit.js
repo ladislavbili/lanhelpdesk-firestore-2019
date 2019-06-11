@@ -1,28 +1,34 @@
 import React, { Component } from 'react';
 import {rebase,database} from '../../index';
-import { Button,  FormGroup, Label, Input } from 'reactstrap';
-import {toSelArr, snapshotToArray} from '../../helperFunctions';
+import { Button,  FormGroup, Label, Input, TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
+import {toSelArr, snapshotToArray, getAttributeDefaultValue, htmlFixNewLines} from '../../helperFunctions';
 import Select from 'react-select';
-import IPList from '../ipList';
-import TextareaListMutable from './textAreaListMutable';
+import IPList from './ipList';
+import AttributesHandler from './attributesHandler';
+import TextareaList from '../components/textareaListTextOnly';
+import classnames from 'classnames';
 
-export default class ItemEdit extends Component{
+
+export default class ItemAdd extends Component{
   constructor(props){
     super(props);
     this.state={
       saving:false,
+      loading:true,
       companies:[],
       statuses:[],
-      originalIPList:[],
+      originalIPs:[],
+      originalBackups:[],
+      sidebarItem:null,
+      tab:'1',
+
       title:'',
       company:null,
       status:null,
       IPlist:[],
       backupTasks:[],
+      attributes:{},
     }
-
-    console.log("AAAAAAAAAAAAAAAAAAA");
-    this.removeBackupTask.bind(this);
     this.setData.bind(this);
     this.getData.bind(this);
     this.getData();
@@ -30,44 +36,63 @@ export default class ItemEdit extends Component{
 
   getData(){
     Promise.all([
+      database.collection('cmdb-items').doc(this.props.match.params.itemID).get(),
       database.collection('cmdb-statuses').get(),
       database.collection('companies').get(),
-      database.collection('cmdb-items').doc(this.props.match.params.id).get(),
-      database.collection('cmdb-item-IPList').where("itemID", "==", this.props.match.params.id).get(),
-      database.collection('cmdb-item-backups').where("itemID", "==", this.props.match.params.id).get(),
+      database.collection('cmdb-sidebar').where('url','==',this.props.match.params.sidebarID).get(),
+      database.collection('cmdb-IPs').where('itemID','==',this.props.match.params.itemID).get(),
+      database.collection('cmdb-backups').where('itemID','==',this.props.match.params.itemID).get(),
     ])
-    .then(([statuses,companies,item,ipList,backups])=>{
-      this.setData(
-        toSelArr(snapshotToArray(statuses)),
-        toSelArr(snapshotToArray(companies)),
-        {id:item.id,...item.data()},
-        snapshotToArray(ipList),
-        snapshotToArray(backups),
-    );
+    .then(([item,statuses,companies,sidebarItem,IPs, backups])=>{
+      this.setData({id:item.id,...item.data()}, toSelArr(snapshotToArray(statuses)),toSelArr(snapshotToArray(companies)),snapshotToArray(sidebarItem)[0],snapshotToArray(IPs),snapshotToArray(backups));
     });
   }
 
-  setData(statuses,companies,item,ipList,backups,storages){
+
+  setData(item,statuses,companies,sidebarItem, IPs, backups){
+    let attributes={};
+    sidebarItem.attributes.forEach((item)=>attributes[item.id]=getAttributeDefaultValue(item));
+    attributes={...attributes,...item.attributes};
+    let company = companies.find((item2)=>item2.id===item.company);
+    if(company===undefined){
+      if(companies.length>0){
+        company=companies[0];
+      }else{
+        company=null
+      }
+    }
+    let status = statuses.find((item2)=>item2.id===item.status);
+    if(!status){
+      if(statuses.length>0){
+        status=statuses[0];
+      }
+      status=null
+    }
     this.setState({
       statuses,
       companies,
-      title: item.title,
-      company: companies.find((i)=>i.id===item.company),
-      status: statuses.find((i)=>i.id===item.status),
-      originalIPList: ipList,
-      IPlist: ipList.map((i)=>{return {...i,fake:false}}),
-      backupTasks: backups.map((i)=>{return {...i,fake:false, textHeight: i.text.split("\n").length, textLeftHeight: i.textLeft.split("\n").length}}),
-      defaultBackupTasks: backups.map((i)=> i.id),
+      sidebarItem,
+      loading:false,
+
+      title:item.title,
+      company,
+      status,
+      IPlist:IPs.map((item)=>{return {...item,fake:false}}),
+      backupTasks:backups.map((item)=>{return {...item,fake:false}}),
+      attributes,
+
+      originalIPs:IPs.map((item)=> item.id),
+      originalBackups:backups.map((item)=> item.id),
     });
   }
 
-  removeBackupTask(index){
-    let newBackupTasks = [...this.state.backupTasks];
-    newBackupTasks.splice(index, index+1);
+  removeBackupTask(id){
     this.setState({
-      backupTasks: newBackupTasks,
+      backupTasks: this.state.backupTasks.filter((item)=>item.id!==id),
     });
   }
+
+
 
   render(){
     return (
@@ -96,74 +121,127 @@ export default class ItemEdit extends Component{
               />
             </FormGroup>
 
-          <IPList items={this.state.IPlist} onChange={(items)=>this.setState({IPlist:items})} />
+            <Nav tabs>
+              <NavItem>
+                <NavLink
+                  className={classnames({ active: this.state.activeTab === '1', clickable:true })}
+                  onClick={() => { this.setState({tab:'1'}); }}
+                >
+                  IP list
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  className={classnames({ active: this.state.activeTab === '2' , clickable:true   })}
+                  onClick={() => { this.setState({tab:'2'}); }}
+                >
+                  Backup tasks
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  className={classnames({ active: this.state.activeTab === '3', clickable:true })}
+                  onClick={() => { this.setState({tab:'3'}); }}
+                >
+                  Attributes
+                </NavLink>
+              </NavItem>
+            </Nav>
+            <TabContent activeTab={this.state.tab} style={{marginBottom:30,borderRadius:4}}>
+              <TabPane tabId="1">
+                <IPList items={this.state.IPlist} onChange={(items)=>this.setState({IPlist:items})} />
+              </TabPane>
+              <TabPane tabId="2">
+                <TextareaList
+                  items={this.state.backupTasks}
+                  onChange={(items)=>this.setState({backupTasks:items})}
+                  removeItem={this.removeBackupTask.bind(this)}
+                  width={300}
+                  rows={6}
+                  label={htmlFixNewLines(this.state.sidebarItem?this.state.sidebarItem.bacupTasksLabel:'')}
+                  addLabel="Add backup task"
+                />
+              </TabPane>
+              <TabPane tabId="3">
+                <AttributesHandler attributes={this.state.sidebarItem ? this.state.sidebarItem.attributes : []} values={this.state.attributes}
+                  setValue={(id, val)=>{
+                    let newAttributes={...this.state.attributes};
+                    newAttributes[id] = val;
+                    this.setState({attributes:newAttributes})
+                  }} />
+              </TabPane>
+            </TabContent>
 
-          <TextareaListMutable
-            items={this.state.backupTasks}
-            onChange={(items)=>this.setState({backupTasks:items})}
-            removeItem={this.removeBackupTask.bind(this)}
-            width={300}
-            rows={1}
-            label={``}
-            addLabel="Add"
-            />
 
 
         <Button color="secondary" onClick={this.props.history.goBack}>Cancel</Button>
 
-        <Button color="success" disabled={this.state.company===null || this.state.status===null} onClick={()=>{
-            let ID = this.props.match.params.id;
-            this.setState({saving:true});
-            let body = {
-              title:this.state.title,
-              company:this.state.company.id,
-              status:this.state.status.id,
-              IP:this.state.IPlist.map((item)=>item.IP)
-            };
-            rebase.updateDoc('/cmdb-items/'+ID, body);
+        <Button color="primary" disabled={this.state.company===null || this.state.status===null||this.state.saving} onClick={()=>{
 
-            this.state.IPlist.filter((item)=>item.fake).forEach((item)=>{
-              let newItem={...item};
-              delete newItem['id'];
-              delete newItem['fake'];
-              rebase.addToCollection('/cmdb-item-IPList',{...newItem,itemID:ID});
-            });
+          let ID = this.props.match.params.itemID;
+          this.setState({saving:true});
+          let body = {
+            title:this.state.title,
+            company:this.state.company.id,
+            status:this.state.status.id,
+            IP:this.state.IPlist.map((item)=>item.IP),
+            attributes:this.state.attributes
+          };
+          let promises=[];
+          promises.push(rebase.updateDoc('/cmdb-items/'+ID, body));
 
-            this.state.IPlist.filter((item)=>!item.fake).forEach((item)=>{
-              let newItem={...item};
-              delete newItem['id'];
-              delete newItem['fake'];
-              rebase.updateDoc('/cmdb-item-IPList/'+item.id,{...newItem});
-            });
+          this.state.IPlist.filter((item)=>item.fake).forEach((item)=>{
+            let newItem={...item};
+            delete newItem['id'];
+            delete newItem['fake'];
+            promises.push(rebase.addToCollection('/cmdb-IPs',{...newItem,itemID:ID}));
+          });
 
-            let currentIDs=this.state.IPlist.filter((item)=>!item.fake).map((item)=>item.id);
-            this.state.originalIPList.filter((item)=>!currentIDs.includes(item.id)).forEach((item)=>{
-              rebase.removeDoc('/cmdb-item-IPList/'+item.id);
-            });
+          this.state.IPlist.filter((item)=>!item.fake).forEach((item)=>{
+            let newItem={...item};
+            delete newItem['id'];
+            delete newItem['fake'];
+            promises.push(rebase.updateDoc('/cmdb-IPs/'+item.id,{...newItem}));
+          });
 
-            this.state.backupTasks.filter((item)=>item.fake).forEach((item)=>{
-              rebase.addToCollection('/cmdb-item-backups',{text:item.text, textLeft:item.textLeft, itemID:ID});
-            });
-            this.state.backupTasks.filter((item)=>!item.fake).forEach((item)=>{
-              rebase.updateDoc('/cmdb-item-backups/'+item.id,{text:item.text, textLeft:item.textLeft, itemID:ID});
-            });
+          let currentIDs=this.state.IPlist.filter((item)=>!item.fake).map((item)=>item.id);
+          this.state.originalIPs.filter((item)=>!currentIDs.includes(item)).forEach((item)=>{
+            promises.push(rebase.removeDoc('/cmdb-IPs/'+item.id));
+          });
 
-            let backupTasksID = this.state.backupTasks.map(item => item.id);
-            this.state.defaultBackupTasks.filter((item)=> !backupTasksID.includes(item)).forEach((item)=>{
-              rebase.removeDoc('/cmdb-item-backups/'+item);
-            });
+          this.state.backupTasks.filter((item)=>item.fake).forEach((item)=>{
+            promises.push(rebase.addToCollection('/cmdb-backups',{text:item.text,itemID:ID}));
+          });
+          this.state.backupTasks.filter((item)=>!item.fake).forEach((item)=>{
+            promises.push(rebase.updateDoc('/cmdb-backups/'+item.id,{text:item.text,itemID:ID}));
+          });
 
-            this.setState({
-              title:'',
-              company:null,
-              status:null,
-              IPlist:[],
-              backupTasks:[],
-              saving:false
+          currentIDs = this.state.backupTasks.map(item => item.id);
+          this.state.originalBackups.filter((item)=> !currentIDs.includes(item)).forEach((item)=>{
+            promises.push(rebase.removeDoc('/cmdb-backups/'+item));
+          });
+          Promise.all(promises).then(()=>{
+            this.setState({saving:false,loading:true})
+            Promise.all([
+              database.collection('cmdb-items').doc(this.props.match.params.itemID).get(),
+              database.collection('cmdb-IPs').where('itemID','==',this.props.match.params.itemID).get(),
+              database.collection('cmdb-backups').where('itemID','==',this.props.match.params.itemID).get(),
+            ])
+            .then(([item,IPs, backups])=>{
+              this.setData({id:item.id,...item.data()}, this.state.statuses,this.state.companies,this.state.sidebarItem,snapshotToArray(IPs),snapshotToArray(backups));
             });
+          })
+        }}>{this.state.saving?'Saving...':(this.state.sidebarItem? ('Save '+this.state.sidebarItem.title) :'Save item')}</Button>
 
-            this.props.history.goBack();
-          }}>{this.state.saving?'Saving...':'Save server'}</Button>
+        <Button color="danger" disabled={this.state.saving} onClick={()=>{
+            if(window.confirm('Are you sure?')){
+              this.setState({saving:true,loading:true})
+              this.state.originalIPs.map((item)=>rebase.removeDoc('/cmdb-IPs/'+item));
+              this.state.originalBackups.map((item)=>rebase.removeDoc('/cmdb-backups/'+item));
+              rebase.removeDoc('/cmdb-items/'+this.props.match.params.itemID);
+              this.props.history.goBack();
+            }
+        }}>Delete</Button>
         </div>
       </div>
     );

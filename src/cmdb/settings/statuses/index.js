@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {rebase} from '../../index';
+import {rebase} from '../../../index';
 import StatusAdd from './statusAdd';
 import StatusEdit from './statusEdit';
 
@@ -22,13 +22,13 @@ export default class Statuses extends Component {
     });
   }
 
+	componentWillUnmount(){
+		rebase.removeBinding(this.ref);
+	}
+
 	getStatuses(){
 		return this.state.statuses.filter((item)=>item.title.toLowerCase().includes(this.state.search.toLowerCase()))
 	}
-
-  componentWillUnmount(){
-    rebase.removeBinding(this.ref);
-  }
 
 	render() {
 		return (

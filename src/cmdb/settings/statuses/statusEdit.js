@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input } from 'reactstrap';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import {rebase} from '../../index';
+import {rebase} from '../../../index';
 
 export default class StatusEdit extends Component{
   constructor(props){

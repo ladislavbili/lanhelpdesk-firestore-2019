@@ -3,12 +3,10 @@ import { Route } from 'react-router-dom';
 
 import Sidebar from './Sidebar';
 import PageHeader from '../components/PageHeader';
-import ServerList from './servers';
 
-import StatusList from './statuses';
-import ServerAdd from './servers/serverAdd';
-import ServerEdit from './servers/serverEdit';
-
+import SidebarItemAdd from './settings/sidebarItemAdd';
+import SidebarItemEdit from './settings/sidebarItemEdit';
+import StatusList from './settings/statuses';
 import ItemList from './items';
 import ItemAdd from './items/itemAdd';
 import ItemEdit from './items/itemEdit';
@@ -22,16 +20,15 @@ export default class Navigation extends Component {
 					<div className="flex">
 						<PageHeader {...this.props} settings={[{link:'statuses', title:'Statuses'}]} />
 
+						<Route exact path='/cmdb/add' component={SidebarItemAdd} />
+						<Route exact path='/cmdb/edit/:sidebarID' component={SidebarItemEdit} />
+						<Route exact path='/cmdb/i/:sidebarID' component={ItemList} />
+						<Route exact path='/cmdb/i/:sidebarID/add' component={ItemAdd} />
+						<Route exact path='/cmdb/i/:sidebarID/:itemID' component={ItemEdit} />
+
+
 						<Route exact path='/cmdb/settings/statuses' component={StatusList} />
-						<Route exact path='/cmdb/settings/status/add' component={ServerAdd} />
-
-						<Route exact path='/cmdb/servers' component={ServerList} />
-						<Route exact path='/cmdb/server/add' component={ServerAdd} />
-						<Route exact path='/cmdb/servers/:id' component={ServerEdit} />
-
-							<Route exact path='/cmdb/items' component={ItemList} />
-							<Route exact path='/cmdb/item/add' component={ItemAdd} />
-							<Route exact path='/cmdb/item/:id' component={ItemEdit} />
+						<Route exact path='/cmdb/settings/status/add' component={StatusList} />
 					</div>
 				</div>
 			</div>
