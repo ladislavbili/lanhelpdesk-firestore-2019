@@ -2,19 +2,6 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import { selectStyle, invisibleSelectStyle} from '../../../scss/selectStyles';
 
-const tableStyle = {
-	border: 'none',
-};
-
-const tableStyleCenter = {
-	textAlign: 'right',
-	border: 'none',
-};
-
-const tableStyleCenterNoBorder = {
-	textAlign: 'center',
-	border: 'none',
-};
 
 export default class Prace extends Component {
 	constructor(props){

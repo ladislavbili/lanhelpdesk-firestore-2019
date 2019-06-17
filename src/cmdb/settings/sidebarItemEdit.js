@@ -13,14 +13,12 @@ export default class SidebarItemEdit extends Component{
       saving:false,
 
       title:'',
-      url:'',
       bacupTasksLabel:'',
       backupTasksHeight:29,
       sidebarItems:[],
       attributes:[],
       newAttributeID:0
     }
-    this.urlInUse.bind(this);
     this.setData.bind(this);
     this.setData(this.props.match.params.sidebarID);
   }
@@ -45,7 +43,6 @@ export default class SidebarItemEdit extends Component{
       }).then((item)=>{
         this.setState({
           title:item.title,
-          url:item.url,
           bacupTasksLabel:item.bacupTasksLabel,
           backupTasksHeight:item.backupTasksHeight,
           newAttributeID:item.newAttributeID,
@@ -55,7 +52,6 @@ export default class SidebarItemEdit extends Component{
     }else{
       this.setState({
         title:item.title,
-        url:item.url,
         bacupTasksLabel:item.bacupTasksLabel,
         backupTasksHeight:item.backupTasksHeight,
         newAttributeID:item.newAttributeID,
@@ -70,10 +66,6 @@ export default class SidebarItemEdit extends Component{
     }
   }
 
-
-  urlInUse(){
-    return this.state.sidebarItems.filter((item)=>item.id!==this.props.match.params.sidebarID).map((item)=>item.url).includes(this.state.url)||this.state.url===''
-  }
 
   removeAttribute(id){
     let attributes = [...this.state.attributes];
@@ -91,11 +83,6 @@ export default class SidebarItemEdit extends Component{
         <FormGroup>
           <Label for="name">Item name</Label>
           <Input type="text" name="name" id="name" placeholder="Enter item name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
-        </FormGroup>
-        <FormGroup>
-          <Label for="name">URL name</Label>
-          {this.urlInUse() && <Label for="name" style={{color:'red',fontSize:10,marginLeft:5}}>This URL is already in use or is empty!</Label>}
-          <Input type="text" name="name" id="name" placeholder="Enter item name" value={this.state.url} onChange={(e)=>this.setState({url:e.target.value.replace(/\s/g, '').toLowerCase()})} />
         </FormGroup>
         <FormGroup>
           <Label for="backupTasks">Backup tasks label</Label>
@@ -129,7 +116,7 @@ export default class SidebarItemEdit extends Component{
         <div>
 
         </div>
-        <Button color="primary" disabled={this.state.saving||this.urlInUse()} onClick={()=>{
+        <Button color="primary" disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
             let attributes = [...this.state.attributes].map((att)=>{
               let attribute = {...att};
@@ -137,7 +124,6 @@ export default class SidebarItemEdit extends Component{
             });
             let body = {
               title:this.state.title,
-              url:this.state.url,
               bacupTasksLabel:this.state.bacupTasksLabel,
               attributes
               }

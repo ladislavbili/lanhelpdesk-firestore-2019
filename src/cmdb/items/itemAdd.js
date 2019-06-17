@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import {rebase,database} from '../../index';
 import { Button,  FormGroup, Label, Input, TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
-import {toSelArr, snapshotToArray, getAttributeDefaultValue, htmlFixNewLines} from '../../helperFunctions';
+import {toSelArr, snapshotToArray, getAttributeDefaultValue, htmlFixNewLines,calculateTextAreaHeight} from '../../helperFunctions';
 import Select from 'react-select';
 import IPList from './ipList';
+import Passwords from './passwords';
 import AttributesHandler from './attributesHandler';
 import TextareaList from '../components/textareaListTextOnly';
 import classnames from 'classnames';
@@ -19,12 +20,15 @@ export default class ItemAdd extends Component{
       statuses:[],
       sidebarItem:null,
       tab:'1',
+      descriptionHeight:29,
 
       title:'',
+      description:'',
       company:null,
       status:null,
       IPlist:[],
       backupTasks:[],
+      passwords:[],
       attributes:{}
     }
     this.setData.bind(this);
@@ -62,6 +66,12 @@ export default class ItemAdd extends Component{
     });
   }
 
+  removePassword(id){
+    this.setState({
+      passwords: this.state.passwords.filter((item)=>item.id!==id),
+    });
+  }
+
 
 
   render(){
@@ -90,6 +100,10 @@ export default class ItemAdd extends Component{
                 onChange={e =>{ this.setState({ status: e }); }}
               />
             </FormGroup>
+            <FormGroup>
+              <Label>Description</Label>
+              <Input type="textarea" placeholder="Enter description" style={{height:this.state.descriptionHeight}} value={this.state.description} onChange={(e)=>this.setState({description:e.target.value,descriptionHeight:calculateTextAreaHeight(e)})} />
+            </FormGroup>
 
             <Nav tabs>
               <NavItem>
@@ -116,6 +130,14 @@ export default class ItemAdd extends Component{
                   Attributes
                 </NavLink>
               </NavItem>
+              <NavItem>
+                <NavLink
+                  className={classnames({ active: this.state.activeTab === '4', clickable:true })}
+                  onClick={() => { this.setState({tab:'4'}); }}
+                >
+                  Passwords
+                </NavLink>
+              </NavItem>
             </Nav>
             <TabContent activeTab={this.state.tab} style={{marginBottom:30,borderRadius:4}}>
               <TabPane tabId="1">
@@ -140,6 +162,9 @@ export default class ItemAdd extends Component{
                     this.setState({attributes:newAttributes})
                   }} />
               </TabPane>
+              <TabPane tabId="4">
+                <Passwords items={this.state.passwords} onChange={(items)=>this.setState({passwords:items})} />
+              </TabPane>
             </TabContent>
 
 
@@ -150,6 +175,8 @@ export default class ItemAdd extends Component{
             this.setState({saving:true});
             let body = {
               title:this.state.title,
+              description:this.state.description,
+              descriptionHeight:this.state.descriptionHeight,
               company:this.state.company.id,
               status:this.state.status.id,
               IP:this.state.IPlist.map((item)=>item.IP),
@@ -164,8 +191,15 @@ export default class ItemAdd extends Component{
                   rebase.addToCollection('/cmdb-IPs',{...item,itemID:response.id});
                 });
 
+                this.state.passwords.forEach((item)=>{
+                  delete item['id'];
+                  delete item['fake'];
+                  rebase.addToCollection('/cmdb-passwords',{...item,itemID:response.id});
+                });
+
+
                 this.state.backupTasks.forEach((item)=>{
-                  rebase.addToCollection('/cmdb-backups',{text:item.text,itemID:response.id});
+                  rebase.addToCollection('/cmdb-backups',{text:item.text,itemID:response.id,textHeight:item.textHeight});
                 });
                   let attributes={};
                   this.state.sidebarItem.attributes.forEach((item)=>attributes[item.id]=getAttributeDefaultValue(item));
@@ -176,6 +210,8 @@ export default class ItemAdd extends Component{
                   IPlist:[],
                   saving:false,
                   attributes,
+                  descriptionHeight:29,
+                  description:''
                 });
                   this.props.history.goBack();
               });

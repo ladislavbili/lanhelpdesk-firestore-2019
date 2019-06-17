@@ -102,7 +102,7 @@ export default class ItemList extends Component {
 							placeholder="Search" />
 					</div>
 					<Button color="primary" className="mb-auto mt-auto" onClick={()=>{
-							this.props.history.push('/cmdb/i/'+this.props.match.params.sidebarID+'/add');
+							this.props.history.push('/cmdb/i/'+this.props.match.params.sidebarID+'/i/add');
 						}}>
 						<i className="fa fa-plus clickable pr-2"/>
 						{' '+(this.state.sidebarItem?this.state.sidebarItem.title:'item')}

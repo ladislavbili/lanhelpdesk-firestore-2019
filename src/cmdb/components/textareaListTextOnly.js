@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Label, Input } from 'reactstrap';
+import {calculateTextAreaHeight} from '../../helperFunctions';
 
 
 export default class TextareaList extends Component{
@@ -10,6 +11,7 @@ export default class TextareaList extends Component{
       editID:null,
       editFake:null,
       newID:0,
+      editTextHeight:29,
     }
   }
 
@@ -25,8 +27,8 @@ export default class TextareaList extends Component{
 
           <div style={{width:this.props.width?1000-this.props.width:150}}>
             <Input
+              style={{height:item.id===this.state.editID?this.state.editTextHeight:item.textHeight}}
               type="textarea"
-              rows={this.props.rows ? this.props.rows : 3}
               value={
                 item.id === this.state.editID
                   ? this.state.editText
@@ -37,6 +39,7 @@ export default class TextareaList extends Component{
                     text:this.state.editText,
                     id:this.state.editID,
                     fake:this.state.editFake,
+                    textHeight:this.state.editTextHeight
                   }
                   let newData = [...this.props.items];
                   newData[index]=body;
@@ -48,10 +51,11 @@ export default class TextareaList extends Component{
                     editText:item.text,
                     editFake:item.fake,
                     editID:item.id,
+                    editTextHeight:item.textHeight
                   });
                 }}
                 onChange={e =>{
-                  this.setState({ editText: e.target.value })}
+                  this.setState({ editText: e.target.value, editTextHeight:calculateTextAreaHeight(e) })}
                 }
                 />
             </div>
@@ -59,7 +63,7 @@ export default class TextareaList extends Component{
 
           </div>
         )}
-        <Button color="primary" onClick={()=>{this.props.onChange([{id:this.state.newID,text:"",fake:true},...this.props.items]);this.setState({newID:this.state.newID+1})}}>{this.props.addLabel}</Button>
+        <Button color="primary" onClick={()=>{this.props.onChange([{id:this.state.newID,text:"",textHeight:29,fake:true},...this.props.items]);this.setState({newID:this.state.newID+1})}}>{this.props.addLabel}</Button>
 
       </div>
     );
