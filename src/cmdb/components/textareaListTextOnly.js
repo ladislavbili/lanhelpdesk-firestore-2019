@@ -3,6 +3,7 @@ import { Button, Label, Input } from 'reactstrap';
 import {calculateTextAreaHeight} from '../../helperFunctions';
 
 
+
 export default class TextareaList extends Component{
   constructor(props){
     super(props);

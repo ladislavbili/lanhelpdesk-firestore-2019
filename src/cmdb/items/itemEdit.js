@@ -6,7 +6,7 @@ import Select from 'react-select';
 import IPList from './ipList';
 import Passwords from './passwords';
 import AttributesHandler from './attributesHandler';
-import TextareaList from '../components/textareaListTextOnly';
+import TextareaList from '../components/backups';
 import classnames from 'classnames';
 
 
@@ -22,7 +22,7 @@ export default class ItemEdit extends Component{
       originalPasswords:[],
       originalBackups:[],
       sidebarItem:null,
-      tab:'1',
+      tab:1,
       descriptionHeight:29,
 
       title:'',
@@ -173,10 +173,10 @@ export default class ItemEdit extends Component{
 
     ///
     this.state.backupTasks.filter((item)=>item.fake).forEach((item)=>{
-      promises.push(rebase.addToCollection('/cmdb-backups',{text:item.text,itemID:ID,textHeight:item.textHeight}));
+      promises.push(rebase.addToCollection('/cmdb-backups',{text:item.text,itemID:ID,textHeight:item.textHeight,backupList:item.backupList?item.backupList:[]}));
     });
     this.state.backupTasks.filter((item)=>!item.fake).forEach((item)=>{
-      promises.push(rebase.updateDoc('/cmdb-backups/'+item.id,{text:item.text,itemID:ID,textHeight:item.textHeight}));
+      promises.push(rebase.updateDoc('/cmdb-backups/'+item.id,{text:item.text,itemID:ID,textHeight:item.textHeight,backupList:item.backupList?item.backupList:[]}));
     });
 
     currentIDs = this.state.backupTasks.map(item => item.id);
@@ -238,42 +238,42 @@ export default class ItemEdit extends Component{
             <Nav tabs>
               <NavItem>
                 <NavLink
-                  className={classnames({ active: this.state.activeTab === '1', clickable:true })}
-                  onClick={() => { this.setState({tab:'1'}); }}
+                  className={classnames({ active: this.state.tab === 1, clickable:true })}
+                  onClick={() => { this.setState({tab:1}); }}
                 >
                   IP list
                 </NavLink>
               </NavItem>
               <NavItem>
                 <NavLink
-                  className={classnames({ active: this.state.activeTab === '2' , clickable:true   })}
-                  onClick={() => { this.setState({tab:'2'}); }}
+                  className={classnames({ active: this.state.tab === 2 , clickable:true   })}
+                  onClick={() => { this.setState({tab:2}); }}
                 >
                   Backup tasks
                 </NavLink>
               </NavItem>
               <NavItem>
                 <NavLink
-                  className={classnames({ active: this.state.activeTab === '3', clickable:true })}
-                  onClick={() => { this.setState({tab:'3'}); }}
+                  className={classnames({ active: this.state.tab === 3, clickable:true })}
+                  onClick={() => { this.setState({tab:3}); }}
                 >
                   Attributes
                 </NavLink>
               </NavItem>
               <NavItem>
                 <NavLink
-                  className={classnames({ active: this.state.activeTab === '4', clickable:true })}
-                  onClick={() => { this.setState({tab:'4'}); }}
+                  className={classnames({ active: this.state.tab === 4, clickable:true })}
+                  onClick={() => { this.setState({tab:4}); }}
                 >
                   Passwords
                 </NavLink>
               </NavItem>
             </Nav>
             <TabContent activeTab={this.state.tab} style={{marginBottom:30,borderRadius:4}}>
-              <TabPane tabId="1">
+              <TabPane tabId={1}>
                 <IPList items={this.state.IPlist} onChange={(items)=>this.setState({IPlist:items})} />
               </TabPane>
-              <TabPane tabId="2">
+              <TabPane tabId={2}>
                 <TextareaList
                   items={this.state.backupTasks}
                   onChange={(items)=>this.setState({backupTasks:items})}
@@ -284,7 +284,7 @@ export default class ItemEdit extends Component{
                   addLabel="Add backup task"
                 />
               </TabPane>
-              <TabPane tabId="3">
+              <TabPane tabId={3}>
                 <AttributesHandler attributes={this.state.sidebarItem ? this.state.sidebarItem.attributes : []} values={this.state.attributes}
                   setValue={(id, val)=>{
                     let newAttributes={...this.state.attributes};
@@ -292,7 +292,7 @@ export default class ItemEdit extends Component{
                     this.setState({attributes:newAttributes})
                   }} />
               </TabPane>
-              <TabPane tabId="4">
+              <TabPane tabId={4}>
                 <Passwords items={this.state.passwords} onChange={(items)=>this.setState({passwords:items})} />
               </TabPane>
             </TabContent>

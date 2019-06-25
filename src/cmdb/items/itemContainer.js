@@ -8,7 +8,7 @@ export default class ItemContainer extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			edit:false,
+			edit:true,
 			saving:false,
 			delete:false
 		};

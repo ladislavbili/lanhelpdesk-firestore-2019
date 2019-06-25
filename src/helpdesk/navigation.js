@@ -46,6 +46,8 @@ export default class Navigation extends Component {
 					<Route exact path="/helpdesk" component={TaskList} />
 					<Route exact path="/helpdesk/taskList" component={TaskList} />
 					<Route exact path="/helpdesk/taskList/:taskID" component={TaskList} />
+					<Route exact path="/helpdesk/taskList/i/:listID" component={TaskList} />
+					<Route exact path="/helpdesk/taskList/i/:listID/:taskID" component={TaskList} />
 
 					<Route exact path='/helpdesk/settings/statuses' component={StatusList} />
           <Route exact path='/helpdesk/settings/statuses/:id' component={StatusList} />

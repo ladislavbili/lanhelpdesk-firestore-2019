@@ -36,7 +36,7 @@ class PageHeader extends Component {
 			<div className="page-header">
 				<div className="d-flex bd-highlight" style={{height:'100%'}}>
 					<div className="center-hor">
-						<Link to={{ pathname: `/helpdesk/taskList` }} className="pl-4" style={{ color: 'white' }}>
+						<Link to={{ pathname: `/helpdesk/taskList/i/all` }} className="pl-4" style={{ color: 'white' }}>
 							Úlohy
 						</Link>
 						<Link to={{ pathname: `/lanwiki` }} className="pl-4" style={{ color: 'white' }}>

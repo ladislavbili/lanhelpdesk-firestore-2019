@@ -358,3 +358,16 @@ td {
 //background: #3C3C3C;
 //color: #212121;
 //color: #33332D;
+
+//TABY
+.nav-tabs a.active {
+    background: inherit;
+    border-bottom: 3px solid #0078D4 !important;
+    font-weight: bold;
+    color: #0078D4 !important;
+}
+
+.nav:not(.nav-tabs) a.active {
+    background: rgba(140, 186, 232, 0.2) !important;
+    color: #0078D4 !important;
+  }

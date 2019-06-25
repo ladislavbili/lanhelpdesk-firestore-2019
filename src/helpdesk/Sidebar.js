@@ -107,7 +107,7 @@ class Sidebar extends Component {
 								<TabPane tabId={0}>
 									<Nav vertical>
 										<NavItem>
-											<Link to={{ pathname: `` }} onClick={()=>{
+											<Link to={{ pathname: `/helpdesk/taskList/i/all` }} onClick={()=>{
 													this.setState({filterID:null,filterData:null});
 													this.props.setFilter({
 														status:null,
@@ -124,7 +124,7 @@ class Sidebar extends Component {
 										{
 											this.state.filters.map((item)=>
 											<NavItem key={item.id}>
-												<Link to={{ pathname: `` }} onClick={()=>{
+												<Link to={{ pathname: `/helpdesk/taskList/i/`+item.id }} onClick={()=>{
 														this.setState({filterID:item.id,filterData:item});
 														this.props.setFilter({
 															...item.filter,
