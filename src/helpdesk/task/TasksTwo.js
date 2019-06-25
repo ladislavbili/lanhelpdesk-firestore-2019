@@ -103,30 +103,30 @@ class TasksRow extends Component {
 									}
 								}
 								key={task.id} >
-								<li className="" >
-									<div className="m-b-0">
+								<li>
+									<div className="">
 										<label>#{task.id} {task.title}</label>
 									</div>
-									<div className="m-t-5">
-										<p className="pull-right m-b-0 font-13">
+									<div>
+										<p className="pull-right font-13 small-p">
 											<span className="label label-info">{task.status?task.status.title:'Neznámy status'}</span>
 										</p>
-										<p className="text-muted m-b-0 font-13">
+										<p className="text-muted font-13 small-p">
 											<span className="">Zadal: {task.requester?(task.requester.name+' '+task.requester.surname):'Neznámy používateľ'}</span>
 										</p>
-										<p className="pull-right m-b-0 font-13">
+										<p className="pull-right font-13 small-p">
 											<i className="fa fa-clock-o" /> <span>Created: {task.statusChange?timestampToString(task.statusChange):'None'}</span>
 										</p>
-										<p className="text-muted m-b-0 font-13">
+										<p className="text-muted font-13 small-p">
 											<span className="" style={{textOverflow: 'ellipsis'}}>Riesi: {task.assignedTo?task.assignedTo.reduce((total,user)=>total+=user.name+' '+user.surname+', ','').slice(0,-2):'Neznámy používateľ'}</span>
 										</p>
 									</div>
-										<p className="pull-right m-r-5 font-13">
+										<p className="pull-right font-13">
 											<i className="fa fa-clock-o" /> <span>Dealine: {task.deadline?timestampToString(task.deadline):'None'}</span>
 										</p>
 										<div className="taskList-tags">
 											{task.tags.map((tag)=>
-												<span key={tag.id} className="label label-info m-r-5">{tag.title}</span>
+												<span key={tag.id} className="label label-info">{tag.title}</span>
 											)}
 										</div>
 								</li>

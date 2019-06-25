@@ -24,47 +24,43 @@ class TaskListContainer extends Component {
 		return (
 			<div className="content-page">
 
-				<div className="content" style={{ paddingTop: 0 }}>
+				<div className="content" >
 
 					<div className="container-fluid">
 
-						<div className="d-flex flex-row align-items-center">
+						<div className="d-flex">
 							{this.state.filterView && (
-								<div className="p2" style={{}}>
+								<div >
 									<div className="button-list" style={{ marginRight: 10 }}>
-										<button type="button" className="btn btn-primary btn-xs waves-effect waves-light">
+										<button type="button" className="btn waves-effect">
 											Apply
 									</button>
-										<button type="button" className="btn btn-primary waves-effect waves-light btn-xs">
+										<button type="button" className="btn waves-effect">
 											Save
 									</button>
-										<button type="button" className="btn btn-primary waves-effect waves-light btn-xs">
+										<button type="button" className="btn waves-effect">
 											Delete
 									</button>
 									</div>
 								</div>
 							)}
 
-							<div className="p2" style={{}}>
-							</div>
-							<div className="p-2">
+							<div className="center-hor">
 								<div className="input-group">
 									<input
 										type="text"
-										className="form-control commandbar-search"
+										className="commandbar-search"
 										value={this.state.search}
 										onChange={(e)=>this.setState({search:e.target.value})}
 										placeholder="Search task name"
 										style={{ width: 200 }}
 									/>
-									<div className="input-group-append">
 										<button className="commandbar-btn-search" type="button" onClick={()=>this.props.setSearch(this.state.search)}>
 											<i className="fa fa-search" />
 										</button>
-									</div>
 								</div>
 							</div>
-							<div className="p-2">
+							<div className="center-hor">
 								<Button
 									className="btn-link"
 									onClick={()=>{
@@ -84,38 +80,35 @@ class TaskListContainer extends Component {
 									Global search
 								</Button>
 							</div>
-							<div className="ml-auto p-2 align-self-center">
+							<div className="ml-auto">
 								{' '}
 								<button type="button" className="btn-link waves-effect">
 									<i
-										className="fas fa-copy commandbar-command-icon icon-S"
-									/>
-									<span className="commandbar-command"> COPY</span>
+										className="fas fa-copy icon-S"
+									/> COPY
 								</button>
 							</div>
-							<div className="">
+							<div className="center-hor">
 								{' '}
 								<button type="button" className="btn-link waves-effect">
 									<i
-										className="fas fa-print commandbar-command-icon icon-S"
-									/>
-									<span className="commandbar-command"> SERVISNY LIST</span>
+										className="fas fa-print icon-S"
+									/> SERVISNY LIST
 								</button>
 							</div>
-							<div className="">
+							<div className="center-hor">
 								{' '}
 								<button type="button" className="btn-link waves-effect">
 									<i
-										className="fas fa-print commandbar-command-icon icon-S"
-									/>
-								<span className="commandbar-command"> CENOVA PONUKA</span>
+										className="fas fa-print icon-S"
+									/> CENOVA PONUKA
 								</button>
 							</div>
-							<div className="">
+							<div className="center-hor">
 								<div className="btn-group btn-group-toggle" data-toggle="buttons">
 									<label
 										className={
-											'btn btn-link btn-outline-blue waves-effect waves-light' +
+											'btn btn-link btn-outline-blue waves-effect' +
 											(this.state.taskListType === 'option1' ? ' active' : '')
 										}
 									>
@@ -131,7 +124,7 @@ class TaskListContainer extends Component {
 									</label>
 									<label
 										className={
-											'btn btn-link btn-outline-blue waves-effect waves-light' +
+											'btn btn-link btn-outline-blue waves-effect' +
 											(this.state.taskListType === 'option2' ? ' active' : '')
 										}
 									>
@@ -148,7 +141,7 @@ class TaskListContainer extends Component {
 
 									<label
 										className={
-											'btn btn-link btn-outline-blue waves-effect waves-light' +
+											'btn btn-link btn-outline-blue waves-effect' +
 											(this.state.taskListType === 'option3' ? ' active' : '')
 										}
 									>
@@ -167,7 +160,7 @@ class TaskListContainer extends Component {
 						</div>
 					</div>
 
-					<div className="row m-0">
+					<div className="row">
 						{this.state.taskListType === 'option2' && (
 							<div className={'' + (this.state.filterView ? 'col-xl-9' : 'col-xl-12')}>
 								<TasksRow history={this.props.history} match={this.props.match}/>{' '}

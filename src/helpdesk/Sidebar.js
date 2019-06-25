@@ -13,7 +13,7 @@ import {rebase} from '../index';
 import {toSelArr} from '../helperFunctions';
 import {setProject, setFilter} from '../redux/actions';
 
-import {sidebarSelectStyle} from '../scss/selectStyles';
+import {sidebarSelectStyle, selectStyle} from '../scss/selectStyles';
 
 class Sidebar extends Component {
 	constructor(props) {
@@ -58,13 +58,22 @@ class Sidebar extends Component {
 		rebase.removeBinding(this.ref);
 			rebase.removeBinding(this.ref2);
 	}
+/*
+<Button className="btn-link full-width t-a-l"  onClick={()=>{
+		this.setState({opened:true});
+	}} >
+<i className="fa fa-plus" /> Project
+</Button>
 
+*/
 	render() {
 		return (
 			<div className="sidebar">
-				<SelectPage />
+					<SelectPage />
 				<div className="scrollable fit-with-header">
-					<div id="sidebar-menu" >
+					<div>
+						<TaskAdd history={this.props.history} />
+						<hr/>
 						<li>
 							<Select
 								options={this.state.projects}
@@ -74,18 +83,17 @@ class Sidebar extends Component {
 									this.setState({project:e});
 									this.props.setProject(e.value);
 								}}
-								components={{DropdownIndicator: ({ innerProps, isDisabled }) =>  <i className="fa fa-folder-open" style={{position:'absolute', left:15}} /> }}
+								components={{
+									DropdownIndicator: ({ innerProps, isDisabled }) =>
+									<div style={{marginTop: "-15px"}}>
+										<i className="fa fa-folder-open" style={{position:'absolute', left:15, color: "#0078D4"}}/>
+										<i className="fa fa-chevron-down" style={{position:'absolute', right:15, color: "#0078D4"}}/>
+									</div>,
+								}}
 								/>
 						</li>
-						<li className="sidebar-title" >
-							Project
-							<span className="pull-right">
-								<ProjectAdd />
-							</span>
-						</li>
-							<TaskAdd history={this.props.history} />
 							<hr />
-							<Nav tabs>
+							<Nav tabs className="sidebar-edit">
 								<NavItem>
 									<NavLink
 										className={classnames({ active: this.state.activeTab === 0 })}
@@ -103,11 +111,11 @@ class Sidebar extends Component {
 									</NavLink>
 								</NavItem>
 							</Nav>
-							<TabContent activeTab={this.state.activeTab} style={{ paddingRight: 20 }}>
-								<TabPane tabId={0}>
+							<TabContent activeTab={this.state.activeTab} className="sidebar-edit">
+								<TabPane tabId={0} >
 									<Nav vertical>
 										<NavItem>
-											<Link to={{ pathname: `/helpdesk/taskList/i/all` }} onClick={()=>{
+											<Link className="text-basic" to={{ pathname: `/helpdesk/taskList/i/all` }} onClick={()=>{
 													this.setState({filterID:null,filterData:null});
 													this.props.setFilter({
 														status:null,
@@ -124,7 +132,7 @@ class Sidebar extends Component {
 										{
 											this.state.filters.map((item)=>
 											<NavItem key={item.id}>
-												<Link to={{ pathname: `/helpdesk/taskList/i/`+item.id }} onClick={()=>{
+												<Link className="text-basic" to={{ pathname: `/helpdesk/taskList/i/`+item.id }} onClick={()=>{
 														this.setState({filterID:item.id,filterData:item});
 														this.props.setFilter({
 															...item.filter,
@@ -142,6 +150,10 @@ class Sidebar extends Component {
 									<Filter filterID={this.state.filterID} filterData={this.state.filterData} resetFilter={()=>this.setState({filterID:null,filterData:null})} />
 								</TabPane>
 							</TabContent>
+							<hr />
+							<li>
+									<ProjectAdd />
+							</li>
 						</div>
 					</div>
 				</div>

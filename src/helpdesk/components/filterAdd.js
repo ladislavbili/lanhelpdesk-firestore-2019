@@ -23,7 +23,7 @@ export default class FilterAdd extends Component{
   render(){
     return (
       <div>
-        <Button className="btn btn-light btn-xs" onClick={this.toggle.bind(this)} color="primary" style={{width:'100%'}}>
+        <Button className="btn-link" onClick={this.toggle.bind(this)}>
           Save
         </Button>
         <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >

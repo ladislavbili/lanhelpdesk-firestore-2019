@@ -13,15 +13,6 @@
   font-size: 13px;
 }
 
-#sidebar-menu, #sidebar-menu ul, #sidebar-menu li, #sidebar-menu a {
-    border: 0;
-    font-weight: normal;
-    line-height: 1;
-    position: relative;
-    text-decoration: none;
-    cursor: pointer;
-}
-
 
 .btn-outline-blue {
     color: #4a81d4;
@@ -40,11 +31,7 @@
     border-left-color: rgb(74, 129, 212);
 }
 
-.btn-outline-blue:not(:disabled):not(.disabled).active, .btn-outline-blue:not(:disabled):not(.disabled):active, .show>.btn-outline-blue.dropdown-toggle {
-    color: #fff;
-    background-color: #4a81d4;
-    border-color: #4a81d4;
-}
+
 
 .thumb-sm {
     height: 32px;

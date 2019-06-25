@@ -34,36 +34,36 @@ class PageHeader extends Component {
 	render() {
 		return (
 			<div className="page-header">
-				<div className="d-flex bd-highlight" style={{height:'100%'}}>
+				<div className="d-flex full-height">
 					<div className="center-hor">
-						<Link to={{ pathname: `/helpdesk/taskList/i/all` }} className="pl-4" style={{ color: 'white' }}>
+						<Link to={{ pathname: `/helpdesk/taskList/i/all` }} className="header-link">
 							Úlohy
 						</Link>
-						<Link to={{ pathname: `/lanwiki` }} className="pl-4" style={{ color: 'white' }}>
+						<Link to={{ pathname: `/lanwiki` }} className="header-link">
 							Návody
 						</Link>
-						<Link to={{ pathname: `/cmdb/all` }} className="pl-4" style={{ color: 'white' }}>
+						<Link to={{ pathname: `/cmdb/all` }} className="header-link">
 							CMDB
 						</Link>
-						<Link to={{ pathname: `/passmanager` }} className="pl-4" style={{ color: 'white' }}>
+						<Link to={{ pathname: `/passmanager` }} className="header-link">
 							Heslá
 						</Link>
-						<Link to={{ pathname: `/expenditures` }} className="pl-4" style={{ color: 'white' }}>
+						<Link to={{ pathname: `/expenditures` }} className="header-link">
 							Náklady
 						</Link>
-						<Link to={{ pathname: `/helpdesk/reports` }} className="pl-4" style={{ color: 'white' }}>
+						<Link to={{ pathname: `/helpdesk/reports` }} className="header-link">
 								Vykazy
 						</Link>
-						<Link to={{ pathname: `/projects` }} className="pl-4" style={{ color: 'white' }}>
+						<Link to={{ pathname: `/projects` }} className="header-link">
 							Projekty
 						</Link>
 					</div>
-					<div className="ml-auto row center-hor">
-						<i className="headerIcons fa fa-exclamation-triangle"/>
-						<i className="headerIcons fa fa-envelope" />
-						<Dropdown isOpen={this.state.settingsOpen} toggle={()=>this.setState({settingsOpen:!this.state.settingsOpen})}>
-			        <DropdownToggle style={{backgroundColor: 'inherit', borderWidth: 0, padding:0}}>
-								<i className="headerIcons fa fa-cog"/>
+					<div className="ml-auto center-hor row">
+						<i className="header-icon fa fa-exclamation-triangle center-hor"/>
+						<i className="header-icon fa fa-envelope center-hor" />
+						<Dropdown className="center-hor" isOpen={this.state.settingsOpen} toggle={()=>this.setState({settingsOpen:!this.state.settingsOpen})}>
+			        <DropdownToggle className="header-dropdown">
+								<i className="header-icon fa fa-cog"/>
 			        </DropdownToggle>
 			        <DropdownMenu right>
 			          <DropdownItem header>Settings</DropdownItem>
@@ -74,9 +74,7 @@ class PageHeader extends Component {
 								)}
 			        </DropdownMenu>
 			      </Dropdown>
-
-
-						<i className="headerIcons clickable fas fa-sign-out-alt" style={{ borderWidth: 0, marginRight: 15, color: 'white' }} onClick={()=>{
+						<i className="header-icon clickable fa fa-sign-out-alt center-hor" onClick={()=>{
 								if(window.confirm('Are you sure you want to log out?')){
 									this.props.deleteUserData();
 									firebase.auth().signOut();

@@ -34,7 +34,7 @@ export default class TaskListContainer extends Component {
 							<div className="d-flex flex-row align-items-center">
 								<div className="p2" style={{ marginLeft: 10 }}>
 									<button
-										className="btn btn-success waves-effect waves-light btn-sm"
+										className="btn btn-success waves-effect  btn-sm"
 										onClick={() => this.setState({ filterView: !this.state.filterView })}
 									>
 										Filter
@@ -80,7 +80,7 @@ export default class TaskListContainer extends Component {
 								<div className="btn-group btn-group-toggle" data-toggle="buttons">
 									<label
 										className={
-											'btn btn-outline-blue waves-effect waves-light' +
+											'btn btn-outline-blue waves-effect ' +
 											(this.state.taskListType === 'option1' ? ' active' : '')
 										}
 									>
@@ -96,7 +96,7 @@ export default class TaskListContainer extends Component {
 									</label>
 									<label
 										className={
-											'btn btn-outline-blue waves-effect waves-light' +
+											'btn btn-outline-blue waves-effect ' +
 											(this.state.taskListType === 'option2' ? ' active' : '')
 										}
 									>
@@ -113,7 +113,7 @@ export default class TaskListContainer extends Component {
 
 									<label
 										className={
-											'btn btn-outline-blue waves-effect waves-light' +
+											'btn btn-outline-blue waves-effect ' +
 											(this.state.taskListType === 'option3' ? ' active' : '')
 										}
 									>

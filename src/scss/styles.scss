@@ -4,10 +4,10 @@
 .header{
   height: $header-height;
 }*/
-
+/*
 .row{
 	margin:0px;
-}
+}*/
 
 .flexbox{
 	display: flex;
@@ -17,9 +17,6 @@
 	flex:1;
 }
 
-.clickable{
-	cursor:pointer;
-}
 
 .side-menu{
 	height:100vh;
@@ -104,13 +101,7 @@
   opacity:100;
 }
 
-.headerIcons{
-  font-size:22px;
-  background-color: inherit;
-  border-width: 0;
-  margin-right: 15px;
-  color: white;
-}
+
 
 .sidebar-tab{
   padding-right: 17px;

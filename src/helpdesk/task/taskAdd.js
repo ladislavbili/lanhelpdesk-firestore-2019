@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import {rebase, database} from '../../index';
 import {toSelArr, snapshotToArray} from '../../helperFunctions';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
 import Materials from '../components/materials';
 import Subtasks from '../components/subtasks';
 import {selectStyle, invisibleSelectStyle} from '../../scss/selectStyles';
@@ -225,11 +225,14 @@ export default class TaskAdd extends Component{
 
     return (
 			<div >
-			<button
-				className="btn sidebar-btn"
+
+			<Button
+				className="btn-link t-a-l sidebar-menu-item"
 				onClick={()=>{this.setState({openAddTaskModal:true,hidden:false})}}
-			> Add task
-			</button>
+			> <i className="fa fa-plus sidebar-icon-center"/> Add task
+			</Button>
+
+
 			<Modal size="lg" isOpen={this.state.openAddTaskModal} toggle={()=>{this.setState({openAddTaskModal:!this.state.openAddTaskModal})}} >
 					<ModalHeader toggle={()=>{this.setState({openAddTaskModal:!this.state.openAddTaskModal})}}>Add task</ModalHeader>
 					<ModalBody>

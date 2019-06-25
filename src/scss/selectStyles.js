@@ -1,13 +1,13 @@
 
 export const sidebarSelectStyle = {
 	singleValue: (provided, state) => {
-		return { ...provided, marginLeft:30 };
+		return { ...provided, marginLeft:30, color: "#0078D4" };
 	},
 	indicatorSeparator:(provided, state) => {
-		return { ...provided, width:0 };
+		return { ...provided, width:0,  };
 	},
 	control:(provided, state) => {
-		return { ...provided, background: "#F2F1F1", borderRadius: 0 , borderWidth: "0", borderBottomWidth: "2", borderColor: "#0078D4" };
+		return { ...provided, background: "#F2F1F1", borderRadius: 0 , borderWidth: "0" };
 	},
 	input:(provided, state) => {
 		return { ...provided, marginLeft:30 };

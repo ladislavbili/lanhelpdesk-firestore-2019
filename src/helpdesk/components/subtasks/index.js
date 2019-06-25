@@ -34,7 +34,7 @@ export default class Subtasks extends Component {
 						<Nav tabs>
 							<NavItem>
 								<NavLink
-									className={classnames({ active: this.state.activeTab === '1'}, "clickable", "form-tab")}
+									className={classnames({ active: this.state.activeTab === '1'}, "clickable", "form-tab-end")}
 									onClick={() => { this.toggle('1'); }}
 								>
 									Sluzby

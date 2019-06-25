@@ -8,35 +8,7 @@ import {setFilter} from '../../redux/actions';
 import {toSelArr, snapshotToArray} from '../../helperFunctions';
 import AddFilter from './filterAdd';
 
-const selectStyle = {
-  control: base => ({
-    ...base,
-    minHeight: 30,
-    backgroundColor: 'white',
-  }),
-  dropdownIndicator: base => ({
-    ...base,
-    padding: 4,
-  }),
-  clearIndicator: base => ({
-    ...base,
-    padding: 4,
-  }),
-  multiValue: base => ({
-    ...base,
-    backgroundColor: 'white',
-  }),
-  valueContainer: base => ({
-    ...base,
-    padding: '0px 6px',
-  }),
-  input: base => ({
-    ...base,
-    margin: 0,
-    padding: 0,
-    backgroundColor: 'white',
-  }),
-};
+import {selectStyle} from '../../scss/selectStyles';
 
 class Filter extends Component {
   constructor(props) {
@@ -168,10 +140,10 @@ class Filter extends Component {
 
     render() {
       return (
-        <Nav vertical>
+        <Nav vertical className="">
           <NavItem>
-            <div className="btn-group mb-2">
-              <button type="button" className="btn btn-light btn-xs" onClick={this.applyFilter.bind(this)}>Apply</button>
+            <div className="d-flex m-b-2">
+              <button type="button" className="btn-link" onClick={this.applyFilter.bind(this)}>Apply</button>
               <AddFilter
                 filter={{
                   requester:this.state.requester.id,
@@ -185,13 +157,13 @@ class Filter extends Component {
                 filterID={this.props.filterID}
                 filterData={this.props.filterData}
               />
-              <button type="button" className="btn btn-light btn-xs" onClick={this.resetFilter.bind(this)}>Reset</button>
-              <button type="button" className="btn btn-light btn-xs" onClick={this.deleteFilter.bind(this)}>Delete</button>
+              <button type="button" className="btn-link" onClick={this.resetFilter.bind(this)}>Reset</button>
+              <button type="button" className="btn-link" onClick={this.deleteFilter.bind(this)}>Delete</button>
             </div>
           </NavItem>
           <h5>{this.props.filterID?'Filter: '+this.props.filterData.title:'No filter selected'}</h5>
           <NavItem>
-            <div className="form-group mb-3">
+            <div className="m-b-3">
               <label htmlFor="example-input-small">Status</label>
               <Select
                 options={[{label:'Žiadny',value:null,id:null}].concat(this.state.statuses)}
@@ -201,7 +173,7 @@ class Filter extends Component {
             </div>
           </NavItem>
           <NavItem>
-            <div className="form-group mb-3">
+            <div className="m-b-3">
               <label htmlFor="example-input-small">Zadal</label>
               <Select
                 options={[{label:'Žiadny',value:null,id:null}].concat(this.state.users)}
@@ -211,7 +183,7 @@ class Filter extends Component {
             </div>
           </NavItem>
           <NavItem>
-            <div className="form-group mb-3">
+            <div className="m-b-3">
               <label htmlFor="example-input-small">Firma</label>
               <Select
                 options={[{label:'Žiadny',value:null,id:null}].concat(this.state.companies)}
@@ -221,7 +193,7 @@ class Filter extends Component {
             </div>
           </NavItem>
           <NavItem>
-            <div className="form-group mb-3">
+            <div className="m-b-3">
               <label htmlFor="example-input-small">Riesi</label>
               <Select
                 options={[{label:'Žiadny',value:null,id:null}].concat(this.state.users)}
@@ -231,7 +203,7 @@ class Filter extends Component {
             </div>
           </NavItem>
           <NavItem>
-            <div className="form-group mb-3">
+            <div className="m-b-3">
               <label htmlFor="example-input-small">Status date from</label>
               <input
                 type="datetime-local"
@@ -239,12 +211,12 @@ class Filter extends Component {
                 onChange={(e)=>{
                   this.setState({statusDateFrom:e.target.value})}
                 }
-                className="form-control form-control-sm active"
+                className="form-control active"
                 placeholder="Od" />
             </div>
           </NavItem>
           <NavItem>
-            <div className="form-group mb-3">
+            <div className=" m-b-3">
               <label htmlFor="example-input-small">Status date to</label>
               <input
                 type="datetime-local"
@@ -252,12 +224,12 @@ class Filter extends Component {
                 onChange={(e)=>{
                   this.setState({statusDateTo:e.target.value})}
                 }
-                className="form-control form-control-sm active"
+                className="form-control active"
                 placeholder="Od" />
             </div>
           </NavItem>
           <NavItem>
-            <div className="form-group mb-3">
+            <div className="m-b-3">
               <label htmlFor="example-input-small">Typ práce</label>
               <Select
                 options={[{label:'Žiadny',value:null,id:null}].concat(this.state.workTypes)}

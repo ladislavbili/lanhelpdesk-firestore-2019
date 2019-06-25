@@ -33,7 +33,7 @@ export default class TaskSideLeft extends Component {
 						<div className="row m-b-20">
 							<div className="col-lg-8">
 								<div className="button-list">
-									<button className="btn btn-icon waves-effect btn-default waves-light">
+									<button className="btn btn-icon waves-effect btn-default ">
 										{' '}
 										<i className="fa fa-arrow-left" />{' '}
 									</button>
