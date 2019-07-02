@@ -234,22 +234,20 @@ export default class TaskAdd extends Component{
 
 
 			<Modal size="lg" isOpen={this.state.openAddTaskModal} toggle={()=>{this.setState({openAddTaskModal:!this.state.openAddTaskModal})}} >
-					<ModalHeader toggle={()=>{this.setState({openAddTaskModal:!this.state.openAddTaskModal})}}>Add task</ModalHeader>
+					<ModalHeader toggle={()=>{this.setState({openAddTaskModal:!this.state.openAddTaskModal})}} ><h1 className="m-l-10">Add task</h1></ModalHeader>
 					<ModalBody>
 					<div className="scrollable">
-						<div className="card-box p-t-0" style={{ maxWidth: 1284, background: '#F9F9F9', borderRadius: 0, padding: "none" }}>
-							<div className="d-flex flex-row">
+						<div className="card-box p-t-0 form">
 								<div className="row">
-									<h1># NEW</h1>
+									<h1 className="center-hor"># NEW</h1>
 									<span className="center-hor">
-										<input type="text" value={this.state.title} className="form-control hidden-input" onChange={(e)=>this.setState({title:e.target.value})} placeholder="Enter task name" />
+										<input type="text" value={this.state.title} className="task-title-input hidden-input" onChange={(e)=>this.setState({title:e.target.value})} placeholder="Enter task name" />
 									</span>
 								</div>
-							</div>
 							<div className="row">
 								<div className="col-lg-12 row">
 									<strong className="center-hor">Tagy: </strong>
-									<div style={{flex:1,marginBottom:5}}>
+									<div className="f-1">
 										<Select
 											value={this.state.tags}
 											isMulti
@@ -261,7 +259,7 @@ export default class TaskAdd extends Component{
 								</div>
 								<div className="col-lg-12 row">
 									<strong className="center-hor">Assigned to: </strong>
-									<div style={{flex:1,marginBottom:5}}>
+									<div className="f-1">
 										<Select
 											value={this.state.assignedTo}
 											isMulti
@@ -274,66 +272,66 @@ export default class TaskAdd extends Component{
 
 								<div className="col-lg-12 p-0">
 									<div className="col-lg-6">
-										<div className="m-t-20 p-r-20">
-											<div className="form-group m-b-0 row">
+										<div className="p-r-20">
+											<div className="row">
 												<label className="col-5 col-form-label">Status</label>
 												<div className="col-7">
 													<Select
 														value={this.state.status}
 														onChange={(status)=>this.setState({status,statusChange:(new Date().getTime())})}
 														options={this.state.statuses.map((status)=>{return {...status,value:status.id,label:status.title}})}
-														styles={selectStyle}
+														styles={invisibleSelectStyle}
 														/>
 												</div>
 											</div>
-											<div className="form-group m-b-0 row">
+											<div className="row">
 												<label className="col-5 col-form-label">Projekt</label>
 												<div className="col-7">
 													<Select
 														value={this.state.project}
 														onChange={(project)=>this.setState({project})}
 														options={this.state.projects}
-														styles={selectStyle}
+														styles={invisibleSelectStyle}
 														/>
 												</div>
 											</div>
-											<div className="form-group m-b-0 row">
+											<div className="row">
 												<label className="col-5 col-form-label">Zadal</label>
 												<div className="col-7">
 													<Select
 														value={this.state.requester}
 														onChange={(requester)=>this.setState({requester})}
 														options={this.state.users}
-														styles={selectStyle}
+														styles={invisibleSelectStyle}
 														/>
 												</div>
 											</div>
-											<div className="form-group m-b-0 row">
+											<div className="row">
 												<label className="col-5 col-form-label">Firma</label>
 												<div className="col-7">
 													<Select
 														value={this.state.company}
 														onChange={(company)=>this.setState({company})}
 														options={this.state.companies}
-														styles={selectStyle}
+														styles={invisibleSelectStyle}
 														/>
 												</div>
 											</div>
 										</div>
 									</div>
 									<div className="col-lg-6">
-										<div className="m-t-20">
-											<div className="form-group m-b-0 row">
+										<div>
+											<div className="row">
 												<label className="col-5 col-form-label">Pripomienka</label>
 												<div className="col-7">
-													<Select styles={selectStyle} />
+													<Select styles={invisibleSelectStyle} />
 												</div>
 											</div>
-											<div className="form-group m-b-0 row">
+											<div className="row">
 												<label className="col-5 col-form-label">Deadline</label>
 												<div className="col-7">
 													<input
-														className='form-control'
+														className='form-control hidden-input'
 														placeholder="Status change date"
 														type="datetime-local"
 														value={this.state.deadline}
@@ -343,19 +341,19 @@ export default class TaskAdd extends Component{
 														/>
 												</div>
 											</div>
-											<div className="form-group m-b-0 row">
+											<div className="row">
 												<label className="col-5 col-form-label">Opakovanie</label>
 												<div className="col-7">
-													<Select options={repeat} styles={selectStyle} />
+													<Select options={repeat} styles={invisibleSelectStyle} />
 												</div>
 											</div>
 
-											<div className="form-group m-b-0 row">
+											<div className="row">
 												<label className="col-5 col-form-label">Typ</label>
 												<div className="col-7">
 													<Select
 														value={this.state.type}
-														styles={selectStyle}
+														styles={invisibleSelectStyle}
 														onChange={(type)=>this.setState({type})}
 														options={this.state.taskTypes}
 														/>
@@ -367,7 +365,7 @@ export default class TaskAdd extends Component{
 							</div>
 
 							<label className="m-t-5">Popis</label>
-							<textarea className="form-control" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value})} />
+							<textarea className="form-control b-r-0" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value})} />
 
 						{!this.state.hidden && <Subtasks
 							taskAssigned={this.state.assignedTo}
@@ -429,7 +427,7 @@ export default class TaskAdd extends Component{
 				</ModalBody>
 				<ModalFooter>
 					<button
-						className="btn btn-success"
+						className="btn m-r-10"
 						disabled={this.state.title==="" || this.state.status===null || this.state.project === null|| this.state.company === null||this.state.saving}
 						onClick={this.submitTask.bind(this)}
 					> Add

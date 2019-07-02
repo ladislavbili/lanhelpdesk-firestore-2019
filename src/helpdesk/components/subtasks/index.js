@@ -29,9 +29,9 @@ export default class Subtasks extends Component {
 		return (
 			<div className="m-t-30">
 				<div className="row">
-					<div>
+					<div className="full-width">
 
-						<Nav tabs>
+						<Nav tabs className="b-0">
 							<NavItem>
 								<NavLink
 									className={classnames({ active: this.state.activeTab === '1'}, "clickable", "form-tab-end")}
@@ -49,7 +49,7 @@ export default class Subtasks extends Component {
             </NavLink>
 							</NavItem>
 						</Nav>
-						<TabContent activeTab={this.state.activeTab} style={{ padding: "0", backgroundColor: "rgb(249, 249, 249)" }}>
+						<TabContent activeTab={this.state.activeTab}>
 							<TabPane tabId="1">
 								<Prace {...this.props} />
 							</TabPane>

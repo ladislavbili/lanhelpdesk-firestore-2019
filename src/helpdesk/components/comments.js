@@ -43,7 +43,7 @@ getData(id){
           <FormGroup>
             <Label>Add comment</Label>
             <Input type="textarea" placeholder="Enter comment" value={this.state.newComment} onChange={(e)=>this.setState({newComment:e.target.value})}/>
-            <Button color="primary" disabled={this.state.newComment===''||this.state.saving} onClick={()=>{
+            <Button className="btn waves-effect" disabled={this.state.newComment===''||this.state.saving} onClick={()=>{
                 this.setState({saving:true});
                 let body={
                   user:this.props.userID,

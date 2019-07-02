@@ -60,10 +60,10 @@ export default class Prace extends Component {
 			<div className="row">
 				<div className="col-md-12">
 					<div >
-						<table className="table table-centered table-borderless table-hover">
+						<table className="table">
 							<thead >
-								<tr>
-									<th  width="25"></th>
+								<tr >
+									<th width="25"></th>
 									<th >Názov</th>
 									<th width="100">Mn.</th>
 									<th width="170">Rieši</th>
@@ -111,7 +111,7 @@ export default class Prace extends Component {
 									<td>
 										<input
 											type="number"
-											className="hidden-input table-number-input"
+											className="form-control hidden-input h-30"
 											value={
 												subtask.id === this.state.focusedSubtask
 												? this.state.editedSubtaskQuantity
@@ -198,7 +198,7 @@ export default class Prace extends Component {
 										type="number"
 										value={this.state.newQuantity}
 										onChange={(e)=>this.setState({newQuantity:e.target.value})}
-										className="form-control table-number-input"
+										className="form-control h-30"
 										id="inlineFormInput"
 										placeholder=""
 										/>

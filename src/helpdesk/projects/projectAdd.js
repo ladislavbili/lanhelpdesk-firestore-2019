@@ -23,7 +23,7 @@ export default class ProjectAdd extends Component{
         <i className="fa fa-plus sidebar-icon-center" /> Project
         </Button>
           <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
-            <ModalHeader toggle={this.toggle.bind(this)}>Add project</ModalHeader>
+            <ModalHeader toggle={this.toggle.bind(this)}> <h1> Add project </h1></ModalHeader>
             <ModalBody>
               <FormGroup>
                 <Label for="name">Project name</Label>
@@ -32,11 +32,11 @@ export default class ProjectAdd extends Component{
             </ModalBody>
 
             <ModalFooter>
-              <Button color="danger" className="mr-auto" disabled={this.state.saving} onClick={this.toggle.bind(this)}>
+              <Button className="btn mr-auto" disabled={this.state.saving} onClick={this.toggle.bind(this)}>
                 Close
               </Button>
 
-              <Button color="primary" disabled={this.state.saving} onClick={()=>{
+              <Button className="btn" disabled={this.state.saving} onClick={()=>{
                   this.setState({saving:true});
                   rebase.addToCollection('/help-projects', {title:this.state.title})
                   .then(()=>{this.setState({title:'',saving:false})});
