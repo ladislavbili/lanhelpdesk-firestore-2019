@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {rebase,database} from '../../index';
-import { Button,  FormGroup, Label, Input, TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
+import {  FormGroup, Label, Input, TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
 import {toSelArr, snapshotToArray, getAttributeDefaultValue, htmlFixNewLines, calculateTextAreaHeight} from '../../helperFunctions';
 import Select from 'react-select';
 import IPList from './ipList';

@@ -113,11 +113,7 @@ export default class TasksTwoEdit extends Component {
 
     rebase.updateDoc('/help-tasks/'+this.state.task.id, body)
     .then(()=>{
-      if(!this.props.columns){
-        this.props.history.goBack()
-      }else{
-        this.setState({saving:false});
-      }
+      this.setState({saving:false});
     });
   }
 
@@ -198,6 +194,9 @@ export default class TasksTwoEdit extends Component {
     let project = projects.find((item)=>item.id===task.project);
     let status = statuses.find((item)=>item.id===task.status);
     let company = companies.find((item)=>item.id===task.company);
+		if(company===undefined){
+			company=companies[0];
+		}
     company = {...company,pricelist:pricelists.find((item)=>item.id===company.pricelist)};
     let requester = users.find((item)=>item.id===task.requester);
     let assignedTo = users.filter((user)=>task.assignedTo.includes(user.id));
@@ -287,7 +286,7 @@ export default class TasksTwoEdit extends Component {
 		return (
 			<div>
 				<div className="row scrollable fit-with-header-and-command-bar">
-						<div className="card-box">
+						<div className="card-box center-ver">
 							<div className="d-flex flex-row">
 								<div className="row">
 									<h1 className="center-hor"># {this.props.match.params.taskID}</h1>
@@ -296,6 +295,14 @@ export default class TasksTwoEdit extends Component {
 									</span>
 								</div>
 								<div className="ml-auto p-2 align-self-center">
+									{!this.props.columns &&
+									<button type="button" className="btn btn-link waves-effect" onClick={()=>this.props.history.goBack()}>
+										<i
+											className="fas fa-arrow-left commandbar-command-icon icon-M"
+											/>
+									</button>
+								}
+									{' '}
 									<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.submitTask.bind(this)}>
 										{this.state.saving?'Saving... ':''}
 										<i
