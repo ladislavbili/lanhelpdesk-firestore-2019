@@ -288,14 +288,14 @@ export default class TasksTwoEdit extends Component {
 			<div>
 				<div className="row scrollable fit-with-header-and-command-bar">
 						<div className="card-box">
-							<div className="d-flex flex-row">
+							<div className="d-flex p-2">
 								<div className="row">
 									<h1 className="center-hor"># {this.props.match.params.taskID}</h1>
 									<span className="center-hor">
-							    	<input type="text" value={this.state.title} className="form-control task-title-input hidden-input" onChange={(e)=>this.setState({title:e.target.value},this.submitTask.bind(this))} placeholder="Enter task name" />
+							    	<input type="text" value={this.state.title} className="task-title-input hidden-input" onChange={(e)=>this.setState({title:e.target.value},this.submitTask.bind(this))} placeholder="Enter task name" />
 									</span>
 								</div>
-								<div className="ml-auto p-2 align-self-center">
+								<div className="ml-auto">
 									<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.submitTask.bind(this)}>
 										{this.state.saving?'Saving... ':''}
 										<i
@@ -314,7 +314,7 @@ export default class TasksTwoEdit extends Component {
 							<hr/>
 
 							<div className="row">
-								<div className="col-lg-12 p-10 d-flex flex-row">
+								<div className="col-lg-12 d-flex">
 									<p className="text-muted">Created by Branislav Šusta at {this.state.createdAt?(timestampToString(this.state.createdAt)):''}</p>
 									<p className="text-muted ml-auto">{this.state.statusChange?('Status changed at ' + timestampToString(this.state.statusChange)):''}</p>
 								</div>
@@ -322,7 +322,7 @@ export default class TasksTwoEdit extends Component {
 							</div>
 							<div className="row">
 								<div className="col-lg-12 row">
-									<strong className="center-hor center-ver">Tagy: </strong>
+									<strong className="center-hor">Tagy: </strong>
 									<div className="f-1">
 										<Select
 											value={this.state.tags}
@@ -345,50 +345,50 @@ export default class TasksTwoEdit extends Component {
 											/>
 									</div>
 								</div>
-								<div className="col-lg-12 p-0">
+								<div className="col-lg-12">
 									<div className="col-lg-6">
-										<div className="m-t-20 p-r-20">
-											<div className="form-group m-b-0 row">
+										<div className="p-r-20">
+											<div className="row">
 												<label className="col-5 col-form-label">Status</label>
 												<div className="col-7">
 													<Select
 														value={this.state.status}
 														onChange={(status)=>this.setState({status,statusChange:(new Date().getTime())},this.submitTask.bind(this))}
 														options={this.state.statuses.map((status)=>{return {...status,value:status.id,label:status.title}})}
-														styles={selectStyle}
+														styles={invisibleSelectStyle}
 														/>
 												</div>
 											</div>
-											<div className="form-group m-b-0 row">
+											<div className="row">
 												<label className="col-5 col-form-label">Projekt</label>
 												<div className="col-7">
 													<Select
 														value={this.state.project}
 														onChange={(project)=>this.setState({project},this.submitTask.bind(this))}
 														options={this.state.projects}
-														styles={selectStyle}
+														styles={invisibleSelectStyle}
 														/>
 												</div>
 											</div>
-											<div className="form-group m-b-0 row">
+											<div className="row">
 												<label className="col-5 col-form-label">Zadal</label>
 												<div className="col-7">
 													<Select
 														value={this.state.requester}
 														onChange={(requester)=>this.setState({requester},this.submitTask.bind(this))}
 														options={this.state.users}
-														styles={selectStyle}
+														styles={invisibleSelectStyle}
 														/>
 												</div>
 											</div>
-											<div className="form-group m-b-0 row">
+											<div className="row">
 												<label className="col-5 col-form-label">Firma</label>
 												<div className="col-7">
 													<Select
 														value={this.state.company}
 														onChange={(company)=>this.setState({company},this.submitTask.bind(this))}
 														options={this.state.companies}
-														styles={selectStyle}
+														styles={invisibleSelectStyle}
 														/>
 												</div>
 											</div>
@@ -396,13 +396,12 @@ export default class TasksTwoEdit extends Component {
 									</div>
 
 									<div className="col-lg-6">
-										<div className="m-t-20">
-
-											<div className="form-group m-b-0 row">
+										<div className="">
+											<div className="row">
 												<label className="col-5 col-form-label">Pripomienka</label>
 												<div className="col-7">
 													<input
-														className='form-control'
+														className='form-control hidden-input'
 														placeholder="Status change date"
 														type="datetime-local"
 														value={this.state.reminder}
@@ -413,11 +412,11 @@ export default class TasksTwoEdit extends Component {
 												</div>
 											</div>
 
-											<div className="form-group m-b-0 row">
+											<div className="row">
 												<label className="col-5 col-form-label">Deadline</label>
 												<div className="col-7">
 													<input
-														className='form-control'
+														className='form-control hidden-input'
 														placeholder="Status change date"
 														type="datetime-local"
 														value={this.state.deadline}
@@ -428,19 +427,19 @@ export default class TasksTwoEdit extends Component {
 												</div>
 											</div>
 
-											<div className="form-group m-b-0 row">
+											<div className="row">
 												<label className="col-5 col-form-label">Opakovanie</label>
 												<div className="col-7">
-													<Select options={repeat} styles={selectStyle} />
+													<Select options={repeat} styles={invisibleSelectStyle} />
 												</div>
 											</div>
 
-											<div className="form-group m-b-0 row">
+											<div className="row">
 												<label className="col-5 col-form-label">Typ</label>
 												<div className="col-7">
 													<Select
 					                  value={this.state.type}
-														styles={selectStyle}
+														styles={invisibleSelectStyle}
 					                  onChange={(type)=>this.setState({type},this.submitTask.bind(this))}
 					                  options={this.state.taskTypes}
 					                  />
@@ -451,7 +450,7 @@ export default class TasksTwoEdit extends Component {
 												<div className="col-7">
 													<Select
 														value={this.state.overtime}
-														styles={selectStyle}
+														styles={invisibleSelectStyle}
 														onChange={(overtime)=>this.setState({overtime},this.submitTask.bind(this))}
 														options={[{value:true,label:'Áno'},{value:false,label:'Nie'}]}
 														/>

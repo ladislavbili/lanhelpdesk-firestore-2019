@@ -1,25 +1,6 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import { invisibleSelectStyle} from '../../scss/selectStyles';
-
-
-const tableStyle = {
-	border: 'none',
-};
-
-const tableStyleCenter = {
-	textAlign: 'right',
-	border: 'none',
-};
-
-const tableStyleCenterNoBorder = {
-	textAlign: 'center',
-	border: 'none',
-};
-
-const tableHighlightBackground ={
-	backgroundColor: '#d5e5f2',
-}
+import { selectStyle, invisibleSelectStyle} from '../../scss/selectStyles';
 
 export default class Rozpocet extends Component {
 	constructor(props){
@@ -79,34 +60,34 @@ export default class Rozpocet extends Component {
 			editedFinalUnitPrice = (parseFloat(this.state.editedMaterialPrice)*(1+parseFloat(this.state.editedMaterialMargin)/100))
 		}
 		return (
-			<div className="">
+			<div>
 			<div className="nav-link">Materiál</div>
 				<div className="row">
 					<div className="col-md-12">
 						<div>
-							<table className="table table-centered table-borderless table-hover mb-0">
-								<thead className="thead-light">
+							<table className="table">
+								<thead>
 									<tr>
-										<th style={tableStyle}>
+										<th>
 											<input type="checkbox"
 												checked={this.props.materials.length===this.state.selectedIDs.length}
 												onChange={()=>this.setState({selectedIDs:(this.props.materials.length===this.state.selectedIDs.length?[]:this.props.materials.map((item)=>item.id))})} />
 										</th>
-										<th style={tableStyle} >Názov</th>
-										<th style={tableStyle} width="100">Mn.</th>
-										<th style={tableStyle} width="170">Jednotka</th>
-										<th style={tableStyle} width="124">Predajná cena</th>
-										<th style={tableStyle} width="120">Cena</th>
-										<th style={tableStyle} width="130">Nákupná cena</th>
-										<th style={tableStyle} width="120">Marža</th>
-										<th style={tableStyleCenterNoBorder} width="124">Action</th>
+										<th >Názov</th>
+										<th width="100">Mn.</th>
+										<th width="170">Jednotka</th>
+										<th width="124">Predajná cena</th>
+										<th width="120">Cena</th>
+										<th width="130">Nákupná cena</th>
+										<th width="120">Marža</th>
+										<th className="t-a-c" width="124">Action</th>
 									</tr>
 								</thead>
 								<tbody>
 									{
 										this.props.materials.map((material)=>
 										<tr key={material.id}>
-											<td style={tableStyle}>
+											<td className="table-checkbox">
 												<input
 													type="checkbox"
 													checked={this.state.selectedIDs.includes(material.id)}
@@ -121,9 +102,9 @@ export default class Rozpocet extends Component {
 													}
 												} />
 											</td>
-											<td style={tableStyle}>
+											<td>
 													<input
-														className="form-control invisible-input"
+														className="form-control hidden-input"
 														value={
 															material.id === this.state.focusedMaterial
 															? this.state.editedMaterialTitle
@@ -149,10 +130,10 @@ export default class Rozpocet extends Component {
 														}
 														/>
 											</td>
-											<td style={tableStyle}>
+											<td>
 												<input
 													type="number"
-													className="invisible-input"
+													className="form-control hidden-input h-30"
 													value={
 														material.id === this.state.focusedMaterial
 														? this.state.editedMaterialQuantity
@@ -178,7 +159,7 @@ export default class Rozpocet extends Component {
 													}
 													/>
 											</td>
-											<td style={tableStyle}>
+											<td>
 												<Select
 													value={material.unit}
 													onChange={(unit)=>{
@@ -188,13 +169,13 @@ export default class Rozpocet extends Component {
 													styles={invisibleSelectStyle}
 													/>
 											</td>
-											<td style={tableStyle}>
+											<td>
 												{parseFloat(material.id === this.state.focusedMaterial
 														? editedFinalUnitPrice
 														: material.finalUnitPrice).toFixed(2)
 													}
 											</td>
-												<td style={tableStyle}>
+												<td>
 													{
 														(
 														(parseFloat(material.id === this.state.focusedMaterial
@@ -206,10 +187,10 @@ export default class Rozpocet extends Component {
 													}
 												</td>
 
-											<td  style={{...tableStyle,...tableHighlightBackground}}>
+											<td className="table-highlight-background">
 												<input
 													type="number"
-													className="invisible-input"
+													className="form-control hidden-input h-30"
 													value={
 														material.id === this.state.focusedMaterial
 														? this.state.editedMaterialPrice
@@ -235,10 +216,10 @@ export default class Rozpocet extends Component {
 													}
 													/>
 											</td>
-											<td  style={{...tableStyle,...tableHighlightBackground}}>
+											<td className="table-highlight-background">
 												<input
 													type="number"
-													className="invisible-input"
+													className="form-control hidden-input h-30"
 													value={
 														parseInt(material.id === this.state.focusedMaterial
 															? this.state.editedMaterialMargin
@@ -263,7 +244,7 @@ export default class Rozpocet extends Component {
 														}
 														/>
 											</td>
-											<td style={tableStyleCenter}>
+											<td className="t-a-r">
 												<button className="btn btn-link waves-effect">
 													<i className="fa fa-arrow-up"  />
 												</button>
@@ -287,31 +268,29 @@ export default class Rozpocet extends Component {
 
 
 									<tr>
-										<td style={tableStyle}>
+										<td>
 										</td>
-										<td style={tableStyle}>
+										<td>
 											<input
 												type="text"
-												className="form-control mb-2"
+												className="form-control h-30"
 												id="inlineFormInput"
 												placeholder=""
 												value={this.state.newTitle}
 												onChange={(e)=>this.setState({newTitle:e.target.value})}
-												style={{ height: 30 }}
 												/>
 										</td>
-										<td style={tableStyle}>
+										<td >
 											<input
 												type="number"
 												value={this.state.newQuantity}
 												onChange={(e)=>this.setState({newQuantity:e.target.value})}
-												className="form-control mb-2"
+												className="form-control h-30"
 												id="inlineFormInput"
 												placeholder=""
-												style={{ height: 30 }}
 												/>
 										</td>
-										<td style={tableStyle} className="p-t-0">
+										<td>
 											<Select
 												value={this.state.newUnit}
 												onChange={(newUnit)=>{
@@ -319,18 +298,18 @@ export default class Rozpocet extends Component {
 												}
 											}
 											options={this.props.units}
-											styles={invisibleSelectStyle}
+											styles={selectStyle}
 											/>
 									</td>
-									<td style={tableStyle}>
+									<td>
 										{unitPrice.toFixed(2)}
 									</td>
-									<td style={tableStyle}>
+									<td>
 										{
 											(unitPrice*this.state.newQuantity).toFixed(2)
 										}
 									</td>
-									<td style={{tableStyle, ...tableHighlightBackground}}>
+									<td className="table-highlight-background">
 										<input
 											type="number"
 											value={this.state.newPrice}
@@ -346,24 +325,22 @@ export default class Rozpocet extends Component {
 													this.setState({newPrice});
 												}
 											}}
-											className="form-control"
+											className="form-control h-30"
 											id="inlineFormInput"
 											placeholder=""
-											style={{ height: 30 }}
 											/>
 									</td>
-									<td style={{tableStyle, ...tableHighlightBackground}}>
+									<td className="table-highlight-background">
 										<input
 											type="number"
 											value={this.state.newMargin}
 											onChange={(e)=>this.setState({newMargin:e.target.value,marginChanged:true})}
-											className="form-control invisible-input"
+											className="form-control h-30"
 											id="inlineFormInput"
 											placeholder=""
-											style={{ height: 30 }}
 											/>
 									</td>
-										<td style={{...tableStyleCenter}}>
+										<td className="t-a-r">
 											<button className="btn btn-link waves-effect"
 												disabled={this.state.newUnit===null}
 												onClick={()=>{

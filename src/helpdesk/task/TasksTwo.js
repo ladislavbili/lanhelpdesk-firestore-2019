@@ -88,8 +88,8 @@ class TasksRow extends Component {
 	render() {
 		return (
 			<div>
-				<div className="row p-0 taskList-container">
-					<div className="col-lg-4 p-0 scrollable fit-with-header-and-command-bar">
+				<div className="row taskList-container">
+					<div className="col-lg-4 scrollable fit-with-header-and-command-bar">
 						{
 							this.filterTasks(this.state.tasks).map((task)=>
 							<ul
@@ -108,16 +108,16 @@ class TasksRow extends Component {
 										<label>#{task.id} {task.title}</label>
 									</div>
 									<div>
-										<p className="pull-right font-13 small-p">
+										<p className="pull-right font-13 m-0">
 											<span className="label label-info">{task.status?task.status.title:'Neznámy status'}</span>
 										</p>
-										<p className="text-muted font-13 small-p">
+										<p className="text-muted font-13 m-0">
 											<span className="">Zadal: {task.requester?(task.requester.name+' '+task.requester.surname):'Neznámy používateľ'}</span>
 										</p>
-										<p className="pull-right font-13 small-p">
+										<p className="pull-right font-13 m-0">
 											<i className="fa fa-clock-o" /> <span>Created: {task.statusChange?timestampToString(task.statusChange):'None'}</span>
 										</p>
-										<p className="text-muted font-13 small-p">
+										<p className="text-muted font-13 m-0">
 											<span className="" style={{textOverflow: 'ellipsis'}}>Riesi: {task.assignedTo?task.assignedTo.reduce((total,user)=>total+=user.name+' '+user.surname+', ','').slice(0,-2):'Neznámy používateľ'}</span>
 										</p>
 									</div>
@@ -126,7 +126,7 @@ class TasksRow extends Component {
 										</p>
 										<div className="taskList-tags">
 											{task.tags.map((tag)=>
-												<span key={tag.id} className="label label-info">{tag.title}</span>
+												<span key={tag.id} className="label tag">{tag.title}</span>
 											)}
 										</div>
 								</li>
