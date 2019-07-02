@@ -194,6 +194,9 @@ export default class TasksTwoEdit extends Component {
     let project = projects.find((item)=>item.id===task.project);
     let status = statuses.find((item)=>item.id===task.status);
     let company = companies.find((item)=>item.id===task.company);
+		if(company===undefined){
+			company=companies[0];
+		}
     company = {...company,pricelist:pricelists.find((item)=>item.id===company.pricelist)};
     let requester = users.find((item)=>item.id===task.requester);
     let assignedTo = users.filter((user)=>task.assignedTo.includes(user.id));

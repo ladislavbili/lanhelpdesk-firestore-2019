@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import {rebase} from '../../index';
-import { connect } from "react-redux";
-import {timestampToString} from '../../helperFunctions';
 
 export default class TaskCol extends Component {
 	render() {
@@ -30,7 +27,7 @@ export default class TaskCol extends Component {
 					</div>
 					<div className="col-lg-8 p-0">
 						{
-							this.props.match.params.taskID && this.props.match.params.taskID!=='add' && this.props.data.some((item)=>item.id===this.props.match.params.taskID) &&
+							this.props.match.params.taskID && this.props.match.params.taskID!=='add' && this.props.data.some((item)=>item.id+""===this.props.match.params.taskID) &&
 							<this.props.edit match={this.props.match} columns={true} history={this.props.history} />
 						}
 

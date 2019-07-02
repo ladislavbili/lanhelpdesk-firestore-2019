@@ -47,3 +47,24 @@ export const getAttributeDefaultValue = (item) => {
 export const htmlFixNewLines = (text) => {
   return text.replace(/(?:\r\n|\r|\n)/g,'<br>');
 }
+
+export const getItemDisplayValue= (item,value) => {
+  if(!item[value.value]){
+    return 'Neexistuje';
+  }
+  if(value.type==='object'){
+    return item[value.value].title;
+  }else if(value.type==='text'){
+    return item[value.value];
+  }else if(value.type==='int'){
+    return parseInt(item[value.value]);
+  }else if(value.type==='list'){
+    return value.func(item[value.value]);
+  }else if(value.type==='date'){
+    return timestampToString(item[value.value]);
+  }else if(value.type==='user'){
+    return item[value.value].name+' '+item[value.value].surname + ' ('+item[value.value].email+')';
+  }else{
+    return 'Error'
+  }
+}

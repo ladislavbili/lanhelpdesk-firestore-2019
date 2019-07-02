@@ -2,3 +2,4 @@
 export * from './userActions';
 export * from './filterActions';
 export * from './appActions';
+export * from './tasksActions';

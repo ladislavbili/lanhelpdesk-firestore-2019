@@ -28,6 +28,8 @@ class TaskListContainer extends Component {
 					filterString+= item[value.value].title + " ";
 				}else if(value.type==='text'){
 					filterString+= item[value.value] + " ";
+				}else if(value.type==='int'){
+					filterString+= item[value.value] + " ";
 				}else if(value.type==='list'){
 					filterString+= item[value.value].reduce(value.func,'') + " ";
 				}else if(value.type==='date'){
@@ -37,8 +39,37 @@ class TaskListContainer extends Component {
 				}
 			});
 			return filterString.toLowerCase().includes(this.props.search.toLowerCase());
+		}).sort((item1,item2)=>{
+			let val1 = this.getSortValue(item1);
+			let val2 = this.getSortValue(item2);
+			if(this.props.ascending){
+				if(val1===null){
+					return 1;
 				}
-			);
+				return val1 > val2? 1 : -1;
+			}else{
+				if(val2===null){
+					return 1;
+				}
+				return val1 < val2? 1 : -1;
+			}
+		});
+	}
+	getSortValue(item){
+		let value = this.props.orderByValues.find((val)=>val.value===this.props.orderBy);
+		if(value.type==='object'){
+			return item[value.value]?item[value.value].title.toLowerCase():null;
+		}else if(value.type==='text'){
+			return item[value.value].toLowerCase();
+		}else if(value.type==='int'){
+			return item[value.value];
+		}else if(value.type==='list'){
+			return item[value.value].reduce(value.func,'').toLowerCase();
+		}else if(value.type==='date'){
+			return parseInt(item[value.value]?item[value.value]:null);
+		}else if(value.type==='user'){
+			return (item[value.value].name+' '+item[value.value].surname).toLowerCase();
+		}
 	}
 
 	render() {
@@ -89,6 +120,29 @@ class TaskListContainer extends Component {
 									</Button>
 								</div>
 							}
+							<select value={this.props.orderBy} onChange={(e)=>this.props.setOrderBy(e.target.value)}>
+								{
+									this.props.orderByValues.map((item,index)=>
+									<option value={item.value} key={index}>{item.label}</option>
+								)
+								}
+							</select>
+							{ !this.props.ascending &&
+								<button type="button" className="btn btn-link waves-effect" onClick={()=>this.props.setAscending(true)}>
+									<i
+										className="fas fa-arrow-up commandbar-command-icon icon-M"
+										/>
+								</button>
+							}
+
+							{ this.props.ascending &&
+								<button type="button" className="btn btn-link waves-effect" onClick={()=>this.props.setAscending(false)}>
+									<i
+										className="fas fa-arrow-down commandbar-command-icon icon-M"
+										/>
+								</button>
+						}
+
 							<div className="ml-auto p-2 align-self-center">
 								{this.props.extraCommands?this.props.extraCommands():null}
 								<div className="btn-group btn-group-toggle" data-toggle="buttons">

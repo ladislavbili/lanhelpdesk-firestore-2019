@@ -4,6 +4,7 @@ import {rebase} from '../../index';
 import ShowData from '../../components/showData';
 import {timestampToString} from '../../helperFunctions';
 import TaskEdit from './taskEdit';
+import {setTasksOrderBy, setTasksAscending} from '../../redux/actions';
 
 
 class TasksRow extends Component {
@@ -71,7 +72,8 @@ class TasksRow extends Component {
 				project:this.state.projects.find((project)=>project.id===task.project),
 				requester:this.state.users.find((user)=>user.id===task.requester),
 				tags:this.state.tags.filter((tag)=>task.tags && task.tags.includes(tag.id)),
-				assignedTo:this.state.users.filter((user)=>task.assignedTo && task.assignedTo.includes(user.id))
+				assignedTo:this.state.users.filter((user)=>task.assignedTo && task.assignedTo.includes(user.id)),
+				id:parseInt(task.id)
 			}
 		});
 
@@ -106,7 +108,7 @@ class TasksRow extends Component {
 					{value:'deadline',type:'date'},
 					{value:'status',type:'object'},
 					{value:'title',type:'text'},
-					{value:'id',type:'text'},
+					{value:'id',type:'int'},
 					{value:'company',type:'object'},
 				]}
 				displayCol={(task)=>
@@ -122,7 +124,7 @@ class TasksRow extends Component {
 								<span className="">Zadal: {task.requester?(task.requester.name+' '+task.requester.surname):'Neznámy používateľ'}</span>
 							</p>
 							<p className="pull-right m-b-0 font-13">
-								<i className="fa fa-clock-o" /> <span>Created: {task.statusChange?timestampToString(task.statusChange):'None'}</span>
+								<i className="fa fa-clock-o" /> <span>Created: {task.createdAt?timestampToString(task.createdAt):'None'}</span>
 							</p>
 							<p className="text-muted m-b-0 font-13">
 								<span className="" style={{textOverflow: 'ellipsis'}}>Riesi: {task.assignedTo?task.assignedTo.reduce((total,user)=>total+=user.name+' '+user.surname+', ','').slice(0,-2):'Neznámy používateľ'}</span>
@@ -139,7 +141,7 @@ class TasksRow extends Component {
 					</li>
 				}
 				displayValues={[
-					{value:'id',label:'ID',type:'text'},
+					{value:'id',label:'ID',type:'int'},
 					{value:'status',label:'Status',type:'object'},
 					{value:'title',label:'Title',type:'text'},
 					{value:'requester',label:'Requester',type:'user'},
@@ -161,19 +163,36 @@ class TasksRow extends Component {
 					},
 					{value:'deadline',label:'Deadline',type:'date'}
 				]}
+				orderByValues={[
+					{value:'id',label:'ID',type:'int'},
+					{value:'status',label:'Status',type:'object'},
+					{value:'title',label:'Title',type:'text'},
+					{value:'requester',label:'Requester',type:'user'},
+					{value:'company',label:'Company',type:'object'},
+					{value:'assignedTo',label:'Assigned to',type:'list',func:((total,user)=>total+=user.email+' '+user.name+' '+user.surname+' ')},
+					{value:'createdAt',label:'Created at',type:'date'},
+					{value:'tags',label:'Tags',type:'list',func:((cur,item)=>cur+item.title+' ')},
+					{value:'deadline',label:'Deadline',type:'date'}
+				]}
 				link={link}
 				history={this.props.history}
+				orderBy={this.props.orderBy}
+				setOrderBy={this.props.setTasksOrderBy}
+				ascending={this.props.ascending}
+				setAscending={this.props.setTasksAscending}
 				itemID={this.props.match.params.taskID}
 				match={this.props.match}
+				isTask={true}
 				edit={TaskEdit}
 				 />
 		);
 	}
 }
 
-const mapStateToProps = ({ filterReducer }) => {
+const mapStateToProps = ({ filterReducer, taskReducer }) => {
 	const { project, filter } = filterReducer;
-	return { project, filter };
+	const { orderBy, ascending } = taskReducer;
+	return { project, filter,orderBy,ascending };
 };
 
-export default connect(mapStateToProps, {  })(TasksRow);
+export default connect(mapStateToProps, { setTasksOrderBy, setTasksAscending })(TasksRow);
