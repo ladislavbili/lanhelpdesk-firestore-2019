@@ -6,7 +6,7 @@ const initialState = {
   userData:null
 };
 
-export default function userReducer(state = initialState, action) {
+export default function appReducer(state = initialState, action) {
   switch (action.type) {
     case SET_USER_DATA:
       return {

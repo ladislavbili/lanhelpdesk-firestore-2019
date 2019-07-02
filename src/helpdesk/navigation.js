@@ -5,7 +5,7 @@ import Sidebar from './Sidebar';
 import PageHeader from '../components/PageHeader';
 import Reports from './reports';
 
-import TaskList from './task/TaskList';
+import TaskList from './task/';
 
 import StatusList from './settings/statuses';
 import ProjectList from './settings/projects';
@@ -18,7 +18,6 @@ import SupplierList from './settings/suppliers';
 import SupplierInvoiceList from './settings/supplierInvoices';
 import TagList from './settings/tags';
 import TaskTypeList from './settings/taskTypes';
-
 
 export default class Navigation extends Component {
 	render() {
@@ -45,7 +44,6 @@ export default class Navigation extends Component {
 					<Route exact path="/helpdesk/Reports" component={Reports} />
 					<Route exact path="/helpdesk" component={TaskList} />
 					<Route exact path="/helpdesk/taskList" component={TaskList} />
-					<Route exact path="/helpdesk/taskList/:taskID" component={TaskList} />
 					<Route exact path="/helpdesk/taskList/i/:listID" component={TaskList} />
 					<Route exact path="/helpdesk/taskList/i/:listID/:taskID" component={TaskList} />
 

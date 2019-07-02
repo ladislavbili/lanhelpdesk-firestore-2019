@@ -7,3 +7,6 @@ export const SET_COMPANY = 'SET_COMPANY';
 export const SET_USER_DATA = 'SET_USER_DATA';
 export const SET_USER_ID = 'SET_USER_ID';
 export const DELETE_USER_DATA = 'DELETE_USER_DATA';
+
+
+export const SET_LAYOUT = 'SET_LAYOUT';

@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import {Button} from 'reactstrap';
-import {rebase} from '../../index';
 import ItemEdit from './itemEdit';
 import ItemView from './itemView';
 
