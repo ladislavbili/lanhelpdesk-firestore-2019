@@ -3,6 +3,7 @@ import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
 import Select from 'react-select';
 import {toSelArr, snapshotToArray} from '../../../helperFunctions';
 import {rebase,database} from '../../../index';
+import {selectStyle} from "../../../scss/selectStyles";
 
 export default class CompanyAdd extends Component{
   constructor(props){
@@ -46,37 +47,39 @@ export default class CompanyAdd extends Component{
 
   render(){
     return (
-      <div className="container-padding form-background card-box scrollable fit-with-header">
-        {
-          this.state.loading &&
-          <Alert color="success">
-            Loading data...
-          </Alert>
-        }
-        <FormGroup>
-          <Label for="name">Company name</Label>
-          <Input name="name" id="name" type="text" placeholder="Enter company name" value={this.state.companyName} onChange={(e)=>this.setState({companyName:e.target.value})} />
-        </FormGroup>
-        <FormGroup>
-          <Label for="pausal">Paušál</Label>
-          <Input name="pausal" id="pausal" type="number" placeholder="Enter pausal" value={this.state.pausal} onChange={(e)=>this.setState({pausal:e.target.value})} />
-        </FormGroup>
-        <FormGroup>
-          <Label for="pricelist">Pricelist</Label>
-          <Select
-            id="pricelist"
-            name="pausal"
-            className="supressDefaultSelectStyle"
-            options={this.state.pricelists}
-            value={this.state.pricelist}
-            onChange={e =>{ this.setState({ pricelist: e }); }}
-              />
-        </FormGroup>
-        <Button color="primary" className="separate" disabled={this.state.saving} onClick={()=>{
-            this.setState({saving:true});
-            rebase.addToCollection('/companies', {title:this.state.companyName,pricelist:this.state.pricelist.id})
-              .then(()=>{this.setState({companyName:'',pausal:this.state.pausal,pricelist:this.state.pricelists.length>0?this.state.pricelists[0]:null,saving:false})});
-          }}>{this.state.saving?'Adding...':'Add company'}</Button>
+      <div className="full-height card-box scrollable fit-with-header-and-commandbar">
+        <div className="m-t-20">
+          {
+            this.state.loading &&
+            <Alert color="success">
+              Loading data...
+            </Alert>
+          }
+          <FormGroup>
+            <Label for="name">Company name</Label>
+            <Input name="name" id="name" type="text" placeholder="Enter company name" value={this.state.companyName} onChange={(e)=>this.setState({companyName:e.target.value})} />
+          </FormGroup>
+          <FormGroup>
+            <Label for="pausal">Paušál</Label>
+            <Input name="pausal" id="pausal" type="number" placeholder="Enter pausal" value={this.state.pausal} onChange={(e)=>this.setState({pausal:e.target.value})} />
+          </FormGroup>
+          <FormGroup>
+            <Label for="pricelist">Pricelist</Label>
+            <Select
+              id="pricelist"
+              name="pausal"
+              styles={selectStyle}
+              options={this.state.pricelists}
+              value={this.state.pricelist}
+              onChange={e =>{ this.setState({ pricelist: e }); }}
+                />
+          </FormGroup>
+          <Button className="btn" disabled={this.state.saving} onClick={()=>{
+              this.setState({saving:true});
+              rebase.addToCollection('/companies', {title:this.state.companyName,pricelist:this.state.pricelist.id})
+                .then(()=>{this.setState({companyName:'',pausal:this.state.pausal,pricelist:this.state.pricelists.length>0?this.state.pricelists[0]:null,saving:false})});
+            }}>{this.state.saving?'Adding...':'Add company'}</Button>
+          </div>
       </div>
     );
   }

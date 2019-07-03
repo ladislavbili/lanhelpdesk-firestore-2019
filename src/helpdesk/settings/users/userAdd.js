@@ -4,6 +4,7 @@ import Select from 'react-select';
 import firebase from 'firebase';
 import {rebase, database} from '../../../index';
 import {snapshotToArray, isEmail} from '../../../helperFunctions';
+import {selectStyle} from "../../../scss/selectStyles";
 
 export default class UserAdd extends Component{
   constructor(props){
@@ -26,7 +27,8 @@ export default class UserAdd extends Component{
 
   render(){
     return (
-        <div className="container-padding form-background card-box scrollable fit-with-header">
+      <div className="full-height card-box scrollable fit-with-header-and-commandbar">
+        <div className="m-t-20">
           <FormGroup>
             <Label for="username">Username</Label>
             <Input type="text" name="username" id="username" placeholder="Enter username" value={this.state.username} onChange={(e)=>this.setState({username:e.target.value})} />
@@ -50,7 +52,7 @@ export default class UserAdd extends Component{
           <FormGroup>
             <Label for="company">Company</Label>
             <Select
-              className="supressDefaultSelectStyle"
+              styles={selectStyle}
               options={
                 this.state.companies.map(company => {
                 company.label = company.title;
@@ -62,23 +64,24 @@ export default class UserAdd extends Component{
               />
           </FormGroup>
 
-        <Button color="primary" className="separate" disabled={this.state.saving|| this.state.companies.length===0||!isEmail(this.state.email)||this.state.password.length < 6 } onClick={()=>{
-            this.setState({saving:true});
-            firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).then((user)=>{
-              rebase.addToCollection('/users', {username:this.state.username,name:this.state.name,surname:this.state.surname,email:this.state.email,company:this.state.company.id},user.user.uid)
-              .then(()=>{
-                let company = {...this.state.companies[0],label:this.state.companies[0].title,value:this.state.companies[0].id};
-                this.setState({
-                  username:'',
-                  name:'',
-                  surname:'',
-                  email:'',
-                  company,
-                  saving:false
+          <Button className="btn" disabled={this.state.saving|| this.state.companies.length===0||!isEmail(this.state.email)||this.state.password.length < 6 } onClick={()=>{
+              this.setState({saving:true});
+              firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).then((user)=>{
+                rebase.addToCollection('/users', {username:this.state.username,name:this.state.name,surname:this.state.surname,email:this.state.email,company:this.state.company.id},user.user.uid)
+                .then(()=>{
+                  let company = {...this.state.companies[0],label:this.state.companies[0].title,value:this.state.companies[0].id};
+                  this.setState({
+                    username:'',
+                    name:'',
+                    surname:'',
+                    email:'',
+                    company,
+                    saving:false
+                  });
                 });
               });
-            });
-          }}>{this.state.saving?'Adding...':'Add user'}</Button>
+            }}>{this.state.saving?'Adding...':'Add user'}</Button>
+        </div>
       </div>
     );
   }

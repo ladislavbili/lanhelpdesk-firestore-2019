@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {rebase} from '../../../index';
 import PriceAdd from './priceAdd';
 import PriceEdit from './priceEdit';
+import {Button } from 'reactstrap';
 
 export default class PriceList extends Component{
   constructor(props){
@@ -24,52 +25,66 @@ export default class PriceList extends Component{
 
   render(){
     return (
-      <div className="row">
-        <div className="col-lg-4">
-          <div className="card-box fit-with-header scrollable">
-          <div className="input-group">
-            <input
-              type="text"
-              onChange={(e)=>this.setState({pricelistFilter:e.target.value})}
-              className="form-control"
-              placeholder="Search task name"
-              style={{ width: 200 }}
-            />
-            <div className="input-group-append">
-              <button className="btn btn-white" type="button">
-                <i className="fa fa-search" />
-              </button>
+      <div className="content-page">
+				<div className="content" style={{ paddingTop: 0 }}>
+					<div className="container-fluid">
+						<div className="d-flex flex-row align-items-center">
+              <div className="p-2">
+                <div className="input-group">
+                  <input
+                    type="text"
+                    onChange={(e)=>this.setState({pricelistFilter:e.target.value})}
+                    className="form-control commandbar-search"
+                    placeholder="Search task name"
+                    style={{ width: 200 }}
+                  />
+                  <div className="input-group-append">
+                    <button className="commandbar-btn-search" type="button">
+                      <i className="fa fa-search" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <Button
+                className="btn-link t-a-l sidebar-menu-item"
+                onClick={()=>this.props.history.push('/helpdesk/settings/pricelists/add')}>
+               <i className="fa fa-plus sidebar-icon-center"/> Add new pricelist
+              </Button>
+
             </div>
           </div>
 
-          <div className="table-responsive">
-            <table className="table table-hover mails m-0">
-            <thead>
-              <tr className="clickable">
-                <th>Price list</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="clickable" onClick={()=>this.props.history.push('/helpdesk/settings/pricelists/add')}>
-                <td>+ Add new pricelist</td>
-              </tr>
-              {this.state.pricelist.filter((item)=>item.title.toLowerCase().includes(this.state.pricelistFilter.toLowerCase())).map((pricelist)=>
-                <tr key={pricelist.id} className="clickable" onClick={()=>{this.props.history.push('/helpdesk/settings/pricelists/'+pricelist.id)}}>
-                  <td>{pricelist.title}</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-        </div>
-        <div className="col-lg-8 p-0">
-          {
-            this.props.match.params.id && this.props.match.params.id==='add' && <PriceAdd />
-          }
-          {
-            this.props.match.params.id && this.props.match.params.id!=='add' && this.state.pricelist.some((item)=>item.id===this.props.match.params.id) && <PriceEdit match={this.props.match} history={this.props.history}/>
-          }
+          <div className="row m-0 p-0 taskList-container">
+            <div className="col-lg-4 p-0 scrollable fit-with-header-and-command-bar">
+              <table className="table table-hover p-5">
+                <thead>
+                  <tr>
+                    <th>Price list</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.state.pricelist.filter((item)=>item.title.toLowerCase().includes(this.state.pricelistFilter.toLowerCase())).map((pricelist)=>
+                    <tr key={pricelist.id}
+                      className={"clickable" + (this.props.match.params.id === pricelist.id ? " sidebar-item-active":"")}
+                      onClick={()=>{this.props.history.push('/helpdesk/settings/pricelists/'+pricelist.id)}}>
+                      <td className={(this.props.match.params.id === pricelist.id ? "text-highlight":"")}>
+                        {pricelist.title}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <div className="col-lg-8 p-0">
+              {
+                this.props.match.params.id && this.props.match.params.id==='add' && <PriceAdd />
+              }
+              {
+                this.props.match.params.id && this.props.match.params.id!=='add' && this.state.pricelist.some((item)=>item.id===this.props.match.params.id) && <PriceEdit match={this.props.match} history={this.props.history}/>
+              }
+            </div>
+          </div>
         </div>
       </div>
     );

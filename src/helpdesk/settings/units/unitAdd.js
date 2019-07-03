@@ -14,11 +14,12 @@ export default class UnitAdd extends Component{
 
   render(){
     return (
-        <div className="container-padding form-background card-box scrollable fit-with-header">
+      <div className="full-height card-box scrollable fit-with-header-and-commandbar">
+        <div className="m-t-20">
 
-        <FormGroup check>
+        <FormGroup check className="m-b-5">
+          <Input type="checkbox" checked={this.state.def} onChange={(e)=>this.setState({def:!this.state.def})}/>
           <Label check>
-            <Input type="checkbox" checked={this.state.def} onChange={(e)=>this.setState({def:!this.state.def})}/>
             Default
           </Label>
         </FormGroup>
@@ -28,7 +29,7 @@ export default class UnitAdd extends Component{
           <Input type="text" name="name" id="name" placeholder="Enter unit name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
         </FormGroup>
 
-        <Button color="primary" className="separate" disabled={this.state.saving} onClick={()=>{
+        <Button className="btn" disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
             rebase.addToCollection('/help-units', {title:this.state.title})
               .then((response)=>{
@@ -38,7 +39,8 @@ export default class UnitAdd extends Component{
                 this.setState({title:'',saving:false})
               });
           }}>{this.state.saving?'Adding...':'Add unit'}</Button>
-      </div>
+        </div>
+    </div>
     );
   }
 }

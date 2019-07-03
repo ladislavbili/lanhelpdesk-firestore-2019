@@ -3,6 +3,7 @@ import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
 import Select from 'react-select';
 import {rebase,database} from '../../../index';
 import {toSelArr,snapshotToArray} from '../../../helperFunctions';
+import {selectStyle} from "../../../scss/selectStyles";
 
 export default class CompanyEdit extends Component{
   constructor(props){
@@ -47,7 +48,8 @@ export default class CompanyEdit extends Component{
 
   render(){
     return (
-      <div className="container-padding form-background card-box scrollable fit-with-header">
+      <div className="full-height card-box scrollable fit-with-header-and-commandbar">
+        <div className="m-t-20">
         {
           this.state.loading &&
           <Alert color="success">
@@ -67,19 +69,19 @@ export default class CompanyEdit extends Component{
           <Select
             id="pricelist"
             name="pausal"
-            className="supressDefaultSelectStyle"
+            styles={selectStyle}
             options={this.state.pricelists}
             value={this.state.pricelist}
             onChange={e =>{ this.setState({ pricelist: e }); }}
               />
         </FormGroup>
-        <Button color="success" className="separate" disabled={this.state.saving} onClick={()=>{
+        <Button className="btn" disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
             rebase.updateDoc('/companies/'+this.props.match.params.id, {title:this.state.companyName,pausal:this.state.pausal,pricelist:this.state.pricelist.id})
               .then(()=>{this.setState({saving:false})});
           }}>{this.state.saving?'Saving company...':'Save company'}</Button>
 
-        <Button color="danger" className="separate" disabled={this.state.saving} onClick={()=>{
+        <Button className="btn-link" disabled={this.state.saving} onClick={()=>{
             if(window.confirm("Are you sure?")){
               rebase.removeDoc('/companies/'+this.props.match.params.id).then(()=>{
                 this.props.history.goBack();
@@ -87,7 +89,7 @@ export default class CompanyEdit extends Component{
             }
             }}>Delete</Button>
 
-
+          </div>
       </div>
     );
   }

@@ -31,30 +31,32 @@ export default class WorkTypeEdit extends Component{
 
   render(){
     return (
-        <div className="container-padding form-background card-box scrollable fit-with-header">
-        {
-          this.state.loading &&
-          <Alert color="success">
-            Loading data...
-          </Alert>
-        }
-        <FormGroup>
-          <Label for="name">WorkType name</Label>
-          <Input type="text" name="name" id="name" placeholder="Enter work type name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
-        </FormGroup>
+      <div className="full-height card-box scrollable fit-with-header-and-commandbar">
+        <div className="m-t-20">
+          {
+            this.state.loading &&
+            <Alert color="success">
+              Loading data...
+            </Alert>
+          }
+          <FormGroup>
+            <Label for="name">WorkType name</Label>
+            <Input type="text" name="name" id="name" placeholder="Enter work type name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
+          </FormGroup>
 
-        <Button color="success" className="separate" disabled={this.state.saving} onClick={()=>{
-            this.setState({saving:true});
-            rebase.updateDoc('/help-work_types/'+this.props.match.params.id, {title:this.state.title})
-              .then(()=>{this.setState({saving:false})});
-          }}>{this.state.saving?'Saving work type...':'Save work type'}</Button>
-        <Button color="danger" className="separate" disabled={this.state.saving} onClick={()=>{
+          <Button className="btn" disabled={this.state.saving} onClick={()=>{
+              this.setState({saving:true});
+              rebase.updateDoc('/help-work_types/'+this.props.match.params.id, {title:this.state.title})
+                .then(()=>{this.setState({saving:false})});
+            }}>{this.state.saving?'Saving work type...':'Save work type'}</Button>
+          <Button className="btn-link" disabled={this.state.saving} onClick={()=>{
               if(window.confirm("Are you sure?")){
                 rebase.removeDoc('/help-work_types/'+this.props.match.params.id).then(()=>{
                   this.props.history.goBack();
                 });
               }
-              }}>Delete</Button>
+            }}>Delete</Button>
+        </div>
       </div>
     );
   }

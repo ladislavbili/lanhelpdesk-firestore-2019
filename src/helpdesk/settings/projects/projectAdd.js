@@ -13,16 +13,18 @@ export default class ProjectAdd extends Component{
 
   render(){
     return (
-        <div className="container-padding form-background card-box scrollable fit-with-header">
-        <FormGroup>
-          <Label for="name">Project name</Label>
-          <Input type="text" name="name" id="name" placeholder="Enter project name" value={this.state.projectName} onChange={(e)=>this.setState({projectName:e.target.value})} />
-        </FormGroup>
-        <Button color="primary" className="separate" disabled={this.state.saving} onClick={()=>{
-            this.setState({saving:true});
-            rebase.addToCollection('/help-projects', {title:this.state.projectName})
-              .then(()=>{this.setState({projectName:'',saving:false})});
-          }}>{this.state.saving?'Adding...':'Add project'}</Button>
+      <div className="full-height card-box scrollable fit-with-header-and-commandbar">
+        <div className="m-t-20">
+          <FormGroup>
+            <Label for="name">Project name</Label>
+            <Input type="text" name="name" id="name" placeholder="Enter project name" value={this.state.projectName} onChange={(e)=>this.setState({projectName:e.target.value})} />
+          </FormGroup>
+          <Button className="btn" className="separate" disabled={this.state.saving} onClick={()=>{
+              this.setState({saving:true});
+              rebase.addToCollection('/help-projects', {title:this.state.projectName})
+                .then(()=>{this.setState({projectName:'',saving:false})});
+            }}>{this.state.saving?'Adding...':'Add project'}</Button>
+        </div>
       </div>
     );
   }

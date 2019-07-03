@@ -31,7 +31,8 @@ export default class WorkTypeEdit extends Component{
 
   render(){
     return (
-        <div className="container-padding form-background card-box scrollable fit-with-header">
+      <div className="full-height card-box scrollable fit-with-header-and-commandbar">
+        <div className="m-t-20">
         {
           this.state.loading &&
           <Alert color="success">
@@ -42,19 +43,20 @@ export default class WorkTypeEdit extends Component{
           <Label for="name">Tag name</Label>
           <Input type="text" name="name" id="name" placeholder="Enter tag name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
         </FormGroup>
-        <Button color="success" className="separate" disabled={this.state.saving} onClick={()=>{
+        <Button className="btn"  disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
             rebase.updateDoc('/help-tags/'+this.props.match.params.id, {title:this.state.title})
               .then(()=>{this.setState({saving:false})});
           }}>{this.state.saving?'Saving tag...':'Save tag'}</Button>
-        <Button color="danger" className="separate" disabled={this.state.saving} onClick={()=>{
+        <Button className="btn-link"  disabled={this.state.saving} onClick={()=>{
               if(window.confirm("Are you sure?")){
                 rebase.removeDoc('/help-tags/'+this.props.match.params.id).then(()=>{
                   this.props.history.goBack();
                 });
               }
               }}>Delete</Button>
-      </div>
+            </div>
+        </div>
     );
   }
 }

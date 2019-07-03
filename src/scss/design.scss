@@ -15,8 +15,9 @@
 - col-md-3
 - col-lg-12
 - col-lg-6
-- justify-content-end
+- justify-content-xxxx
 - table-hover
+- input-group-append
 */
 
 
@@ -67,6 +68,9 @@ html{
 }
 .text-basic{
   color: $main-font-color;
+}
+.text-highlight{
+  color: $basic-button-color !important;
 }
 .font-13 {
     font-size: 13px;
@@ -153,6 +157,9 @@ html{
 }
 .m-t-5{
 	margin-top: 5px;
+}
+.m-t-20 {
+    margin-top: 20px;
 }
 .m-t-30 {
     margin-top: 30px;
