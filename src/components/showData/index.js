@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import TaskCol from './taskCol';
 import TaskList from './taskList';
-import TaskBoard from './taskList';
+//import TaskBoard from './taskList';
 import {Button} from 'reactstrap';
 import { connect } from "react-redux";
 import {timestampToString} from '../../helperFunctions';
@@ -68,7 +68,7 @@ class TaskListContainer extends Component {
 		}else if(value.type==='date'){
 			return parseInt(item[value.value]?item[value.value]:null);
 		}else if(value.type==='user'){
-			return (item[value.value].name+' '+item[value.value].surname).toLowerCase();
+			return (item[value.value].surname+' '+item[value.value].name).toLowerCase();
 		}
 	}
 
@@ -88,7 +88,7 @@ class TaskListContainer extends Component {
 										className="form-control commandbar-search"
 										value={this.state.search}
 										onChange={(e)=>this.setState({search:e.target.value})}
-										placeholder="Search task name"
+										placeholder="Search here"
 										style={{ width: 200 }}
 									/>
 									<div className="input-group-append">
@@ -196,7 +196,7 @@ class TaskListContainer extends Component {
 					<div className="row m-0">
 						{this.props.layout === 0 && (
 							<div className={'' + (this.state.filterView ? 'col-xl-9' : 'col-xl-12')}>
-								<TaskCol history={this.props.history} match={this.props.match} data={this.filterData()} displayValues={this.props.displayValues} itemID={this.props.itemID} link={this.props.link} displayCol={this.props.displayCol} edit={this.props.edit}/>
+								<TaskCol history={this.props.history} match={this.props.match} data={this.filterData()} displayValues={this.props.displayValues} itemID={this.props.itemID} listID={this.props.listID} link={this.props.link} displayCol={this.props.displayCol} edit={this.props.edit}/>
 							</div>
 						)}
 
@@ -204,15 +204,15 @@ class TaskListContainer extends Component {
 						{this.props.layout === 1 && (
 							<div className={'' + (this.state.filterView ? 'col-xl-9' : 'col-xl-12')}>
 								{this.props.itemID && <this.props.edit match={this.props.match} columns={false} history={this.props.history} />}
-								{!this.props.itemID && <TaskList history={this.props.history} match={this.props.match} data={this.filterData()} displayValues={this.props.displayValues} link={this.props.link}/>}
+								{!this.props.itemID && <TaskList history={this.props.history} match={this.props.match} data={this.filterData()} itemID={this.props.itemID} listID={this.props.listID} displayValues={this.props.displayValues} link={this.props.link}/>}
 							</div>
 						)}
 
-						{this.props.layout === 2 && (
+						{/*this.props.layout === 2 && false && (
 							<div className={'' + (this.state.filterView ? 'col-xl-9' : 'col-xl-12')}>
 								<TaskBoard history={this.props.history} match={this.props.match} data={this.filterData()} displayValues={this.props.displayValues} link={this.props.link}/>
 							</div>
-						)}
+						)*/}
 					</div>
 				</div>
 			</div>

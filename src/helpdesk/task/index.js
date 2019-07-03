@@ -168,7 +168,6 @@ class TasksRow extends Component {
 					{value:'status',label:'Status',type:'object'},
 					{value:'title',label:'Title',type:'text'},
 					{value:'requester',label:'Requester',type:'user'},
-					{value:'company',label:'Company',type:'object'},
 					{value:'assignedTo',label:'Assigned to',type:'list',func:((total,user)=>total+=user.email+' '+user.name+' '+user.surname+' ')},
 					{value:'createdAt',label:'Created at',type:'date'},
 					{value:'tags',label:'Tags',type:'list',func:((cur,item)=>cur+item.title+' ')},
@@ -181,6 +180,7 @@ class TasksRow extends Component {
 				ascending={this.props.ascending}
 				setAscending={this.props.setTasksAscending}
 				itemID={this.props.match.params.taskID}
+				listID={this.props.match.params.listID}
 				match={this.props.match}
 				isTask={true}
 				edit={TaskEdit}
