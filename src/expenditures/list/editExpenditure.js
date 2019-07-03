@@ -50,38 +50,19 @@ export default class EditFolder extends Component{
         folder: folders.filter(f => f.id === instance.folder)[0],
         price:  instance.price,
         repeat:  REPEAT.filter(r => r.label === instance.repeat)[0],
-        startDate:  instance.startDate,
+  			startDate: instance.startDate!==null?new Date(instance.startDate).toISOString().replace('Z',''):'',
         note: instance.note,
         folders
       });
     });
   }
-  /*
-  rebase.get('expenditures-instances/'+id, {
-    context: this,
-  }).then((instance) => {
-    rebase.get('expenditures-folders', {
-      context: this,
-      withIds: true,
-    }).then((content) => {
-      let folders = content.map(f => {
-      let newF = {...f};
-      newF["value"] = f.id;
-      newF["label"] = f.title;
-      return newF;
-    });
-      this.setState({
-        title:  instance.title,
-        folder: instance.folder,
-        price:  instance.price,
-        repeat:  instance.repeat,
-        startDate:  instance.startDate,
-        note: instance.note,
-        folders
-      });
-    })
-  });
-  */
+
+  componentWillReceiveProps(props){
+    if(this.props.match.params.expID!==props.match.params.expID){
+      this.fetch(props.match.params.expID);
+    }
+  }
+
 
 
   render(){
@@ -119,7 +100,7 @@ export default class EditFolder extends Component{
 
           <FormGroup>
             <Label>Začiatočný dátum</Label>
-            <Input type="date" placeholder="Expiration date" value={this.state.startDate} onChange={(e)=>this.setState({startDate:e.target.value})} />
+            <Input type="datetime-local" placeholder="Expiration date" value={this.state.startDate} onChange={(e)=>this.setState({startDate:e.target.value})} />
           </FormGroup>
 
           <FormGroup>
@@ -136,13 +117,12 @@ export default class EditFolder extends Component{
               folder: this.state.folder.id,
               repeat:this.state.repeat.label,
               price: this.state.price,
-              startDate: this.state.startDate,
+              startDate: isNaN(new Date(this.state.startDate).getTime()) ? null : (new Date(this.state.startDate).getTime()),
               note: this.state.note,
             };
             rebase.updateDoc('expenditures-instances/'+this.props.match.params.expID, body)
               .then((response)=>{
                 this.setState({saving:false});
-                this.props.history.goBack();
               });
           }}>{this.state.saving?'Saving...':'Save'}</Button>
         </div>

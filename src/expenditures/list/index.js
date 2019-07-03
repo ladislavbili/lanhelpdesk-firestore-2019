@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
-import {Button} from 'reactstrap';
 import {rebase} from '../../index';
+import { connect } from "react-redux";
+import ShowData from '../../components/showData';
+import EditExpenditure from './editExpenditure';
+import {timestampToString} from '../../helperFunctions';
+import {setExpendituresOrderBy, setExpendituresAscending} from '../../redux/actions';
 
-export default class Sidebar extends Component {
+class List extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -11,16 +15,19 @@ export default class Sidebar extends Component {
 		};
 		this.ref=null;
 		this.fetchData.bind(this);
-		this.fetchData(this.props.match.params.id);
+		this.fetchData(this.props.match.params.listID);
 	}
 
 	componentWillReceiveProps(props){
-		if(this.props.match.params.id!==props.match.params.id){
-			this.fetchData(props.match.params.id);
+		if(this.props.match.params.listID!==props.match.params.listID){
+			this.fetchData(props.match.params.listID);
 		}
 	}
 
 	fetchData(id){
+		if(this.ref!==null){
+			rebase.removeBinding(this.ref);
+		}
 		this.ref = rebase.listenToCollection('/expenditures-instances', {
 			context: this,
 			withIds: true,
@@ -34,7 +41,6 @@ export default class Sidebar extends Component {
 	}
 
 	getData(){
-
 		return this.state.instances.filter((item)=>
 			(item.title.toLowerCase().includes(this.state.search.toLowerCase()))||
 			(item.URL.toLowerCase().includes(this.state.search.toLowerCase()))||
@@ -45,55 +51,70 @@ export default class Sidebar extends Component {
 
 
 	render() {
-		return (
-			<div>
-				<div className="commandbar row">
-					<div className="commandbar-item ml-2">
-						<input
-							type="text"
-							value={this.state.search}
-							className="form-control command-search"
-							onChange={(e)=>this.setState({search:e.target.value})}
-							placeholder="Search" />
-					</div>
-					<Button color="primary" className="mb-auto mt-auto" onClick={()=>{
-							this.props.history.push('/expenditures/'+this.props.match.params.id+'/add');
-						}}>
-						<i className="fa fa-plus clickable pr-2"/>
-						Náklad
-					</Button>
-				</div>
-				<div className="fit-with-header scrollable">
-					<h1>Náklady</h1>
-						<table className="table table-centered table-borderless table-hover mb-0">
-							<thead className="thead-light">
-								<tr>
-									<th>Dátum</th>
-									<th>Názov</th>
-									<th>Opakovanie</th>
-									<th>Cena</th>
-								</tr>
-							</thead>
-							<tbody>
-								{
-									this.state.instances
-									.filter(i => i.title.toLowerCase().includes(this.state.search.toLowerCase())
-															|| i.repeat.toLowerCase().includes(this.state.search.toLowerCase())
-														 	|| i.price.toLowerCase().includes(this.state.search.toLowerCase())
-															|| i.startDate.toLowerCase().includes(this.state.search.toLowerCase()))
-									.map((item)=>
-										<tr key={item.id} className="clickable" onClick={()=>this.props.history.push('/expenditures/'+this.props.match.params.id+'/edit/'+item.id)}>
-											<td >{item.startDate}</td>
-											<td>{item.title}</td>
-											<td>{item.repeat}</td>
-											<td>{item.price}</td>
-										</tr>
-									)
-								}
-							</tbody>
-						</table>
-				</div>
-			</div>
-			);
+		let link='';
+		if(this.props.match.params.hasOwnProperty('listID')){
+			link = '/expenditures/i/'+this.props.match.params.listID;
+		}else{
+			link = '/expenditures'
+		}
+		return(
+			<ShowData
+				data={this.state.instances}
+				filterBy={[
+					{value:'title',type:'text'},
+					{value:'startDate',type:'date'},
+					{value:'repeat',type:'text'},
+					{value:'price',type:'text'},
+				]}
+				displayCol={(expenditure)=>
+					<li className="" >
+						<div className="m-b-0">
+							<label>{expenditure.title}</label>
+							<div className="m-t-5">
+								<p className="pull-right m-b-0 font-13">
+									<i className="fa fa-clock-o" /> <span>Start: {expenditure.startDate?timestampToString(expenditure.startDate):'None'}</span>
+								</p>
+								<p className="text-muted m-b-0 font-13">
+									<span className="">Opakovanie: {expenditure.repeat?expenditure.repeat:'Žiadne'}</span>
+								</p>
+								<p className="text-muted m-b-0 font-13">
+									<span className="">Cena: {expenditure.price?expenditure.price:'Nezadaná'}</span>
+								</p>
+							</div>
+						</div>
+					</li>
+				}
+				displayValues={[
+					{value:'startDate',label:'Start date',type:'date'},
+					{value:'title',label:'Title',type:'text'},
+					{value:'repeat',label:'Repeat',type:'text'},
+					{value:'price',label:'Price',type:'text'},
+				]}
+				orderByValues={[
+					{value:'startDate',label:'Start Date',type:'date'},
+					{value:'title',label:'Title',type:'text'},
+					{value:'repeat',label:'Repeat',type:'text'},
+					{value:'price',label:'Price',type:'text'},
+				]}
+				link={link}
+				history={this.props.history}
+				orderBy={this.props.orderBy}
+				setOrderBy={this.props.setExpendituresOrderBy}
+				ascending={this.props.ascending}
+				setAscending={this.props.setExpendituresAscending}
+				itemID={this.props.match.params.expID}
+				listID={this.props.match.params.listID}
+				match={this.props.match}
+				edit={EditExpenditure}
+				 />
+		)
 		}
 	}
+
+	const mapStateToProps = ({ filterReducer, expenditureReducer }) => {
+		const { project, filter } = filterReducer;
+		const { orderBy, ascending } = expenditureReducer;
+		return { project, filter,orderBy,ascending };
+	};
+
+	export default connect(mapStateToProps, { setExpendituresOrderBy, setExpendituresAscending })(List);

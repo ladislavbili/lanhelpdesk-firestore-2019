@@ -9,15 +9,11 @@ export default class TaskCol extends Component {
 						{
 							this.props.data.map((item)=>
 							<ul
-								className={"taskList list-unstyled clickable"+(this.props.match.params.taskID===item.id?' active selected-item':'')}
+								className={"taskList list-unstyled clickable"+(this.props.itemID===item.id?' active selected-item':'')}
 								id="upcoming"
 								onClick={()=>{
-									if(this.props.match.params.listID){
-										this.props.history.push('/helpdesk/taskList/i/'+this.props.match.params.listID+'/'+item.id);
-									}else{
-										this.props.history.push('/helpdesk/taskList/'+item.id)}
-									}
-								}
+									this.props.history.push(this.props.link+'/'+item.id);
+								}}
 								key={item.id}>
 								{this.props.displayCol(item)}
 							</ul>
@@ -27,7 +23,7 @@ export default class TaskCol extends Component {
 					</div>
 					<div className="col-lg-8 p-0">
 						{
-							this.props.match.params.taskID && this.props.match.params.taskID!=='add' && this.props.data.some((item)=>item.id+""===this.props.match.params.taskID) &&
+							this.props.itemID && this.props.itemID!=='add' && this.props.data.some((item)=>item.id+""===this.props.itemID) &&
 							<this.props.edit match={this.props.match} columns={true} history={this.props.history} />
 						}
 

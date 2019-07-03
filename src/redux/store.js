@@ -3,6 +3,7 @@ import ReduxThunk from 'redux-thunk';
 
 import taskReducer from './reducers/taskReducer';
 import appReducer from './reducers/appReducer';
+import expenditureReducer from './reducers/expenditureReducer';
 import userReducer from './reducers/userReducer';
 import filterReducer from './reducers/filterReducer';
 
@@ -11,6 +12,7 @@ const reducers = combineReducers({
     userReducer,
     filterReducer,
     taskReducer,
+    expenditureReducer,
   });
 
 const enhancers = compose(
