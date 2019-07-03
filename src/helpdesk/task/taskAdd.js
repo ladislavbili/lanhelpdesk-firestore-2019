@@ -233,11 +233,11 @@ export default class TaskAdd extends Component{
 			</Button>
 
 
-			<Modal size="lg" isOpen={this.state.openAddTaskModal} toggle={()=>{this.setState({openAddTaskModal:!this.state.openAddTaskModal})}} >
-					<ModalHeader toggle={()=>{this.setState({openAddTaskModal:!this.state.openAddTaskModal})}} ><h1 className="m-l-10">Add task</h1></ModalHeader>
+			<Modal size="lg"  isOpen={this.state.openAddTaskModal} toggle={()=>{this.setState({openAddTaskModal:!this.state.openAddTaskModal})}} >
+					<ModalHeader toggle={()=>{this.setState({openAddTaskModal:!this.state.openAddTaskModal})}} ></ModalHeader>
 					<ModalBody>
 					<div className="scrollable">
-						<div className="card-box p-t-0 form">
+						<div className="p-t-0">
 								<div className="row">
 									<h1 className="center-hor"># NEW</h1>
 									<span className="center-hor">

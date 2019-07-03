@@ -75,11 +75,8 @@ class TaskListContainer extends Component {
 	render() {
 		return (
 			<div className="content-page">
-
 				<div className="content" style={{ paddingTop: 0 }}>
-
 					<div className="container-fluid">
-
 						<div className="d-flex flex-row align-items-center">
 							<div className="p-2">
 								<div className="input-group">
@@ -89,7 +86,6 @@ class TaskListContainer extends Component {
 										value={this.state.search}
 										onChange={(e)=>this.setState({search:e.target.value})}
 										placeholder="Search task name"
-										style={{ width: 200 }}
 									/>
 									<div className="input-group-append">
 										<button className="commandbar-btn-search" type="button" onClick={()=>this.props.setSearch(this.state.search)}>

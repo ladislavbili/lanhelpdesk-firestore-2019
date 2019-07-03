@@ -72,7 +72,9 @@ class Sidebar extends Component {
 					<SelectPage />
 				<div className="scrollable fit-with-header">
 					<div>
-						<TaskAdd history={this.props.history} />
+						<div className="m-t-5 m-b-5">
+							<TaskAdd history={this.props.history} />
+						</div>
 						<hr/>
 						<li>
 							<Select
@@ -92,14 +94,14 @@ class Sidebar extends Component {
 								}}
 								/>
 						</li>
-							<hr />
-							<Nav tabs className="sidebar-edit">
+						<hr />
+							<Nav tabs className="sidebar-filter">
 								<NavItem>
 									<NavLink
-										className={classnames({ active: this.state.activeTab === 0 })}
+										className={"sidebar-filter-navlink " + classnames({ active: this.state.activeTab === 0 })}
 										onClick={() => this.setState({activeTab:0})}
 										>
-										FILTERS
+										<i className="fas fa-filter sidebar-icon-center" ></i> Filters
 									</NavLink>
 								</NavItem>
 								<NavItem>
@@ -107,15 +109,16 @@ class Sidebar extends Component {
 										className={classnames({ active: this.state.activeTab === 1 })}
 										onClick={() => this.setState({activeTab:1})}
 										>
-										EDIT
+										Edit
 									</NavLink>
 								</NavItem>
 							</Nav>
-							<TabContent activeTab={this.state.activeTab} className="sidebar-edit">
+							<TabContent activeTab={this.state.activeTab}>
 								<TabPane tabId={0} >
-									<Nav vertical>
+									<Nav vertical className="sidebar-filter-items">
 										<NavItem>
-											<Link className="text-basic" to={{ pathname: `/helpdesk/taskList/i/all` }} onClick={()=>{
+											<Link className={this.props.location.pathname.includes("/helpdesk/taskList/i/all") ? "text-basic sidebar-align sidebar-item-active" : "text-basic sidebar-align"}
+												to={{ pathname: `/helpdesk/taskList/i/all` }} onClick={()=>{
 													this.setState({filterID:null,filterData:null});
 													this.props.setFilter({
 														status:null,
@@ -132,7 +135,8 @@ class Sidebar extends Component {
 										{
 											this.state.filters.map((item)=>
 											<NavItem key={item.id}>
-												<Link className="text-basic" to={{ pathname: `/helpdesk/taskList/i/`+item.id }} onClick={()=>{
+												<Link className={this.props.location.pathname.includes(`/helpdesk/taskList/i/`+item.id) ? "text-basic sidebar-align sidebar-item-active" : "text-basic sidebar-align"}
+													to={{ pathname: `/helpdesk/taskList/i/`+item.id }} onClick={()=>{
 														this.setState({filterID:item.id,filterData:item});
 														this.props.setFilter({
 															...item.filter,
@@ -152,7 +156,9 @@ class Sidebar extends Component {
 							</TabContent>
 							<hr />
 							<li>
+								<div className="m-t-5 m-b-5">
 									<ProjectAdd />
+								</div>
 							</li>
 						</div>
 					</div>

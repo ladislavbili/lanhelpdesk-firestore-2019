@@ -29,8 +29,9 @@ body{
 
 .container-fluid{
   background-color: $main-background-color;
-  padding: 5px 20px 5px 5px;
+  padding: 0px 20px 3px 3px;
   border-bottom: 1px solid $muted-gray;
+  height: 41px;
 }
 
 .content-page > .content {
@@ -40,6 +41,9 @@ body{
     min-height: 300px;
 }
 
+.main{
+  background-color: white;
+}
 
 //-------------------overflow----------------------
 html{
@@ -99,6 +103,10 @@ html{
     transition: all 0.3s ease-out;
 }
 
+.bkg-color-inherit{
+  background-color: inherit;
+}
+
 .clickable{
 	cursor:pointer;
 }
@@ -124,9 +132,16 @@ html{
 .f-1{
   flex: 1;
 }
+.p-20{
+  padding: 20px;
+}
 .p-r-20{
 	padding-right: 20px;
 }
+.p-l-18{
+    padding-left: 18px;
+}
+
 .b-0{
   border: 0px;
 }
@@ -149,8 +164,14 @@ html{
 .m-b-3{
   margin-bottom: 3px;
 }
+.m-b-5{
+  margin-bottom: 5px;
+}
 .m-l-10{
   margin-left: 10px;
+}
+.m-r-5{
+  margin-right: 5px;
 }
 .m-r-10{
   margin-right: 10px;
@@ -193,7 +214,7 @@ html{
 }
 
 .btn-link:hover{
-  background-color: rgba(140, 186, 232, 0.2);
+  background-color: $sidebar-item-color;
   color: $basic-button-color;
   text-decoration: none;
 }
@@ -217,9 +238,15 @@ html{
 
 .form{
   background-color: $form-background-color;
-  max-width: 1284px;
+//  max-width: 1284px;
   border-radius: 0px;
   padding: 0px;
+}
+
+.modal-content{
+  background-color: $form-background-color;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 hr{
@@ -283,6 +310,11 @@ td {
     padding-right: 0px;
 }
 
+.tab-pane{
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
 //----------------END-všeobecné-elementy----------------
 
 
@@ -293,6 +325,8 @@ td {
   margin: 0px;
   padding: 0px;
   border: 0px;
+  border-right: 2px solid $header-color;
+  margin-right: -2px;
 
   .lansystems-title{
     display: flex!important;
@@ -333,6 +367,7 @@ td {
 //---------------------sidebar---------------------
 .sidebar{
   width: $sidebar-width;
+  border-right: 1px solid #dee2e6;
   list-style-type: none;
   background: $main-background-color;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
@@ -349,7 +384,8 @@ td {
 }
 
 .sidebar-menu-item{
-  margin: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
   width: calc(#{$sidebar-width} - 10px);
 }
 
@@ -359,13 +395,23 @@ td {
   height: $button-height;
 }
 
-.sidebar-edit{
+.sidebar-filter{
   margin-left: 10px;
-  margin-right: 10px;
+  border: none;
+  margin-bottom: 2px;
+}
+.sidebar-filter-navlink{
+  padding-left: 0px !important;
 }
 
-.sidebar-edit-buttons-center{
+.sidebar-align{
+  padding-left: 28px !important;
+  height: 40px;
+}
 
+.sidebar-item-active{
+  background-color: $sidebar-item-color !important;
+  font-weight: 900;
 }
 
 //--------------------END-sidebar----------------------
@@ -376,6 +422,7 @@ td {
   border-radius: 0px;
   padding-left: 5px;
   height: $button-height;
+  width: 200px !important;
 }
 
 .commandbar-btn-search{
@@ -432,8 +479,8 @@ td {
 
 .taskList li {
   background-color: #fff;
-  border: 1px solid #dee2e6;
-  border-top: none;
+  border: 0px;
+  border-bottom: 1px solid #dee2e6;
   padding: 10px;
   margin-bottom: 15px;
   border-radius: 0px;
@@ -485,6 +532,7 @@ td {
 
 .card-box{
   border: 1px solid rgba(54, 64, 74, 0.05);
+  border-top: none;
   margin-bottom: 0px;
   background-color: #ffffff;
   background: $form-background-color;

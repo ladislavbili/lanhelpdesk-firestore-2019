@@ -74,65 +74,95 @@ export default class Sidebar extends Component {
 		const ORDERRED_NOTES = NOTES.sort((a, b) => new Date(b.dateCreated) - new Date(a.dateCreated));
 
 		return (
-			<div className="">
+			<div className="content-page">
+				<div className="content" style={{ paddingTop: 0 }}>
+					<div className="container-fluid">
+						<div className="d-flex flex-row align-items-center">
 
-				<div className="row">
-
-
-						<div className="fit-with-header scrollable col-lg-4">
-							<div className="commandbar">
-							{/*		<Progress value={this.state.value}>{this.state.value === 100 ? "Loaded" : "Loading"}</Progress>*/}
-								<InputGroup >
-									<Input placeholder="Search" value={this.state.search} onChange={(e) => this.setState({search: e.target.value})}/>
-								</InputGroup>
+							<div className="p-2">
+								<div className="input-group">
+									<input
+										type="text"
+										className="form-control commandbar-search"
+										value={this.state.search}
+										onChange={(e)=>this.setState({search:e.target.value})}
+										placeholder="Search by title"
+									/>
+									<div className="input-group-append">
+										<button className="commandbar-btn-search" type="button">
+											<i className="fa fa-search" />
+										</button>
+									</div>
+								</div>
 							</div>
-
-
-							<ListGroup className="list">
-								<Button
-									color="success"
-									className="addNote"
-									onClick={(e) => {
-										e.preventDefault();
-										this.createNew();
-									}}
-									>New Note +</Button>
-	              {
-	                this.state.tags.length > 0
-	                &&
-	                  ORDERRED_NOTES.map(note => (
-	                    <ListGroupItem
-	                      active={this.props.match.params.noteID ? (this.props.match.params.noteID === note.id) : false}
-	                      tag="a"
-	                      href={`/notes/${this.props.match.params.tagID}/` + note.id}
-												className="sidebarItem"
-	                      onClick={(e) => {
-	                        e.preventDefault();
-	                        this.props.history.push(`/lanwiki/notes/${this.props.match.params.tagID}/` + note.id);
-	                      }}
-	                      action
-	                      key={note.id}
-	                      >
-	                      <Row>
-	                        <Col xs="9" className="listName">{hightlightText(note.name, this.state.search, '#81c868')}</Col>
-	                        <Col xs="3" className="listTag"><TimeAgo date={note.lastUpdated} minPeriod={300}/></Col>
-	                      </Row>
-	                      <Row>
-	                        <Col className="listTime">{this.state.tags.filter(tag =>
-	                          note.tags.includes(tag.id)).map(tag => "| " + tag.name + " ")}</Col>
-	                      </Row>
-	                    </ListGroupItem>
-	                  ))
-	              }
-	            </ListGroup>
+							<Button
+								className="btn btn-link"
+								onClick={(e) => {
+									e.preventDefault();
+									this.createNew();
+								}}
+								>
+								<i className="fa fa-plus sidebar-icon-center"/> New Note
+							</Button>
+						</div>
 					</div>
-					<div className="fit-with-header scrollable col-lg-8">
-						{
-              this.state.notes.some((item)=>item.id===this.props.match.params.noteID) && <NoteEdit match={this.props.match} history={this.props.history}/>
-            }
-					</div>
+
+						<div className="row p-0 m-0 taskList-container">
+							<div className="col-lg-4 p-0 scrollable fit-with-header-and-command-bar">
+
+			              {
+			                this.state.tags.length > 0
+			                &&
+			                  ORDERRED_NOTES.map(note => (
+			                    <ListGroupItem
+			                      active={this.props.match.params.noteID ? (this.props.match.params.noteID === note.id) : false}
+			                      tag="a"
+			                      href={`/notes/${this.props.match.params.tagID}/` + note.id}
+			                      onClick={(e) => {
+			                        e.preventDefault();
+			                        this.props.history.push(`/lanwiki/notes/${this.props.match.params.tagID}/` + note.id);
+			                      }}
+			                      action
+			                      key={note.id}
+			                      >
+			                      <Row>
+			                        <Col xs="9" >{hightlightText(note.name, this.state.search, '#81c868')}</Col>
+			                        <Col xs="3" ><TimeAgo date={note.lastUpdated} minPeriod={300}/></Col>
+			                      </Row>
+			                      <Row>
+			                        <Col className="listTime">{this.state.tags.filter(tag =>
+			                          note.tags.includes(tag.id)).map(tag => "| " + tag.name + " ")}</Col>
+			                      </Row>
+			                    </ListGroupItem>
+			                  ))
+			              }
+
+							</div>
+							<div className="col-lg-8 p-0">
+								{
+		              this.state.notes.some((item)=>item.id===this.props.match.params.noteID) && <NoteEdit match={this.props.match} history={this.props.history}/>
+		            }
+							</div>
+						</div>
 				</div>
 			</div>
 			);
 		}
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	{/*		<Progress value={this.state.value}>{this.state.value === 100 ? "Loaded" : "Loading"}</Progress>*/}

@@ -5,12 +5,10 @@ export default class TaskList extends Component {
 
 	render() {
 		return (
-			<div>
-				<div className="row">
+				<div className="row p-20">
 					<div className="col-md-12">
-						<div className="card-box">
-							<table className="table table-centered table-borderless table-hover mb-0">
-								<thead className="thead-light">
+							<table className="table">
+								<thead>
 										<tr>
 											{
 												this.props.displayValues.map((display,index)=>
@@ -32,10 +30,8 @@ export default class TaskList extends Component {
 										)}
 									</tbody>
 								</table>
-						</div>
 					</div>
 				</div>
-			</div>
 		);
 	}
 }

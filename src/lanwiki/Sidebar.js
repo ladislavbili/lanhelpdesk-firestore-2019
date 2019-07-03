@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {ListGroupItem, Button, Row, Col} from 'reactstrap';
+import {ListGroupItem, Button, Row, Col, NavItem, Nav} from 'reactstrap';
 import { NavLink as Link } from 'react-router-dom';
 import { connect } from "react-redux";
 
@@ -49,54 +49,49 @@ class Sidebar extends Component {
 			<div className="sidebar">
 				<SelectPage />
 				<div className="scrollable fit-with-header">
-					<div className="commandbar">
 					{/*	<Progress value={this.state.value}>{this.state.value === 100 ? "Loaded" : "Loading"}</Progress>*/}
-							<Button
-								block
-								className='addTag'
-								onClick={() => this.props.history.push(`/lanwiki/tags/add`)}
-								>
-								Add tag +
-						</Button>
-					</div>
-
-					<Link className='link' to={{pathname: `/lanwiki/notes/all`}}  key={1}>
-								<ListGroupItem
-									className='sidebarItem'
-									key={1}
-									active={window.location.pathname.includes('/lanwiki/notes/all')}
+						<div className="m-t-5 m-b-5">
+								<Button
+									block
+									className="btn-link t-a-l sidebar-menu-item"
+									onClick={() => this.props.history.push(`/lanwiki/tags/add`)}
 									>
-									All
-								</ListGroupItem>
-				</Link>
+									<i className="fa fa-plus sidebar-icon-center"/> Add tag
+								</Button>
+						</div>
 
-				{
-						ORDERRED_TAGS
-						.map(asset =>
-							<Row>
-								<Col xs={10}>
-										<ListGroupItem
-											className='sidebarItem'
-											key={asset.id}
-											active={window.location.pathname.includes(asset.id)}
-											onClick={() => this.props.history.push(`/lanwiki/notes/${asset.id}`)}
-											>
-												{asset.name}
-										</ListGroupItem>
-								 </Col>
-								 <Col xs={2}>
-									 <ListGroupItem
-										 className='sidebarItem'
-										 key={asset.id}
-										 active={window.location.pathname.includes(`/lanwiki/tags/${asset.id}`)}
-										 onClick={() => this.props.history.push(`/lanwiki/tags/${asset.id}`)}
-										 >
-										 		<i className="fa fa-cog"/>
-											</ListGroupItem>
-									</Col>
-								</Row>
-								)
-					}
+						<hr />
+
+									<Nav>
+										<NavItem  key={1} className={window.location.pathname.includes('/lanwiki/notes/all') ? "text-basic t-a-l sidebar-menu-item sidebar-item-active" : "text-basic sidebar-menu-item t-a-l "}>
+											<Link to={{ pathname: `/lanwiki/notes/all` }} >All</Link>
+										</NavItem>
+									</Nav>
+									{
+										ORDERRED_TAGS.map((item)=>
+										<Row>
+											<Col xs={10}>
+												<Nav>
+												<NavItem key={item.id} className={window.location.pathname.includes(`/lanwiki/notes/${item.id}`) ? "text-basic t-a-l sidebar-menu-item sidebar-item-active" : "text-basic t-a-l sidebar-menu-item"}>
+													<Link to={{pathname: `/lanwiki/notes/${item.id}`}}>
+														{item.name}
+													</Link>
+												</NavItem>
+											</Nav>
+											</Col>
+											<Col xs={2}>
+												<Nav>
+													<NavItem key={item.id} className={window.location.pathname.includes(`/lanwiki/tags/${item.id}`) ? "text-basic t-a-l full-width m-r-5 sidebar-item-active" : "text-basic t-a-l full-width m-r-5"}>
+														<Link className="pull-right" to={{pathname: `/lanwiki/tags/${item.id}`}}>
+															<i className="fa fa-cog"/>
+														</Link>
+													</NavItem>
+												</Nav>
+											</Col>
+										</Row>
+										)
+									}
+
 
 				</div>
 			</div>
