@@ -32,29 +32,30 @@ class PageHeader extends Component {
 	}
 
 	render() {
+		const URL = this.props.history.location.pathname;
 		return (
 			<div className="page-header">
 				<div className="d-flex full-height">
 					<div className="center-hor">
-						<Link to={{ pathname: `/helpdesk/taskList/i/all` }} className="header-link">
+						<Link to={{ pathname: `/helpdesk/taskList/i/all` }} className={"header-link" + (URL.includes("helpdesk/taskList") ? " header-link-active" : "")}>
 							Úlohy
 						</Link>
-						<Link to={{ pathname: `/lanwiki` }} className="header-link">
+						<Link to={{ pathname: `/lanwiki` }} className={"header-link" + (URL.includes("lanwiki") ? " header-link-active" : "")}>
 							Návody
 						</Link>
-						<Link to={{ pathname: `/cmdb/all` }} className="header-link">
+						<Link to={{ pathname: `/cmdb/all` }} className={"header-link" + (URL.includes("cmdb") ? " header-link-active" : "")}>
 							CMDB
 						</Link>
-						<Link to={{ pathname: `/passmanager` }} className="header-link">
+						<Link to={{ pathname: `/passmanager` }} className={"header-link" + (URL.includes("passmanager") ? " header-link-active" : "")}>
 							Heslá
 						</Link>
-						<Link to={{ pathname: `/expenditures` }} className="header-link">
+						<Link to={{ pathname: `/expenditures` }} className={"header-link" + (URL.includes("expenditures") ? " header-link-active" : "")}>
 							Náklady
 						</Link>
-						<Link to={{ pathname: `/helpdesk/reports` }} className="header-link">
+						<Link to={{ pathname: `/helpdesk/reports` }} className={"header-link" + (URL.includes("helpdesk/reports") ? " header-link-active" : "")}>
 								Vykazy
 						</Link>
-						<Link to={{ pathname: `/projects` }} className="header-link">
+						<Link to={{ pathname: `/projects` }} className={"header-link" + (URL.includes("projects") ? " header-link-active" : "")}>
 							Projekty
 						</Link>
 					</div>

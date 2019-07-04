@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
 import {rebase, database} from '../../../index';
 import {snapshotToArray} from '../../../helperFunctions';
-import {selectStyle} from "../../../scss/selectStyles";
 
 export default class PriceEdit extends Component{
   constructor(props){

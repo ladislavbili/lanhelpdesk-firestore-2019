@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {ListGroup, ListGroupItem, InputGroup, Input, Button, Row, Col} from 'reactstrap';
+import {ListGroupItem, Button, Row, Col} from 'reactstrap';
 import TimeAgo from 'react-timeago'
 import { rebase } from '../../index';
 import {hightlightText} from '../../helperFunctions';
@@ -107,6 +107,7 @@ export default class Sidebar extends Component {
 						</div>
 					</div>
 
+					{/*		<Progress value={this.state.value}>{this.state.value === 100 ? "Loaded" : "Loading"}</Progress>*/}
 						<div className="row p-0 m-0 taskList-container">
 							<div className="col-lg-4 p-0 scrollable fit-with-header-and-command-bar">
 
@@ -149,20 +150,3 @@ export default class Sidebar extends Component {
 			);
 		}
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	{/*		<Progress value={this.state.value}>{this.state.value === 100 ? "Loaded" : "Loading"}</Progress>*/}

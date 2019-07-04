@@ -9,7 +9,7 @@ export default class TaskCol extends Component {
 						{
 							this.props.data.map((item)=>
 							<ul
-								className={"taskList list-unstyled clickable"+(this.props.itemID===item.id?' active selected-item':'')}
+								className={"taskList list-unstyled clickable" + (this.props.itemID === item.id.toString() ? ' selected-item' : '')}
 								id="upcoming"
 								onClick={()=>{
 									this.props.history.push(this.props.link+'/'+item.id);

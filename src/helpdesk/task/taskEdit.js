@@ -7,7 +7,7 @@ import Subtasks from '../components/subtasks';
 
 import {rebase, database} from '../../index';
 import {toSelArr, snapshotToArray, timestampToString} from '../../helperFunctions';
-import {selectStyle, invisibleSelectStyle} from '../../scss/selectStyles';
+import {invisibleSelectStyle} from '../../scss/selectStyles';
 
 const repeat = [
 	{ value: 'none', label: 'none' },

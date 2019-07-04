@@ -5,7 +5,7 @@ import {toSelArr, snapshotToArray} from '../../helperFunctions';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
 import Materials from '../components/materials';
 import Subtasks from '../components/subtasks';
-import {selectStyle, invisibleSelectStyle} from '../../scss/selectStyles';
+import {invisibleSelectStyle} from '../../scss/selectStyles';
 
 const repeat = [
 	{ value: 'none', label: 'none' },

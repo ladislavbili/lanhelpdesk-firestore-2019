@@ -116,32 +116,40 @@ class TaskListContainer extends Component {
 									</Button>
 								</div>
 							}
-							<select value={this.props.orderBy} onChange={(e)=>this.props.setOrderBy(e.target.value)}>
+
+							<div className="text-basic m-r-5 m-l-5">
+							Sort by
+						</div>
+							<select
+								value={this.props.orderBy}
+								className="invisible-select"
+								onChange={(e)=>this.props.setOrderBy(e.target.value)}>
 								{
 									this.props.orderByValues.map((item,index)=>
 									<option value={item.value} key={index}>{item.label}</option>
 								)
 								}
 							</select>
+
 							{ !this.props.ascending &&
-								<button type="button" className="btn btn-link waves-effect" onClick={()=>this.props.setAscending(true)}>
+								<button type="button" className="btn btn-link btn-outline-blue waves-effect" onClick={()=>this.props.setAscending(true)}>
 									<i
-										className="fas fa-arrow-up commandbar-command-icon icon-M"
+										className="fas fa-arrow-up icon-M"
 										/>
 								</button>
 							}
 
 							{ this.props.ascending &&
-								<button type="button" className="btn btn-link waves-effect" onClick={()=>this.props.setAscending(false)}>
+								<button type="button" className="btn btn-link btn-outline-blue waves-effect" onClick={()=>this.props.setAscending(false)}>
 									<i
-										className="fas fa-arrow-down commandbar-command-icon icon-M"
+										className="fas fa-arrow-down icon-M"
 										/>
 								</button>
 						}
 
 							<div className="ml-auto p-2 align-self-center">
 								{this.props.extraCommands?this.props.extraCommands():null}
-								<div className="btn-group btn-group-toggle" data-toggle="buttons">
+								<div className="btn-group" data-toggle="buttons">
 									<label
 										className={
 											'btn btn-link btn-outline-blue waves-effect waves-light' +

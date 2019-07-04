@@ -13,7 +13,7 @@ import {rebase} from '../index';
 import {toSelArr} from '../helperFunctions';
 import {setProject, setFilter} from '../redux/actions';
 
-import {sidebarSelectStyle, selectStyle} from '../scss/selectStyles';
+import {sidebarSelectStyle} from '../scss/selectStyles';
 
 class Sidebar extends Component {
 	constructor(props) {
@@ -72,9 +72,7 @@ class Sidebar extends Component {
 					<SelectPage />
 				<div className="scrollable fit-with-header">
 					<div>
-						<div className="m-t-5 m-b-5">
 							<TaskAdd history={this.props.history} />
-						</div>
 						<hr/>
 						<li>
 							<Select
@@ -115,9 +113,9 @@ class Sidebar extends Component {
 							</Nav>
 							<TabContent activeTab={this.state.activeTab}>
 								<TabPane tabId={0} >
-									<Nav vertical className="sidebar-filter-items">
+									<Nav vertical>
 										<NavItem>
-											<Link className={this.props.location.pathname.includes("/helpdesk/taskList/i/all") ? "text-basic sidebar-align sidebar-item-active" : "text-basic sidebar-align"}
+											<Link className={this.props.location.pathname.includes("/helpdesk/taskList/i/all") ? "text-basic sidebar-align sidebar-item-active sidebar-menu-item" : "text-basic sidebar-align sidebar-menu-item"}
 												to={{ pathname: `/helpdesk/taskList/i/all` }} onClick={()=>{
 													this.setState({filterID:null,filterData:null});
 													this.props.setFilter({
@@ -135,7 +133,7 @@ class Sidebar extends Component {
 										{
 											this.state.filters.map((item)=>
 											<NavItem key={item.id}>
-												<Link className={this.props.location.pathname.includes(`/helpdesk/taskList/i/`+item.id) ? "text-basic sidebar-align sidebar-item-active" : "text-basic sidebar-align"}
+												<Link className={this.props.location.pathname.includes(`/helpdesk/taskList/i/`+item.id) ? "text-basic sidebar-align sidebar-item-active sidebar-menu-item" : "text-basic sidebar-align sidebar-menu-item"}
 													to={{ pathname: `/helpdesk/taskList/i/`+item.id }} onClick={()=>{
 														this.setState({filterID:item.id,filterData:item});
 														this.props.setFilter({
@@ -156,9 +154,7 @@ class Sidebar extends Component {
 							</TabContent>
 							<hr />
 							<li>
-								<div className="m-t-5 m-b-5">
 									<ProjectAdd />
-								</div>
 							</li>
 						</div>
 					</div>

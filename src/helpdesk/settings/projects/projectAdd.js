@@ -19,7 +19,7 @@ export default class ProjectAdd extends Component{
             <Label for="name">Project name</Label>
             <Input type="text" name="name" id="name" placeholder="Enter project name" value={this.state.projectName} onChange={(e)=>this.setState({projectName:e.target.value})} />
           </FormGroup>
-          <Button className="btn" className="separate" disabled={this.state.saving} onClick={()=>{
+          <Button className="btn" disabled={this.state.saving} onClick={()=>{
               this.setState({saving:true});
               rebase.addToCollection('/help-projects', {title:this.state.projectName})
                 .then(()=>{this.setState({projectName:'',saving:false})});
