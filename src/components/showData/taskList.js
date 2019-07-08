@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import {getItemDisplayValue} from '../../helperFunctions';
+import CommandBar from './commandBar';
 
 export default class TaskList extends Component {
 
 	render() {
 		return (
-				<div className="row p-20">
-					<div className="col-md-12">
+				<div className="row">
+					<CommandBar {...this.props.commandBar} />
+					<div className="col-md-12 p-20">
 							<table className="table">
 								<thead>
 										<tr>

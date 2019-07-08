@@ -27,7 +27,9 @@ export default class Navigation extends Component {
 						<Sidebar {...this.props} />
 					<div className="flex main">
 
-					<PageHeader {...this.props} settings={
+					<PageHeader {...this.props}
+						showLayoutSwitch={true} 
+						settings={
 						[{title:'Projects',link:'projects'},
 						{title:'Statuses',link:'statuses'},
 						{title:'Units',link:'units'},

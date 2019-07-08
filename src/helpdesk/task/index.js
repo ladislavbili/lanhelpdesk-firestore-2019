@@ -4,6 +4,7 @@ import {rebase} from '../../index';
 import ShowData from '../../components/showData';
 import {timestampToString} from '../../helperFunctions';
 import TaskEdit from './taskEdit';
+import TaskEmpty from './taskEmpty';
 import {setTasksOrderBy, setTasksAscending} from '../../redux/actions';
 
 
@@ -184,6 +185,7 @@ class TasksRow extends Component {
 				match={this.props.match}
 				isTask={true}
 				edit={TaskEdit}
+				empty={TaskEmpty}
 				 />
 		);
 	}

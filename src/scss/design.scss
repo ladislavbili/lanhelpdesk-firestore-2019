@@ -58,7 +58,7 @@ html{
 	height: $height-without-header;
 }
 .fit-with-header-and-command-bar{
-	height: calc(  #{$height-without-header} - 44.5px );
+	height: calc(  #{$height-without-header} - 41px );
 }
 //-------------------END-overflow----------------------
 
@@ -578,6 +578,10 @@ td {
 }
 .table-highlight-background{
   	background-color: #d5e5f2,
+}
+
+.dropdown-menu{
+  min-width: auto;
 }
 
 //-------------------END-taskEdit-------------------------

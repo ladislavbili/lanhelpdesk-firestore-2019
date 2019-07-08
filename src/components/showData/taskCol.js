@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-
+import CommandBar from './commandBar';
 export default class TaskCol extends Component {
 	render() {
 		return (
 			<div>
 				<div className="row p-0 taskList-container">
-					<div className="col-lg-4 p-0 scrollable fit-with-header-and-command-bar">
+					<div className="p-0">
+					<CommandBar {...this.props.commandBar} />
+					<div className="scrollable fit-with-header-and-command-bar">
 						{
 							this.props.data.map((item)=>
 							<ul
@@ -19,15 +21,22 @@ export default class TaskCol extends Component {
 							</ul>
 						)
 					}
-
+					{
+						this.props.data.length===0 &&
+						<div className="center-ver" style={{textAlign:'center'}}>
+							Neboli nájdené žiadne výsledky pre tento filter
+						</div>
+					}
 					</div>
-					<div className="col-lg-8 p-0">
+				</div>
 						{
 							this.props.itemID && this.props.itemID!=='add' && this.props.data.some((item)=>item.id+""===this.props.itemID) &&
 							<this.props.edit match={this.props.match} columns={true} history={this.props.history} />
 						}
-
-					</div>
+						{
+							(!this.props.itemID || !this.props.data.some((item)=>item.id+""===this.props.itemID)) &&
+							(this.props.empty?<this.props.empty/>:null)
+						}
 				</div>
 			</div>
 		);

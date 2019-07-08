@@ -114,7 +114,7 @@ export default class TaskAdd extends Component{
 					taskMaterials:[],
 				})
 				this.fetchData();
-				this.props.history.push('/helpdesk/taskList/'+newID);
+				this.props.history.push('/helpdesk/taskList/i/all/'+newID);
 			});
 		})
   }

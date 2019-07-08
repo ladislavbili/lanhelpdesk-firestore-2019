@@ -19,6 +19,7 @@ export default class EditFolder extends Component{
       folders:[],
       saving:false,
 
+      item:null,
       title: "",
       folder:null,
       price: 0.00,
@@ -34,6 +35,7 @@ export default class EditFolder extends Component{
     Promise.all([
       rebase.get('expenditures-instances/'+id, {
         context: this,
+        withIds:true,
       }),
       database.collection('expenditures-folders').get()
     ])
@@ -46,6 +48,7 @@ export default class EditFolder extends Component{
         return newF;
       });
       this.setState({
+        item: instance,
         title:  instance.title,
         folder: folders.filter(f => f.id === instance.folder)[0],
         price:  instance.price,
@@ -67,7 +70,7 @@ export default class EditFolder extends Component{
 
   render(){
     return (
-        <div className="container-padding form-background card-box scrollable fit-with-header">
+        <div className="container-padding form-background card-box scrollable fit-with-header flex">
           <div className="ml-auto mr-auto" style={{maxWidth:1000}}>
             <FormGroup>
               <Label>Názov</Label>
@@ -123,6 +126,9 @@ export default class EditFolder extends Component{
             rebase.updateDoc('expenditures-instances/'+this.props.match.params.expID, body)
               .then((response)=>{
                 this.setState({saving:false});
+                if(this.state.folder.id!==this.state.item.folder){
+                  this.props.history.push('/expenditures/i/'+this.state.folder.id+'/'+this.state.item.id);
+                }
               });
           }}>{this.state.saving?'Saving...':'Save'}</Button>
         </div>

@@ -6,7 +6,7 @@ import {Button} from 'reactstrap';
 import { connect } from "react-redux";
 import {timestampToString} from '../../helperFunctions';
 import {setSearch, setFilter, setLayout} from '../../redux/actions';
-
+import CommandBar from './commandBar';
 
 class TaskListContainer extends Component {
 	constructor(props) {
@@ -76,131 +76,10 @@ class TaskListContainer extends Component {
 		return (
 			<div className="content-page">
 				<div className="content" style={{ paddingTop: 0 }}>
-					<div className="container-fluid">
-						<div className="d-flex flex-row align-items-center">
-							<div className="p-2">
-								<div className="input-group">
-									<input
-										type="text"
-										className="form-control commandbar-search"
-										value={this.state.search}
-										onChange={(e)=>this.setState({search:e.target.value})}
-										placeholder="Search"
-									/>
-									<div className="input-group-append">
-										<button className="commandbar-btn-search" type="button" onClick={()=>this.props.setSearch(this.state.search)}>
-											<i className="fa fa-search" />
-										</button>
-									</div>
-								</div>
-							</div>
-							{ this.props.isTask &&
-								<div className="p-2">
-									<Button
-										className="btn-link"
-										onClick={()=>{
-											let body={
-												requester:null,
-												company:null,
-												assigned:null,
-												workType:null,
-												status:null,
-								        statusDateFrom:'',
-								        statusDateTo:'',
-								        updatedAt:(new Date()).getTime()
-								      }
-								      this.props.setFilter(body);
-										}}
-										>
-										Global search
-									</Button>
-								</div>
-							}
-
-							<div className="text-basic m-r-5 m-l-5">
-							Sort by
-						</div>
-							<select
-								value={this.props.orderBy}
-								className="invisible-select"
-								onChange={(e)=>this.props.setOrderBy(e.target.value)}>
-								{
-									this.props.orderByValues.map((item,index)=>
-									<option value={item.value} key={index}>{item.label}</option>
-								)
-								}
-							</select>
-
-							{ !this.props.ascending &&
-								<button type="button" className="btn btn-link btn-outline-blue waves-effect" onClick={()=>this.props.setAscending(true)}>
-									<i
-										className="fas fa-arrow-up icon-M"
-										/>
-								</button>
-							}
-
-							{ this.props.ascending &&
-								<button type="button" className="btn btn-link btn-outline-blue waves-effect" onClick={()=>this.props.setAscending(false)}>
-									<i
-										className="fas fa-arrow-down icon-M"
-										/>
-								</button>
-						}
-
-							<div className="ml-auto p-2 align-self-center">
-								{this.props.extraCommands?this.props.extraCommands():null}
-								<div className="btn-group" data-toggle="buttons">
-									<label
-										className={
-											'btn btn-link btn-outline-blue waves-effect waves-light' +
-											(this.props.layout === 0 ? ' active' : '')
-										}
-									>
-										<input
-											type="radio"
-											name="options"
-											onChange={() => this.props.setLayout(0)}
-											checked={this.props.layout === 0}
-										/>
-										<i className="fa fa-columns" />
-									</label>
-									<label
-										className={
-											'btn btn-link btn-outline-blue waves-effect waves-light' +
-											(this.props.layout === 1? ' active' : '')
-										}
-									>
-										<input
-											type="radio"
-											name="options"
-											checked={this.props.layout === 1}
-											onChange={() => this.props.setLayout(1)}
-										/>
-										<i className="fa fa-list" />
-									</label>
-									<label
-										className={
-											'btn btn-link btn-outline-blue waves-effect waves-light' +
-											(this.props.layout === 2 ? ' active' : '')
-										}
-									>
-										<input
-											type="radio"
-											name="options"
-											onChange={() => this.props.setLayout(2)}
-											checked={this.props.layout === 2}
-										/>
-										<i className="fa fa-map" />
-									</label>
-								</div>
-							</div>
-						</div>
-					</div>
-
 					<div className="row m-0">
 						{this.props.layout === 0 && (
 							<div className={'' + (this.state.filterView ? 'col-xl-9' : 'col-xl-12')}>
-								<TaskCol history={this.props.history} match={this.props.match} data={this.filterData()} displayValues={this.props.displayValues} itemID={this.props.itemID} listID={this.props.listID} link={this.props.link} displayCol={this.props.displayCol} edit={this.props.edit}/>
+								<TaskCol commandBar={this.props} history={this.props.history} empty={this.props.empty} match={this.props.match} data={this.filterData()} displayValues={this.props.displayValues} itemID={this.props.itemID} listID={this.props.listID} link={this.props.link} displayCol={this.props.displayCol} edit={this.props.edit}/>
 							</div>
 						)}
 
@@ -208,7 +87,7 @@ class TaskListContainer extends Component {
 						{this.props.layout === 1 && (
 							<div className={'' + (this.state.filterView ? 'col-xl-9' : 'col-xl-12')}>
 								{this.props.itemID && <this.props.edit match={this.props.match} columns={false} history={this.props.history} />}
-								{!this.props.itemID && <TaskList history={this.props.history} match={this.props.match} data={this.filterData()} itemID={this.props.itemID} listID={this.props.listID} displayValues={this.props.displayValues} link={this.props.link}/>}
+								{!this.props.itemID && <TaskList  commandBar={this.props} history={this.props.history} match={this.props.match} data={this.filterData()} itemID={this.props.itemID} listID={this.props.listID} displayValues={this.props.displayValues} link={this.props.link}/>}
 							</div>
 						)}
 

@@ -3,7 +3,7 @@ import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap
 import { Link } from 'react-router-dom';
 import { connect } from "react-redux";
 import firebase from 'firebase';
-import {deleteUserData} from '../redux/actions';
+import {deleteUserData, setLayout} from '../redux/actions';
 
 class PageHeader extends Component {
 	constructor() {
@@ -28,6 +28,19 @@ class PageHeader extends Component {
 			return '/projects';
 		} else {
 			return '/lanwiki';
+		}
+	}
+
+	getLayoutIcon(){
+		switch (this.props.layout) {
+			case 0:
+				return "fa-columns";
+			case 1:
+				return "fa-list";
+			case 2:
+				return "fa-map";
+			default:
+				return "fa-cog";
 		}
 	}
 
@@ -60,6 +73,58 @@ class PageHeader extends Component {
 						</Link>
 					</div>
 					<div className="ml-auto center-hor row">
+						{this.props.showLayoutSwitch && <Dropdown className="center-hor" isOpen={this.state.layoutOpen} toggle={()=>this.setState({layoutOpen:!this.state.layoutOpen})}>
+							<DropdownToggle className="header-dropdown">
+								<i className={"header-icon fa "+this.getLayoutIcon()}/>
+							</DropdownToggle>
+							<DropdownMenu right>
+								<div className="btn-group-vertical" data-toggle="buttons">
+									<label
+										className={
+											'btn btn-link btn-outline-blue waves-effect waves-light' +
+											(this.props.layout === 0 ? ' active' : '')
+										}
+									>
+										<input
+											type="radio"
+											name="options"
+											onChange={() => this.props.setLayout(0)}
+											checked={this.props.layout === 0}
+										/>
+										<i className="fa fa-columns" />
+									</label>
+									<label
+										className={
+											'btn btn-link btn-outline-blue waves-effect waves-light' +
+											(this.props.layout === 1? ' active' : '')
+										}
+									>
+										<input
+											type="radio"
+											name="options"
+											checked={this.props.layout === 1}
+											onChange={() => this.props.setLayout(1)}
+										/>
+										<i className="fa fa-list" />
+									</label>
+									<label
+										className={
+											'btn btn-link btn-outline-blue waves-effect waves-light' +
+											(this.props.layout === 2 ? ' active' : '')
+										}
+									>
+										<input
+											type="radio"
+											name="options"
+											onChange={() => this.props.setLayout(2)}
+											checked={this.props.layout === 2}
+										/>
+										<i className="fa fa-map" />
+									</label>
+								</div>
+							</DropdownMenu>
+						</Dropdown>}
+
 						<i className="header-icon fa fa-exclamation-triangle center-hor"/>
 						<i className="header-icon fa fa-envelope center-hor" />
 						<Dropdown className="center-hor" isOpen={this.state.settingsOpen} toggle={()=>this.setState({settingsOpen:!this.state.settingsOpen})}>
@@ -89,8 +154,8 @@ class PageHeader extends Component {
 }
 
 
-const mapStateToProps = () => {
-	return {  };
+const mapStateToProps = ({appReducer}) => {
+	return { layout:appReducer.layout };
 };
 
-export default connect(mapStateToProps, { deleteUserData })(PageHeader);
+export default connect(mapStateToProps, { deleteUserData, setLayout })(PageHeader);

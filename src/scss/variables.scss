@@ -1,5 +1,5 @@
 $header-height: 40px;
-$height-without-header: calc( 100vh - #{$header-height} );
+$height-without-header: calc( 100vh - calc(#{$header-height} + 15px)  );
 $sidebar-width: 240px;
 $sidebar-item-height: 40px;
 $inputs-border: 6px solid red;

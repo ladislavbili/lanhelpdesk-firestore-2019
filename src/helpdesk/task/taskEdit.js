@@ -284,7 +284,33 @@ export default class TasksTwoEdit extends Component {
 		});
 
 		return (
-			<div>
+			<div className="flex">
+				<div className="container-fluid p-2">
+					<div className="d-flex flex-row align-items-center">
+						<div className="center-hor">
+							{!this.props.columns &&
+								<button type="button" className="btn btn-link waves-effect" onClick={()=>this.props.history.goBack()}>
+									<i
+										className="fas fa-arrow-left commandbar-command-icon icon-M"
+										/>
+								</button>
+							}
+							{' '}
+							<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.submitTask.bind(this)}>
+								{this.state.saving?'Saving... ':''}
+								<i
+									className="fas fa-save commandbar-command-icon icon-M"
+									/>
+							</button>
+							{' '}
+							<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.deleteTask.bind(this)}>
+								<i
+									className="fas fa-trash commandbar-command-icon icon-M"
+									/>
+							</button>
+						</div>
+					</div>
+				</div>
 				<div className="row scrollable fit-with-header-and-command-bar">
 						<div className="card-box center-ver">
 							<div className="d-flex p-2">
@@ -293,28 +319,6 @@ export default class TasksTwoEdit extends Component {
 									<span className="center-hor">
 							    	<input type="text" value={this.state.title} className="task-title-input hidden-input" onChange={(e)=>this.setState({title:e.target.value},this.submitTask.bind(this))} placeholder="Enter task name" />
 									</span>
-								</div>
-								<div className="ml-auto">
-									{!this.props.columns &&
-									<button type="button" className="btn btn-link waves-effect" onClick={()=>this.props.history.goBack()}>
-										<i
-											className="fas fa-arrow-left commandbar-command-icon icon-M"
-											/>
-									</button>
-								}
-									{' '}
-									<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.submitTask.bind(this)}>
-										{this.state.saving?'Saving... ':''}
-										<i
-											className="fas fa-save commandbar-command-icon icon-M"
-											/>
-									</button>
-									{' '}
-									<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.deleteTask.bind(this)}>
-										<i
-											className="fas fa-trash commandbar-command-icon icon-M"
-											/>
-									</button>
 								</div>
 							</div>
 

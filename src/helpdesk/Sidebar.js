@@ -15,6 +15,18 @@ import {setProject, setFilter} from '../redux/actions';
 
 import {sidebarSelectStyle} from '../scss/selectStyles';
 
+let settings=[{title:'Projects',link:'projects'},
+{title:'Statuses',link:'statuses'},
+{title:'Units',link:'units'},
+{title:'Companies',link:'companies'},
+{title:'Work Type',link:'workTypes'},
+{title:'Users',link:'users'},
+{title:'Prices',link:'pricelists'},
+{title:'Supplier',link:'suppliers'},
+{title:'Tags',link:'tags'},
+{title:'Invoices',link:'supplierInvoices'},
+{title:'Task types',link:'taskTypes'}]
+
 class Sidebar extends Component {
 	constructor(props) {
 		super(props);
@@ -30,7 +42,6 @@ class Sidebar extends Component {
 			filterID:null,
 			filterData:null,
 		};
-
 	}
 
 	componentWillMount(){
@@ -67,13 +78,15 @@ class Sidebar extends Component {
 
 */
 	render() {
+		let showSettings= this.props.history.location.pathname.includes('settings');
 		return (
 			<div className="sidebar">
 					<SelectPage />
 				<div className="scrollable fit-with-header">
-					<div>
-							<TaskAdd history={this.props.history} />
+					<TaskAdd history={this.props.history} />
 						<hr/>
+					{!showSettings && <div>
+						<div>
 						<li>
 							<Select
 								options={this.state.projects}
@@ -157,6 +170,17 @@ class Sidebar extends Component {
 									<ProjectAdd />
 							</li>
 						</div>
+					</div>}
+					{showSettings &&
+						<Nav vertical>
+							{settings.map((setting)=>
+								<NavItem>
+									<Link className={this.props.location.pathname.includes(setting.link) ? "text-basic sidebar-align sidebar-item-active sidebar-menu-item" : "text-basic sidebar-align sidebar-menu-item"}
+										to={{ pathname: '/helpdesk/settings/'+setting.link }}>{setting.title}</Link>
+								</NavItem>
+							)}
+						</Nav>
+					}
 					</div>
 				</div>
 			);
