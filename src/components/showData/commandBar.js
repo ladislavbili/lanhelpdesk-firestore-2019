@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
-import TaskCol from './taskCol';
-import TaskList from './taskList';
-//import TaskBoard from './taskList';
 import {Button} from 'reactstrap';
 import { connect } from "react-redux";
-import {timestampToString} from '../../helperFunctions';
-import {setSearch, setFilter, setLayout} from '../../redux/actions';
+import {setSearch, setFilter} from '../../redux/actions';
 
 
 class TaskListContainer extends Component {

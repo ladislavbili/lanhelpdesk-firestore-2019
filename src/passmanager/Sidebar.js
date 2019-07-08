@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import {Row, Col, ListGroupItem, Modal } from 'reactstrap';
+import { Row, Col, Modal, Button, NavItem, Nav} from 'reactstrap';
+import { NavLink as Link } from 'react-router-dom';
 
 import SelectPage from '../components/SelectPage';
 import {rebase} from '../index';
@@ -42,30 +43,36 @@ export default class Sidebar extends Component {
 				<SelectPage />
 				<div className="scrollable fit-with-header">
 					<FolderAdd />
-							{
-								this.state.folders.map((item)=>
-									<Row key={item.id}>
-										<Col xs={10}>
-												<ListGroupItem
-													className='sidebarItem'
-													key={item.id}
-													active={window.location.pathname.includes(item.id)}
-													onClick={() => this.props.history.push(`/passmanager/${item.id}`)}
-													>
-														{item.title}
-												</ListGroupItem>
-										 </Col>
-										 <Col xs={2}>
-											 <ListGroupItem
-												 className='sidebarItem'
-												 key={item.id}
-												 onClick={() => {this.setState({folderEdit: item, openedEdit: true})}}
-												 >
-														<i className="fa fa-cog"/>
-													</ListGroupItem>
-											</Col>
-										</Row>
-						)}
+						<Button
+							className="btn-link t-a-l sidebar-menu-item"
+							onClick={()=>{this.props.history.push('/passmanager/add')}}
+							>
+							<i className="fa fa-plus clickable pr-2"  />
+							Náklad
+						</Button>
+						<Row>
+							<Col xs={10}>
+								<Nav vertical>
+									{	this.state.folders.map((item)=>
+										<NavItem key={item.id}>
+											<Link className="text-basic" to={{ pathname: `/passmanager/i/`+item.id }}>{item.title}</Link>
+										</NavItem>
+									)}
+								</Nav>
+							</Col>
+							<Col xs={2}>
+								{	this.state.folders.map((item)=>
+									<Button
+										key={item.id}
+										className='btn-link t-a-l'
+										style={{height:41}}
+										onClick={() => {this.setState({folderEdit: item, openedEdit: true})}}
+										>
+										<i className="fa fa-cog"/>
+									</Button>
+								)}
+							</Col>
+						</Row>
 
 						<Modal isOpen={this.state.openedEdit} toggle={this.toggleEdit.bind(this)}>
 							<FolderEdit folder={this.state.folderEdit} close={this.toggleEdit.bind(this)}/>

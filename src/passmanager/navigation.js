@@ -5,7 +5,6 @@ import Sidebar from './Sidebar';
 import PageHeader from '../components/PageHeader';
 import List from './list';
 import AddPassword from './list/addPassword';
-import EditPassword from './list/editPassword';
 
 export default class Navigation extends Component {
 	render() {
@@ -14,10 +13,10 @@ export default class Navigation extends Component {
 				<div className="row">
 						<Sidebar {...this.props} />
 					<div className="flex">
-						<PageHeader {...this.props} />
-						<Route exact path='/passmanager/:id' component={List} />
-						<Route exact path='/passmanager/:id/add' component={AddPassword} />
-						<Route exact path='/passmanager/:id/edit/:passID' component={EditPassword} />
+						<PageHeader {...this.props} showLayoutSwitch={true} />
+						<Route exact path='/passmanager/i/:listID' component={List} />
+						<Route exact path='/passmanager/add' component={AddPassword} />
+						<Route exact path='/passmanager/i/:listID/:passID' component={List} />
 					</div>
 				</div>
 			</div>

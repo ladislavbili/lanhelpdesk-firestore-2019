@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {getItemDisplayValue} from '../../helperFunctions';
 import CommandBar from './commandBar';
 
-export default class TaskList extends Component {
+export default class List extends Component {
 
 	render() {
 		return (
@@ -24,9 +24,19 @@ export default class TaskList extends Component {
 									<tbody>
 										{
 											this.props.data.map((item,index)=>
-											<tr	 key={index} className="clickable" onClick={()=>this.props.history.push(this.props.link+'/'+item.id)}>
-												{this.props.displayValues.map((display,index)=>
-													<td key={index}>{getItemDisplayValue(item,display)}</td>
+											<tr
+												key={index}
+												onClick={(e)=>{
+													this.props.history.push(this.props.link+'/'+item.id);
+												}}
+												className="clickable">
+												{ this.props.displayValues.map((display,index)=>
+													<td
+														key={index}
+														>
+
+														{getItemDisplayValue(item,display)}
+													</td>
 												)}
 											</tr>
 										)}

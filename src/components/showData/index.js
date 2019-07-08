@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
 import TaskCol from './taskCol';
 import TaskList from './taskList';
-//import TaskBoard from './taskList';
-import {Button} from 'reactstrap';
 import { connect } from "react-redux";
 import {timestampToString} from '../../helperFunctions';
 import {setSearch, setFilter, setLayout} from '../../redux/actions';
-import CommandBar from './commandBar';
-
-class TaskListContainer extends Component {
+class ShowDataContainer extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -107,4 +103,4 @@ const mapStateToProps = ({ filterReducer, appReducer }) => {
 	return { search:filterReducer.search, layout:appReducer.layout };
 };
 
-export default connect(mapStateToProps, { setSearch, setFilter, setLayout })(TaskListContainer);
+export default connect(mapStateToProps, { setSearch, setFilter, setLayout })(ShowDataContainer);

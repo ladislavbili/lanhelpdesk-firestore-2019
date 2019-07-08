@@ -40,16 +40,6 @@ class List extends Component {
 		rebase.removeBinding(this.ref);
 	}
 
-	getData(){
-		return this.state.instances.filter((item)=>
-			(item.title.toLowerCase().includes(this.state.search.toLowerCase()))||
-			(item.URL.toLowerCase().includes(this.state.search.toLowerCase()))||
-			(item.login.toLowerCase().includes(this.state.search.toLowerCase()))
-		)
-	}
-
-
-
 	render() {
 		let link='';
 		if(this.props.match.params.hasOwnProperty('listID')){
@@ -60,12 +50,6 @@ class List extends Component {
 		return(
 			<ShowData
 				data={this.state.instances}
-				filterBy={[
-					{value:'title',type:'text'},
-					{value:'startDate',type:'date'},
-					{value:'repeat',type:'text'},
-					{value:'price',type:'text'},
-				]}
 				displayCol={(expenditure)=>
 					<li className="" >
 						<div className="m-b-0">
@@ -84,6 +68,12 @@ class List extends Component {
 						</div>
 					</li>
 				}
+				filterBy={[
+					{value:'title',type:'text'},
+					{value:'startDate',type:'date'},
+					{value:'repeat',type:'text'},
+					{value:'price',type:'text'},
+				]}
 				displayValues={[
 					{value:'startDate',label:'Start date',type:'date'},
 					{value:'title',label:'Title',type:'text'},

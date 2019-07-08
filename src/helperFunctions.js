@@ -56,6 +56,10 @@ export const getItemDisplayValue= (item,value) => {
     return item[value.value].title;
   }else if(value.type==='text'){
     return item[value.value];
+  }else if(value.type==='custom'){
+    return value.func(item);
+  }else if(value.type==='url'){
+    return <a onClick={(e)=>e.stopPropagation()} href={item[value.value]} target="_blank" without rel="noopener noreferrer">{item[value.value]?item[value.value]:''}</a>;
   }else if(value.type==='int'){
     return parseInt(item[value.value]);
   }else if(value.type==='list'){

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import CommandBar from './commandBar';
-export default class TaskCol extends Component {
+export default class ColumnDisplay extends Component {
 	render() {
 		return (
 			<div>

@@ -58,9 +58,15 @@ export default class UnitAdd extends Component{
     });
   }
 
+  componentWillReceiveProps(props){
+    if(this.props.match.params.passID!==props.match.params.passID){
+      this.getData(props.match.params.passID);
+    }
+  }
+
   render(){
     return (
-        <div className="container-padding form-background card-box scrollable fit-with-header">
+        <div className="container-padding form-background card-box scrollable fit-with-header flex">
           <div className="ml-auto mr-auto" style={{maxWidth:1000}}>
           <FormGroup>
             <Label>Folder</Label>
