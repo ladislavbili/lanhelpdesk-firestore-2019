@@ -283,6 +283,8 @@ export default class TasksTwoEdit extends Component {
 			}
 		});
 
+		console.log(this.props.columns);
+
 		return (
 			<div className="flex">
 				<div className="container-fluid p-2">
@@ -299,25 +301,25 @@ export default class TasksTwoEdit extends Component {
 							<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.submitTask.bind(this)}>
 								{this.state.saving?'Saving... ':''}
 								<i
-									className="fas fa-save commandbar-command-icon icon-M"
+									className="fas fa-save icon-M"
 									/>
 							</button>
 							{' '}
 							<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.deleteTask.bind(this)}>
 								<i
-									className="fas fa-trash commandbar-command-icon icon-M"
+									className="fas fa-trash icon-M"
 									/>
 							</button>
 						</div>
 					</div>
 				</div>
 				<div className="row scrollable fit-with-header-and-command-bar">
-						<div className="card-box center-ver">
+						<div className={"card-box " + (!this.props.columns ? " center-ver" : "")}>
 							<div className="d-flex p-2">
 								<div className="row">
-									<h1 className="center-hor"># {this.props.match.params.taskID}</h1>
+									<h1 className="center-hor text-extra-slim"># {this.props.match.params.taskID}</h1>
 									<span className="center-hor">
-							    	<input type="text" value={this.state.title} className="task-title-input hidden-input" onChange={(e)=>this.setState({title:e.target.value},this.submitTask.bind(this))} placeholder="Enter task name" />
+							    	<input type="text" value={this.state.title} className="task-title-input text-extra-slim hidden-input" onChange={(e)=>this.setState({title:e.target.value},this.submitTask.bind(this))} placeholder="Enter task name" />
 									</span>
 								</div>
 							</div>
@@ -333,7 +335,7 @@ export default class TasksTwoEdit extends Component {
 							</div>
 							<div className="row">
 								<div className="col-lg-12 row">
-									<strong className="center-hor">Tagy: </strong>
+									<strong className="center-hor text-slim">Tagy: </strong>
 									<div className="f-1">
 										<Select
 											value={this.state.tags}
@@ -345,7 +347,7 @@ export default class TasksTwoEdit extends Component {
 									</div>
 								</div>
 								<div className="col-lg-12 row">
-									<strong className="center-hor">Assigned to: </strong>
+									<strong className="center-hor text-slim">Assigned to: </strong>
 									<div className="f-1">
 										<Select
 											value={this.state.assignedTo}
@@ -360,7 +362,7 @@ export default class TasksTwoEdit extends Component {
 									<div className="col-lg-6">
 										<div className="p-r-20">
 											<div className="row">
-												<label className="col-5 col-form-label">Status</label>
+												<label className="col-5 col-form-label text-slim">Status</label>
 												<div className="col-7">
 													<Select
 														value={this.state.status}
@@ -371,7 +373,7 @@ export default class TasksTwoEdit extends Component {
 												</div>
 											</div>
 											<div className="row">
-												<label className="col-5 col-form-label">Projekt</label>
+												<label className="col-5 col-form-label text-slim">Projekt</label>
 												<div className="col-7">
 													<Select
 														value={this.state.project}
@@ -382,7 +384,7 @@ export default class TasksTwoEdit extends Component {
 												</div>
 											</div>
 											<div className="row">
-												<label className="col-5 col-form-label">Zadal</label>
+												<label className="col-5 col-form-label text-slim">Zadal</label>
 												<div className="col-7">
 													<Select
 														value={this.state.requester}
@@ -393,7 +395,7 @@ export default class TasksTwoEdit extends Component {
 												</div>
 											</div>
 											<div className="row">
-												<label className="col-5 col-form-label">Firma</label>
+												<label className="col-5 col-form-label text-slim">Firma</label>
 												<div className="col-7">
 													<Select
 														value={this.state.company}
@@ -409,7 +411,7 @@ export default class TasksTwoEdit extends Component {
 									<div className="col-lg-6">
 										<div className="">
 											<div className="row">
-												<label className="col-5 col-form-label">Pripomienka</label>
+												<label className="col-5 col-form-label text-slim">Pripomienka</label>
 												<div className="col-7">
 													<input
 														className='form-control hidden-input'
@@ -424,7 +426,7 @@ export default class TasksTwoEdit extends Component {
 											</div>
 
 											<div className="row">
-												<label className="col-5 col-form-label">Deadline</label>
+												<label className="col-5 col-form-label text-slim">Deadline</label>
 												<div className="col-7">
 													<input
 														className='form-control hidden-input'
@@ -439,14 +441,14 @@ export default class TasksTwoEdit extends Component {
 											</div>
 
 											<div className="row">
-												<label className="col-5 col-form-label">Opakovanie</label>
+												<label className="col-5 col-form-label text-slim">Opakovanie</label>
 												<div className="col-7">
 													<Select options={repeat} styles={invisibleSelectStyle} />
 												</div>
 											</div>
 
 											<div className="row">
-												<label className="col-5 col-form-label">Typ</label>
+												<label className="col-5 col-form-label text-slim">Typ</label>
 												<div className="col-7">
 													<Select
 					                  value={this.state.type}
@@ -457,7 +459,7 @@ export default class TasksTwoEdit extends Component {
 												</div>
 											</div>
 											{false && <div className="form-group m-b-0 row">
-												<label className="col-5 col-form-label">Mimo pracovných hodín</label>
+												<label className="col-5 col-form-label text-slim">Mimo pracovných hodín</label>
 												<div className="col-7">
 													<Select
 														value={this.state.overtime}
@@ -472,7 +474,7 @@ export default class TasksTwoEdit extends Component {
 								</div>
 							</div>
 
-							<label className="m-t-5">Popis</label>
+							<label className="m-t-5  text-slim">Popis</label>
 							<textarea className="form-control b-r-0" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value},this.submitTask.bind(this))} />
 
 							<Subtasks

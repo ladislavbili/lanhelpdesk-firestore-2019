@@ -29,9 +29,10 @@ export default class ColumnDisplay extends Component {
 					}
 					</div>
 				</div>
+
 						{
 							this.props.itemID && this.props.itemID!=='add' && this.props.data.some((item)=>item.id+""===this.props.itemID) &&
-							<this.props.edit match={this.props.match} columns={true} history={this.props.history} />
+								<this.props.edit match={this.props.match} columns={true} history={this.props.history} />
 						}
 						{
 							(!this.props.itemID || !this.props.data.some((item)=>item.id+""===this.props.itemID)) &&

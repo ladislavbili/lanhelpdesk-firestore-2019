@@ -8,7 +8,7 @@ export default class List extends Component {
 		return (
 				<div className="row">
 					<CommandBar {...this.props.commandBar} />
-					<div className="col-md-12 p-20">
+					<div className="p-20 full-width">
 							<table className="table">
 								<thead>
 										<tr>
