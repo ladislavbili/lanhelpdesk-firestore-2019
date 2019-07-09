@@ -17,7 +17,7 @@ export default class Navigation extends Component {
 			<div>
 				<div className="row">
 						<Sidebar {...this.props} />
-					<div className="flex">
+					<div className="flex main">
 						<PageHeader {...this.props} settings={[{link:'statuses', title:'Statuses'}]} />
 
 						<Route exact path='/cmdb/add' component={SidebarItemAdd} />
