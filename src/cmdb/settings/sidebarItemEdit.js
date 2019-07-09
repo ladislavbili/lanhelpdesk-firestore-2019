@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input } from 'reactstrap';
-import {rebase} from '../../index';
-import { calculateTextAreaHeight} from '../../helperFunctions';
+import {rebase, database} from '../../index';
+import { calculateTextAreaHeight, snapshotToArray} from '../../helperFunctions';
 import InputSelectList from '../components/inputSelectList';
 const inputSelectOptions=[{id:'input',title:'Input',value:'input',label:'Input'},{id:'select',title:'Select',value:'select',label:'Select'},{id:'textarea',title:'Text Area',value:'textarea',label:'Text Area'}];
 
@@ -17,6 +17,7 @@ export default class SidebarItemEdit extends Component{
       backupTasksHeight:29,
       sidebarItems:[],
       attributes:[],
+      url:'',
       newAttributeID:0
     }
     this.setData.bind(this);
@@ -35,6 +36,29 @@ export default class SidebarItemEdit extends Component{
     rebase.removeBinding(this.ref);
   }
 
+  deleteItem(){
+    if(window.confirm("Are you sure?")){
+
+      database.collection('cmdb-items').where("sidebarID", "==", this.state.url).get().then((resp)=>{
+        snapshotToArray(resp).forEach((item)=>
+          Promise.all(
+            [
+              database.collection('cmdb-IPs').where("itemID", "==", item.id).get(),
+              database.collection('cmdb-backups').where("itemID", "==", item.id).get(),
+              database.collection('cmdb-passwords').where("itemID", "==", item.id).get(),
+          ]).then(([IPs,backups,passwords])=>{
+            snapshotToArray(IPs).forEach((item2)=>rebase.removeDoc('/cmdb-IPs/'+item2.id));
+            snapshotToArray(backups).forEach((item2)=>rebase.removeDoc('/cmdb-backups/'+item2.id));
+            snapshotToArray(passwords).forEach((item2)=>rebase.removeDoc('/cmdb-passwords/'+item2.id));
+            rebase.removeDoc('/cmdb-items/'+item.id);
+            this.props.history.goBack();
+          })
+        )
+      });
+      rebase.removeDoc('/cmdb-sidebar/'+this.props.match.params.sidebarID);
+    }
+  }
+
   setData(id){
     let item = this.state.sidebarItems.find((item)=>item.id===id);
     if(item===undefined){
@@ -46,7 +70,8 @@ export default class SidebarItemEdit extends Component{
           bacupTasksLabel:item.bacupTasksLabel,
           backupTasksHeight:item.backupTasksHeight,
           newAttributeID:item.newAttributeID,
-          attributes:item.attributes
+          attributes:item.attributes,
+          url:item.url
         })
       });
     }else{
@@ -55,7 +80,8 @@ export default class SidebarItemEdit extends Component{
         bacupTasksLabel:item.bacupTasksLabel,
         backupTasksHeight:item.backupTasksHeight,
         newAttributeID:item.newAttributeID,
-        attributes:item.attributes
+        attributes:item.attributes,
+        url:item.url
       })
     }
   }
@@ -132,6 +158,7 @@ export default class SidebarItemEdit extends Component{
                 this.setState({saving:false})
               });
           }}>{this.state.saving?'Saving...':'Save sidebar item'}</Button>
+        <Button color="danger" disabled={this.state.saving} onClick={this.deleteItem.bind(this)}>Delete</Button>
       </div>
     );
   }

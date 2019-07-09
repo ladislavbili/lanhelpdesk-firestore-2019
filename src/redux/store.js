@@ -6,6 +6,7 @@ import appReducer from './reducers/appReducer';
 import expenditureReducer from './reducers/expenditureReducer';
 import userReducer from './reducers/userReducer';
 import filterReducer from './reducers/filterReducer';
+import passReducer from './reducers/passReducer';
 
 const reducers = combineReducers({
     appReducer,
@@ -13,6 +14,7 @@ const reducers = combineReducers({
     filterReducer,
     taskReducer,
     expenditureReducer,
+    passReducer,
   });
 
 const enhancers = compose(

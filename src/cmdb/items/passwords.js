@@ -11,17 +11,15 @@ export default class Passwords extends Component{
       editFake: true,
 
       editTitle:'',
-      editURL:'',
+      editIP:'',
       editLogin:'',
       editPassword:'',
-      editIP:'',
       editNote:'',
 
       newTitle:'',
-      newURL:'',
+      newIP:'',
       newLogin:'',
       newPassword:'',
-      newIP:'',
       newNote:'',
     }
     this.onBlur.bind(this);
@@ -31,10 +29,9 @@ export default class Passwords extends Component{
 onBlur(){
   let body={
     title:this.state.editTitle,
-    URL:this.state.editURL,
+    IP:this.state.editIP,
     login:this.state.editLogin,
     password:this.state.editPassword,
-    IP:this.state.editIP,
     note:this.state.editNote,
     id:this.state.editItemID,
     fake:this.state.editFake,
@@ -48,10 +45,9 @@ onBlur(){
 onFocus(item) {
   this.setState({
     editTitle:item.title,
-    editURL:item.URL,
+    editIP:item.IP,
     editLogin:item.login,
     editPassword:item.password,
-    editIP:item.IP,
     editNote:item.note,
     editItemID:item.id,
     editFake:item.fake,
@@ -67,12 +63,11 @@ onFocus(item) {
           <tr>
 
             <th>Title</th>
-            <th>URL</th>
+            <th>IP/URL</th>
             <th>Login</th>
             <th>Password</th>
-            <th>IP</th>
             <th>Note</th>
-              <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -97,16 +92,16 @@ onFocus(item) {
                 <Input
                   type="text"
                   value={
-                  item.id === this.state.editItemID
-                    ? this.state.editURL
-                    : item.URL
+                    item.id === this.state.editItemID
+                    ? this.state.editIP
+                    : item.IP
                   }
                   onBlur={this.onBlur.bind(this)}
                   onFocus={()=>this.onFocus(item)}
                   onChange={e =>{
-                    this.setState({ editURL: e.target.value })}
+                    this.setState({ editIP: e.target.value })}
                   }
-                />
+                  />
               </td>
               <td>
                 <Input
@@ -135,21 +130,6 @@ onFocus(item) {
                   onFocus={()=>this.onFocus(item)}
                   onChange={e =>{
                     this.setState({ editPassword: e.target.value })}
-                  }
-                />
-              </td>
-              <td>
-                <Input
-                  type="text"
-                  value={
-                  item.id === this.state.editItemID
-                    ? this.state.editIP
-                    : item.IP
-                  }
-                  onBlur={this.onBlur.bind(this)}
-                  onFocus={()=>this.onFocus(item)}
-                  onChange={e =>{
-                    this.setState({ editIP: e.target.value })}
                   }
                 />
               </td>
@@ -199,11 +179,11 @@ onFocus(item) {
             <td>
               <Input
                 type="text"
-                value={this.state.newURL}
-                onChange={(e)=>this.setState({newURL:e.target.value})}
+                value={this.state.newIP}
+                onChange={(e)=>this.setState({newIP:e.target.value})}
                 className="form-control"
                 id="inlineFormInput"
-                placeholder="Enter URL"
+                placeholder="Enter IP"
                 />
             </td>
             <td>
@@ -229,16 +209,6 @@ onFocus(item) {
             <td>
               <Input
                 type="text"
-                value={this.state.newIP}
-                onChange={(e)=>this.setState({newIP:e.target.value})}
-                className="form-control"
-                id="inlineFormInput"
-                placeholder="Enter IP"
-                />
-            </td>
-            <td>
-              <Input
-                type="text"
                 value={this.state.newNote}
                 onChange={(e)=>this.setState({newNote:e.target.value})}
                 className="form-control"
@@ -255,10 +225,9 @@ onFocus(item) {
                 onClick={()=>{
                   let body={
                     title:this.state.newTitle,
-                    URL:this.state.newURL,
+                    IP:this.state.newIP,
                     login:this.state.newLogin,
                     password:this.state.newPassword,
-                    IP:this.state.newIP,
                     note:this.state.newNote,
                     id:this.state.newItemID,
                     fake:true,
@@ -266,10 +235,9 @@ onFocus(item) {
 
                   this.setState({
                     newTitle:'',
-                    newURL:'',
+                    newIP:'',
                     newLogin:'',
                     newPassword:'',
-                    newIP:'',
                     newNote:'',
                     newItemID:this.state.newItemID+1
                   });

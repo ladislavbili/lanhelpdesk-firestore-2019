@@ -10,7 +10,7 @@ export default class ItemView extends Component{
     super(props);
     this.state={
       loading:true,
-      tab:'1',
+      tab:'0',
       item:null,
       statuses:[],
       companies:[],
@@ -90,15 +90,19 @@ export default class ItemView extends Component{
               <Label>Status</Label>
               <div>{this.state.item===null?'':this.state.statuses.find((item)=>item.id===this.state.item.status).title}</div>
             </FormGroup>
-            <FormGroup>
-              <Label>Description</Label>
-              <div  dangerouslySetInnerHTML={{__html:this.state.item===null?'': this.state.item.description.replace(/(?:\r\n|\r|\n)/g, '<br>') }}></div>
-            </FormGroup>
 
             <Nav tabs>
               <NavItem>
                 <NavLink
-                  className={classnames({ active: this.state.activeTab === '1', clickable:true })}
+                  className={classnames({ active: this.state.tab === '0', clickable:true })}
+                  onClick={() => { this.setState({tab:'0'}); }}
+                >
+                  Description
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  className={classnames({ active: this.state.tab === '1', clickable:true })}
                   onClick={() => { this.setState({tab:'1'}); }}
                 >
                   IP list
@@ -106,7 +110,7 @@ export default class ItemView extends Component{
               </NavItem>
               <NavItem>
                 <NavLink
-                  className={classnames({ active: this.state.activeTab === '2' , clickable:true   })}
+                  className={classnames({ active: this.state.tab === '2' , clickable:true   })}
                   onClick={() => { this.setState({tab:'2'}); }}
                 >
                   Backup tasks
@@ -114,7 +118,7 @@ export default class ItemView extends Component{
               </NavItem>
               <NavItem>
                 <NavLink
-                  className={classnames({ active: this.state.activeTab === '3', clickable:true })}
+                  className={classnames({ active: this.state.tab === '3', clickable:true })}
                   onClick={() => { this.setState({tab:'3'}); }}
                 >
                   Attributes
@@ -122,7 +126,7 @@ export default class ItemView extends Component{
               </NavItem>
               <NavItem>
                 <NavLink
-                  className={classnames({ active: this.state.activeTab === '4', clickable:true })}
+                  className={classnames({ active: this.state.tab === '4', clickable:true })}
                   onClick={() => { this.setState({tab:'4'}); }}
                 >
                   Passwords
@@ -130,6 +134,9 @@ export default class ItemView extends Component{
               </NavItem>
             </Nav>
             <TabContent activeTab={this.state.tab} style={{marginBottom:30,borderRadius:4}}>
+              <TabPane tabId="0">
+                <div  dangerouslySetInnerHTML={{__html:this.state.item===null?'': this.state.item.description.replace(/(?:\r\n|\r|\n)/g, '<br>') }}></div>
+              </TabPane>
               <TabPane tabId="1">
                 <Table striped>
                   <thead>
@@ -139,6 +146,7 @@ export default class ItemView extends Component{
                       <th>Mask</th>
                       <th>Gateway</th>
                       <th>DNS</th>
+                      <th>DNS 2</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -149,6 +157,7 @@ export default class ItemView extends Component{
                         <td>{item.mask}</td>
                         <td>{item.gateway}</td>
                         <td>{item.DNS}</td>
+                        <td>{item.DNS2}</td>
                       </tr>
                     )}
                   </tbody>
@@ -186,10 +195,9 @@ export default class ItemView extends Component{
                   <thead>
                     <tr>
                       <th>Title</th>
-                      <th>URL</th>
+                      <th>IP/URL</th>
                       <th>Login</th>
                       <th>Password</th>
-                      <th>IP</th>
                       <th>Note</th>
                     </tr>
                   </thead>
@@ -197,10 +205,9 @@ export default class ItemView extends Component{
                     { this.state.passwords.map((item,index)=>
                       <tr key={item.id}>
                         <td>{item.title}</td>
-                        <td>{item.URL}</td>
+                        <td> <a href={item.IP} target="_blank" without rel="noopener noreferrer">{item.IP}</a></td>
                         <td>{item.login}</td>
                         <td>{item.password}</td>
-                        <td>{item.IP}</td>
                         <td>{item.note}</td>
                       </tr>
                     )}

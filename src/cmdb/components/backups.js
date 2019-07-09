@@ -4,7 +4,7 @@ import {calculateTextAreaHeight} from '../../helperFunctions';
 import BackupList from './backupList';
 
 
-export default class TextareaList extends Component{
+export default class Backups extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -21,7 +21,7 @@ export default class TextareaList extends Component{
       <div>
         {
           this.props.items.map((item,index)=>
-          <div>
+          <div key={item.id}>
             <div className="row" key={item.id}>
               <Label>
                 <div style={{width:this.props.width?this.props.width:150, fontWeight: 50}} dangerouslySetInnerHTML ={{__html:this.props.label}}/>
@@ -29,6 +29,7 @@ export default class TextareaList extends Component{
 
             <div style={{width:this.props.width?1000-this.props.width:150}}>
               <Input
+                className="no-scrolling"
                 style={{height:item.id===this.state.editID?this.state.editTextHeight:item.textHeight}}
                 type="textarea"
                 value={
@@ -62,13 +63,13 @@ export default class TextareaList extends Component{
                   />
               </div>
             </div>
-            <BackupList id={item.id} items={item.backupList?item.backupList:[]}
+            {false && <BackupList id={item.id} items={item.backupList?item.backupList:[]}
               onChange={(items)=>{
                 let newData = [...this.props.items];
                 newData[index].backupList=items;
                 this.props.onChange(newData);
               }}
-            />
+            />}
           <Button outline color="danger" size="sm" className="ml-auto" style={{marginBottom: "20px", marginLeft: "900px", width: "100px", border: "0px"}} onClick={()=>{this.props.removeItem(item.id);}}>Remove</Button>
           </div>
         )}

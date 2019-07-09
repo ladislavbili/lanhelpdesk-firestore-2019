@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import ShowData from '../../components/showData';
 import EditPassword from './editPassword';
 import { Button, Input } from 'reactstrap';
-import {setExpendituresOrderBy, setExpendituresAscending} from '../../redux/actions';
+import {setPasswordsOrderBy, setPasswordsAscending} from '../../redux/actions';
 
 //const attributes=[{title:'Server name',id:'title'},{title:'IP',id:'IP'},{title:'Status',id:'status'},{title:'Company',id:'company'}];
 
@@ -134,9 +134,9 @@ class List extends Component {
 				link={link}
 				history={this.props.history}
 				orderBy={this.props.orderBy}
-				setOrderBy={this.props.setExpendituresOrderBy}
+				setOrderBy={this.props.setPasswordsOrderBy}
 				ascending={this.props.ascending}
-				setAscending={this.props.setExpendituresAscending}
+				setAscending={this.props.setPasswordsAscending}
 				itemID={this.props.match.params.passID}
 				listID={this.props.match.params.listID}
 				match={this.props.match}
@@ -146,10 +146,9 @@ class List extends Component {
 		}
 	}
 
-	const mapStateToProps = ({ filterReducer, expenditureReducer }) => {
-		const { project, filter } = filterReducer;
-		const { orderBy, ascending } = expenditureReducer;
-		return { project, filter,orderBy,ascending };
+	const mapStateToProps = ({ passReducer }) => {
+		const { orderBy, ascending } = passReducer;
+		return { orderBy,ascending };
 	};
 
-	export default connect(mapStateToProps, { setExpendituresOrderBy, setExpendituresAscending })(List);
+	export default connect(mapStateToProps, { setPasswordsOrderBy, setPasswordsAscending })(List);

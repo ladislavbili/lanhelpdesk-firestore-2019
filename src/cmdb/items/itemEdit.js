@@ -8,7 +8,7 @@ import Passwords from './passwords';
 import AttributesHandler from './attributesHandler';
 import TextareaList from '../components/backups';
 import classnames from 'classnames';
-
+import CKEditor from 'ckeditor4-react';
 
 export default class ItemEdit extends Component{
   constructor(props){
@@ -22,8 +22,7 @@ export default class ItemEdit extends Component{
       originalPasswords:[],
       originalBackups:[],
       sidebarItem:null,
-      tab:1,
-      descriptionHeight:29,
+      tab:0,
 
       title:'',
       description:'',
@@ -92,7 +91,6 @@ export default class ItemEdit extends Component{
 
       title:item.title,
       description:item.description?item.description:'',
-      descriptionHeight:item.descriptionHeight?item.descriptionHeight:29,
       company,
       status,
       IPlist:IPs.map((item)=>{return {...item,fake:false}}),
@@ -111,6 +109,7 @@ export default class ItemEdit extends Component{
       this.setState({saving:true,loading:true})
       this.state.originalIPs.map((item)=>rebase.removeDoc('/cmdb-IPs/'+item));
       this.state.originalBackups.map((item)=>rebase.removeDoc('/cmdb-backups/'+item));
+      this.state.originalPasswords.map((item)=>rebase.removeDoc('/cmdb-backups/'+item));
       rebase.removeDoc('/cmdb-items/'+this.props.match.params.itemID);
       this.props.setDeleting(false);
       this.props.history.goBack();
@@ -125,7 +124,6 @@ export default class ItemEdit extends Component{
     let body = {
       title:this.state.title,
       description:this.state.description,
-      descriptionHeight:this.state.descriptionHeight,
       company:this.state.company.id,
       status:this.state.status.id,
       IP:this.state.IPlist.map((item)=>item.IP),
@@ -230,12 +228,16 @@ export default class ItemEdit extends Component{
                 onChange={e =>{ this.setState({ status: e }); }}
               />
             </FormGroup>
-            <FormGroup>
-              <Label>Description</Label>
-              <Input type="textarea" placeholder="Enter description" style={{height:this.state.descriptionHeight}} value={this.state.description} onChange={(e)=>this.setState({description:e.target.value,descriptionHeight:calculateTextAreaHeight(e)})} />
-            </FormGroup>
 
             <Nav tabs>
+              <NavItem>
+                <NavLink
+                  className={classnames({ active: this.state.tab === 0, clickable:true })}
+                  onClick={() => { this.setState({tab:0}); }}
+                >
+                  Description
+                </NavLink>
+              </NavItem>
               <NavItem>
                 <NavLink
                   className={classnames({ active: this.state.tab === 1, clickable:true })}
@@ -270,6 +272,19 @@ export default class ItemEdit extends Component{
               </NavItem>
             </Nav>
             <TabContent activeTab={this.state.tab} style={{marginBottom:30,borderRadius:4}}>
+              <TabPane tabId={0}>
+                <CKEditor
+                  data={this.state.description}
+                  onChange={(e)=>this.setState({description:e.editor.getData()})}
+                  config={ {
+                      //height: [ '60vh' ],
+                      codeSnippet_languages: {
+                        javascript: 'JavaScript',
+                        php: 'PHP'
+                      }
+                  } }
+                  />
+              </TabPane>
               <TabPane tabId={1}>
                 <IPList items={this.state.IPlist} onChange={(items)=>this.setState({IPlist:items})} />
               </TabPane>

@@ -16,7 +16,8 @@ export default class SidebarItemAdd extends Component{
       backupTasksHeight:29,
       newAttributeID:0,
       sidebarItems:[],
-      attributes:[]
+      attributes:[],
+      urlEdited:false
     }
     this.urlInUse.bind(this);
   }
@@ -53,12 +54,12 @@ export default class SidebarItemAdd extends Component{
         <div className="container-padding form-background card-box scrollable fit-with-header">
         <FormGroup>
           <Label for="name">Item name</Label>
-          <Input type="text" name="name" id="name" placeholder="Enter item name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
+          <Input type="text" name="name" id="name" placeholder="Enter item name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value,url:this.state.urlEdited?this.state.url:e.target.value.toLowerCase()})} />
         </FormGroup>
         <FormGroup>
           <Label for="name">URL name</Label>
           {this.urlInUse() && <Label for="name" style={{color:'red',fontSize:10,marginLeft:5}}>This URL is already in use or is empty!</Label>}
-          <Input type="text" name="name" id="name" placeholder="Enter item name" value={this.state.url} onChange={(e)=>this.setState({url:e.target.value.replace(/\s/g, '').toLowerCase()})} />
+          <Input type="text" name="name" id="name" placeholder="Enter item name" value={this.state.url} onChange={(e)=>this.setState({url:e.target.value.replace(/\s/g, '').toLowerCase(),urlEdited:true})} />
         </FormGroup>
         <FormGroup>
           <Label for="backupTasks">Backup tasks label</Label>

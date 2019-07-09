@@ -10,6 +10,7 @@ export default class ServerAdd extends Component{
       editMask:'',
       editGateway:'',
       editDNS:'',
+      editDNS2:'',
       editItemID:null,
       editFake: true,
 
@@ -18,8 +19,41 @@ export default class ServerAdd extends Component{
       newMask:'',
       newGateway:'',
       newDNS:'',
+      newDNS2:'',
       newItemID:0
     }
+    this.onFocus.bind(this);
+  }
+
+  onBlur(){
+    let body={
+      NIC:this.state.editNIC,
+      IP:this.state.editIP,
+      mask:this.state.editMask,
+      gateway:this.state.editGateway,
+      DNS:this.state.editDNS,
+      DNS2:this.state.editDNS2,
+      id:this.state.editItemID,
+      fake:this.state.editFake,
+    }
+    let newData = [...this.props.items];
+    let index = newData.findIndex((item)=>item.id===body.id);
+    newData[index]=body;
+    this.props.onChange(newData);
+    this.setState({ editItemID: null });
+  }
+
+  onFocus(item){
+    this.setState({
+      editNIC:item.NIC,
+      editIP:item.IP,
+      editMask:item.mask,
+      editGateway:item.gateway,
+      editDNS:item.DNS,
+      editDNS2:item.DNS2,
+      editItemID:item.id,
+      editFake:item.fake,
+    });
   }
 
 //className="invisible-input"
@@ -33,7 +67,8 @@ export default class ServerAdd extends Component{
             <th>IP</th>
             <th>Mask</th>
             <th>Gateway</th>
-            <th>DNS</th>
+            <th>DNS 1</th>
+            <th>DNS 2</th>
             <th></th>
           </tr>
         </thead>
@@ -48,31 +83,9 @@ export default class ServerAdd extends Component{
                       ? this.state.editNIC
                       : item.NIC
                     }
-                    onBlur={() => {
-                      let body={
-                        NIC:this.state.editNIC,
-                        IP:this.state.editIP,
-                        mask:this.state.editMask,
-                        gateway:this.state.editGateway,
-                        DNS:this.state.editDNS,
-                        id:this.state.editItemID,
-                        fake:this.state.editFake,
-                      }
-                      let newData = [...this.props.items];
-                      newData[index]=body;
-                      this.props.onChange(newData);
-                      this.setState({ editItemID: null });
-                    }}
+                    onBlur={this.onBlur.bind(this)}
                     onFocus={() => {
-                      this.setState({
-                        editNIC:item.NIC,
-                        editIP:item.IP,
-                        editMask:item.mask,
-                        editGateway:item.gateway,
-                        editDNS:item.DNS,
-                        editItemID:item.id,
-                        editFake:item.fake,
-                      });
+                      this.onFocus(item);
                     }}
                     onChange={e =>{
                       this.setState({ editNIC: e.target.value })}
@@ -87,31 +100,9 @@ export default class ServerAdd extends Component{
                       ? this.state.editIP
                       : item.IP
                     }
-                    onBlur={() => {
-                      let body={
-                        NIC:this.state.editNIC,
-                        IP:this.state.editIP,
-                        mask:this.state.editMask,
-                        gateway:this.state.editGateway,
-                        DNS:this.state.editDNS,
-                        id:this.state.editItemID,
-                        fake:this.state.editFake,
-                      }
-                      let newData = [...this.props.items];
-                      newData[index]=body;
-                      this.props.onChange(newData);
-                      this.setState({ editItemID: null });
-                    }}
+                    onBlur={this.onBlur.bind(this)}
                     onFocus={() => {
-                      this.setState({
-                        editNIC:item.NIC,
-                        editIP:item.IP,
-                        editMask:item.mask,
-                        editGateway:item.gateway,
-                        editDNS:item.DNS,
-                        editItemID:item.id,
-                        editFake:item.fake,
-                      });
+                      this.onFocus(item);
                     }}
                     onChange={e =>{
                       this.setState({ editIP: e.target.value })}
@@ -129,31 +120,9 @@ export default class ServerAdd extends Component{
                     onChange={e =>{
                       this.setState({ editMask: e.target.value })}
                     }
-                    onBlur={() => {
-                      let body={
-                        NIC:this.state.editNIC,
-                        IP:this.state.editIP,
-                        mask:this.state.editMask,
-                        gateway:this.state.editGateway,
-                        DNS:this.state.editDNS,
-                        id:this.state.editItemID,
-                        fake:this.state.editFake,
-                      }
-                      let newData = [...this.props.items];
-                      newData[index]=body;
-                      this.props.onChange(newData);
-                      this.setState({ editItemID: null });
-                    }}
+                    onBlur={this.onBlur.bind(this)}
                     onFocus={() => {
-                      this.setState({
-                        editNIC:item.NIC,
-                        editIP:item.IP,
-                        editMask:item.mask,
-                        editGateway:item.gateway,
-                        editDNS:item.DNS,
-                        editItemID:item.id,
-                        editFake:item.fake,
-                      });
+                      this.onFocus(item);
                     }}
                     />
               </td>
@@ -168,31 +137,9 @@ export default class ServerAdd extends Component{
                     onChange={e =>{
                       this.setState({ editGateway: e.target.value })}
                     }
-                    onBlur={() => {
-                      let body={
-                        NIC:this.state.editNIC,
-                        IP:this.state.editIP,
-                        mask:this.state.editMask,
-                        gateway:this.state.editGateway,
-                        DNS:this.state.editDNS,
-                        id:this.state.editItemID,
-                        fake:this.state.editFake,
-                      }
-                      let newData = [...this.props.items];
-                      newData[index]=body;
-                      this.props.onChange(newData);
-                      this.setState({ editItemID: null });
-                    }}
+                    onBlur={this.onBlur.bind(this)}
                     onFocus={() => {
-                      this.setState({
-                        editNIC:item.NIC,
-                        editIP:item.IP,
-                        editMask:item.mask,
-                        editGateway:item.gateway,
-                        editDNS:item.DNS,
-                        editItemID:item.id,
-                        editFake:item.fake,
-                      });
+                      this.onFocus(item);
                     }}
                     />
               </td>
@@ -204,35 +151,30 @@ export default class ServerAdd extends Component{
                       ? this.state.editDNS
                       : item.DNS
                     }
-                    onChange={e =>{
-                      this.setState({ editDNS: e.target.value })}
+                  onChange={e =>{
+                    this.setState({ editDNS: e.target.value })}
+                  }
+                  onBlur={this.onBlur.bind(this)}
+                  onFocus={() => {
+                    this.onFocus(item);
+                  }}
+                    />
+              </td>
+              <td>
+                <Input
+                  type="text"
+                  value={
+                    item.id === this.state.editItemID
+                      ? this.state.editDNS2
+                      : item.DNS2
                     }
-                    onBlur={() => {
-                      let body={
-                        NIC:this.state.editNIC,
-                        IP:this.state.editIP,
-                        mask:this.state.editMask,
-                        gateway:this.state.editGateway,
-                        DNS:this.state.editDNS,
-                        id:this.state.editItemID,
-                        fake:this.state.editFake,
-                      }
-                      let newData = [...this.props.items];
-                      newData[index]=body;
-                      this.props.onChange(newData);
-                      this.setState({ editItemID: null });
-                    }}
-                    onFocus={() => {
-                      this.setState({
-                        editNIC:item.NIC,
-                        editIP:item.IP,
-                        editMask:item.mask,
-                        editGateway:item.gateway,
-                        editDNS:item.DNS,
-                        editItemID:item.id,
-                        editFake:item.fake,
-                      });
-                    }}
+                  onChange={e =>{
+                    this.setState({ editDNS2: e.target.value })}
+                  }
+                  onBlur={this.onBlur.bind(this)}
+                  onFocus={() => {
+                    this.onFocus(item);
+                  }}
                     />
               </td>
               <td>
@@ -307,6 +249,17 @@ export default class ServerAdd extends Component{
                 style={{ height: 30 }}
                 />
             </td>
+            <td>
+              <Input
+                type="text"
+                value={this.state.newDNS2}
+                onChange={(e)=>this.setState({newDNS2:e.target.value})}
+                className="form-control"
+                id="inlineFormInput"
+                placeholder=""
+                style={{ height: 30 }}
+                />
+            </td>
 
             <td>
               <button className="btn btn-link waves-effect"
@@ -318,6 +271,7 @@ export default class ServerAdd extends Component{
                     mask:this.state.newMask,
                     gateway:this.state.newGateway,
                     DNS:this.state.newDNS,
+                    DNS2:this.state.newDNS2,
                     id:this.state.newItemID,
                     fake:true
                   }
@@ -327,6 +281,7 @@ export default class ServerAdd extends Component{
                     newMask:'',
                     newGateway:'',
                     newDNS:'',
+                    newDNS2:'',
                     newItemID:this.state.newItemID+1
                   });
 

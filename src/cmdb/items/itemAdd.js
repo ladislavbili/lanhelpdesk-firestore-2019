@@ -6,9 +6,9 @@ import Select from 'react-select';
 import IPList from './ipList';
 import Passwords from './passwords';
 import AttributesHandler from './attributesHandler';
-import TextareaList from '../components/textareaListTextOnly';
+import TextareaList from '../components/backups';
 import classnames from 'classnames';
-
+import CKEditor from 'ckeditor4-react';
 
 export default class ItemAdd extends Component{
   constructor(props){
@@ -19,8 +19,7 @@ export default class ItemAdd extends Component{
       companies:[],
       statuses:[],
       sidebarItem:null,
-      tab:'1',
-      descriptionHeight:29,
+      tab:'0',
 
       title:'',
       description:'',
@@ -100,12 +99,16 @@ export default class ItemAdd extends Component{
                 onChange={e =>{ this.setState({ status: e }); }}
               />
             </FormGroup>
-            <FormGroup>
-              <Label>Description</Label>
-              <Input type="textarea" placeholder="Enter description" style={{height:this.state.descriptionHeight}} value={this.state.description} onChange={(e)=>this.setState({description:e.target.value,descriptionHeight:calculateTextAreaHeight(e)})} />
-            </FormGroup>
 
             <Nav tabs>
+              <NavItem>
+                <NavLink
+                  className={classnames({ active: this.state.activeTab === '0', clickable:true })}
+                  onClick={() => { this.setState({tab:'0'}); }}
+                >
+                  Description
+                </NavLink>
+              </NavItem>
               <NavItem>
                 <NavLink
                   className={classnames({ active: this.state.activeTab === '1', clickable:true })}
@@ -140,6 +143,19 @@ export default class ItemAdd extends Component{
               </NavItem>
             </Nav>
             <TabContent activeTab={this.state.tab} style={{marginBottom:30,borderRadius:4}}>
+              <TabPane tabId="0">
+                <CKEditor
+                  data={this.state.description}
+                  onChange={(e)=>this.setState({description:e.editor.getData()})}
+                  config={ {
+                      //height: [ '60vh' ],
+                      codeSnippet_languages: {
+                        javascript: 'JavaScript',
+                        php: 'PHP'
+                      }
+                  } }
+                  />
+              </TabPane>
               <TabPane tabId="1">
                 <IPList items={this.state.IPlist} onChange={(items)=>this.setState({IPlist:items})} />
               </TabPane>
@@ -176,7 +192,6 @@ export default class ItemAdd extends Component{
             let body = {
               title:this.state.title,
               description:this.state.description,
-              descriptionHeight:this.state.descriptionHeight,
               company:this.state.company.id,
               status:this.state.status.id,
               IP:this.state.IPlist.map((item)=>item.IP),
@@ -210,7 +225,6 @@ export default class ItemAdd extends Component{
                   IPlist:[],
                   saving:false,
                   attributes,
-                  descriptionHeight:29,
                   description:''
                 });
                   this.props.history.goBack();
