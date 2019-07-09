@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input } from 'reactstrap';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import Select from 'react-select';
+import {selectStyle} from "../../../scss/selectStyles";
 
 export default class InvoiceItems extends Component{
   constructor(props){
@@ -20,8 +21,8 @@ export default class InvoiceItems extends Component{
 
   render(){
     return (
-        <div className="container-padding form-background card-box">
-          <table className="table table-centered table-borderless table-hover mb-0">
+        <div className="container-padding bkg-white b-1 b-cl-form p-10  m-b-15 m-t-15">
+          <table className="table">
             <thead>
               <tr>
                 <th>Item name</th>
@@ -41,7 +42,7 @@ export default class InvoiceItems extends Component{
                   <td>{item.price}</td>
                   <td>{item.sn}</td>
                   <td>
-                    <Button className="no-border inherit-background" onClick={()=>{
+                    <Button className="btn-link" onClick={()=>{
                         this.setState({
                           editOpened:!this.state.editOpened,
                           editedID:item.id,
@@ -54,22 +55,24 @@ export default class InvoiceItems extends Component{
                     }}>
                       <i className="fa fa-edit" />
                     </Button>
-                    <Button className="no-border inherit-background" onClick={()=>{
+                    <Button className="btn-link" onClick={()=>{
                         if(window.confirm('Are you sure?')){
                             this.props.deleteItem(item.id);
                         }
-                      }}><i className="fa fa-trash" /></Button>
+                      }}>
+                      <i className="fa fa-trash" /></Button>
                 </td>
                 </tr>
               )}
             </tbody>
           </table>
-          <Button color="success" className="separate" onClick={()=>this.setState({addOpened:!this.state.addOpened})} >Add invoice item</Button>
+
+          <Button className="btn t-a-l" onClick={()=>this.setState({addOpened:!this.state.addOpened})} >Add invoice item</Button>
 
           <Modal isOpen={this.state.addOpened} toggle={()=>this.setState({addOpened:!this.state.addOpened})} >
-              <ModalHeader toggle={()=>this.setState({addOpened:!this.state.addOpened})}>Add item</ModalHeader>
+              <ModalHeader toggle={()=>this.setState({addOpened:!this.state.addOpened})}></ModalHeader>
               <ModalBody>
-              <div className="container-padding">
+              <div>
                 <FormGroup>
                   <Label for="title">Name</Label>
                   <Input type="text" name="title" id="title" placeholder="Enter title" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
@@ -82,6 +85,7 @@ export default class InvoiceItems extends Component{
                   <Label for="unit">Unit</Label>
                   <Select
                     value={this.state.unit}
+                    styles={selectStyle}
                     onChange={(unit)=>this.setState({unit})}
                     options={this.props.units}
                     />
@@ -97,7 +101,9 @@ export default class InvoiceItems extends Component{
               </div>
             </ModalBody>
             <ModalFooter>
-              <Button color="success" disabled={this.props.disabled||this.state.unit===null} onClick={()=>{
+              <Button className="btn"
+                disabled={this.props.disabled||this.state.unit===null}
+                onClick={()=>{
                   this.props.addItem({id:this.props.newItemID,title:this.state.title,unit:this.state.unit.id,quantity:this.state.quantity,price:this.state.price,sn:this.state.sn});
                   this.setState({
                     addOpened:false,
@@ -106,15 +112,17 @@ export default class InvoiceItems extends Component{
                     price:0,
                     sn:''
                   });
-                }}>Add</Button>
-                <Button onClick={()=>this.setState({addOpened:!this.state.addOpened})}>Close</Button>
+                }}>Add
+              </Button>
+
+                <Button className="btn-link" onClick={()=>this.setState({addOpened:!this.state.addOpened})}>Close</Button>
               </ModalFooter>
             </Modal>
 
             <Modal isOpen={this.state.editOpened} toggle={()=>this.setState({editOpened:!this.state.editOpened})} >
-              <ModalHeader toggle={()=>this.setState({editOpened:!this.state.editOpened})}>Edditing item</ModalHeader>
+              <ModalHeader toggle={()=>this.setState({editOpened:!this.state.editOpened})}></ModalHeader>
               <ModalBody>
-              <div className="container-padding">
+              <div>
                 <FormGroup>
                   <Label for="title">Name</Label>
                   <Input type="text" name="title" id="title" placeholder="Enter title" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
@@ -127,6 +135,7 @@ export default class InvoiceItems extends Component{
                   <Label for="unit">Unit</Label>
                   <Select
                     value={this.state.unit}
+                    styles={selectStyle}
                     onChange={(unit)=>this.setState({unit})}
                     options={this.props.units}
                     />
@@ -142,7 +151,8 @@ export default class InvoiceItems extends Component{
               </div>
             </ModalBody>
             <ModalFooter>
-              <Button color="primary" disabled={this.props.disabled||this.state.unit===null} onClick={()=>{
+
+              <Button className="btn" disabled={this.props.disabled||this.state.unit===null} onClick={()=>{
                   this.props.editItem({id:this.state.editedID,title:this.state.title,unit:this.state.unit.id,quantity:this.state.quantity,price:this.state.price,sn:this.state.sn});
                   this.setState({
                     editOpened:false,
@@ -152,7 +162,7 @@ export default class InvoiceItems extends Component{
                     sn:''
                   });
                 }}>Edit</Button>
-              <Button onClick={()=>this.setState({editOpened:!this.state.editOpened})}>Close</Button>
+              <Button className="btn-link" onClick={()=>this.setState({editOpened:!this.state.editOpened})}>Close</Button>
               </ModalFooter>
             </Modal>
       </div>

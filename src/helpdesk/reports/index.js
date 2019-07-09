@@ -144,187 +144,160 @@ class Reports extends Component {
 
 	render() {
 		return (
-			<div className="content-page scrollable fit-with-header">
-				<div className="content" style={{ paddingTop: 0 }}>
+				<div className="scrollable fit-with-header">
 					<div className="container-fluid">
-						<div className="d-flex flex-row align-items-center">
-							<div className="p-2">
-								<button type="button" className="btn btn-link waves-effect">
+						<div className="d-flex flex-row align-items-center p-2">
+							<button type="button" className="btn-link waves-effect">
+								<i
+									className="fa fa-file-pdf"
+									/>
+								{"  "}Export
+								</button>
+								<button type="button" className="btn-link waves-effect">
 									<i
-										className="fa fa-file-pdf"
-										style={{
-											color: '#4a81d4',
-											fontSize: '1.2em',
-										}}
+										className="fas fa-print"
 										/>
-									<span style={{
-											color: '#4a81d4',
-											fontSize: '1.2em',
-										}}> Export</span>
+									{"  "}Print
 									</button>
-								</div>
-								<div className="">
-									<button type="button" className="btn btn-link waves-effect">
+									<button type="button" className="btn-link waves-effect">
 										<i
-											className="fas fa-print"
-											style={{
-												color: '#4a81d4',
-												fontSize: '1.2em',
-											}}
+											className="fas fa-sync"
 											/>
-										<span style={{
-												color: '#4a81d4',
-												fontSize: '1.2em',
-											}}> Print</span>
-										</button>
-									</div>
-									<div>
-										<button type="button" className="btn btn-link waves-effect">
-											<i
-												className="fas fa-sync"
-												style={{color: '#4a81d4',fontSize: '1.2em'}}
-												/>
-											<span style={{color: '#4a81d4',fontSize: '1.2em'}}> Aktualizovať ceny podla cenníka</span>
-										</button>
-									</div>
+										{"  "}Aktualizovať ceny podla cenníka
+									</button>
+						</div>
+							<div className="p-10">
+								<h1 className="m-b-15">Výkaz prác</h1>
+								<div>
+									<h3>Služby</h3>
+									<hr />
+									<div className="m-b-30">
+										<table className="table m-b-10">
+											<thead>
+												<tr>
+													<th>ID</th>
+													<th style={{ width: '20%' }}>	Name</th>
+													<th>Zadal</th>
+													<th>Riesi</th>
+													<th>Status</th>
+													<th>Status date</th>
+													<th>Služby</th>
+													<th>Typ práce</th>
+													<th>Hodiny</th>
+													<th >	Cena/ks </th>
+													<th>Cena spolu</th>
+												</tr>
+											</thead>
+											<tbody>
+												{
+													this.processWorks(this.state.taskWorks).map((item,index)=>
+													<tr key={index}>
+														<td>{item.task.id}</td>
+														<td><Link className="" to={{ pathname: `/helpdesk/taskList/`+item.task.id }} style={{ color: "#1976d2" }}>{item.task.title}</Link></td>
+														<td>{item.task.requester?item.task.requester.email:'Nikto'}</td>
+														<td>{item.task.assigned?item.task.assigned.email:'Nikto'}</td>
+														<td>{item.task.status.title}</td>
+														<td>{timestampToString(item.task.statusChange)}</td>
+														<td>
+															{item.title.map((item2,index)=>
+																<p key={index}>{item2}</p>
+															)}
+														</td>
+														<td>
+															{item.workType.map((item2,index)=>
+																<p key={index}>{item2.title}</p>
+															)}
+														</td>
+														<td>
+															{item.quantity.map((item2,index)=>
+																<p key={index}>{item2}</p>
+															)}
+														</td>
+														<td>
+															{item.finalUnitPrice.map((item2,index)=>
+																<p key={index}>{item2}</p>
+															)}
+														</td>
+														<td>
+															{item.totalPrice.map((item2,index)=>
+																<p key={index}>{item2}</p>
+															)}
+														</td>
+													</tr>
+												)
+											}
+										 </tbody>
+									</table>
+									<p className="m-0">Spolu zlava bez DPH: 105 EUR</p>
+									<p className="m-0">Spolu cena bez DPH: 105 EUR</p>
+									<p className="m-0">Spolu cena s DPH: 126 EUR</p>
 								</div>
-								<div className="row">
-									<div className="col-md-12">
-										<div className="card-box">
-											<h1>Výkaz prác</h1>
-											<hr />
-											<div>
-												<h3>Služby</h3>
-												<div className="table-responsive">
-													<table className="table table-hover mails m-0">
-														<thead>
-															<tr>
-															<th>ID</th>
-																<th style={{ width: '20%' }}>	Name</th>
-																<th>Zadal</th>
-																<th>Riesi</th>
-																<th>Status</th>
-																<th>Status date</th>
-																<th>Služby</th>
-																<th>Typ práce</th>
-																<th>Hodiny</th>
-																<th >	Cena/ks </th>
-																<th>Cena spolu</th>
-															</tr>
-														</thead>
-														<tbody>
-															{
-																this.processWorks(this.state.taskWorks).map((item,index)=>
-																<tr key={index}>
-																	<td>{item.task.id}</td>
-																	<td><Link className="" to={{ pathname: `/helpdesk/taskList/`+item.task.id }} style={{ color: "#1976d2" }}>{item.task.title}</Link></td>
-																	<td>{item.task.requester?item.task.requester.email:'Nikto'}</td>
-																	<td>{item.task.assigned?item.task.assigned.email:'Nikto'}</td>
-																	<td>{item.task.status.title}</td>
-																	<td>{timestampToString(item.task.statusChange)}</td>
-																	<td>
-																		{item.title.map((item2,index)=>
-																			<p key={index}>{item2}</p>
-																		)}
-																	</td>
-																	<td>
-																		{item.workType.map((item2,index)=>
-																			<p key={index}>{item2.title}</p>
-																		)}
-																	</td>
-																	<td>
-																		{item.quantity.map((item2,index)=>
-																			<p key={index}>{item2}</p>
-																		)}
-																	</td>
-																	<td>
-																		{item.finalUnitPrice.map((item2,index)=>
-																			<p key={index}>{item2}</p>
-																		)}
-																	</td>
-																	<td>
-																		{item.totalPrice.map((item2,index)=>
-																			<p key={index}>{item2}</p>
-																		)}
-																	</td>
-																</tr>
-															)
-														}
-													</tbody>
-												</table>
-												<p className="m-0">Spolu zlava bez DPH: 105 EUR</p>
-												<p className="m-0">Spolu cena bez DPH: 105 EUR</p>
-												<p className="m-0">Spolu cena s DPH: 126 EUR</p>
-												<hr />
-											</div>
-											<div>
-												<h3>Material</h3>
-												<table className="table table-hover mails m-0">
-													<thead>
-														<tr>
-														<th>ID</th>
-															<th style={{ width: '20%' }}>Name</th>
-															<th>Zadal</th>
-															<th>Riesi</th>
-															<th>Status</th>
-															<th>Status date</th>
-															<th>Material</th>
-															<th>Mn.</th>
-															<th>Jednotka</th>
-															<th >Cena/Mn.</th>
-															<th>Cena spolu</th>
-														</tr>
-													</thead>
-													<tbody>
-														{
-															this.processMaterials(this.state.taskMaterials).map((material, index)=>
-															<tr key={index}>
-																<td>{material.task.id}</td>
-																<td><Link className="" to={{ pathname: `/helpdesk/taskList/`+material.task.id }} style={{ color: "#1976d2" }}>{material.task.title}</Link></td>
-																<td>{material.task.requester?material.task.requester.email:'Nikto'}</td>
-																<td>{material.task.assigned?material.task.assigned.email:'Nikto'}</td>
-																<td>{material.task.status.title}</td>
-																<td>{timestampToString(material.task.statusChange)}</td>
-																	<td>
-																		{material.title.map((item2,index)=>
-																			<p key={index}>{item2}</p>
-																		)}
-																	</td>
-																	<td>
-																		{material.quantity.map((item2,index)=>
-																			<p key={index}>{item2}</p>
-																		)}
-																	</td>
-																	<td>
-																		{material.unit.map((item2,index)=>
-																			<p key={index}>{item2.title}</p>
-																		)}
-																	</td>
-																	<td>
-																		{material.finalUnitPrice.map((item2,index)=>
-																			<p key={index}>{item2}</p>
-																		)}
-																	</td>
-																	<td>
-																		{material.totalPrice.map((item2,index)=>
-																			<p key={index}>{item2}</p>
-																		)}
-																	</td>
-															</tr>
-														)}
-													</tbody>
-												</table>
-												<p className="m-0">Spolu cena bez DPH: 105 EUR</p>
-												<p className="m-0">Spolu cena s DPH: 126 EUR</p>
-											</div>
-										</div>
-									</div>
+
+								<div>
+									<h3>Material</h3>
+									<hr />
+									<table className="table p-10">
+										<thead>
+											<tr>
+												<th>ID</th>
+												<th style={{ width: '20%' }}>Name</th>
+												<th>Zadal</th>
+												<th>Riesi</th>
+												<th>Status</th>
+												<th>Status date</th>
+												<th>Material</th>
+												<th>Mn.</th>
+												<th>Jednotka</th>
+												<th >Cena/Mn.</th>
+												<th>Cena spolu</th>
+											</tr>
+										</thead>
+										<tbody>
+											{
+												this.processMaterials(this.state.taskMaterials).map((material, index)=>
+												<tr key={index}>
+													<td>{material.task.id}</td>
+													<td><Link className="" to={{ pathname: `/helpdesk/taskList/`+material.task.id }} style={{ color: "#1976d2" }}>{material.task.title}</Link></td>
+													<td>{material.task.requester?material.task.requester.email:'Nikto'}</td>
+													<td>{material.task.assigned?material.task.assigned.email:'Nikto'}</td>
+													<td>{material.task.status.title}</td>
+													<td>{timestampToString(material.task.statusChange)}</td>
+														<td>
+															{material.title.map((item2,index)=>
+																<p key={index}>{item2}</p>
+															)}
+														</td>
+														<td>
+															{material.quantity.map((item2,index)=>
+																<p key={index}>{item2}</p>
+															)}
+														</td>
+														<td>
+															{material.unit.map((item2,index)=>
+																<p key={index}>{item2.title}</p>
+															)}
+														</td>
+														<td>
+															{material.finalUnitPrice.map((item2,index)=>
+																<p key={index}>{item2}</p>
+															)}
+														</td>
+														<td>
+															{material.totalPrice.map((item2,index)=>
+																<p key={index}>{item2}</p>
+															)}
+														</td>
+												</tr>
+											)}
+										</tbody>
+									</table>
+									<p className="m-0">Spolu cena bez DPH: 105 EUR</p>
+									<p className="m-0">Spolu cena s DPH: 126 EUR</p>
 								</div>
 							</div>
-
 						</div>
 					</div>
-				</div>
+				 </div>
 			);
 		}
 	}

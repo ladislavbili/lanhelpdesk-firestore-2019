@@ -4,6 +4,7 @@ import Select from 'react-select';
 import InvoiceItems from './invoiceItems';
 import {rebase, database} from '../../../index';
 import {toSelArr, snapshotToArray} from '../../../helperFunctions';
+import {selectStyle} from "../../../scss/selectStyles";
 
 export default class SupplierInvoiceAdd extends Component{
   constructor(props){
@@ -43,7 +44,8 @@ export default class SupplierInvoiceAdd extends Component{
 
   render(){
     return (
-        <div className="container-padding form-background card-box scrollable fit-with-header">
+      <div className="full-height card-box scrollable fit-with-header-and-commandbar">
+        <div className="m-t-20">
           <FormGroup>
             <Label for="name">Invoice indetifier</Label>
             <Input type="text" name="identifier" id="identifier" placeholder="Enter identifier" value={this.state.identifier} onChange={(e)=>this.setState({identifier:e.target.value})} />
@@ -54,6 +56,7 @@ export default class SupplierInvoiceAdd extends Component{
                 value={this.state.supplier}
                 onChange={(supplier)=>this.setState({supplier})}
                 options={this.state.suppliers}
+                styles={selectStyle}
                 />
           </FormGroup>
           <FormGroup>
@@ -75,7 +78,7 @@ export default class SupplierInvoiceAdd extends Component{
           newItemID={this.state.newItemID}
           />
 
-        <Button color="primary" className="separate" disabled={this.state.saving||this.state.loading} onClick={()=>{
+        <Button className="btn"  disabled={this.state.saving||this.state.loading} onClick={()=>{
             this.setState({saving:true});
             rebase.addToCollection('/help-supplier_invoices', {supplier:this.state.supplier.id,identifier:this.state.identifier,note:this.state.note,date:this.state.date!==null?(new Date(this.state.date)).getTime():0})
               .then((response)=>{
@@ -98,6 +101,7 @@ export default class SupplierInvoiceAdd extends Component{
                 this.setState({ supplier:null,identifier:0,note:'',invoiceItems:[],saving:false});
               });
           }}>{this.state.saving?'Adding...':'Add invoice'}</Button>
+        </div>
       </div>
     );
   }

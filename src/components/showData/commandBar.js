@@ -54,6 +54,7 @@ class TaskListContainer extends Component {
 							</div>
 						</div>
 					</div>
+
 					{ this.props.isTask &&
 						<div className="p-2">
 							<Button

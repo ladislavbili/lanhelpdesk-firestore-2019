@@ -29,7 +29,7 @@ export default class TaskTypesList extends Component{
       <div className="content-page">
 				<div className="content" style={{ paddingTop: 0 }}>
 					<div className="container-fluid">
-						<div className="d-flex flex-row align-items-center">
+						<div className="row align-items-center">
               <div className="p-2">
                 <div className="input-group">
                   <input
@@ -48,7 +48,7 @@ export default class TaskTypesList extends Component{
               </div>
 
                 <Button
-          				className="btn-link t-a-l sidebar-menu-item"
+          				className="btn-link t-a-l"
           				onClick={()=>this.props.history.push('/helpdesk/settings/taskTypes/add')}>
           			 <i className="fa fa-plus sidebar-icon-center"/> Add task type
           			</Button>

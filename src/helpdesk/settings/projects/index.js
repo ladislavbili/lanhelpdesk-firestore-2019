@@ -28,8 +28,8 @@ export default class ProjectList extends Component{
       <div className="content-page">
 				<div className="content" style={{ paddingTop: 0 }}>
 					<div className="container-fluid">
-						<div className="d-flex flex-row align-items-center">
-              <div className="p-2">
+						<div className="row align-items-center">
+              <div className="p-2" >
                 <div className="input-group">
                   <input
                     type="text"
@@ -47,7 +47,7 @@ export default class ProjectList extends Component{
               </div>
 
               <Button
-                className="btn-link t-a-l sidebar-menu-item"
+                className="btn-link t-a-l"
                 onClick={()=>this.props.history.push('/helpdesk/settings/projects/add')}>
                <i className="fa fa-plus sidebar-icon-center"/> Add project
               </Button>

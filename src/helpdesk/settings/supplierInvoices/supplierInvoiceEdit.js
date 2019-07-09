@@ -4,6 +4,7 @@ import Select from 'react-select';
 import InvoiceItems from './invoiceItems';
 import {rebase, database} from '../../../index';
 import {toSelArr, snapshotToArray} from '../../../helperFunctions';
+import {selectStyle} from "../../../scss/selectStyles";
 
 export default class SupplierInvoiceAdd extends Component{
   constructor(props){
@@ -64,7 +65,8 @@ export default class SupplierInvoiceAdd extends Component{
   render(){
     return (
 
-        <div className="container-padding form-background card-box scrollable fit-with-header">
+      <div className="full-height card-box scrollable fit-with-header-and-commandbar">
+        <div className="m-t-20">
           {
             this.state.loading &&
             <Alert color="success">
@@ -79,6 +81,7 @@ export default class SupplierInvoiceAdd extends Component{
             <Label for="name">Supplier</Label>
               <Select
                 value={this.state.supplier}
+                styles={selectStyle}
                 onChange={(supplier)=>this.setState({supplier})}
                 options={this.state.suppliers}
                 />
@@ -142,15 +145,15 @@ export default class SupplierInvoiceAdd extends Component{
           disabled={this.state.saving||this.state.loading}
           newItemID={this.state.newItemID}
           />
-
-        <Button color="primary" className="separate" disabled={this.state.saving||this.state.loading||this.state.supplier===undefined} onClick={()=>{
+        
+        <Button className="btn" disabled={this.state.saving||this.state.loading||this.state.supplier===undefined} onClick={()=>{
             this.setState({saving:true});
             rebase.updateDoc('/help-supplier_invoices/'+this.props.match.params.id, {supplier:this.state.supplier.id,identifier:this.state.identifier,note:this.state.note,date:this.state.date!==null?(new Date(this.state.date)).getTime():0})
               .then((response)=>{
                 this.setState({ saving:false});
               });
           }}>{this.state.saving?'Saving...':'Save supplier'}</Button>
-        <Button color="danger" className="separate" disabled={this.state.saving} onClick={()=>{
+        <Button className="btn-link" disabled={this.state.saving} onClick={()=>{
               if(window.confirm("Are you sure?")){
                 this.state.invoiceItems.forEach((invoiceItem)=>{
                   rebase.removeDoc('/help-invoice_items/'+invoiceItem.id).then(()=>{
@@ -167,6 +170,7 @@ export default class SupplierInvoiceAdd extends Component{
                 });
               }
               }}>Delete</Button>
+        </div>
       </div>
     );
   }
