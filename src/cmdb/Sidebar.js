@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {NavItem, Nav, Button} from 'reactstrap';
+import {Row, Col,NavItem, Nav, Button} from 'reactstrap';
 import { NavLink as Link } from 'react-router-dom';
 import Select from "react-select";
 import { connect } from "react-redux";
@@ -9,24 +9,7 @@ import {rebase} from '../index';
 import {toSelArr} from '../helperFunctions';
 import {setCompany, setFilter} from '../redux/actions';
 import CompanyAdd from './settings/companies/companyAdd';
-
-const customSelect = {
-	singleValue: (provided, state) => {
-		return { ...provided, marginLeft:30 };
-	},
-	indicatorSeparator:(provided, state) => {
-		return { ...provided, width:0 };
-	},
-	control:(provided, state) => {
-		return { ...provided, borderRadius:50, borderColor:'#6c757d' };
-	},
-	input:(provided, state) => {
-		return { ...provided, marginLeft:30 };
-	},
-	placeholder:(provided, state) => {
-		return { ...provided, marginLeft:30 };
-	},
-}
+import {sidebarSelectStyle} from '../scss/selectStyles';
 
 class Sidebar extends Component {
 	constructor(props) {
@@ -71,47 +54,59 @@ class Sidebar extends Component {
 			<div className="sidebar">
 				<SelectPage />
 				<div className="scrollable fit-with-header">
-					<div className="commandbar"  >
-						<CompanyAdd />
-					</div>
-					<li className="pb-0 menu-item" >
-						Companies
-					</li>
-					<li className="menu-item">
+					<Button
+						className="btn-link t-a-l sidebar-menu-item"
+						onClick={()=>{this.props.history.push('/cmdb/add')}}
+					> <i className="fa fa-plus sidebar-icon-center"/> Item
+					</Button>
+
+					<li>
 						<Select
-							className="fullWidth"
 							options={this.state.companies}
 							value={this.state.company}
-							styles={customSelect}
+							styles={sidebarSelectStyle}
 							onChange={e => {
 								this.setState({company:e});
 								this.props.setCompany(e.value);
 							}}
-							components={{DropdownIndicator: ({ innerProps, isDisabled }) =>  <i className="fa fa-folder-open" style={{position:'absolute', left:15}} /> }}
+							components={{
+								DropdownIndicator: ({ innerProps, isDisabled }) =>
+								<div style={{marginTop: "-15px"}}>
+									<i className="fa fa-folder-open" style={{position:'absolute', left:15, color: "#0078D4"}}/>
+									<i className="fa fa-chevron-down" style={{position:'absolute', right:15, color: "#0078D4"}}/>
+								</div>,
+							}}
 							/>
 					</li>
-					<Button
-						color="success"
-						style={{ width: '100%' }}
-						onClick={()=>{this.props.history.push('/cmdb/add')}}
-					> Add items
-					</Button>
-					<Nav vertical>
-						{
-							this.state.sidebar.map((item)=>
-							<NavItem key={item.id} style={{flex:1, display:'flex'}}>
-								<Link style={{width:'calc( 100% - 32px )'}} to={{ pathname: `/cmdb/i/`+item.url }}>{item.title}</Link>
-									<button className="btn btn-link waves-effect" onClick={()=>{
-											this.props.history.push('/cmdb/edit/'+item.id);
-										}}>
-											<i className="fa fa-cog" />
-									</button>
-							</NavItem>
-						)
-						}
-					</Nav>
-				</div>
+					<hr />
 
+						<Row>
+							<Col xs={10}>
+								<Nav vertical>
+									{	this.state.sidebar.map((item)=>
+										<NavItem key={item.id}>
+											<Link className="text-basic" to={{ pathname: `/cmdb/i/`+item.url }}>{item.title}</Link>
+										</NavItem>
+									)}
+								</Nav>
+							</Col>
+							<Col xs={2}>
+								{	this.state.sidebar.map((item)=>
+									<Button
+										key={item.id}
+										className='btn-link t-a-l'
+										style={{height:41}}
+										onClick={() => this.props.history.push('/cmdb/edit/'+item.id)}
+										>
+										<i className="fa fa-cog"/>
+									</Button>
+								)}
+							</Col>
+						</Row>
+					<hr />
+					<CompanyAdd />
+
+				</div>
 			</div>
 			);
 		}

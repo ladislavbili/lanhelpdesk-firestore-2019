@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {rebase,database} from '../../index';
 import {  FormGroup, Label, Input, TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
-import {toSelArr, snapshotToArray, getAttributeDefaultValue, htmlFixNewLines, calculateTextAreaHeight} from '../../helperFunctions';
+import {toSelArr, snapshotToArray, getAttributeDefaultValue, htmlFixNewLines} from '../../helperFunctions';
 import Select from 'react-select';
 import IPList from './ipList';
 import Passwords from './passwords';

@@ -5,3 +5,4 @@ export * from './appActions';
 export * from './tasksActions';
 export * from './expendituresActions';
 export * from './passwordsActions';
+export * from './cmdbActions';
