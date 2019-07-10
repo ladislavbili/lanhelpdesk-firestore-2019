@@ -18,16 +18,16 @@ export default class Backups extends Component{
 
   render(){
     return (
-      <div>
+      <div className="m-t-10">
         {
           this.props.items.map((item,index)=>
-          <div key={item.id}>
-            <div className="row" key={item.id}>
+          <div key={item.id} >
+            <div key={item.id}>
               <Label>
-                <div style={{width:this.props.width?this.props.width:150, fontWeight: 50}} dangerouslySetInnerHTML ={{__html:this.props.label}}/>
+                <div dangerouslySetInnerHTML ={{__html:this.props.label}}/>
               </Label>
 
-            <div style={{width:this.props.width?1000-this.props.width:150}}>
+            <div>
               <Input
                 className="no-scrolling"
                 style={{height:item.id===this.state.editID?this.state.editTextHeight:item.textHeight}}
@@ -70,11 +70,11 @@ export default class Backups extends Component{
                 this.props.onChange(newData);
               }}
             />}
-          <Button outline color="danger" size="sm" className="ml-auto" style={{marginBottom: "20px", marginLeft: "900px", width: "100px", border: "0px"}} onClick={()=>{this.props.removeItem(item.id);}}>Remove</Button>
+          <Button className="btn-link" onClick={()=>{this.props.removeItem(item.id);}}>Remove</Button>
+          <hr className="m-b-10"/>
           </div>
         )}
-        <Button color="primary" onClick={()=>{this.props.onChange([{id:this.state.newID,text:"",textHeight:29,fake:true,backupList:[]},...this.props.items]);this.setState({newID:this.state.newID+1})}}>{this.props.addLabel}</Button>
-
+        <Button className="btn" onClick={()=>{this.props.onChange([{id:this.state.newID,text:"",textHeight:29,fake:true,backupList:[]},...this.props.items]);this.setState({newID:this.state.newID+1})}}>{this.props.addLabel}</Button>
       </div>
     );
   }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Input } from 'reactstrap';
+import { Input } from 'reactstrap';
 
 export default class Passwords extends Component{
   constructor(props){
@@ -58,7 +58,7 @@ onFocus(item) {
 
   render(){
     return (
-      <Table striped>
+      <table className="table">
         <thead>
           <tr>
 
@@ -76,6 +76,7 @@ onFocus(item) {
               <td>
                 <Input
                   type="text"
+                  className="form-control hidden-input"
                   value={
                   item.id === this.state.editItemID
                     ? this.state.editTitle
@@ -91,6 +92,7 @@ onFocus(item) {
               <td>
                 <Input
                   type="text"
+                  className="form-control hidden-input"
                   value={
                     item.id === this.state.editItemID
                     ? this.state.editIP
@@ -106,6 +108,7 @@ onFocus(item) {
               <td>
                 <Input
                   type="text"
+                  className="form-control hidden-input"
                   value={
                   item.id === this.state.editItemID
                     ? this.state.editLogin
@@ -121,6 +124,7 @@ onFocus(item) {
               <td>
                 <Input
                   type="text"
+                  className="form-control hidden-input"
                   value={
                   item.id === this.state.editItemID
                     ? this.state.editPassword
@@ -136,6 +140,7 @@ onFocus(item) {
               <td>
                 <Input
                   type="text"
+                  className="form-control hidden-input"
                   value={
                   item.id === this.state.editItemID
                     ? this.state.editNote
@@ -150,7 +155,7 @@ onFocus(item) {
               </td>
 
               <td>
-                <button className="btn btn-link waves-effect"
+                <button className="btn-link waves-effect"
                   onClick={()=>{
                     if(window.confirm('Are you sure?')){
                       let newData = [...this.props.items];
@@ -220,7 +225,7 @@ onFocus(item) {
 
 
             <td>
-              <button className="btn btn-link waves-effect"
+              <button className="btn-link waves-effect"
                 disabled={this.state.newIP===''}
                 onClick={()=>{
                   let body={
@@ -253,7 +258,7 @@ onFocus(item) {
           </tr>
         </tbody>
 
-      </Table>
+      </table>
     );
   }
 }

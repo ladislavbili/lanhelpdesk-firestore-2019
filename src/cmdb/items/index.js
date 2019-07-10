@@ -187,7 +187,9 @@ class ItemList extends Component {
 
 
 				<div className="fit-with-header-and-command-bar scrollable">
+					<div className="p-20 full-width">
 					<h1>{this.state.sidebarItem?this.state.sidebarItem.title:'Item'}</h1>
+					<hr />
 						<table className="table">
 							<thead>
 								<tr>
@@ -210,6 +212,7 @@ class ItemList extends Component {
 								}
 							</tbody>
 						</table>
+						</div>
 				</div>
 			</div>
 			);

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Input } from 'reactstrap';
+import { Input } from 'reactstrap';
 
 export default class ServerAdd extends Component{
   constructor(props){
@@ -60,7 +60,7 @@ export default class ServerAdd extends Component{
 
   render(){
     return (
-      <Table striped>
+      <table className="table">
         <thead>
           <tr>
             <th>NIC</th>
@@ -87,6 +87,7 @@ export default class ServerAdd extends Component{
                   onFocus={() => {
                     this.onFocus(item);
                   }}
+                  className="form-control hidden-input"
                   onChange={e =>{
                     this.setState({ editNIC: e.target.value })}
                   }
@@ -104,6 +105,7 @@ export default class ServerAdd extends Component{
                   onFocus={() => {
                     this.onFocus(item);
                   }}
+                  className="form-control hidden-input"
                   onChange={e =>{
                     this.setState({ editIP: e.target.value })}
                   }
@@ -117,6 +119,7 @@ export default class ServerAdd extends Component{
                     ? this.state.editMask
                     : item.mask
                   }
+                  className="form-control hidden-input"
                   onChange={e =>{
                     this.setState({ editMask: e.target.value })}
                   }
@@ -134,6 +137,7 @@ export default class ServerAdd extends Component{
                     ? this.state.editGateway
                     : item.gateway
                   }
+                  className="form-control hidden-input"
                   onChange={e =>{
                     this.setState({ editGateway: e.target.value })}
                   }
@@ -151,6 +155,7 @@ export default class ServerAdd extends Component{
                     ? this.state.editDNS
                     : item.DNS
                   }
+                  className="form-control hidden-input"
                   onChange={e =>{
                     this.setState({ editDNS: e.target.value })}
                   }
@@ -168,6 +173,7 @@ export default class ServerAdd extends Component{
                     ? this.state.editDNS2
                     : item.DNS2
                   }
+                  className="form-control hidden-input"
                   onChange={e =>{
                     this.setState({ editDNS2: e.target.value })}
                   }
@@ -202,7 +208,6 @@ export default class ServerAdd extends Component{
               className="form-control"
               id="inlineFormInput"
               placeholder=""
-              style={{ height: 30 }}
               />
           </td>
           <td>
@@ -213,7 +218,6 @@ export default class ServerAdd extends Component{
               className="form-control"
               id="inlineFormInput"
               placeholder=""
-              style={{ height: 30 }}
               />
           </td>
           <td>
@@ -224,7 +228,6 @@ export default class ServerAdd extends Component{
               className="form-control"
               id="inlineFormInput"
               placeholder=""
-              style={{ height: 30 }}
               />
           </td>
           <td>
@@ -235,7 +238,6 @@ export default class ServerAdd extends Component{
               className="form-control"
               id="inlineFormInput"
               placeholder=""
-              style={{ height: 30 }}
               />
           </td>
           <td>
@@ -246,7 +248,6 @@ export default class ServerAdd extends Component{
               className="form-control"
               id="inlineFormInput"
               placeholder=""
-              style={{ height: 30 }}
               />
           </td>
           <td>
@@ -257,12 +258,11 @@ export default class ServerAdd extends Component{
               className="form-control"
               id="inlineFormInput"
               placeholder=""
-              style={{ height: 30 }}
               />
           </td>
 
           <td>
-            <button className="btn btn-link waves-effect"
+            <button className="btn-link waves-effect"
               disabled={this.state.newIP===''}
               onClick={()=>{
                 let body={
@@ -296,7 +296,7 @@ export default class ServerAdd extends Component{
       </tr>
     </tbody>
 
-  </Table>
+  </table>
 );
 }
 }

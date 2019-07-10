@@ -59,7 +59,7 @@ class Sidebar extends Component {
 						onClick={()=>{this.props.history.push('/cmdb/add')}}
 					> <i className="fa fa-plus sidebar-icon-center"/> Item
 					</Button>
-
+					<hr />
 					<li>
 						<Select
 							options={this.state.companies}
@@ -85,7 +85,7 @@ class Sidebar extends Component {
 								<Nav vertical>
 									{	this.state.sidebar.map((item)=>
 										<NavItem key={item.id}>
-											<Link className="text-basic" to={{ pathname: `/cmdb/i/`+item.url }}>{item.title}</Link>
+											<Link className="text-basic sidebar-align sidebar-menu-item" to={{ pathname: `/cmdb/i/`+item.url }}>{item.title}</Link>
 										</NavItem>
 									)}
 								</Nav>

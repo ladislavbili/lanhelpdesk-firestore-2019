@@ -7,7 +7,7 @@ import Subtasks from '../components/subtasks';
 
 import {rebase, database} from '../../index';
 import {toSelArr, snapshotToArray, timestampToString} from '../../helperFunctions';
-import {invisibleSelectStyle} from '../../scss/selectStyles';
+import {invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
 
 const repeat = [
 	{ value: 'none', label: 'none' },
@@ -313,6 +313,7 @@ export default class TasksTwoEdit extends Component {
 						</div>
 					</div>
 				</div>
+
 				<div className="row scrollable fit-with-header-and-command-bar">
 						<div className={"card-box " + (!this.props.columns ? " center-ver" : "")}>
 							<div className="d-flex p-2">
@@ -342,7 +343,7 @@ export default class TasksTwoEdit extends Component {
 											isMulti
 											onChange={(tags)=>this.setState({tags},this.submitTask.bind(this))}
 											options={this.state.allTags}
-											styles={invisibleSelectStyle}
+											styles={invisibleSelectStyleNoArrow}
 											/>
 									</div>
 								</div>
@@ -354,7 +355,7 @@ export default class TasksTwoEdit extends Component {
 											isMulti
 											onChange={(users)=>this.setState({assignedTo:users},this.submitTask.bind(this))}
 											options={this.state.users}
-											styles={invisibleSelectStyle}
+											styles={invisibleSelectStyleNoArrow}
 											/>
 									</div>
 								</div>
@@ -368,7 +369,7 @@ export default class TasksTwoEdit extends Component {
 														value={this.state.status}
 														onChange={(status)=>this.setState({status,statusChange:(new Date().getTime())},this.submitTask.bind(this))}
 														options={this.state.statuses.map((status)=>{return {...status,value:status.id,label:status.title}})}
-														styles={invisibleSelectStyle}
+														styles={invisibleSelectStyleNoArrow}
 														/>
 												</div>
 											</div>
@@ -379,7 +380,7 @@ export default class TasksTwoEdit extends Component {
 														value={this.state.project}
 														onChange={(project)=>this.setState({project},this.submitTask.bind(this))}
 														options={this.state.projects}
-														styles={invisibleSelectStyle}
+														styles={invisibleSelectStyleNoArrow}
 														/>
 												</div>
 											</div>
@@ -390,7 +391,7 @@ export default class TasksTwoEdit extends Component {
 														value={this.state.requester}
 														onChange={(requester)=>this.setState({requester},this.submitTask.bind(this))}
 														options={this.state.users}
-														styles={invisibleSelectStyle}
+														styles={invisibleSelectStyleNoArrow}
 														/>
 												</div>
 											</div>
@@ -401,7 +402,7 @@ export default class TasksTwoEdit extends Component {
 														value={this.state.company}
 														onChange={(company)=>this.setState({company},this.submitTask.bind(this))}
 														options={this.state.companies}
-														styles={invisibleSelectStyle}
+														styles={invisibleSelectStyleNoArrow}
 														/>
 												</div>
 											</div>
@@ -443,7 +444,7 @@ export default class TasksTwoEdit extends Component {
 											<div className="row">
 												<label className="col-5 col-form-label text-slim">Opakovanie</label>
 												<div className="col-7">
-													<Select options={repeat} styles={invisibleSelectStyle} />
+													<Select options={repeat} styles={invisibleSelectStyleNoArrow} />
 												</div>
 											</div>
 
@@ -452,7 +453,7 @@ export default class TasksTwoEdit extends Component {
 												<div className="col-7">
 													<Select
 					                  value={this.state.type}
-														styles={invisibleSelectStyle}
+														styles={invisibleSelectStyleNoArrow}
 					                  onChange={(type)=>this.setState({type},this.submitTask.bind(this))}
 					                  options={this.state.taskTypes}
 					                  />
@@ -463,7 +464,7 @@ export default class TasksTwoEdit extends Component {
 												<div className="col-7">
 													<Select
 														value={this.state.overtime}
-														styles={invisibleSelectStyle}
+														styles={invisibleSelectStyleNoArrow}
 														onChange={(overtime)=>this.setState({overtime},this.submitTask.bind(this))}
 														options={[{value:true,label:'Áno'},{value:false,label:'Nie'}]}
 														/>

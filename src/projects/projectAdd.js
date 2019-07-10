@@ -20,10 +20,12 @@ export default class ProjectAdd extends Component{
   render(){
     return (
       <div>
-        <Button onClick={this.toggle.bind(this)} color="primary" style={{width:'100%'}}>
-          <i className="fa fa-plus clickable pr-2"  />
-          Project
+        <Button
+          onClick={this.toggle.bind(this)}
+          className="btn-link t-a-l sidebar-menu-item">
+          <i className="fa fa-plus sidebar-icon-center"  /> Project
         </Button>
+
         <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)}>
             <ModalHeader toggle={this.toggle.bind(this)}>Add project</ModalHeader>
             <ModalBody>

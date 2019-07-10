@@ -3,6 +3,7 @@ import {rebase,database} from '../../index';
 import {  FormGroup, Label, Input, TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
 import {toSelArr, snapshotToArray, getAttributeDefaultValue, htmlFixNewLines} from '../../helperFunctions';
 import Select from 'react-select';
+import {selectStyle} from "../../scss/selectStyles";
 import IPList from './ipList';
 import Passwords from './passwords';
 import AttributesHandler from './attributesHandler';
@@ -204,8 +205,7 @@ export default class ItemEdit extends Component{
 
   render(){
     return (
-        <div className="form-background card-box scrollable fit-with-header" style={{padding:0,border:'none'}}>
-          <div className="ml-auto mr-auto" style={{maxWidth:1000}}>
+          <div className="ml-auto mr-auto card-box fit-with-header-and-command-bar p-t-15" style={{maxWidth:1000}}>
             <FormGroup>
               <Label>Name</Label>
               <Input type="text" placeholder="Enter name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
@@ -213,7 +213,7 @@ export default class ItemEdit extends Component{
             <FormGroup>
               <Label>Company</Label>
               <Select
-                className="supressDefaultSelectStyle"
+                styles={selectStyle}
                 options={this.state.companies}
                 value={this.state.company}
                 onChange={e =>{ this.setState({ company: e }); }}
@@ -222,7 +222,7 @@ export default class ItemEdit extends Component{
             <FormGroup>
               <Label>Status</Label>
               <Select
-                className="supressDefaultSelectStyle"
+                styles={selectStyle}
                 options={this.state.statuses}
                 value={this.state.status}
                 onChange={e =>{ this.setState({ status: e }); }}
@@ -271,7 +271,7 @@ export default class ItemEdit extends Component{
                 </NavLink>
               </NavItem>
             </Nav>
-            <TabContent activeTab={this.state.tab} style={{marginBottom:30,borderRadius:4}}>
+            <TabContent activeTab={this.state.tab}>
               <TabPane tabId={0}>
                 <CKEditor
                   data={this.state.description}
@@ -312,7 +312,6 @@ export default class ItemEdit extends Component{
               </TabPane>
             </TabContent>
         </div>
-      </div>
     );
   }
 }

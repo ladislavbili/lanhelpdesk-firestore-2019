@@ -33,29 +33,37 @@ export default class Statuses extends Component {
 	render() {
 		return (
 			<div>
-				<div className="commandbar row">
-					<div className="commandbar-item ml-2">
-						<input
-							type="text"
-							value={this.state.search}
-							className="form-control command-search"
-							onChange={(e)=>this.setState({search:e.target.value})}
-							placeholder="Search" />
-					</div>
-					<div className="commandbar-item ml-2">
+				<div className="container-fluid">
+					<div className="d-flex flex-row align-items-center">
+						<div className="p-2">
+							<div className="input-group">
+								<input
+									type="text"
+									value={this.state.search}
+									className="form-control commandbar-search"
+									onChange={(e)=>this.setState({search:e.target.value})}
+									placeholder="Search" />
+									<div className="input-group-append">
+										<button className="commandbar-btn-search" type="button">
+											<i className="fa fa-search" />
+										</button>
+									</div>
+							</div>
+						</div>
 						<StatusAdd/>
 					</div>
 				</div>
-				<div className="fit-with-header scrollable">
-						<table className="table table-centered table-borderless table-hover mb-0">
-							<thead className="thead-light">
+
+				<div className="fit-with-header-and-command-bar p-20">
+						<table className="table">
+							<thead >
 								<tr>
 									<th>
 										Status name
 									</th>
 								</tr>
 							</thead>
-							<tbody style={{backgroundColor:'white'}}>
+							<tbody>
 								{
 									this.getStatuses().map((status)=>
 									<tr

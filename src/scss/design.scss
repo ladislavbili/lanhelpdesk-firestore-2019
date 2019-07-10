@@ -90,6 +90,15 @@ html{
 .w-a{
   width: auto;
 }
+.w-5{
+  width: 5%;
+}
+.w-40{
+  width: 40%;
+}
+.w-55{
+  width: 55%;
+}
 .full-height{
   height: 100%;
 }
@@ -128,6 +137,13 @@ html{
   margin: 0px;
 }
 
+.no-scrolling{
+	textarea{
+		overflow: hidden;
+	}
+	overflow: hidden;
+}
+
 .bottom-border{
   border-bottom: 1px solid;
   color: $muted-gray;
@@ -150,11 +166,20 @@ html{
 .f-1{
   flex: 1;
 }
+.p-5{
+  padding: 5px !important;
+}
 .p-10{
   padding: 10px;
 }
+.p-t-15{
+  padding-top: 15px;
+}
 .p-20{
   padding: 20px;
+}
+.p-r-10{
+	padding-right: 10px;
 }
 .p-r-20{
 	padding-right: 20px;
@@ -180,6 +205,9 @@ html{
 }
 .m-t-5{
 	margin-top: 5px;
+}
+.m-t-10{
+	margin-top: 10px;
 }
 .m-t-15{
 	margin-top: 15px;
@@ -214,6 +242,9 @@ html{
 }
 .m-l-10{
   margin-left: 10px;
+}
+.m-r-0{
+  margin-right: 0px;
 }
 .m-r-5{
   margin-right: 5px;
@@ -370,6 +401,10 @@ td {
     padding-right: 0px;
 }
 
+.warning{
+  color: red;
+  font-size: 10px;
+}
 
 //----------------END-všeobecné-elementy----------------
 
@@ -465,7 +500,7 @@ td {
 }
 
 .sidebar-align{
-  padding-left: 28px !important;
+  padding-left: 35px !important;
 }
 
 .sidebar-item-active{
@@ -494,19 +529,6 @@ td {
 	font-size: 14px;
 }
 
-.commandbar-command-icon{
-    color: $basic-button-color;
-}
-.commandbar-command{
-    color: $main-font-color;
-}
-
-.commandbar-command-icon:hover{
-    color: #FFF;
-}
-.commandbar-command:hover{
-    color: #FFF;
-}
 
 //------------------END-commandbar----------------------
 

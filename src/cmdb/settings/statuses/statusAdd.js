@@ -21,14 +21,14 @@ export default class StatusAdd extends Component{
     return (
 
       <div>
-        <Button color="primary" onClick={()=>{
+        <Button className="btn-link" onClick={()=>{
             this.setState({opened:true});
           }}>
-          <i className="fa fa-plus clickable" style={{paddingRight:5}} />
-           Status
+          <i className="fa fa-plus" /> Status
         </Button>
+
         <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
-            <ModalHeader toggle={this.toggle.bind(this)}>Add status</ModalHeader>
+            <ModalHeader toggle={this.toggle.bind(this)}></ModalHeader>
             <ModalBody>
               <FormGroup>
                 <Label for="name">Status name</Label>
@@ -36,11 +36,11 @@ export default class StatusAdd extends Component{
               </FormGroup>
             </ModalBody>
             <ModalFooter>
-              <Button color="danger" className="mr-auto" disabled={this.state.saving} onClick={this.toggle.bind(this)}>
+              <Button className="mr-auto btn-link" disabled={this.state.saving} onClick={this.toggle.bind(this)}>
                 Close
               </Button>
 
-              <Button color="primary" disabled={this.state.saving} onClick={()=>{
+              <Button className="btn" disabled={this.state.saving} onClick={()=>{
                   this.setState({saving:true});
                   rebase.addToCollection('/cmdb-statuses', {title:this.state.title})
                   .then(()=>{this.setState({title:'',saving:false})});

@@ -14,7 +14,7 @@ export default class Navigation extends Component {
 			<div>
 				<div className="row">
 						<Sidebar {...this.props} />
-					<div className="flex">
+					<div className="flex main">
 						<PageHeader {...this.props} settings={[{title:'Tags',link:'tags'}]} />
 						<Route exact path='/projects/:projectID' component={List} />
 						<Route exact path='/projects/:projectID/edit/:taskID' component={TaskEdit} />

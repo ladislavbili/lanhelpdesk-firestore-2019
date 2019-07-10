@@ -14,7 +14,7 @@ export default class SidebarItemEdit extends Component{
 
       title:'',
       bacupTasksLabel:'',
-      backupTasksHeight:29,
+      backupTasksHeight:31,
       sidebarItems:[],
       attributes:[],
       url:'',
@@ -105,7 +105,8 @@ export default class SidebarItemEdit extends Component{
 
   render(){
     return (
-        <div className="container-padding form-background card-box scrollable fit-with-header">
+      <div className="scrollable">
+        <div className="ml-auto mr-auto card-box fit-with-header p-t-15" style={{maxWidth:1000}}>
         <FormGroup>
           <Label for="name">Item name</Label>
           <Input type="text" name="name" id="name" placeholder="Enter item name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
@@ -142,7 +143,7 @@ export default class SidebarItemEdit extends Component{
         <div>
 
         </div>
-        <Button color="primary" disabled={this.state.saving} onClick={()=>{
+        <Button className="btn"  disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
             let attributes = [...this.state.attributes].map((att)=>{
               let attribute = {...att};
@@ -158,8 +159,9 @@ export default class SidebarItemEdit extends Component{
                 this.setState({saving:false})
               });
           }}>{this.state.saving?'Saving...':'Save sidebar item'}</Button>
-        <Button color="danger" disabled={this.state.saving} onClick={this.deleteItem.bind(this)}>Delete</Button>
+        <Button className="btn-link"  disabled={this.state.saving} onClick={this.deleteItem.bind(this)}>Delete</Button>
       </div>
+    </div>
     );
   }
 }

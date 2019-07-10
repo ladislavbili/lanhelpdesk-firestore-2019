@@ -39,10 +39,19 @@ export default class Sidebar extends Component {
 					<ProjectAdd />
 					<Nav vertical>
 						<NavItem>
-							<Link to={{ pathname: `/projects/all` }}>All</Link>
+							<Link
+								className="text-basic sidebar-align sidebar-menu-item"
+								to={{ pathname: `/projects/all` }}>
+								All
+							</Link>
 							{
 								this.state.projects.map((item)=>
-								<Link key={item.id} to={{ pathname: `/projects/`+item.id }}>{item.title}</Link>
+								<Link
+									className="text-basic sidebar-align sidebar-menu-item"
+									key={item.id}
+									to={{ pathname: `/projects/`+item.id }}>
+									{item.title}
+								</Link>
 							)}
 						</NavItem>
 					</Nav>

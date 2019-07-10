@@ -3,6 +3,7 @@ import {rebase,database} from '../../index';
 import { Button,  FormGroup, Label, Input, TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
 import {toSelArr, snapshotToArray, getAttributeDefaultValue, htmlFixNewLines} from '../../helperFunctions';
 import Select from 'react-select';
+import {selectStyle} from "../../scss/selectStyles";
 import IPList from './ipList';
 import Passwords from './passwords';
 import AttributesHandler from './attributesHandler';
@@ -75,8 +76,7 @@ export default class ItemAdd extends Component{
 
   render(){
     return (
-      <div className="container-padding form-background card-box scrollable fit-with-header">
-        <div className="ml-auto mr-auto" style={{maxWidth:1000}}>
+      <div className="ml-auto mr-auto card-box fit-with-header-and-command-bar p-t-15" style={{maxWidth:1000}}>
           <FormGroup>
             <Label>Name</Label>
             <Input type="text" placeholder="Enter name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
@@ -84,7 +84,7 @@ export default class ItemAdd extends Component{
           <FormGroup>
             <Label>Company</Label>
             <Select
-              className="supressDefaultSelectStyle"
+              styles={selectStyle}
               options={this.state.companies}
               value={this.state.company}
               onChange={e =>{ this.setState({ company: e }); }}
@@ -93,7 +93,7 @@ export default class ItemAdd extends Component{
           <FormGroup>
             <Label>Status</Label>
             <Select
-              className="supressDefaultSelectStyle"
+              styles={selectStyle}
               options={this.state.statuses}
               value={this.state.status}
               onChange={e =>{ this.setState({ status: e }); }}
@@ -142,7 +142,7 @@ export default class ItemAdd extends Component{
               </NavLink>
             </NavItem>
           </Nav>
-          <TabContent activeTab={this.state.tab} style={{marginBottom:30,borderRadius:4}}>
+          <TabContent activeTab={this.state.tab}>
             <TabPane tabId="0">
               <CKEditor
                 data={this.state.description}
@@ -183,11 +183,7 @@ export default class ItemAdd extends Component{
               </TabPane>
             </TabContent>
 
-
-
-            <Button color="secondary" onClick={this.props.history.goBack}>Cancel</Button>
-
-            <Button color="primary" disabled={this.state.company===null || this.state.status===null} onClick={()=>{
+            <Button className="btn m-t-10" disabled={this.state.company===null || this.state.status===null} onClick={()=>{
                 this.setState({saving:true});
                 let body = {
                   title:this.state.title,
@@ -230,7 +226,9 @@ export default class ItemAdd extends Component{
                   this.props.history.goBack();
                 });
               }}>{this.state.saving?'Adding...':(this.state.sidebarItem? ('Add '+this.state.sidebarItem.title) :'Add item')}</Button>
-            </div>
+
+              <Button className="btn-link m-t-10" onClick={this.props.history.goBack}>Cancel</Button>
+              
           </div>
         );
       }

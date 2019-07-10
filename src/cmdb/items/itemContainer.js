@@ -14,38 +14,42 @@ export default class ItemContainer extends Component {
 
 	render() {
 		return (
-			<div className="form-background card-box scrollable fit-with-header" style={{padding:0,border:'none'}}>
-				<div className="commandbar row">
-					{ !this.state.edit &&
-						<button type="button" className="btn btn-link waves-effect" onClick={()=>this.setState({edit:true})}>
-							<i
-								className="fas fa-pen commandbar-command-icon icon-M"
-								/>
-							{" Edit"}
-						</button>
-					}
-					{ this.state.edit &&
-						<button type="button" className="btn btn-link waves-effect" onClick={()=>this.setState({edit:false})}>
-							<i
-								className="fas fa-file-invoice commandbar-command-icon icon-M"
-								/>
-							{" View"}
-						</button>
-					}
-					{ this.state.edit &&
-						<button type="button" className="btn btn-link waves-effect" onClick={()=>this.setState({saving:true})} disabled={this.state.saving}>
-							<i
-								className="fas fa-save commandbar-command-icon icon-M"
-								/>
-							{this.state.saving?" Saving...":" Save"}
-						</button>
-					}
-					<button type="button" className="btn btn-link waves-effect" onClick={()=>this.setState({delete:true})} disabled={this.state.delete}>
-						<i
-							className="fas fa-trash commandbar-command-icon icon-M"
-							/>
-						{" Delete"}
-					</button>
+			<div className="form-background scrollable fit-with-header" style={{padding:0,border:'none'}}>
+				<div className="container-fluid">
+					<div className="d-flex flex-row align-items-center">
+						<div className="p-2">
+							{ !this.state.edit &&
+								<button type="button" className="btn btn-link waves-effect" onClick={()=>this.setState({edit:true})}>
+									<i
+										className="fas fa-pen icon-M"
+										/>
+									{" Edit"}
+								</button>
+							}
+							{ this.state.edit &&
+								<button type="button" className="btn btn-link waves-effect" onClick={()=>this.setState({edit:false})}>
+									<i
+										className="fas fa-file-invoice icon-M"
+										/>
+									{" View"}
+								</button>
+							}
+							{ this.state.edit &&
+								<button type="button" className="btn btn-link waves-effect" onClick={()=>this.setState({saving:true})} disabled={this.state.saving}>
+									<i
+										className="fas fa-save icon-M"
+										/>
+									{this.state.saving?" Saving...":" Save"}
+								</button>
+							}
+							<button type="button" className="btn btn-link waves-effect" onClick={()=>this.setState({delete:true})} disabled={this.state.delete}>
+								<i
+									className="fas fa-trash icon-M"
+									/>
+								{" Delete"}
+							</button>
+						</div>
+					</div>
 				</div>
 				{
 					this.state.edit &&

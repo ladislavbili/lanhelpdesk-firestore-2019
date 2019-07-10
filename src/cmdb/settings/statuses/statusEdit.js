@@ -37,7 +37,7 @@ export default class StatusEdit extends Component{
   render(){
     return (
       <Modal isOpen={this.props.opened} toggle={this.props.toggle} >
-          <ModalHeader toggle={this.props.toggle}>Edit status</ModalHeader>
+          <ModalHeader toggle={this.props.toggle}></ModalHeader>
           <ModalBody>
             <FormGroup>
                 <Label for="name">Status name</Label>
@@ -45,11 +45,11 @@ export default class StatusEdit extends Component{
               </FormGroup>
             </ModalBody>
             <ModalFooter>
-              <Button color="danger" className="mr-auto" disabled={this.state.saving} onClick={this.props.toggle}>
+              <Button className="mr-auto btn-link" disabled={this.state.saving} onClick={this.props.toggle}>
                 Close
               </Button>
 
-              <Button color="primary" disabled={this.state.saving||this.state.loading} onClick={()=>{
+              <Button className="btn" disabled={this.state.saving||this.state.loading} onClick={()=>{
                   this.setState({saving:true});
                   rebase.updateDoc('/cmdb-statuses/'+this.props.id, {title:this.state.title})
                   .then(()=>{this.setState({saving:false})});

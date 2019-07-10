@@ -13,7 +13,7 @@ export default class SidebarItemAdd extends Component{
       saving:false,
       url:'',
       bacupTasksLabel:'',
-      backupTasksHeight:29,
+      backupTasksHeight:31,
       newAttributeID:0,
       sidebarItems:[],
       attributes:[],
@@ -51,14 +51,15 @@ export default class SidebarItemAdd extends Component{
 
   render(){
     return (
-        <div className="container-padding form-background card-box scrollable fit-with-header">
+      <div className="scrollable">
+        <div className="ml-auto mr-auto card-box fit-with-header p-t-15" style={{maxWidth:1000}}>
         <FormGroup>
           <Label for="name">Item name</Label>
           <Input type="text" name="name" id="name" placeholder="Enter item name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value,url:this.state.urlEdited?this.state.url:e.target.value.toLowerCase()})} />
         </FormGroup>
         <FormGroup>
           <Label for="name">URL name</Label>
-          {this.urlInUse() && <Label for="name" style={{color:'red',fontSize:10,marginLeft:5}}>This URL is already in use or is empty!</Label>}
+          {this.urlInUse() && <Label for="name" className="warning m-l-5">This URL is already in use or is empty!</Label>}
           <Input type="text" name="name" id="name" placeholder="Enter item name" value={this.state.url} onChange={(e)=>this.setState({url:e.target.value.replace(/\s/g, '').toLowerCase(),urlEdited:true})} />
         </FormGroup>
         <FormGroup>
@@ -78,22 +79,21 @@ export default class SidebarItemAdd extends Component{
 
         <FormGroup>
           <Label for="name">Custom attributes</Label>
-        <InputSelectList
-          items={this.state.attributes}
-          onChange={(items)=>this.setState({attributes:items})}
-          removeItem={this.removeAttribute.bind(this)}
-          width={300}
-          newID={this.state.newAttributeID}
-          increaseID={()=>{this.setState({newAttributeID:this.state.newAttributeID+1})}}
-          options={inputSelectOptions}
-          addLabel="Add"
-          />
-
+          <InputSelectList
+            items={this.state.attributes}
+            onChange={(items)=>this.setState({attributes:items})}
+            removeItem={this.removeAttribute.bind(this)}
+            width={300}
+            newID={this.state.newAttributeID}
+            increaseID={()=>{this.setState({newAttributeID:this.state.newAttributeID+1})}}
+            options={inputSelectOptions}
+            addLabel="Add"
+            />
         </FormGroup>
         <div>
 
         </div>
-        <Button color="primary" disabled={this.state.saving||this.urlInUse()} onClick={()=>{
+        <Button className="btn" disabled={this.state.saving||this.urlInUse()} onClick={()=>{
             this.setState({saving:true});
             let body = {
               title:this.state.title,
@@ -109,6 +109,7 @@ export default class SidebarItemAdd extends Component{
               });
           }}>{this.state.saving?'Adding...':'Add sidebar item'}</Button>
       </div>
+    </div>
     );
   }
 }

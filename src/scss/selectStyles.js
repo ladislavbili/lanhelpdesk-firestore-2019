@@ -1,3 +1,43 @@
+export const invisibleSelectStyleNoArrow = {
+	control: (base,state) => ({
+		...base,
+		minHeight: 30,
+		backgroundColor: state.isFocused?'white':'inherit',
+		borderWidth:0,
+		borderRadius: 0
+	}),
+	dropdownIndicator: base => ({
+		...base,
+		color: "transparent",
+		padding: 4,
+	}),
+	clearIndicator: base => ({
+		...base,
+		padding: 4,
+	}),
+	multiValue: base => ({
+		...base,
+		backgroundColor: "#F2F1F1",
+		borderRadius: 0
+	}),
+	valueContainer: base => ({
+		...base,
+		padding: '0px 6px',
+		borderRadius: 0
+	}),
+	input: base => ({
+		...base,
+		margin: 0,
+		padding: 0,
+		backgroundColor: "#F2F1F1",
+		borderRadius: 0
+	}),
+	indicatorSeparator: base => ({
+		...base,
+		width: 0,
+	}),
+
+};
 
 export const sidebarSelectStyle = {
 	singleValue: (provided, state) => {

@@ -4,6 +4,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import {toSelArr, snapshotToArray} from '../../../helperFunctions';
 import {rebase,database} from '../../../index';
 import Select from 'react-select';
+import {selectStyle} from "../../../scss/selectStyles";
 
 export default class CompanyAdd extends Component{
   constructor(props){
@@ -60,7 +61,7 @@ export default class CompanyAdd extends Component{
           </Button>
 
         <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
-            <ModalHeader toggle={this.toggle.bind(this)}>Add company</ModalHeader>
+            <ModalHeader toggle={this.toggle.bind(this)}></ModalHeader>
             <ModalBody>
               <FormGroup>
                 <Label for="name">Company name</Label>
@@ -75,7 +76,7 @@ export default class CompanyAdd extends Component{
                 <Select
                   id="pricelist"
                   name="pausal"
-                  className="supressDefaultSelectStyle"
+                  styles={selectStyle}
                   options={this.state.pricelists}
                   value={this.state.pricelist}
                   onChange={e =>{ this.setState({ pricelist: e }); }}
@@ -83,10 +84,11 @@ export default class CompanyAdd extends Component{
               </FormGroup>
             </ModalBody>
             <ModalFooter>
-              <Button color="danger" className="mr-auto" disabled={this.state.saving} onClick={this.toggle.bind(this)}>
+
+              <Button className="mr-auto btn-link" disabled={this.state.saving} onClick={this.toggle.bind(this)}>
                 Close
               </Button>
-              <Button color="primary" className="separate" disabled={this.state.saving||this.state.loading||this.state.pricelist===undefined||this.state.companyName===""} onClick={()=>{
+              <Button className="btn" disabled={this.state.saving||this.state.loading||this.state.pricelist===undefined||this.state.companyName===""} onClick={()=>{
                   this.setState({saving:true});
                   rebase.addToCollection('/companies', {title:this.state.companyName,pricelist:this.state.pricelist.id})
                     .then(()=>{this.setState({companyName:'',pausal:this.state.pausal,pricelist:this.state.pricelists.length>0?this.state.pricelists[0]:null,saving:false})});

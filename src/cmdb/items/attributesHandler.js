@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Input, FormGroup, Label } from 'reactstrap';
 import Select from 'react-select';
+import {selectStyle} from "../../scss/selectStyles";
 
 export default class AttributesHandler extends Component{
   constructor(props){
@@ -22,7 +23,7 @@ export default class AttributesHandler extends Component{
         return <Input type="textarea" value={this.props.values[attribute.id]} onChange={(e)=>this.props.setValue(attribute.id,e.target.value)}/>
       }
       case 'select':{
-        return <Select options={attribute.options}  value={this.props.values[attribute.id]} onChange={(item)=>this.props.setValue(attribute.id,item)} />
+        return <Select options={attribute.options}  value={this.props.values[attribute.id]} styles={selectStyle} onChange={(item)=>this.props.setValue(attribute.id,item)} />
       }
       default:
         return <p>{attribute.type.id} of {attribute.title}</p>
@@ -31,7 +32,7 @@ export default class AttributesHandler extends Component{
 
   render(){
     return (
-      <div>
+      <div className="m-t-10">
         {
           this.props.attributes.sort((item1,item2)=>item1.order-item2.order).map((item)=>
           <FormGroup key={item.id}>
