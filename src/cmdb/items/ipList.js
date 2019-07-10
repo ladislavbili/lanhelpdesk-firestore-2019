@@ -56,7 +56,7 @@ export default class ServerAdd extends Component{
     });
   }
 
-//className="invisible-input"
+  //className="invisible-input"
 
   render(){
     return (
@@ -80,77 +80,77 @@ export default class ServerAdd extends Component{
                   type="text"
                   value={
                     item.id === this.state.editItemID
-                      ? this.state.editNIC
-                      : item.NIC
-                    }
-                    onBlur={this.onBlur.bind(this)}
-                    onFocus={() => {
-                      this.onFocus(item);
-                    }}
-                    onChange={e =>{
-                      this.setState({ editNIC: e.target.value })}
-                    }
-                    />
+                    ? this.state.editNIC
+                    : item.NIC
+                  }
+                  onBlur={this.onBlur.bind(this)}
+                  onFocus={() => {
+                    this.onFocus(item);
+                  }}
+                  onChange={e =>{
+                    this.setState({ editNIC: e.target.value })}
+                  }
+                  />
               </td>
               <td>
                 <Input
                   type="text"
                   value={
                     item.id === this.state.editItemID
-                      ? this.state.editIP
-                      : item.IP
-                    }
-                    onBlur={this.onBlur.bind(this)}
-                    onFocus={() => {
-                      this.onFocus(item);
-                    }}
-                    onChange={e =>{
-                      this.setState({ editIP: e.target.value })}
-                    }
-                    />
+                    ? this.state.editIP
+                    : item.IP
+                  }
+                  onBlur={this.onBlur.bind(this)}
+                  onFocus={() => {
+                    this.onFocus(item);
+                  }}
+                  onChange={e =>{
+                    this.setState({ editIP: e.target.value })}
+                  }
+                  />
               </td>
               <td>
                 <Input
                   type="text"
                   value={
                     item.id === this.state.editItemID
-                      ? this.state.editMask
-                      : item.mask
-                    }
-                    onChange={e =>{
-                      this.setState({ editMask: e.target.value })}
-                    }
-                    onBlur={this.onBlur.bind(this)}
-                    onFocus={() => {
-                      this.onFocus(item);
-                    }}
-                    />
+                    ? this.state.editMask
+                    : item.mask
+                  }
+                  onChange={e =>{
+                    this.setState({ editMask: e.target.value })}
+                  }
+                  onBlur={this.onBlur.bind(this)}
+                  onFocus={() => {
+                    this.onFocus(item);
+                  }}
+                  />
               </td>
               <td>
                 <Input
                   type="text"
                   value={
                     item.id === this.state.editItemID
-                      ? this.state.editGateway
-                      : item.gateway
-                    }
-                    onChange={e =>{
-                      this.setState({ editGateway: e.target.value })}
-                    }
-                    onBlur={this.onBlur.bind(this)}
-                    onFocus={() => {
-                      this.onFocus(item);
-                    }}
-                    />
+                    ? this.state.editGateway
+                    : item.gateway
+                  }
+                  onChange={e =>{
+                    this.setState({ editGateway: e.target.value })}
+                  }
+                  onBlur={this.onBlur.bind(this)}
+                  onFocus={() => {
+                    this.onFocus(item);
+                  }}
+                  />
               </td>
               <td>
                 <Input
                   type="text"
                   value={
                     item.id === this.state.editItemID
-                      ? this.state.editDNS
-                      : item.DNS
-                    }
+                    ? this.state.editDNS
+                    : item.DNS
+                  }
                   onChange={e =>{
                     this.setState({ editDNS: e.target.value })}
                   }
@@ -158,16 +158,16 @@ export default class ServerAdd extends Component{
                   onFocus={() => {
                     this.onFocus(item);
                   }}
-                    />
+                  />
               </td>
               <td>
                 <Input
                   type="text"
                   value={
                     item.id === this.state.editItemID
-                      ? this.state.editDNS2
-                      : item.DNS2
-                    }
+                    ? this.state.editDNS2
+                    : item.DNS2
+                  }
                   onChange={e =>{
                     this.setState({ editDNS2: e.target.value })}
                   }
@@ -175,7 +175,7 @@ export default class ServerAdd extends Component{
                   onFocus={() => {
                     this.onFocus(item);
                   }}
-                    />
+                  />
               </td>
               <td>
                 <button className="btn btn-link waves-effect"
@@ -191,112 +191,112 @@ export default class ServerAdd extends Component{
                 </button>
               </td>
             </tr>
-            )
-          }
-          <tr>
-            <td>
-              <Input
-                type="text"
-                value={this.state.newNIC}
-                onChange={(e)=>this.setState({newNIC:e.target.value})}
-                className="form-control"
-                id="inlineFormInput"
-                placeholder=""
-                style={{ height: 30 }}
-                />
-            </td>
-            <td>
-              <Input
-                type="text"
-                value={this.state.newIP}
-                onChange={(e)=>this.setState({newIP:e.target.value})}
-                className="form-control"
-                id="inlineFormInput"
-                placeholder=""
-                style={{ height: 30 }}
-                />
-            </td>
-            <td>
-              <Input
-                type="text"
-                value={this.state.newMask}
-                onChange={(e)=>this.setState({newMask:e.target.value})}
-                className="form-control"
-                id="inlineFormInput"
-                placeholder=""
-                style={{ height: 30 }}
-                />
-            </td>
-            <td>
-              <Input
-                type="text"
-                value={this.state.newGateway}
-                onChange={(e)=>this.setState({newGateway:e.target.value})}
-                className="form-control"
-                id="inlineFormInput"
-                placeholder=""
-                style={{ height: 30 }}
-                />
-            </td>
-            <td>
-              <Input
-                type="text"
-                value={this.state.newDNS}
-                onChange={(e)=>this.setState({newDNS:e.target.value})}
-                className="form-control"
-                id="inlineFormInput"
-                placeholder=""
-                style={{ height: 30 }}
-                />
-            </td>
-            <td>
-              <Input
-                type="text"
-                value={this.state.newDNS2}
-                onChange={(e)=>this.setState({newDNS2:e.target.value})}
-                className="form-control"
-                id="inlineFormInput"
-                placeholder=""
-                style={{ height: 30 }}
-                />
-            </td>
+          )
+        }
+        <tr>
+          <td>
+            <Input
+              type="text"
+              value={this.state.newNIC}
+              onChange={(e)=>this.setState({newNIC:e.target.value})}
+              className="form-control"
+              id="inlineFormInput"
+              placeholder=""
+              style={{ height: 30 }}
+              />
+          </td>
+          <td>
+            <Input
+              type="text"
+              value={this.state.newIP}
+              onChange={(e)=>this.setState({newIP:e.target.value})}
+              className="form-control"
+              id="inlineFormInput"
+              placeholder=""
+              style={{ height: 30 }}
+              />
+          </td>
+          <td>
+            <Input
+              type="text"
+              value={this.state.newMask}
+              onChange={(e)=>this.setState({newMask:e.target.value})}
+              className="form-control"
+              id="inlineFormInput"
+              placeholder=""
+              style={{ height: 30 }}
+              />
+          </td>
+          <td>
+            <Input
+              type="text"
+              value={this.state.newGateway}
+              onChange={(e)=>this.setState({newGateway:e.target.value})}
+              className="form-control"
+              id="inlineFormInput"
+              placeholder=""
+              style={{ height: 30 }}
+              />
+          </td>
+          <td>
+            <Input
+              type="text"
+              value={this.state.newDNS}
+              onChange={(e)=>this.setState({newDNS:e.target.value})}
+              className="form-control"
+              id="inlineFormInput"
+              placeholder=""
+              style={{ height: 30 }}
+              />
+          </td>
+          <td>
+            <Input
+              type="text"
+              value={this.state.newDNS2}
+              onChange={(e)=>this.setState({newDNS2:e.target.value})}
+              className="form-control"
+              id="inlineFormInput"
+              placeholder=""
+              style={{ height: 30 }}
+              />
+          </td>
 
-            <td>
-              <button className="btn btn-link waves-effect"
-                disabled={this.state.newIP===''}
-                onClick={()=>{
-                  let body={
-                    NIC:this.state.newNIC,
-                    IP:this.state.newIP,
-                    mask:this.state.newMask,
-                    gateway:this.state.newGateway,
-                    DNS:this.state.newDNS,
-                    DNS2:this.state.newDNS2,
-                    id:this.state.newItemID,
-                    fake:true
-                  }
-                  this.setState({
-                    newNIC:'',
-                    newIP:'',
-                    newMask:'',
-                    newGateway:'',
-                    newDNS:'',
-                    newDNS2:'',
-                    newItemID:this.state.newItemID+1
-                  });
-
-                  this.props.onChange([...this.props.items,body]);
-                  }
+          <td>
+            <button className="btn btn-link waves-effect"
+              disabled={this.state.newIP===''}
+              onClick={()=>{
+                let body={
+                  NIC:this.state.newNIC,
+                  IP:this.state.newIP,
+                  mask:this.state.newMask,
+                  gateway:this.state.newGateway,
+                  DNS:this.state.newDNS,
+                  DNS2:this.state.newDNS2,
+                  id:this.state.newItemID,
+                  fake:true
                 }
-                >
-                <i className="fa fa-plus" />
-              </button>
-            </td>
+                this.setState({
+                  newNIC:'',
+                  newIP:'',
+                  newMask:'',
+                  newGateway:'',
+                  newDNS:'',
+                  newDNS2:'',
+                  newItemID:this.state.newItemID+1
+                });
 
-          </tr>
-        </tbody>
+                this.props.onChange([...this.props.items,body]);
+              }
+            }
+            >
+            <i className="fa fa-plus" />
+          </button>
+        </td>
 
-      </Table>
-    );
-  }
+      </tr>
+    </tbody>
+
+  </Table>
+);
+}
 }

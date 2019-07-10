@@ -12,20 +12,16 @@ class Sidebar extends Component {
 		super(props);
 		this.state = {
 			tags : [],
-			value: 0,
 		};
 
 		this.compare.bind(this);
 	}
 
 	componentWillMount(){
-    this.setState({
-      value: 0,
-    });
     this.ref = rebase.listenToCollection('/lanwiki-tags', {
       context: this,
       withIds: true,
-      then: tags=>{this.setState({tags, value:100})},
+      then: tags=>{this.setState({tags})},
     });
   }
 
@@ -49,16 +45,13 @@ class Sidebar extends Component {
 			<div className="sidebar">
 				<SelectPage />
 				<div className="scrollable fit-with-header">
-					{/*	<Progress value={this.state.value}>{this.state.value === 100 ? "Loaded" : "Loading"}</Progress>*/}
-						<div className="m-t-5 m-b-5">
-								<Button
-									block
-									className="btn-link t-a-l sidebar-menu-item"
-									onClick={() => this.props.history.push(`/lanwiki/tags/add`)}
-									>
-									<i className="fa fa-plus sidebar-icon-center"/> Add tag
-								</Button>
-						</div>
+					<Button
+						block
+						className="btn-link t-a-l sidebar-menu-item"
+						onClick={() => this.props.history.push(`/lanwiki/tags/add`)}
+						>
+						<i className="fa fa-plus sidebar-icon-center"/> Add tag
+					</Button>
 
 						<hr />
 
