@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Input, Table } from 'reactstrap';
+import { Input} from 'reactstrap';
 import {rebase,database} from '../../index';
 import {snapshotToArray} from '../../helperFunctions';
 

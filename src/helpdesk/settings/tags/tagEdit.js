@@ -55,7 +55,7 @@ export default class WorkTypeEdit extends Component{
                 });
               }
               }}>Delete</Button>
-            </div>
+          </div>
         </div>
     );
   }

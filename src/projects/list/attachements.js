@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Table} from 'reactstrap';
 import firebase from 'firebase';
 
 export default class Attachements extends Component{
