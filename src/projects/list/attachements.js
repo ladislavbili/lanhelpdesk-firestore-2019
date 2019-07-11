@@ -52,11 +52,11 @@ export default class Attachements extends Component{
 
   render(){
     return (
-      <Table>
+      <table className="table">
         <thead>
           <tr>
             <th>Attachements</th>
-            <th style={{width:20}}></th>
+            <th className="w-20px"></th>
           </tr>
         </thead>
         <tbody>
@@ -85,19 +85,20 @@ export default class Attachements extends Component{
               <label
                 htmlFor="fileUpload"
                 className="btn"
-                style={{paddingLeft:0}}
                 >
-                <i className="fa fa-plus primary-color" /> new file
+                <i className="fa fa-plus" /> new file
                 </label>
               </td>
             </tr>
             {
               this.state.files.map((file)=>
                 <tr key={file.path}>
-                  <td><a href={file.url} rel="noopener noreferrer" target="_blank">{file.name}</a></td>
+                  <td>
+                    <a href={file.url} rel="noopener noreferrer" target="_blank">{file.name}</a>
+                  </td>
                   <td>
                     <button
-                      className="btn"
+                      className="btn-link"
                       type="button"
                       onClick={()=>{
                           if(window.confirm('Are you sure?')){
@@ -114,14 +115,14 @@ export default class Attachements extends Component{
                           }
                         }}
                       >
-                      <i className="fa fa-trash primary-color"  />
+                      <i className="fa fa-trash"  />
                     </button>
                   </td>
                 </tr>
               )
             }
           </tbody>
-        </Table>
+        </table>
       );
     }
   }

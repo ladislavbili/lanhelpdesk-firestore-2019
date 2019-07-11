@@ -7,7 +7,7 @@ export default class TaskEditModal extends Component{
   render(){
     return (
       <Modal size="lg" isOpen={this.props.opened} toggle={this.props.toggle} >
-        <ModalHeader toggle={this.props.toggle}>Edit Task</ModalHeader>
+        <ModalHeader toggle={this.props.toggle}></ModalHeader>
         <ModalBody>
           <TaskEdit id={this.props.id} toggle={this.props.toggle} />
         </ModalBody>

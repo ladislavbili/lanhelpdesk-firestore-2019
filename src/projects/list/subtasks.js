@@ -51,68 +51,73 @@ export default class Subtasks extends Component{
   render(){
     return (
       <div>
-        <Table>
+        <table className="table">
           <thead>
             <tr>
-              <th style={{width:40}}></th>
+              <th className="w-40px"></th>
               <th>Subtasks</th>
-              <th style={{width:20}}></th>
+              <th className="w-20px"></th>
             </tr>
           </thead>
           <tbody>
             {
               this.state.subtasks.map((item,index)=>
               <tr key={item.id}>
-                <td><Input type="checkbox" checked={item.done} onChange={()=>{
+                <td className="table-checkbox">
+                  <Input type="checkbox" checked={item.done} onChange={()=>{
                     let newData=[...this.state.subtasks];
                     newData[index].done=!newData[index].done;
                     rebase.updateDoc('proj-subtasks/'+item.id,{done:item.done});
                     this.setState({subtasks:newData});
                   }} /></td>
-                <td><Input type="text"
-                  value={this.state.focusedSubtask===item.id?this.state.editedSubtaskTitle:item.title}
-                  onBlur={() => {
-                  rebase.updateDoc('proj-subtasks/'+item.id,{title:this.state.editedSubtaskTitle});
-                  let newSubtasks=[...this.state.subtasks];
-                  newSubtasks[index].title=this.state.editedSubtaskTitle;
-                  this.setState({ focusedSubtask: null, subtasks:newSubtasks });
-                  }}
-                  onFocus={() => {
-                    this.setState({
-                      editedSubtaskTitle: item.title,
-                      focusedSubtask: item.id
-                    });
-                  }}
-                  onChange={e =>{
-                    this.setState({ editedSubtaskTitle: e.target.value })}
-                  }
-
-                  className="invisible-input" /></td>
+                <td>
+                  <Input
+                      type="text"
+                      className="form-control hidden-input"
+                      value={this.state.focusedSubtask===item.id?this.state.editedSubtaskTitle:item.title}
+                      onBlur={() => {
+                      rebase.updateDoc('proj-subtasks/'+item.id,{title:this.state.editedSubtaskTitle});
+                      let newSubtasks=[...this.state.subtasks];
+                      newSubtasks[index].title=this.state.editedSubtaskTitle;
+                      this.setState({ focusedSubtask: null, subtasks:newSubtasks });
+                      }}
+                      onFocus={() => {
+                        this.setState({
+                          editedSubtaskTitle: item.title,
+                          focusedSubtask: item.id
+                        });
+                      }}
+                      onChange={e =>{
+                        this.setState({ editedSubtaskTitle: e.target.value })}
+                      }/>
+                </td>
                 <td>
                   <button
-                    className="btn"
+                    className="btn-link"
                     type="button"
                     >
-                    <i className="fa fa-trash primary-color" onClick={()=>this.deleteSubtask(item.id)} />
+                    <i className="fa fa-trash" onClick={()=>this.deleteSubtask(item.id)} />
                   </button>
                 </td>
               </tr>
             )
           }
             <tr>
-              <td colSpan={2}><Input type="text" value={this.state.newSubtask} onChange={(e)=>this.setState({newSubtask:e.target.value})} /></td>
+              <td colSpan={2}>
+                <Input type="text" className="form-control" value={this.state.newSubtask} onChange={(e)=>this.setState({newSubtask:e.target.value})} />
+              </td>
               <td>
                 <button
-                  className="btn"
+                  className="btn-link"
                   type="button"
                   onClick={this.submitSubtask.bind(this)}
                 >
-                  <i className="fa fa-plus primary-color" />
+                  <i className="fa fa-plus" />
                 </button>
               </td>
             </tr>
           </tbody>
-        </Table>
+        </table>
 
       </div>
     );

@@ -3,6 +3,7 @@ import {rebase,database} from '../../index';
 import { FormGroup, Label, Input } from 'reactstrap';
 import {toSelArr,snapshotToArray} from '../../helperFunctions';
 import Select from 'react-select';
+import {selectStyle} from '../../scss/selectStyles';
 import Subtasks from './subtasks';
 import Comments from './comments';
 import Attachements from './attachements';
@@ -113,63 +114,127 @@ export default class TaskEdit extends Component{
 
   render(){
     return (
-      <div className="row">
-        <div style={{width:'calc( 100% - 75px )'}}>
+      <div>
+        {/*TOOLBAR*/}
+        <div className="row m-b-10">
+          <div className="toolbar-item">
+            <button type="button" className="btn-link"
+              onClick={()=>this.props.toggle?this.props.toggle():this.props.history.goBack()}
+              >
+              <i className="fa fa-times" /> Close
+            </button>
+          </div>
+
+            <div className="toolbar-item">
+              <button type="button" className="btn-link"
+                onClick={()=>{this.setState({status:1},this.submitTask.bind(this))}}
+                >
+                <i className="fa fa-play" /> Resume
+              </button>
+            </div>
+
+            <div className="toolbar-item">
+              <button type="button" className="btn-link"
+                onClick={()=>{this.setState({status:2},this.submitTask.bind(this))}}
+                >
+                <i className="fa fa-pause" /> Pause
+              </button>
+            </div>
+
+            <div className="toolbar-item">
+              <button type="button" className="btn-link"
+                onClick={()=>{this.setState({status:3},this.submitTask.bind(this))}}
+                >
+                <i className="fa fa-check-circle" /> Check
+              </button>
+            </div>
+
+            {
+              this.state.saving &&
+              <div className="toolbar-item">
+                <button type="button" className="btn-link">
+                  <i className="fas fa-save"
+                    /> Saving
+                </button>
+              </div>
+            }
+
+          <div className="toolbar-item">
+            <button type="button" className="btn-link"
+              onClick={()=>{
+                if(window.confirm('Are you sure?')){
+                  rebase.removeDoc('/proj-tasks/'+this.props.id).then(()=>{
+                    this.props.toggle?this.props.toggle():this.props.history.goBack();
+                  });
+                }
+              }}
+              >
+              <i className="fa fa-trash" /> Delete
+            </button>
+          </div>
+        </div>
+
+        {/*MAIN*/}
+        <div>
           <FormGroup className="row">
-            <span className="label label-success mr-5 center-hor center-ver" style={{backgroundColor:statuses.find((item)=>item.id===this.state.status).color}}>{statuses.find((item)=>item.id===this.state.status).title}</span>
-            <div style={{flex:1}}>
-              <Input type="text" placeholder="Task name" className="hidden-input" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value},this.submitTask.bind(this))} />
+            <Label className="label m-r-5 center-hor center-ver" style={{backgroundColor:statuses.find((item)=>item.id===this.state.status).color}}>
+              {statuses.find((item)=>item.id===this.state.status).title}
+            </Label>
+            <div className="flex">
+              <Input type="text" placeholder="Task name" className="task-title-input text-extra-slim hidden-input" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value},this.submitTask.bind(this))} />
             </div>
           </FormGroup>
+
           <div className="row">
-            <div className="width-half">
+            <div className="flex m-r-5">
               <FormGroup>
-                <Label>Project</Label>
+                <Label className="text-slim">Project</Label>
                 <Select
-                  className="supressDefaultSelectStyle"
+                  styles={selectStyle}
                   options={this.state.projects}
                   value={this.state.project}
                   onChange={e =>{ this.setState({ project: e },this.submitTask.bind(this)); }}
                   />
               </FormGroup>
               <FormGroup>
-                <Label>Hours</Label>
+                <Label className="text-slim">Hours</Label>
                 <Input type="number" placeholder="Enter hours" value={this.state.hours} onChange={(e)=>this.setState({hours:e.target.value},this.submitTask.bind(this))} />
               </FormGroup>
             </div>
-            <div className="width-half">
+            <div className="flex m-l-5">
               <FormGroup>
-                <Label>Assigned by</Label>
+                <Label className="text-slim">Assigned by</Label>
                 <Select
-                  className="supressDefaultSelectStyle"
+                  styles={selectStyle}
                   options={this.state.users}
                   value={this.state.assignedBy}
                   onChange={e =>{ this.setState({ assignedBy: e },this.submitTask.bind(this)); }}
                   />
               </FormGroup>
               <FormGroup>
-                <Label>Assigned to</Label>
+                <Label className="text-slim">Assigned to</Label>
                 <Select
-                  className="supressDefaultSelectStyle"
+                  styles={selectStyle}
                   options={this.state.users}
                   value={this.state.assignedTo}
                   onChange={e =>{ this.setState({ assignedTo: e },this.submitTask.bind(this)); }}
                   />
               </FormGroup>
               <FormGroup>
-                <Label>Deadline</Label>
+                <Label className="text-slim">Deadline</Label>
                 <Input type="datetime-local" placeholder="Enter deadline" value={this.state.deadline} onChange={(e)=>this.setState({deadline:e.target.value},this.submitTask.bind(this))} />
               </FormGroup>
             </div>
           </div>
+
           <FormGroup>
-            <Label>Description</Label>
+            <Label className="text-slim">Description</Label>
             <Input type="textarea" placeholder="Description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value},this.submitTask.bind(this))} />
           </FormGroup>
           <FormGroup>
-            <Label>Tags</Label>
+            <Label className="text-slim">Tags</Label>
             <Select
-              className="supressDefaultSelectStyle"
+              styles={selectStyle}
               options={this.state.allTags}
               value={this.state.tags}
               onChange={(tags)=>this.setState({tags},this.submitTask.bind(this))}
@@ -180,77 +245,6 @@ export default class TaskEdit extends Component{
           <Subtasks id={this.props.id} />
           <Attachements id={this.props.id} attachements={this.state.attachements} onChange={(attachements)=>this.setState({attachements},this.submitTask.bind(this))} />
           <Comments id={this.props.id} users={this.state.users} />
-          </div>
-          {/*TOOLBAR*/}
-          <div style={{width:70,borderLeft:'darkgrey 3px solid', marginLeft:5, flex:1 ,flexDirection:'column', padding:5}}>
-
-            <div className="toolbar-item">
-              <button
-                className="btn"
-                type="button"
-                onClick={()=>this.props.toggle?this.props.toggle():this.props.history.goBack()}
-                >
-                <i className="fa fa-times primary-color" />
-              </button>
-
-
-              <div className="toolbar-item">
-                <button
-                  className="btn"
-                  type="button"
-                  onClick={()=>{this.setState({status:1},this.submitTask.bind(this))}}
-                  >
-                  <i className={"fa fa-play "+ (this.state.status===1?'success-color':'primary-color')} />
-                </button>
-              </div>
-
-              <div className="toolbar-item">
-                <button
-                  className="btn"
-                  type="button"
-                  onClick={()=>{this.setState({status:2},this.submitTask.bind(this))}}
-                  >
-                  <i className={"fa fa-pause "+ (this.state.status===2?'success-color':'primary-color')} />
-                </button>
-              </div>
-
-              <div className="toolbar-item">
-                <button
-                  className="btn"
-                  type="button"
-                  onClick={()=>{this.setState({status:3},this.submitTask.bind(this))}}
-                  >
-                  <i className={"fa fa-check-circle "+ (this.state.status===3?'success-color':'primary-color')} />
-                </button>
-              </div>
-
-              {
-                this.state.saving &&
-                <button type="button" className="btn btn-link">
-                  <i
-                    className="fas fa-save"
-                    />
-                </button>
-              }
-
-
-            </div>
-            <div className="toolbar-item">
-              <button
-                className="btn"
-                type="button"
-                onClick={()=>{
-                  if(window.confirm('Are you sure?')){
-                    rebase.removeDoc('/proj-tasks/'+this.props.id).then(()=>{
-                      this.props.toggle?this.props.toggle():this.props.history.goBack();
-                    });
-                  }
-                }}
-                >
-                <i className="fa fa-trash primary-color" />
-              </button>
-            </div>
-
           </div>
         </div>
       );

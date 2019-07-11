@@ -13,16 +13,18 @@ export default class TagAdd extends Component{
 
   render(){
     return (
-        <div className="container-padding form-background card-box scrollable fit-with-header">
+      <div className="full-height card-box scrollable fit-with-header-and-commandbar">
+        <div className="m-t-20">
           <FormGroup>
             <Label for="name">Tag name</Label>
             <Input type="text" name="name" id="name" placeholder="Enter tag name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
           </FormGroup>
-        <Button color="primary" disabled={this.state.saving} onClick={()=>{
-            this.setState({saving:true});
-            rebase.addToCollection('/proj-tags', {title:this.state.title})
-              .then(()=>{this.setState({title:'',saving:false})});
-          }}>{this.state.saving?'Adding...':'Add tag'}</Button>
+          <Button className="btn" disabled={this.state.saving} onClick={()=>{
+              this.setState({saving:true});
+              rebase.addToCollection('/proj-tags', {title:this.state.title})
+                .then(()=>{this.setState({title:'',saving:false})});
+            }}>{this.state.saving?'Adding...':'Add tag'}</Button>
+        </div>
       </div>
     );
   }

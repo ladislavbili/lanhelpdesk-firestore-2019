@@ -104,139 +104,153 @@ export default class Sidebar extends Component {
 
 	render() {
 		return (
-			<div>
-				<div className="commandbar row">
-					<div className="commandbar-item ml-2">
-						<input
-							type="text"
-							value={this.state.search}
-							className="form-control command-search"
-							onChange={(e)=>this.setState({search:e.target.value})}
-							placeholder="Search" />
-					</div>
-					<Button color="link">Global search</Button>
-					<span className="center-hor ml-3" style={{color:'#095eb3'}}>
-						<FormGroup check>
-							<Input type="checkbox"
-								id="check-new"
-								checked={this.state.statuses.includes(0)}
-								onChange={()=>{
-									this.setState({
-										statuses: this.state.statuses.includes(0)?this.state.statuses.filter((item)=>item!==0):[...this.state.statuses,0]
-									})
-								}} />{' '}
-							<Label htmlFor="check-new" check className="clickable">
-								New
-							</Label>
-						</FormGroup>
-					</span>
-
-					<span className="center-hor ml-3" style={{color:'#095eb3'}}>
-						<FormGroup check>
-							<Input type="checkbox"
-								id="check-open"
-								checked={this.state.statuses.includes(1)}
-								onChange={()=>{
-									this.setState({
-										statuses: this.state.statuses.includes(1)?this.state.statuses.filter((item)=>item!==1):[...this.state.statuses,1]
-									})
-								}} />{' '}
-							<Label htmlFor="check-open" check className="clickable">
-								Open
-							</Label>
-						</FormGroup>
-					</span>
-
-					<span className="center-hor ml-3" style={{color:'#095eb3'}}>
-						<FormGroup check>
-							<Input type="checkbox"
-								id="check-pending"
-								checked={this.state.statuses.includes(2)}
-								onChange={()=>{
-									this.setState({
-										statuses: this.state.statuses.includes(2)?this.state.statuses.filter((item)=>item!==2):[...this.state.statuses,2]
-									})
-								}} />{' '}
-							<Label htmlFor="check-pending" check className="clickable">
-								Pending
-							</Label>
-						</FormGroup>
-					</span>
-
-					<span className="center-hor ml-3" style={{color:'#095eb3'}}>
-						<FormGroup check>
-							<Input type="checkbox"
-								id="check-close"
-								checked={this.state.statuses.includes(3)}
-								onChange={()=>{
-									this.setState({
-										statuses: this.state.statuses.includes(3)?this.state.statuses.filter((item)=>item!==3):[...this.state.statuses,3]
-									})
-								}} />{' '}
-							<Label htmlFor="check-close" check className="clickable">
-								Closed
-							</Label>
-						</FormGroup>
-					</span>
-				</div>
-				<div className="fit-with-header scrollable">
-					<h1>Tasks</h1>
-						<div className="p-2 max-input-400">
+			<div className="row">
+				<div className="container-fluid">
+					<div className="d-flex flex-row align-items-center">
+						<div className="p-2">
 							<div className="input-group">
 								<input
 									type="text"
-									className="form-control"
-									value={this.state.newTitle}
-									onChange={(e)=>this.setState({newTitle:e.target.value})}
-									placeholder="New task name"
-									style={{ width: 200 }}
-									onKeyPress={(e)=>{
-		                if(e.key==='Enter' && !this.state.saving && this.state.newTitle!==''){
-		                  this.addTask();
-		                }
-		              }}
-								/>
+									value={this.state.search}
+									className="form-control commandbar-search"
+									onChange={(e)=>this.setState({search:e.target.value})}
+									placeholder="Search" />
 								<div className="input-group-append">
-									<button className="btn btn-search"
-										type="button"
-										disabled={this.state.saving || this.state.newTitle===''}
-										onClick={this.addTask.bind(this)}>
-										<i className="fa fa-plus" />
+									<button className="commandbar-btn-search" type="button">
+										<i className="fa fa-search" />
 									</button>
 								</div>
 							</div>
 						</div>
-						<table className="table table-centered table-borderless table-hover mb-0">
-							<thead className="thead-light">
-								<tr>
-									<th>Created</th>
-									<th>Title</th>
-									<th>Assigned by</th>
-									<th>Assigned to</th>
-									<th>Status</th>
-									<th>Deadline</th>
-									<th>Hours</th>
-								</tr>
-							</thead>
-							<tbody>
-								{
-									this.getData().map((item)=>
-										<tr className="clickable" key={item.id} onClick={()=>this.setState({editOpened:true, openedID:item.id})}>
-											<td>{item.createdAt?timestampToString(item.createdAt):'No date'}</td>
-											<td>{item.title}</td>
-											<td>{item.assignedBy?item.assignedBy.email:'No user'}</td>
-											<td>{item.assignedTo?item.assignedTo.email:'No user'}</td>
-											<td>{item.status.title}</td>
-											<td>{item.deadline?timestampToString(item.deadline):'No deadline'}</td>
-											<td>{item.hours?item.hours:0}</td>
-										</tr>
-									)
-								}
-							</tbody>
-						</table>
-					<TaskEditModal id={this.state.openedID} opened={this.state.editOpened} toggle={()=>this.setState({editOpened:!this.state.editOpened})} />
+						<Button className="btn-link">Global search</Button>
+
+						<span className="center-hor m-l-10">
+							<FormGroup check>
+								<Input
+									type="checkbox"
+									id="check-new"
+									checked={this.state.statuses.includes(0)}
+									onChange={()=>{
+										this.setState({
+											statuses: this.state.statuses.includes(0)?this.state.statuses.filter((item)=>item!==0):[...this.state.statuses,0]
+										})
+									}} />{' '}
+								<Label htmlFor="check-new" check className="clickable">
+									New
+								</Label>
+							</FormGroup>
+						</span>
+
+						<span className="center-hor m-l-10">
+							<FormGroup check>
+								<Input type="checkbox"
+									id="check-open"
+									checked={this.state.statuses.includes(1)}
+									onChange={()=>{
+										this.setState({
+											statuses: this.state.statuses.includes(1)?this.state.statuses.filter((item)=>item!==1):[...this.state.statuses,1]
+										})
+									}} />{' '}
+								<Label htmlFor="check-open" check className="clickable">
+									Open
+								</Label>
+							</FormGroup>
+						</span>
+
+						<span className="center-hor m-l-10">
+							<FormGroup check>
+								<Input type="checkbox"
+									id="check-pending"
+									checked={this.state.statuses.includes(2)}
+									onChange={()=>{
+										this.setState({
+											statuses: this.state.statuses.includes(2)?this.state.statuses.filter((item)=>item!==2):[...this.state.statuses,2]
+										})
+									}} />{' '}
+								<Label htmlFor="check-pending" check className="clickable">
+									Pending
+								</Label>
+							</FormGroup>
+						</span>
+
+						<span className="center-hor m-l-10">
+							<FormGroup check>
+								<Input type="checkbox"
+									id="check-close"
+									checked={this.state.statuses.includes(3)}
+									onChange={()=>{
+										this.setState({
+											statuses: this.state.statuses.includes(3)?this.state.statuses.filter((item)=>item!==3):[...this.state.statuses,3]
+										})
+									}} />{' '}
+								<Label htmlFor="check-close" check className="clickable">
+									Closed
+								</Label>
+							</FormGroup>
+						</span>
+					</div>
 				</div>
-			</div>
+
+					<div className="p-20 full-width scrollable">
+						<h1>Tasks</h1>
+
+							<div className="p-2 max-width-400">
+								<div className="input-group">
+									<input
+										type="text"
+										className="form-control h-30"
+										value={this.state.newTitle}
+										onChange={(e)=>this.setState({newTitle:e.target.value})}
+										placeholder="New task name"
+										onKeyPress={(e)=>{
+			                if(e.key==='Enter' && !this.state.saving && this.state.newTitle!==''){
+			                  this.addTask();
+			                }
+			              }}
+									/>
+									<div className="input-group-append">
+										<button className="btn"
+											type="button"
+											disabled={this.state.saving || this.state.newTitle===''}
+											onClick={this.addTask.bind(this)}>
+											<i className="fa fa-plus" />
+										</button>
+									</div>
+								</div>
+							</div>
+
+							<table className="table">
+								<thead>
+									<tr>
+										<th>Created</th>
+										<th>Title</th>
+										<th>Assigned by</th>
+										<th>Assigned to</th>
+										<th>Status</th>
+										<th>Deadline</th>
+										<th>Hours</th>
+									</tr>
+								</thead>
+								<tbody>
+									{
+										this.getData().map((item)=>
+											<tr className="clickable" key={item.id} onClick={()=>this.setState({editOpened:true, openedID:item.id})}>
+												<td>{item.createdAt?timestampToString(item.createdAt):'No date'}</td>
+												<td>{item.title}</td>
+												<td>{item.assignedBy?item.assignedBy.email:'No user'}</td>
+												<td>{item.assignedTo?item.assignedTo.email:'No user'}</td>
+												<td>{item.status.title}</td>
+												<td>{item.deadline?timestampToString(item.deadline):'No deadline'}</td>
+												<td>{item.hours?item.hours:0}</td>
+											</tr>
+										)
+									}
+								</tbody>
+							</table>
+
+						  <TaskEditModal id={this.state.openedID} opened={this.state.editOpened} toggle={()=>this.setState({editOpened:!this.state.editOpened})} />
+					</div>
+				</div>
 			);
 		}
 	}
