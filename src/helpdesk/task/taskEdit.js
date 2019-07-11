@@ -283,8 +283,6 @@ export default class TasksTwoEdit extends Component {
 			}
 		});
 
-		console.log(this.props.columns);
-
 		return (
 			<div className="flex">
 				<div className="container-fluid p-2">

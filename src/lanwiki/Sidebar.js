@@ -13,15 +13,13 @@ class Sidebar extends Component {
 		this.state = {
 			tags : [],
 		};
-
-		this.compare.bind(this);
 	}
 
 	componentWillMount(){
     this.ref = rebase.listenToCollection('/lanwiki-tags', {
       context: this,
       withIds: true,
-      then: tags=>{this.setState({tags})},
+      then: tags=>{this.setState({tags});},
     });
   }
 
@@ -29,18 +27,7 @@ class Sidebar extends Component {
     rebase.removeBinding(this.ref);
   }
 
-	compare(a,b) {
-		if (a.name.toLowerCase() < b.name.toLowerCase())
-			return -1;
-		if (a.name.toLowerCase() > b.name.toLowerCase())
-			return 1;
-		return 0;
-	}
-
 	render() {
-
-		let ORDERRED_TAGS = this.state.tags.sort(this.compare);
-
 		return (
 			<div className="sidebar">
 				<SelectPage />
@@ -53,37 +40,33 @@ class Sidebar extends Component {
 						<i className="fa fa-plus sidebar-icon-center"/> Add tag
 					</Button>
 
-						<hr />
-
-									<Nav>
-										<NavItem  key={1} className={window.location.pathname.includes('/lanwiki/notes/all') ? "text-basic t-a-l sidebar-menu-item sidebar-item-active" : "text-basic sidebar-menu-item t-a-l "}>
-											<Link to={{ pathname: `/lanwiki/notes/all` }} >All</Link>
-										</NavItem>
-									</Nav>
-									{
-										ORDERRED_TAGS.map((item)=>
-										<Row>
-											<Col xs={10}>
-												<Nav>
-												<NavItem key={item.id} className={window.location.pathname.includes(`/lanwiki/notes/${item.id}`) ? "text-basic t-a-l sidebar-menu-item sidebar-item-active" : "text-basic t-a-l sidebar-menu-item"}>
-													<Link to={{pathname: `/lanwiki/notes/${item.id}`}}>
-														{item.name}
-													</Link>
-												</NavItem>
-											</Nav>
-											</Col>
-											<Col xs={2}>
-												<Nav>
-													<NavItem key={item.id} className={window.location.pathname.includes(`/lanwiki/tags/${item.id}`) ? "text-basic t-a-l full-width m-r-5 sidebar-item-active" : "text-basic t-a-l full-width m-r-5"}>
-														<Link className="pull-right" to={{pathname: `/lanwiki/tags/${item.id}`}}>
-															<i className="fa fa-cog"/>
-														</Link>
-													</NavItem>
-												</Nav>
-											</Col>
-										</Row>
-										)
-									}
+					<hr/>
+					<Row>
+						<Col xs={10}>
+							<Nav vertical>
+								<NavItem>
+									<Link  className = "text-basic sidebar-align sidebar-menu-item" to={{ pathname: `/lanwiki/i/all` }}>All</Link>
+								</NavItem>
+								{	this.state.tags.sort((item1,item2)=>item1.title.toLowerCase()>item2.title.toLowerCase()?1:-1).map((item)=>
+									<NavItem key={item.id}>
+										<Link className = "text-basic sidebar-align sidebar-menu-item" to={{ pathname:`/lanwiki/i/`+item.id}}>{item.title}</Link>
+									</NavItem>
+								)}
+							</Nav>
+						</Col>
+						<Col xs={2} style={{marginTop:40}}>
+							{	this.state.tags.sort((item1,item2)=>item1.title.toLowerCase()>item2.title.toLowerCase()?1:-1).map((item)=>
+								<Button
+									key={item.id}
+									className='btn-link t-a-l'
+									style={{height:40}}
+									onClick={() => this.props.history.push('/lanwiki/i/'+item.id)}
+									>
+									<i className="fa fa-cog"/>
+								</Button>
+							)}
+						</Col>
+					</Row>
 
 
 				</div>

@@ -496,7 +496,6 @@ td {
   position:relative;
   top: inherit;
   width: 240px;
-  cursor: pointer;
 }
 
 .sidebar-icon-center{
@@ -527,11 +526,6 @@ td {
 
 .sidebar-align{
   padding-left: 35px !important;
-}
-
-.sidebar-item-active{
-  background-color: $sidebar-item-color !important;
-  font-weight: 900;
 }
 
 //--------------------END-sidebar----------------------
@@ -568,7 +562,8 @@ td {
 }
 
 .nav:not(.nav-tabs) a.active {
-  background: inherit;
+  background-color: $sidebar-item-color !important;
+  font-weight: 900;
   color: #0078D4 !important;
 }
 
