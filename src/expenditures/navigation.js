@@ -12,10 +12,10 @@ export default class Navigation extends Component {
 			<div>
 				<div className="row">
 						<Sidebar {...this.props} />
-					<div className="flex">
-						<PageHeader {...this.props} />
-						<Route exact path='/expenditures/i/:listID' component={List} />
+					<div className="flex main">
+						<PageHeader {...this.props} showLayoutSwitch={true} />
 						<Route exact path='/expenditures/add' component={AddExpenditure} />
+						<Route exact path='/expenditures/i/:listID' component={List} />
 						<Route exact path='/expenditures/i/:listID/:expID' component={List} />
 					</div>
 				</div>

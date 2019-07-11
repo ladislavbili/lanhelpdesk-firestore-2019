@@ -7,7 +7,7 @@ export default class Sidebar extends Component {
 		super(props);
 		this.state = {
 			saving: false,
-			name: "",
+			title: "",
 			body: "",
 			public: false,
 			active: false,
@@ -43,7 +43,7 @@ export default class Sidebar extends Component {
 						withIds: true,
 						}).then((users) =>*/
 								this.setState({
-									name: tag.name,
+									title: tag.title,
 									body: tag.body,
 							//		read: users.filter(u => tag.read.includes(u.id)),
 							//		write: users.filter(u => tag.write.includes(u.id)),
@@ -67,7 +67,7 @@ export default class Sidebar extends Component {
     this.setState({value: 0, saving: true});
   //  let newRead = this.state.read.map(user => user.id);
   //  let newWrite = this.state.write.map(user => user.id);
-    rebase.updateDoc('/lanwiki-tags/'+this.props.match.params.tagID, {name:this.state.name, body:this.state.body, /*read: newRead, write: newWrite, public: this.state.public,*/ active: this.state.active})
+    rebase.updateDoc('/lanwiki-tags/'+this.props.match.params.tagID, {title:this.state.title, body:this.state.body, /*read: newRead, write: newWrite, public: this.state.public,*/ active: this.state.active})
     .then(() => {
       this.setState({
         value: 100,
@@ -88,7 +88,7 @@ export default class Sidebar extends Component {
               .then((notes) =>{
                 notes.filter(note => (note.tags.includes(this.props.match.params.tagID)))
                 .map(note =>
-                    rebase.updateDoc('/lanwiki-notes/'+note.id, {name: note.name, body: note.body, tags: note.tags.filter(item => item !== this.props.match.params.tagID)})
+                    rebase.updateDoc('/lanwiki-notes/'+note.id, {title: note.title, body: note.body, tags: note.tags.filter(item => item !== this.props.match.params.tagID)})
                   );
                 this.props.history.push(`/lanwiki/notes/all`);
               });
@@ -123,7 +123,7 @@ export default class Sidebar extends Component {
 
 						<FormGroup>
 							<Label htmlFor="name">Názov</Label>
-							<Input id="name" placeholder="Názov" value={this.state.name} onChange={(e) => this.setState({name: e.target.value})}/>
+							<Input id="name" placeholder="Názov" value={this.state.title} onChange={(e) => this.setState({title: e.target.value})}/>
 						</FormGroup>
 
 						<FormGroup>

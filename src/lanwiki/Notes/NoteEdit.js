@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
-import { Button, FormGroup, Row, Col, Input, InputGroup, ButtonDropdown, ButtonGroup, DropdownToggle, DropdownMenu, DropdownItem, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Button, FormGroup, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 import TimeAgo from 'react-timeago'
-
+import Select from 'react-select';
+import {timestampToString, toSelArr} from '../../helperFunctions';
 import { rebase } from '../../index';
+import {invisibleSelectStyle} from '../../scss/selectStyles';
 
 import CKEditor from 'ckeditor4-react';
 
 import PictureUpload from './PictureUpload';
 
-import "../../scss/lanwiki.scss";
+
 
 export default class Note extends Component{
 
@@ -23,6 +25,7 @@ export default class Note extends Component{
       modalOpen: false,
       name: "",
       body: "",
+      newLoad:false,
       tags: [],
       chosenTags: [],
       dateCreated: null,
@@ -35,16 +38,6 @@ export default class Note extends Component{
 
     this.onEditorChange.bind(this);
     this.appendImage.bind(this);
-
-    this.startTimeout.bind(this);
-
-    this.niceDate.bind(this);
-
-    this.changeName.bind(this);
-    this.findName.bind(this);
-    this.addTag.bind(this);
-    this.removeTag.bind(this);
-    this.toggleDropDown.bind(this);
     this.toggleModal.bind(this);
     this.submit.bind(this);
     this.fetchData.bind(this);
@@ -52,38 +45,57 @@ export default class Note extends Component{
   }
 
   fetchData(id){
-    rebase.get('lanwiki-notes/' + id, {
-      context: this,
-    }).then((note) =>
-        {
-          rebase.get('/lanwiki-tags', {
-            context: this,
-            withIds: true,
-          }).then((tags) => this.setState({value: 100, name: note.name, body: note.body, chosenTags: note.tags, dateCreated: note.dateCreated.toLocaleString(), lastUpdated: note.lastUpdated, tags, loading:false})  );
+    Promise.all(
+      [
+        rebase.get('lanwiki-notes/' + id, {
+          context: this,
+        }),
+        rebase.get('/lanwiki-tags', {
+          context: this,
+          withIds: true,
         })
+      ]).then(([note,tags]) =>{
+        let allTags=toSelArr(tags);
+        this.setState({
+          name: note.name,
+          body: note.body,
+          tags: allTags.filter((item)=>note.tags.includes(item.id)),
+          dateCreated: new Date(note.dateCreated).getTime(),
+          lastUpdated: new Date(note.lastUpdated).getTime(),
+          allTags,
+          newLoad:true,
+          loading:false
+        });
+      });
+
   }
 
   componentWillReceiveProps(props){
     if(this.props.match.params.noteID!==props.match.params.noteID){
-      this.setState({loading:true, value: 0});
+      this.setState({loading:true});
       this.fetchData(props.match.params.noteID);
     }
   }
 
   submit(){
-    if (this.state.timeout !== null){
-        let lastUpd = Date().toLocaleString();
-  //      this.setState({saving:true, value: 45});
-        rebase.updateDoc('/lanwiki-notes/'+this.props.match.params.noteID, {name:this.state.name, body:this.state.body, tags: this.state.chosenTags, lastUpdated: lastUpd})
-        .then(() => {
-          this.setState({
-            saving:false,
-            value: 100,
-            timeout: null,
-            lastUpdated: lastUpd,
-          });
-        });
-    }
+    let lastUpd = new Date().getTime();
+    this.setState({saving:true});
+    let body={
+      name:this.state.name,
+      body:this.state.body,
+      tags: this.state.tags.map((item)=>item.id),
+      lastUpdated:lastUpd,
+      dateCreated: new Date(this.state.dateCreated).getTime()
+    };
+    rebase.updateDoc('/lanwiki-notes/'+this.props.match.params.noteID, body)
+    .then(() => {
+      this.setState({
+        saving:false,
+        timeout: null,
+        lastUpdated: lastUpd,
+        dateCreated: new Date(this.state.dateCreated).getTime()
+      });
+    });
   }
 
   remove(){
@@ -95,181 +107,117 @@ export default class Note extends Component{
     }
   }
 
-  changeName(e){
-     this.setState({
-       name: e.target.value,
-     });
-
-     this.startTimeout();
-  }
-
-  addTag(id){
-    this.setState({
-      chosenTags: [...this.state.chosenTags, id],
-    })
-
-    this.startTimeout();
-
-  }
-
-  removeTag(id){
-    this.setState({
-      chosenTags: this.state.chosenTags.filter(tagId => tagId !== id),
-    })
-
-    this.startTimeout();
-  }
-
-  toggleDropDown() {
-      this.setState({
-        dropdownOpen: !this.state.dropdownOpen,
-      });
-  }
-
   toggleModal() {
       this.setState({
         modalOpen: !this.state.modalOpen
       });
   }
 
-  findName(id){
-    return this.state.tags.filter(tag => tag.id === id)[0].name;
-  }
-
   onEditorChange( evt ) {
-    this.setState( {
-      body: evt.editor.getData()
-    } );
-
-    this.startTimeout();
+    if(this.state.newLoad){
+      this.setState( {
+        body: evt.editor.getData(),
+        newLoad:false
+      });
+    }else{
+      this.setState( {
+        body: evt.editor.getData()
+      },this.submit.bind(this) );
+    }
   }
 
   appendImage(image){
     this.setState({
       body : this.state.body.concat(image),
       modalOpen : false
-    });
-
-    this.startTimeout();
-  }
-
-  startTimeout(){
-    if (this.state.timeout === null){
-      this.setState({
-        value: 0,
-        timeout: setTimeout(this.submit.bind(this), 250),
-      });
-    }
-  }
-
-  niceDate(uglyDate){
-    if (uglyDate){
-      let arr = uglyDate.split(" ");
-      let niceDate = arr[2] + " " + arr[1] + " " + arr[3] + "  " + arr[4];
-      return niceDate;
-    } else {
-      return "no date";
-    }
+    },this.submit.bind(this));
   }
 
   render(){
     return (
-      <div >
+      <div className="flex">
+				<div className="container-fluid p-2">
+					<div className="d-flex flex-row align-items-center">
+						<div className="center-hor">
+							{!this.props.columns &&
+								<button type="button" className="btn btn-link waves-effect" onClick={()=>this.props.history.goBack()}>
+									<i
+										className="fas fa-arrow-left commandbar-command-icon icon-M"
+										/>
+								</button>
+							}
+							{' '}
+							<button type="button" className="btn btn-link waves-effect" onClick={this.submit.bind(this)}>
+								{this.state.saving?'Saving... ':''}
+								<i
+									className="fas fa-save icon-M"
+									/>
+							</button>
+							{' '}
+							<button type="button" className="btn btn-link waves-effect" onClick={this.remove.bind(this)}>
+								<i
+									className="fas fa-trash icon-M"
+									/>
+							</button>
+						</div>
+					</div>
+				</div>
+        <div className="row scrollable fit-with-header-and-command-bar">
+            <div className={"card-box flex " + (!this.props.columns ? " center-ver" : "")}>
+              <div className="d-flex p-2">
+                <div className="row">
+                  <h1 className="center-hor text-extra-slim">#</h1>
+                  <span className="center-hor">
+                    <input type="text" value={this.state.name} className="task-title-input text-extra-slim hidden-input" onChange={(e)=>this.setState({name:e.target.value},this.submit.bind(this))} placeholder="Enter task name" />
+                  </span>
+                </div>
+              </div>
+              <hr/>
 
-          <div className="commandbar">
-          	{/*  <Progress value={this.state.value}>{this.state.value === 100 ? "Loaded" : "Loading"}</Progress>*/}
-            <Button
-              onClick={this.remove.bind(this)}
-              block
-              className='addTag'>
-               DELETE
-             </Button>
+              <div className="row">
+                <div className="col-lg-12 d-flex">
+                  <p className="text-muted">Created at {this.state.dateCreated?(timestampToString(this.state.dateCreated)):''}</p>
+                  <p className="text-muted ml-auto">{this.state.lastUpdated && <TimeAgo style={{color: 'rgb(180, 180, 180)'}} date={new Date(this.state.lastUpdated)} />}</p>
+                </div>
+              </div>
+              <div className="col-lg-12 row">
+                <strong className="center-hor text-slim">Tagy: </strong>
+                <div className="f-1">
+                  <Select
+                    value={this.state.tags}
+                    isMulti
+                    onChange={(tags)=>this.setState({tags},this.submit.bind(this))}
+                    options={this.state.allTags}
+                    styles={invisibleSelectStyle}
+                    />
+                </div>
+              </div>
+              <FormGroup>
+                  <Button outline color="secondary" size="sm" onClick={this.toggleModal.bind(this)}>Pridať obrázok z uložiska</Button>
+                  <Modal className="modalLO" isOpen={this.state.modalOpen} toggle={this.toggleModal.bind(this)} >
+                    <ModalHeader toggle={this.toggleModal.bind(this)}>Nahrať obrázok</ModalHeader>
+                    <ModalBody>
+                      <PictureUpload appendImage={this.appendImage.bind(this)}/>
+                    </ModalBody>
+                    <ModalFooter>
+                      <Button outline color="secondary" size="sm" onClick={this.toggleModal.bind(this)}>Close</Button>{'  '}
+                    </ModalFooter>
+                  </Modal>
+                  <CKEditor
+                    data={this.state.body}
+                    onChange={this.onEditorChange.bind(this)}
+                    config={ {
+                        height: [ '60vh' ],
+                        codeSnippet_languages: {
+                          javascript: 'JavaScript',
+                          php: 'PHP'
+                        }
+                    } }
+                    />
+              </FormGroup>
           </div>
-
-          <div
-            className="note">
-          <FormGroup>
-            <InputGroup>
-              <Input
-                id="name"
-                placeholder="Názov"
-
-                value={this.state.name}
-                onChange={(e) => this.changeName(e)}
-              />
-            </InputGroup>
-          </FormGroup>
-
-          <Row>
-            <Col xs="9" style={{color: 'rgb(180, 180, 180)'}}>{`Date created ${this.niceDate(this.state.dateCreated)}`}</Col>
-            <Col xs="3" style={{color: 'rgb(180, 180, 180)'}}>Last updated <TimeAgo style={{color: 'rgb(180, 180, 180)'}} date={this.state.lastUpdated} /></Col>
-          </Row>
-
-
-          <FormGroup>
-                <ButtonGroup>
-                  {
-                    this.state.chosenTags
-                    .map(id => {
-                      return(
-                        <Button key={id}>
-                          {this.findName(id)} <Button onClick={() => this.removeTag(id)}>-</Button>
-                      </Button>
-                      );
-                    })
-                  }
-
-                  {  (this.state.tags.length !== this.state.chosenTags.length)
-                    &&
-                  <ButtonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggleDropDown.bind(this)}>
-                          <DropdownToggle caret color="success">
-                            Add tag
-                          </DropdownToggle>
-                          <DropdownMenu>
-                            {
-                              this.state.tags
-                              .filter(tag => !this.state.chosenTags.includes(tag.id))
-                              .map(
-                                tag =>
-                                      <DropdownItem
-                                        key={tag.id}
-                                        onClick={() => {this.addTag(tag.id)}}>
-                                         {tag.name}
-                                      </DropdownItem>
-                                )
-                            }
-                          </DropdownMenu>
-                    </ButtonDropdown>
-                  }
-                  </ButtonGroup>
-            </FormGroup>
-
-            <FormGroup>
-                <Button outline color="secondary" size="sm" onClick={this.toggleModal.bind(this)}>Pridať obrázok z uložiska</Button>
-                <Modal className="modalLO" isOpen={this.state.modalOpen} toggle={this.toggleModal.bind(this)} >
-                  <ModalHeader toggle={this.toggleModal.bind(this)}>Nahrať obrázok</ModalHeader>
-                  <ModalBody>
-                    <PictureUpload appendImage={this.appendImage.bind(this)}/>
-                  </ModalBody>
-                  <ModalFooter>
-                    <Button outline color="secondary" size="sm" onClick={this.toggleModal.bind(this)}>Close</Button>{'  '}
-                  </ModalFooter>
-                </Modal>
-                <CKEditor
-                  data={this.state.body}
-                  onChange={this.onEditorChange.bind(this)}
-                  config={ {
-                      height: [ '60vh' ],
-                      codeSnippet_languages: {
-                        javascript: 'JavaScript',
-                        php: 'PHP'
-                      }
-                  } }
-                  />
-            </FormGroup>
-
-</div>
-</div>
+        </div>
+      </div>
     );
   }
 }

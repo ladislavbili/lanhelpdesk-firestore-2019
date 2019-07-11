@@ -6,3 +6,4 @@ export * from './tasksActions';
 export * from './expendituresActions';
 export * from './passwordsActions';
 export * from './cmdbActions';
+export * from './wikiActions';

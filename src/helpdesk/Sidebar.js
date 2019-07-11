@@ -109,7 +109,7 @@ class Sidebar extends Component {
 							<Nav tabs className="sidebar-filter">
 								<NavItem>
 									<NavLink
-										className={"sidebar-filter-navlink " + classnames({ active: this.state.activeTab === 0 })}
+										className={"sidebar-filter-navlink " + classnames({ active: this.state.activeTab === 0, clickable:true })}
 										onClick={() => this.setState({activeTab:0})}
 										>
 										<i className="fas fa-filter sidebar-icon-center" ></i> Filters
@@ -117,7 +117,7 @@ class Sidebar extends Component {
 								</NavItem>
 								<NavItem>
 									<NavLink
-										className={classnames({ active: this.state.activeTab === 1 })}
+										className={classnames({ active: this.state.activeTab === 1, clickable:true })}
 										onClick={() => this.setState({activeTab:1})}
 										>
 										Edit
@@ -128,7 +128,8 @@ class Sidebar extends Component {
 								<TabPane tabId={0} >
 									<Nav vertical>
 										<NavItem>
-											<Link className={this.props.location.pathname.includes("/helpdesk/taskList/i/all") ? "text-basic sidebar-align sidebar-item-active sidebar-menu-item" : "text-basic sidebar-align sidebar-menu-item"}
+											<Link
+												className = "text-basic sidebar-align sidebar-menu-item"
 												to={{ pathname: `/helpdesk/taskList/i/all` }} onClick={()=>{
 													this.setState({filterID:null,filterData:null});
 													this.props.setFilter({
@@ -146,7 +147,8 @@ class Sidebar extends Component {
 										{
 											this.state.filters.map((item)=>
 											<NavItem key={item.id}>
-												<Link className={this.props.location.pathname.includes(`/helpdesk/taskList/i/`+item.id) ? "text-basic sidebar-align sidebar-item-active sidebar-menu-item" : "text-basic sidebar-align sidebar-menu-item"}
+												<Link
+													className = "text-basic sidebar-align sidebar-menu-item"
 													to={{ pathname: `/helpdesk/taskList/i/`+item.id }} onClick={()=>{
 														this.setState({filterID:item.id,filterData:item});
 														this.props.setFilter({

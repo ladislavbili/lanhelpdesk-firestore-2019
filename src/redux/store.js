@@ -8,6 +8,7 @@ import userReducer from './reducers/userReducer';
 import filterReducer from './reducers/filterReducer';
 import passReducer from './reducers/passReducer';
 import cmdbReducer from './reducers/cmdbReducer';
+import wikiReducer from './reducers/wikiReducer';
 
 const reducers = combineReducers({
     appReducer,
@@ -17,6 +18,7 @@ const reducers = combineReducers({
     expenditureReducer,
     passReducer,
     cmdbReducer,
+    wikiReducer,
   });
 
 const enhancers = compose(

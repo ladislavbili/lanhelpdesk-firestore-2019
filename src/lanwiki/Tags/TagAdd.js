@@ -7,7 +7,7 @@ export default class Sidebar extends Component {
 		super(props);
 		this.state = {
 			saving: false,
-			name: "",
+			title: "",
 			body: "",
 			public: false,
 			active: false,
@@ -26,11 +26,11 @@ export default class Sidebar extends Component {
     this.setState({value: 0, saving: true});
     let newRead = this.state.read.map(user => user.id);
     let newWrite = this.state.write.map(user => user.id);
-    rebase.addToCollection('/lanwiki-tags', {name:this.state.name, body:this.state.body, read: newRead, write: newWrite, public: this.state.public, active: this.state.active})
+    rebase.addToCollection('/lanwiki-tags', {title:this.state.title, body:this.state.body, read: newRead, write: newWrite, public: this.state.public, active: this.state.active})
     .then(() => {
       this.setState({
         saving:false,
-        name: "",
+        title: "",
         body: "",
         users: "",
         read: [],
@@ -65,7 +65,7 @@ export default class Sidebar extends Component {
 
 						<FormGroup>
 							<Label htmlFor="name">Názov</Label>
-							<Input id="name" placeholder="Názov" value={this.state.name} onChange={(e) => this.setState({name: e.target.value})}/>
+							<Input id="name" placeholder="Názov" value={this.state.title} onChange={(e) => this.setState({title: e.target.value})}/>
 						</FormGroup>
 
 						<FormGroup>
