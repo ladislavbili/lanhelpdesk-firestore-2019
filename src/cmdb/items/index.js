@@ -186,7 +186,7 @@ class ItemList extends Component {
 
 
 
-				<div className="fit-with-header-and-command-bar scrollable">
+				<div className="fit-header-commandBar scrollable">
 					<div className="p-20 full-width">
 					<h1>{this.state.sidebarItem?this.state.sidebarItem.title:'Item'}</h1>
 					<hr />

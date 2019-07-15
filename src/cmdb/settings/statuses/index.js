@@ -54,7 +54,7 @@ export default class Statuses extends Component {
 					</div>
 				</div>
 
-				<div className="fit-with-header-and-command-bar p-20">
+				<div className="fit-header-commandBar p-20">
 						<table className="table">
 							<thead >
 								<tr>

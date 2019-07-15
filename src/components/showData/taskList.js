@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import {getItemDisplayValue} from '../../helperFunctions';
 import CommandBar from './commandBar';
-
+import ListHeader from './listHeader';
 export default class List extends Component {
 
 	render() {
 		return (
 				<div className="row">
 					<CommandBar {...this.props.commandBar} />
-					<div className="p-20 full-width">
+					<div className="full-width scrollable fit-header-commandBar">
+						<ListHeader {...this.props.commandBar} listName={this.props.listName}/>
+						<div className="p-10">
 							<table className="table">
 								<thead>
 										<tr>
@@ -42,6 +44,7 @@ export default class List extends Component {
 										)}
 									</tbody>
 								</table>
+							</div>
 					</div>
 				</div>
 		);

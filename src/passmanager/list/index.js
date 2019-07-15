@@ -14,6 +14,7 @@ class List extends Component {
 		this.state = {
 			search:'',
 			passwords:[],
+			filterName:''
 		};
 		this.ref=null;
 		this.fetchData.bind(this);
@@ -35,6 +36,12 @@ class List extends Component {
 			withIds: true,
 			query: (ref) => ref.where('folder', '==', id),
 			then:content=>{this.setState({passwords:content.map((item)=>{return {...item, shown:false}})})},
+		});
+
+		rebase.get('pass-folders/'+id, {
+			context: this,
+		}).then((result)=>{
+			this.setState({filterName:result.title});
 		});
 	}
 
@@ -139,6 +146,7 @@ class List extends Component {
 				setAscending={this.props.setPasswordsAscending}
 				itemID={this.props.match.params.passID}
 				listID={this.props.match.params.listID}
+				listName={this.state.filterName}
 				match={this.props.match}
 				edit={EditPassword}
 				 />

@@ -19,6 +19,7 @@ class TasksRow extends Component {
 			users:[],
 			tags:[],
 			companies:[],
+			filterName:''
 		}
 		this.filterTasks.bind(this);
 	}
@@ -53,6 +54,7 @@ class TasksRow extends Component {
 		withIds: true,
 		then:content=>{this.setState({companies:content })},
 	});
+	this.getFilterName(this.props.match.params.listID);
 	}
 
 	componentWillUnmount(){
@@ -62,6 +64,27 @@ class TasksRow extends Component {
 		rebase.removeBinding(this.ref4);
 		rebase.removeBinding(this.ref5);
 		rebase.removeBinding(this.ref6);
+	}
+
+	componentWillReceiveProps(props){
+		if(this.props.match.params.listID!==props.match.params.listID){
+			this.getFilterName(props.match.params.listID);
+		}
+	}
+
+	getFilterName(id){
+		if(!id){
+			this.setState({filterName:''});
+			return;
+		}else if(id==='all'){
+			this.setState({filterName:'All'});
+			return;
+		}
+		rebase.get('help-filters/'+id, {
+			context: this,
+		}).then((result)=>{
+			this.setState({filterName:result.title});
+		})
 	}
 
 	filterTasks(){
@@ -184,6 +207,7 @@ class TasksRow extends Component {
 				listID={this.props.match.params.listID}
 				match={this.props.match}
 				isTask={true}
+				listName={this.state.filterName}
 				edit={TaskEdit}
 				empty={TaskEmpty}
 				 />

@@ -30,6 +30,7 @@ export default class Note extends Component{
       chosenTags: [],
       dateCreated: null,
       lastUpdated: null,
+      editBodyOpen:false,
 
       value: 0,
 
@@ -72,7 +73,7 @@ export default class Note extends Component{
 
   componentWillReceiveProps(props){
     if(this.props.match.params.noteID!==props.match.params.noteID){
-      this.setState({loading:true});
+      this.setState({loading:true,editBodyOpen:false});
       this.fetchData(props.match.params.noteID);
     }
   }
@@ -162,7 +163,7 @@ export default class Note extends Component{
 						</div>
 					</div>
 				</div>
-        <div className="row scrollable fit-with-header-and-command-bar">
+        <div className="row scrollable fit-header-commandBar">
             <div className={"card-box flex " + (!this.props.columns ? " center-ver" : "")}>
               <div className="d-flex p-2">
                 <div className="row">
@@ -192,6 +193,8 @@ export default class Note extends Component{
                     />
                 </div>
               </div>
+              {!this.state.editBodyOpen && <div className="clickable" onClick={()=>this.setState({editBodyOpen:true})} dangerouslySetInnerHTML={{__html:this.state.body===null?'': this.state.body }}></div>}
+              { this.state.editBodyOpen &&
               <FormGroup>
                   <Button outline color="secondary" size="sm" onClick={this.toggleModal.bind(this)}>Pridať obrázok z uložiska</Button>
                   <Modal className="modalLO" isOpen={this.state.modalOpen} toggle={this.toggleModal.bind(this)} >
@@ -214,7 +217,7 @@ export default class Note extends Component{
                         }
                     } }
                     />
-              </FormGroup>
+              </FormGroup>}
           </div>
         </div>
       </div>

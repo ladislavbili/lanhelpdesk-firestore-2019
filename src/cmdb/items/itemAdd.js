@@ -76,7 +76,7 @@ export default class ItemAdd extends Component{
 
   render(){
     return (
-      <div className="ml-auto mr-auto card-box fit-with-header-and-command-bar p-t-15" style={{maxWidth:1000}}>
+      <div className="ml-auto mr-auto card-box fit-header-commandBar p-t-15" style={{maxWidth:1000}}>
           <FormGroup>
             <Label>Name</Label>
             <Input type="text" placeholder="Enter name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />

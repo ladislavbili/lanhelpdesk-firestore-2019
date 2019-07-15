@@ -12,8 +12,8 @@ class List extends Component {
 		super(props);
 		this.state = {
 			notes: [],
-			search: "",
 			tags: [],
+			listName:''
 		};
 
 		this.createNew.bind(this);
@@ -32,6 +32,7 @@ class List extends Component {
 				withIds: true,
 				then: tags=> this.setState({tags})
 			});
+			this.getFilterName(this.props.match.params.listID);
 	}
 
 	createNew(){
@@ -46,6 +47,35 @@ class List extends Component {
       this.props.history.push(`/lanwiki/${this.props.match.params.listID}/${note.id}`);
     });
   }
+
+	componentWillReceiveProps(props){
+		if(this.props.match.params.listID!==props.match.params.listID){
+			this.getFilterName(props.match.params.listID);
+		}
+	}
+
+	getFilterName(id){
+		if(!id){
+			this.setState({filterName:''});
+			return;
+		}else if(id==='all'){
+			this.setState({filterName:'All'});
+			return;
+		}
+		let tag = this.state.tags.find((item)=>item.id===id);
+		if(tag){
+			this.setState({filterName:tag.name});
+		}else{
+			rebase.get('lanwiki-tags/'+id, {
+				context: this,
+			}).then((result)=>{
+				this.setState({filterName:result.name});
+			}).catch(()=>{
+				this.setState({filterName:'Unknown tag'});
+			})
+
+		}
+	}
 
 
 	render() {
@@ -101,6 +131,7 @@ class List extends Component {
 				setAscending={this.props.setWikiAscending}
 				itemID={this.props.match.params.noteID}
 				listID={this.props.match.params.listID}
+				listName={this.state.filterName}
 				match={this.props.match}
 				edit={NoteEdit}
 				 />

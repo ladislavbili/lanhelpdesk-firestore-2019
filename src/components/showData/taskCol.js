@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import CommandBar from './commandBar';
+import ListHeader from './listHeader';
 export default class ColumnDisplay extends Component {
 	render() {
 		return (
@@ -7,7 +8,10 @@ export default class ColumnDisplay extends Component {
 				<div className="row p-0 taskList-container">
 					<div className="p-0">
 					<CommandBar {...this.props.commandBar} />
-					<div className="scrollable fit-with-header-and-command-bar">
+
+					<div className="scrollable fit-header-commandBar">
+						<ListHeader {...this.props.commandBar} listName={this.props.listName}/>
+
 						{
 							this.props.data.map((item)=>
 							<ul

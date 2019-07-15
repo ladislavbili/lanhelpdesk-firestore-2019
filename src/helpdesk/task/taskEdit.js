@@ -312,7 +312,7 @@ export default class TasksTwoEdit extends Component {
 					</div>
 				</div>
 
-				<div className="row scrollable fit-with-header-and-command-bar">
+				<div className="row scrollable fit-header-commandBar" style={{flexDirection:'column'}}>
 						<div className={"card-box " + (!this.props.columns ? " center-ver" : "")}>
 							<div className="d-flex p-2">
 								<div className="row">

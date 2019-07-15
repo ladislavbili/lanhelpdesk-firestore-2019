@@ -16,7 +16,8 @@ class Login extends Component {
 	}
 	render() {
 		return (
-			<div className="card center-hor center-ver" style={{backgroundColor:'white', borderRadius:6, padding:'10px 20px', width:'350px'}}>
+			<div style={{height:'100vh',display: 'flex'}}>
+			<div className="card" style={{backgroundColor:'white', borderRadius:6, padding:'10px 20px', width:'350px',margin:'auto'}}>
 				<FormGroup>
 					<Label for="email">E-mail</Label>
 					<Input type="email" name="email" id="email" placeholder="Enter e-mail" value={this.state.email} onChange={(e)=>this.setState({email:e.target.value})} />
@@ -41,6 +42,7 @@ class Login extends Component {
       </Alert>
 			}
 			</div>
+		</div>
 		);
 	}
 }

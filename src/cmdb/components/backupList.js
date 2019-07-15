@@ -103,7 +103,6 @@ export default class BackupList extends Component{
         <thead>
           <tr>
             <th>Title</th>
-            <th>Server</th>
             <th>Tool</th>
             <th>What</th>
             <th>Where</th>
@@ -129,22 +128,6 @@ export default class BackupList extends Component{
                     onFocus={() => this.onFocus(item,index)}
                     onChange={e =>{
                       this.setState({ editTitle: e.target.value, editTitleHeight:calculateTextAreaHeight(e)  })}
-                    }
-                    />
-              </td>
-              <td>
-                <Input
-                  type="textarea"
-                  style={{height:item.id===this.state.editItemID?this.state.editServerHeight:(item.serverHeight?item.serverHeight:29)}}
-                  value={
-                    item.id === this.state.editItemID
-                      ? this.state.editServer
-                      : item.server
-                    }
-                    onBlur={()=>this.onBlur(item,index)}
-                    onFocus={() => this.onFocus(item,index)}
-                    onChange={e =>{
-                      this.setState({ editServer: e.target.value, editServerHeight:calculateTextAreaHeight(e)  })}
                     }
                     />
               </td>
@@ -270,17 +253,6 @@ export default class BackupList extends Component{
                 id="inlineFormInput"
                 placeholder=""
                 style={{ height: this.state.newTitleHeight }}
-                />
-            </td>
-            <td>
-              <Input
-                type="textarea"
-                value={this.state.newServer}
-                onChange={(e)=>this.setState({newServer:e.target.value, newServerHeight:calculateTextAreaHeight(e)})}
-                className="form-control"
-                id="inlineFormInput"
-                placeholder=""
-                style={{ height: this.state.newServerHeight }}
                 />
             </td>
             <td>
