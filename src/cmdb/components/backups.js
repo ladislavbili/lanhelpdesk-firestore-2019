@@ -63,13 +63,13 @@ export default class Backups extends Component{
                   />
               </div>
             </div>
-            {false && <BackupList id={item.id} items={item.backupList?item.backupList:[]}
+            <BackupList id={item.id} items={item.backupList?item.backupList:[]}
               onChange={(items)=>{
                 let newData = [...this.props.items];
                 newData[index].backupList=items;
                 this.props.onChange(newData);
               }}
-            />}
+            />
           <Button className="btn-link" onClick={()=>{this.props.removeItem(item.id);}}>Remove</Button>
           <hr className="m-b-10"/>
           </div>
