@@ -58,7 +58,7 @@ html{
 .fit-with-header{
 	height: $height-without-header;
 }
-.fit-header-commandBar{
+.fit-with-header-and-commandbar{
 	height: calc(  #{$height-without-header} - 41px );
 }
 //-------------------END-overflow----------------------
@@ -189,6 +189,9 @@ html{
 }
 .p-10{
   padding: 10px;
+}
+.p-t-5{
+  padding-top: 5px;
 }
 .p-t-15{
   padding-top: 15px;

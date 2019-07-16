@@ -76,7 +76,7 @@ export default class ItemAdd extends Component{
 
   render(){
     return (
-      <div className="ml-auto mr-auto card-box fit-header-commandBar p-t-15" style={{maxWidth:1000}}>
+      <div className="ml-auto mr-auto card-box fit-with-header-and-commandbar p-t-15 w-50" >
           <FormGroup>
             <Label>Name</Label>
             <Input type="text" placeholder="Enter name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
@@ -142,7 +142,7 @@ export default class ItemAdd extends Component{
               </NavLink>
             </NavItem>
           </Nav>
-          <TabContent activeTab={this.state.tab}>
+          <TabContent activeTab={this.state.tab} className="m-t-15">
             <TabPane tabId="0">
               <CKEditor
                 data={this.state.description}
@@ -228,7 +228,7 @@ export default class ItemAdd extends Component{
               }}>{this.state.saving?'Adding...':(this.state.sidebarItem? ('Add '+this.state.sidebarItem.title) :'Add item')}</Button>
 
               <Button className="btn-link m-t-10" onClick={this.props.history.goBack}>Cancel</Button>
-              
+
           </div>
         );
       }

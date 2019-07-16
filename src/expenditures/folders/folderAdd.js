@@ -17,7 +17,6 @@ export default class ProjectAdd extends Component{
   render(){
     return (
       <div>
-            <ModalHeader>Add folder</ModalHeader>
             <ModalBody>
               <FormGroup>
                 <Label>Title</Label>
@@ -30,10 +29,10 @@ export default class ProjectAdd extends Component{
 
             </ModalBody>
             <ModalFooter>
-              <Button color="danger" className="mr-auto" disabled={this.state.saving} onClick={() => this.props.close()}>
+              <Button className="mr-auto btn-link" disabled={this.state.saving} onClick={() => this.props.close()}>
                 Close
               </Button>
-              <Button color="primary" className="separate" disabled={this.state.saving||this.state.title===""} onClick={()=>{
+              <Button className="btn" disabled={this.state.saving||this.state.title===""} onClick={()=>{
                   this.setState({saving:true});
                   rebase.addToCollection('/expenditures-folders', {title:this.state.title, note:this.state.note})
                     .then(()=>{this.setState({title:'',note:'',saving:false}); this.props.close();});

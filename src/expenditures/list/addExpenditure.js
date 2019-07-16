@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {rebase} from '../../index';
 import { Button,  FormGroup, Label, Input } from 'reactstrap';
 import Select from 'react-select';
+import {selectStyle} from "../../scss/selectStyles";
 
 const REPEAT = [
   {label: "Nie", value: 1},
@@ -55,8 +56,7 @@ export default class AddFolder extends Component{
 
   render(){
     return (
-        <div className="container-padding form-background card-box scrollable fit-with-header">
-          <div className="ml-auto mr-auto" style={{maxWidth:1000}}>
+        <div className="ml-auto mr-auto card-box fit-with-header p-t-15 w-50">
             <FormGroup>
               <Label>Názov</Label>
               <Input type="text" placeholder="zadajte názov" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
@@ -65,7 +65,7 @@ export default class AddFolder extends Component{
           <FormGroup>
             <Label>Folder</Label>
             <Select
-              className="supressDefaultSelectStyle"
+              styles={selectStyle}
               options={this.state.folders}
               value={this.state.folder}
               onChange={e =>{ this.setState({ folder: e }); }}
@@ -79,7 +79,7 @@ export default class AddFolder extends Component{
           <FormGroup>
             <Label>Opakovanie</Label>
               <Select
-                className="supressDefaultSelectStyle"
+                styles={selectStyle}
                 options={REPEAT}
                 value={this.state.repeat}
                 onChange={e =>{ this.setState({ repeat: e }); }}
@@ -96,9 +96,9 @@ export default class AddFolder extends Component{
             <Input type="textarea" placeholder="Leave a note here" value={this.state.note} onChange={(e)=>this.setState({note:e.target.value})} />
           </FormGroup>
 
-        <Button color="secondary" onClick={this.props.history.goBack}>Cancel</Button>
-{"    "}
-        <Button color="primary" disabled={this.state.saving||this.state.title===""||this.state.folder===null} onClick={()=>{
+        <Button className="btn-link" onClick={this.props.history.goBack}>Cancel</Button>
+        {"    "}
+        <Button className="btn" disabled={this.state.saving||this.state.title===""||this.state.folder===null} onClick={()=>{
             this.setState({saving:true});
             let body = {
               title: this.state.title,
@@ -121,7 +121,6 @@ export default class AddFolder extends Component{
                   this.props.history.goBack();
               });
           }}>{this.state.saving?'Adding...':'Add'}</Button>
-        </div>
       </div>
     );
   }

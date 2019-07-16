@@ -140,7 +140,7 @@ class Filter extends Component {
 
     render() {
       return (
-        <Nav vertical className="">
+        <Nav vertical className="p-10">
           <NavItem>
             <div className="d-flex m-b-2">
               <button type="button" className="btn-link" onClick={this.applyFilter.bind(this)}>Apply</button>

@@ -18,7 +18,7 @@ export default class Backups extends Component{
 
   render(){
     return (
-      <div className="m-t-10">
+      <div>
         {
           this.props.items.map((item,index)=>
           <div key={item.id} className="row">

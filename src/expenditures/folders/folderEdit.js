@@ -21,7 +21,6 @@ export default class FolderEdit extends Component{
   render(){
     return (
       <div>
-            <ModalHeader>Edit folder</ModalHeader>
             <ModalBody>
               <FormGroup>
                 <Label>Title</Label>
@@ -34,10 +33,10 @@ export default class FolderEdit extends Component{
 
             </ModalBody>
             <ModalFooter>
-              <Button color="danger" className="mr-auto" disabled={this.state.saving} onClick={() => this.props.close()}>
+              <Button className="mr-auto btn-link" disabled={this.state.saving} onClick={() => this.props.close()}>
                 Close
               </Button>
-              <Button color="primary" className="separate" disabled={this.state.saving||this.state.title===""} onClick={()=>{
+              <Button className="btn" disabled={this.state.saving||this.state.title===""} onClick={()=>{
                   this.setState({saving:true});
                   rebase.updateDoc(`/expenditures-folders/${this.props.folder.id}`, {title:this.state.title,note:this.state.note})
                     .then(()=>{this.setState({title:'',note:'',saving:false}); this.props.close();});

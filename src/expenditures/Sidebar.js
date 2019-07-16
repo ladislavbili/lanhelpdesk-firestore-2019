@@ -51,23 +51,24 @@ export default class Sidebar extends Component {
 						className="btn-link t-a-l sidebar-menu-item"
 						onClick={()=>{this.setState({openedAdd:true})}}
 						>
-						<i className="fa fa-plus clickable pr-2"  />
-						Folder
+						<i className="fa fa-plus sidebar-icon-center"  /> Folder
 					</Button>
+					<hr/>
+
 					<Button
 						className="btn-link t-a-l sidebar-menu-item"
 						onClick={()=>{this.props.history.push('/expenditures/add')}}
 						>
-						<i className="fa fa-plus clickable pr-2"  />
-						Náklad
+						<i className="fa fa-plus sidebar-icon-center"  /> Náklad
 					</Button>
+					<hr/>
 
 					<Row>
 						<Col xs={10}>
 							<Nav vertical>
 								{	this.state.folders.map((item)=>
 									<NavItem key={item.id}>
-										<Link className="text-basic" to={{ pathname: `/expenditures/i/`+item.id }}>{item.title}</Link>
+										<Link className="text-basic sidebar-align sidebar-menu-item" to={{ pathname: `/expenditures/i/`+item.id }}>{item.title}</Link>
 									</NavItem>
 								)}
 							</Nav>
@@ -76,8 +77,7 @@ export default class Sidebar extends Component {
 							{	this.state.folders.map((item)=>
 								<Button
 									key={item.id}
-									className='btn-link t-a-l'
-									style={{height:41}}
+									className='btn-link sidebar-menu-item'
 									onClick={() => {this.setState({folderEdit: item, openedEdit: true})}}
 									>
 									<i className="fa fa-cog"/>

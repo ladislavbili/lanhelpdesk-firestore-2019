@@ -3,6 +3,7 @@ import {rebase,database} from '../../index';
 import { Button,  FormGroup, Label, Input } from 'reactstrap';
 import {toSelArr,snapshotToArray} from '../../helperFunctions';
 import Select from 'react-select';
+import {selectStyle} from '../../scss/selectStyles';
 
 const REPEAT = [
   {label: "Nie", value: 1},
@@ -70,17 +71,22 @@ export default class EditFolder extends Component{
 
   render(){
     return (
-        <div className="container-padding form-background card-box scrollable fit-with-header flex">
-          <div className="ml-auto mr-auto" style={{maxWidth:1000}}>
+      <div className="flex">
+				<div className="container-fluid p-2">
+					<div className="d-flex flex-row align-items-center p-l-18">
+          </div>
+				</div>
+
+        <div className={"card-box scrollable fit-with-header-and-commandbar p-t-15 "  + (!this.props.columns ? " center-ver w-50" : "")}>
             <FormGroup>
               <Label>Názov</Label>
-              <Input type="text" placeholder="zadajte názov" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
+              <Input className="form-control" type="text" placeholder="zadajte názov" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
             </FormGroup>
 
           <FormGroup>
             <Label>Folder</Label>
             <Select
-              className="supressDefaultSelectStyle"
+              styles={selectStyle}
               options={this.state.folders}
               value={this.state.folder}
               onChange={e =>{ this.setState({ folder: e }); }}
@@ -88,13 +94,13 @@ export default class EditFolder extends Component{
           </FormGroup>
           <FormGroup>
             <Label>Suma</Label>
-            <Input type="number" placeholder="0.00" required name="price" min="0" step="0.01" title="Currency" pattern="^\d+(?:\.\d{1,2})?$" value={this.state.price} onChange={(e)=> this.setState({price: e.target.value})} />
+            <Input className="form-control" type="number" placeholder="0.00" required name="price" min="0" step="0.01" title="Currency" pattern="^\d+(?:\.\d{1,2})?$" value={this.state.price} onChange={(e)=> this.setState({price: e.target.value})} />
           </FormGroup>
 
           <FormGroup>
             <Label>Opakovanie</Label>
               <Select
-                className="supressDefaultSelectStyle"
+                styles={selectStyle}
                 options={REPEAT}
                 value={this.state.repeat}
                 onChange={e =>{ this.setState({ repeat: e }); }}
@@ -103,17 +109,17 @@ export default class EditFolder extends Component{
 
           <FormGroup>
             <Label>Začiatočný dátum</Label>
-            <Input type="datetime-local" placeholder="Expiration date" value={this.state.startDate} onChange={(e)=>this.setState({startDate:e.target.value})} />
+            <Input className="form-control" type="datetime-local" placeholder="Expiration date" value={this.state.startDate} onChange={(e)=>this.setState({startDate:e.target.value})} />
           </FormGroup>
 
           <FormGroup>
             <Label>Note</Label>
-            <Input type="textarea" placeholder="Leave a note here" value={this.state.note} onChange={(e)=>this.setState({note:e.target.value})} />
+            <Input className="form-control" type="textarea" placeholder="Leave a note here" value={this.state.note} onChange={(e)=>this.setState({note:e.target.value})} />
           </FormGroup>
 
-        <Button color="secondary" onClick={this.props.history.goBack}>Cancel</Button>
+        <Button className="btn-link" onClick={this.props.history.goBack}>Cancel</Button>
 {"    "}
-        <Button color="primary" disabled={this.state.saving||this.state.loading||this.state.title===""||this.state.folder===null} onClick={()=>{
+        <Button className="btn" disabled={this.state.saving||this.state.loading||this.state.title===""||this.state.folder===null} onClick={()=>{
             this.setState({saving:true});
             let body = {
               title: this.state.title,
@@ -131,7 +137,7 @@ export default class EditFolder extends Component{
                 }
               });
           }}>{this.state.saving?'Saving...':'Save'}</Button>
-        </div>
+      </div>
       </div>
     );
   }

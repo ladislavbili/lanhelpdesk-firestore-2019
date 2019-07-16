@@ -89,7 +89,7 @@ class TasksRow extends Component {
 		return (
 			<div>
 				<div className="row taskList-container">
-					<div className="col-lg-4 scrollable fit-header-commandBar">
+					<div className="col-lg-4 scrollable fit-with-header-and-commandbar">
 						{
 							this.filterTasks(this.state.tasks).map((task)=>
 							<ul

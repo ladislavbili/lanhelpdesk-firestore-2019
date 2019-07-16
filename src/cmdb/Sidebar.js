@@ -94,8 +94,7 @@ class Sidebar extends Component {
 								{	this.state.sidebar.map((item)=>
 									<Button
 										key={item.id}
-										className='btn-link t-a-l'
-										style={{height:41}}
+										className='btn-link sidebar-menu-item'
 										onClick={() => this.props.history.push('/cmdb/edit/'+item.id)}
 										>
 										<i className="fa fa-cog"/>
@@ -103,6 +102,7 @@ class Sidebar extends Component {
 								)}
 							</Col>
 						</Row>
+
 					<hr />
 					<CompanyAdd />
 

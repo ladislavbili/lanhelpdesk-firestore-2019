@@ -56,7 +56,7 @@ export default class ProjectList extends Component{
           </div>
 
           <div className="row m-0 p-0 taskList-container">
-            <div className="col-lg-4 p-0 scrollable fit-header-commandBar">
+            <div className="col-lg-4 p-0 scrollable fit-with-header-and-commandbar">
               <table className="table table-hover p-5">
                 <thead>
                   <tr className="clickable">

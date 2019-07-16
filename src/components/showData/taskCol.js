@@ -11,7 +11,7 @@ export default class ColumnDisplay extends Component {
 					<div className="p-0">
 					<CommandBar {...this.props.commandBar} />
 
-					<div className="scrollable fit-header-commandBar">
+					<div className="scrollable fit-with-header-and-commandbar">
 						<ListHeader {...this.props.commandBar} listName={this.props.listName}/>
 
 						{

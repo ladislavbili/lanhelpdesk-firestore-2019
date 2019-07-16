@@ -312,8 +312,7 @@ export default class TasksTwoEdit extends Component {
 					</div>
 				</div>
 
-				<div className="row scrollable fit-header-commandBar" style={{flexDirection:'column'}}>
-						<div className={"card-box " + (!this.props.columns ? " center-ver" : "")}>
+						<div className={"card-box scrollable fit-with-header-and-commandbar " + (!this.props.columns ? " center-ver w-50" : "")}>
 							<div className="d-flex p-2">
 								<div className="row">
 									<h1 className="center-hor text-extra-slim"># {this.props.match.params.taskID}</h1>
@@ -540,7 +539,6 @@ export default class TasksTwoEdit extends Component {
 
 							<Comments id={this.state.task?this.state.task.id:null} users={this.state.users} />
 						</div>
-				</div>
 			</div>
 		);
 	}

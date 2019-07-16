@@ -69,6 +69,10 @@ export default class UnitAdd extends Component{
         <div className="container-padding form-background card-box scrollable fit-with-header flex">
           <div className="ml-auto mr-auto" style={{maxWidth:1000}}>
           <FormGroup>
+            <Label>Password name</Label>
+            <Input type="text" placeholder="Enter name" value={this.state.title} disabled={this.state.loading} onChange={(e)=>this.setState({title:e.target.value})} />
+          </FormGroup>
+          <FormGroup>
             <Label>Folder</Label>
             <Select
               className="supressDefaultSelectStyle"
@@ -77,10 +81,6 @@ export default class UnitAdd extends Component{
               disabled={this.state.loading}
               onChange={e =>{ this.setState({ folder: e }); }}
                 />
-          </FormGroup>
-          <FormGroup>
-            <Label>Password name</Label>
-            <Input type="text" placeholder="Enter name" value={this.state.title} disabled={this.state.loading} onChange={(e)=>this.setState({title:e.target.value})} />
           </FormGroup>
           <FormGroup>
             <Label>URL</Label>

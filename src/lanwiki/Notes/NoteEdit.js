@@ -163,7 +163,7 @@ export default class Note extends Component{
 						</div>
 					</div>
 				</div>
-        <div className="row scrollable fit-header-commandBar">
+        <div className="row scrollable fit-with-header-and-commandbar">
             <div className={"card-box flex " + (!this.props.columns ? " center-ver" : "")}>
               <div className="d-flex p-2">
                 <div className="row">

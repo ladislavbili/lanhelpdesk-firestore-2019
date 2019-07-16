@@ -15,7 +15,7 @@ class TaskListContainer extends Component {
 	render() {
 		return (
 			<div className="container-fluid" style={{paddingLeft:10,paddingRight:10, minWidth:450}}>
-				<div className="d-flex flex-row align-items-center">
+				<div className="d-flex flex-row align-items-center p-t-5">
 					<div className="center-hor">
 						<div className="input-group">
 							<input
@@ -39,7 +39,7 @@ class TaskListContainer extends Component {
 					</div>
 
 					{ this.props.isTask &&
-						<div className="p-2">
+						<div>
 							<Button
 								className="btn-link"
 								onClick={()=>{
