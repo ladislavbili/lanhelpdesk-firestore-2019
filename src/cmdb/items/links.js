@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Input } from 'reactstrap';
 import Select from 'react-select';
-import {selectStyle} from "../../scss/selectStyles";
-import { calculateTextAreaHeight} from '../../helperFunctions';
+import {selectStyle, invisibleSelectStyleNoArrow} from "../../scss/selectStyles";
+import { calculateTextAreaHeight, htmlFixNewLines} from '../../helperFunctions';
 
 export default class Links extends Component{
   constructor(props){
@@ -37,8 +37,8 @@ export default class Links extends Component{
           { this.props.items.map((item,index)=>
             <tr key={item.id}>
               <td>
-                <Select
-                  styles={selectStyle}
+                {item.opened && <Select
+                  styles={invisibleSelectStyleNoArrow}
                   options={this.props.links}
                   value={item.link}
                   onChange={e =>{
@@ -46,10 +46,14 @@ export default class Links extends Component{
                     newItems.find((item2)=>item.id===item2.id).link = e;
                     this.props.onChange(newItems);
                   }}
-                />
+                  />}
+                  {!item.opened &&
+                    <a href={'/cmdb/i/'+item.link.sidebarID+'/'+item.link.id} without="true" target="_blank" rel="noopener noreferrer">{item.link.title}</a>
+                  }
               </td>
               <td>
-                <Input
+                {!item.opened && <div dangerouslySetInnerHTML ={{__html:htmlFixNewLines(item.note)}}></div>}
+                {item.opened && <Input
                   type="textarea"
                   value={item.note}
                   style={{height:item.noteHeight}}
@@ -60,9 +64,33 @@ export default class Links extends Component{
                     newItems.find((item2)=>item.id===item2.id).noteHeight = calculateTextAreaHeight(e);
                     this.props.onChange(newItems);
                   }}
-                  />
+                  />}
               </td>
               <td>
+                {
+                  !item.opened &&
+                  <button className="btn btn-link waves-effect"
+                    onClick={()=>{
+                      let newItems = [...this.props.items];
+                      newItems.find((item2)=>item.id===item2.id).opened = true;
+                      this.props.onChange(newItems);
+                    }}
+                    >
+                    <i className="fa fa-pen" />
+                  </button>
+                }
+                {
+                  item.opened &&
+                  <button className="btn btn-link waves-effect"
+                    onClick={()=>{
+                      let newItems = [...this.props.items];
+                      newItems.find((item2)=>item.id===item2.id).opened = false;
+                      this.props.onChange(newItems);
+                    }}
+                    >
+                    <i className="fa fa-save" />
+                  </button>
+                }
                 <button className="btn btn-link waves-effect"
                   onClick={()=>{
                     if(window.confirm('Are you sure?')){
@@ -85,7 +113,7 @@ export default class Links extends Component{
               options={this.props.links}
               value={this.state.link}
               onChange={e =>{ this.setState({ link: e }); }}
-            />
+              />
           </td>
           <td>
             <Input
@@ -107,6 +135,7 @@ export default class Links extends Component{
                   noteHeight:this.state.noteHeight,
                   link:this.state.link,
                   id:this.state.newItemID,
+                  opened:false,
                   fake:true
                 }
                 this.setState({
@@ -121,13 +150,13 @@ export default class Links extends Component{
             }
             >
             <i className="fa fa-plus" /> Add link
-          </button>
-        </td>
+            </button>
+          </td>
 
-      </tr>
-    </tbody>
+        </tr>
+      </tbody>
 
-  </table>
-);
+    </table>
+  );
 }
 }

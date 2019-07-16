@@ -10,6 +10,7 @@ import AttributesHandler from './attributesHandler';
 import TextareaList from '../components/backups';
 import classnames from 'classnames';
 import CKEditor from 'ckeditor4-react';
+import Links from './links';
 
 export default class ItemEdit extends Component{
   constructor(props){
@@ -19,9 +20,11 @@ export default class ItemEdit extends Component{
       loading:true,
       companies:[],
       statuses:[],
+      allLinks:[],
       originalIPs:[],
       originalPasswords:[],
       originalBackups:[],
+      originalLinks:[],
       sidebarItem:null,
       tab:0,
 
@@ -29,6 +32,7 @@ export default class ItemEdit extends Component{
       description:'',
       company:null,
       status:null,
+      links:[],
       IPlist:[],
       backupTasks:[],
       passwords:[],
@@ -51,21 +55,35 @@ export default class ItemEdit extends Component{
   }
 
   getData(){
+    let sidebarID = this.props.match.params.sidebarID;
+    let itemID = this.props.match.params.itemID;
     Promise.all([
-      database.collection('cmdb-items').doc(this.props.match.params.itemID).get(),
+      database.collection('cmdb-items').get(),
       database.collection('cmdb-statuses').get(),
       database.collection('companies').get(),
-      database.collection('cmdb-sidebar').where('url','==',this.props.match.params.sidebarID).get(),
-      database.collection('cmdb-IPs').where('itemID','==',this.props.match.params.itemID).get(),
-      database.collection('cmdb-passwords').where('itemID','==',this.props.match.params.itemID).get(),
-      database.collection('cmdb-backups').where('itemID','==',this.props.match.params.itemID).get(),
+      database.collection('cmdb-sidebar').where('url','==',sidebarID).get(),
+      database.collection('cmdb-IPs').where('itemID','==',itemID).get(),
+      database.collection('cmdb-passwords').where('itemID','==',itemID).get(),
+      database.collection('cmdb-backups').where('itemID','==',itemID).get(),
+      database.collection('cmdb-links').where('link','==',itemID).get(),
+      database.collection('cmdb-links').where('itemID','==',itemID).get(),
     ])
-    .then(([item,statuses,companies,sidebarItem,IPs,passwords,backups])=>{
-      this.setData({id:item.id,...item.data()}, toSelArr(snapshotToArray(statuses)),toSelArr(snapshotToArray(companies)),snapshotToArray(sidebarItem)[0],snapshotToArray(IPs),snapshotToArray(passwords),snapshotToArray(backups));
+    .then(([items,statuses,companies,sidebarItem,IPs,passwords,backups,links1,links2])=>{
+      this.setData(
+        snapshotToArray(items).find((item)=>item.id===itemID),
+        toSelArr(snapshotToArray(statuses)),
+        toSelArr(snapshotToArray(companies)),
+        snapshotToArray(sidebarItem)[0],
+        snapshotToArray(IPs),
+        snapshotToArray(passwords),
+        snapshotToArray(backups),
+        toSelArr(snapshotToArray(items).filter((item)=>item.id!==itemID)),
+        [...(snapshotToArray(links1).map((item)=>{return{...item,source:false,itemID:item.link,link:item.itemID,opened:false}})),...(snapshotToArray(links2).map((item)=>{return{...item,source:true,opened:false}}))]
+    );
     });
   }
 
-  setData(item,statuses,companies,sidebarItem, IPs,passwords, backups){
+  setData(item,statuses,companies,sidebarItem, IPs,passwords, backups, items, links){
     let attributes={};
     sidebarItem.attributes.forEach((item)=>attributes[item.id]=getAttributeDefaultValue(item));
     attributes={...attributes,...item.attributes};
@@ -88,6 +106,7 @@ export default class ItemEdit extends Component{
       statuses,
       companies,
       sidebarItem,
+      allLinks:items,
       loading:false,
 
       title:item.title,
@@ -97,8 +116,10 @@ export default class ItemEdit extends Component{
       IPlist:IPs.map((item)=>{return {...item,fake:false}}),
       passwords:passwords.map((item)=>{return {...item,fake:false}}),
       backupTasks:backups.map((item)=>{return {...item,fake:false}}),
+      links:links.map((item)=>{return {...item,fake:false,link:items.find((item2)=>item2.id===item.link)}}),
       attributes,
 
+      originalLinks:links.map((item)=>item.id),
       originalIPs:IPs.map((item)=> item.id),
       originalPasswords:passwords.map((item)=> item.id),
       originalBackups:backups.map((item)=> item.id),
@@ -111,6 +132,7 @@ export default class ItemEdit extends Component{
       this.state.originalIPs.map((item)=>rebase.removeDoc('/cmdb-IPs/'+item));
       this.state.originalBackups.map((item)=>rebase.removeDoc('/cmdb-backups/'+item));
       this.state.originalPasswords.map((item)=>rebase.removeDoc('/cmdb-backups/'+item));
+      this.state.originalLinks.map((item)=>rebase.removeDoc('/cmdb-links/'+item));
       rebase.removeDoc('/cmdb-items/'+this.props.match.params.itemID);
       this.props.setDeleting(false);
       this.props.history.goBack();
@@ -119,7 +141,6 @@ export default class ItemEdit extends Component{
   }
 
   submit(){
-
     let ID = this.props.match.params.itemID;
     this.setState({saving:true});
     let body = {
@@ -171,6 +192,39 @@ export default class ItemEdit extends Component{
     });
 
     ///
+
+    ////
+    this.state.links.filter((item)=>item.fake).forEach((item)=>{
+      let newItem={...item};
+      delete newItem['id'];
+      delete newItem['source'];
+      delete newItem['fake'];
+      delete newItem['opened'];
+      newItem.link=newItem.link.id;
+      promises.push(rebase.addToCollection('/cmdb-links',{...newItem,itemID:ID}));
+    });
+
+    this.state.links.filter((item)=>!item.fake).forEach((item)=>{
+      let newItem={...item};
+      delete newItem['id'];
+      delete newItem['source'];
+      delete newItem['fake'];
+      delete newItem['opened'];
+      newItem.link=newItem.link.id;
+      if(!item.source){
+        let link = newItem.link;
+        newItem.link = newItem.itemID;
+        newItem.itemID = link;
+      }
+      promises.push(rebase.updateDoc('/cmdb-links/'+item.id,{...newItem}));
+    });
+    currentIDs=this.state.links.filter((item)=>!item.fake).map((item)=>item.id);
+    this.state.originalLinks.filter((item)=>!currentIDs.includes(item)).forEach((item)=>{
+
+      promises.push(rebase.removeDoc('/cmdb-links/'+item));
+    });
+
+    ///
     this.state.backupTasks.filter((item)=>item.fake).forEach((item)=>{
       promises.push(rebase.addToCollection('/cmdb-backups',{text:item.text,itemID:ID,textHeight:item.textHeight,backupList:item.backupList?item.backupList:[]}));
     });
@@ -189,9 +243,20 @@ export default class ItemEdit extends Component{
         database.collection('cmdb-IPs').where('itemID','==',this.props.match.params.itemID).get(),
         database.collection('cmdb-passwords').where('itemID','==',this.props.match.params.itemID).get(),
         database.collection('cmdb-backups').where('itemID','==',this.props.match.params.itemID).get(),
+        database.collection('cmdb-links').where('link','==',this.props.match.params.itemID).get(),
+        database.collection('cmdb-links').where('itemID','==',this.props.match.params.itemID).get(),
       ])
-      .then(([item,IPs,passwords, backups])=>{
-        this.setData({id:item.id,...item.data()}, this.state.statuses,this.state.companies,this.state.sidebarItem,snapshotToArray(IPs),snapshotToArray(passwords),snapshotToArray(backups));
+      .then(([item,IPs,passwords, backups,links1,links2])=>{
+        this.setData(
+          {id:item.id,...item.data()},
+          this.state.statuses,
+          this.state.companies,
+          this.state.sidebarItem,
+          snapshotToArray(IPs),
+          snapshotToArray(passwords),
+          snapshotToArray(backups),this.state.allLinks,
+          [...(snapshotToArray(links1).map((item)=>{return{...item,source:false,itemID:item.link,link:item.itemID}})),...(snapshotToArray(links2).map((item)=>{return{...item,source:true}}))]
+        );
         this.props.setSaving(false);
       });
     })
@@ -270,6 +335,14 @@ export default class ItemEdit extends Component{
                   Passwords
                 </NavLink>
               </NavItem>
+              <NavItem>
+                <NavLink
+                  className={classnames({ active: this.state.tab === 5, clickable:true })}
+                  onClick={() => { this.setState({tab:5}); }}
+                  >
+                  Links
+                </NavLink>
+              </NavItem>
             </Nav>
             <TabContent activeTab={this.state.tab}>
               <TabPane tabId={0}>
@@ -309,6 +382,9 @@ export default class ItemEdit extends Component{
               </TabPane>
               <TabPane tabId={4}>
                 <Passwords items={this.state.passwords} onChange={(items)=>this.setState({passwords:items})} />
+              </TabPane>
+              <TabPane tabId={5}>
+                <Links items={this.state.links} links={this.state.allLinks} onChange={(links)=>this.setState({links})} />
               </TabPane>
             </TabContent>
         </div>

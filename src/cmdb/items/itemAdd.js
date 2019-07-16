@@ -224,6 +224,14 @@ export default class ItemAdd extends Component{
                     rebase.addToCollection('/cmdb-passwords',{...item,itemID:response.id});
                   });
 
+                  this.state.links.forEach((item)=>{
+                    delete item['id'];
+                    delete item['fake'];
+                    delete item['opened'];
+                    item.link=item.link.id;
+                    rebase.addToCollection('/cmdb-links',{...item,itemID:response.id});
+                  });
+
 
                   this.state.backupTasks.forEach((item)=>{
                     rebase.addToCollection('/cmdb-backups',{text:item.text,itemID:response.id,textHeight:item.textHeight});

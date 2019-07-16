@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Input } from 'reactstrap';
+import { Input } from 'reactstrap';
 import {calculateTextAreaHeight} from '../../helperFunctions';
 
 
