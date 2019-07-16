@@ -60,7 +60,7 @@ class Sidebar extends Component {
 									key={item.id}
 									className='btn-link t-a-l'
 									style={{height:40}}
-									onClick={() => this.props.history.push('/lanwiki/i/'+item.id)}
+									onClick={() => this.props.history.push('/lanwiki/tags/'+item.id)}
 									>
 									<i className="fa fa-cog"/>
 								</Button>

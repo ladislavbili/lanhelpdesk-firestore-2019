@@ -26,13 +26,13 @@ class Reports extends Component {
 	fetchData(){
 		Promise.all(
 			[
-				database.collection('tasks').get(),
-				database.collection('statuses').get(),
-				database.collection('workTypes').get(),
-				database.collection('units').get(),
+				database.collection('help-tasks').get(),
+				database.collection('help-statuses').get(),
+				database.collection('help-work_types').get(),
+				database.collection('help-units').get(),
 				database.collection('users').get(),
-				database.collection('taskMaterials').get(),
-				database.collection('taskWorks').get()
+				database.collection('help-task_materials').get(),
+				database.collection('help-task_works').get()
 			]).then(([tasks,statuses, workTypes, units, users,taskMaterials, taskWorks])=>{
 				this.setData(snapshotToArray(tasks),snapshotToArray(statuses),snapshotToArray(users),
 				snapshotToArray(workTypes), snapshotToArray(units),
@@ -67,14 +67,17 @@ class Reports extends Component {
 			if(work.extraWork){
 				finalUnitPrice+=finalUnitPrice*parseFloat(work.extraPrice)/100;
 			}
+			let discountPerItem = finalUnitPrice*parseFloat(work.discount)/100;
 			finalUnitPrice=(finalUnitPrice*(1-parseFloat(work.discount)/100)).toFixed(2)
 			let totalPrice=(finalUnitPrice*parseFloat(work.quantity)).toFixed(2);
 			let workType= this.state.workTypes.find((item)=>item.id===work.workType);
-			return{...work,
+			return{
+				...work,
 				task:this.state.tasks.find((task)=>work.task===task.id),
-				workType,
+				workType:workType?workType:{title:'Unknown',id:Math.random()},
 				finalUnitPrice,
-				totalPrice
+				totalPrice,
+				totalDiscount:(parseFloat(work.quantity)*discountPerItem).toFixed(2)
 
 			}
 		});
@@ -87,6 +90,7 @@ class Reports extends Component {
 			(this.props.filter.statusDateFrom===''||work.task.statusChange >= this.props.filter.statusDateFrom) &&
 			(this.props.filter.statusDateTo===''||work.task.statusChange <= this.props.filter.statusDateTo)
 			);
+
 		let groupedWorks = newWorks.filter((item, index)=>{
 			return newWorks.findIndex((item2)=>item2.task.id===item.task.id)===index
 			});
@@ -98,7 +102,8 @@ class Reports extends Component {
 				workType: works.map((item)=>item.workType),
 				quantity: works.map((item)=>item.quantity),
 				finalUnitPrice: works.map((item)=>item.finalUnitPrice),
-				totalPrice: works.map((item)=>item.totalPrice)
+				totalPrice: works.map((item)=>item.totalPrice),
+				totalDiscount: works.map((item)=>item.totalDiscount)
 			}
 		});
 	}
@@ -193,7 +198,7 @@ class Reports extends Component {
 													this.processWorks(this.state.taskWorks).map((item,index)=>
 													<tr key={index}>
 														<td>{item.task.id}</td>
-														<td><Link className="" to={{ pathname: `/helpdesk/taskList/`+item.task.id }} style={{ color: "#1976d2" }}>{item.task.title}</Link></td>
+														<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/`+item.task.id }} style={{ color: "#1976d2" }}>{item.task.title}</Link></td>
 														<td>{item.task.requester?item.task.requester.email:'Nikto'}</td>
 														<td>{item.task.assigned?item.task.assigned.email:'Nikto'}</td>
 														<td>{item.task.status.title}</td>
@@ -228,9 +233,15 @@ class Reports extends Component {
 											}
 										 </tbody>
 									</table>
-									<p className="m-0">Spolu zlava bez DPH: 105 EUR</p>
-									<p className="m-0">Spolu cena bez DPH: 105 EUR</p>
-									<p className="m-0">Spolu cena s DPH: 126 EUR</p>
+									<p className="m-0">Spolu zlava bez DPH: {(this.processWorks(this.state.taskWorks).reduce((acc,item)=>{
+											return acc+item.totalDiscount.reduce((acc,item)=>acc+=isNaN(parseFloat(item))?0:parseFloat(item),0)
+										},0)).toFixed(2)} EUR</p>
+										<p className="m-0">Spolu cena bez DPH: {(this.processWorks(this.state.taskWorks).reduce((acc,item)=>{
+												return acc+item.totalPrice.reduce((acc,item)=>acc+=isNaN(parseFloat(item))?0:parseFloat(item),0)
+											},0)).toFixed(2)} EUR</p>
+										<p className="m-0">Spolu cena s DPH: {(this.processWorks(this.state.taskWorks).reduce((acc,item)=>{
+												return acc+item.totalPrice.reduce((acc,item)=>acc+=isNaN(parseFloat(item))?0:parseFloat(item),0)
+											},0)*1.2).toFixed(2)} EUR</p>
 								</div>
 
 								<div>
@@ -257,7 +268,7 @@ class Reports extends Component {
 												this.processMaterials(this.state.taskMaterials).map((material, index)=>
 												<tr key={index}>
 													<td>{material.task.id}</td>
-													<td><Link className="" to={{ pathname: `/helpdesk/taskList/`+material.task.id }} style={{ color: "#1976d2" }}>{material.task.title}</Link></td>
+													<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/`+material.task.id }} style={{ color: "#1976d2" }}>{material.task.title}</Link></td>
 													<td>{material.task.requester?material.task.requester.email:'Nikto'}</td>
 													<td>{material.task.assigned?material.task.assigned.email:'Nikto'}</td>
 													<td>{material.task.status.title}</td>
@@ -291,8 +302,12 @@ class Reports extends Component {
 											)}
 										</tbody>
 									</table>
-									<p className="m-0">Spolu cena bez DPH: 105 EUR</p>
-									<p className="m-0">Spolu cena s DPH: 126 EUR</p>
+									<p className="m-0">Spolu cena bez DPH: {(this.processMaterials(this.state.taskMaterials).reduce((acc,item)=>{
+											return acc+item.totalPrice.reduce((acc,item)=>acc+=isNaN(parseFloat(item))?0:parseFloat(item),0)
+										},0)).toFixed(2)} EUR</p>
+									<p className="m-0">Spolu cena s DPH: {(this.processMaterials(this.state.taskMaterials).reduce((acc,item)=>{
+											return acc+item.totalPrice.reduce((acc,item)=>acc+=isNaN(parseFloat(item))?0:parseFloat(item),0)
+										},0)*1.2).toFixed(2)} EUR</p>
 								</div>
 							</div>
 						</div>

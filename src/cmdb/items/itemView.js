@@ -18,6 +18,8 @@ export default class ItemView extends Component{
       IPs:[],
       passwords:[],
       backups:[],
+      items:[],
+      links:[]
     }
     this.setData.bind(this);
     this.getData.bind(this);
@@ -33,20 +35,32 @@ export default class ItemView extends Component{
 
   getData(){
     Promise.all([
-      database.collection('cmdb-items').doc(this.props.match.params.itemID).get(),
+      database.collection('cmdb-items').get(),
       database.collection('cmdb-statuses').get(),
       database.collection('companies').get(),
       database.collection('cmdb-sidebar').where('url','==',this.props.match.params.sidebarID).get(),
       database.collection('cmdb-IPs').where('itemID','==',this.props.match.params.itemID).get(),
       database.collection('cmdb-passwords').where('itemID','==',this.props.match.params.itemID).get(),
       database.collection('cmdb-backups').where('itemID','==',this.props.match.params.itemID).get(),
+      database.collection('cmdb-links').where('link','==',this.props.match.params.itemID).get(),
+      database.collection('cmdb-links').where('itemID','==',this.props.match.params.itemID).get(),
     ])
-    .then(([item,statuses,companies,sidebarItem,IPs,passwords,backups])=>{
-      this.setData({id:item.id,...item.data()}, snapshotToArray(statuses),snapshotToArray(companies),snapshotToArray(sidebarItem)[0],snapshotToArray(IPs),snapshotToArray(passwords),snapshotToArray(backups));
+    .then(([items,statuses,companies,sidebarItem,IPs,passwords,backups,links1,links2])=>{
+      this.setData(
+        snapshotToArray(items).find((item)=>item.id===this.props.match.params.itemID),
+        snapshotToArray(statuses),
+        snapshotToArray(companies),
+        snapshotToArray(sidebarItem)[0],
+        snapshotToArray(IPs),
+        snapshotToArray(passwords),
+        snapshotToArray(backups),
+        snapshotToArray(items),
+        [...(snapshotToArray(links1).map((item)=>{return{...item,itemID:item.link,link:item.itemID}})),...(snapshotToArray(links2).map((item)=>{return{...item}}))]
+      );
     });
   }
 
-  setData(item,statuses,companies,sidebarItem, IPs,passwords, backups){
+  setData(item,statuses,companies,sidebarItem, IPs,passwords, backups,items,links){
     let attributes={};
     sidebarItem.attributes.forEach((item)=>attributes[item.id]=getAttributeDefaultValue(item));
     attributes={...attributes,...item.attributes};
@@ -59,6 +73,13 @@ export default class ItemView extends Component{
       passwords,
       backups,
       attributes,
+      items,
+      links: links.map((item)=>{
+        return {
+          ...item,
+          link:items.find((item2)=>item2.id===item.link)
+        }
+      })
     });
   }
 
@@ -130,6 +151,14 @@ export default class ItemView extends Component{
                   onClick={() => { this.setState({tab:'4'}); }}
                 >
                   Passwords
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  className={classnames({ active: this.state.tab === '5', clickable:true })}
+                  onClick={() => { this.setState({tab:'5'}); }}
+                >
+                  Links
                 </NavLink>
               </NavItem>
             </Nav>
@@ -209,6 +238,24 @@ export default class ItemView extends Component{
                         <td>{item.login}</td>
                         <td>{item.password}</td>
                         <td>{item.note}</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </Table>
+              </TabPane>
+              <TabPane tabId="5">
+                <Table striped>
+                  <thead>
+                    <tr>
+                      <th>Connection</th>
+                      <th>Note</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    { this.state.links.map((item,index)=>
+                      <tr key={item.id}>
+                        <td><a href={'/cmdb/i/'+item.link.sidebarID+'/'+item.link.id} target="_blank" without rel="noopener noreferrer">{item.link.title}</a></td>
+                        <td><div dangerouslySetInnerHTML ={{__html:htmlFixNewLines(item.note)}}></div></td>
                       </tr>
                     )}
                   </tbody>

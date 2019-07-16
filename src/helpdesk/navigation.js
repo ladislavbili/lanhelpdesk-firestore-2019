@@ -28,7 +28,7 @@ export default class Navigation extends Component {
 					<div className="flex main">
 
 					<PageHeader {...this.props}
-						showLayoutSwitch={true} 
+						showLayoutSwitch={true}
 						settings={
 						[{title:'Projects',link:'projects'},
 						{title:'Statuses',link:'statuses'},
@@ -43,7 +43,8 @@ export default class Navigation extends Component {
 						{title:'Task types',link:'taskTypes'}]
 					} />
 
-					<Route exact path="/helpdesk/Reports" component={Reports} />
+					<Route exact path="/helpdesk/reports" component={Reports} />
+					<Route exact path="/helpdesk/reports/:id" component={Reports} />
 					<Route exact path="/helpdesk" component={TaskList} />
 					<Route exact path="/helpdesk/taskList" component={TaskList} />
 					<Route exact path="/helpdesk/taskList/i/:listID" component={TaskList} />
