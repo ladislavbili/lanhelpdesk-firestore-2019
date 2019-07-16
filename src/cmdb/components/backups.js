@@ -21,16 +21,15 @@ export default class Backups extends Component{
       <div className="m-t-10">
         {
           this.props.items.map((item,index)=>
-          <div key={item.id} >
-            <div key={item.id}>
-              <Label>
+          <div key={item.id} className="row">
+              <Label style={{width: (this.props.width ? this.props.width : 150)}}>
                 <div dangerouslySetInnerHTML ={{__html:this.props.label}}/>
               </Label>
 
-            <div>
+            <div className="flex">
               <Input
                 className="no-scrolling"
-                style={{height:item.id===this.state.editID?this.state.editTextHeight:item.textHeight}}
+                style={{height:item.id===this.state.editID?this.state.editTextHeight:item.textHeight, /*width: this.props.width ? 958-this.props.width-20 : 150*/}}
                 type="textarea"
                 value={
                   item.id === this.state.editID
@@ -61,7 +60,6 @@ export default class Backups extends Component{
                     this.setState({ editText: e.target.value, editTextHeight:calculateTextAreaHeight(e) })}
                   }
                   />
-              </div>
             </div>
             <BackupList id={item.id} items={item.backupList?item.backupList:[]}
               onChange={(items)=>{

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import CommandBar from './commandBar';
 import ListHeader from './listHeader';
+import classnames from "classnames";
+
 export default class ColumnDisplay extends Component {
 	render() {
 		return (
@@ -13,9 +15,9 @@ export default class ColumnDisplay extends Component {
 						<ListHeader {...this.props.commandBar} listName={this.props.listName}/>
 
 						{
-							this.props.data.map((item)=>
+							this.props.data.map((item, index)=>
 							<ul
-								className={"taskList list-unstyled clickable" + (this.props.itemID === item.id.toString() ? ' selected-item' : '')}
+								className={classnames("taskList", "clickable", "list-unstyled", {'selected-item': this.props.itemID === item.id.toString(),'first-task':index===0})}
 								id="upcoming"
 								onClick={()=>{
 									this.props.history.push(this.props.link+'/'+item.id);

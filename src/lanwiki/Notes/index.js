@@ -6,6 +6,7 @@ import {timestampToString} from '../../helperFunctions';
 import {setWikiOrderBy, setWikiAscending} from '../../redux/actions';
 import ShowData from '../../components/showData';
 import NoteEdit from './NoteEdit';
+import NoteEmpty from './noteEmpty';
 
 class List extends Component {
 	constructor(props) {
@@ -134,6 +135,7 @@ class List extends Component {
 				listName={this.state.filterName}
 				match={this.props.match}
 				edit={NoteEdit}
+				empty={NoteEmpty}
 				 />
 			);
 		}

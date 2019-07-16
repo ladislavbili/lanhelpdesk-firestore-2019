@@ -99,7 +99,7 @@ export default class BackupList extends Component{
 
   render(){
     return (
-      <Table striped>
+      <table className="table">
         <thead>
           <tr>
             <th>Title</th>
@@ -112,11 +112,12 @@ export default class BackupList extends Component{
             <th></th>
           </tr>
         </thead>
-        <tbody className="no-scrolling">
+        <tbody className="no-scrolling backupList">
           { this.props.items.map((item,index)=>
             <tr key={index}>
               <td>
                 <Input
+                  className="hidden-input"
                   type="textarea"
                   style={{height:item.id===this.state.editItemID?this.state.editTitleHeight:(item.titleHeight?item.titleHeight:29)}}
                   value={
@@ -133,6 +134,7 @@ export default class BackupList extends Component{
               </td>
               <td>
                 <Input
+                  className="hidden-input"
                   type="textarea"
                   style={{height:item.id===this.state.editItemID?this.state.editToolHeight:(item.toolHeight?item.toolHeight:29)}}
                   value={
@@ -149,6 +151,7 @@ export default class BackupList extends Component{
               </td>
               <td>
                 <Input
+                  className="hidden-input"
                   type="textarea"
                   style={{height:item.id===this.state.editItemID?this.state.editWhatHeight:(item.whatHeight?item.whatHeight:29)}}
                   value={
@@ -165,6 +168,7 @@ export default class BackupList extends Component{
               </td>
               <td>
                 <Input
+                  className="hidden-input"
                   type="textarea"
                   style={{height:item.id===this.state.editItemID?this.state.editWhereHeight:(item.whereHeight?item.whereHeight:29)}}
                   value={
@@ -181,6 +185,7 @@ export default class BackupList extends Component{
               </td>
               <td>
                 <Input
+                  className="hidden-input"
                   type="textarea"
                   style={{height:item.id===this.state.editItemID?this.state.editWhenHeight:(item.whenHeight?item.whenHeight:29)}}
                   value={
@@ -197,6 +202,7 @@ export default class BackupList extends Component{
               </td>
               <td>
                 <Input
+                  className="hidden-input"
                   type="textarea"
                   style={{height:item.id===this.state.editItemID?this.state.editLengthHeight:(item.lengthHeight?item.lengthHeight:29)}}
                   value={
@@ -214,6 +220,7 @@ export default class BackupList extends Component{
               <td>
                 <Input
                   type="textarea"
+                  className="hidden-input"
                   style={{height:item.id===this.state.editItemID?this.state.editRotationHeight:(item.rotationHeight?item.rotationHeight:29)}}
                   value={
                     item.id === this.state.editItemID
@@ -376,7 +383,7 @@ export default class BackupList extends Component{
           </tr>
         </tbody>
 
-      </Table>
+      </table>
     );
   }
 }

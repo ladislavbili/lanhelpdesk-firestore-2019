@@ -5,6 +5,7 @@ import ShowData from '../../components/showData';
 import EditPassword from './editPassword';
 import { Button, Input } from 'reactstrap';
 import {setPasswordsOrderBy, setPasswordsAscending} from '../../redux/actions';
+import PassEmpty from "./passEmpty";
 
 //const attributes=[{title:'Server name',id:'title'},{title:'IP',id:'IP'},{title:'Status',id:'status'},{title:'Company',id:'company'}];
 
@@ -149,6 +150,7 @@ class List extends Component {
 				listName={this.state.filterName}
 				match={this.props.match}
 				edit={EditPassword}
+				empty={PassEmpty}
 				 />
 			);
 		}

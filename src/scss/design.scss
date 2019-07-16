@@ -424,6 +424,10 @@ td {
   font-size: 10px;
 }
 
+.backupList textarea{
+  resize: none;
+}
+
 //----------------END-všeobecné-elementy----------------
 
 
@@ -618,6 +622,10 @@ td {
 }
 .small-p{
   margin: 0px;
+}
+
+.first-task{
+  border-top: 1px solid #dee2e6;
 }
 
 //-------------------END-tasklist-------------------------

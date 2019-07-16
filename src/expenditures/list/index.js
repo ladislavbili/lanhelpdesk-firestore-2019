@@ -5,6 +5,7 @@ import ShowData from '../../components/showData';
 import EditExpenditure from './editExpenditure';
 import {timestampToString} from '../../helperFunctions';
 import {setExpendituresOrderBy, setExpendituresAscending} from '../../redux/actions';
+import EmptyExpenditure from "./emptyExpenditure";
 
 class List extends Component {
 	constructor(props) {
@@ -96,6 +97,7 @@ class List extends Component {
 				listID={this.props.match.params.listID}
 				match={this.props.match}
 				edit={EditExpenditure}
+				empty={EmptyExpenditure}
 				 />
 		)
 		}
