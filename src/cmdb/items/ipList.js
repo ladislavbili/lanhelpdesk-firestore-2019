@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Input } from 'reactstrap';
 
-export default class ServerAdd extends Component{
+export default class IPList extends Component{
   constructor(props){
     super(props);
     this.state={

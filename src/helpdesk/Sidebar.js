@@ -78,6 +78,7 @@ class Sidebar extends Component {
 
 */
 	render() {
+		let isReport = this.props.history.location.pathname.includes('reports');
 		let showSettings= this.props.history.location.pathname.includes('settings');
 		return (
 			<div className="sidebar">
@@ -130,7 +131,7 @@ class Sidebar extends Component {
 										<NavItem>
 											<Link
 												className = "text-basic sidebar-align sidebar-menu-item"
-												to={{ pathname: `/helpdesk/taskList/i/all` }} onClick={()=>{
+												to={{ pathname: isReport?'/helpdesk/reports/all':`/helpdesk/taskList/i/all` }} onClick={()=>{
 													this.setState({filterID:null,filterData:null});
 													this.props.setFilter({
 														status:null,
@@ -149,7 +150,7 @@ class Sidebar extends Component {
 											<NavItem key={item.id}>
 												<Link
 													className = "text-basic sidebar-align sidebar-menu-item"
-													to={{ pathname: `/helpdesk/taskList/i/`+item.id }} onClick={()=>{
+													to={{ pathname: isReport?'/helpdesk/reports/'+item.id:`/helpdesk/taskList/i/`+item.id }} onClick={()=>{
 														this.setState({filterID:item.id,filterData:item});
 														this.props.setFilter({
 															...item.filter,
@@ -178,7 +179,7 @@ class Sidebar extends Component {
 							{settings.map((setting)=>
 								<NavItem>
 									<Link className={this.props.location.pathname.includes(setting.link) ? "text-basic sidebar-align sidebar-item-active sidebar-menu-item" : "text-basic sidebar-align sidebar-menu-item"}
-										to={{ pathname: '/helpdesk/settings/'+setting.link }}>{setting.title}</Link>
+										to={{ pathname:'/helpdesk/settings/'+setting.link }}>{setting.title}</Link>
 								</NavItem>
 							)}
 						</Nav>

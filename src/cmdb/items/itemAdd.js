@@ -5,6 +5,7 @@ import {toSelArr, snapshotToArray, getAttributeDefaultValue, htmlFixNewLines} fr
 import Select from 'react-select';
 import {selectStyle} from "../../scss/selectStyles";
 import IPList from './ipList';
+import Links from './links';
 import Passwords from './passwords';
 import AttributesHandler from './attributesHandler';
 import TextareaList from '../components/backups';
@@ -19,6 +20,7 @@ export default class ItemAdd extends Component{
       loading:true,
       companies:[],
       statuses:[],
+      allLinks:[],
       sidebarItem:null,
       tab:'0',
 
@@ -29,7 +31,8 @@ export default class ItemAdd extends Component{
       IPlist:[],
       backupTasks:[],
       passwords:[],
-      attributes:{}
+      attributes:{},
+      links:[]
     }
     this.setData.bind(this);
     this.getData.bind(this);
@@ -40,15 +43,16 @@ export default class ItemAdd extends Component{
     Promise.all([
       database.collection('cmdb-statuses').get(),
       database.collection('companies').get(),
+      database.collection('cmdb-items').get(),
       database.collection('cmdb-sidebar').where('url','==',this.props.match.params.sidebarID).get(),
     ])
-    .then(([statuses,companies,sidebarItem])=>{
-      this.setData(toSelArr(snapshotToArray(statuses)),toSelArr(snapshotToArray(companies)),snapshotToArray(sidebarItem)[0]);
+    .then(([statuses,companies,links,sidebarItem])=>{
+      this.setData(toSelArr(snapshotToArray(statuses)),toSelArr(snapshotToArray(companies)),toSelArr(snapshotToArray(links)),snapshotToArray(sidebarItem)[0]);
     });
   }
 
 
-  setData(statuses,companies,sidebarItem){
+  setData(statuses,companies,links, sidebarItem){
     let attributes={};
     sidebarItem.attributes.forEach((item)=>attributes[item.id]=getAttributeDefaultValue(item))
     this.setState({
@@ -56,6 +60,7 @@ export default class ItemAdd extends Component{
       companies,
       sidebarItem,
       attributes,
+      allLinks:links,
       loading:false
     });
   }
@@ -141,6 +146,14 @@ export default class ItemAdd extends Component{
                 Passwords
               </NavLink>
             </NavItem>
+            <NavItem>
+              <NavLink
+                className={classnames({ active: this.state.tab === '5', clickable:true })}
+                onClick={() => { this.setState({tab:'5'}); }}
+                >
+                Links
+              </NavLink>
+            </NavItem>
           </Nav>
           <TabContent activeTab={this.state.tab}>
             <TabPane tabId="0">
@@ -180,6 +193,9 @@ export default class ItemAdd extends Component{
               </TabPane>
               <TabPane tabId="4">
                 <Passwords items={this.state.passwords} onChange={(items)=>this.setState({passwords:items})} />
+              </TabPane>
+              <TabPane tabId="5">
+                <Links items={this.state.links} links={this.state.allLinks} onChange={(links)=>this.setState({links})} />
               </TabPane>
             </TabContent>
 
@@ -221,14 +237,15 @@ export default class ItemAdd extends Component{
                     IPlist:[],
                     saving:false,
                     attributes,
-                    description:''
+                    description:'',
+                    links:[]
                   });
                   this.props.history.goBack();
                 });
               }}>{this.state.saving?'Adding...':(this.state.sidebarItem? ('Add '+this.state.sidebarItem.title) :'Add item')}</Button>
 
               <Button className="btn-link m-t-10" onClick={this.props.history.goBack}>Cancel</Button>
-              
+
           </div>
         );
       }
