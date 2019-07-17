@@ -7,7 +7,7 @@ import Subtasks from '../components/subtasks';
 
 import {rebase, database} from '../../index';
 import {toSelArr, snapshotToArray, timestampToString} from '../../helperFunctions';
-import {invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
+import {selectStyle, invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
 
 const repeat = [
 	{ value: 'none', label: 'none' },
@@ -366,7 +366,7 @@ export default class TasksTwoEdit extends Component {
 														value={this.state.status}
 														onChange={(status)=>this.setState({status,statusChange:(new Date().getTime())},this.submitTask.bind(this))}
 														options={this.state.statuses.map((status)=>{return {...status,value:status.id,label:status.title}})}
-														styles={invisibleSelectStyleNoArrow}
+														styles={selectStyle}
 														/>
 												</div>
 											</div>
@@ -377,7 +377,7 @@ export default class TasksTwoEdit extends Component {
 														value={this.state.project}
 														onChange={(project)=>this.setState({project},this.submitTask.bind(this))}
 														options={this.state.projects}
-														styles={invisibleSelectStyleNoArrow}
+														styles={selectStyle}
 														/>
 												</div>
 											</div>
@@ -388,7 +388,7 @@ export default class TasksTwoEdit extends Component {
 														value={this.state.requester}
 														onChange={(requester)=>this.setState({requester},this.submitTask.bind(this))}
 														options={this.state.users}
-														styles={invisibleSelectStyleNoArrow}
+														styles={selectStyle}
 														/>
 												</div>
 											</div>
@@ -399,7 +399,7 @@ export default class TasksTwoEdit extends Component {
 														value={this.state.company}
 														onChange={(company)=>this.setState({company},this.submitTask.bind(this))}
 														options={this.state.companies}
-														styles={invisibleSelectStyleNoArrow}
+														styles={selectStyle}
 														/>
 												</div>
 											</div>
@@ -411,8 +411,9 @@ export default class TasksTwoEdit extends Component {
 											<div className="row">
 												<label className="col-5 col-form-label text-slim">Pripomienka</label>
 												<div className="col-7">
+													{/*className='form-control hidden-input'*/}
 													<input
-														className='form-control hidden-input'
+														className='form-control'
 														placeholder="Status change date"
 														type="datetime-local"
 														value={this.state.reminder}
@@ -426,8 +427,9 @@ export default class TasksTwoEdit extends Component {
 											<div className="row">
 												<label className="col-5 col-form-label text-slim">Deadline</label>
 												<div className="col-7">
+													{/*className='form-control hidden-input'*/}
 													<input
-														className='form-control hidden-input'
+														className='form-control'
 														placeholder="Status change date"
 														type="datetime-local"
 														value={this.state.deadline}
@@ -441,7 +443,7 @@ export default class TasksTwoEdit extends Component {
 											<div className="row">
 												<label className="col-5 col-form-label text-slim">Opakovanie</label>
 												<div className="col-7">
-													<Select options={repeat} styles={invisibleSelectStyleNoArrow} />
+													<Select options={repeat} styles={selectStyle} />
 												</div>
 											</div>
 
@@ -450,7 +452,7 @@ export default class TasksTwoEdit extends Component {
 												<div className="col-7">
 													<Select
 					                  value={this.state.type}
-														styles={invisibleSelectStyleNoArrow}
+														styles={selectStyle}
 					                  onChange={(type)=>this.setState({type},this.submitTask.bind(this))}
 					                  options={this.state.taskTypes}
 					                  />

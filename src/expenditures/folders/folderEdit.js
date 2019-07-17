@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { ModalBody, ModalFooter } from 'reactstrap';
 import { Button, FormGroup, Label, Input } from 'reactstrap';
 import {rebase} from '../../index';
 
@@ -24,11 +24,11 @@ export default class FolderEdit extends Component{
             <ModalBody>
               <FormGroup>
                 <Label>Title</Label>
-                <Input type="text" placeholder="Enter folder name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
+                <Input type="text" className="form-control" placeholder="Enter folder name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
               </FormGroup>
               <FormGroup>
                 <Label>Note</Label>
-                <Input type="textarea" placeholder="Enter folder note" value={this.state.note} onChange={(e)=>this.setState({note:e.target.value})} />
+                <Input type="textarea" className="form-control" placeholder="Enter folder note" value={this.state.note} onChange={(e)=>this.setState({note:e.target.value})} />
               </FormGroup>
 
             </ModalBody>

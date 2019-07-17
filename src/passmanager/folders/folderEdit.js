@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { ModalBody, ModalFooter } from 'reactstrap';
 import { Button, FormGroup, Label, Input } from 'reactstrap';
 import {rebase} from '../../index';
 
@@ -22,26 +22,24 @@ export default class FolderEdit extends Component{
   render(){
     return (
       <div>
-          <ModalHeader>Edit folder</ModalHeader>
             <ModalBody>
               <FormGroup>
                 <Label>Folder name</Label>
-                <Input type="text" placeholder="Enter folder name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
+                <Input type="text" className="form-control" placeholder="Enter folder name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
               </FormGroup>
               <FormGroup>
                 <Label>Folder description</Label>
-                <Input type="textarea" placeholder="Enter folder description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value})} />
+                <Input type="textarea" className="form-control" placeholder="Enter folder description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value})} />
               </FormGroup>
 
               </ModalBody>
               <ModalFooter>
-              <Button color="secondary" className="mr-auto" disabled={this.state.saving} onClick={() => this.props.close()}>
+              <Button className="mr-auto btn-link" disabled={this.state.saving} onClick={() => this.props.close()}>
                 Close
               </Button>
 
               <Button
-                color="primary"
-                className="separate"
+                className="btn"
                 disabled={this.state.saving||this.state.title===""}
                 onClick={()=> {
                   this.setState({saving:true});

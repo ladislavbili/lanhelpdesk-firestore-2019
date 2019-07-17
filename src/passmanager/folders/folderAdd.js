@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Modal, ModalBody, ModalFooter } from 'reactstrap';
 import { Button, FormGroup, Label, Input } from 'reactstrap';
 import {rebase} from '../../index';
 
@@ -22,13 +22,11 @@ export default class ProjectAdd extends Component{
     return (
       <div>
 
-        <Button onClick={this.toggle.bind(this)} color="primary" style={{width:'100%'}}>
-          <i className="fa fa-plus clickable pr-2"  />
-          Folder
+        <Button onClick={this.toggle.bind(this)} className="btn-link t-a-l sidebar-menu-item">
+          <i className="fa fa-plus sidebar-icon-center"  /> Folder
         </Button>
 
         <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
-            <ModalHeader toggle={this.toggle.bind(this)}>Add folder</ModalHeader>
             <ModalBody>
               <FormGroup>
                 <Label>Folder name</Label>
@@ -41,14 +39,13 @@ export default class ProjectAdd extends Component{
 
               </ModalBody>
               <ModalFooter>
-              <Button color="secondary" className="mr-auto" disabled={this.state.saving} onClick={this.toggle.bind(this)}>
+              <Button className="mr-auto btn-link" disabled={this.state.saving} onClick={this.toggle.bind(this)}>
                 Close
               </Button>
 
 
               <Button
-                color="primary"
-                className="separate"
+                className="btn"
                 disabled={this.state.saving||this.state.title===""}
                 onClick={()=>{
                   this.setState({saving:true});

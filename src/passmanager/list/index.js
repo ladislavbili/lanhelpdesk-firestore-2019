@@ -78,9 +78,9 @@ class List extends Component {
 										<span onClick={(e)=>e.stopPropagation()}>
 										{
 											pass.shown &&
-											<Input type="text" placeholder="No pass" style={{width:'auto'}} className="mb-auto mt-auto" id={'input'+pass.id}	value={pass.password} disabled={true}/>
+											<Input type="text" placeholder="No pass" className="mb-auto mt-auto w-a" id={'input'+pass.id}	value={pass.password} disabled={true}/>
 										}
-										{!pass.shown && <Button color="primary" className="mb-auto mt-auto" onClick={()=>{
+										{!pass.shown && <Button  className="mb-auto mt-auto btn" onClick={()=>{
 											let newPasswords = [...this.state.passwords];
 											newPasswords.find((item2)=>pass.id===item2.id).shown=true;
 											this.setState({passwords:newPasswords});
@@ -89,7 +89,7 @@ class List extends Component {
 									</Button>}
 								</span>
 
-								<Button color="warning" className="mb-auto mt-auto" onClick={(e)=>{
+								<Button  className="mb-auto mt-auto btn-link" onClick={(e)=>{
 										e.stopPropagation();
 										navigator.clipboard.writeText(pass.password);
 									}}>

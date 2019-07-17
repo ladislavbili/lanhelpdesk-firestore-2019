@@ -56,10 +56,16 @@ export default class AddFolder extends Component{
 
   render(){
     return (
+      <div className="flex">
+				<div className="container-fluid p-2">
+					<div className="d-flex flex-row align-items-center p-l-18">
+          </div>
+				</div>
+
         <div className="ml-auto mr-auto card-box fit-with-header p-t-15 w-50">
             <FormGroup>
               <Label>Názov</Label>
-              <Input type="text" placeholder="zadajte názov" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
+              <Input type="text" className="from-control" placeholder="zadajte názov" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
             </FormGroup>
 
           <FormGroup>
@@ -73,7 +79,7 @@ export default class AddFolder extends Component{
           </FormGroup>
           <FormGroup>
             <Label>Suma</Label>
-            <Input type="number" placeholder="0.00" required name="price" min="0" step="0.01" title="Currency" pattern="^\d+(?:\.\d{1,2})?$" value={this.state.price} onChange={(e)=> this.setState({price: e.target.value})} />
+            <Input type="number" className="from-control" placeholder="0.00" required name="price" min="0" step="0.01" title="Currency" pattern="^\d+(?:\.\d{1,2})?$" value={this.state.price} onChange={(e)=> this.setState({price: e.target.value})} />
           </FormGroup>
 
           <FormGroup>
@@ -88,12 +94,12 @@ export default class AddFolder extends Component{
 
           <FormGroup>
             <Label>Začiatočný dátum</Label>
-            <Input type="date" placeholder="Expiration date" value={this.state.startDate} onChange={(e)=>this.setState({startDate:e.target.value})} />
+            <Input type="date" className="from-control" placeholder="Expiration date" value={this.state.startDate} onChange={(e)=>this.setState({startDate:e.target.value})} />
           </FormGroup>
 
           <FormGroup>
             <Label>Note</Label>
-            <Input type="textarea" placeholder="Leave a note here" value={this.state.note} onChange={(e)=>this.setState({note:e.target.value})} />
+            <Input type="textarea" className="from-control" placeholder="Leave a note here" value={this.state.note} onChange={(e)=>this.setState({note:e.target.value})} />
           </FormGroup>
 
         <Button className="btn-link" onClick={this.props.history.goBack}>Cancel</Button>
@@ -121,6 +127,7 @@ export default class AddFolder extends Component{
                   this.props.history.goBack();
               });
           }}>{this.state.saving?'Adding...':'Add'}</Button>
+      </div>
       </div>
     );
   }
