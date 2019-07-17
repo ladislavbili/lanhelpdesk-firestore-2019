@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, FormGroup, Label, Input} from 'reactstrap';
+import { Button, FormGroup, Label, Input, ModalBody, ModalFooter} from 'reactstrap';
 import { rebase } from '../../index';
 
 export default class Sidebar extends Component {
@@ -38,21 +38,18 @@ export default class Sidebar extends Component {
         public: false,
         active: false,
         value: 100
-      });
+      }, () => this.props.close());
     });
   }
 
 	render() {
 		return (
-			<div className="">
-				<div className="commandbar">
+			<div>
 				{/*		<Progress value={this.state.value}>{this.state.value === 100 ? "Loaded" : "Loading"}</Progress>*/}
-					<h2>Add tag</h2>
-				</div>
-				<div className="fit-with-header scrollable col-lg-12 form">
 
+				<ModalBody>
 
-					<FormGroup check>
+					<FormGroup check className="m-t-10 m-b-10">
 							<Input
 								type="checkbox"
 								checked={this.state.active}
@@ -65,19 +62,24 @@ export default class Sidebar extends Component {
 
 						<FormGroup>
 							<Label htmlFor="name">Názov</Label>
-							<Input id="name" placeholder="Názov" value={this.state.title} onChange={(e) => this.setState({title: e.target.value})}/>
+							<Input id="name" className="form-control" placeholder="Názov" value={this.state.title} onChange={(e) => this.setState({title: e.target.value})}/>
 						</FormGroup>
 
 						<FormGroup>
 							<Label htmlFor="body">Popis</Label>
-							<Input type="textarea" id="body" placeholder="Zadajte text" value={this.state.body} onChange={(e) => this.setState({body: e.target.value})}/>
+							<Input type="textarea" className="form-control" id="body" placeholder="Zadajte text" value={this.state.body} onChange={(e) => this.setState({body: e.target.value})}/>
 						</FormGroup>
 
+					</ModalBody>
 
-						<Button  color="primary" className="saveBtn" onClick={this.submit.bind(this)} >{!this.state.saving ? "Save":"Saving..."}</Button>
-
-
-				</div>
+					<ModalFooter>
+						<Button className="mr-auto btn-link" disabled={this.state.saving} onClick={() => this.props.close()}>
+							Close
+						</Button>
+						<Button  className="btn" onClick={this.submit.bind(this)} >
+							{!this.state.saving ? "Save":"Saving..."}
+						</Button>
+					</ModalFooter>
 
 			</div>
 			);

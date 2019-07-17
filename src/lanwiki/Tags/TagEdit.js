@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-import {Button, FormGroup, Label, Input} from 'reactstrap';
+import {Button, FormGroup, Label, Input, ModalBody, ModalFooter} from 'reactstrap';
 import { rebase } from '../../index';
 
 export default class Sidebar extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			title: this.props.tag.title,
+			body: this.props.tag.body,
+
 			saving: false,
-			title: "",
-			body: "",
 			public: false,
 			active: false,
 			read: [],
@@ -27,13 +28,10 @@ export default class Sidebar extends Component {
 		this.submit.bind(this);
 		this.remove.bind(this);
 		this.fetchData.bind(this);
-		this.fetchData(this.props.match.params.tagID);
+	//	this.fetchData(this.props.tagEdit.id);
 	}
 
 		fetchData(id){
-			if (id === 'add'){
-				return;
-			}
 			rebase.get('lanwiki-tags/' + id, {
 				context: this,
 				withIds: true,
@@ -50,67 +48,63 @@ export default class Sidebar extends Component {
 									active: tag.active,
 									public: tag.public,
 							//		users,
-									value: 100,
+				//					value: 100,
 								})
 						//	);
 			});
 		}
 
 	componentWillReceiveProps(props){
-    if(this.props.match.params.tagID!==props.match.params.tagID){
-      this.setState({value: 0});
-      this.fetchData(props.match.params.tagID);
+    if(this.props.tag.id !== props.tag.id ){
+      this.setState({
+		//		value: 0,
+				title: props.tag.title,
+				body: props.tag.body,
+			});
+    //  this.fetchData(props.match.params.tagID);
     }
   }
 
 	submit(){
-    this.setState({value: 0, saving: true});
+     this.setState({/*value: 0, */saving: true});
   //  let newRead = this.state.read.map(user => user.id);
   //  let newWrite = this.state.write.map(user => user.id);
-    rebase.updateDoc('/lanwiki-tags/'+this.props.match.params.tagID, {title:this.state.title, body:this.state.body, /*read: newRead, write: newWrite, public: this.state.public,*/ active: this.state.active})
+    rebase.updateDoc('/lanwiki-tags/'+this.props.tag.id, {title:this.state.title, body:this.state.body, /*read: newRead, write: newWrite, public: this.state.public,*/ active: this.state.active})
     .then(() => {
       this.setState({
-        value: 100,
+  //      value: 100,
 				saving: false,
-      });
+      }, () => this.props.close());
     });
   }
 
 	remove(){
-    this.setState({value: 0});
+  //  this.setState({value: 0});
     if (window.confirm("Chcete zmazať tento tag?")) {
-      rebase.removeDoc('/lanwiki-tags/'+this.props.match.params.tagID)
+      rebase.removeDoc('/lanwiki-tags/'+this.props.tag.id)
         .then(() =>
             { rebase.get('/lanwiki-notes', {
                 context: this,
                 withIds: true,
               })
               .then((notes) =>{
-                notes.filter(note => (note.tags.includes(this.props.match.params.tagID)))
+                notes.filter(note => (note.tags.includes(this.props.tag.id)))
                 .map(note =>
                     rebase.updateDoc('/lanwiki-notes/'+note.id, {title: note.title, body: note.body, tags: note.tags.filter(item => item !== this.props.match.params.tagID)})
                   );
-                this.props.history.push(`/lanwiki/notes/all`);
+                this.props.close();
               });
             });
       };
-    this.setState({value: 100});
+  //  this.setState({value: 100});
   }
 
 	render() {
-		if (this.props.match.params.tagID === 'add'){
-      return (<div></div>)
-    }
 		return (
-			<div className="">
-				<div className="commandbar">
+			<div >
 				{/*		<Progress value={this.state.value}>{this.state.value === 100 ? "Loaded" : "Loading"}</Progress>*/}
-					<h2>Edit tag</h2>
-				</div>
-				<div className="fit-with-header scrollable col-lg-12 form">
-
-
-					<FormGroup check>
+				<ModalBody>
+					<FormGroup check className="m-t-10 m-b-10">
 							<Input
 								type="checkbox"
 								checked={this.state.active}
@@ -121,23 +115,27 @@ export default class Sidebar extends Component {
 						</Label>
 					</FormGroup>
 
-						<FormGroup>
-							<Label htmlFor="name">Názov</Label>
-							<Input id="name" placeholder="Názov" value={this.state.title} onChange={(e) => this.setState({title: e.target.value})}/>
-						</FormGroup>
+					<FormGroup>
+						<Label htmlFor="name">Názov</Label>
+						<Input id="name" className="form-control" placeholder="Názov" value={this.state.title} onChange={(e) => this.setState({title: e.target.value})}/>
+					</FormGroup>
 
-						<FormGroup>
-							<Label htmlFor="body">Popis</Label>
-							<Input type="textarea" id="body" placeholder="Zadajte text" value={this.state.body} onChange={(e) => this.setState({body: e.target.value})}/>
-						</FormGroup>
+					<FormGroup>
+						<Label htmlFor="body">Popis</Label>
+						<Input type="textarea" className="form-control" id="body" placeholder="Zadajte text" value={this.state.body} onChange={(e) => this.setState({body: e.target.value})}/>
+					</FormGroup>
 
+				</ModalBody>
 
-						<Button  color="primary" className="saveBtn" onClick={this.submit.bind(this)} >{!this.state.saving ? "Save":"Saving..."}</Button>
-						{" "}
-					<Button  color="danger" className="delBtn" onClick={this.remove.bind(this)} >Delete</Button>
+				<ModalFooter>
+					<Button className="mr-auto btn-link" disabled={this.state.saving} onClick={() => this.props.close()}>
+						Close
+					</Button>
+					<Button  className="btn" onClick={this.submit.bind(this)} >{!this.state.saving ? "Save":"Saving..."}</Button>
+					{" "}
+					<Button  className="btn-link" onClick={this.remove.bind(this)} >Delete</Button>
+				</ModalFooter>
 
-
-				</div>
 
 			</div>
 			);

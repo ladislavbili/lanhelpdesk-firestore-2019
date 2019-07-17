@@ -104,7 +104,7 @@ class List extends Component {
 							<label>{note.name}</label>
 							<div className="m-t-5">
 								<p className="pull-right m-b-0 font-13">
-									<i className="fa fa-clock-o" /> <span>Updated: {note.lastUpdated&& <TimeAgo style={{color: 'rgb(180, 180, 180)'}} date={new Date(note.lastUpdated)} />}</span>
+									<i className="fa fa-clock-o" /> <span>Updated: {note.lastUpdated&& <TimeAgo className="text-muted" date={new Date(note.lastUpdated)} />}</span>
 								</p>
 								<div className="taskList-tags">
 									{note.tags.map((tag)=>

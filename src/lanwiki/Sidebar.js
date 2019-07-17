@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import {Button, Row, Col, NavItem, Nav} from 'reactstrap';
+import {Button, Row, Col, NavItem, Nav, Modal} from 'reactstrap';
 import { NavLink as Link } from 'react-router-dom';
 import { connect } from "react-redux";
 
 import SelectPage from '../components/SelectPage';
+import TagAdd from './Tags/TagAdd';
+import TagEdit from './Tags/TagEdit';
 import {rebase} from '../index';
 import {setProject, setFilter} from '../redux/actions';
 
@@ -12,7 +14,12 @@ class Sidebar extends Component {
 		super(props);
 		this.state = {
 			tags : [],
+			tagEdit: null,
+			openedAdd: false,
+			openedEdit: false,
 		};
+		this.toggleEdit.bind(this);
+		this.toggleAdd.bind(this);
 	}
 
 	componentWillMount(){
@@ -27,6 +34,14 @@ class Sidebar extends Component {
     rebase.removeBinding(this.ref);
   }
 
+	toggleAdd(){
+		this.setState({openedAdd:!this.state.openedAdd})
+	}
+
+	toggleEdit(){
+		this.setState({openedEdit:!this.state.openedEdit})
+	}
+
 	render() {
 		return (
 			<div className="sidebar">
@@ -35,7 +50,7 @@ class Sidebar extends Component {
 					<Button
 						block
 						className="btn-link t-a-l sidebar-menu-item"
-						onClick={() => this.props.history.push(`/lanwiki/tags/add`)}
+						onClick={()=>{this.setState({openedAdd:true})}}
 						>
 						<i className="fa fa-plus sidebar-icon-center"/> Add tag
 					</Button>
@@ -54,13 +69,13 @@ class Sidebar extends Component {
 								)}
 							</Nav>
 						</Col>
-						<Col xs={2} style={{marginTop:40}}>
+						<Col xs={2} className="m-t-sidebar-item">
+
 							{	this.state.tags.sort((item1,item2)=>item1.title.toLowerCase()>item2.title.toLowerCase()?1:-1).map((item)=>
 								<Button
 									key={item.id}
-									className='btn-link t-a-l'
-									style={{height:40}}
-									onClick={() => this.props.history.push('/lanwiki/tags/'+item.id)}
+									className='btn-link sidebar-menu-item'
+									onClick={() => {this.setState({tagEdit: item, openedEdit: true})}}
 									>
 									<i className="fa fa-cog"/>
 								</Button>
@@ -68,6 +83,13 @@ class Sidebar extends Component {
 						</Col>
 					</Row>
 
+					<Modal isOpen={this.state.openedAdd} toggle={this.toggleAdd.bind(this)}>
+						<TagAdd close={this.toggleAdd.bind(this)}/>
+					</Modal>
+
+					<Modal isOpen={this.state.openedEdit} toggle={this.toggleEdit.bind(this)}>
+						<TagEdit tag={this.state.tagEdit} close={this.toggleEdit.bind(this)}/>
+					</Modal>
 
 				</div>
 			</div>

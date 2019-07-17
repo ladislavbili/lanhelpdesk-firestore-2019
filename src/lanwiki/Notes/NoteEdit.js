@@ -138,7 +138,7 @@ export default class Note extends Component{
     return (
       <div className="flex">
 				<div className="container-fluid p-2">
-					<div className="d-flex flex-row align-items-center">
+					<div className="d-flex flex-row align-items-center  p-l-18">
 						<div className="center-hor">
 							{!this.props.columns &&
 								<button type="button" className="btn btn-link waves-effect" onClick={()=>this.props.history.goBack()}>
@@ -163,49 +163,53 @@ export default class Note extends Component{
 						</div>
 					</div>
 				</div>
-        <div className="row scrollable fit-with-header-and-commandbar">
-            <div className={"card-box flex " + (!this.props.columns ? " center-ver" : "")}>
-              <div className="d-flex p-2">
-                <div className="row">
-                  <h1 className="center-hor text-extra-slim">#</h1>
-                  <span className="center-hor">
-                    <input type="text" value={this.state.name} className="task-title-input text-extra-slim hidden-input" onChange={(e)=>this.setState({name:e.target.value},this.submit.bind(this))} placeholder="Enter task name" />
-                  </span>
-                </div>
-              </div>
-              <hr/>
 
+        <div className={"card-box scrollable fit-with-header-and-commandbar " + (!this.props.columns ? " center-ver w-50" : "")}>
+          <div className="d-flex p-2">
               <div className="row">
-                <div className="col-lg-12 d-flex">
-                  <p className="text-muted">Created at {this.state.dateCreated?(timestampToString(this.state.dateCreated)):''}</p>
-                  <p className="text-muted ml-auto">{this.state.lastUpdated && <TimeAgo style={{color: 'rgb(180, 180, 180)'}} date={new Date(this.state.lastUpdated)} />}</p>
-                </div>
+                <h1 className="center-hor text-extra-slim">#</h1>
+                <span className="center-hor">
+                  <input type="text" value={this.state.name} className="task-title-input text-extra-slim hidden-input" onChange={(e)=>this.setState({name:e.target.value},this.submit.bind(this))} placeholder="Enter task name" />
+                </span>
               </div>
-              <div className="col-lg-12 row">
-                <strong className="center-hor text-slim">Tagy: </strong>
-                <div className="f-1">
-                  <Select
-                    value={this.state.tags}
-                    isMulti
-                    onChange={(tags)=>this.setState({tags},this.submit.bind(this))}
-                    options={this.state.allTags}
-                    styles={invisibleSelectStyle}
-                    />
-                </div>
-              </div>
-              {!this.state.editBodyOpen && <div className="clickable" onClick={()=>this.setState({editBodyOpen:true})} dangerouslySetInnerHTML={{__html:this.state.body===null?'': this.state.body }}></div>}
+          </div>
+
+          <hr/>
+
+          <div className="row">
+            <div className="col-lg-12 d-flex">
+              <p className="text-muted">Created at {this.state.dateCreated?(timestampToString(this.state.dateCreated)):''}</p>
+              <p className="text-muted ml-auto">{this.state.lastUpdated && <TimeAgo className="text-muted" date={new Date(this.state.lastUpdated)} />}</p>
+            </div>
+          </div>
+
+          <div className="row">
+            <strong className="center-hor text-slim">Tagy: </strong>
+            <div className="f-1">
+              <Select
+                value={this.state.tags}
+                isMulti
+                onChange={(tags)=>this.setState({tags},this.submit.bind(this))}
+                options={this.state.allTags}
+                styles={invisibleSelectStyle}
+                />
+            </div>
+          </div>
+
+              {!this.state.editBodyOpen && <div className="clickable m-t-30" onClick={()=>this.setState({editBodyOpen:true})} dangerouslySetInnerHTML={{__html:this.state.body===null?'': this.state.body }}></div>}
+
               { this.state.editBodyOpen &&
-              <FormGroup>
-                  <Button outline color="secondary" size="sm" onClick={this.toggleModal.bind(this)}>Pridať obrázok z uložiska</Button>
-                  <Modal className="modalLO" isOpen={this.state.modalOpen} toggle={this.toggleModal.bind(this)} >
-                    <ModalHeader toggle={this.toggleModal.bind(this)}>Nahrať obrázok</ModalHeader>
-                    <ModalBody>
+              <FormGroup className="m-t-15">
+                  <Button className="btn-link" onClick={this.toggleModal.bind(this)}>Pridať obrázok z uložiska</Button>
+                  <Modal isOpen={this.state.modalOpen} toggle={this.toggleModal.bind(this)} >
+                    <ModalBody className="m-t-15">
                       <PictureUpload appendImage={this.appendImage.bind(this)}/>
                     </ModalBody>
                     <ModalFooter>
-                      <Button outline color="secondary" size="sm" onClick={this.toggleModal.bind(this)}>Close</Button>{'  '}
+                      <Button className="btn-link mr-auto" onClick={this.toggleModal.bind(this)}>Close</Button>{'  '}
                     </ModalFooter>
                   </Modal>
+
                   <CKEditor
                     data={this.state.body}
                     onChange={this.onEditorChange.bind(this)}
@@ -219,7 +223,6 @@ export default class Note extends Component{
                     />
               </FormGroup>}
           </div>
-        </div>
       </div>
     );
   }

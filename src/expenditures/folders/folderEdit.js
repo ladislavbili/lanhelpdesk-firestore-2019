@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { ModalBody, ModalFooter } from 'reactstrap';
-import { Button, FormGroup, Label, Input } from 'reactstrap';
+import { ModalBody, ModalFooter,  Button, FormGroup, Label, Input } from 'reactstrap';
 import {rebase} from '../../index';
 
 export default class FolderEdit extends Component{
