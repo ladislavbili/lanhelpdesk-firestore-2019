@@ -115,7 +115,7 @@ html{
   max-width: 400px;
 }
 .full-height{
-  height: 100%;
+  height: 100% !important;
 }
 
 .waves-effect {
@@ -324,6 +324,25 @@ html{
     background-color: $basic-button-color;
 }
 
+.hidden-button{
+  color: transparent;
+  background-color: inherit;
+}
+
+.hidden-button:hover{
+  color: $basic-button-color;
+  background-color: inherit;
+}
+
+.hidden-icon{
+  color: transparent;
+  background-color: inherit;
+}
+
+.hidden-icon:hover{
+  color: $basic-button-color;
+}
+
 .link{
   color: $basic-button-color;
 }
@@ -519,11 +538,29 @@ td {
   height: $sidebar-item-height;
 }
 
+.sidebar-menu-item-link{
+  width: 80%;
+  height: $sidebar-item-height;
+  display: inline-block !important;
+}
+
+.sidebar-menu-item-btn{
+  width: 20%;
+  height: $sidebar-item-height;
+}
+
+
 .sidebar-btn{
   width: calc(#{$sidebar-width} - 20px);
   margin: 10px;
   height: $button-height;
 }
+
+.sidebar-link{
+  display: flex !important;
+  margin: 0px;
+}
+
 
 .sidebar-filter{
   margin-left: 10px;
@@ -576,6 +613,28 @@ td {
   font-weight: 900;
   color: #0078D4 !important;
 }
+
+.nav:not(.nav-tabs) a.active + .sidebar-menu-item-btn {
+  .hidden-button{
+    background-color: $sidebar-item-color !important;
+  }
+}
+
+.nav:not(.nav-tabs) a.active:hover + .sidebar-menu-item-btn {
+  .hidden-button{
+    background-color: $sidebar-item-color !important;
+    color: $basic-button-color;
+  }
+}
+
+.nav:not(.nav-tabs) a:hover + .sidebar-menu-item-btn {
+  .hidden-button{
+    background-color: #eeeeee !important;
+    color: $basic-button-color;
+  }
+}
+
+
 
 
 //---------------------TaskList----------------------

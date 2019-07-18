@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {Button, FormGroup, Label, Input, ModalBody, ModalFooter} from 'reactstrap';
 import { rebase } from '../../index';
+import Permits from "../../components/permissions";
 
 export default class Sidebar extends Component {
 	constructor(props) {
@@ -8,12 +9,13 @@ export default class Sidebar extends Component {
 		this.state = {
 			title: this.props.tag.title,
 			body: this.props.tag.body,
+			view: this.props.tag.view,
+			edit: this.props.tag.edit,
+			permissions: this.props.tag.permissions,
 
 			saving: false,
 			public: false,
 			active: false,
-			read: [],
-			write: [],
 			firstRead: [],
 			firstWrite: [],
 			users: [],
@@ -124,6 +126,8 @@ export default class Sidebar extends Component {
 						<Label htmlFor="body">Popis</Label>
 						<Input type="textarea" className="form-control" id="body" placeholder="Zadajte text" value={this.state.body} onChange={(e) => this.setState({body: e.target.value})}/>
 					</FormGroup>
+
+					<Permits id={this.props.tag.id} view={this.props.tag.view} edit={this.props.tag.edit} permissions={this.props.tag.permissions} db="lanwiki-tags"/>
 
 				</ModalBody>
 

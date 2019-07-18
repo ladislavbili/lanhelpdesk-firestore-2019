@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, FormGroup, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Button, FormGroup, Modal, ModalBody, ModalFooter } from 'reactstrap';
 
 import TimeAgo from 'react-timeago'
 import Select from 'react-select';

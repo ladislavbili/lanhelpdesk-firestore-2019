@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { ModalBody, ModalFooter,  Button, FormGroup, Label, Input } from 'reactstrap';
 import {rebase} from '../../index';
+import Permits from "../../components/permissions";
 
 export default class FolderEdit extends Component{
   constructor(props){
@@ -29,6 +30,8 @@ export default class FolderEdit extends Component{
                 <Label>Note</Label>
                 <Input type="textarea" className="form-control" placeholder="Enter folder note" value={this.state.note} onChange={(e)=>this.setState({note:e.target.value})} />
               </FormGroup>
+
+              <Permits id={this.props.folder.id} view={this.props.folder.view} edit={this.props.folder.edit} permissions={this.props.folder.permissions} db="expenditures-folders" />
 
             </ModalBody>
             <ModalFooter>

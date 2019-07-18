@@ -8,6 +8,7 @@ import { connect } from "react-redux";
 import SelectPage from '../components/SelectPage';
 import TaskAdd from './task/taskAdd';
 import Filter from './components/filter';
+import ProjectEdit from './projects/projectEdit';
 import ProjectAdd from './projects/projectAdd';
 import {rebase} from '../index';
 import {toSelArr} from '../helperFunctions';
@@ -130,7 +131,7 @@ class Sidebar extends Component {
 									<Nav vertical>
 										<NavItem>
 											<Link
-												className = "text-basic sidebar-align sidebar-menu-item"
+												className="text-basic sidebar-align sidebar-menu-item"
 												to={{ pathname: isReport?'/helpdesk/reports/all':`/helpdesk/taskList/i/all` }} onClick={()=>{
 													this.setState({filterID:null,filterData:null});
 													this.props.setFilter({
@@ -159,8 +160,7 @@ class Sidebar extends Component {
 													}}>{item.title}</Link>
 											</NavItem>
 
-										)
-										}
+										)}
 
 									</Nav>
 								</TabPane>
@@ -172,6 +172,10 @@ class Sidebar extends Component {
 							<li>
 									<ProjectAdd />
 							</li>
+
+							<hr />
+							<ProjectEdit item={null}/>
+
 						</div>
 					</div>}
 					{showSettings &&

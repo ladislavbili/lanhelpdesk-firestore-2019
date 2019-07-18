@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Button, Row, Col, NavItem, Nav, Modal} from 'reactstrap';
+import {Button, NavItem, Nav, Modal} from 'reactstrap';
 import { NavLink as Link } from 'react-router-dom';
 import { connect } from "react-redux";
 
@@ -56,32 +56,32 @@ class Sidebar extends Component {
 					</Button>
 
 					<hr/>
-					<Row>
-						<Col xs={10}>
-							<Nav vertical>
-								<NavItem>
-									<Link  className = "text-basic sidebar-align sidebar-menu-item" to={{ pathname: `/lanwiki/i/all` }}>All</Link>
-								</NavItem>
-								{	this.state.tags.sort((item1,item2)=>item1.title.toLowerCase()>item2.title.toLowerCase()?1:-1).map((item)=>
-									<NavItem key={item.id}>
-										<Link className = "text-basic sidebar-align sidebar-menu-item" to={{ pathname:`/lanwiki/i/`+item.id}}>{item.title}</Link>
-									</NavItem>
-								)}
-							</Nav>
-						</Col>
-						<Col xs={2} className="m-t-sidebar-item">
 
-							{	this.state.tags.sort((item1,item2)=>item1.title.toLowerCase()>item2.title.toLowerCase()?1:-1).map((item)=>
-								<Button
-									key={item.id}
-									className='btn-link sidebar-menu-item'
-									onClick={() => {this.setState({tagEdit: item, openedEdit: true})}}
-									>
-									<i className="fa fa-cog"/>
-								</Button>
-							)}
-						</Col>
-					</Row>
+					<Nav vertical>
+						<NavItem>
+							<Link  className = "text-basic sidebar-align sidebar-menu-item" to={{ pathname: `/lanwiki/i/all` }}>All</Link>
+						</NavItem>
+
+						{
+							this.state.tags
+							.sort((item1,item2)=>item1.title.toLowerCase()>item2.title.toLowerCase()?1:-1)
+							.map((item)=>
+								<NavItem key={item.id}  className="sidebar-link">
+									<Link className= "text-basic sidebar-align sidebar-menu-item-link" to={{ pathname:`/lanwiki/i/`+item.id}}>{item.title}</Link>
+									<div className='sidebar-menu-item-btn'>
+										<Button
+											key={item.id}
+											className='hidden-button full-width full-height'
+											onClick={() => {this.setState({tagEdit: item, openedEdit: true})}}
+											>
+											<i className="fa fa-cog"/>
+										</Button>
+									</div>
+								</NavItem>
+							)
+						}
+
+				</Nav>
 
 					<Modal isOpen={this.state.openedAdd} toggle={this.toggleAdd.bind(this)}>
 						<TagAdd close={this.toggleAdd.bind(this)}/>

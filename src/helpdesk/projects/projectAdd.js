@@ -8,6 +8,7 @@ export default class ProjectAdd extends Component{
     super(props);
     this.state={
       title:'',
+      body:'',
       saving:false,
       opened:false
     }
@@ -29,6 +30,12 @@ export default class ProjectAdd extends Component{
                 <Label for="name">Project name</Label>
                 <Input type="text" name="name" id="name" placeholder="Enter project name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
               </FormGroup>
+
+              <FormGroup>
+    						<Label htmlFor="body">Popis</Label>
+    						<Input type="textarea" className="form-control" id="body" placeholder="Zadajte text" value={this.state.body} onChange={(e) => this.setState({body: e.target.value})}/>
+    					</FormGroup>
+
             </ModalBody>
 
             <ModalFooter>
@@ -38,8 +45,8 @@ export default class ProjectAdd extends Component{
 
               <Button className="btn" disabled={this.state.saving} onClick={()=>{
                   this.setState({saving:true});
-                  rebase.addToCollection('/help-projects', {title:this.state.title})
-                  .then(()=>{this.setState({title:'',saving:false})});
+                  rebase.addToCollection('/help-projects', {title: this.state.title, body: this.state.body})
+                  .then(()=>{this.setState({title:'', body:'', saving:false})});
                 }}>
                 {this.state.saving?'Adding...':'Add project'}
               </Button>

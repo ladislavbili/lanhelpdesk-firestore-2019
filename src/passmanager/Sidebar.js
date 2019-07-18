@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Modal, Button, NavItem, Nav} from 'reactstrap';
+import { Modal, Button, NavItem, Nav} from 'reactstrap';
 import { NavLink as Link } from 'react-router-dom';
 
 import SelectPage from '../components/SelectPage';
@@ -51,28 +51,22 @@ export default class Sidebar extends Component {
 						<i className="fa fa-plus sidebar-icon-center"  /> Heslo
 					</Button>
 					<hr/>
-					<Row>
-						<Col xs={10}>
-							<Nav vertical>
-								{	this.state.folders.map((item)=>
-									<NavItem key={item.id}>
-										<Link className="text-basic sidebar-align sidebar-menu-item" to={{ pathname: `/passmanager/i/`+item.id }}>{item.title}</Link>
-									</NavItem>
-								)}
-							</Nav>
-						</Col>
-						<Col xs={2}>
+						<Nav vertical>
 							{	this.state.folders.map((item)=>
-								<Button
-									key={item.id}
-									className='btn-link sidebar-menu-item'
-									onClick={() => {this.setState({folderEdit: item, openedEdit: true})}}
-									>
-									<i className="fa fa-cog"/>
-								</Button>
+							<NavItem key={item.id}  className="sidebar-link">
+								<Link className="text-basic sidebar-align sidebar-menu-item-link" to={{ pathname: `/passmanager/i/`+item.id }}>{item.title}</Link>
+								<div className='sidebar-menu-item-btn'>
+									<Button
+										key={item.id}
+										className='hidden-button full-width full-height'
+										onClick={() => {this.setState({folderEdit: item, openedEdit: true})}}
+										>
+										<i className="fa fa-cog"/>
+									</Button>
+								</div>
+							</NavItem>
 							)}
-						</Col>
-					</Row>
+						</Nav>
 
 						<Modal isOpen={this.state.openedEdit} toggle={this.toggleEdit.bind(this)}>
 							<FolderEdit folder={this.state.folderEdit} close={this.toggleEdit.bind(this)}/>

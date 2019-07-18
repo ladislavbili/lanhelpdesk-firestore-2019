@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Modal, ModalBody, ModalFooter } from 'reactstrap';
 import { Button, FormGroup, Label, Input } from 'reactstrap';
 import {rebase} from '../../index';
 
@@ -26,24 +26,23 @@ export default class FilterAdd extends Component{
         <Button className="btn-link" onClick={this.toggle.bind(this)}>
           Save
         </Button>
+
         <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
-            <ModalHeader toggle={this.toggle.bind(this)}>Add filter</ModalHeader>
             <ModalBody>
               <FormGroup>
                 <Label>Filter name</Label>
-                <Input type="text" placeholder="Enter filter name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
+                <Input type="text" className="from-control" placeholder="Enter filter name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
               </FormGroup>
 
               </ModalBody>
               <ModalFooter>
-              <Button color="secondary" className="mr-auto" disabled={this.state.saving} onClick={this.toggle.bind(this)}>
+              <Button className="mr-auto btn-link" disabled={this.state.saving} onClick={this.toggle.bind(this)}>
                 Close
               </Button>
 
 
               <Button
-                color="primary"
-                className="separate"
+                className="btn"
                 disabled={this.state.saving||this.state.title===""}
                 onClick={()=>{
                   this.setState({saving:true});

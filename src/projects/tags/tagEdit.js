@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
 import {rebase} from '../../index';
+import Permits from "../../components/permissions";
 
 export default class WorkTypeEdit extends Component{
   constructor(props){
@@ -17,7 +18,13 @@ export default class WorkTypeEdit extends Component{
   }
 
   setData(data){
-    this.setState({title:data.title,loading:false})
+    this.setState({
+      title:data.title,
+      loading:false,
+      view: data.view,
+      edit: data.edit,
+      permissions: data.permissions,
+    })
   }
 
   componentWillReceiveProps(props){
@@ -43,12 +50,16 @@ export default class WorkTypeEdit extends Component{
             <Label for="name">Tag name</Label>
             <Input type="text" name="name" id="name" placeholder="Enter tag name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
           </FormGroup>
-          <Button className="btn" disabled={this.state.saving} onClick={()=>{
+
+          <Permits id={this.props.match.params.id} view={this.state.view} edit={this.state.edit} permissions={this.state.permissions} db="proj-tags" />
+
+
+          <Button className="btn m-t-30" disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
             rebase.updateDoc('/proj-tags/'+this.props.match.params.id, {title:this.state.title})
               .then(()=>{this.setState({saving:false})});
           }}>{this.state.saving?'Saving tag...':'Save tag'}</Button>
-          <Button className="btn-link" disabled={this.state.saving} onClick={()=>{
+          <Button className="btn-link  m-t-30" disabled={this.state.saving} onClick={()=>{
               if(window.confirm("Are you sure?")){
                 rebase.removeDoc('/proj-tags/'+this.props.match.params.id).then(()=>{
                   this.props.history.goBack();
