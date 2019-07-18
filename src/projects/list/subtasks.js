@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Input} from 'reactstrap';
+import { Input, Label} from 'reactstrap';
 import {rebase,database} from '../../index';
 import {snapshotToArray} from '../../helperFunctions';
 
@@ -51,12 +51,10 @@ export default class Subtasks extends Component{
   render(){
     return (
       <div>
-        <table className="table">
+        <table className="table table-borderless">
           <thead>
             <tr>
-              <th className="w-40px"></th>
-              <th>Subtasks</th>
-              <th className="w-20px"></th>
+              <th colSpan={3} >Subtasks</th>
             </tr>
           </thead>
           <tbody>
@@ -91,7 +89,7 @@ export default class Subtasks extends Component{
                         this.setState({ editedSubtaskTitle: e.target.value })}
                       }/>
                 </td>
-                <td>
+                <td className="w-20px">
                   <button
                     className="btn-link"
                     type="button"
