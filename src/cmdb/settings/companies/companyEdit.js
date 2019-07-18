@@ -96,7 +96,7 @@ export default class CompanyEdit extends Component{
               <Button className="btn" disabled={this.state.saving||this.state.loading||this.state.pricelist===undefined||this.state.companyName===""} onClick={()=>{
                   this.setState({saving:true});
                   rebase.updateDoc(`/companies/${this.props.item.id}`, {title:this.state.companyName,})
-                    .then(()=>{this.setState({companyName:'', pausal:this.state.pausal, pricelist:this.state.pricelists.length>0?this.state.pricelists[0]:null,saving:false})});
+                    .then(()=>{this.setState({companyName:'', pausal:this.state.pausal, pricelist:this.state.pricelists.length>0?this.state.pricelists[0]:null,saving:false, opened: false})});
                 }}>{this.state.saving?'Saving...':'Save changes'}</Button>
             </ModalFooter>
           </Modal>
