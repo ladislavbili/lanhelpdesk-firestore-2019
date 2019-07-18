@@ -1,28 +1,30 @@
 import React, { Component } from 'react';
 import { FormGroup, Button, Label, Input } from 'reactstrap';
 import { Modal, ModalBody, ModalFooter } from 'reactstrap';
-import {toSelArr, snapshotToArray} from '../../../helperFunctions';
-import {rebase,database} from '../../../index';
-import Select from 'react-select';
-import {selectStyle} from "../../../scss/selectStyles";
+//import {toSelArr, snapshotToArray} from '../../../helperFunctions';
+import {rebase/*,database*/} from '../../../index';
+//import Select from 'react-select';
+//import {selectStyle} from "../../../scss/selectStyles";
+import Permits from "../../../components/permissions";
 
-export default class CompanyAdd extends Component{
+export default class CompanyEdit extends Component{
   constructor(props){
     super(props);
     this.state={
+      companyName: this.props.item.title,
+
       pricelists:[],
       pricelist:null,
-      companyName:'',
       pausal:0,
       saving:false,
       opened:false
     }
-    this.fetchData.bind(this);
-    this.setData.bind(this);
-    this.fetchData();
+  //  this.fetchData.bind(this);
+  //  this.setData.bind(this);
+//    this.fetchData();
   }
 
-    fetchData(){
+/*    fetchData(){
       Promise.all(
         [
           database.collection('help-pricelists').get(),
@@ -44,11 +46,12 @@ export default class CompanyAdd extends Component{
           }
         }
         this.setState({pricelists,pricelist,loading:false})
-    }
+    }*/
 
   toggle(){
     this.setState({opened:!this.state.opened})
   }
+
   render(){
     return (
       <div>
@@ -57,7 +60,7 @@ export default class CompanyAdd extends Component{
             className='btn-link t-a-l sidebar-menu-item'
             onClick={() => this.setState({opened:true})}
             >
-           <i className="fa fa-plus sidebar-icon-center"/> Add company
+           <i className="fa fa-cog sidebar-icon-center"/> Company settings
           </Button>
 
         <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
@@ -66,7 +69,7 @@ export default class CompanyAdd extends Component{
                 <Label for="name">Company name</Label>
                 <Input name="name" id="name" type="text" placeholder="Enter company name" value={this.state.companyName} onChange={(e)=>this.setState({companyName:e.target.value})} />
               </FormGroup>
-              <FormGroup>
+          {/*    <FormGroup>
                 <Label for="pausal">Paušál</Label>
                 <Input name="pausal" id="pausal" type="number" placeholder="Enter pausal" value={this.state.pausal} onChange={(e)=>this.setState({pausal:e.target.value})} />
               </FormGroup>
@@ -80,7 +83,10 @@ export default class CompanyAdd extends Component{
                   value={this.state.pricelist}
                   onChange={e =>{ this.setState({ pricelist: e }); }}
                     />
-              </FormGroup>
+              </FormGroup>*/}
+
+              <Permits id={this.props.item.id} view={this.props.item.view} edit={this.props.item.edit} permissions={this.props.item.permissions} db="companies" />
+
             </ModalBody>
             <ModalFooter>
 
@@ -89,9 +95,9 @@ export default class CompanyAdd extends Component{
               </Button>
               <Button className="btn" disabled={this.state.saving||this.state.loading||this.state.pricelist===undefined||this.state.companyName===""} onClick={()=>{
                   this.setState({saving:true});
-                  rebase.addToCollection('/companies', {title:this.state.companyName,pricelist:this.state.pricelist.id})
-                    .then(()=>{this.setState({companyName:'',pausal:this.state.pausal,pricelist:this.state.pricelists.length>0?this.state.pricelists[0]:null,saving:false})});
-                }}>{this.state.saving?'Adding...':'Add company'}</Button>
+                  rebase.updateDoc(`/companies/${this.props.item.id}`, {title:this.state.companyName,})
+                    .then(()=>{this.setState({companyName:'', pausal:this.state.pausal, pricelist:this.state.pricelists.length>0?this.state.pricelists[0]:null,saving:false})});
+                }}>{this.state.saving?'Saving...':'Save changes'}</Button>
             </ModalFooter>
           </Modal>
           </div>

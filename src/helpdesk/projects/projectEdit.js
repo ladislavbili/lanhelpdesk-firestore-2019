@@ -15,6 +15,15 @@ export default class ProjectEdit extends Component{
     }
   }
 
+  componentWillReceiveProps(props){
+    if (this.props.item.id !== props.item.id){
+      this.setState({
+        title: props.item.title,
+        body: props.item.body,
+      });
+    }
+  }
+
   toggle(){
     if(!this.state.opened && this.props.item){
       this.setState({title: this.props.item.title});

@@ -38,8 +38,8 @@ class Sidebar extends Component {
 			filters:[],
 			search: '',
 			activeTab:0,
-			projects:[{id:null,title:'Dashboard',label:'Dashboard',value:null}],
-			project:{id:null,title:'Dashboard',label:'Dashboard',value:null},
+			projects:[{id:null,title:'Dashboard',body:'dashboard', label:'Dashboard',value:null}],
+			project:{id:null,title:'Dashboard',body:'dashboard', label:'Dashboard',value:null},
 			filterID:null,
 			filterData:null,
 		};
@@ -51,8 +51,8 @@ class Sidebar extends Component {
 			withIds: true,
 			then:content=>{
 				this.setState({
-				projects:toSelArr([{id:null,title:'Dashboard'}].concat(content)),
-				project:toSelArr([{id:null,title:'Dashboard'}].concat(content)).find((item)=>item.id===this.props.project)
+				projects:toSelArr([{id:null,title:'Dashboard', body:'dashboard',}].concat(content)),
+				project:toSelArr([{id:null,title:'Dashboard', body:'dashboard',}].concat(content)).find((item)=>item.id===this.props.project)
 			});
 		},
 		});
@@ -174,7 +174,10 @@ class Sidebar extends Component {
 							</li>
 
 							<hr />
-							<ProjectEdit item={null}/>
+							{ this.state.project.id
+								&&
+							<ProjectEdit item={this.state.project}/>
+							}
 
 						</div>
 					</div>}

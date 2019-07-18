@@ -9,6 +9,7 @@ import {rebase} from '../index';
 import {toSelArr} from '../helperFunctions';
 import {setCompany, setFilter} from '../redux/actions';
 import CompanyAdd from './settings/companies/companyAdd';
+import CompanyEdit from './settings/companies/companyEdit';
 import {sidebarSelectStyle} from '../scss/selectStyles';
 
 class Sidebar extends Component {
@@ -50,6 +51,7 @@ class Sidebar extends Component {
 	}
 
 	render() {
+		console.log(this.state.company);
 		return (
 			<div className="sidebar">
 				<SelectPage />
@@ -105,6 +107,11 @@ class Sidebar extends Component {
 
 					<hr />
 					<CompanyAdd />
+					<hr />
+					{ this.state.company.id
+						&&
+					<CompanyEdit item={this.state.company}/>
+					}
 
 				</div>
 			</div>
