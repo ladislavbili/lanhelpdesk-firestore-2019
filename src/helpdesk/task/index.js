@@ -142,7 +142,7 @@ class TasksRow extends Component {
 						</div>
 						<div className="m-t-5">
 							<p className="pull-right m-b-0 font-13">
-								<span className="label label-info">{task.status?task.status.title:'Neznámy status'}</span>
+								<span className="label label-info" style={{backgroundColor:task.status && task.status.color?task.status.color:'white'}}>{task.status?task.status.title:'Neznámy status'}</span>
 							</p>
 							<p className="text-muted m-b-0 font-13">
 								<span className="">Zadal: {task.requester?(task.requester.name+' '+task.requester.surname):'Neznámy používateľ'}</span>

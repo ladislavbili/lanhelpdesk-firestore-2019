@@ -4,7 +4,6 @@ import { Route } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import PageHeader from '../components/PageHeader';
 import List from './list';
-import TaskEdit from './list/taskEdit';
 import TagList from './tags'
 import "../scss/projects.scss";
 

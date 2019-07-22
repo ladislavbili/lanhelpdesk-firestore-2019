@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-
+import {Button} from 'reactstrap';
 import Comments from '../components/comments.js';
 import Materials from '../components/materials';
 import Subtasks from '../components/subtasks';
@@ -309,16 +309,29 @@ export default class TasksTwoEdit extends Component {
 									/>
 							</button>
 						</div>
+						{
+							this.state.statuses.map((status)=>
+							<Button
+								className="btn-link"
+								style={status.color?{color:status.color}:{}}
+								onClick={()=>{this.setState({status},this.submitTask.bind(this))}}
+								>{status.title}
+							</Button>
+							)
+						}
 					</div>
 				</div>
 
 						<div className={"card-box scrollable fit-with-header-and-commandbar " + (!this.props.columns ? " center-ver w-50" : "")}>
 							<div className="d-flex p-2">
-								<div className="row">
+								<div className="row flex">
 									<h1 className="center-hor text-extra-slim"># {this.props.match.params.taskID}</h1>
 									<span className="center-hor">
 							    	<input type="text" value={this.state.title} className="task-title-input text-extra-slim hidden-input" onChange={(e)=>this.setState({title:e.target.value},this.submitTask.bind(this))} placeholder="Enter task name" />
 									</span>
+									<div className="ml-auto center-hor">
+									<span className="label label-info" style={{backgroundColor:this.state.status && this.state.status.color?this.state.status.color:'white'}}>{this.state.status?this.state.status.title:'Neznámy status'}</span>
+									</div>
 								</div>
 							</div>
 
