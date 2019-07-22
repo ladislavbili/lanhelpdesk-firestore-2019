@@ -196,7 +196,12 @@ export default class Note extends Component{
             </div>
           </div>
 
-              {!this.state.editBodyOpen && <div className="clickable m-t-30" onClick={()=>this.setState({editBodyOpen:true})} dangerouslySetInnerHTML={{__html:this.state.body===null?'': this.state.body }}></div>}
+              {!this.state.editBodyOpen &&
+                <div>
+                  <Button className="btn-link" onClick={()=>this.setState({editBodyOpen:true})}>Upraviť text</Button>
+                  <div className="clickable m-t-30" onClick={()=>this.setState({editBodyOpen:true})} dangerouslySetInnerHTML={{__html:this.state.body===null?'': this.state.body }}></div>
+                </div>
+              }
 
               { this.state.editBodyOpen &&
               <FormGroup className="m-t-15">

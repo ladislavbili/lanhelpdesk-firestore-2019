@@ -3,11 +3,15 @@ import { Button, FormGroup, Label, Input } from 'reactstrap';
 import {rebase} from '../../index';
 import {timestampToString} from '../../helperFunctions';
 import TaskEditModal from './taskEditModal';
+import { connect } from "react-redux";
+import classnames from 'classnames';
+import TaskEdit from './taskEditColumn';
+import TaskEmpty from './taskEmpty';
+
 
 const statuses = [{id:0,title:'New'},{id:1,title:'Open'},{id:2,title:'Pending'},{id:3,title:'Closed'}]
 
-
-export default class Sidebar extends Component {
+class TaskList extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -93,7 +97,9 @@ export default class Sidebar extends Component {
 		{title:this.state.newTitle,
 			project:this.props.match.params.projectID!=='all'?this.props.match.params.projectID:null,
 			status:0,
-			createdAt: (new Date()).getTime()
+			createdAt: (new Date()).getTime(),
+			hours: 0,
+			price:0,
 		})
 		.then(()=>{
 			this.setState({newTitle:'',saving:false})
@@ -104,7 +110,7 @@ export default class Sidebar extends Component {
 
 	render() {
 		return (
-			<div className="row">
+			<div>
 				<div className="container-fluid">
 					<div className="d-flex flex-row align-items-center">
 						<div className="p-2">
@@ -190,8 +196,8 @@ export default class Sidebar extends Component {
 						</span>
 					</div>
 				</div>
-
-					<div className="p-20 full-width scrollable">
+				<div className="fit-with-header-and-commandbar row">
+					<div className="fit-with-header-and-commandbar p-20 scrollable" style={this.props.layout===1?{flex:'auto'}:{}}>
 						<h1>Tasks</h1>
 
 							<div className="p-2 max-width-400">
@@ -219,7 +225,7 @@ export default class Sidebar extends Component {
 								</div>
 							</div>
 
-							<table className="table">
+						<table className={classnames({ 'project-table-fixed': this.props.layout === 0, table:true })}>
 								<thead>
 									<tr>
 										<th>Created</th>
@@ -229,12 +235,22 @@ export default class Sidebar extends Component {
 										<th>Status</th>
 										<th>Deadline</th>
 										<th>Hours</th>
+										<th>Price</th>
 									</tr>
 								</thead>
 								<tbody>
 									{
 										this.getData().map((item)=>
-											<tr className="clickable" key={item.id} onClick={()=>this.setState({editOpened:true, openedID:item.id})}>
+											<tr
+												className={classnames({ 'active': this.props.match.params.taskID === item.id, clickable:true })}
+												key={item.id}
+												onClick={()=>{
+													if(this.props.layout===1){
+														this.setState({editOpened:true, openedID:item.id});
+													}else{
+														this.props.history.push('/projects/'+this.props.match.params.projectID+'/edit/'+item.id)
+													}
+											}}>
 												<td>{item.createdAt?timestampToString(item.createdAt):'No date'}</td>
 												<td>{item.title}</td>
 												<td>{item.assignedBy?item.assignedBy.email:'No user'}</td>
@@ -242,15 +258,54 @@ export default class Sidebar extends Component {
 												<td>{item.status.title}</td>
 												<td>{item.deadline?timestampToString(item.deadline):'No deadline'}</td>
 												<td>{item.hours?item.hours:0}</td>
+												<td>{item.price?item.price:0}</td>
 											</tr>
 										)
 									}
+									<tr>
+										<td colspan="6">
+											<b>Totals:</b>
+										</td>
+										<td>
+												{
+													this.getData().reduce((acc, cur)=>{
+														let hours = parseFloat(cur.hours);
+														if(!isNaN(hours)){
+															acc+=hours;
+														}
+														return acc;
+													},0)
+												}
+										</td>
+										<td>
+											{
+												this.getData().reduce((acc, cur)=>{
+													let price = parseFloat(cur.price);
+													if(!isNaN(price)){
+														acc+=price;
+													}
+													return acc;
+												},0)
+											}
+										</td>
+									</tr>
 								</tbody>
 							</table>
-
-						  <TaskEditModal id={this.state.openedID} opened={this.state.editOpened} toggle={()=>this.setState({editOpened:!this.state.editOpened})} />
 					</div>
+					{!this.props.match.params.taskID && this.props.layout === 0 && <TaskEmpty />}
+					{this.props.match.params.taskID && this.props.layout === 0 && <TaskEdit {...this.props} id={this.props.match.params.taskID} toggle={()=>{}}/>}
+
+
+
+					</div>
+					<TaskEditModal id={this.state.openedID} opened={this.state.editOpened} toggle={()=>this.setState({editOpened:!this.state.editOpened})} />
 				</div>
 			);
 		}
 	}
+
+	const mapStateToProps = ({ appReducer }) => {
+		return { layout:appReducer.layout };
+	};
+
+	export default connect(mapStateToProps, { })(TaskList);
