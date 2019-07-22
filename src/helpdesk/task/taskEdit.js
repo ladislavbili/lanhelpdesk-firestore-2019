@@ -288,6 +288,15 @@ export default class TasksTwoEdit extends Component {
 				<div className="container-fluid p-2">
 					<div className="d-flex flex-row align-items-center p-l-18">
 						<div className="center-hor">
+							{
+								this.state.statuses.map((status)=>
+								<Button
+									className="btn-link"
+									onClick={()=>{this.setState({status},this.submitTask.bind(this))}}
+									>{status.title}
+								</Button>
+								)
+							}
 							{!this.props.columns &&
 								<button type="button" className="btn btn-link waves-effect" onClick={()=>this.props.history.goBack()}>
 									<i
@@ -296,29 +305,19 @@ export default class TasksTwoEdit extends Component {
 								</button>
 							}
 							{' '}
-							<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.submitTask.bind(this)}>
-								{this.state.saving?'Saving... ':''}
-								<i
-									className="fas fa-save icon-M"
-									/>
-							</button>
-							{' '}
 							<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.deleteTask.bind(this)}>
 								<i
 									className="fas fa-trash icon-M"
 									/>
 							</button>
+							{' '}
+							<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.submitTask.bind(this)}>
+								<i
+									className="fas fa-save icon-M mr-3"
+									/>
+								{this.state.saving?'Saving... ':''}
+							</button>
 						</div>
-						{
-							this.state.statuses.map((status)=>
-							<Button
-								className="btn-link"
-								style={status.color?{color:status.color}:{}}
-								onClick={()=>{this.setState({status},this.submitTask.bind(this))}}
-								>{status.title}
-							</Button>
-							)
-						}
 					</div>
 				</div>
 
