@@ -289,11 +289,16 @@ export default class TasksTwoEdit extends Component {
 					<div className="d-flex flex-row align-items-center p-l-18">
 						<div className="center-hor">
 							{
-								this.state.statuses.map((status)=>
+								this.state.statuses.sort((item1,item2)=>{
+					        if(item1.order &&item2.order){
+					          return item1.order > item2.order? 1 :-1;
+					        }
+					        return -1;
+					      }).map((status)=>
 								<Button
 									className="btn-link"
-									onClick={()=>{this.setState({status},this.submitTask.bind(this))}}
-									>{status.title}
+									onClick={()=>{this.setState({status,statusChange:(new Date().getTime())},this.submitTask.bind(this))}}
+									><i className={(status.icon?status.icon:"")+" commandbar-command-icon icon-M"}/>{" "+status.title}
 								</Button>
 								)
 							}
@@ -308,7 +313,7 @@ export default class TasksTwoEdit extends Component {
 							<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.deleteTask.bind(this)}>
 								<i
 									className="fas fa-trash icon-M"
-									/>
+									/> Delete
 							</button>
 							{' '}
 							<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.submitTask.bind(this)}>
@@ -372,14 +377,14 @@ export default class TasksTwoEdit extends Component {
 									<div className="col-lg-6">
 										<div className="p-r-20">
 											<div className="row">
-												<label className="col-5 col-form-label text-slim">Status</label>
+												<label className="col-5 col-form-label text-slim">Typ</label>
 												<div className="col-7">
 													<Select
-														value={this.state.status}
-														onChange={(status)=>this.setState({status,statusChange:(new Date().getTime())},this.submitTask.bind(this))}
-														options={this.state.statuses.map((status)=>{return {...status,value:status.id,label:status.title}})}
+					                  value={this.state.type}
 														styles={selectStyle}
-														/>
+					                  onChange={(type)=>this.setState({type},this.submitTask.bind(this))}
+					                  options={this.state.taskTypes}
+					                  />
 												</div>
 											</div>
 											<div className="row">
@@ -404,6 +409,11 @@ export default class TasksTwoEdit extends Component {
 														/>
 												</div>
 											</div>
+										</div>
+									</div>
+
+									<div className="col-lg-6">
+										<div className="">
 											<div className="row">
 												<label className="col-5 col-form-label text-slim">Firma</label>
 												<div className="col-7">
@@ -415,27 +425,6 @@ export default class TasksTwoEdit extends Component {
 														/>
 												</div>
 											</div>
-										</div>
-									</div>
-
-									<div className="col-lg-6">
-										<div className="">
-											<div className="row">
-												<label className="col-5 col-form-label text-slim">Pripomienka</label>
-												<div className="col-7">
-													{/*className='form-control hidden-input'*/}
-													<input
-														className='form-control'
-														placeholder="Status change date"
-														type="datetime-local"
-														value={this.state.reminder}
-														onChange={(e)=>{
-															this.setState({reminder:e.target.value},this.submitTask.bind(this))}
-														}
-														/>
-												</div>
-											</div>
-
 											<div className="row">
 												<label className="col-5 col-form-label text-slim">Deadline</label>
 												<div className="col-7">
@@ -458,33 +447,38 @@ export default class TasksTwoEdit extends Component {
 													<Select options={repeat} styles={selectStyle} />
 												</div>
 											</div>
-
-											<div className="row">
-												<label className="col-5 col-form-label text-slim">Typ</label>
-												<div className="col-7">
-													<Select
-					                  value={this.state.type}
-														styles={selectStyle}
-					                  onChange={(type)=>this.setState({type},this.submitTask.bind(this))}
-					                  options={this.state.taskTypes}
-					                  />
-												</div>
-											</div>
-											{false && <div className="form-group m-b-0 row">
-												<label className="col-5 col-form-label text-slim">Mimo pracovných hodín</label>
-												<div className="col-7">
-													<Select
-														value={this.state.overtime}
-														styles={invisibleSelectStyleNoArrow}
-														onChange={(overtime)=>this.setState({overtime},this.submitTask.bind(this))}
-														options={[{value:true,label:'Áno'},{value:false,label:'Nie'}]}
-														/>
-												</div>
-											</div>}
 										</div>
 									</div>
 								</div>
 							</div>
+
+							{false && <div className="form-group m-b-0 row">
+								<label className="col-5 col-form-label text-slim">Mimo pracovných hodín</label>
+								<div className="col-7">
+									<Select
+										value={this.state.overtime}
+										styles={invisibleSelectStyleNoArrow}
+										onChange={(overtime)=>this.setState({overtime},this.submitTask.bind(this))}
+										options={[{value:true,label:'Áno'},{value:false,label:'Nie'}]}
+										/>
+								</div>
+							</div>}
+							{false && <div className="row">
+								<label className="col-5 col-form-label text-slim">Pripomienka</label>
+								<div className="col-7">
+									{/*className='form-control hidden-input'*/}
+									<input
+										className='form-control'
+										placeholder="Status change date"
+										type="datetime-local"
+										value={this.state.reminder}
+										onChange={(e)=>{
+											this.setState({reminder:e.target.value},this.submitTask.bind(this))}
+										}
+										/>
+								</div>
+							</div>}
+
 
 							<label className="m-t-5  text-slim">Popis</label>
 							<textarea className="form-control b-r-0" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value},this.submitTask.bind(this))} />
