@@ -15,7 +15,12 @@ export default class StatusesList extends Component{
     this.ref = rebase.listenToCollection('/help-statuses', {
       context: this,
       withIds: true,
-      then:content=>{this.setState({statuses:content, statusFilter:''})},
+      then:content=>{this.setState({statuses:content.sort((item1,item2)=>{
+        if(item1.order &&item2.order){
+          return item1.order > item2.order? 1 :-1;
+        }
+        return -1;
+      }), statusFilter:''})},
     });
   }
 
@@ -61,6 +66,7 @@ export default class StatusesList extends Component{
               <thead>
                 <tr>
                   <th>Status name</th>
+                  <th>Order</th>
                 </tr>
               </thead>
               <tbody>
@@ -70,6 +76,9 @@ export default class StatusesList extends Component{
                      onClick={()=>this.props.history.push('/helpdesk/settings/statuses/'+status.id)}>
                     <td className={(this.props.match.params.id === status.id ? "text-highlight":"")}>
                       {status.title}
+                    </td>
+                    <td className={(this.props.match.params.id === status.id ? "text-highlight":"")}>
+                      {status.order?status.order:0}
                     </td>
                   </tr>
                 )}

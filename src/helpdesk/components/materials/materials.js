@@ -75,9 +75,9 @@ export default class Rozpocet extends Component {
 										<th >Názov</th>
 										<th width="100">Mn.</th>
 										<th width="170">Jednotka</th>
+										<th width="130">Nákupná cena</th>
 										<th width="124">Predajná cena</th>
 										<th width="120">Cena</th>
-										<th width="130">Nákupná cena</th>
 										<th className="t-a-c" width="124">Action</th>
 									</tr>
 								</thead>
@@ -167,24 +167,6 @@ export default class Rozpocet extends Component {
 													styles={invisibleSelectStyle}
 													/>
 											</td>
-											<td>
-												{parseFloat(material.id === this.state.focusedMaterial
-														? editedFinalUnitPrice
-														: material.finalUnitPrice).toFixed(2)
-													}
-											</td>
-												<td>
-													{
-														(
-														(parseFloat(material.id === this.state.focusedMaterial
-																? editedFinalUnitPrice
-																: material.finalUnitPrice))*
-														parseInt(material.id === this.state.focusedMaterial?(this.state.editedMaterialQuantity===''?0:this.state.editedMaterialQuantity):material.quantity)
-														)
-														.toFixed(2)
-													}
-												</td>
-
 											<td className="table-highlight-background">
 												<input
 													type="number"
@@ -214,6 +196,24 @@ export default class Rozpocet extends Component {
 													}
 													/>
 											</td>
+											<td>
+												{parseFloat(material.id === this.state.focusedMaterial
+														? editedFinalUnitPrice
+														: material.finalUnitPrice).toFixed(2)
+													}
+											</td>
+												<td>
+													{
+														(
+														(parseFloat(material.id === this.state.focusedMaterial
+																? editedFinalUnitPrice
+																: material.finalUnitPrice))*
+														parseInt(material.id === this.state.focusedMaterial?(this.state.editedMaterialQuantity===''?0:this.state.editedMaterialQuantity):material.quantity)
+														)
+														.toFixed(2)
+													}
+												</td>
+
 											<td className="t-a-r">
 												<button className="btn btn-link waves-effect">
 													<i className="fa fa-arrow-up"  />
@@ -271,14 +271,6 @@ export default class Rozpocet extends Component {
 											styles={selectStyle}
 											/>
 									</td>
-									<td>
-										{unitPrice.toFixed(2)}
-									</td>
-									<td>
-										{
-											(unitPrice*this.state.newQuantity).toFixed(2)
-										}
-									</td>
 									<td className="table-highlight-background">
 										<input
 											type="number"
@@ -300,6 +292,15 @@ export default class Rozpocet extends Component {
 											placeholder=""
 											/>
 									</td>
+									<td>
+										{unitPrice.toFixed(2)}
+									</td>
+									<td>
+										{
+											(unitPrice*this.state.newQuantity).toFixed(2)
+										}
+									</td>
+
 										<td className="t-a-r">
 											<button className="btn btn-link waves-effect"
 												disabled={this.state.newUnit===null}
