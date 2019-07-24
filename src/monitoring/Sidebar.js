@@ -3,39 +3,25 @@ import {NavItem, Nav, Modal, Button} from 'reactstrap';
 import { NavLink as Link } from 'react-router-dom';
 
 import SelectPage from '../components/SelectPage';
-import {rebase} from '../index';
-import ProjectAdd from './projects/projectAdd';
-import ProjectEdit from './projects/projectEdit';
+import MailServersEdit from './mailServers/allMailServersEdit';
 
 export default class Sidebar extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			projects:[],
-			projectEdit: null,
-			openedEdit: false,
+			openedEditServers: false,
 		};
 		this.toggleEdit.bind(this);
 	}
 
 	componentWillMount(){
-		this.ref1 = rebase.listenToCollection('/proj-projects', {
-			context: this,
-			withIds: true,
-			then:content=>{
-				this.setState({
-				projects:content
-				});
-			},
-		});
 	}
 
 	componentWillUnmount(){
-		rebase.removeBinding(this.ref1);
 	}
 
 	toggleEdit(){
-		this.setState({openedEdit:!this.state.openedEdit})
+		this.setState({openedEditServers:!this.state.openedEditServers})
 	}
 
 	render() {
@@ -43,39 +29,49 @@ export default class Sidebar extends Component {
 			<div className="sidebar">
 				<SelectPage />
 				<div className="scrollable fit-with-header">
-					<ProjectAdd />
+					<div className="text-basic sidebar-align">
+						Monitoring
+					</div>
 					<Nav vertical>
-						<NavItem>
+						<NavItem key={0}  className="sidebar-link">
 							<Link
-								className="text-basic sidebar-align sidebar-menu-item"
-								to={{ pathname: `/projects/all` }}>
-								All
+								className="text-basic sidebar-align sidebar-menu-item-link"
+								key={0}
+								to={{ pathname: `/monitoring/backup-tasks`  }}>
+								Backup tasks
 							</Link>
+							<div className='sidebar-menu-item-btn'>
+								<Button
+									key={0}
+									className='hidden-button full-width full-height'
+									onClick={() => {/*this.setState({openedEditServers: true})*/}}
+									>
+									<i className="fa fa-cog"/>
+								</Button>
+							</div>
 						</NavItem>
-							{
-								this.state.projects.map((item)=>
-								<NavItem key={item.id}  className="sidebar-link">
-									<Link
-										className="text-basic sidebar-align sidebar-menu-item-link"
-										key={item.id}
-										to={{ pathname: `/projects/`+item.id }}>
-										{item.title}
-									</Link>
-								<div className='sidebar-menu-item-btn'>
-										<Button
-											key={item.id}
-											className='hidden-button full-width full-height'
-											onClick={() => {this.setState({projectEdit: item, openedEdit: true})}}
-											>
-											<i className="fa fa-cog"/>
-										</Button>
-									</div>
-								</NavItem>
-							)}
+
+						<NavItem key={1}  className="sidebar-link">
+							<Link
+								className="text-basic sidebar-align sidebar-menu-item-link"
+								key={1}
+								to={{ pathname: `/monitoring/mail-servers`}}>
+								Mail servers
+							</Link>
+						<div className='sidebar-menu-item-btn'>
+								<Button
+									key={1}
+									className='hidden-button full-width full-height'
+									onClick={() => {this.setState({openedEditServers: true})}}
+									>
+									<i className="fa fa-cog"/>
+								</Button>
+							</div>
+						</NavItem>
 					</Nav>
 
-					<Modal isOpen={this.state.openedEdit} toggle={this.toggleEdit.bind(this)}>
-						<ProjectEdit project={this.state.projectEdit} close={this.toggleEdit.bind(this)}/>
+					<Modal isOpen={this.state.openedEditServers} toggle={this.toggleEdit.bind(this)}>
+						<MailServersEdit close={this.toggleEdit.bind(this)}/>
 					</Modal>
 
 				</div>

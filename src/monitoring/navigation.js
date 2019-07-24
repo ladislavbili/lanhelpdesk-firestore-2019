@@ -4,8 +4,7 @@ import { Route } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import PageHeader from '../components/PageHeader';
 import List from './list';
-import TagList from './tags'
-import "../scss/projects.scss";
+import MailServerAdd from './mailServers/mailServerAdd';
 
 export default class Navigation extends Component {
 	render() {
@@ -14,11 +13,10 @@ export default class Navigation extends Component {
 				<div className="row">
 						<Sidebar {...this.props} />
 					<div className="flex main">
-						<PageHeader {...this.props} showLayoutSwitch={true} settings={[{title:'Tags',link:'tags'}]} />
-						<Route exact path='/projects/:projectID' component={List} />
-						<Route exact path='/projects/:projectID/edit/:taskID' component={List} />
-						<Route exact path='/projects/settings/tags' component={TagList} />
-	          <Route exact path='/projects/settings/tags/:id' component={TagList} />
+						<PageHeader {...this.props} showLayoutSwitch={true} settings={[]} />
+						<Route exact path='/monitoring/mail-servers' component={List} />
+						<Route exact path='/monitoring/mail-servers/edit/:itemID' component={List} />
+						<Route exact path='/monitoring/mail-servers/add' component={MailServerAdd} />
 					</div>
 				</div>
 			</div>

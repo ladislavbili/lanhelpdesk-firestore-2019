@@ -7,7 +7,7 @@ export default class TaskEmpty extends Component {
 			<div className="flex card-box">
 				<div className="fit-with-header-and-commandbar row">
 						<div className=" center-ver center-hor">
-							Vyberte task zo zoznamu vlavo.
+							Vyberte položku zo zoznamu vlavo.
 						</div>
 				</div>
 			</div>
