@@ -47,13 +47,18 @@ export default class TaskAdd extends Component{
       overtime:{value:false,label:'Nie'}
     }
 		this.counter = 0;
-    this.fetchData();
+    this.fetchData(this.props.project);
   }
 
 	getNewID(){
 		return this.counter++;
 	}
 
+	componentWillReceiveProps(props){
+    if (this.props.project !== props.project){
+      this.fetchData(props.project);
+    }
+  }
 
   submitTask(){
     this.setState({saving:true});
@@ -113,13 +118,13 @@ export default class TaskAdd extends Component{
 					taskWorks:[],
 					taskMaterials:[],
 				})
-				this.fetchData();
+				this.fetchData(this.props.project);
 				this.props.history.push('/helpdesk/taskList/i/all/'+newID);
 			});
 		})
   }
 
-  fetchData(){
+  fetchData(projectID){
     Promise.all(
       [
         database.collection('help-statuses').get(),
@@ -136,23 +141,43 @@ export default class TaskAdd extends Component{
 					context: this,
 				})
     ]).then(([statuses,projects,users, companies, workTypes,units, prices, pricelists,tags,taskTypes,meta])=>{
-      this.setData(
-				toSelArr(snapshotToArray(statuses)),
-				toSelArr(snapshotToArray(projects)),
-				toSelArr(snapshotToArray(users),'email'),
-				toSelArr(snapshotToArray(companies)),
-				toSelArr(snapshotToArray(workTypes)),
-      	toSelArr(snapshotToArray(units)),
-				snapshotToArray(prices),
-				snapshotToArray(pricelists),
-				toSelArr(snapshotToArray(tags)),
-				toSelArr(snapshotToArray(taskTypes)),
-				meta.defaultUnit
-			);
+			if(projectID){
+				database.collection('help-projects').doc(projectID).get().then((project)=>{
+					this.setData(
+						{id:project.id,...project.data()},
+						toSelArr(snapshotToArray(statuses)),
+						toSelArr(snapshotToArray(projects)),
+						toSelArr(snapshotToArray(users),'email'),
+						toSelArr(snapshotToArray(companies)),
+						toSelArr(snapshotToArray(workTypes)),
+		      	toSelArr(snapshotToArray(units)),
+						snapshotToArray(prices),
+						snapshotToArray(pricelists),
+						toSelArr(snapshotToArray(tags)),
+						toSelArr(snapshotToArray(taskTypes)),
+						meta.defaultUnit
+					)
+				})
+			}else{
+				this.setData(
+					null,
+					toSelArr(snapshotToArray(statuses)),
+					toSelArr(snapshotToArray(projects)),
+					toSelArr(snapshotToArray(users),'email'),
+					toSelArr(snapshotToArray(companies)),
+					toSelArr(snapshotToArray(workTypes)),
+					toSelArr(snapshotToArray(units)),
+					snapshotToArray(prices),
+					snapshotToArray(pricelists),
+					toSelArr(snapshotToArray(tags)),
+					toSelArr(snapshotToArray(taskTypes)),
+					meta.defaultUnit
+				);
+			}
     });
   }
 
-  setData(statuses, projects,users,companies,workTypes,units, prices, pricelists,tags,taskTypes,defaultUnit){
+  setData(project,statuses, projects,users,companies,workTypes,units, prices, pricelists,tags,taskTypes,defaultUnit){
     let status = statuses.find((item)=>item.title==='New');
     if(!status){
       status=null;
@@ -165,30 +190,56 @@ export default class TaskAdd extends Component{
 			let newWorkType = {...workType, prices:prices.filter((price)=>price.workType===workType.id)}
 			return newWorkType;
 		});
+		if(project===null||!project.def){
+			this.setState({
+				statuses,
+				projects,
+				users,
+				companies:newCompanies,
+				workTypes:newWorkTypes,
+				taskTypes,
+				allTags:tags,
 
-    this.setState({
-      statuses,
-      projects,
-      users,
-      companies:newCompanies,
-      workTypes:newWorkTypes,
-			taskTypes,
-			allTags:tags,
+				status,
+				units,
+				statusChange:null,
+				project:null,
+				company:null,
+				workHours:0,
+				workType:null,
+				requester:null,
+				assignedTo:[],
+				loading:false,
+				type:null,
+				tags:[],
+				defaultUnit
+			});
+		}else{
+			this.setState({
+				statuses,
+				projects,
+				users,
+				companies:newCompanies,
+				workTypes:newWorkTypes,
+				taskTypes,
+				allTags:tags,
+				units,
 
-      status,
-      units,
-      statusChange:null,
-      project:null,
-      company:null,
-      workHours:0,
-      workType:null,
-      requester:null,
-      assignedTo:[],
-      loading:false,
-			type:null,
-			tags:[],
-			defaultUnit
-    });
+				status:project.def.status&& (project.def.status.fixed||project.def.status.def)?this.state.statuses.find((item)=> item.id===project.def.status.value):null,
+				statusChange:null,
+				project:projects.find((item)=>item.id===project.id),
+				company:project.def.company&& (project.def.company.fixed||project.def.company.def)?this.state.companies.find((item)=> item.id===project.def.company.value):null,
+				workHours:0,
+				workType:null,
+				requester:project.def.requester&& (project.def.requester.fixed||project.def.requester.def)?this.state.users.find((item)=> item.id===project.def.requester.value):null,
+				assignedTo:[],
+				loading:false,
+				type:null,
+				tags:[],
+				defaultUnit
+			});
+		}
+
   }
 
   render(){

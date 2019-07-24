@@ -75,7 +75,7 @@ export default class Permits extends Component {
 		return (
 			<div >
 				<hr />
-				<h3 className="m-t-20" style={{color: "red"}}> DEMO </h3>
+				<h3 className="m-t-20" style={{color: "red"}}> DEMO - prava </h3>
 				<div className="row">
 					<div className="m-r-10 center-hor">
 						<label className="">

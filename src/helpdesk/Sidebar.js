@@ -85,7 +85,7 @@ class Sidebar extends Component {
 			<div className="sidebar">
 					<SelectPage />
 				<div className="scrollable fit-with-header">
-					<TaskAdd history={this.props.history} />
+					<TaskAdd history={this.props.history} project={this.state.project.id} />
 						<hr/>
 					{!showSettings && <div>
 						<div>
