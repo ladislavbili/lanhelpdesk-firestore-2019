@@ -51,7 +51,6 @@ class Sidebar extends Component {
 	}
 
 	render() {
-		console.log(this.state.company);
 		return (
 			<div className="sidebar">
 				<SelectPage />
