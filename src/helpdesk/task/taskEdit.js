@@ -88,6 +88,48 @@ export default class TasksTwoEdit extends Component {
 		}
 	}
 
+	copyTask(){
+		if(window.confirm("Do you really want to copy this task?")){
+			let body = {
+				title: this.state.title,
+				company: this.state.company?this.state.company.id:null,
+				workHours: this.state.workHours,
+				requester: this.state.requester?this.state.requester.id:null,
+				assignedTo: this.state.assignedTo.map((item)=>item.id),
+				description: this.state.description,
+				status: this.state.status?this.state.status.id:null,
+				deadline: isNaN(new Date(this.state.deadline).getTime()) ? null : (new Date(this.state.deadline).getTime()),
+				reminder: isNaN(new Date(this.state.reminder).getTime()) ? null : (new Date(this.state.reminder).getTime()),
+				createdAt:(new Date()).getTime(),
+				statusChange:(new Date()).getTime(),
+				project: this.state.project?this.state.project.id:null,
+				pausal: this.state.pausal.value,
+				overtime: this.state.overtime.value,
+				tags: this.state.tags.map((item)=>item.id),
+				type: this.state.type?this.state.type.id:null,
+			};
+			database.collection('metadata').doc('0').get().then((taskMeta)=>{
+				let newID = (parseInt(taskMeta.data().taskLastID)+1)+"";
+				this.state.taskWorks.forEach((item)=>{
+					delete item['id'];
+						rebase.addToCollection('help-task_works',{...item,task:newID});
+				})
+
+				this.state.taskMaterials.forEach((item)=>{
+					delete item['id'];
+					rebase.addToCollection('help-task_materials',{...item, task:newID});
+				})
+
+
+				rebase.addToCollection('/help-tasks', body,newID)
+				.then(()=>{
+					rebase.updateDoc('/metadata/0',{taskLastID:newID});
+					this.props.history.push('/helpdesk/taskList/i/'+this.props.match.params.listID+'/'+newID);
+				});
+			})
+		}
+	}
+
 	submitTask(){
 		if(this.canSave()){
 			return;
@@ -316,6 +358,12 @@ export default class TasksTwoEdit extends Component {
 									/> Delete
 							</button>
 							{' '}
+							<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.copyTask.bind(this)}>
+								<i
+									className="fas fa-copy icon-M"
+									/> Copy
+							</button>
+							{' '}
 							<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.submitTask.bind(this)}>
 								<i
 									className="fas fa-save icon-M mr-3"
@@ -533,7 +581,7 @@ export default class TasksTwoEdit extends Component {
 									this.setState({taskMaterials:newTaskMaterials});
 								}}
 								removeMaterial={(id)=>{
-									this.props.removeMaterial(id).then(()=>{
+									rebase.removeDoc('help-task_materials/'+id).then(()=>{
 										let newTaskMaterials=[...this.state.taskMaterials];
 										newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
 										this.setState({taskMaterials:newTaskMaterials});
