@@ -4,14 +4,17 @@ import { NavLink as Link } from 'react-router-dom';
 
 import SelectPage from '../components/SelectPage';
 import MailServersEdit from './mailServers/allMailServersEdit';
+import BackupTasksEdit from './backupTasks/allBackupTasksEdit';
 
 export default class Sidebar extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			openedEditServers: false,
+			openedEditBackupTasks: false,
 		};
-		this.toggleEdit.bind(this);
+		this.toggleEditServers.bind(this);
+		this.toggleEditBackupTasks.bind(this);
 	}
 
 	componentWillMount(){
@@ -20,8 +23,12 @@ export default class Sidebar extends Component {
 	componentWillUnmount(){
 	}
 
-	toggleEdit(){
+	toggleEditServers(){
 		this.setState({openedEditServers:!this.state.openedEditServers})
+	}
+
+	toggleEditBackupTasks(){
+		this.setState({openedEditBackupTasks:!this.state.openedEditBackupTasks})
 	}
 
 	render() {
@@ -29,9 +36,10 @@ export default class Sidebar extends Component {
 			<div className="sidebar">
 				<SelectPage />
 				<div className="scrollable fit-with-header">
-					<div className="text-basic sidebar-align">
+					<div className="text-basic sidebar-align center-hor p-t-10 sidebar-menu-item">
 						Monitoring
 					</div>
+					<hr/>
 					<Nav vertical>
 						<NavItem key={0}  className="sidebar-link">
 							<Link
@@ -44,7 +52,7 @@ export default class Sidebar extends Component {
 								<Button
 									key={0}
 									className='hidden-button full-width full-height'
-									onClick={() => {/*this.setState({openedEditServers: true})*/}}
+									onClick={() => {this.setState({openedEditBackupTasks: true})}}
 									>
 									<i className="fa fa-cog"/>
 								</Button>
@@ -70,8 +78,12 @@ export default class Sidebar extends Component {
 						</NavItem>
 					</Nav>
 
-					<Modal isOpen={this.state.openedEditServers} toggle={this.toggleEdit.bind(this)}>
-						<MailServersEdit close={this.toggleEdit.bind(this)}/>
+					<Modal isOpen={this.state.openedEditServers} toggle={this.toggleEditServers.bind(this)}>
+						<MailServersEdit close={this.toggleEditServers.bind(this)}/>
+					</Modal>
+
+					<Modal isOpen={this.state.openedEditBackupTasks} toggle={this.toggleEditBackupTasks.bind(this)}>
+						<BackupTasksEdit close={this.toggleEditBackupTasks.bind(this)}/>
 					</Modal>
 
 				</div>

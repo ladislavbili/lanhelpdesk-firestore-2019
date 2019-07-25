@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { ModalBody, ModalFooter, Button, FormGroup, Label, Input  } from 'reactstrap';
 
-export default class AllMailServersEdit extends Component{
+export default class ProjectEdit extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -118,8 +118,7 @@ export default class AllMailServersEdit extends Component{
               </Button>
 
               <Button className="btn" disabled={this.state.saving} onClick={()=>{}}>
-                {this.state.saving?'Saving...':'Save changes'}
-              </Button>
+                {this.state.saving?'Saving...':'Save changes'}</Button>
             </ModalFooter>
 
           </div>

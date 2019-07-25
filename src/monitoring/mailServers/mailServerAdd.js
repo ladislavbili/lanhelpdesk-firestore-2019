@@ -5,7 +5,7 @@ import {rebase} from '../../index';
 import Select from 'react-select';
 import {selectStyle} from '../../scss/selectStyles';
 
-export default class ProjectAdd extends Component{
+export default class MailServerAdd extends Component{
   constructor(props){
     super(props);
     this.state={
