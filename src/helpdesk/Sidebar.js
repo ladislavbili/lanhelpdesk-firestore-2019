@@ -42,6 +42,8 @@ class Sidebar extends Component {
 			project:{id:null,title:'Dashboard',body:'dashboard', label:'Dashboard',value:null},
 			filterID:null,
 			filterData:null,
+
+			projectChangeDate:(new Date()).getTime(),
 		};
 	}
 
@@ -85,7 +87,7 @@ class Sidebar extends Component {
 			<div className="sidebar">
 					<SelectPage />
 				<div className="scrollable fit-with-header">
-					<TaskAdd history={this.props.history} project={this.state.project.id} />
+					<TaskAdd history={this.props.history} project={this.state.project.id} triggerDate={this.state.projectChangeDate} />
 						<hr/>
 					{!showSettings && <div>
 						<div>
@@ -176,7 +178,7 @@ class Sidebar extends Component {
 							<hr />
 							{ this.state.project.id
 								&&
-							<ProjectEdit item={this.state.project}/>
+							<ProjectEdit item={this.state.project} triggerChange={()=>{this.setState({projectChangeDate:(new Date()).getTime()})}}/>
 							}
 
 						</div>

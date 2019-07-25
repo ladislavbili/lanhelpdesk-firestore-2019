@@ -7,6 +7,15 @@ import Materials from '../components/materials';
 import Subtasks from '../components/subtasks';
 import {invisibleSelectStyle} from '../../scss/selectStyles';
 
+const noDef={
+	status:{def:false,fixed:false, value: null},
+	tags:{def:false,fixed:false, value: []},
+	assignedTo:{def:false,fixed:false, value: []},
+	type:{def:false,fixed:false, value: null},
+	requester:{def:false,fixed:false, value: null},
+	company:{def:false,fixed:false, value: null}
+}
+
 const repeat = [
 	{ value: 'none', label: 'none' },
 	{ value: 'every day', label: 'every day' },
@@ -30,6 +39,7 @@ export default class TaskAdd extends Component{
 			allTags:[],
 			taskTypes:[],
 			hidden:true,
+			defaults:noDef,
 
       title:'',
       company:null,
@@ -47,7 +57,7 @@ export default class TaskAdd extends Component{
       overtime:{value:false,label:'Nie'}
     }
 		this.counter = 0;
-    this.fetchData(this.props.project);
+    this.fetchData();
   }
 
 	getNewID(){
@@ -56,8 +66,10 @@ export default class TaskAdd extends Component{
 
 	componentWillReceiveProps(props){
     if (this.props.project !== props.project){
-      this.fetchData(props.project);
-    }
+      this.fetchData();
+    }else if(this.props.triggerDate!==props.triggerDate){
+      this.setDefaults(props.project);
+		}
   }
 
   submitTask(){
@@ -124,7 +136,7 @@ export default class TaskAdd extends Component{
 		})
   }
 
-  fetchData(projectID){
+  fetchData(){
     Promise.all(
       [
         database.collection('help-statuses').get(),
@@ -141,43 +153,50 @@ export default class TaskAdd extends Component{
 					context: this,
 				})
     ]).then(([statuses,projects,users, companies, workTypes,units, prices, pricelists,tags,taskTypes,meta])=>{
-			if(projectID){
-				database.collection('help-projects').doc(projectID).get().then((project)=>{
-					this.setData(
-						{id:project.id,...project.data()},
-						toSelArr(snapshotToArray(statuses)),
-						toSelArr(snapshotToArray(projects)),
-						toSelArr(snapshotToArray(users),'email'),
-						toSelArr(snapshotToArray(companies)),
-						toSelArr(snapshotToArray(workTypes)),
-		      	toSelArr(snapshotToArray(units)),
-						snapshotToArray(prices),
-						snapshotToArray(pricelists),
-						toSelArr(snapshotToArray(tags)),
-						toSelArr(snapshotToArray(taskTypes)),
-						meta.defaultUnit
-					)
-				})
-			}else{
-				this.setData(
-					null,
-					toSelArr(snapshotToArray(statuses)),
-					toSelArr(snapshotToArray(projects)),
-					toSelArr(snapshotToArray(users),'email'),
-					toSelArr(snapshotToArray(companies)),
-					toSelArr(snapshotToArray(workTypes)),
-					toSelArr(snapshotToArray(units)),
-					snapshotToArray(prices),
-					snapshotToArray(pricelists),
-					toSelArr(snapshotToArray(tags)),
-					toSelArr(snapshotToArray(taskTypes)),
-					meta.defaultUnit
-				);
-			}
+			this.setData(
+				toSelArr(snapshotToArray(statuses)),
+				toSelArr(snapshotToArray(projects)),
+				toSelArr(snapshotToArray(users),'email'),
+				toSelArr(snapshotToArray(companies)),
+				toSelArr(snapshotToArray(workTypes)),
+				toSelArr(snapshotToArray(units)),
+				snapshotToArray(prices),
+				snapshotToArray(pricelists),
+				toSelArr(snapshotToArray(tags)),
+				toSelArr(snapshotToArray(taskTypes)),
+				meta.defaultUnit
+			);
     });
   }
 
-  setData(project,statuses, projects,users,companies,workTypes,units, prices, pricelists,tags,taskTypes,defaultUnit){
+	setDefaults(projectID){
+		if(projectID===null){
+			this.setState({defaults:noDef});
+			return;
+		}
+
+		database.collection('help-projects').doc(projectID).get().then((project)=>{
+			let def = project.data().def;
+			if(!def){
+				this.setState({defaults:noDef});
+				return;
+			}
+			let state  = this.state;
+			this.setState({
+				assignedTo:def.assignedTo&& (def.assignedTo.fixed||def.assignedTo.def)? state.users.filter((item)=> def.assignedTo.value.includes(item.id)):[],
+				company:def.company&& (def.company.fixed||def.company.def)?state.companies.find((item)=> item.id===def.company.value):null,
+				requester:def.requester&& (def.requester.fixed||def.requester.def)?state.users.find((item)=> item.id===def.requester.value):null,
+				status:def.status&& (def.status.fixed||def.status.def)?state.statuses.find((item)=> item.id===def.status.value):null,
+				tags:def.tags&& (def.tags.fixed||def.tags.def)? state.allTags.filter((item)=> def.tags.value.includes(item.id)):[],
+				type:def.type && (def.type.fixed||def.type.def)?state.taskTypes.find((item)=> item.id===def.type.value):null,
+				project:state.projects.find((item)=>item.id===project.id),
+				defaults:def
+			});
+
+		});
+	}
+
+  setData(statuses, projects,users,companies,workTypes,units, prices, pricelists,tags,taskTypes,defaultUnit){
     let status = statuses.find((item)=>item.title==='New');
     if(!status){
       status=null;
@@ -190,7 +209,7 @@ export default class TaskAdd extends Component{
 			let newWorkType = {...workType, prices:prices.filter((price)=>price.workType===workType.id)}
 			return newWorkType;
 		});
-		if(project===null||!project.def){
+
 			this.setState({
 				statuses,
 				projects,
@@ -212,33 +231,9 @@ export default class TaskAdd extends Component{
 				loading:false,
 				type:null,
 				tags:[],
+				defaults:noDef,
 				defaultUnit
-			});
-		}else{
-			this.setState({
-				statuses,
-				projects,
-				users,
-				companies:newCompanies,
-				workTypes:newWorkTypes,
-				taskTypes,
-				allTags:tags,
-				units,
-
-				status:project.def.status&& (project.def.status.fixed||project.def.status.def)?this.state.statuses.find((item)=> item.id===project.def.status.value):null,
-				statusChange:null,
-				project:projects.find((item)=>item.id===project.id),
-				company:project.def.company&& (project.def.company.fixed||project.def.company.def)?this.state.companies.find((item)=> item.id===project.def.company.value):null,
-				workHours:0,
-				workType:null,
-				requester:project.def.requester&& (project.def.requester.fixed||project.def.requester.def)?this.state.users.find((item)=> item.id===project.def.requester.value):null,
-				assignedTo:[],
-				loading:false,
-				type:null,
-				tags:[],
-				defaultUnit
-			});
-		}
+			},()=>this.setDefaults(this.props.project));
 
   }
 
@@ -285,7 +280,24 @@ export default class TaskAdd extends Component{
 
 
 			<Modal size="lg"  isOpen={this.state.openAddTaskModal} toggle={()=>{this.setState({openAddTaskModal:!this.state.openAddTaskModal})}} >
-					<ModalHeader toggle={()=>{this.setState({openAddTaskModal:!this.state.openAddTaskModal})}} ></ModalHeader>
+					<ModalHeader toggle={()=>{this.setState({openAddTaskModal:!this.state.openAddTaskModal})}} >
+						{
+							this.state.statuses.sort((item1,item2)=>{
+								if(item1.order &&item2.order){
+									return item1.order > item2.order? 1 :-1;
+								}
+								return -1;
+							}).map((status)=>
+							<Button
+								className="btn-link"
+								disabled={this.state.defaults.status.fixed}
+								onClick={()=>{this.setState({status})}}
+								> <i className={(status.icon?status.icon:"")+" commandbar-command-icon icon-M"}/>{" "+status.title}
+							</Button>
+							)
+						}
+
+					</ModalHeader>
 					<ModalBody>
 					<div className="scrollable">
 						<div className="p-t-0">
@@ -294,6 +306,10 @@ export default class TaskAdd extends Component{
 									<span className="center-hor">
 										<input type="text" value={this.state.title} className="task-title-input hidden-input" onChange={(e)=>this.setState({title:e.target.value})} placeholder="Enter task name" />
 									</span>
+									<div className="ml-auto center-hor">
+										<span className="label label-info" style={{backgroundColor:this.state.status && this.state.status.color?this.state.status.color:'white'}}>{this.state.status?this.state.status.title:'Neznámy status'}</span>
+									</div>
+
 								</div>
 							<div className="row">
 								<div className="col-lg-12 row">
@@ -301,6 +317,7 @@ export default class TaskAdd extends Component{
 									<div className="f-1">
 										<Select
 											value={this.state.tags}
+											isDisabled={this.state.defaults.tags.fixed}
 											isMulti
 											onChange={(tags)=>this.setState({tags})}
 											options={this.state.allTags}
@@ -313,6 +330,7 @@ export default class TaskAdd extends Component{
 									<div className="f-1">
 										<Select
 											value={this.state.assignedTo}
+											isDisabled={this.state.defaults.assignedTo.fixed}
 											isMulti
 											onChange={(users)=>this.setState({assignedTo:users})}
 											options={this.state.users}
@@ -325,13 +343,14 @@ export default class TaskAdd extends Component{
 									<div className="col-lg-6">
 										<div className="p-r-20">
 											<div className="row">
-												<label className="col-5 col-form-label">Status</label>
+												<label className="col-5 col-form-label">Typ</label>
 												<div className="col-7">
 													<Select
-														value={this.state.status}
-														onChange={(status)=>this.setState({status,statusChange:(new Date().getTime())})}
-														options={this.state.statuses.map((status)=>{return {...status,value:status.id,label:status.title}})}
+														value={this.state.type}
+														isDisabled={this.state.defaults.type.fixed}
 														styles={invisibleSelectStyle}
+														onChange={(type)=>this.setState({type})}
+														options={this.state.taskTypes}
 														/>
 												</div>
 											</div>
@@ -340,7 +359,7 @@ export default class TaskAdd extends Component{
 												<div className="col-7">
 													<Select
 														value={this.state.project}
-														onChange={(project)=>this.setState({project})}
+														onChange={(project)=>this.setState({project},()=>this.setDefaults(project.id))}
 														options={this.state.projects}
 														styles={invisibleSelectStyle}
 														/>
@@ -351,19 +370,9 @@ export default class TaskAdd extends Component{
 												<div className="col-7">
 													<Select
 														value={this.state.requester}
+														isDisabled={this.state.defaults.requester.fixed}
 														onChange={(requester)=>this.setState({requester})}
 														options={this.state.users}
-														styles={invisibleSelectStyle}
-														/>
-												</div>
-											</div>
-											<div className="row">
-												<label className="col-5 col-form-label">Firma</label>
-												<div className="col-7">
-													<Select
-														value={this.state.company}
-														onChange={(company)=>this.setState({company})}
-														options={this.state.companies}
 														styles={invisibleSelectStyle}
 														/>
 												</div>
@@ -373,9 +382,15 @@ export default class TaskAdd extends Component{
 									<div className="col-lg-6">
 										<div>
 											<div className="row">
-												<label className="col-5 col-form-label">Pripomienka</label>
+												<label className="col-5 col-form-label">Firma</label>
 												<div className="col-7">
-													<Select styles={invisibleSelectStyle} />
+													<Select
+														value={this.state.company}
+														isDisabled={this.state.defaults.company.fixed}
+														onChange={(company)=>this.setState({company})}
+														options={this.state.companies}
+														styles={invisibleSelectStyle}
+														/>
 												</div>
 											</div>
 											<div className="row">
@@ -396,18 +411,6 @@ export default class TaskAdd extends Component{
 												<label className="col-5 col-form-label">Opakovanie</label>
 												<div className="col-7">
 													<Select options={repeat} styles={invisibleSelectStyle} />
-												</div>
-											</div>
-
-											<div className="row">
-												<label className="col-5 col-form-label">Typ</label>
-												<div className="col-7">
-													<Select
-														value={this.state.type}
-														styles={invisibleSelectStyle}
-														onChange={(type)=>this.setState({type})}
-														options={this.state.taskTypes}
-														/>
 												</div>
 											</div>
 										</div>

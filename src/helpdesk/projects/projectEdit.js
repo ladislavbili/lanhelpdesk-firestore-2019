@@ -20,7 +20,7 @@ export default class ProjectEdit extends Component{
 
       status:{def:false,fixed:false, value: null},
       tags:{def:false,fixed:false, value: []},
-      assigned:{def:false,fixed:false, value: []},
+      assignedTo:{def:false,fixed:false, value: []},
       type:{def:false,fixed:false, value: null},
       requester:{def:false,fixed:false, value: null},
       company:{def:false,fixed:false, value: null},
@@ -59,7 +59,7 @@ export default class ProjectEdit extends Component{
   setData(project,statuses,allTags,users,types,companies){
     let status = statuses.find(item=> project.def && item.id===project.def.status.value);
     let tags = allTags.filter(item=> project.def && project.def.tags.value.includes(item.id));
-    let assigned = users.filter(item=> project.def && project.def.assigned.value.includes(item.id));
+    let assignedTo = users.filter(item=> project.def && project.def.assignedTo.value.includes(item.id));
     let type = types.find(item=> project.def && item.id===project.def.type.value);
     let requester = users.find(item=> project.def && item.id===project.def.requester.value);
     let company = companies.find(item=> project.def && item.id===project.def.company.value);
@@ -74,7 +74,7 @@ export default class ProjectEdit extends Component{
 
       status:status?{value:status,def:project.def.status.def,fixed:project.def.status.fixed}:{def:false,fixed:false, value: null},
       tags:project.def?{value:tags,def:project.def.tags.def,fixed:project.def.tags.fixed}:{def:false,fixed:false, value: []},
-      assigned:project.def?{value:assigned,def:project.def.assigned.def,fixed:project.def.assigned.fixed}:{def:false,fixed:false, value: []},
+      assignedTo:project.def?{value:assignedTo,def:project.def.assignedTo.def,fixed:project.def.assignedTo.fixed}:{def:false,fixed:false, value: []},
       type:type?{value:type,def:project.def.type.def,fixed:project.def.type.fixed}:{def:false,fixed:false, value: null},
       requester:requester?{value:requester,def:project.def.requester.def,fixed:project.def.requester.fixed}:{def:false,fixed:false, value: null},
       company:company?{value:company,def:project.def.company.def,fixed:project.def.company.fixed}:{def:false,fixed:false, value: null},
@@ -175,8 +175,8 @@ export default class ProjectEdit extends Component{
                           <div className="col-9">
                             <Select
                               isMulti
-                              value={this.state.assigned.value}
-                              onChange={(assigned)=>this.setState({assigned:{...this.state.assigned,value:assigned}})}
+                              value={this.state.assignedTo.value}
+                              onChange={(assignedTo)=>this.setState({assignedTo:{...this.state.assignedTo,value:assignedTo}})}
                               options={this.state.users}
                               styles={invisibleSelectStyle}
                               />
@@ -184,10 +184,10 @@ export default class ProjectEdit extends Component{
                         </div>
                       </td>
                       <td>
-                        <input type="checkbox" checked={this.state.assigned.def} onChange={(e)=>this.setState({assigned:{...this.state.assigned,def:!this.state.assigned.def}})} />
+                        <input type="checkbox" checked={this.state.assignedTo.def} onChange={(e)=>this.setState({assignedTo:{...this.state.assignedTo,def:!this.state.assignedTo.def}})} />
                       </td>
                       <td>
-                        <input type="checkbox" checked={this.state.assigned.fixed} onChange={(e)=>this.setState({assigned:{...this.state.assigned,fixed:!this.state.assigned.fixed}})} />
+                        <input type="checkbox" checked={this.state.assignedTo.fixed} onChange={(e)=>this.setState({assignedTo:{...this.state.assignedTo,fixed:!this.state.assignedTo.fixed}})} />
                       </td>
                     </tr>
 
@@ -278,14 +278,15 @@ export default class ProjectEdit extends Component{
                     def:{
                       status:this.state.status.value?{...this.state.status,value:this.state.status.value.id}:{def:false,fixed:false, value: null},
                       tags:this.state.tags.value?{...this.state.tags,value:this.state.tags.value.map(item=>item.id)}:{def:false,fixed:false, value: []},
-                      assigned:this.state.assigned.value?{...this.state.assigned,value:this.state.assigned.value.map(item=>item.id)}:{def:false,fixed:false, value: []},
+                      assignedTo:this.state.assignedTo.value?{...this.state.assignedTo,value:this.state.assignedTo.value.map(item=>item.id)}:{def:false,fixed:false, value: []},
                       type:this.state.type.value?{...this.state.type,value:this.state.type.value.id}:{def:false,fixed:false, value: null},
                       requester:this.state.requester.value?{...this.state.requester,value:this.state.requester.value.id}:{def:false,fixed:false, value: null},
                       company:this.state.company.value?{...this.state.company,value:this.state.company.value.id}:{def:false,fixed:false, value: null}
                     }
                   };
                   rebase.updateDoc(`/help-projects/${this.props.item.id}`, body)
-                        .then(()=>{this.setState({title:'', description:'', saving:false, opened: false})});
+                        .then(()=>{this.setState({saving:false, opened: false})});
+                        this.props.triggerChange();
               }}>
                 {(this.state.saving?'Saving...':'Save project')}</Button>
             </ModalFooter>

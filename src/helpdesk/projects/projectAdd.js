@@ -19,7 +19,7 @@ export default class ProjectAdd extends Component{
 
       status:{def:false,fixed:false, value: null},
       tags:{def:false,fixed:false, value: []},
-      assigned:{def:false,fixed:false, value: []},
+      assignedTo:{def:false,fixed:false, value: []},
       type:{def:false,fixed:false, value: null},
       requester:{def:false,fixed:false, value: null},
       company:{def:false,fixed:false, value: null},
@@ -59,7 +59,7 @@ export default class ProjectAdd extends Component{
 
       status:{def:false,fixed:false, value: null},
       tags:{def:false,fixed:false, value: []},
-      assigned:{def:false,fixed:false, value: []},
+      assignedTo:{def:false,fixed:false, value: []},
       type:{def:false,fixed:false, value: null},
       requester:{def:false,fixed:false, value: null},
       company:{def:false,fixed:false, value: null},
@@ -154,8 +154,8 @@ export default class ProjectAdd extends Component{
                           <div className="col-9">
                             <Select
                               isMulti
-                              value={this.state.assigned.value}
-                              onChange={(assigned)=>this.setState({assigned:{...this.state.assigned,value:assigned}})}
+                              value={this.state.assignedTo.value}
+                              onChange={(assignedTo)=>this.setState({assignedTo:{...this.state.assignedTo,value:assignedTo}})}
                               options={this.state.users}
                               styles={invisibleSelectStyle}
                               />
@@ -163,10 +163,10 @@ export default class ProjectAdd extends Component{
                         </div>
                       </td>
                       <td>
-                        <input type="checkbox" checked={this.state.assigned.def} onChange={(e)=>this.setState({assigned:{...this.state.assigned,def:!this.state.assigned.def}})} />
+                        <input type="checkbox" checked={this.state.assignedTo.def} onChange={(e)=>this.setState({assignedTo:{...this.state.assignedTo,def:!this.state.assignedTo.def}})} />
                       </td>
                       <td>
-                        <input type="checkbox" checked={this.state.assigned.fixed} onChange={(e)=>this.setState({assigned:{...this.state.assigned,fixed:!this.state.assigned.fixed}})} />
+                        <input type="checkbox" checked={this.state.assignedTo.fixed} onChange={(e)=>this.setState({assignedTo:{...this.state.assignedTo,fixed:!this.state.assignedTo.fixed}})} />
                       </td>
                     </tr>
 
@@ -254,7 +254,7 @@ export default class ProjectAdd extends Component{
                     def:{
                       status:this.state.status.value?{...this.state.status,value:this.state.status.value.id}:{def:false,fixed:false, value: null},
                       tags:this.state.tags.value?{...this.state.tags,value:this.state.tags.value.map(item=>item.id)}:{def:false,fixed:false, value: []},
-                      assigned:this.state.assigned.value?{...this.state.assigned,value:this.state.assigned.value.map(item=>item.id)}:{def:false,fixed:false, value: []},
+                      assignedTo:this.state.assignedTo.value?{...this.state.assignedTo,value:this.state.assignedTo.value.map(item=>item.id)}:{def:false,fixed:false, value: []},
                       type:this.state.type.value?{...this.state.type,value:this.state.type.value.id}:{def:false,fixed:false, value: null},
                       requester:this.state.requester.value?{...this.state.requester,value:this.state.requester.value.id}:{def:false,fixed:false, value: null},
                       company:this.state.company.value?{...this.state.company,value:this.state.company.value.id}:{def:false,fixed:false, value: null}
@@ -267,7 +267,7 @@ export default class ProjectAdd extends Component{
                     description: '',
                     status:{def:false,fixed:false, value: null},
                     tags:{def:false,fixed:false, value: []},
-                    assigned:{def:false,fixed:false, value: []},
+                    assignedTo:{def:false,fixed:false, value: []},
                     type:{def:false,fixed:false, value: null},
                     requester:{def:false,fixed:false, value: null},
                     company:{def:false,fixed:false, value: null},
