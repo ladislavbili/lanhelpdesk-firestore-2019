@@ -51,17 +51,10 @@ class Sidebar extends Component {
 	}
 
 	render() {
-		console.log(this.state.company);
 		return (
 			<div className="sidebar">
 				<SelectPage />
 				<div className="scrollable fit-with-header">
-					<Button
-						className="btn-link t-a-l sidebar-menu-item"
-						onClick={()=>{this.props.history.push('/cmdb/add')}}
-					> <i className="fa fa-plus sidebar-icon-center"/> Item
-					</Button>
-					<hr />
 					<li>
 						<Select
 							options={this.state.companies}
@@ -81,7 +74,17 @@ class Sidebar extends Component {
 							/>
 					</li>
 					<hr />
+					<Button
+						className="btn-link t-a-l sidebar-menu-item"
+						onClick={()=>{this.props.history.push('/cmdb/add')}}
+						> <i className="fa fa-plus sidebar-icon-center"/> Item
+					</Button>
 
+					<CompanyAdd />
+					{ this.state.company.id
+						&&
+						<CompanyEdit item={this.state.company}/>
+					}
 						<Row>
 							<Col xs={10}>
 								<Nav vertical>
@@ -105,13 +108,6 @@ class Sidebar extends Component {
 							</Col>
 						</Row>
 
-					<hr />
-					<CompanyAdd />
-					<hr />
-					{ this.state.company.id
-						&&
-					<CompanyEdit item={this.state.company}/>
-					}
 
 				</div>
 			</div>

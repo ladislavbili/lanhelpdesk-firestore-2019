@@ -87,8 +87,6 @@ class Sidebar extends Component {
 			<div className="sidebar">
 					<SelectPage />
 				<div className="scrollable fit-with-header">
-					<TaskAdd history={this.props.history} project={this.state.project.id} triggerDate={this.state.projectChangeDate} />
-						<hr/>
 					{!showSettings && <div>
 						<div>
 						<li>
@@ -109,7 +107,18 @@ class Sidebar extends Component {
 								}}
 								/>
 						</li>
-						<hr />
+
+						<TaskAdd history={this.props.history} project={this.state.project.id} triggerDate={this.state.projectChangeDate} />
+
+						<li>
+							<ProjectAdd />
+						</li>
+
+						{ this.state.project.id
+							&&
+							<ProjectEdit item={this.state.project} triggerChange={()=>{this.setState({projectChangeDate:(new Date()).getTime()})}}/>
+						}
+
 							<Nav tabs className="sidebar-filter">
 								<NavItem>
 									<NavLink
@@ -170,16 +179,6 @@ class Sidebar extends Component {
 									<Filter filterID={this.state.filterID} filterData={this.state.filterData} resetFilter={()=>this.setState({filterID:null,filterData:null})} />
 								</TabPane>
 							</TabContent>
-							<hr />
-							<li>
-									<ProjectAdd />
-							</li>
-
-							<hr />
-							{ this.state.project.id
-								&&
-							<ProjectEdit item={this.state.project} triggerChange={()=>{this.setState({projectChangeDate:(new Date()).getTime()})}}/>
-							}
 
 						</div>
 					</div>}

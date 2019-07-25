@@ -5,7 +5,6 @@ import Sidebar from './Sidebar';
 import PageHeader from '../components/PageHeader';
 import List from './list';
 import TagList from './tags'
-import "../scss/projects.scss";
 
 export default class Navigation extends Component {
 	render() {

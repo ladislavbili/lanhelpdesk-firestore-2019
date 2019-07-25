@@ -53,7 +53,6 @@ export default class Sidebar extends Component {
 						>
 						<i className="fa fa-plus sidebar-icon-center"  /> Folder
 					</Button>
-					<hr/>
 
 					<Button
 						className="btn-link t-a-l sidebar-menu-item"
@@ -61,7 +60,6 @@ export default class Sidebar extends Component {
 						>
 						<i className="fa fa-plus sidebar-icon-center"  /> Náklad
 					</Button>
-					<hr/>
 
 					<Nav vertical>
 						{	this.state.folders.map((item)=>

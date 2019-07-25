@@ -398,7 +398,7 @@ export default class TasksTwoEdit extends Component {
 							</div>
 							<div className="row">
 								<div className="col-lg-12 row">
-									<strong className="center-hor text-slim">Tagy: </strong>
+									<div className="center-hor text-slim">Tagy: </div>
 									<div className="f-1">
 										<Select
 											value={this.state.tags}
@@ -410,7 +410,7 @@ export default class TasksTwoEdit extends Component {
 									</div>
 								</div>
 								<div className="col-lg-12 row">
-									<strong className="center-hor text-slim">Assigned to: </strong>
+									<div className="center-hor text-slim">Assigned to: </div>
 									<div className="f-1">
 										<Select
 											value={this.state.assignedTo}

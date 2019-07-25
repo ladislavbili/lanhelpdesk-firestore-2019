@@ -43,14 +43,12 @@ export default class Sidebar extends Component {
 				<SelectPage />
 				<div className="scrollable fit-with-header">
 					<FolderAdd />
-					<hr/>
 					<Button
 						className="btn-link t-a-l sidebar-menu-item"
 						onClick={()=>{this.props.history.push('/passmanager/add')}}
 						>
 						<i className="fa fa-plus sidebar-icon-center"  /> Heslo
 					</Button>
-					<hr/>
 						<Nav vertical>
 							{	this.state.folders.map((item)=>
 							<NavItem key={item.id}  className="sidebar-link">

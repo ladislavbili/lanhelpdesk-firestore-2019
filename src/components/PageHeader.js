@@ -26,6 +26,8 @@ class PageHeader extends Component {
 			return '/expenditures';
 		} else if (url.includes('projects')) {
 			return '/projects';
+		} else if (url.includes('monitoring')) {
+			return '/monitoring';
 		} else {
 			return '/lanwiki';
 		}
@@ -70,6 +72,9 @@ class PageHeader extends Component {
 						</Link>
 						<Link to={{ pathname: `/projects` }} className={"header-link" + (URL.includes("projects") ? " header-link-active" : "")}>
 							Projekty
+						</Link>
+						<Link to={{ pathname: `/monitoring` }} className={"header-link" + (URL.includes("monitoring") ? " header-link-active" : "")}>
+							Monitoring
 						</Link>
 					</div>
 					<div className="ml-auto center-hor row">
