@@ -385,6 +385,9 @@ hr{
   margin-bottom: 0px;
 }
 
+.table>tbody>tr:hover {
+  background-color: $main-background-color;
+}
 
 th {
   border-bottom: 2px solid $table-lines !important;
@@ -395,8 +398,11 @@ td {
   border-bottom: 1px solid $table-lines !important;
 }
 
-.table>tbody>tr.active>td, .table>tbody>tr.active>th, .table>tbody>tr>td.active, .table>tbody>tr>th.active, .table>tfoot>tr.active>td, .table>tfoot>tr.active>th, .table>tfoot>tr>td.active, .table>tfoot>tr>th.active, .table>thead>tr.active>td, .table>thead>tr.active>th, .table>thead>tr>td.active, .table>thead>tr>th.active {
-    background-color: #f4f8fb;
+.table>tbody>tr.active>td, .table>tbody>tr.active>th, .table>tbody>tr>td.active,
+.table>tbody>tr>th.active, .table>tfoot>tr.active>td, .table>tfoot>tr.active>th,
+.table>tfoot>tr>td.active, .table>tfoot>tr>th.active, .table>thead>tr.active>td,
+.table>thead>tr.active>th, .table>thead>tr>td.active, .table>thead>tr>th.active {
+    background-color: $sidebar-item-color;
 }
 
 .table-checkbox{
@@ -579,7 +585,7 @@ td {
 
 
 .sidebar-filter{
-  margin-left: 10px;
+  margin-left: 6px;
   border: none;
   margin-bottom: 2px;
 }
@@ -588,7 +594,7 @@ td {
 }
 
 .sidebar-align{
-  padding-left: 35px !important;
+  padding-left: 33px !important;
 }
 
 //--------------------END-sidebar----------------------

@@ -1,30 +1,29 @@
 import React, { Component } from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import { Button, FormGroup, Label, Input } from 'reactstrap';
 
 const ITEMS =[
 		{
 			id: 0,
-			name: "lansystems.sk",
-			testEmail: "mail.test@lansystems.sk",
-			timeout: "5",
-			numberOfTests: "2",
-			notificationEmails: "5:25",
-			lastResp: "5 min.",
+			sendTestDate: "27.6.2016 13:14:25",
+			responseDateTime: "27.6.2016 13:14:25",
+			responseTime: "5",
+			twentyFive: "25",
 			status: "OK",
-			note: "No note",
 			},
 		{
 			id: 1,
-			name: "lansystems.sk",
-			testEmail: "mail.test@essco.sk",
-			timeout: "10",
-			numberOfTests: "5",
-			notificationEmails: "1:25",
-			lastResp: "10 min.",
+			sendTestDate: "27.6.2016 13:14:25",
+			responseDateTime: "27.6.2016 13:14:25",
+			responseTime: "5",
+			twentyFive: "25",
 			status: "OK",
-			note: "No notes here",
-		}
+		},{
+			id: 2,
+			sendTestDate: "27.6.2016 13:14:25",
+			responseDateTime: "27.6.2016 13:14:25",
+			responseTime: "5",
+			twentyFive: "25",
+			status: "OK",
+		},
 ]
 
 export default class ReportDetail extends Component{

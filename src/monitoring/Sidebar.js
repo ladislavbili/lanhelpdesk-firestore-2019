@@ -36,10 +36,6 @@ export default class Sidebar extends Component {
 			<div className="sidebar">
 				<SelectPage />
 				<div className="scrollable fit-with-header">
-					<div className="text-basic sidebar-align center-hor p-t-10 sidebar-menu-item">
-						Monitoring
-					</div>
-					<hr/>
 					<Nav vertical>
 						<NavItem key={0}  className="sidebar-link">
 							<Link

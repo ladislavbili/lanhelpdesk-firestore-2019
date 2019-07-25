@@ -55,7 +55,6 @@ class Sidebar extends Component {
 						<i className="fa fa-plus sidebar-icon-center"/> Add tag
 					</Button>
 
-					<hr/>
 
 					<Nav vertical>
 						<NavItem>

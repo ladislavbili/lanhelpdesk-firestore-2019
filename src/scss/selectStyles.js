@@ -47,7 +47,7 @@ export const sidebarSelectStyle = {
 		return { ...provided, width:0,  };
 	},
 	control:(provided, state) => {
-		return { ...provided, background: "#F2F1F1", borderRadius: 0 , borderWidth: "0" };
+		return { ...provided, background: "#F2F1F1", borderRadius: 0 , borderWidth: "0", height: 40 };
 	},
 	input:(provided, state) => {
 		return { ...provided, marginLeft:30 };

@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { Button, FormGroup, Label, Input, Modal, ModalBody, ModalFooter } from 'reactstrap';
-import {rebase} from '../../index';
-import {timestampToString} from '../../helperFunctions';
+import { Button, Modal, ModalBody, ModalFooter } from 'reactstrap';
 import { connect } from "react-redux";
 
 import classnames from 'classnames';

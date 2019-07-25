@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import { Button, FormGroup, Label, Input } from 'reactstrap';
+import { Modal, Button, ModalBody, ModalFooter } from 'reactstrap';
 import ReportDetail from "./reportDetail";
 
 const ITEMS =[

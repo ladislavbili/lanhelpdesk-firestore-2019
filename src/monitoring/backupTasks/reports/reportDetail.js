@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import { Button, FormGroup, Label, Input } from 'reactstrap';
 
 const ITEMS =[
 		{
