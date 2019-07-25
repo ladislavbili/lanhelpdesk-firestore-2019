@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
-import {NavItem, Nav, Modal} from 'reactstrap';
+import {NavItem, Nav, Modal, Button} from 'reactstrap';
 import { NavLink as Link } from 'react-router-dom';
 
 import SelectPage from '../components/SelectPage';
 import {rebase} from '../index';
-import ProjectAdd from './projectAdd';
-import TagEdit from './tags/tagEdit';
+import ProjectAdd from './projects/projectAdd';
+import ProjectEdit from './projects/projectEdit';
 
 export default class Sidebar extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			projects:[],
-			tagEdit: null,
+			projectEdit: null,
 			openedEdit: false,
 		};
 		this.toggleEdit.bind(this);
@@ -61,21 +61,21 @@ export default class Sidebar extends Component {
 										to={{ pathname: `/projects/`+item.id }}>
 										{item.title}
 									</Link>
-								{/*	<div className='sidebar-menu-item-btn'>
+								<div className='sidebar-menu-item-btn'>
 										<Button
 											key={item.id}
 											className='hidden-button full-width full-height'
-											onClick={() => {this.setState({tagEdit: item, openedEdit: true})}}
+											onClick={() => {this.setState({projectEdit: item, openedEdit: true})}}
 											>
 											<i className="fa fa-cog"/>
 										</Button>
-									</div>*/}
+									</div>
 								</NavItem>
 							)}
 					</Nav>
 
 					<Modal isOpen={this.state.openedEdit} toggle={this.toggleEdit.bind(this)}>
-						<TagEdit tag={this.state.tagEdit} close={this.toggleEdit.bind(this)}/>
+						<ProjectEdit project={this.state.projectEdit} close={this.toggleEdit.bind(this)}/>
 					</Modal>
 
 				</div>
