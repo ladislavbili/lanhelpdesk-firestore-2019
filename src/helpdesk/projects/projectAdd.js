@@ -5,6 +5,16 @@ import { Button, FormGroup, Label,Input, Modal, ModalHeader, ModalBody, ModalFoo
 import {toSelArr, snapshotToArray} from '../../helperFunctions';
 import {rebase, database} from '../../index';
 
+
+const noDef={
+	status:{def:false,fixed:false, value: null},
+	tags:{def:false,fixed:false, value: []},
+	assignedTo:{def:false,fixed:false, value: []},
+	type:{def:false,fixed:false, value: null},
+	requester:{def:false,fixed:false, value: null},
+	company:{def:false,fixed:false, value: null}
+}
+
 export default class ProjectAdd extends Component{
   constructor(props){
     super(props);
@@ -17,12 +27,7 @@ export default class ProjectAdd extends Component{
       types:[],
       companies:[],
 
-      status:{def:false,fixed:false, value: null},
-      tags:{def:false,fixed:false, value: []},
-      assignedTo:{def:false,fixed:false, value: []},
-      type:{def:false,fixed:false, value: null},
-      requester:{def:false,fixed:false, value: null},
-      company:{def:false,fixed:false, value: null},
+      ...noDef,
       saving: false,
       opened: false
     }
@@ -57,12 +62,7 @@ export default class ProjectAdd extends Component{
       types,
       companies,
 
-      status:{def:false,fixed:false, value: null},
-      tags:{def:false,fixed:false, value: []},
-      assignedTo:{def:false,fixed:false, value: []},
-      type:{def:false,fixed:false, value: null},
-      requester:{def:false,fixed:false, value: null},
-      company:{def:false,fixed:false, value: null},
+      ...noDef
     });
   }
 
@@ -117,10 +117,10 @@ export default class ProjectAdd extends Component{
                         </div>
                       </td>
                       <td>
-                        <input type="checkbox" checked={this.state.status.def} onChange={(e)=>this.setState({status:{...this.state.status,def:!this.state.status.def}})} />
+                        <input type="checkbox" checked={this.state.status.def} onChange={(e)=>this.setState({status:{...this.state.status,def:!this.state.status.def}})} disabled={this.state.status.fixed} />
                       </td>
                       <td>
-                        <input type="checkbox" checked={this.state.status.fixed} onChange={(e)=>this.setState({status:{...this.state.status,fixed:!this.state.status.fixed}})} />
+                        <input type="checkbox" checked={this.state.status.fixed} onChange={(e)=>this.setState({status:{...this.state.status,fixed:!this.state.status.fixed, def: !this.state.status.fixed ? true : this.state.status.def }})} />
                       </td>
                     </tr>
 
@@ -140,10 +140,10 @@ export default class ProjectAdd extends Component{
                         </div>
                       </td>
                       <td>
-                        <input type="checkbox" checked={this.state.tags.def} onChange={(e)=>this.setState({tags:{...this.state.tags,def:!this.state.tags.def}})} />
+                        <input type="checkbox" checked={this.state.tags.def} onChange={(e)=>this.setState({tags:{...this.state.tags,def:!this.state.tags.def}})} disabled={this.state.tags.fixed} />
                       </td>
                       <td>
-                        <input type="checkbox" checked={this.state.tags.fixed} onChange={(e)=>this.setState({tags:{...this.state.tags,fixed:!this.state.tags.fixed}})} />
+                        <input type="checkbox" checked={this.state.tags.fixed} onChange={(e)=>this.setState({tags:{...this.state.tags,fixed:!this.state.tags.fixed, def: !this.state.tags.fixed ? true : this.state.tags.def }})} />
                       </td>
                     </tr>
 
@@ -163,10 +163,10 @@ export default class ProjectAdd extends Component{
                         </div>
                       </td>
                       <td>
-                        <input type="checkbox" checked={this.state.assignedTo.def} onChange={(e)=>this.setState({assignedTo:{...this.state.assignedTo,def:!this.state.assignedTo.def}})} />
+                        <input type="checkbox" checked={this.state.assignedTo.def} onChange={(e)=>this.setState({assignedTo:{...this.state.assignedTo,def:!this.state.assignedTo.def}})} disabled={this.state.assignedTo.fixed} />
                       </td>
                       <td>
-                        <input type="checkbox" checked={this.state.assignedTo.fixed} onChange={(e)=>this.setState({assignedTo:{...this.state.assignedTo,fixed:!this.state.assignedTo.fixed}})} />
+                        <input type="checkbox" checked={this.state.assignedTo.fixed} onChange={(e)=>this.setState({assignedTo:{...this.state.assignedTo,fixed:!this.state.assignedTo.fixed, def: !this.state.assignedTo.fixed ? true : this.state.assignedTo.def }})} />
                       </td>
                     </tr>
 
@@ -185,10 +185,10 @@ export default class ProjectAdd extends Component{
                         </div>
                       </td>
                       <td>
-                        <input type="checkbox" checked={this.state.type.def} onChange={(e)=>this.setState({type:{...this.state.type,def:!this.state.type.def}})} />
+                        <input type="checkbox" checked={this.state.type.def} onChange={(e)=>this.setState({type:{...this.state.type,def:!this.state.type.def}})} disabled={this.state.type.fixed} />
                       </td>
                       <td>
-                        <input type="checkbox" checked={this.state.type.fixed} onChange={(e)=>this.setState({type:{...this.state.type,fixed:!this.state.type.fixed}})} />
+                        <input type="checkbox" checked={this.state.type.fixed} onChange={(e)=>this.setState({type:{...this.state.type,fixed:!this.state.type.fixed, def: !this.state.type.fixed ? true : this.state.type.def }})} />
                       </td>
                     </tr>
 
@@ -207,10 +207,10 @@ export default class ProjectAdd extends Component{
                         </div>
                       </td>
                       <td>
-                        <input type="checkbox" checked={this.state.requester.def} onChange={(e)=>this.setState({requester:{...this.state.requester,def:!this.state.requester.def}})} />
+                        <input type="checkbox" checked={this.state.requester.def} onChange={(e)=>this.setState({requester:{...this.state.requester,def:!this.state.requester.def}})} disabled={this.state.requester.fixed} />
                       </td>
                       <td>
-                        <input type="checkbox" checked={this.state.requester.fixed} onChange={(e)=>this.setState({requester:{...this.state.requester,fixed:!this.state.requester.fixed}})} />
+                        <input type="checkbox" checked={this.state.requester.fixed} onChange={(e)=>this.setState({requester:{...this.state.requester,fixed:!this.state.requester.fixed, def: !this.state.requester.fixed ? true : this.state.requester.def }})} />
                       </td>
                     </tr>
 
@@ -229,15 +229,17 @@ export default class ProjectAdd extends Component{
                         </div>
                       </td>
                       <td>
-                        <input type="checkbox" checked={this.state.company.def} onChange={(e)=>this.setState({company:{...this.state.company,def:!this.state.company.def}})} />
+                        <input type="checkbox" checked={this.state.company.def} onChange={(e)=>this.setState({company:{...this.state.company,def:!this.state.company.def}})} disabled={this.state.company.fixed} />
                       </td>
                       <td>
-                        <input type="checkbox" checked={this.state.company.fixed} onChange={(e)=>this.setState({company:{...this.state.company,fixed:!this.state.company.fixed}})} />
+                        <input type="checkbox" checked={this.state.company.fixed} onChange={(e)=>this.setState({company:{...this.state.company,fixed:!this.state.company.fixed, def: !this.state.company.fixed ? true : this.state.company.def }})} />
                       </td>
                     </tr>
-
                   </tbody>
                 </table>
+                {((this.state.company.value===null&&this.state.company.fixed)||(this.state.status.value===null&&this.state.status.fixed)) && <div className="red" style={{color:'red'}}>
+                  Status and company can't be empty if they are fixed!
+                </div>}
 
             </ModalBody>
 
@@ -246,7 +248,9 @@ export default class ProjectAdd extends Component{
                 Close
               </Button>
 
-              <Button className="btn" disabled={this.state.saving} onClick={()=>{
+              <Button className="btn" 
+                disabled={this.state.saving||this.state.title===""||(this.state.company.value===null&&this.state.company.fixed)||(this.state.status.value===null&&this.state.status.fixed)}
+                onClick={()=>{
                   this.setState({saving:true});
                   let body = {
                     title: this.state.title,
@@ -265,12 +269,7 @@ export default class ProjectAdd extends Component{
                     saving:false,
                     title: '',
                     description: '',
-                    status:{def:false,fixed:false, value: null},
-                    tags:{def:false,fixed:false, value: []},
-                    assignedTo:{def:false,fixed:false, value: []},
-                    type:{def:false,fixed:false, value: null},
-                    requester:{def:false,fixed:false, value: null},
-                    company:{def:false,fixed:false, value: null},
+                    ...noDef
                   })});
                 }}>
                 {this.state.saving?'Adding...':'Add project'}

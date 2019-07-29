@@ -9,6 +9,15 @@ import {rebase, database} from '../../index';
 import {toSelArr, snapshotToArray, timestampToString} from '../../helperFunctions';
 import {selectStyle, invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
 
+const noDef={
+	status:{def:false,fixed:false, value: null},
+	tags:{def:false,fixed:false, value: []},
+	assignedTo:{def:false,fixed:false, value: []},
+	type:{def:false,fixed:false, value: null},
+	requester:{def:false,fixed:false, value: null},
+	company:{def:false,fixed:false, value: null}
+}
+
 const repeat = [
 	{ value: 'none', label: 'none' },
 	{ value: 'every day', label: 'every day' },
@@ -37,7 +46,7 @@ export default class TasksTwoEdit extends Component {
 			openService:null,
 			openEditMaterialModal:false,
 			openMaterial:null,
-
+			defaultFields:noDef,
 
 			title:'',
 			company:null,
@@ -232,7 +241,26 @@ export default class TasksTwoEdit extends Component {
     });
   }
 
+	setDefaults(projectID){
+		if(projectID===null){
+			this.setState({defaultFields:noDef});
+			return;
+		}
+
+		database.collection('help-projects').doc(projectID).get().then((project)=>{
+			let def = project.data().def;
+			if(!def){
+				this.setState({defaultFields:noDef});
+				return;
+			}
+			this.setState({
+				defaultFields:def
+			});
+		});
+	}
+
   setData(task, statuses, projects,users,tags,companies,workTypes,units,taskTypes, prices,taskMaterials,taskWorks,pricelists,defaultUnit){
+		this.setDefaults(task.project);
     let project = projects.find((item)=>item.id===task.project);
     let status = statuses.find((item)=>item.id===task.status);
     let company = companies.find((item)=>item.id===task.company);
@@ -339,6 +367,7 @@ export default class TasksTwoEdit extends Component {
 					      }).map((status)=>
 								<Button
 									className="btn-link"
+									disabled={this.state.defaultFields.status.fixed}
 									onClick={()=>{this.setState({status,statusChange:(new Date().getTime())},this.submitTask.bind(this))}}
 									><i className={(status.icon?status.icon:"")+" commandbar-command-icon icon-M"}/>{" "+status.title}
 								</Button>
@@ -405,6 +434,7 @@ export default class TasksTwoEdit extends Component {
 											isMulti
 											onChange={(tags)=>this.setState({tags},this.submitTask.bind(this))}
 											options={this.state.allTags}
+											isDisabled={this.state.defaultFields.tags.fixed}
 											styles={invisibleSelectStyleNoArrow}
 											/>
 									</div>
@@ -415,6 +445,7 @@ export default class TasksTwoEdit extends Component {
 										<Select
 											value={this.state.assignedTo}
 											isMulti
+											isDisabled={this.state.defaultFields.assignedTo.fixed}
 											onChange={(users)=>this.setState({assignedTo:users},this.submitTask.bind(this))}
 											options={this.state.users}
 											styles={invisibleSelectStyleNoArrow}
@@ -429,6 +460,7 @@ export default class TasksTwoEdit extends Component {
 												<div className="col-7">
 													<Select
 					                  value={this.state.type}
+														isDisabled={this.state.defaultFields.type.fixed}
 														styles={selectStyle}
 					                  onChange={(type)=>this.setState({type},this.submitTask.bind(this))}
 					                  options={this.state.taskTypes}
@@ -440,7 +472,7 @@ export default class TasksTwoEdit extends Component {
 												<div className="col-7">
 													<Select
 														value={this.state.project}
-														onChange={(project)=>this.setState({project},this.submitTask.bind(this))}
+														onChange={(project)=>this.setState({project},()=>{this.submitTask();this.setDefaults(project.id)})}
 														options={this.state.projects}
 														styles={selectStyle}
 														/>
@@ -451,6 +483,7 @@ export default class TasksTwoEdit extends Component {
 												<div className="col-7">
 													<Select
 														value={this.state.requester}
+														isDisabled={this.state.defaultFields.requester.fixed}
 														onChange={(requester)=>this.setState({requester},this.submitTask.bind(this))}
 														options={this.state.users}
 														styles={selectStyle}
@@ -467,6 +500,7 @@ export default class TasksTwoEdit extends Component {
 												<div className="col-7">
 													<Select
 														value={this.state.company}
+														isDisabled={this.state.defaultFields.company.fixed}
 														onChange={(company)=>this.setState({company},this.submitTask.bind(this))}
 														options={this.state.companies}
 														styles={selectStyle}
