@@ -111,6 +111,9 @@ html{
 .w-40px{
   width: 40px;
 }
+.golden-ratio-618{
+  width: 61.8%;
+}
 .max-width-400{
   max-width: 400px;
 }
@@ -546,7 +549,6 @@ td {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
   position:relative;
   top: inherit;
-  width: 240px;
 }
 
 .sidebar-icon-center{
@@ -605,7 +607,11 @@ td {
   border-radius: 0px;
   padding-left: 5px;
   height: $button-height;
-  width: 200px !important;
+}
+
+.commandbar-search-case{
+  display: flex;
+  width: 375px;
 }
 
 .commandbar-btn-search{

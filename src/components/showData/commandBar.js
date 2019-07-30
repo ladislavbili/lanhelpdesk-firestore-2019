@@ -16,8 +16,7 @@ class TaskListContainer extends Component {
 		return (
 			<div className="container-fluid" style={{paddingLeft:10,paddingRight:10, minWidth:450}}>
 				<div className="d-flex flex-row align-items-center p-t-5">
-					<div className="center-hor">
-						<div className="input-group">
+					<div className="center-hor input-group commandbar-search-case">
 							<input
 								type="text"
 								className="form-control commandbar-search"
@@ -35,7 +34,6 @@ class TaskListContainer extends Component {
 									<i className="fa fa-search" />
 								</button>
 							</div>
-						</div>
 					</div>
 
 					{ this.props.isTask &&
@@ -56,7 +54,7 @@ class TaskListContainer extends Component {
 									this.props.setFilter(body);
 								}}
 								>
-								Global search
+								Global
 							</Button>
 						</div>
 					}

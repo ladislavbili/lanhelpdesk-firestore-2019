@@ -5,7 +5,7 @@ import {toSelArr, snapshotToArray} from '../../helperFunctions';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
 import Materials from '../components/materials';
 import Subtasks from '../components/subtasks';
-import {invisibleSelectStyle} from '../../scss/selectStyles';
+import {selectStyle, invisibleSelectStyle} from '../../scss/selectStyles';
 
 const repeat = [
 	{ value: 'none', label: 'none' },
@@ -280,7 +280,7 @@ export default class TaskAdd extends Component{
 														value={this.state.status}
 														onChange={(status)=>this.setState({status,statusChange:(new Date().getTime())})}
 														options={this.state.statuses.map((status)=>{return {...status,value:status.id,label:status.title}})}
-														styles={invisibleSelectStyle}
+														styles={selectStyle}
 														/>
 												</div>
 											</div>
@@ -291,7 +291,7 @@ export default class TaskAdd extends Component{
 														value={this.state.project}
 														onChange={(project)=>this.setState({project})}
 														options={this.state.projects}
-														styles={invisibleSelectStyle}
+														styles={selectStyle}
 														/>
 												</div>
 											</div>
@@ -302,7 +302,7 @@ export default class TaskAdd extends Component{
 														value={this.state.requester}
 														onChange={(requester)=>this.setState({requester})}
 														options={this.state.users}
-														styles={invisibleSelectStyle}
+														styles={selectStyle}
 														/>
 												</div>
 											</div>
@@ -313,7 +313,7 @@ export default class TaskAdd extends Component{
 														value={this.state.company}
 														onChange={(company)=>this.setState({company})}
 														options={this.state.companies}
-														styles={invisibleSelectStyle}
+														styles={selectStyle}
 														/>
 												</div>
 											</div>
@@ -324,14 +324,14 @@ export default class TaskAdd extends Component{
 											<div className="row">
 												<label className="col-5 col-form-label">Pripomienka</label>
 												<div className="col-7">
-													<Select styles={invisibleSelectStyle} />
+													<Select styles={selectStyle} />
 												</div>
 											</div>
 											<div className="row">
 												<label className="col-5 col-form-label">Deadline</label>
 												<div className="col-7">
 													<input
-														className='form-control hidden-input'
+														className='form-control'
 														placeholder="Status change date"
 														type="datetime-local"
 														value={this.state.deadline}
@@ -344,7 +344,7 @@ export default class TaskAdd extends Component{
 											<div className="row">
 												<label className="col-5 col-form-label">Opakovanie</label>
 												<div className="col-7">
-													<Select options={repeat} styles={invisibleSelectStyle} />
+													<Select options={repeat} styles={selectStyle} />
 												</div>
 											</div>
 
@@ -353,7 +353,7 @@ export default class TaskAdd extends Component{
 												<div className="col-7">
 													<Select
 														value={this.state.type}
-														styles={invisibleSelectStyle}
+														styles={selectStyle}
 														onChange={(type)=>this.setState({type})}
 														options={this.state.taskTypes}
 														/>

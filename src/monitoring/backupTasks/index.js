@@ -57,7 +57,7 @@ class BackupTaskList extends Component {
 				<div className="container-fluid">
 					<div className="d-flex flex-row align-items-center">
 						<div className="p-2">
-							<div className="input-group">
+							<div className="input-group commandbar-search-case">
 								<input
 									type="text"
 									value={this.state.search}
@@ -71,14 +71,14 @@ class BackupTaskList extends Component {
 								</div>
 							</div>
 						</div>
-						<Button className="btn-link">Global search</Button>
+						<Button className="btn-link">Global</Button>
 						<Button className="btn" onClick={() => this.props.history.push("/monitoring/backup-tasks/add")}>
 							<i className="fa fa-plus"/> Backup Task
 						</Button>
 					</div>
 				</div>
 				<div className="fit-with-header-and-commandbar row">
-					<div className="fit-with-header-and-commandbar p-20 scrollable w-50" style={this.props.layout===1?{flex:'auto'}:{}}>
+					<div className="fit-with-header-and-commandbar p-20 scrollable golden-ratio-618" style={this.props.layout===1?{flex:'auto'}:{}}>
 
 						<table className={classnames({ 'project-table-fixed': this.props.layout === 0, table:true })}>
 								<thead>
