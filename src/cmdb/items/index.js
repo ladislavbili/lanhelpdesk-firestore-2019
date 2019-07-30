@@ -110,7 +110,7 @@ class ItemList extends Component {
 				<div className="container-fluid">
 					<div className="d-flex flex-row align-items-center">
 						<div className="p-2">
-							<div className="input-group">
+							<div className="input-group commandbar-search-case">
 								<input
 									type="text"
 									className="form-control commandbar-search"
@@ -137,7 +137,7 @@ class ItemList extends Component {
 									this.props.setCompany(null);
 								}}
 								>
-								Global search
+								Global
 							</Button>
 						</div>
 						<div className="p-2">

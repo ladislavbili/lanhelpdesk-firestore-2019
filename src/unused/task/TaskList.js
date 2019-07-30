@@ -45,8 +45,7 @@ class TaskListContainer extends Component {
 								</div>
 							)}
 
-							<div className="center-hor">
-								<div className="input-group">
+							<div className="center-hor input-group commandbar-search-case">
 									<input
 										type="text"
 										className="commandbar-search"
@@ -58,7 +57,6 @@ class TaskListContainer extends Component {
 										<button className="commandbar-btn-search" type="button" onClick={()=>this.props.setSearch(this.state.search)}>
 											<i className="fa fa-search" />
 										</button>
-								</div>
 							</div>
 							<div className="center-hor">
 								<Button
@@ -77,7 +75,7 @@ class TaskListContainer extends Component {
 							      this.props.setFilter(body);
 									}}
 									>
-									Global search
+									Global
 								</Button>
 							</div>
 							<div className="ml-auto">

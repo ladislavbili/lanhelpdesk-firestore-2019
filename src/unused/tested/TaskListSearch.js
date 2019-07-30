@@ -26,7 +26,7 @@ export default class TaskListContainer extends Component {
 						<div className="row">
 							<div className="col-sm-6">
 								<h4 className="page-title" style={{ fontSize: 24 }}>
-									Global Search
+									Global
 								</h4>
 							</div>
 						</div>
@@ -51,7 +51,7 @@ export default class TaskListContainer extends Component {
 									</div>
 								</div>
 								<div className="p-2">
-									<p className="m-0">Global search</p>
+									<p className="m-0">Global</p>
 								</div>
 								<div className="p-2">
 									<div

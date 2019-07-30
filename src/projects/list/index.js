@@ -114,7 +114,7 @@ class TaskList extends Component {
 				<div className="container-fluid">
 					<div className="d-flex flex-row align-items-center">
 						<div className="p-2">
-							<div className="input-group">
+							<div className="input-group commandbar-search-case">
 								<input
 									type="text"
 									value={this.state.search}
@@ -128,7 +128,7 @@ class TaskList extends Component {
 								</div>
 							</div>
 						</div>
-						<Button className="btn-link">Global search</Button>
+						<Button className="btn-link">Global</Button>
 
 						<span className="center-hor m-l-10">
 							<FormGroup check>
@@ -197,7 +197,7 @@ class TaskList extends Component {
 					</div>
 				</div>
 				<div className="fit-with-header-and-commandbar row">
-					<div className="fit-with-header-and-commandbar p-20 scrollable" style={this.props.layout===1?{flex:'auto'}:{}}>
+					<div className="fit-with-header-and-commandbar p-20 scrollable golden-ratio-618" style={this.props.layout===1?{flex:'auto'}:{}}>
 						<h1>Tasks</h1>
 
 							<div className="p-2 max-width-400">
@@ -225,7 +225,7 @@ class TaskList extends Component {
 								</div>
 							</div>
 
-						<table className={classnames({ 'project-table-fixed': this.props.layout === 0, table:true })}>
+						<table className={classnames({ 'project-table-fixed': this.props.layout === 0, table:true})}>
 								<thead>
 									<tr>
 										<th>Created</th>
