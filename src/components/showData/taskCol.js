@@ -8,7 +8,7 @@ export default class ColumnDisplay extends Component {
 		return (
 			<div>
 				<div className="row p-0 taskList-container">
-					<div className="p-0">
+					<div className="p-0 golden-ratio-382">
 					<CommandBar {...this.props.commandBar} />
 
 					<div className="scrollable fit-with-header-and-commandbar">

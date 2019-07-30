@@ -108,7 +108,9 @@ class Sidebar extends Component {
 								/>
 						</li>
 
-						<TaskAdd history={this.props.history} project={this.state.project.id} triggerDate={this.state.projectChangeDate} />
+						<hr/>
+
+						<TaskAdd history={this.props.history} isCopy={false} project={this.state.project.id} triggerDate={this.state.projectChangeDate} />
 
 						<li>
 							<ProjectAdd />

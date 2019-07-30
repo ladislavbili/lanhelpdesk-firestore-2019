@@ -5,6 +5,8 @@ import Comments from '../components/comments.js';
 import Materials from '../components/materials';
 import Subtasks from '../components/subtasks';
 
+import TaskAdd from './taskAdd';
+
 import {rebase, database} from '../../index';
 import {toSelArr, snapshotToArray, timestampToString} from '../../helperFunctions';
 import {selectStyle, invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
@@ -70,6 +72,7 @@ export default class TasksTwoEdit extends Component {
 			openAddTaskModal: false,
 			isColumn: false,
 			search: '',
+			openCopyModal: false,
 		};
     this.submitTask.bind(this);
     this.submitMaterial.bind(this);
@@ -99,7 +102,7 @@ export default class TasksTwoEdit extends Component {
 
 	copyTask(){
 		if(window.confirm("Do you really want to copy this task?")){
-			let body = {
+		/*	let body = {
 				title: this.state.title,
 				company: this.state.company?this.state.company.id:null,
 				workHours: this.state.workHours,
@@ -116,8 +119,13 @@ export default class TasksTwoEdit extends Component {
 				overtime: this.state.overtime.value,
 				tags: this.state.tags.map((item)=>item.id),
 				type: this.state.type?this.state.type.id:null,
-			};
-			database.collection('metadata').doc('0').get().then((taskMeta)=>{
+			};*/
+
+			this.setState({
+				openCopyModal: true,
+			})
+
+	/*		database.collection('metadata').doc('0').get().then((taskMeta)=>{
 				let newID = (parseInt(taskMeta.data().taskLastID)+1)+"";
 				this.state.taskWorks.forEach((item)=>{
 					delete item['id'];
@@ -135,7 +143,7 @@ export default class TasksTwoEdit extends Component {
 					rebase.updateDoc('/metadata/0',{taskLastID:newID});
 					this.props.history.push('/helpdesk/taskList/i/'+this.props.match.params.listID+'/'+newID);
 				});
-			})
+			})*/
 		}
 	}
 
@@ -316,6 +324,8 @@ export default class TasksTwoEdit extends Component {
 			defaultUnit,
 			tags:taskTags,
 			type:type?type:null,
+
+			projectChangeDate:(new Date()).getTime(),
     });
   }
 
@@ -353,6 +363,25 @@ export default class TasksTwoEdit extends Component {
 			}
 		});
 
+		const BODY = {
+				title: this.state.title,
+				company: this.state.company?this.state.company.id:null,
+				workHours: this.state.workHours,
+				requester: this.state.requester?this.state.requester.id:null,
+				assignedTo: this.state.assignedTo.map((item)=>item.id),
+				description: this.state.description,
+				status: this.state.status?this.state.status.id:null,
+				deadline: isNaN(new Date(this.state.deadline).getTime()) ? null : (new Date(this.state.deadline).getTime()),
+				reminder: isNaN(new Date(this.state.reminder).getTime()) ? null : (new Date(this.state.reminder).getTime()),
+				createdAt:(new Date()).getTime(),
+				statusChange:(new Date()).getTime(),
+				project: this.state.project?this.state.project.id:null,
+				pausal: this.state.pausal.value,
+				overtime: this.state.overtime.value,
+				tags: this.state.tags.map((item)=>item.id),
+				type: this.state.type?this.state.type.id:null,
+			};
+
 		return (
 			<div className="flex">
 				<div className="container-fluid p-2">
@@ -387,11 +416,16 @@ export default class TasksTwoEdit extends Component {
 									/> Delete
 							</button>
 							{' '}
-							<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.copyTask.bind(this)}>
+							{this.state.project
+								&&
+								<TaskAdd history={this.props.history} isCopy={true} project={this.state.project.id} triggerDate={this.state.projectChangeDate} task={BODY} disabled={this.canSave()}/>
+							}
+
+						{/*	<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.copyTask.bind(this)}>
 								<i
 									className="fas fa-copy icon-M"
 									/> Copy
-							</button>
+							</button>*/}
 							{' '}
 							<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.submitTask.bind(this)}>
 								<i

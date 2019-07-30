@@ -19,7 +19,6 @@ const noDef={
 const repeat = [
 	{ value: 'none', label: 'none' },
 	{ value: 'every day', label: 'every day' },
-
 ];
 
 export default class TaskAdd extends Component{
@@ -54,11 +53,88 @@ export default class TaskAdd extends Component{
 			tags:[],
 			type:null,
       pausal:{value:true,label:'Pausal'},
-      overtime:{value:false,label:'Nie'}
+      overtime:{value:false,label:'Nie'},
+
+			metadata: null,
     }
 		this.counter = 0;
     this.fetchData();
   }
+
+	fetchData(){
+		Promise.all(
+			[
+				database.collection('help-statuses').get(),
+				database.collection('help-projects').get(),
+				database.collection('users').get(),
+				database.collection('companies').get(),
+				database.collection('help-work_types').get(),
+				database.collection('help-units').get(),
+				database.collection('help-prices').get(),
+				database.collection('help-pricelists').get(),
+				database.collection('help-tags').get(),
+				database.collection('help-task_types').get(),
+				rebase.get('metadata/0', {
+					context: this,
+				})
+			]).then(([statuses,projects,users, companies, workTypes,units, prices, pricelists,tags,taskTypes,meta])=>{
+				this.setData(
+					toSelArr(snapshotToArray(statuses)),
+					toSelArr(snapshotToArray(projects)),
+					toSelArr(snapshotToArray(users),'email'),
+					toSelArr(snapshotToArray(companies)),
+					toSelArr(snapshotToArray(workTypes)),
+					toSelArr(snapshotToArray(units)),
+					snapshotToArray(prices),
+					snapshotToArray(pricelists),
+					toSelArr(snapshotToArray(tags)),
+					toSelArr(snapshotToArray(taskTypes)),
+					meta.defaultUnit
+				);
+			});
+	}
+
+	setData(statuses, projects,users,companies,workTypes,units, prices, pricelists,tags,taskTypes,defaultUnit){
+		let status = statuses.find((item)=>item.title==='New');
+		if(!status){
+			status=null;
+		}
+		let newCompanies=companies.map((company)=>{
+			let newCompany={...company,pricelist:pricelists.find((item)=>item.id===company.pricelist)};
+			return newCompany;
+		});
+		let newWorkTypes=workTypes.map((workType)=>{
+			let newWorkType = {...workType, prices:prices.filter((price)=>price.workType===workType.id)}
+			return newWorkType;
+		});
+
+		this.setState({
+			statuses,
+			projects,
+			users,
+			companies:newCompanies,
+			workTypes:newWorkTypes,
+			taskTypes,
+			allTags:tags,
+
+			id: 0,
+			title: this.props.isCopy ? this.props.task.title : "",
+			status,
+			units,
+			statusChange:null,
+			project:null,
+			company:null,
+			workHours:0,
+			workType:null,
+			requester:null,
+			assignedTo:[],
+			loading:false,
+			type:null,
+			tags:[],
+			defaults:noDef,
+			defaultUnit
+		},()=>this.setDefaults(this.props.project));
+	}
 
 	getNewID(){
 		return this.counter++;
@@ -71,6 +147,19 @@ export default class TaskAdd extends Component{
       this.setDefaults(props.project);
 		}
   }
+
+	componentWillMount(){
+	/*	rebase.bindCollection('/metadata', {
+    context: this,
+    state: 'metadata',
+    then(data) {
+			console.log(data);
+     	this.setState(state => ({
+       	id: parseInt(data.taskLastID)+1,
+     	}))
+    	},
+  	});*/
+	}
 
   submitTask(){
     this.setState({saving:true});
@@ -111,7 +200,7 @@ export default class TaskAdd extends Component{
 				rebase.updateDoc('/metadata/0',{taskLastID:newID});
 				this.setState({
 					saving:false,
-					openAddTaskModal:false,
+					openAddTaskModal: this.props.isCopy,
 					hidden:true,
 					title:'',
 					company:null,
@@ -136,38 +225,6 @@ export default class TaskAdd extends Component{
 		})
   }
 
-  fetchData(){
-    Promise.all(
-      [
-        database.collection('help-statuses').get(),
-        database.collection('help-projects').get(),
-        database.collection('users').get(),
-        database.collection('companies').get(),
-        database.collection('help-work_types').get(),
-        database.collection('help-units').get(),
-        database.collection('help-prices').get(),
-        database.collection('help-pricelists').get(),
-				database.collection('help-tags').get(),
-				database.collection('help-task_types').get(),
-				rebase.get('metadata/0', {
-					context: this,
-				})
-    ]).then(([statuses,projects,users, companies, workTypes,units, prices, pricelists,tags,taskTypes,meta])=>{
-			this.setData(
-				toSelArr(snapshotToArray(statuses)),
-				toSelArr(snapshotToArray(projects)),
-				toSelArr(snapshotToArray(users),'email'),
-				toSelArr(snapshotToArray(companies)),
-				toSelArr(snapshotToArray(workTypes)),
-				toSelArr(snapshotToArray(units)),
-				snapshotToArray(prices),
-				snapshotToArray(pricelists),
-				toSelArr(snapshotToArray(tags)),
-				toSelArr(snapshotToArray(taskTypes)),
-				meta.defaultUnit
-			);
-    });
-  }
 
 	setDefaults(projectID){
 		if(projectID===null){
@@ -196,46 +253,6 @@ export default class TaskAdd extends Component{
 		});
 	}
 
-  setData(statuses, projects,users,companies,workTypes,units, prices, pricelists,tags,taskTypes,defaultUnit){
-    let status = statuses.find((item)=>item.title==='New');
-    if(!status){
-      status=null;
-    }
-		let newCompanies=companies.map((company)=>{
-			let newCompany={...company,pricelist:pricelists.find((item)=>item.id===company.pricelist)};
-			return newCompany;
-		});
-		let newWorkTypes=workTypes.map((workType)=>{
-			let newWorkType = {...workType, prices:prices.filter((price)=>price.workType===workType.id)}
-			return newWorkType;
-		});
-
-			this.setState({
-				statuses,
-				projects,
-				users,
-				companies:newCompanies,
-				workTypes:newWorkTypes,
-				taskTypes,
-				allTags:tags,
-
-				status,
-				units,
-				statusChange:null,
-				project:null,
-				company:null,
-				workHours:0,
-				workType:null,
-				requester:null,
-				assignedTo:[],
-				loading:false,
-				type:null,
-				tags:[],
-				defaults:noDef,
-				defaultUnit
-			},()=>this.setDefaults(this.props.project));
-
-  }
 
   render(){
 		let taskWorks= this.state.taskWorks.map((work)=>{
@@ -269,15 +286,32 @@ export default class TaskAdd extends Component{
 			}
 		});
 
+
     return (
-			<div >
+			<div className="display-inline">
 
-			<Button
-				className="btn-link t-a-l sidebar-menu-item"
-				onClick={()=>{this.setState({openAddTaskModal:true,hidden:false})}}
-			> <i className="fa fa-plus sidebar-icon-center"/> Add task
-			</Button>
+				{!this.props.isCopy
+					&&
+					<Button
+						className="btn-link t-a-l sidebar-menu-item"
+						onClick={()=>{this.setState({openAddTaskModal:true,hidden:false})}}
+					> <i className="fa fa-plus sidebar-icon-center"/> Add task
+					</Button>
+				}
 
+				{
+					this.props.isCopy
+					&&
+					<button
+						type="button"
+						className="btn btn-link waves-effect"
+						disabled={this.props.disabled}
+						onClick={()=>{this.setState({openAddTaskModal:true,hidden:false})}}>
+						<i
+							className="fas fa-copy icon-M"
+							/> Copy
+					</button>
+				}
 
 			<Modal size="lg"  isOpen={this.state.openAddTaskModal} toggle={()=>{this.setState({openAddTaskModal:!this.state.openAddTaskModal})}} >
 					<ModalHeader toggle={()=>{this.setState({openAddTaskModal:!this.state.openAddTaskModal})}} >
@@ -302,7 +336,8 @@ export default class TaskAdd extends Component{
 					<div className="scrollable">
 						<div className="p-t-0">
 								<div className="row">
-									<h1 className="center-hor"># NEW</h1>
+									<h1 className="center-hor"># {this.props.isCopy ? this.state.id : "NEW"}</h1>
+
 									<span className="center-hor">
 										<input type="text" value={this.state.title} className="task-title-input hidden-input" onChange={(e)=>this.setState({title:e.target.value})} placeholder="Enter task name" />
 									</span>
