@@ -25,41 +25,81 @@ export default class TaskAdd extends Component{
   constructor(props){
     super(props);
     this.state={
+			//vseobecne
       saving:false,
       loading:true,
 			openAddTaskModal:false,
-      users:[],
-      companies:[],
-      workTypes:[],
-      statuses:[],
-      projects:[],
-			taskWorks:[],
-			taskMaterials:[],
-			allTags:[],
-			taskTypes:[],
-			hidden:true,
+			statuses:[],	//Hore status v ramceku
 			defaults:noDef,
 
-      title:'',
-      company:null,
-      workHours:'0',
-      workType:null,
-      requester:null,
-			assignedTo:[],
-      description:'',
-      status:null,
-      statusChange:null,
-      project:null,
+			//moznosti vo formulari
+			allTags:[], //Tagy
+      users:[], //Assigned to, Zadal, Sluzby - riesi
+			taskTypes:[], //Typ
+      companies:[], //Firma
+      projects:[], //Projekt
+
+			//sluzby & rozpocet select - Typ
+			workTypes:[],
+
+			//vsetky sluzby
+			taskWorks:[],
+
+			//vsetky materialy
+			taskMaterials:[],
+
+
+			//task basic info
+			id: 0,
+      title: this.props.isCopy ? this.props.task.title : "",
 			tags:[],
+			assignedTo:[],
 			type:null,
+			project: null,
+			requester:null,
+      company:null,
+			deadline: null,
+			description: this.props.isCopy ? this.props.task.description : "",
+
+			status:null,
+			statusChange:null,
+
+			//sluzby formular
+      workType:null,
+
       pausal:{value:true,label:'Pausal'},
       overtime:{value:false,label:'Nie'},
 
-			metadata: null,
+			//smth
+			workHours:'0',
+			hidden:true,
+
     }
 		this.counter = 0;
     this.fetchData();
   }
+
+	componentWillMount(){
+		rebase.listenToCollection('metadata', {
+			context: this,
+			then(data) {
+				this.setState({
+					id: parseInt(data[0].taskLastID)+1,
+				});
+			},
+			onFailure(err) {
+				//handle error
+			}
+		});
+	}
+
+	componentWillReceiveProps(props){
+		if (this.props.project !== props.project){
+			this.fetchData();
+		}else if(this.props.triggerDate!==props.triggerDate){
+			this.setDefaults(props.project);
+		}
+	}
 
 	fetchData(){
 		Promise.all(
@@ -108,31 +148,44 @@ export default class TaskAdd extends Component{
 			return newWorkType;
 		});
 
-		this.setState({
-			statuses,
-			projects,
-			users,
-			companies:newCompanies,
-			workTypes:newWorkTypes,
-			taskTypes,
-			allTags:tags,
+		let chosenProject = (this.props.isCopy ? (projects.map(p => {return {label: p.label, value: p.value }}).find(p => p.value === this.props.project)) : null)
 
-			id: 0,
+		this.setState({
+			//vseobecne
+			loading:false,
+			statuses,
+			defaults:noDef,
+
+			//moznosti vo formulari
+			allTags:tags,
+			users,
+			taskTypes,
+			companies: newCompanies,
+			projects,
+
+			//sluzby & rozpocet select - Typ
+			workTypes: newWorkTypes,
+
+			//task basic info
 			title: this.props.isCopy ? this.props.task.title : "",
-			status,
-			units,
-			statusChange:null,
-			project:null,
+			tags: this.props.isCopy ? this.props.task.tags : [],
+			assignedTo: this.props.isCopy ? this.props.task.assignedTo : [],
+			type:null,
+			project: chosenProject,
+			requester:null,
 			company:null,
+			description: this.props.isCopy ? this.props.task.description : "",
+
+			status,
+			statusChange:null,
+
+			//sluzby formular
 			workHours:0,
 			workType:null,
-			requester:null,
-			assignedTo:[],
-			loading:false,
-			type:null,
-			tags:[],
-			defaults:noDef,
-			defaultUnit
+
+			defaultUnit,
+			units,
+
 		},()=>this.setDefaults(this.props.project));
 	}
 
@@ -140,25 +193,46 @@ export default class TaskAdd extends Component{
 		return this.counter++;
 	}
 
-	componentWillReceiveProps(props){
-    if (this.props.project !== props.project){
-      this.fetchData();
-    }else if(this.props.triggerDate!==props.triggerDate){
-      this.setDefaults(props.project);
-		}
-  }
 
-	componentWillMount(){
-	/*	rebase.bindCollection('/metadata', {
-    context: this,
-    state: 'metadata',
-    then(data) {
-			console.log(data);
-     	this.setState(state => ({
-       	id: parseInt(data.taskLastID)+1,
-     	}))
-    	},
-  	});*/
+
+	setDefaults(projectID){
+		if(projectID===null){
+			this.setState({defaults:noDef});
+			return;
+		}
+
+		database.collection('help-projects').doc(projectID).get().then((project)=>{
+			let def = project.data().def;
+			if(!def){
+				this.setState({defaults:noDef});
+				return;
+			}
+			let state  = this.state;
+
+			this.setState({
+				assignedTo: def.assignedTo && (def.assignedTo.fixed||def.assignedTo.def)
+																		 ? state.users.filter((item)=> def.assignedTo.value.includes(item.id) || (this.props.isCopy && this.props.task.assignedTo.includes(item.id)))
+																		 : (this.props.isCopy ? state.users.filter((item)=> this.props.task.assignedTo.includes(item.id)) : []),
+				tags: def.tags && (def.tags.fixed||def.tags.def)
+																		 ? state.allTags.filter((item)=> def.tags.value.includes(item.id) || (this.props.isCopy && this.props.task.tags.includes(item.id)))
+																		 : (this.props.isCopy ? state.users.filter((item)=> this.props.task.tags.includes(item.id)) : []),
+				type: def.type && (def.type.fixed||def.type.def)
+																		 ? state.taskTypes.find((item)=> item.id === (this.props.isCopy && this.props.task.type ? this.props.task.type : def.type.value))
+																		 : (this.props.isCopy ? state.taskTypes.find((item)=> item.id === this.props.task.type) : null),
+				company: def.company && (def.company.fixed||def.company.def)
+																		 ? state.companies.find((item)=> item.id === (this.props.isCopy && this.props.task.company ? this.props.task.company : def.company.value))
+																		 : (this.props.isCopy ? state.companies.find((item)=> item.id === this.props.task.company) : null),
+				requester: def.requester && (def.requester.fixed||def.requester.def)
+																		 ? state.users.find((item)=> item.id === (this.props.isCopy && this.props.task.requester ? this.props.task.requester : def.requester.value))
+																		 : (this.props.isCopy ? state.users.find((item)=> item.id === this.props.task.requester) : null),
+				status: def.status && (def.status.fixed||def.status.def)
+																		 ? state.statuses.find((item) => item.id === (this.props.isCopy && this.props.task.status ? this.props.task.status : def.status.value))
+																		 : (this.props.isCopy ? state.statuses.find((item)=> item.id === this.props.task.status) : null),
+				project: state.projects.find((item)=>item.id===project.id),
+				defaults: def
+			});
+
+		});
 	}
 
   submitTask(){
@@ -226,35 +300,10 @@ export default class TaskAdd extends Component{
   }
 
 
-	setDefaults(projectID){
-		if(projectID===null){
-			this.setState({defaults:noDef});
-			return;
-		}
-
-		database.collection('help-projects').doc(projectID).get().then((project)=>{
-			let def = project.data().def;
-			if(!def){
-				this.setState({defaults:noDef});
-				return;
-			}
-			let state  = this.state;
-			this.setState({
-				assignedTo:def.assignedTo&& (def.assignedTo.fixed||def.assignedTo.def)? state.users.filter((item)=> def.assignedTo.value.includes(item.id)):[],
-				company:def.company&& (def.company.fixed||def.company.def)?state.companies.find((item)=> item.id===def.company.value):null,
-				requester:def.requester&& (def.requester.fixed||def.requester.def)?state.users.find((item)=> item.id===def.requester.value):null,
-				status:def.status&& (def.status.fixed||def.status.def)?state.statuses.find((item)=> item.id===def.status.value):null,
-				tags:def.tags&& (def.tags.fixed||def.tags.def)? state.allTags.filter((item)=> def.tags.value.includes(item.id)):[],
-				type:def.type && (def.type.fixed||def.type.def)?state.taskTypes.find((item)=> item.id===def.type.value):null,
-				project:state.projects.find((item)=>item.id===project.id),
-				defaults:def
-			});
-
-		});
-	}
-
 
   render(){
+		console.log(this.state.assignedTo);
+
 		let taskWorks= this.state.taskWorks.map((work)=>{
 			let finalUnitPrice=parseFloat(work.price);
 			if(work.extraWork){

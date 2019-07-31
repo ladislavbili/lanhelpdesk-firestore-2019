@@ -28,7 +28,6 @@ componentWillReceiveProps(props){
 }
 
 getData(id){
-  console.log(id);
   Promise.all([
     database.collection('help-comments').where("task", "==", id).get(),
     database.collection('help-mails').where("taskID", "==", parseInt(id)).get(),
@@ -53,7 +52,6 @@ getData(id){
 
 
   render(){
-    console.log(this.state.tos);
     return (
       <div>
         <div>
