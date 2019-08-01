@@ -18,6 +18,8 @@ import SupplierList from './settings/suppliers';
 import SupplierInvoiceList from './settings/supplierInvoices';
 import TagList from './settings/tags';
 import TaskTypeList from './settings/taskTypes';
+import ImapList from './settings/imaps';
+import SMTPList from './settings/smtps';
 
 export default class Navigation extends Component {
 	render() {
@@ -40,8 +42,10 @@ export default class Navigation extends Component {
 						{title:'Supplier',link:'suppliers'},
 						{title:'Tags',link:'tags'},
 						{title:'Invoices',link:'supplierInvoices'},
-						{title:'Task types',link:'taskTypes'}]
-					} />
+						{title:'Task types',link:'taskTypes'},
+						{title:'Imaps',link:'imaps'},
+						{title:'SMTPs',link:'smtps'},
+					]} />
 
 					<Route exact path="/helpdesk/reports" component={Reports} />
 					<Route exact path="/helpdesk/reports/:id" component={Reports} />
@@ -72,6 +76,10 @@ export default class Navigation extends Component {
 					<Route exact path='/helpdesk/settings/tags/:id' component={TagList} />
 					<Route exact path='/helpdesk/settings/taskTypes' component={TaskTypeList} />
           <Route exact path='/helpdesk/settings/taskTypes/:id' component={TaskTypeList} />
+					<Route exact path='/helpdesk/settings/imaps' component={ImapList} />
+					<Route exact path='/helpdesk/settings/imaps/:id' component={ImapList} />
+					<Route exact path='/helpdesk/settings/smtps' component={SMTPList} />
+					<Route exact path='/helpdesk/settings/smtps/:id' component={SMTPList} />
 				</div>
 			</div>
 		</div>

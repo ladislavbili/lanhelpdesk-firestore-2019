@@ -152,6 +152,13 @@ html{
   background-color: white;
 }
 
+.ignore-css{
+  all:initial;
+  font-family: $main-font;
+  font-size: 14px;
+  color: #797979;
+}
+
 .clickable{
 	cursor:pointer;
 }

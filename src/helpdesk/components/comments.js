@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Input, Label, Button, FormGroup } from 'reactstrap';
+import firebase from 'firebase';
 import { connect } from "react-redux";
 import {rebase,database} from '../../index';
 import {snapshotToArray, timestampToString} from '../../helperFunctions';
@@ -28,7 +29,6 @@ componentWillReceiveProps(props){
 }
 
 getData(id){
-  console.log(id);
   Promise.all([
     database.collection('help-comments').where("task", "==", id).get(),
     database.collection('help-mails').where("taskID", "==", parseInt(id)).get(),
@@ -53,7 +53,6 @@ getData(id){
 
 
   render(){
-    console.log(this.state.tos);
     return (
       <div>
         <div>
@@ -89,16 +88,18 @@ getData(id){
               }
               rebase.addToCollection('/help-comments',body).then(()=>{this.setState({saving:false,newComment:''});this.getData(this.props.id)})
               if(this.state.isEmail){
-                fetch('http://127.0.0.1:8081/send-mail',{
-                  headers: {
-                    'Content-Type': 'application/json'
-                  },
-                  method: 'POST',
-                  body:JSON.stringify({message:this.state.newComment,tos:this.state.tos, subject:this.state.subject, taskID:this.props.id}),
-                }).then((response)=>response.json().then((response)=>{
-                  this.setState({subject:'',tos:[]})
-                  console.log(response);
-                }))
+                firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then((token)=>{
+                  fetch('https://127.0.0.1:8081/send-mail',{
+                    headers: {
+                      'Content-Type': 'application/json'
+                    },
+                    method: 'POST',
+                    body:JSON.stringify({message:this.state.newComment,tos:this.state.tos, subject:this.state.subject, taskID:this.props.id,token,email:this.props.users.find((user)=>user.id===this.props.userID).email}),
+                  }).then((response)=>response.json().then((response)=>{
+                    this.setState({subject:'',tos:[]})
+                    console.log(response);
+                  }))
+                });
               }
             }}>Send</Button>
 
@@ -120,8 +121,7 @@ getData(id){
                   {!comment.isMail && <small className="text-muted">From: {comment.user!==undefined?(comment.user.email):'Unknown sender'}</small>}
                 </div>
               </div>
-              {comment.isMail &&<iframe title={comment.subject} style={{width:'100%',height:'auto', border:'none'}} srcDoc={comment.html?comment.html:unescape(comment.text).replace(/(?:\r\n|\r|\n)/g, '<br>')}>
-            </iframe>}
+              {comment.isMail && <div className="ignore-css" dangerouslySetInnerHTML={{__html: comment.html?comment.html:unescape(comment.text).replace(/(?:\r\n|\r|\n)/g, '<br>') }}></div>}
               {!comment.isMail && <div  dangerouslySetInnerHTML={{__html: comment.comment.replace(/(?:\r\n|\r|\n)/g, '<br>') }}>
               </div>}
             </div>

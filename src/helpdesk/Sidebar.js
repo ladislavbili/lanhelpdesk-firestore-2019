@@ -26,7 +26,10 @@ let settings=[{title:'Projects',link:'projects'},
 {title:'Supplier',link:'suppliers'},
 {title:'Tags',link:'tags'},
 {title:'Invoices',link:'supplierInvoices'},
-{title:'Task types',link:'taskTypes'}]
+{title:'Task types',link:'taskTypes'},
+{title:'Imaps',link:'imaps'},
+{title:'SMTPs',link:'smtps'},
+]
 
 class Sidebar extends Component {
 	constructor(props) {
@@ -187,7 +190,7 @@ class Sidebar extends Component {
 					{showSettings &&
 						<Nav vertical>
 							{settings.map((setting)=>
-								<NavItem>
+								<NavItem key={setting.link}>
 									<Link className={this.props.location.pathname.includes(setting.link) ? "text-basic sidebar-align sidebar-item-active sidebar-menu-item" : "text-basic sidebar-align sidebar-menu-item"}
 										to={{ pathname:'/helpdesk/settings/'+setting.link }}>{setting.title}</Link>
 								</NavItem>

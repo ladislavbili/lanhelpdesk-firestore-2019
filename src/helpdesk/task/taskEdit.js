@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import {Button} from 'reactstrap';
-import Comments from '../components/comments.js';
+import Comments from '../components/comments';
 import Materials from '../components/materials';
 import Subtasks from '../components/subtasks';
 
