@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import {Button} from 'reactstrap';
-import ReactToPrint from 'react-to-print';
 import Comments from '../components/comments.js';
 import Materials from '../components/materials';
 import Subtasks from '../components/subtasks';
 
 import TaskAdd from './taskAddContainer';
-import TaskPrint from './taskPrint';
 
 import {rebase, database} from '../../index';
 import {toSelArr, snapshotToArray, timestampToString} from '../../helperFunctions';
@@ -60,6 +58,7 @@ export default class TasksTwoEdit extends Component {
 			description:'',
 			status:null,
 			statusChange:null,
+			createdAt:null,
 			deadline:null,
 			reminder:null,
 			project:null,
@@ -67,7 +66,6 @@ export default class TasksTwoEdit extends Component {
 			pausal:{value:true,label:'Pausal'},
 			overtime:{value:true,label:'Áno'},
 			type:null,
-			createdAt:null,
 
 			/////
 			openAddStatusModal: false,
@@ -75,8 +73,6 @@ export default class TasksTwoEdit extends Component {
 			isColumn: false,
 			search: '',
 			openCopyModal: false,
-
-			print: false,
 		};
     this.submitTask.bind(this);
     this.submitMaterial.bind(this);
@@ -101,6 +97,49 @@ export default class TasksTwoEdit extends Component {
 			.then((data)=>{
 				snapshotToArray(data).forEach((item)=>rebase.removeDoc('/help-comments/'+item.id));
 			});
+		}
+	}
+
+	copyTask(){
+		if(window.confirm("Do you really want to copy this task?")){
+		/*	let body = {
+				title: this.state.title,
+				company: this.state.company?this.state.company.id:null,
+				workHours: this.state.workHours,
+				requester: this.state.requester?this.state.requester.id:null,
+				assignedTo: this.state.assignedTo.map((item)=>item.id),
+				description: this.state.description,
+				status: this.state.status?this.state.status.id:null,
+				deadline: isNaN(new Date(this.state.deadline).getTime()) ? null : (new Date(this.state.deadline).getTime()),
+				reminder: isNaN(new Date(this.state.reminder).getTime()) ? null : (new Date(this.state.reminder).getTime()),
+				createdAt:(new Date()).getTime(),
+				statusChange:(new Date()).getTime(),
+				project: this.state.project?this.state.project.id:null,
+				pausal: this.state.pausal.value,
+				overtime: this.state.overtime.value,
+				tags: this.state.tags.map((item)=>item.id),
+				type: this.state.type?this.state.type.id:null,
+			};*/
+
+	/*		database.collection('metadata').doc('0').get().then((taskMeta)=>{
+				let newID = (parseInt(taskMeta.data().taskLastID)+1)+"";
+				this.state.taskWorks.forEach((item)=>{
+					delete item['id'];
+						rebase.addToCollection('help-task_works',{...item,task:newID});
+				})
+
+				this.state.taskMaterials.forEach((item)=>{
+					delete item['id'];
+					rebase.addToCollection('help-task_materials',{...item, task:newID});
+				})
+
+
+				rebase.addToCollection('/help-tasks', body,newID)
+				.then(()=>{
+					rebase.updateDoc('/metadata/0',{taskLastID:newID});
+					this.props.history.push('/helpdesk/taskList/i/'+this.props.match.params.listID+'/'+newID);
+				});
+			})*/
 		}
 	}
 
@@ -320,6 +359,7 @@ export default class TasksTwoEdit extends Component {
 			}
 		});
 
+
 		return (
 			<div className="flex">
 				<div className="container-fluid p-2">
@@ -356,8 +396,14 @@ export default class TasksTwoEdit extends Component {
 							{' '}
 							{this.state.project
 								&&
-								<TaskAdd history={this.props.history} project={this.state.project.id} triggerDate={this.state.projectChangeDate} task={this.state} disabled={this.canSave()}/>
+								<TaskAdd history={this.props.history} isCopy={true} project={this.state.project.id} triggerDate={this.state.projectChangeDate} task={this.state} disabled={this.canSave()}/>
 							}
+
+						{/*	<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.copyTask.bind(this)}>
+								<i
+									className="fas fa-copy icon-M"
+									/> Copy
+							</button>*/}
 							{' '}
 							<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.submitTask.bind(this)}>
 								<i
@@ -365,31 +411,11 @@ export default class TasksTwoEdit extends Component {
 									/>
 								{this.state.saving?'Saving... ':''}
 							</button>
-
-							<ReactToPrint
-								onBeforePrint={() =>
-									this.setState({print: true})}
-								onAfterPrint={() =>
-									this.setState({print: false})}
-									pageStule="m-100"
-								trigger={() =>
-									<button className="btn btn-link waves-effect">
-										<i
-											className="fas fa-print icon-M mr-3"
-											/>
-										Print
-									</button>
-								}
-								content={() => this.componentRef}
-							/>
 						</div>
 					</div>
 				</div>
 
-					{/*<TaskPrint print={this.state.print} ref={el => (this.componentRef = el)} {...this.state} match={this.props.match}/>*/}
-
-
-						<div ref={el => (this.componentRef = el)}  className={"card-box fit-with-header-and-commandbar " + (!this.props.columns && !this.state.print ? " center-ver w-50 " : "") + (this.state.print ? " m-100 " : " scrollable ")}>
+						<div className={"card-box scrollable fit-with-header-and-commandbar " + (!this.props.columns ? " center-ver w-50" : "")}>
 							<div className="d-flex p-2">
 								<div className="row flex">
 									<h1 className="center-hor text-extra-slim"># {this.props.match.params.taskID}</h1>
@@ -440,7 +466,7 @@ export default class TasksTwoEdit extends Component {
 								</div>
 								<div className="col-lg-12">
 									<div className="col-lg-6">
-										<div className={(!this.state.print ? "" : "p-r-20")}>
+										<div className="p-r-20">
 											<div className="row">
 												<label className="col-5 col-form-label text-slim">Typ</label>
 												<div className="col-7">
@@ -613,9 +639,7 @@ export default class TasksTwoEdit extends Component {
 								match={this.props.match}
 							/>
 
-						{ !this.state.print &&
 							<Comments id={this.state.task?this.state.task.id:null} users={this.state.users} />
-						}
 						</div>
 			</div>
 		);

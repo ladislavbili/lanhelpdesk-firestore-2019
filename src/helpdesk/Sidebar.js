@@ -6,7 +6,7 @@ import Select from "react-select";
 import { connect } from "react-redux";
 
 import SelectPage from '../components/SelectPage';
-import TaskAdd from './task/taskAdd';
+import TaskAdd from './task/taskAddContainer';
 import Filter from './components/filter';
 import ProjectEdit from './projects/projectEdit';
 import ProjectAdd from './projects/projectAdd';
@@ -113,7 +113,7 @@ class Sidebar extends Component {
 
 						<hr/>
 
-						<TaskAdd history={this.props.history} isCopy={false} project={this.state.project.id} triggerDate={this.state.projectChangeDate} />
+						<TaskAdd history={this.props.history} project={this.state.project.id} triggerDate={this.state.projectChangeDate} />
 
 						<li>
 							<ProjectAdd />
