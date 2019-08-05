@@ -27,6 +27,7 @@
     "react-select": "^2.3.0",
     "react-table": "^6.8.6",
     "react-timeago": "^4.4.0",
+    "react-to-print": "^2.3.0",
     "reactjs-popup": "^1.2.0",
     "reactstrap": "^7.1.0",
     "redux": "^4.0.1",

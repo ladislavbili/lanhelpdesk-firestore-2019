@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import {Button} from 'reactstrap';
+import ReactToPrint from 'react-to-print';
 import Comments from '../components/comments.js';
 import Materials from '../components/materials';
 import Subtasks from '../components/subtasks';
 
 import TaskAdd from './taskAddContainer';
+import TaskPrint from './taskPrint';
 
 import {rebase, database} from '../../index';
 import {toSelArr, snapshotToArray, timestampToString} from '../../helperFunctions';
@@ -73,6 +75,8 @@ export default class TasksTwoEdit extends Component {
 			isColumn: false,
 			search: '',
 			openCopyModal: false,
+
+			print: false,
 		};
     this.submitTask.bind(this);
     this.submitMaterial.bind(this);
@@ -316,7 +320,6 @@ export default class TasksTwoEdit extends Component {
 			}
 		});
 
-
 		return (
 			<div className="flex">
 				<div className="container-fluid p-2">
@@ -362,11 +365,31 @@ export default class TasksTwoEdit extends Component {
 									/>
 								{this.state.saving?'Saving... ':''}
 							</button>
+
+							<ReactToPrint
+								onBeforePrint={() =>
+									this.setState({print: true})}
+								onAfterPrint={() =>
+									this.setState({print: false})}
+									pageStule="m-100"
+								trigger={() =>
+									<button className="btn btn-link waves-effect">
+										<i
+											className="fas fa-print icon-M mr-3"
+											/>
+										Print
+									</button>
+								}
+								content={() => this.componentRef}
+							/>
 						</div>
 					</div>
 				</div>
 
-						<div className={"card-box scrollable fit-with-header-and-commandbar " + (!this.props.columns ? " center-ver w-50" : "")}>
+					{/*<TaskPrint print={this.state.print} ref={el => (this.componentRef = el)} {...this.state} match={this.props.match}/>*/}
+
+
+						<div ref={el => (this.componentRef = el)}  className={"card-box fit-with-header-and-commandbar " + (!this.props.columns && !this.state.print ? " center-ver w-50 " : "") + (this.state.print ? " m-100 " : " scrollable ")}>
 							<div className="d-flex p-2">
 								<div className="row flex">
 									<h1 className="center-hor text-extra-slim"># {this.props.match.params.taskID}</h1>
@@ -417,7 +440,7 @@ export default class TasksTwoEdit extends Component {
 								</div>
 								<div className="col-lg-12">
 									<div className="col-lg-6">
-										<div className="p-r-20">
+										<div className={(!this.state.print ? "" : "p-r-20")}>
 											<div className="row">
 												<label className="col-5 col-form-label text-slim">Typ</label>
 												<div className="col-7">
@@ -590,7 +613,9 @@ export default class TasksTwoEdit extends Component {
 								match={this.props.match}
 							/>
 
+						{ !this.state.print &&
 							<Comments id={this.state.task?this.state.task.id:null} users={this.state.users} />
+						}
 						</div>
 			</div>
 		);
