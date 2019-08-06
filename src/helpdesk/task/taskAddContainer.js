@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-import Select from 'react-select';
 import {rebase, database} from '../../index';
 import {toSelArr, snapshotToArray} from '../../helperFunctions';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
 import TaskAdd from './taskAdd';
-import {invisibleSelectStyle} from '../../scss/selectStyles';
 
 export default class TaskAddContainer extends Component{
   constructor(props){

@@ -74,7 +74,7 @@ export default class BackupTaskShowInfo extends Component{
   }
 
 	componentWillReceiveProps(props){
-		if (this.props.id != props.id){
+		if (this.props.id !== props.id){
 			this.setState({
 				name: ITEMS[props.id].name,
 				startDate: ITEMS[props.id].startDate,

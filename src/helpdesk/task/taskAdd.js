@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import {rebase, database} from '../../index';
-import {toSelArr, snapshotToArray} from '../../helperFunctions';
+//import {toSelArr, snapshotToArray} from '../../helperFunctions';
 import { Button } from 'reactstrap';
 import Materials from '../components/materials';
 import Subtasks from '../components/subtasks';

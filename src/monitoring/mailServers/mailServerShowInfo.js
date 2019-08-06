@@ -45,7 +45,7 @@ export default class MailServerShowInfo extends Component{
   }
 
 	componentWillReceiveProps(props){
-		if (this.props.id != props.id){
+		if (this.props.id !== props.id){
 			this.setState({
 				name: ITEMS[props.id].name,
 				testEmail: ITEMS[props.id].testEmail,

@@ -15,7 +15,7 @@ export default class BackupTaskEditIndex extends Component{
   }
 
   componentWillReceiveProps(props){
-    if (this.props != props){
+    if (this.props !== props){
       this.setState({
         openedID: props.match.params.itemID,
       });

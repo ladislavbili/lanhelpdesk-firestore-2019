@@ -7,7 +7,6 @@ import Materials from '../components/materials';
 import Subtasks from '../components/subtasks';
 
 import TaskAdd from './taskAddContainer';
-import TaskPrint from './taskPrint';
 
 import {rebase, database} from '../../index';
 import {toSelArr, snapshotToArray, timestampToString} from '../../helperFunctions';
