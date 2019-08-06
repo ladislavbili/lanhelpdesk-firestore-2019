@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Input, Label, Button, FormGroup, Dropdown, DropdownMenu, DropdownToggle } from 'reactstrap';
+import { Input, Label, Button, FormGroup, Dropdown, DropdownMenu, DropdownToggle, DropdownItem } from 'reactstrap';
 import firebase from 'firebase';
 import { connect } from "react-redux";
 import {rebase,database} from '../../index';
@@ -63,7 +63,8 @@ getData(id){
             <Label className="text-slim">To:</Label>
               <Creatable
                 isMulti
-                onChange={(newData)=>this.setState({tos:newData.map((item)=>item.label)})}
+                value={this.state.tos}
+                onChange={(newData)=>this.setState({tos:newData})}
                 options={this.props.users}
               />
           </FormGroup>}
@@ -101,7 +102,7 @@ getData(id){
                   comment:this.state.isEmail?this.state.emailBody: this.state.newComment,
                   subject:this.state.subject,
                   isEmail: this.state.isEmail,
-                  tos:this.state.tos,
+                  tos:this.state.tos.map((item)=>item.value),
                   createdAt: (new Date()).getTime(),
                   task:this.props.id
                 }
@@ -113,7 +114,7 @@ getData(id){
                         'Content-Type': 'application/json'
                       },
                       method: 'POST',
-                      body:JSON.stringify({message:this.state.emailBody,tos:this.state.tos, subject:this.state.subject, taskID:this.props.id,token,email:this.props.users.find((user)=>user.id===this.props.userID).email}),
+                      body:JSON.stringify({message:this.state.emailBody,tos:this.state.tos.map((item)=>item.label), subject:this.state.subject, taskID:this.props.id,token,email:this.props.users.find((user)=>user.id===this.props.userID).email}),
                     }).then((response)=>response.json().then((response)=>{
                       this.setState({subject:'',tos:[], emailBody:''})
                       console.log(response);
@@ -138,30 +139,53 @@ getData(id){
                       <span className="media-meta pull-right">{timestampToString(comment.createdAt)}</span>
                       <h4 className="text-primary font-16 m-0">{comment.from.map((item)=>item.address).toString()}</h4>
                     </p>
-                    <p>
-                      <span className="media-meta pull-right">
-                        <Dropdown className="center-hor"
+                        <Dropdown className="center-hor pull-right"
                           isOpen={comment.open}
                           toggle={()=>this.setState({comments:this.state.comments.map((com)=>{
                               if(com.id===comment.id){
                                 return {...com,open:!comment.open}
                               }
                               return com
-                          })})}
+                            })
+                          })}
                           >
             							<DropdownToggle className="header-dropdown">
-            								<i className="fa fa-arrow-down" style={{backgroundColor:'red'}}/>
+            								<i className="fa fa-arrow-down" style={{color:'grey'}}/>
             							</DropdownToggle>
             							<DropdownMenu right>
-                            asdsaddsaads
+                              <label
+                                className='btn btn-link btn-outline-blue waves-effect waves-light'
+                                onClick={()=>this.setState({
+                                  tos: comment.from.map((item)=>{
+                                    return {
+                                      label:item.address,
+                                      value:item.address
+                                    }
+                                  }),
+                                  subject:comment.subject,
+                                  isEmail:true,
+                                  emailBody:('<body><br><blockquote><p>'+(comment.html?comment.html:unescape(comment.text).replace(/(?:\r\n|\r|\n)/g, '<br>'))+'</p></blockquote><body>')
+                                })}
+                              >
+                                <i className="fa fa-reply" />
+                              </label>
+                              <label
+                                className='btn btn-link btn-outline-blue waves-effect waves-light'
+                              >
+                                <i className="fa fa-share-square"
+                                  onClick={()=>this.setState({
+                                    subject:comment.subject,
+                                    isEmail:true,
+                                    emailBody:comment.html?comment.html:unescape(comment.text).replace(/(?:\r\n|\r|\n)/g, '<br>')
+                                  })}
+                                  />
+                              </label>
             							</DropdownMenu>
             						</Dropdown>
-                      </span>
                       <small className="text-muted">Send from e-mail: {comment.subject}</small>
-                    </p>
+                      <div className="ignore-css" dangerouslySetInnerHTML={{__html: comment.html?comment.html:unescape(comment.text).replace(/(?:\r\n|\r|\n)/g, '<br>') }}>
                   </div>
                 </div>
-                <div className="ignore-css" dangerouslySetInnerHTML={{__html: comment.html?comment.html:unescape(comment.text).replace(/(?:\r\n|\r|\n)/g, '<br>') }}>
                 </div>
               </div>
             }
