@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Input, Label, Button, FormGroup } from 'reactstrap';
+import { Input, Label, Button, FormGroup, Dropdown, DropdownMenu, DropdownToggle } from 'reactstrap';
 import firebase from 'firebase';
 import { connect } from "react-redux";
 import {rebase,database} from '../../index';
 import {snapshotToArray, timestampToString} from '../../helperFunctions';
 import { Creatable } from 'react-select';
+import CKEditor from 'ckeditor4-react';
 import classnames from 'classnames';
 
 class Comments extends Component{
@@ -16,6 +17,7 @@ constructor(props){
     isEmail:false,
     comments:[],
     subject:'',
+    emailBody:'',
     tos:[]
   }
   this.getData.bind(this);
@@ -44,7 +46,8 @@ getData(id){
   let emails = snapshotToArray(mails).map((item)=>{
     return {
       ...item,
-      isMail:true
+      isMail:true,
+      open:false
     }
   })
     this.setState({comments:[...comments,...emails]});
@@ -68,63 +71,118 @@ getData(id){
             <Label className="text-slim">Subject</Label>
             <Input type="text" placeholder="Enter subject" value={this.state.subject} onChange={(e)=>this.setState({subject:e.target.value})}/>
           </FormGroup>}
-          <FormGroup>
-            <Label className="text-slim">Add comment</Label>
-            <Input type="textarea" placeholder="Enter comment" value={this.state.newComment} onChange={(e)=>this.setState({newComment:e.target.value})}/>
-          </FormGroup>
+          {this.state.isEmail &&
+            <FormGroup>
+              <Label className="text-slim">Message</Label>
+                <CKEditor
+                  data={this.state.emailBody}
+                  onChange={(evt)=>{this.setState({emailBody:evt.editor.getData()})}}
+                  />
+            </FormGroup>
+          }
+          {!this.state.isEmail &&
+            <FormGroup>
+              <Label className="text-slim">Add comment</Label>
+              <Input type="textarea" placeholder="Enter comment" value={this.state.newComment} onChange={(e)=>this.setState({newComment:e.target.value})}/>
+            </FormGroup>
+          }
           <Button
             className={classnames({ active:this.state.isEmail}, "btn-link", "t-a-l", "m-t-5" )}
             onClick={()=>this.setState({isEmail:!this.state.isEmail})} >
-            {this.state.isEmail?'Message':'E-mail'}
+            {this.state.isEmail?'Comment':'E-mail'}
           </Button>
           <Button className="btn waves-effect m-t-5"
-            disabled={this.state.newComment===''||(this.state.isEmail&&(this.state.tos.length < 1 ||this.state.subject===''))||this.state.saving} onClick={()=>{
-              this.setState({saving:true});
-              let body={
-                user:this.props.userID,
-                comment:this.state.newComment,
-                createdAt: (new Date()).getTime(),
-                task:this.props.id
-              }
-              rebase.addToCollection('/help-comments',body).then(()=>{this.setState({saving:false,newComment:''});this.getData(this.props.id)})
-              if(this.state.isEmail){
-                firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then((token)=>{
-                  fetch('https://127.0.0.1:8081/send-mail',{
-                    headers: {
-                      'Content-Type': 'application/json'
-                    },
-                    method: 'POST',
-                    body:JSON.stringify({message:this.state.newComment,tos:this.state.tos, subject:this.state.subject, taskID:this.props.id,token,email:this.props.users.find((user)=>user.id===this.props.userID).email}),
-                  }).then((response)=>response.json().then((response)=>{
-                    this.setState({subject:'',tos:[]})
-                    console.log(response);
-                  }))
-                });
-              }
-            }}>Send</Button>
+            disabled={(!this.state.isEmail && this.state.newComment==='')||
+              (this.state.isEmail&&(this.state.tos.length < 1 ||this.state.subject===''||this.state.emailBody===''))||this.state.saving}
+              onClick={()=>{
+                this.setState({saving:true});
+                let body={
+                  user:this.props.userID,
+                  comment:this.state.isEmail?this.state.emailBody: this.state.newComment,
+                  subject:this.state.subject,
+                  isEmail: this.state.isEmail,
+                  tos:this.state.tos,
+                  createdAt: (new Date()).getTime(),
+                  task:this.props.id
+                }
+                rebase.addToCollection('/help-comments',body).then(()=>{this.setState({saving:false,newComment:''});this.getData(this.props.id)})
+                if(this.state.isEmail){
+                  firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then((token)=>{
+                    fetch('https://127.0.0.1:8081/send-mail',{
+                      headers: {
+                        'Content-Type': 'application/json'
+                      },
+                      method: 'POST',
+                      body:JSON.stringify({message:this.state.emailBody,tos:this.state.tos, subject:this.state.subject, taskID:this.props.id,token,email:this.props.users.find((user)=>user.id===this.props.userID).email}),
+                    }).then((response)=>response.json().then((response)=>{
+                      this.setState({subject:'',tos:[], emailBody:''})
+                      console.log(response);
+                    }))
+                  });
+                }
+              }}>Send</Button>
 
         </div>
         {this.state.comments.sort((item1,item2)=>item2.createdAt-item1.createdAt).map((comment)=>
           <div key={comment.id} style={{width:900}}>
-            <div className="" style={{borderTop:"1px solid rgba(54, 64, 74, 0.05)", borderBottom:"1px solid rgba(54, 64, 74, 0.05)"}}>
-              <div className="media m-b-30 m-t-30">
-                <img
-                  className="d-flex mr-3 rounded-circle thumb-sm"
-                  src="https://i.pinimg.com/originals/08/a9/0a/08a90a48a9386c314f97a07ba1f0db56.jpg"
-                  alt="Generic placeholder XX"
-                  />
-                <div className="media-body">
-                  <span className="media-meta pull-right">{timestampToString(comment.createdAt)}</span>
-                  {comment.isMail && <h4 className="text-primary font-16 m-0">{comment.from.map((item)=>item.address).toString()}</h4>}
-                  {comment.isMail && <small className="text-muted">Send from e-mail: {comment.subject}</small>}
-                  {!comment.isMail && <h4 className="text-primary font-16 m-0">{comment.user!==undefined?(comment.user.name + ' '+comment.user.surname):'Unknown sender'}</h4>}
-                  {!comment.isMail && <small className="text-muted">From: {comment.user!==undefined?(comment.user.email):'Unknown sender'}</small>}
+            { comment.isMail &&
+              <div className="" style={{borderTop:"1px solid rgba(54, 64, 74, 0.05)", borderBottom:"1px solid rgba(54, 64, 74, 0.05)"}}>
+                <div className="media m-b-30 m-t-30">
+                  <img
+                    className="d-flex mr-3 rounded-circle thumb-sm"
+                    src="https://i.pinimg.com/originals/08/a9/0a/08a90a48a9386c314f97a07ba1f0db56.jpg"
+                    alt="Generic placeholder XX"
+                    />
+                  <div className="media-body">
+                    <p>
+                      <span className="media-meta pull-right">{timestampToString(comment.createdAt)}</span>
+                      <h4 className="text-primary font-16 m-0">{comment.from.map((item)=>item.address).toString()}</h4>
+                    </p>
+                    <p>
+                      <span className="media-meta pull-right">
+                        <Dropdown className="center-hor"
+                          isOpen={comment.open}
+                          toggle={()=>this.setState({comments:this.state.comments.map((com)=>{
+                              if(com.id===comment.id){
+                                return {...com,open:!comment.open}
+                              }
+                              return com
+                          })})}
+                          >
+            							<DropdownToggle className="header-dropdown">
+            								<i className="fa fa-arrow-down" style={{backgroundColor:'red'}}/>
+            							</DropdownToggle>
+            							<DropdownMenu right>
+                            asdsaddsaads
+            							</DropdownMenu>
+            						</Dropdown>
+                      </span>
+                      <small className="text-muted">Send from e-mail: {comment.subject}</small>
+                    </p>
+                  </div>
+                </div>
+                <div className="ignore-css" dangerouslySetInnerHTML={{__html: comment.html?comment.html:unescape(comment.text).replace(/(?:\r\n|\r|\n)/g, '<br>') }}>
                 </div>
               </div>
-              {comment.isMail && <div className="ignore-css" dangerouslySetInnerHTML={{__html: comment.html?comment.html:unescape(comment.text).replace(/(?:\r\n|\r|\n)/g, '<br>') }}></div>}
-              {!comment.isMail && <div  dangerouslySetInnerHTML={{__html: comment.comment.replace(/(?:\r\n|\r|\n)/g, '<br>') }}>
-              </div>}
-            </div>
+            }
+            { !comment.isMail &&
+              <div className="" style={{borderTop:"1px solid rgba(54, 64, 74, 0.05)", borderBottom:"1px solid rgba(54, 64, 74, 0.05)"}}>
+                <div className="media m-b-30 m-t-30">
+                  <img
+                    className="d-flex mr-3 rounded-circle thumb-sm"
+                    src="https://i.pinimg.com/originals/08/a9/0a/08a90a48a9386c314f97a07ba1f0db56.jpg"
+                    alt="Generic placeholder XX"
+                    />
+                  <div className="media-body">
+                    <span className="media-meta pull-right">{timestampToString(comment.createdAt)}</span>
+                    <h4 className="text-primary font-16 m-0">{comment.user!==undefined?(comment.user.name + ' '+comment.user.surname):'Unknown sender'}</h4>
+                    <small className="text-muted">From: {comment.user!==undefined?(comment.user.email):'Unknown sender'}</small>
+                  </div>
+                </div>
+                <div  dangerouslySetInnerHTML={{__html: comment.isEmail? comment.comment : comment.comment.replace(/(?:\r\n|\r|\n)/g, '<br>') }}>
+                </div>
+              </div>
+            }
           </div>
         )}
     </div>
