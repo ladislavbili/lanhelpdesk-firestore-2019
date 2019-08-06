@@ -23,9 +23,9 @@ export default class Navigation extends Component {
 						<Route exact path='/monitoring/mail-servers/add' component={MailServerAdd} />
 
 
-							<Route exact path='/monitoring/backup-tasks' component={BackupTasksList} />
-							<Route exact path='/monitoring/backup-tasks/edit/:itemID' component={BackupTasksList} />
-							<Route exact path='/monitoring/backup-tasks/add' component={BackupTaskAdd} />
+							<Route exact path='/monitoring/mail-notifications' component={BackupTasksList} />
+							<Route exact path='/monitoring/mail-notifications/edit/:itemID' component={BackupTasksList} />
+							<Route exact path='/monitoring/mail-notifications/add' component={BackupTaskAdd} />
 					</div>
 				</div>
 			</div>

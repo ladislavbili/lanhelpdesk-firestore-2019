@@ -73,6 +73,24 @@ export default class BackupTaskShowInfo extends Component{
     }
   }
 
+	componentWillReceiveProps(props){
+		if (this.props.id != props.id){
+			this.setState({
+				name: ITEMS[props.id].name,
+				startDate: ITEMS[props.id].startDate,
+				repeatNumber: ITEMS[props.id].repeatNumber,
+				repeatTime: ITEMS[props.id].repeatTime,
+				wait: ITEMS[props.id].wait,
+				from: ITEMS[props.id].from,
+				subject: ITEMS[props.id].subject,
+				mailOK: ITEMS[props.id].mailOK,
+				mailInvalid: ITEMS[props.id].mailInvalid,
+				alertMail: ITEMS[props.id].alertMail,
+				note: ITEMS[props.id].note,
+			})
+		}
+	}
+
   render(){
       return (
         <div className="flex">

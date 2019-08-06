@@ -16,7 +16,7 @@ const ITEMS =[
 			},
 		{
 			id: 1,
-			name: "lansystems.sk",
+			name: "essco.sk",
 			testEmail: "mail.test@essco.sk",
 			timeout: "10",
 			numberOfTests: "5",
@@ -43,6 +43,21 @@ export default class MailServerShowInfo extends Component{
       saving:false,
     }
   }
+
+	componentWillReceiveProps(props){
+		if (this.props.id != props.id){
+			this.setState({
+				name: ITEMS[props.id].name,
+				testEmail: ITEMS[props.id].testEmail,
+				timeout: ITEMS[props.id].timeout,
+				numberOfTests: ITEMS[props.id].numberOfTests,
+				notificationEmails: ITEMS[props.id].notificationEmails,
+				lastResp: ITEMS[props.id].lastResp,
+				status: ITEMS[props.id].status,
+				note: ITEMS[props.id].note,
+			})
+		}
+	}
 
   render(){
       return (

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label, Input } from 'reactstrap';
+import {rebase} from "../../index";
 import Select from 'react-select';
 import {selectStyle} from '../../scss/selectStyles';
 
@@ -8,15 +9,27 @@ export default class MailServerAdd extends Component{
     super(props);
     this.state={
       name: "",
-      port: "",
-      timeout: "",
-      numberOfTests: "",
-      notificationEmails: "",
+      company: null,
+      testEmail: "",
       note: "",
 
       saving:false,
     }
   }
+
+  componentWillMount(){
+		rebase.get("companies", {
+			 context: this,
+			 withIds: true,
+		 }).then(data => {
+			 let newCompanies = data.map(com => {return {value: com.id, label: com.title}});
+			 this.setState({
+				 companies: newCompanies,
+			 });
+		 }).catch(err => {
+			 //handle error
+		 })
+	}
 
   render(){
     return (
@@ -31,28 +44,20 @@ export default class MailServerAdd extends Component{
                 <Label>Name</Label>
                 <Input type="text" placeholder="Enter mailserver name" value={this.state.name} onChange={(e)=>this.setState({name: e.target.value})} />
               </FormGroup>
+
               <FormGroup>
-                <Label>Port</Label>
-                <Input type="text" placeholder="Enter port" value={this.state.port} onChange={(e)=>this.setState({port: e.target.value})} />
-              </FormGroup>
-              <FormGroup>
-                <Label>Timeout</Label>
-                <Input type="text" placeholder="Enter timeout" value={this.state.timeout} onChange={(e)=>this.setState({timeout: e.target.value})} />
-              </FormGroup>
-              <FormGroup>
-                <Label>Number of tests for alert</Label>
-                <Input type="text" placeholder="Enter number of tests for alert" value={this.state.numberOfTests} onChange={(e)=>this.setState({numberOfTests: e.target.value})}  />
+                <Label>Company</Label>
+                <Select
+                  value={this.state.company}
+                  onChange={(company)=>this.setState({company})}
+                  options={this.state.companies}
+                  styles={selectStyle}
+                  />
               </FormGroup>
 
               <FormGroup>
-                <Label>Notification emails</Label>
-                <Select
-                  value={this.state.notificationEmails}
-                  isMulti
-                  onChange={()=> {}}
-                  options={[]}
-                  styles={selectStyle}
-                  />
+                <Label>Test e-mail</Label>
+                <Input type="text" placeholder="Enter port" value={this.state.testEmail} onChange={(e)=>this.setState({testEmail: e.target.value})} />
               </FormGroup>
 
               <FormGroup>

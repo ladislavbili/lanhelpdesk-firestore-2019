@@ -41,8 +41,8 @@ export default class Sidebar extends Component {
 							<Link
 								className="text-basic sidebar-align sidebar-menu-item-link"
 								key={0}
-								to={{ pathname: `/monitoring/backup-tasks`  }}>
-								Backup tasks
+								to={{ pathname: `/monitoring/mail-notifications`  }}>
+								Mail notifications
 							</Link>
 							<div className='sidebar-menu-item-btn'>
 								<Button

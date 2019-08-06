@@ -192,6 +192,16 @@ export default class TaskEditColumn extends Component {
               {statuses.find((item) => item.id === this.state.status).title}
             </Label>
           </FormGroup>
+          <FormGroup>
+            <Label className="text-slim">Tags</Label>
+            <Select
+              styles={selectStyle}
+              options={this.state.allTags}
+              value={this.state.tags}
+              onChange={(tags) => this.setState({ tags }, this.submitTask.bind(this))}
+              isMulti
+              />
+          </FormGroup>
           <div className="flex m-l-5">
             <FormGroup class="row" >
               <Label className="text-slim">Project</Label>
@@ -203,15 +213,6 @@ export default class TaskEditColumn extends Component {
               />
             </FormGroup>
 
-            <FormGroup>
-              <Label className="text-slim">Task type</Label>
-              <Select
-                styles={selectStyle}
-                options={this.state.users}
-                value={this.state.assignedBy}
-                onChange={e => { this.setState({ assignedBy: e }, this.submitTask.bind(this)); }}
-              />
-            </FormGroup>
             <FormGroup>
               <Label className="text-slim">Requester</Label>
               <Select
@@ -242,33 +243,17 @@ export default class TaskEditColumn extends Component {
               <Label className="text-slim">Price</Label>
               <Input type="number" placeholder="Enter price" value={this.state.price} onChange={(e) => this.setState({ price: e.target.value }, this.submitTask.bind(this))} />
             </FormGroup>
+            <FormGroup>
+              <Label className="text-slim">Description</Label>
+              <Input type="textarea" placeholder="Description" value={this.state.description} onChange={(e) => this.setState({ description: e.target.value }, this.submitTask.bind(this))} />
+            </FormGroup>
           </div>
-            <div className="flex m-r-5">
-              <FormGroup>
-                <Label className="text-slim">Description</Label>
-                <Input type="textarea" placeholder="Description" value={this.state.description} onChange={(e) => this.setState({ description: e.target.value }, this.submitTask.bind(this))} />
-              </FormGroup>
-              <FormGroup>
-                <Label className="text-slim">Tags</Label>
-                <Select
-                  styles={selectStyle}
-                  options={this.state.allTags}
-                  value={this.state.tags}
-                  onChange={(tags) => this.setState({ tags }, this.submitTask.bind(this))}
-                  isMulti
-                />
-              </FormGroup>
-              <Subtasks id={this.props.id} />
-              <Attachements id={this.props.id} attachements={this.state.attachements} onChange={(attachements) => this.setState({ attachements }, this.submitTask.bind(this))} />
-              <Comments id={this.props.id} users={this.state.users} />
+          <div className="flex m-r-5">
+            <Subtasks id={this.props.id} />
+            <Attachements id={this.props.id} attachements={this.state.attachements} onChange={(attachements) => this.setState({ attachements }, this.submitTask.bind(this))} />
+            <Comments id={this.props.id} users={this.state.users} />
 
-
-            </div>
-
-
-
-
-
+          </div>
         </div>
       </div>
     );

@@ -18,7 +18,7 @@ const ITEMS =[
 			id: 1,
 			name: "essco.sk",
 			customer: "ESSCO",
-			lastReport: "27.06.2019 13:14:25",
+			lastReport: "07.06.2019 13:14:25",
 			status: "OK",
 		}
 ]
@@ -28,6 +28,11 @@ class BackupTaskList extends Component {
 		super(props);
 		this.state = {
 			search:'',
+
+			filterByName: "",
+			filterByCustomer: "",
+			filterByStatus: "",
+			filterByLastReport: "",
 
 			saving:false,
 			openedID:null,
@@ -72,8 +77,8 @@ class BackupTaskList extends Component {
 							</div>
 						</div>
 						<Button className="btn-link">Global</Button>
-						<Button className="btn" onClick={() => this.props.history.push("/monitoring/backup-tasks/add")}>
-							<i className="fa fa-plus"/> Backup Task
+						<Button className="btn" onClick={() => this.props.history.push("/monitoring/mail-notifications/add")}>
+							<i className="fa fa-plus"/> mail notification
 						</Button>
 					</div>
 				</div>
@@ -91,21 +96,63 @@ class BackupTaskList extends Component {
 									</tr>
 								</thead>
 								<tbody>
+									<tr>
+										<td>
+											<input
+											type="text"
+											value={this.state.filterByName}
+											className="form-control commandbar-search"
+											onChange={(e)=>this.setState({filterByName:e.target.value})}
+											placeholder="Filter by name" />
+										</td>
+										<td>
+											<input
+											type="text"
+											value={this.state.filterByCustomer}
+											className="form-control commandbar-search"
+											onChange={(e)=>this.setState({filterByCustomer:e.target.value})}
+											placeholder="Filter by customer" />
+										</td>
+										<td>
+											<input
+											type="text"
+											value={this.state.filterByStatus}
+											className="form-control commandbar-search"
+											onChange={(e)=>this.setState({filterByStatus:e.target.value})}
+											placeholder="Filter by status" />
+										</td>
+										<td>
+											<input
+											type="text"
+											value={this.state.filterByLastReport}
+											className="form-control commandbar-search"
+											onChange={(e)=>this.setState({filterByLastReport:e.target.value})}
+											placeholder="Filter by last report" />
+										</td>
+										<td>
+										</td>
+									</tr>
 									{
-										ITEMS.map(item =>
+										ITEMS
+										.filter(item =>
+																item.name.toLowerCase().includes(this.state.filterByName.toLowerCase())
+																&& item.customer.toLowerCase().includes(this.state.filterByCustomer.toLowerCase())
+																&& item.status.toLowerCase().includes(this.state.filterByStatus.toLowerCase())
+																&& item.lastReport.toLowerCase().includes(this.state.filterByLastReport.toLowerCase())
+										).map(item =>
 											<tr className={classnames({ 'active': this.props.match.params.itemID === item.id.toString(), clickable:true })}
 												key={item.id}
 												onClick={()=>{
 													if(this.props.layout===1){
 														this.setState({editOpened:true, openedID:item.id});
 													}else{
-														this.props.history.push(`/monitoring/backup-tasks/edit/${item.id}`)
+														this.props.history.push(`/monitoring/mail-notifications/edit/${item.id}`)
 													}
 												}}>
 												<td>{item.name}</td>
 												<td>{item.customer}</td>
-												<td>{item.lastReport}</td>
 												<td>{item.status}</td>
+												<td>{item.lastReport}</td>
 												<td>
 													<Button className="btn-link" onClick={() => {}}>
 														<i className="fa fa-trash"/>
@@ -120,7 +167,7 @@ class BackupTaskList extends Component {
 
 					{!this.props.match.params.itemID && this.props.layout === 0 && <Empty />}
 
-					{this.props.match.params.itemID && this.props.layout === 0 && <BackupTaskEditIndex {...this.props} id={this.props.match.params.itemID} isModal={false}/>}
+					{this.props.match.params.itemID && this.props.layout === 0 && <BackupTaskEditIndex {...this.props} isModal={false}/>}
 
 					</div>
 					<Modal className="w-50" isOpen={this.state.editOpened} toggle={() => this.setState({editOpened:!this.state.editOpened})} >

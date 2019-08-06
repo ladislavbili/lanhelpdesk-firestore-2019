@@ -11,7 +11,6 @@ export default class BackupTaskAdd extends Component{
       startDate: "",
       repeatNumber: "",
       repeatTime: "",
-      wait: "",
 
       from: "",
       subject: "",
@@ -32,7 +31,7 @@ export default class BackupTaskAdd extends Component{
 				</div>
 
 					<div className={"card-box p-t-15 scrollable fit-with-header-and-commandbar " + (!this.props.columns ? " center-ver w-50" : "")}>
-            <h1>Add backup task monitor</h1>
+            <h1>Add mail notification</h1>
 
               <FormGroup>
                 <Label>Name</Label>
@@ -59,11 +58,6 @@ export default class BackupTaskAdd extends Component{
                       />
                   </div>
                 </div>
-              </FormGroup>
-
-              <FormGroup>
-                <Label>Wait period (hour)</Label>
-                <Input type="number" placeholder="Enter hours to wait" value={this.state.wait} onChange={(e)=>this.setState({wait: e.target.value})}  />
               </FormGroup>
 
               <FormGroup>

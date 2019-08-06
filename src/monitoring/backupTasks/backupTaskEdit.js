@@ -62,7 +62,6 @@ export default class BackupTaskEdit extends Component{
       startDate: ITEMS[this.props.id].startDate,
       repeatNumber: ITEMS[this.props.id].repeatNumber,
       repeatTime: ITEMS[this.props.id].repeatTime,
-      wait: ITEMS[this.props.id].wait,
 
       from: ITEMS[this.props.id].from,
       subject: ITEMS[this.props.id].subject,
@@ -75,6 +74,26 @@ export default class BackupTaskEdit extends Component{
       saving:false,
     }
   }
+
+	componentWillReceiveProps(props){
+		if (this.props.id !== props.id){
+			this.setState({
+				name: ITEMS[props.id].name,
+	      startDate: ITEMS[props.id].startDate,
+	      repeatNumber: ITEMS[props.id].repeatNumber,
+	      repeatTime: ITEMS[props.id].repeatTime,
+	      wait: ITEMS[props.id].wait,
+
+	      from: ITEMS[props.id].from,
+	      subject: ITEMS[props.id].subject,
+	      mailOK: ITEMS[props.id].mailOK,
+	      mailInvalid: ITEMS[props.id].mailInvalid,
+	      alertMail: ITEMS[props.id].alertMail,
+
+	      note: ITEMS[props.id].note,
+			})
+		}
+	}
 
   render(){
     return (
@@ -104,11 +123,6 @@ export default class BackupTaskEdit extends Component{
                       />
                   </div>
                 </div>
-              </FormGroup>
-
-              <FormGroup>
-                <Label>Wait period (hour)</Label>
-                <Input type="number" placeholder="Enter hours to wait" value={this.state.wait} onChange={(e)=>this.setState({wait: e.target.value})}  />
               </FormGroup>
 
               <FormGroup>
@@ -146,7 +160,7 @@ export default class BackupTaskEdit extends Component{
               <Button
     						className="btn pull-right"
                 disabled={this.state.saving || this.state.name === ""}
-    					> { this.state.saving ? "Adding..." : "Add backup task monitor"}
+    					> { this.state.saving ? "Saving..." : "Save mail notification"}
               </Button>
               <Button
                 className="btn-link m-r-10"

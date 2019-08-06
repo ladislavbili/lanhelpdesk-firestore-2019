@@ -5,6 +5,8 @@ export default class ProjectEdit extends Component{
   constructor(props){
     super(props);
     this.state={
+      wait: "",
+
       sendServer: "",
       sendPort: "",
       sendLogin: "",
@@ -39,6 +41,13 @@ export default class ProjectEdit extends Component{
     return (
       <div>
             <ModalBody>
+              <h1>Email notification settings</h1>
+              <FormGroup>
+                <Label>Wait period (hour)</Label>
+                <Input type="number" placeholder="Enter hours to wait" value={this.state.wait} onChange={(e)=>this.setState({wait: e.target.value})}  />
+              </FormGroup>
+              <hr/>
+
               <h1>Send e-mail SMTP settings</h1>
               <FormGroup>
                 <Label>Server</Label>

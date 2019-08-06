@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label, Input } from 'reactstrap';
+import {rebase} from "../../index";
 import Select from 'react-select';
 import {selectStyle} from '../../scss/selectStyles';
 
 const ITEMS =[
 		{
 			id: 0,
-			name: "lansystems.sk",
+			title: "lansystems.sk",
+			company: {value: "2H0yphdPRH7JCDwgy68Q", label: "Pozagas"},
 			testEmail: "mail.test@lansystems.sk",
 			timeout: "5",
 			numberOfTests: "2",
@@ -17,7 +19,8 @@ const ITEMS =[
 			},
 		{
 			id: 1,
-			name: "lansystems.sk",
+			title: "essco.sk",
+			company: {value: "y999M6qHn1cyvfjDn9O8", label: "Bala"},
 			testEmail: "mail.test@essco.sk",
 			timeout: "10",
 			numberOfTests: "5",
@@ -32,18 +35,39 @@ export default class MailServerEdit extends Component{
   constructor(props){
     super(props);
     this.state={
-      name: ITEMS[this.props.id].name,
+      title: ITEMS[this.props.id].title,
+			company: ITEMS[this.props.id].company,
 			testEmail: ITEMS[this.props.id].testEmail,
-			timeout: ITEMS[this.props.id].timeout,
-			numberOfTests: ITEMS[this.props.id].numberOfTests,
-			notificationEmails: ITEMS[this.props.id].notificationEmails,
-			lastResp: ITEMS[this.props.id].lastResp,
-			status: ITEMS[this.props.id].status,
 			note: ITEMS[this.props.id].note,
 
       saving:false,
     }
   }
+
+	componentWillReceiveProps(props){
+		if (this.props.id !== props.id){
+			this.setState({
+				title: ITEMS[props.id].title,
+				company: ITEMS[props.id].company,
+				testEmail: ITEMS[props.id].testEmail,
+				note: ITEMS[props.id].note,
+			})
+		}
+	}
+
+	componentWillMount(){
+		rebase.get("companies", {
+			 context: this,
+			 withIds: true,
+		 }).then(data => {
+			 let newCompanies = data.map(com => {return {value: com.id, label: com.title}});
+			 this.setState({
+				 companies: newCompanies,
+			 });
+		 }).catch(err => {
+			 //handle error
+		 })
+	}
 
   render(){
       return (
@@ -51,30 +75,22 @@ export default class MailServerEdit extends Component{
 
             <FormGroup>
               <Label>Name</Label>
-              <Input type="text" placeholder="Enter mailserver name" value={this.state.name} onChange={(e)=>this.setState({name: e.target.value})} />
-            </FormGroup>
-            <FormGroup>
-              <Label>Port</Label>
-              <Input type="text" placeholder="Enter port" value={this.state.port} onChange={(e)=>this.setState({port: e.target.value})} />
-            </FormGroup>
-            <FormGroup>
-              <Label>Timeout</Label>
-              <Input type="text" placeholder="Enter timeout" value={this.state.timeout} onChange={(e)=>this.setState({timeout: e.target.value})} />
-            </FormGroup>
-            <FormGroup>
-              <Label>Number of tests for alert</Label>
-              <Input type="text" placeholder="Enter number of tests for alert" value={this.state.numberOfTests} onChange={(e)=>this.setState({numberOfTests: e.target.value})}  />
+              <Input type="text" placeholder="Enter mailserver name" value={this.state.title} onChange={(e)=>this.setState({title: e.target.value})} />
             </FormGroup>
 
+						<FormGroup>
+							<Label>Company</Label>
+							<Select
+								value={this.state.company}
+								onChange={(company)=>this.setState({company})}
+								options={this.state.companies}
+								styles={selectStyle}
+								/>
+						</FormGroup>
+
             <FormGroup>
-              <Label>Notification emails</Label>
-              <Select
-                value={this.state.notificationEmails}
-                isMulti
-                onChange={()=> {}}
-                options={[]}
-                styles={selectStyle}
-                />
+              <Label>Test e-mail</Label>
+              <Input type="text" placeholder="Enter port" value={this.state.testEmail} onChange={(e)=>this.setState({testEmail: e.target.value})} />
             </FormGroup>
 
             <FormGroup>
