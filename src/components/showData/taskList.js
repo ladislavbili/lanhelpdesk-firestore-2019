@@ -8,7 +8,7 @@ export default class List extends Component {
 		return (
 				<div className="row">
 					<CommandBar {...this.props.commandBar} />
-					<div className="full-width scrollable fit-with-header-and-commandbar">
+					<div className="full-width scrollable fit-with-header-and-commandbar p-r-20 p-l-20">
 						<ListHeader {...this.props.commandBar} listName={this.props.listName}/>
 						<div className="p-10">
 							<table className="table">
