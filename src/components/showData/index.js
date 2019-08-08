@@ -75,7 +75,19 @@ class ShowDataContainer extends Component {
 					<div className="row m-0">
 						{this.props.layout === 0 && (
 							<div className={'' + (this.state.filterView ? 'col-xl-9' : 'col-xl-12')}>
-								<TaskCol commandBar={this.props} listName={this.props.listName} history={this.props.history} empty={this.props.empty} match={this.props.match} data={this.filterData()} displayValues={this.props.displayValues} itemID={this.props.itemID} listID={this.props.listID} link={this.props.link} displayCol={this.props.displayCol} edit={this.props.edit}/>
+								<TaskCol
+									commandBar={this.props}
+									listName={this.props.listName}
+									history={this.props.history}
+									empty={this.props.empty}
+									match={this.props.match}
+									data={this.filterData()}
+									displayValues={this.props.displayValues}
+									itemID={this.props.itemID}
+									listID={this.props.listID}
+									link={this.props.link}
+									displayCol={this.props.displayCol}
+									edit={this.props.edit}/>
 							</div>
 						)}
 
@@ -83,7 +95,17 @@ class ShowDataContainer extends Component {
 						{this.props.layout === 1 && (
 							<div className={'' + (this.state.filterView ? 'col-xl-9' : 'col-xl-12')}>
 								{this.props.itemID && <this.props.edit match={this.props.match} columns={false} history={this.props.history} />}
-								{!this.props.itemID && <TaskList  commandBar={this.props}  listName={this.props.listName} history={this.props.history} match={this.props.match} data={this.filterData()} itemID={this.props.itemID} listID={this.props.listID} displayValues={this.props.displayValues} link={this.props.link}/>}
+								{!this.props.itemID &&
+									<TaskList
+										commandBar={this.props}
+										listName={this.props.listName}
+										history={this.props.history}
+										match={this.props.match} 
+										data={this.filterData()}
+										itemID={this.props.itemID}
+										listID={this.props.listID}
+										displayValues={this.props.displayValues}
+										link={this.props.link}/>}
 							</div>
 						)}
 
