@@ -153,10 +153,13 @@ html{
 }
 
 .ignore-css{
-  all:initial;
-  font-family: $main-font;
-  font-size: 14px;
-  color: #797979;
+  all:initial !important;
+  font-family: $main-font !important;
+  font-size: 14px !important;
+  color: #797979 !important;
+  blockquote{
+    font-size: 14px !important;    
+  }
 }
 
 .clickable{
