@@ -1,16 +1,9 @@
 import React, { Component } from 'react';
-import Select from 'react-select';
-import {Button} from 'reactstrap';
 import ReactToPrint from 'react-to-print';
-import Comments from '../components/comments.js';
 import Materials from '../components/materials/materialsPrint';
 import Subtasks from '../components/subtasks/pracePrint';
 
-import TaskAdd from './taskAddContainer';
-
-import {rebase, database} from '../../index';
-import {toSelArr, snapshotToArray, timestampToString} from '../../helperFunctions';
-import {selectStyle, invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
+import {timestampToString} from '../../helperFunctions';
 
 export default class TaskPrint extends Component {
 	constructor(props) {

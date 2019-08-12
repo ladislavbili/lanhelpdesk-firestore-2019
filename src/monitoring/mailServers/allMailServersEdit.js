@@ -7,28 +7,28 @@ export default class AllMailServersEdit extends Component{
   constructor(props){
     super(props);
     this.state={
-      repeatL: "",
-      timeoutL: "",
-      numberOfTestsL: "",
-      notificationEmailsL: "",
+      repeat: "",
+      timeout: "",
+      numberOfTests: "",
+      notificationEmails: "",
 
-      sendServer: "",
-      sendHost: "",
-      sendPort: "",
-      sendSecure: false,
-      sendLogin: "",
-      sendPassword: "",
-      sendSsl: false,
-      sendRejectUnauthorized: false,
+      smtpServer: "",
+      smtpHost: "",
+      smtpPort: "",
+      smtpSecure: false,
+      smtpUser: "",
+      smtpPass: "",
+      smtpSsl: false,
+      smtpRejectUnauthorized: false,
 
-      receiveServer: "",
-      receiveHost: "",
-      receivePort: "",
-      receiveLogin: "",
-      receivePassword: "",
-      receiveTsl: false,
-      receiveSsl: false,
-      receiveRejectUnauthorized: false,
+      imapServer: "",
+      imapHost: "",
+      imapPort: "",
+      imapUser: "",
+      imapPassword: "",
+      imapTsl: false,
+      imapSsl: false,
+      imapRejectUnauthorized: false,
 
       testMail: "I am a test mail.",
 
@@ -100,50 +100,50 @@ export default class AllMailServersEdit extends Component{
               <h1>Send e-mail SMTP settings</h1>
               <FormGroup>
                 <Label>Server</Label>
-                <Input type="text" placeholder="Enter server" value={this.state.sendServer} onChange={(e)=>this.setState({sendServer: e.target.value})} />
+                <Input type="text" placeholder="Enter server" value={this.state.smtpServer} onChange={(e)=>this.setState({smtpServer: e.target.value})} />
               </FormGroup>
               <FormGroup>
                 <Label>Host</Label>
-                <Input type="text" placeholder="Enter port" value={this.state.sendHost} onChange={(e)=>this.setState({sendHost: e.target.value})} />
+                <Input type="text" placeholder="Enter port" value={this.state.smtpHost} onChange={(e)=>this.setState({smtpHost: e.target.value})} />
               </FormGroup>
               <FormGroup>
                 <Label>Port</Label>
-                <Input type="text" placeholder="Enter port" value={this.state.sendPort} onChange={(e)=>this.setState({sendPort: e.target.value})} />
+                <Input type="text" placeholder="Enter port" value={this.state.smtpPort} onChange={(e)=>this.setState({smtpPort: e.target.value})} />
               </FormGroup>
               <FormGroup>
                 <Label>Login</Label>
-                <Input type="text" placeholder="Enter login" value={this.state.sendLogin} onChange={(e)=>this.setState({sendLogin: e.target.value})} />
+                <Input type="text" placeholder="Enter login" value={this.state.smtpUser} onChange={(e)=>this.setState({smtpUser: e.target.value})} />
               </FormGroup>
               <FormGroup>
                 <Label>Password</Label>
-                <Input type="password" placeholder="Enter password" value={this.state.sendPassword} onChange={(e)=>this.setState({sendPassword: e.target.value})}  />
+                <Input type="password" placeholder="Enter password" value={this.state.smtpPass} onChange={(e)=>this.setState({smtpPass: e.target.value})}  />
               </FormGroup>
               <FormGroup className="row">
                 <div className="m-r-10">
                   <Label >Secure</Label>
                 </div>
                 <div className="m-l-15">
-                  <Input  type="checkbox" value={this.state.sendSecure} onChange={(e)=>this.setState({ssl: !this.state.sendSecure})} />
+                  <Input  type="checkbox" value={this.state.smtpSecure} onChange={(e)=>this.setState({ssl: !this.state.smtpSecure})} />
                 </div>
-                <div className="m-l-15">{this.state.sendSsl ? "YES" : "NO"}</div>
+                <div className="m-l-15">{this.state.smtpSsl ? "YES" : "NO"}</div>
               </FormGroup>
               <FormGroup className="row">
                 <div className="m-r-10">
                   <Label >SSL</Label>
                 </div>
                 <div className="m-l-15">
-                  <Input  type="checkbox" value={this.state.sendSsl} onChange={(e)=>this.setState({ssl: !this.state.sendSsl})} />
+                  <Input  type="checkbox" value={this.state.smtpSsl} onChange={(e)=>this.setState({ssl: !this.state.smtpSsl})} />
                 </div>
-                <div className="m-l-15">{this.state.sendSsl ? "YES" : "NO"}</div>
+                <div className="m-l-15">{this.state.smtpSsl ? "YES" : "NO"}</div>
               </FormGroup>
               <FormGroup className="row m-b-15">
                 <div className="m-r-10">
                   <Label >Reject unauthorized</Label>
                 </div>
                 <div className="m-l-15">
-                  <Input  type="checkbox" value={this.state.sendRejectUnauthorized} onChange={(e)=>this.setState({ssl: !this.state.sendRejectUnauthorized})} />
+                  <Input  type="checkbox" value={this.state.smtpRejectUnauthorized} onChange={(e)=>this.setState({ssl: !this.state.smtpRejectUnauthorized})} />
                 </div>
-                <div className="m-l-15">{this.state.sendSsl ? "YES" : "NO"}</div>
+                <div className="m-l-15">{this.state.smtpSsl ? "YES" : "NO"}</div>
               </FormGroup>
 
               <hr/>
@@ -161,30 +161,30 @@ export default class AllMailServersEdit extends Component{
               <h1>Receive e-mail IMAP settings</h1>
                 <FormGroup>
                   <Label>Server</Label>
-                  <Input type="text" placeholder="Enter server" value={this.state.receiveServer} onChange={(e)=>this.setState({receiveServer: e.target.value})} />
+                  <Input type="text" placeholder="Enter server" value={this.state.imapServer} onChange={(e)=>this.setState({imapServer: e.target.value})} />
                 </FormGroup>
                 <FormGroup>
                   <Label>Host</Label>
-                  <Input type="text" placeholder="Enter port" value={this.state.sendHost} onChange={(e)=>this.setState({sendHost: e.target.value})} />
+                  <Input type="text" placeholder="Enter port" value={this.state.imapHost} onChange={(e)=>this.setState({imapHost: e.target.value})} />
                 </FormGroup>
                 <FormGroup>
                   <Label>Port</Label>
-                  <Input type="text" placeholder="Enter port" value={this.state.receivePort} onChange={(e)=>this.setState({receivePort: e.target.value})} />
+                  <Input type="text" placeholder="Enter port" value={this.state.imapPort} onChange={(e)=>this.setState({imapPort: e.target.value})} />
                 </FormGroup>
                 <FormGroup>
                   <Label>Login</Label>
-                  <Input type="text" placeholder="Enter login" value={this.state.receiveLogin} onChange={(e)=>this.setState({receiveLogin: e.target.value})} />
+                  <Input type="text" placeholder="Enter login" value={this.state.imapUser} onChange={(e)=>this.setState({imapUser: e.target.value})} />
                 </FormGroup>
                 <FormGroup>
                   <Label>Password</Label>
-                  <Input type="password" placeholder="Enter password" value={this.state.receivePassword} onChange={(e)=>this.setState({receivePassword: e.target.value})} />
+                  <Input type="password" placeholder="Enter password" value={this.state.imapPassword} onChange={(e)=>this.setState({imapPassword: e.target.value})} />
                 </FormGroup>
                 <FormGroup className="row">
                   <div className="m-r-10">
                     <Label >TSL</Label>
                   </div>
                   <div className="m-l-15">
-                    <Input  type="checkbox" value={this.state.receiveTsl} onChange={(e)=>this.setState({ssl: !this.state.receiveTsl})} />
+                    <Input  type="checkbox" value={this.state.imapTsl} onChange={(e)=>this.setState({ssl: !this.state.imapTsl})} />
                   </div>
                   <div className="m-l-15">{this.state.sendSsl ? "YES" : "NO"}</div>
                 </FormGroup>
@@ -193,16 +193,16 @@ export default class AllMailServersEdit extends Component{
                     <Label >SSL</Label>
                   </div>
                   <div className="m-l-15">
-                    <Input  type="checkbox" value={this.state.receiveSsl} onChange={(e)=>this.setState({ssl: !this.state.receiveSsl})} />
+                    <Input  type="checkbox" value={this.state.imapSsl} onChange={(e)=>this.setState({ssl: !this.state.imapSsl})} />
                   </div>
-                  <div className="m-l-15">{this.state.receiveSsl ? "YES" : "NO"}</div>
+                  <div className="m-l-15">{this.state.imapSsl ? "YES" : "NO"}</div>
                 </FormGroup>
                 <FormGroup className="row m-b-15">
                   <div className="m-r-10">
                     <Label >Reject unauthorized</Label>
                   </div>
                   <div className="m-l-15">
-                    <Input  type="checkbox" value={this.state.receiveRejectUnauthorized} onChange={(e)=>this.setState({ssl: !this.state.receiveRejectUnauthorized})} />
+                    <Input  type="checkbox" value={this.state.imapRejectUnauthorized} onChange={(e)=>this.setState({ssl: !this.state.imapRejectUnauthorized})} />
                   </div>
                   <div className="m-l-15">{this.state.sendSsl ? "YES" : "NO"}</div>
                 </FormGroup>

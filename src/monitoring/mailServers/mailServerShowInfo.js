@@ -40,7 +40,7 @@ export default class MailServerShowInfo extends Component{
 			status: ITEMS[this.props.id].status,
 			note: ITEMS[this.props.id].note,
 
-      saving:false,
+      saving: false,
     }
   }
 
