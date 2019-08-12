@@ -182,7 +182,7 @@ getData(id){
                               </label>
             							</DropdownMenu>
             						</Dropdown>
-                      <small className="text-muted">Send from e-mail: {comment.subject}</small>
+                      <small className="text-muted">{comment.subject}</small>
                       <div className="ignore-css" dangerouslySetInnerHTML={{__html: comment.html?comment.html:unescape(comment.text).replace(/(?:\r\n|\r|\n)/g, '<br>') }}>
                   </div>
                 </div>
