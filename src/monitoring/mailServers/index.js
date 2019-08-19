@@ -5,41 +5,16 @@ import { connect } from "react-redux";
 import classnames from 'classnames';
 import MailServerEditIndex from './mailServerEditIndex';
 import Empty from '../empty';
-
-const ITEMS =[
-		{
-			id: 0,
-			name: "lansystems.sk",
-			company: "LanSystems",
-			testEmail: "mail.test@lansystems.sk",
-			timeout: "5",
-			numberOfTests: "2",
-			notificationEmails: "5:25",
-			lastResp: "5 min.",
-			status: "OK",
-			note: "No note",
-			},
-		{
-			id: 1,
-			name: "essco.sk",
-			company: "Essco",
-			testEmail: "mail.test@essco.sk",
-			timeout: "10",
-			numberOfTests: "5",
-			notificationEmails: "1:25",
-			lastResp: "10 min.",
-			status: "OK",
-			note: "No notes here",
-		}
-]
+import {rebase} from "../../index";
 
 class MailServerList extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			data: [],
 			search:'',
 
-			filterByName: "",
+			filterByTitle: "",
 			filterByCompany: "",
 			filterByTestMail: "",
 			filterByStatus: "",
@@ -50,18 +25,39 @@ class MailServerList extends Component {
 
 			editOpened:false
 		};
-
-		this.fetchData.bind(this);
-		this.addTask.bind(this);
 	}
 
-	fetchData(id){
+	componentWillMount(){
+		rebase.listenToCollection('monitoring-servers', {
+    context: this,
+		withIds: true,
+    then(data) {
+	     this.setState({
+				 data: data.map(datum => {
+					 return {
+						 id: datum.id,
+						 title: datum.title ? datum.title : "no title",
+						 company: datum.company ? datum.company.label : "no company",
+						 testEmail: datum.testEmail ? datum.testEmail : "no test mail",
+	 					 lastResponse: "12.08.2019",
+						 status: "OK"
+					 }
+				 	}),
+			 });
+    },
+    onFailure(err) {
+      //handle error
+    }
+  	});
 	}
 
-	componentWillUnmount(){
-	}
-
-	addTask(){
+	removeItem(id){
+		rebase.removeDoc(`monitoring-servers/${id}`)
+				.then(() => {
+					this.props.history.push(`/monitoring/mail-servers`);
+				}).catch(err => {
+				//handle error
+			});
 	}
 
 	render() {
@@ -98,7 +94,7 @@ class MailServerList extends Component {
 						<table className={classnames({ 'project-table-fixed': this.props.layout === 0, table:true })}>
 								<thead>
 									<tr>
-										<th>Name</th>
+										<th>Title</th>
 										<th>Company</th>
 										<th>Test email</th>
 										<th>Status</th>
@@ -111,10 +107,10 @@ class MailServerList extends Component {
 										<td>
 											<input
 											type="text"
-											value={this.state.filterByName}
+											value={this.state.filterByTitle}
 											className="form-control commandbar-search"
-											onChange={(e)=>this.setState({filterByName:e.target.value})}
-											placeholder="Filter by name" />
+											onChange={(e)=>this.setState({filterByTitle:e.target.value})}
+											placeholder="Filter by title" />
 										</td>
 										<td>
 											<input
@@ -152,13 +148,13 @@ class MailServerList extends Component {
 										</td>
 									</tr>
 									{
-										ITEMS
+										this.state.data
 												.filter(item =>
-													item.name.toLowerCase().includes(this.state.filterByName.toLowerCase())
+													item.title.toLowerCase().includes(this.state.filterByTitle.toLowerCase())
 													&& item.company.toLowerCase().includes(this.state.filterByCompany.toLowerCase())
 													&& item.testEmail.toLowerCase().includes(this.state.filterByTestMail.toLowerCase())
 													&& item.status.toLowerCase().includes(this.state.filterByStatus.toLowerCase())
-													&& item.lastResp.toLowerCase().includes(this.state.filterByLastResponse.toLowerCase())
+													&& item.lastResponse.toLowerCase().includes(this.state.filterByLastResponse.toLowerCase())
 												).map(item =>
 													<tr
 														className={classnames({ 'active': this.props.match.params.itemID === item.id.toString(), clickable:true })}
@@ -170,13 +166,13 @@ class MailServerList extends Component {
 																this.props.history.push(`/monitoring/mail-servers/edit/${item.id}`)
 															}
 														}}>
-														<td>{item.name}</td>
+														<td>{item.title}</td>
 														<td>{item.company}</td>
 														<td>{item.testEmail}</td>
 														<td>{item.status}</td>
 														<td>{item.lastResp}</td>
 														<td>
-															<Button className="btn-link" onClick={() => {}}>
+															<Button className="btn-link" onClick={() => this.removeItem(item.id)}>
 																<i className="fa fa-trash"/>
 															</Button>
 														</td>

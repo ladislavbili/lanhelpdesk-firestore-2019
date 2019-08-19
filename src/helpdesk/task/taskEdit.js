@@ -365,12 +365,11 @@ export default class TasksTwoEdit extends Component {
 								{this.state.saving?'Saving... ':''}
 							</button>*/}
 							<TaskPrint match={this.props.match} {...this.state}/>
-
 						</div>
 					</div>
 				</div>
 
-						<div className={"card-box fit-with-header-and-commandbar " + (!this.props.columns? " center-ver w-70 " : "")}>
+						<div className={"card-box fit-with-header-and-commandbar scrollable" + (!this.props.columns? " center-ver w-70 " : "")}>
 							<div className="d-flex p-2">
 								<div className="row flex">
 									<h1 className="center-hor text-extra-slim"># {this.props.match.params.taskID}</h1>

@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import Select from 'react-select';
-import { selectStyle, invisibleSelectStyle} from '../../../scss/selectStyles';
 
 export default class Rozpocet extends Component {
 	constructor(props){
@@ -54,7 +52,6 @@ export default class Rozpocet extends Component {
 	}
 
 	render() {
-		const unitPrice= this.props.newPrice?(this.props.newPrice*(this.props.newMargin/100+1)):0;
 		let editedFinalUnitPrice = 0;
 		if(this.props.focusedMaterial!==null){
 			editedFinalUnitPrice = (parseFloat(this.props.editedMaterialPrice)*(1+parseFloat(this.props.editedMaterialMargin)/100))

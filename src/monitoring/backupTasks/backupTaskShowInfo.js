@@ -1,102 +1,84 @@
 import React, { Component } from 'react';
 import { Button } from 'reactstrap';
 import Reports from "./reports"
-
-const ITEMS =[
-		{
-			id: 0,
-			name: "daily backup sh01.lansystems.sk",
-      startDate: "17.07.2019 11:00:00",
-      repeatNumber: "24",
-      repeatTime: "hours",
-      wait: "12 hours",
-
-      from: "sh01.notification.local",
-      subject: "Daily backup task",
-      mailOK: "OK",
-      mailInvalid: "FAILED, ERROR",
-      alertMail: "mail@mail.com",
-
-      note: "no note",
-			},
-		{
-			id: 1,
-			name: "daily backup sh01.essco.sk",
-      startDate: "17.07.2019 11:00:00",
-      repeatNumber: "24",
-      repeatTime: "hours",
-      wait: "12 hours",
-
-      from: "sh01.notification.local",
-      subject: "Daily backup task",
-      mailOK: "OK",
-      mailInvalid: "FAILED, ERROR",
-      alertMail: "mail@mail.com",
-
-      note: "no note",
-		},
-		{
-			id: 2,
-			name: "daily backup sh01.lansystems.sk",
-			startDate: "17.07.2019 11:00:00",
-			repeatNumber: "24",
-			repeatTime: "hours",
-			wait: "12 hours",
-
-			from: "sh01.notification.local",
-			subject: "Daily backup task",
-			mailOK: "OK",
-			mailInvalid: "FAILED, ERROR",
-			alertMail: "mail@mail.com",
-
-			note: "no note",
-		}
-]
+import {rebase} from "../../index";
+import {arraySelectToString} from "../../helperFunctions";
 
 export default class BackupTaskShowInfo extends Component{
   constructor(props){
     super(props);
     this.state={
-			name: ITEMS[this.props.id].name,
-			startDate: ITEMS[this.props.id].startDate,
-			repeatNumber: ITEMS[this.props.id].repeatNumber,
-			repeatTime: ITEMS[this.props.id].repeatTime,
-			wait: ITEMS[this.props.id].wait,
-			from: ITEMS[this.props.id].from,
-			subject: ITEMS[this.props.id].subject,
-			mailOK: ITEMS[this.props.id].mailOK,
-			mailInvalid: ITEMS[this.props.id].mailInvalid,
-			alertMail: ITEMS[this.props.id].alertMail,
-			note: ITEMS[this.props.id].note,
+			title: "",
+      company: {},
+      startDate: "",
+      repeatNumber: "",
+      repeatTime: "",
 
-      saving:false,
+      from: "",
+      fromDisabled: false,
+      subject: "",
+      subjectDisabled: false,
+      mailOK: [],
+      mailInvalid: [],
+      alertMail: "",
+
+      note: "",
     }
+		this.fetch.bind(this);
+		this.msToTime.bind(this);
+		this.fetch(this.props.id);
   }
+
+
+	fetch(id){
+		rebase.get(`monitoring-notifications/${id}`, {
+			context: this,
+			withIds: true,
+		}).then(datum => {
+				 this.setState({
+					 title: datum.title ? datum.title : "untitled",
+		       company: datum.company ? datum.company.label : "no company",
+		       startDate: datum.startDate ? datum.startDate : "no start date",
+		       repeatEvery: this.msToTime(datum.repeatNumber, datum.repeatTime),
+
+		       from: (datum.from ? datum.from : "no sender") + (datum.fromDisabled ? " (sender disabled)" : "") ,
+		       subject: (datum.subject ? datum.subject : "no subject")  + (datum.subjectDisabled ? " (subject disabled)" : "") ,
+		       mailOK: datum.mailOK ? datum.mailOK : ["no phrases"],
+		       mailInvalid: datum.mailInvalid ? datum.mailInvalid : ["no phrases"],
+		       alertMail: datum.alertMail ? datum.alertMail : "no alert mail",
+
+		       note: datum.note ? datum.note : "no note",
+				 });
+			});
+	}
 
 	componentWillReceiveProps(props){
 		if (this.props.id !== props.id){
-			this.setState({
-				name: ITEMS[props.id].name,
-				startDate: ITEMS[props.id].startDate,
-				repeatNumber: ITEMS[props.id].repeatNumber,
-				repeatTime: ITEMS[props.id].repeatTime,
-				wait: ITEMS[props.id].wait,
-				from: ITEMS[props.id].from,
-				subject: ITEMS[props.id].subject,
-				mailOK: ITEMS[props.id].mailOK,
-				mailInvalid: ITEMS[props.id].mailInvalid,
-				alertMail: ITEMS[props.id].alertMail,
-				note: ITEMS[props.id].note,
-			})
+			this.fetch(props.id);
 		}
 	}
+
+	msToTime(time, type){
+		let t = 0;
+		if (type.value === "m"){
+			t = time / 60000;
+		}
+		if (type.value === "h"){
+			t = time / 60000 / 60;
+		}
+		if (type.value === "d"){
+			t = time / 60000 / 60 / 24;
+		}
+		return t + " " + type.label;
+	}
+
 
   render(){
       return (
         <div className="flex">
 					<div className="row m-b-30">
 						<div className="mr-auto">
-							<h1>{this.state.name}</h1>
+							<h1>{this.state.title}</h1>
 						</div>
 						<div className="pull-right">
 							<Button
@@ -109,10 +91,10 @@ export default class BackupTaskShowInfo extends Component{
 
 					<div className="row">
 						<div className="mr-auto">
-							<strong>Name:</strong>
+							<strong>Title:</strong>
 						</div>
 						<div className="pull-right">
-							{this.state.name}
+							{this.state.title}
 						</div>
 					</div>
 
@@ -130,16 +112,7 @@ export default class BackupTaskShowInfo extends Component{
 							<strong>Repeat every:</strong>
 						</div>
 						<div className="pull-right">
-							{this.state.repeatTime + " " + this.state.repeatNumber}
-						</div>
-					</div>
-
-					<div className="row">
-						<div className="mr-auto">
-							<strong>Wait period</strong>
-						</div>
-						<div className="pull-right">
-							{this.state.wait + " hours"}
+							{this.state.repeatEvery}
 						</div>
 					</div>
 
@@ -166,7 +139,7 @@ export default class BackupTaskShowInfo extends Component{
 							<strong>Mail body OK:</strong>
 						</div>
 						<div className="pull-right">
-							{this.state.mailOK}
+							{arraySelectToString(this.state.mailOK)}
 						</div>
 					</div>
 
@@ -175,7 +148,7 @@ export default class BackupTaskShowInfo extends Component{
 							<strong>Mail body INVALID:</strong>
 						</div>
 						<div className="pull-right">
-							{this.state.mailInvalid}
+							{arraySelectToString(this.state.mailInvalid)}
 						</div>
 					</div>
 

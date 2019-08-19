@@ -1,32 +1,97 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label, Input } from 'reactstrap';
-import Select from 'react-select';
+import Select, { Creatable } from 'react-select';
 import {selectStyle} from '../../scss/selectStyles';
+import {rebase} from "../../index";
+
+const TIME_OPTIONS = [
+  { label: "minutes", value: "m"},
+  { label: "hours", value: "h"},
+  { label: "days", value: "d"},
+];
 
 export default class BackupTaskAdd extends Component{
   constructor(props){
     super(props);
     this.state={
-      name: "",
+      title: "",
+      company: "",
       startDate: "",
       repeatNumber: "",
       repeatTime: "",
 
       from: "",
+      fromDisabled: false,
       subject: "",
-      mailOK: "",
-      mailInvalid: "",
+      subjectDisabled: false,
+      mailOK: [],
+      mailInvalid: [],
       alertMail: "",
 
       note: "",
-
-      saving:false,
+      saving: false,
+      companies: [],
+      options: [
+        { label: "ok", value: "ok"},
+        { label: "success", value: "success"},
+        { label: "fail", value: "fail"},
+      ],
     }
+    this.submit.bind(this);
+    this.checkNumber.bind(this);
+    this.toMillisec.bind(this);
+  }
+
+  componentWillMount(){
+    rebase.get("companies", {
+       context: this,
+       withIds: true,
+     }).then(data => {
+       let newCompanies = data.map(com => {return {value: com.id, label: com.title}});
+       this.setState({
+         companies: newCompanies,
+       });
+     }).catch(err => {
+     })
+  }
+
+  submit(){
+    let data = {
+      title: this.state.title,
+      company: this.state.company,
+      startDate: this.state.startDate,
+      repeatTime: this.state.repeatTime,
+      repeatNumber: this.toMillisec(this.state.repeatNumber),
+      from: this.state.from,
+      fromDisabled: this.state.fromDisabled,
+      subject: this.state.subject,
+      subjectDisabled: this.state.subjectDisabled,
+      mailOK: this.state.mailOK,
+      mailInvalid: this.state.mailInvalid,
+      alertMail: this.state.alertMail,
+      note: this.state.note,
+
+      status: "OK",
+      lastReport: this.state.startDate,
+    };
+    rebase.addToCollection('/monitoring-notifications', data)
+    .then(() => {
+      this.props.history.goBack();
+    }).catch(err => {
+  });
+  }
+
+  checkNumber(number){
+    return !isNaN(number);
+  }
+
+  toMillisec(number){
+    return number * (this.state.repeatTime.value === "d" ? 24*60*60*1000 : 1) * (this.state.repeatTime.value === "h" ? 60*60*1000 : 1) * (this.state.repeatTime.value === "m" ? 60*1000 : 1);
   }
 
   render(){
     return (
-      <div className="flex">
+      <div classtitle="flex">
 				<div className="container-fluid p-2">
 				</div>
 
@@ -35,16 +100,26 @@ export default class BackupTaskAdd extends Component{
 
               <FormGroup>
                 <Label>Name</Label>
-                <Input type="text" placeholder="Enter name" value={this.state.name} onChange={(e)=>this.setState({name: e.target.value})} />
+                <Input type="text" placeholder="Enter name" value={this.state.title} onChange={(e)=>this.setState({title: e.target.value})} />
               </FormGroup>
 
               <FormGroup>
-                <Label>Start Date</Label>
+                <Label>Customer</Label>
+                <Select
+                  value={this.state.company}
+                  onChange={(e)=> this.setState({company: e})}
+                  options={this.state.companies}
+                  styles={selectStyle}
+                  />
+              </FormGroup>
+
+              <FormGroup>
+                <Label>Start Date *</Label>
                 <Input type="datetime-local" placeholder="Enter start date" value={this.state.startDate} onChange={(e)=>this.setState({startDate: e.target.value})} />
               </FormGroup>
 
               <FormGroup>
-                <Label>Repeat every</Label>
+                <Label>Repeat every *</Label>
                 <div className="row">
                   <div className="w-50 p-r-20">
                     <Input type="number" placeholder="Enter number" value={this.state.repeatNumber} onChange={(e)=>this.setState({repeatNumber: e.target.value})} />
@@ -52,33 +127,61 @@ export default class BackupTaskAdd extends Component{
                   <div className="w-50">
                     <Select
                       value={this.state.repeatTime}
-                      onChange={()=> {}}
-                      options={[]}
+                      onChange={(e)=> this.setState({repeatTime: e})}
+                      options={TIME_OPTIONS}
                       styles={selectStyle}
                       />
                   </div>
                 </div>
               </FormGroup>
 
+
+                <FormGroup>
+                  <div  className="row">
+                    <Label>From {!this.state.fromDisabled ? "*" : ""}</Label>
+                    <div className="m-l-15">
+                        <Input type="checkbox" className="position-inherit" checked={this.state.fromDisabled} onChange={(e)=>this.setState({fromDisabled: !this.state.fromDisabled})} />
+                    </div>
+                    <div className="m-l-15 w-10">Disabled</div>
+                  </div>
+                  <div className="m-r-10">
+                    <Input type="text" disabled={this.state.fromDisabled} placeholder="Enter sender" value={this.state.from} onChange={(e)=>this.setState({from: e.target.value})} />
+                  </div>
+                  </FormGroup>
+
               <FormGroup>
-                <Label>From</Label>
-                <Input type="text" placeholder="Enter sender" value={this.state.from} onChange={(e)=>this.setState({from: e.target.value})} />
+                <div  className="row">
+                  <Label>Subject {!this.state.subjectDisabled ? "*" : ""}</Label>
+                  <div className="m-l-15">
+                      <Input type="checkbox" className="position-inherit" checked={this.state.subjectDisabled} onChange={(e)=>this.setState({subjectDisabled: !this.state.subjectDisabled})} />
+                  </div>
+                  <div className="m-l-15 w-10">Disabled</div>
+                </div>
+                <div className="m-r-10">
+                  <Input type="text" disabled={this.state.subjectDisabled} placeholder="Enter subject" value={this.state.subject} onChange={(e)=>this.setState({subject: e.target.value})} />
+                </div>
               </FormGroup>
 
               <FormGroup>
-                <Label>Subject</Label>
-                <Input type="text" placeholder="Enter subject" value={this.state.subject} onChange={(e)=>this.setState({subject: e.target.value})} />
+                <Label>Mail body OK *</Label>
+                <Creatable
+                  isMulti
+                  value={this.state.mailOK}
+                  onChange={(newData) => this.setState({mailOK: newData})}
+                  options={this.state.options}
+                  styles={selectStyle}
+                />
               </FormGroup>
 
               <FormGroup>
-                <Label>Mail body OK</Label>
-                <Input type="text" placeholder="Enter string that has to appera in the mail for it to be OK" value={this.state.mailOK} onChange={(e)=>this.setState({mailOK: e.target.value})} />
-              </FormGroup>
-
-
-              <FormGroup>
-                <Label>Mail body INVALID</Label>
-                <Input type="text" placeholder="Enter string that has to appera in the mail for it to be invalid" value={this.state.mailInvalid} onChange={(e)=>this.setState({mailInvalid: e.target.value})} />
+                <Label>Mail body INVALID *</Label>
+                <Creatable
+                  isMulti
+                  value={this.state.mailInvalid}
+                  onChange={(newData) => this.setState({mailInvalid: newData})}
+                  options={this.state.options}
+                  styles={selectStyle}
+                />
               </FormGroup>
 
 
@@ -94,12 +197,20 @@ export default class BackupTaskAdd extends Component{
 
               <Button
     						className="btn pull-right"
-                disabled={this.state.saving || this.state.name === ""}
-    					> { this.state.saving ? "Adding..." : "Add backup task monitor"}
+                disabled={this.state.saving
+                  || this.state.startDate === ""
+                  || !this.checkNumber(this.state.repeatNumber)
+                  || this.state.repeatTime === ""
+                  || (!this.state.fromDisabled && this.state.from === "")
+                  || (!this.state.subjectDisabled && this.state.subject === "")
+                  || this.state.mailOK.length === 0
+                  || this.state.mailInvalid.length === 0}
+                onClick={() => this.submit()}
+              > { this.state.saving ? "Adding..." : "Add mail notification"}
               </Button>
               <Button
                 className="btn-link m-r-10"
-                onClick={()=>this.props.history.goBack()}
+                onClick={() => this.props.history.goBack()}
               > Back
               </Button>
 

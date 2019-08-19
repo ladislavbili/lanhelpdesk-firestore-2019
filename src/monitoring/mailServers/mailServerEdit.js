@@ -4,69 +4,86 @@ import {rebase} from "../../index";
 import Select from 'react-select';
 import {selectStyle} from '../../scss/selectStyles';
 
-const ITEMS =[
-		{
-			id: 0,
-			title: "lansystems.sk",
-			company: {value: "2H0yphdPRH7JCDwgy68Q", label: "Pozagas"},
-			testEmail: "mail.test@lansystems.sk",
-			timeout: "5",
-			numberOfTests: "2",
-			notificationEmails: "5:25",
-			lastResp: "5 min.",
-			status: "OK",
-			note: "No note",
-			},
-		{
-			id: 1,
-			title: "essco.sk",
-			company: {value: "y999M6qHn1cyvfjDn9O8", label: "Bala"},
-			testEmail: "mail.test@essco.sk",
-			timeout: "10",
-			numberOfTests: "5",
-			notificationEmails: "1:25",
-			lastResp: "10 min.",
-			status: "OK",
-			note: "No notes here",
-		}
-]
-
 export default class MailServerEdit extends Component{
   constructor(props){
     super(props);
     this.state={
-      title: ITEMS[this.props.id].title,
-			company: ITEMS[this.props.id].company,
-			testEmail: ITEMS[this.props.id].testEmail,
-			note: ITEMS[this.props.id].note,
+			title: "",
+      company: null,
+      testEmail: "",
+      note: "",
+      timeout: "",
+
+			companies: [],
 
       saving:false,
     }
+		this.fetch.bind(this);
+		this.msToTime.bind(this);
+		this.submit.bind(this);
   }
-
-	componentWillReceiveProps(props){
-		if (this.props.id !== props.id){
-			this.setState({
-				title: ITEMS[props.id].title,
-				company: ITEMS[props.id].company,
-				testEmail: ITEMS[props.id].testEmail,
-				note: ITEMS[props.id].note,
-			})
-		}
-	}
 
 	componentWillMount(){
 		rebase.get("companies", {
-			 context: this,
-			 withIds: true,
-		 }).then(data => {
-			 let newCompanies = data.map(com => {return {value: com.id, label: com.title}});
-			 this.setState({
-				 companies: newCompanies,
-			 });
-		 }).catch(err => {
-			 //handle error
-		 })
+			context: this,
+			withIds: true,
+		}).then(data => {
+			let newCompanies = data.map(com => {return {value: com.id, label: com.title}});
+			this.setState({
+				companies: newCompanies,
+			}, () => this.fetch(this.props.id));
+		}).catch(err => {
+			//handle error
+		})
+	}
+
+	fetch(id){
+		console.log("here");
+		rebase.get(`monitoring-servers/${id}`, {
+			context: this,
+			withIds: true,
+		}).then(datum => {
+				 this.setState({
+					 title: datum.title,
+		 			 company: datum.company,
+		 			 testEmail: datum.testEmail,
+					 note: datum.note,
+		       timeout: this.msToTime(datum.timeout),
+				 });
+			});
+	}
+
+	componentWillReceiveProps(props){
+		if (this.props.id !== props.id){
+			this.fetch(props.id);
+		}
+	}
+
+
+	submit(){
+		this.setState({
+			saving: true,
+		})
+		let data = {
+			title: this.state.title,
+			company: this.state.company,
+			testEmail: this.state.testEmail,
+			note: this.state.note,
+			timeout: this.state.timeout * 60000,
+		};
+
+		rebase.updateDoc(`monitoring-servers/${this.props.id}`, data)
+		.then(() => {
+			this.setState({
+				saving: false,
+			})
+			this.props.toggleEdit();
+		}).catch(err => {
+		});
+	}
+
+	msToTime(time){
+		return time / 60000;
 	}
 
   render(){
@@ -74,7 +91,7 @@ export default class MailServerEdit extends Component{
         <div className="flex">
 
             <FormGroup>
-              <Label>Name</Label>
+              <Label>Title *</Label>
               <Input type="text" placeholder="Enter mailserver name" value={this.state.title} onChange={(e)=>this.setState({title: e.target.value})} />
             </FormGroup>
 
@@ -88,8 +105,13 @@ export default class MailServerEdit extends Component{
 								/>
 						</FormGroup>
 
+						<FormGroup>
+							<Label>Timeout (min) *</Label>
+							<Input type="number" placeholder="Enter timeout" value={this.state.timeout} onChange={(e)=>this.setState({timeout: e.target.value})} />
+						</FormGroup>
+
             <FormGroup>
-              <Label>Test e-mail</Label>
+              <Label>Test e-mail *</Label>
               <Input type="text" placeholder="Enter port" value={this.state.testEmail} onChange={(e)=>this.setState({testEmail: e.target.value})} />
             </FormGroup>
 
@@ -100,7 +122,12 @@ export default class MailServerEdit extends Component{
 
             <Button
   						className="btn pull-right"
-              disabled={this.state.saving || this.state.name === ""}
+							disabled={this.state.saving
+								|| this.state.title === ""
+								|| this.state.timeout <= 0
+								|| this.state.testEmail === ""
+							}
+							onClick={() => this.submit()}
   					> { this.state.saving ? "Saving..." : "Save changes"}
             </Button>
             <Button

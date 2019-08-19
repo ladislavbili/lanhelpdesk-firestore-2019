@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import Select from 'react-select';
-import { selectStyle, invisibleSelectStyle} from '../../../scss/selectStyles';
 
 
 export default class Prace extends Component {

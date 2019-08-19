@@ -1,62 +1,49 @@
 import React, { Component } from 'react';
 import { Button } from 'reactstrap';
 import Reports from "./reports"
-
-const ITEMS =[
-		{
-			id: 0,
-			name: "lansystems.sk",
-			testEmail: "mail.test@lansystems.sk",
-			timeout: "5",
-			numberOfTests: "2",
-			notificationEmails: "5:25",
-			lastResp: "5 min.",
-			status: "OK",
-			note: "No note",
-			},
-		{
-			id: 1,
-			name: "essco.sk",
-			testEmail: "mail.test@essco.sk",
-			timeout: "10",
-			numberOfTests: "5",
-			notificationEmails: "1:25",
-			lastResp: "10 min.",
-			status: "OK",
-			note: "No notes here",
-		}
-]
+import {rebase} from "../../index";
 
 export default class MailServerShowInfo extends Component{
   constructor(props){
     super(props);
     this.state={
-      name: ITEMS[this.props.id].name,
-			testEmail: ITEMS[this.props.id].testEmail,
-			timeout: ITEMS[this.props.id].timeout,
-			numberOfTests: ITEMS[this.props.id].numberOfTests,
-			notificationEmails: ITEMS[this.props.id].notificationEmails,
-			lastResp: ITEMS[this.props.id].lastResp,
-			status: ITEMS[this.props.id].status,
-			note: ITEMS[this.props.id].note,
+			title: "",
+			company: "",
+			timeout: "",
+			testEmail: "",
+			note: "",
 
-      saving:false,
+      saving: false,
     }
+		this.fetch.bind(this);
+		this.msToTime.bind(this);
+		console.log(this.props.id);
+		this.fetch(this.props.id);
   }
 
 	componentWillReceiveProps(props){
 		if (this.props.id !== props.id){
-			this.setState({
-				name: ITEMS[props.id].name,
-				testEmail: ITEMS[props.id].testEmail,
-				timeout: ITEMS[props.id].timeout,
-				numberOfTests: ITEMS[props.id].numberOfTests,
-				notificationEmails: ITEMS[props.id].notificationEmails,
-				lastResp: ITEMS[props.id].lastResp,
-				status: ITEMS[props.id].status,
-				note: ITEMS[props.id].note,
-			})
+			this.fetch(props.id);
 		}
+	}
+
+	fetch(id){
+		rebase.get(`monitoring-servers/${id}`, {
+			context: this,
+			withIds: true,
+		}).then(datum => {
+				 this.setState({
+					 title: datum.title ? datum.title : "no title",
+		 			 company: datum.company ? datum.company.label : "no company",
+		 			 testEmail: datum.testEmail ? datum.testEmail : "no test mail",
+					 note: datum.note ? datum.note : "no notes",
+					 timeout: datum.timeout ? this.msToTime(datum.timeout) : "no test mail",
+				 });
+			});
+	}
+
+	msToTime(time){
+		return time / 60000;
 	}
 
   render(){
@@ -64,7 +51,7 @@ export default class MailServerShowInfo extends Component{
         <div className="flex">
 					<div className="row m-b-30">
 						<div className="mr-auto">
-							<h1>{this.state.name}</h1>
+							<h1>{this.state.title}</h1>
 						</div>
 						<div className="pull-right">
 							<Button
@@ -77,10 +64,19 @@ export default class MailServerShowInfo extends Component{
 
 					<div className="row">
 						<div className="mr-auto">
-							<strong>Name:</strong>
+							<strong>Title:</strong>
 						</div>
 						<div className="pull-right">
-							{this.state.name}
+							{this.state.title}
+						</div>
+					</div>
+
+					<div className="row">
+						<div className="mr-auto">
+							<strong>Company:</strong>
+						</div>
+						<div className="pull-right">
+							{this.state.company}
 						</div>
 					</div>
 
@@ -102,7 +98,7 @@ export default class MailServerShowInfo extends Component{
 						</div>
 					</div>
 
-					<div className="row">
+					{/*<div className="row">
 						<div className="mr-auto">
 							<strong>Number of tests for alert</strong>
 						</div>
@@ -125,7 +121,7 @@ export default class MailServerShowInfo extends Component{
 							<strong>Last response:</strong>
 						</div>
 						<div className="pull-right">
-							{this.state.lastResp}
+							{this.state.lastResponse}
 						</div>
 					</div>
 
@@ -154,7 +150,7 @@ export default class MailServerShowInfo extends Component{
 						<div className="pull-right">
 							4:25
 						</div>
-					</div>
+					</div>*/}
 
 					<hr className="m-t-15 m-b-15"/>
 

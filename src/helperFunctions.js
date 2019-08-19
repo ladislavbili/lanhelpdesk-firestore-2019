@@ -72,3 +72,7 @@ export const getItemDisplayValue= (item,value) => {
     return 'Error'
   }
 }
+
+export const arraySelectToString = (arr) => {
+  return arr.map(a => " " + a.label).toString();
+}

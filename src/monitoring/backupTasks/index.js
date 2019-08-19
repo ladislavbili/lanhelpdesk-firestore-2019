@@ -5,23 +5,7 @@ import { connect } from "react-redux";
 import classnames from 'classnames';
 import BackupTaskEditIndex from './backupTaskEditIndex';
 import Empty from '../empty';
-
-const ITEMS =[
-		{
-			id: 0,
-			name: "lansystems.sk",
-			customer: "LAN SYSTEMS",
-			lastReport: "27.06.2019 13:14:25",
-			status: "OK",
-			},
-		{
-			id: 1,
-			name: "essco.sk",
-			customer: "ESSCO",
-			lastReport: "07.06.2019 13:14:25",
-			status: "OK",
-		}
-]
+import {rebase} from "../../index";
 
 class BackupTaskList extends Component {
 	constructor(props) {
@@ -34,6 +18,9 @@ class BackupTaskList extends Component {
 			filterByStatus: "",
 			filterByLastReport: "",
 
+			data: [],
+			companies: [],
+
 			saving:false,
 			openedID:null,
 
@@ -42,6 +29,29 @@ class BackupTaskList extends Component {
 
 		this.fetchData.bind(this);
 		this.addTask.bind(this);
+	}
+
+	componentWillMount(){
+		rebase.listenToCollection('monitoring-notifications', {
+    context: this,
+		withIds: true,
+    then(data) {
+	     this.setState({
+				 data: data.map(datum => {
+					 return {
+						 id: datum.id,
+						 title: datum.title ? datum.title : "no title",
+						 company: datum.company ? datum.company.label : "no company",
+	 					 lastReport: datum.startDate ? datum.startDate : "no reports",
+						 status: "OK"
+					 }
+				 	}),
+			 });
+    },
+    onFailure(err) {
+      //handle error
+    }
+  });
 	}
 
 	componentWillReceiveProps(props){
@@ -54,6 +64,15 @@ class BackupTaskList extends Component {
 	}
 
 	addTask(){
+	}
+
+	removeItem(id){
+		rebase.removeDoc(`monitoring-notifications/${id}`)
+		    .then(() => {
+		      this.props.history.push(`/monitoring/mail-notifications`);
+		    }).catch(err => {
+		    //handle error
+		  });
 	}
 
 	render() {
@@ -132,11 +151,11 @@ class BackupTaskList extends Component {
 										<td>
 										</td>
 									</tr>
-									{
-										ITEMS
+									{ this.state.data.length > 0 &&
+										this.state.data
 										.filter(item =>
-																item.name.toLowerCase().includes(this.state.filterByName.toLowerCase())
-																&& item.customer.toLowerCase().includes(this.state.filterByCustomer.toLowerCase())
+																item.title.toLowerCase().includes(this.state.filterByName.toLowerCase())
+																&& item.company.toLowerCase().includes(this.state.filterByCustomer.toLowerCase())
 																&& item.status.toLowerCase().includes(this.state.filterByStatus.toLowerCase())
 																&& item.lastReport.toLowerCase().includes(this.state.filterByLastReport.toLowerCase())
 										).map(item =>
@@ -149,12 +168,12 @@ class BackupTaskList extends Component {
 														this.props.history.push(`/monitoring/mail-notifications/edit/${item.id}`)
 													}
 												}}>
-												<td>{item.name}</td>
-												<td>{item.customer}</td>
+												<td>{item.title}</td>
+												<td>{item.company}</td>
 												<td>{item.status}</td>
 												<td>{item.lastReport}</td>
 												<td>
-													<Button className="btn-link" onClick={() => {}}>
+													<Button className="btn-link" onClick={() => this.removeItem(item.id)}>
 														<i className="fa fa-trash"/>
 													</Button>
 												</td>
