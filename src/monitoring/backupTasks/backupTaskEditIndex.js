@@ -9,7 +9,7 @@ export default class BackupTaskEditIndex extends Component{
     super(props);
     this.state={
 			showEdit: false,
-      openedID: 0,
+      openedID: props.match.params.itemID,
     }
 		this.toggleEdit.bind(this);
   }

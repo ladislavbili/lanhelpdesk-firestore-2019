@@ -58,10 +58,10 @@ export default class BackupTaskAdd extends Component{
   submit(){
     let data = {
       title: this.state.title,
-      company: this.state.company.value,
-      startDate: this.state.startDate.value,
+      company: this.state.company,
+      startDate: this.state.startDate,
       repeatTime: this.state.repeatTime,
-      repeatMs: this.toMillisec(this.state.repeatNumber),
+      repeatNumber: this.toMillisec(this.state.repeatNumber),
       from: this.state.from,
       fromDisabled: this.state.fromDisabled,
       subject: this.state.subject,
@@ -76,7 +76,6 @@ export default class BackupTaskAdd extends Component{
     };
     rebase.addToCollection('/monitoring-notifications', data)
     .then(() => {
-      console.log("wheee");
       this.props.history.goBack();
     }).catch(err => {
   });
@@ -91,7 +90,6 @@ export default class BackupTaskAdd extends Component{
   }
 
   render(){
-    console.log(this.state.startDate);
     return (
       <div classtitle="flex">
 				<div className="container-fluid p-2">
@@ -142,7 +140,7 @@ export default class BackupTaskAdd extends Component{
                   <div  className="row">
                     <Label>From {!this.state.fromDisabled ? "*" : ""}</Label>
                     <div className="m-l-15">
-                        <Input type="checkbox" checked={this.state.fromDisabled} value={this.state.fromDisabled} onChange={(e)=>this.setState({fromDisabled: !this.state.fromDisabled})} />
+                        <Input type="checkbox" className="position-inherit" checked={this.state.fromDisabled} onChange={(e)=>this.setState({fromDisabled: !this.state.fromDisabled})} />
                     </div>
                     <div className="m-l-15 w-10">Disabled</div>
                   </div>
@@ -155,7 +153,7 @@ export default class BackupTaskAdd extends Component{
                 <div  className="row">
                   <Label>Subject {!this.state.subjectDisabled ? "*" : ""}</Label>
                   <div className="m-l-15">
-                      <Input type="checkbox" checked={this.state.subjectDisabled} value={this.state.subjectDisabled} onChange={(e)=>this.setState({subjectDisabled: !this.state.subjectDisabled})} />
+                      <Input type="checkbox" className="position-inherit" checked={this.state.subjectDisabled} onChange={(e)=>this.setState({subjectDisabled: !this.state.subjectDisabled})} />
                   </div>
                   <div className="m-l-15 w-10">Disabled</div>
                 </div>

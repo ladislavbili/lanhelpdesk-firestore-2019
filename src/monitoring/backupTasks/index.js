@@ -32,24 +32,19 @@ class BackupTaskList extends Component {
 	}
 
 	componentWillMount(){
-		rebase.get("companies", {
-       context: this,
-       withIds: true,
-	     }).then(data => {
-	       let newCompanies = data.map(com => {return {value: com.id, label: com.title}});
-	       this.setState({
-	         companies: newCompanies,
-	       });
-	     }).catch(err => {
-    });
-
 		rebase.listenToCollection('monitoring-notifications', {
     context: this,
 		withIds: true,
     then(data) {
 	     this.setState({
 				 data: data.map(datum => {
-					 return {...datum, company: this.state.companies.length > 0 ? this.state.companies.find(comp => comp.id === datum.company) : "no company"}
+					 return {
+						 id: datum.id,
+						 title: datum.title ? datum.title : "no title",
+						 company: datum.company ? datum.company.label : "no company",
+	 					 lastReport: datum.startDate ? datum.startDate : "no reports",
+						 status: "OK"
+					 }
 				 	}),
 			 });
     },
@@ -69,6 +64,10 @@ class BackupTaskList extends Component {
 	}
 
 	addTask(){
+	}
+
+	removeItem(id){
+
 	}
 
 	render() {
@@ -169,7 +168,7 @@ class BackupTaskList extends Component {
 												<td>{item.status}</td>
 												<td>{item.lastReport}</td>
 												<td>
-													<Button className="btn-link" onClick={() => {}}>
+													<Button className="btn-link" onClick={() => this.removeItem(item.id)}>
 														<i className="fa fa-trash"/>
 													</Button>
 												</td>
