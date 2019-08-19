@@ -31,6 +31,7 @@ export default class ProjectEdit extends Component{
       saving: false,
       opened: false
     }
+    this.submit.bind(this);
     this.sendTestMail.bind(this);
     this.testIMAPServer.bind(this);
     this.fetch.bind(this);
@@ -38,7 +39,7 @@ export default class ProjectEdit extends Component{
   }
 
   fetch(id){
-    rebase.get('monitoring-sidebar/notifications',{
+    rebase.get(`monitoring-sidebar/${id}`,{
       context: this,
       withIds: true,
     }
@@ -104,7 +105,7 @@ export default class ProjectEdit extends Component{
       .then(() => {
         this.setState({
           saving: false,
-        })
+        }, () => this.props.close())
       }).catch(err => {
     });
   }

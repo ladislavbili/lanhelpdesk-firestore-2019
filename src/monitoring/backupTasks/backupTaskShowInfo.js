@@ -54,7 +54,7 @@ export default class BackupTaskShowInfo extends Component{
 
 	componentWillReceiveProps(props){
 		if (this.props.id !== props.id){
-			this.fetch(props.id)
+			this.fetch(props.id);
 		}
 	}
 

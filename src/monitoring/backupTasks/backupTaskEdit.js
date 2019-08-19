@@ -84,7 +84,7 @@ export default class BackupTaskEdit extends Component{
 
 	componentWillReceiveProps(props){
 		if (this.props.id !== props.id){
-			this.fetch(props.id)
+			this.fetch(props.id);
 		}
 	}
 
@@ -252,7 +252,7 @@ export default class BackupTaskEdit extends Component{
         <Button
           className="btn-link m-r-10"
           onClick={()=>this.props.toggleEdit()}
-        > Back
+        > Back to overview
         </Button>
 
 			</div>

@@ -8,13 +8,15 @@ export default class MailServerAdd extends Component{
   constructor(props){
     super(props);
     this.state={
-      name: "",
+      title: "",
       company: null,
       testEmail: "",
       note: "",
+      timeout: "",
 
       saving:false,
     }
+    this.submit.bind(this);
   }
 
   componentWillMount(){
@@ -31,6 +33,27 @@ export default class MailServerAdd extends Component{
 		 })
 	}
 
+  submit(){
+    this.setState({
+      saving: true,
+    })
+    let data = {
+      title: this.state.title,
+      company: this.state.company,
+      testEmail: this.state.testEmail,
+      note: this.state.note,
+      timeout: this.state.timeout * 60000,
+    };
+    rebase.addToCollection('/monitoring-servers', data)
+    .then(() => {
+      this.setState({
+        saving: false,
+      });
+      this.props.history.goBack();
+    }).catch(err => {
+  });
+  }
+
   render(){
     return (
       <div className="flex">
@@ -41,7 +64,7 @@ export default class MailServerAdd extends Component{
             <h1>Add mail server</h1>
 
               <FormGroup>
-                <Label>Name</Label>
+                <Label>Title *</Label>
                 <Input type="text" placeholder="Enter mailserver name" value={this.state.name} onChange={(e)=>this.setState({name: e.target.value})} />
               </FormGroup>
 
@@ -56,8 +79,13 @@ export default class MailServerAdd extends Component{
               </FormGroup>
 
               <FormGroup>
-                <Label>Test e-mail</Label>
-                <Input type="text" placeholder="Enter port" value={this.state.testEmail} onChange={(e)=>this.setState({testEmail: e.target.value})} />
+                <Label>Timeout (min) *</Label>
+                <Input type="number" placeholder="Enter timeout" value={this.state.timeout} onChange={(e)=>this.setState({timeout: e.target.value})} />
+              </FormGroup>
+
+              <FormGroup>
+                <Label>Test e-mail *</Label>
+                <Input type="text" placeholder="Enter test mail" value={this.state.testEmail} onChange={(e)=>this.setState({testEmail: e.target.value})} />
               </FormGroup>
 
               <FormGroup>
@@ -67,7 +95,12 @@ export default class MailServerAdd extends Component{
 
               <Button
     						className="btn pull-right"
-                disabled={this.state.saving || this.state.name === ""}
+                disabled={this.state.saving
+                  || this.state.title === ""
+                  || this.state.timeout <= 0
+                  || this.state.testEmail === ""
+                }
+                onClick={() => this.submit()}
     					> { this.state.saving ? "Adding..." : "Add mail server"}
               </Button>
               <Button

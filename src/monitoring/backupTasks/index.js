@@ -67,7 +67,12 @@ class BackupTaskList extends Component {
 	}
 
 	removeItem(id){
-
+		rebase.removeDoc(`monitoring-notifications/${id}`)
+		    .then(() => {
+		      this.props.history.push(`/monitoring/mail-notifications`);
+		    }).catch(err => {
+		    //handle error
+		  });
 	}
 
 	render() {

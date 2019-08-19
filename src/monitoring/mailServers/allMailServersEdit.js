@@ -2,15 +2,16 @@ import React, { Component } from 'react';
 import { ModalBody, ModalFooter, Button, FormGroup, Label, Input  } from 'reactstrap';
 import Select from 'react-select';
 import {selectStyle} from '../../scss/selectStyles';
+import {rebase} from "../../index";
 
 export default class AllMailServersEdit extends Component{
   constructor(props){
     super(props);
     this.state={
       repeat: "",
-      timeout: "",
       numberOfTests: "",
       notificationEmails: "",
+      testMail: "I am a test mail.",
 
       smtpServer: "",
       smtpHost: "",
@@ -26,38 +27,96 @@ export default class AllMailServersEdit extends Component{
       imapPort: "",
       imapUser: "",
       imapPassword: "",
-      imapTsl: false,
+      imapTll: false,
       imapSsl: false,
       imapRejectUnauthorized: false,
 
-      testMail: "I am a test mail.",
 
       saving:false,
       opened:false
     }
 
+    this.submit.bind(this);
     this.sendTestMail.bind(this);
     this.testIMAPServer.bind(this);
+    this.fetch.bind(this);
+    this.fetch("servers");
   }
 
-  /*
-  v db smtp
-  host: "",
-  port: 465,
-  secure: true,
-  user: '',
-  pass: '',
-  rejectUnauthorized: false,
+  fetch(id){
+    rebase.get(`monitoring-sidebar/${id}`,{
+      context: this,
+      withIds: true,
+    }
+    ).then((data) => {
+      this.setState({
+        repeat: data.repeat,
+        numberOfTests: data.numberOfTests,
+        notificationEmails: data.notificationEmails,
+        testMail: data.testMail,
 
+        smtpServer: data.smtp.server,
+        smtpHost: data.smtp.host,
+        smtpPort: data.smtp.port,
+        smtpSecure: data.smtp.secure,
+        smtpUser: data.smtp.user,
+        smtpPass: data.smtp.pass,
+        smtpSsl: data.smtp.ssl,
+        smtpRejectUnauthorized: data.smtp.rejectUnauthorized,
 
-  v db imap
-  host: "",
-  port: 993,
-  user: '',
-  password: '',
-  tls: true,
-  rejectUnauthorized: false,
-  */
+        imapServer: data.imap.server,
+        imapHost: data.imap.host,
+        imapPort: data.imap.port,
+        imapUser: data.imap.user,
+        imapPassword: data.imap.password,
+        imapTls: data.imap.tls,
+        imapSsl: data.imap.ssl,
+        imapRejectUnauthorized: data.imap.rejectUnauthorized,
+      });
+      }).catch(err => {
+    });
+  }
+
+  submit(){
+    this.setState({
+      saving: true,
+    })
+    let smtp = {
+      server: this.state.smtpServer,
+      host: this.state.smtpHost,
+      port: this.state.smtpPort,
+      secure: this.state.smtpSecure,
+      user: this.state.smtpUser,
+      pass: this.state.smtpPass,
+      ssl: this.state.smtpSsl,
+      rejectUnauthorized: this.state.smtpRejectUnauthorized,
+    };
+    let imap = {
+      server: this.state.imapServer,
+      host: this.state.imapHost,
+      port: this.state.imapPort,
+      user: this.state.imapUser,
+      password: this.state.imapPassword,
+      ssl: this.state.imapSsl,
+      tls: this.state.imapTls,
+      rejectUnauthorized: this.state.imapRejectUnauthorized,
+    };
+    let data = {
+      repeat: this.state.repeat,
+      numberOfTests: this.state.numberOfTests,
+      notificationEmails: this.state.notificationEmails,
+      testMail: this.state.testMail,
+      smtp,
+      imap,
+    };
+    rebase.updateDoc('monitoring-sidebar/servers', data)
+      .then(() => {
+        this.setState({
+          saving: false,
+        }, () => this.props.close())
+      }).catch(err => {
+    });
+  }
 
   sendTestMail(){
 
@@ -76,15 +135,14 @@ export default class AllMailServersEdit extends Component{
                 <Label>Test mail repeat</Label>
                 <Input type="text" placeholder="Enter port" value={this.state.repeat} onChange={(e)=>this.setState({repeat: e.target.value})} />
               </FormGroup>
-              <FormGroup>
-                <Label>Timeout</Label>
-                <Input type="text" placeholder="Enter port" value={this.state.timeout} onChange={(e)=>this.setState({timeout: e.target.value})} />
-              </FormGroup>
+
+
+
               <FormGroup>
                 <Label>Number of tests for alert</Label>
                 <Input type="text" placeholder="Enter number of tests for alert" value={this.state.numberOfTests} onChange={(e)=>this.setState({numberOfTests: e.target.value})}  />
               </FormGroup>
-              <FormGroup>
+        {/*      <FormGroup>
                 <Label>Notification emails</Label>
                 <Select
                   value={this.state.notificationEmails}
@@ -93,7 +151,7 @@ export default class AllMailServersEdit extends Component{
                   options={[]}
                   styles={selectStyle}
                   />
-              </FormGroup>
+              </FormGroup>*/}
 
               <hr className="m-b-15"/>
 
@@ -123,16 +181,16 @@ export default class AllMailServersEdit extends Component{
                   <Label >Secure</Label>
                 </div>
                 <div className="m-l-15">
-                  <Input  type="checkbox" value={this.state.smtpSecure} onChange={(e)=>this.setState({ssl: !this.state.smtpSecure})} />
+                  <Input  type="checkbox" checked={this.state.smtpSecure} onChange={(e)=>this.setState({smtpSecure: !this.state.smtpSecure})} />
                 </div>
-                <div className="m-l-15">{this.state.smtpSsl ? "YES" : "NO"}</div>
+                <div className="m-l-15">{this.state.smtpSecure ? "YES" : "NO"}</div>
               </FormGroup>
               <FormGroup className="row">
                 <div className="m-r-10">
                   <Label >SSL</Label>
                 </div>
                 <div className="m-l-15">
-                  <Input  type="checkbox" value={this.state.smtpSsl} onChange={(e)=>this.setState({ssl: !this.state.smtpSsl})} />
+                  <Input  type="checkbox" checked={this.state.smtpSsl} onChange={(e)=>this.setState({smtpSsl: !this.state.smtpSsl})} />
                 </div>
                 <div className="m-l-15">{this.state.smtpSsl ? "YES" : "NO"}</div>
               </FormGroup>
@@ -141,9 +199,9 @@ export default class AllMailServersEdit extends Component{
                   <Label >Reject unauthorized</Label>
                 </div>
                 <div className="m-l-15">
-                  <Input  type="checkbox" value={this.state.smtpRejectUnauthorized} onChange={(e)=>this.setState({ssl: !this.state.smtpRejectUnauthorized})} />
+                  <Input  type="checkbox" checked={this.state.smtpRejectUnauthorized} onChange={(e)=>this.setState({smtpRejectUnauthorized: !this.state.smtpRejectUnauthorized})} />
                 </div>
-                <div className="m-l-15">{this.state.smtpSsl ? "YES" : "NO"}</div>
+                <div className="m-l-15">{this.state.smtpRejectUnauthorized ? "YES" : "NO"}</div>
               </FormGroup>
 
               <hr/>
@@ -181,19 +239,19 @@ export default class AllMailServersEdit extends Component{
                 </FormGroup>
                 <FormGroup className="row">
                   <div className="m-r-10">
-                    <Label >TSL</Label>
+                    <Label >TLS</Label>
                   </div>
                   <div className="m-l-15">
-                    <Input  type="checkbox" value={this.state.imapTsl} onChange={(e)=>this.setState({ssl: !this.state.imapTsl})} />
+                    <Input  type="checkbox" checked={this.state.imapTls} onChange={(e)=>this.setState({imapTls: !this.state.imapTls})} />
                   </div>
-                  <div className="m-l-15">{this.state.sendSsl ? "YES" : "NO"}</div>
+                  <div className="m-l-15">{this.state.imapTls ? "YES" : "NO"}</div>
                 </FormGroup>
                 <FormGroup className="row">
                   <div className="m-r-10">
                     <Label >SSL</Label>
                   </div>
                   <div className="m-l-15">
-                    <Input  type="checkbox" value={this.state.imapSsl} onChange={(e)=>this.setState({ssl: !this.state.imapSsl})} />
+                    <Input  type="checkbox" checked={this.state.imapSsl} onChange={(e)=>this.setState({imapSsl: !this.state.imapSsl})} />
                   </div>
                   <div className="m-l-15">{this.state.imapSsl ? "YES" : "NO"}</div>
                 </FormGroup>
@@ -202,9 +260,9 @@ export default class AllMailServersEdit extends Component{
                     <Label >Reject unauthorized</Label>
                   </div>
                   <div className="m-l-15">
-                    <Input  type="checkbox" value={this.state.imapRejectUnauthorized} onChange={(e)=>this.setState({ssl: !this.state.imapRejectUnauthorized})} />
+                    <Input  type="checkbox" checked={this.state.imapRejectUnauthorized} onChange={(e)=>this.setState({imapRejectUnauthorized: !this.state.imapRejectUnauthorized})} />
                   </div>
-                  <div className="m-l-15">{this.state.sendSsl ? "YES" : "NO"}</div>
+                  <div className="m-l-15">{this.state.imapRejectUnauthorized ? "YES" : "NO"}</div>
                 </FormGroup>
                 <div className="h-30">
                   <Button className="pull-right btn-link" disabled={this.state.saving} onClick={() => this.testIMAPServer()}>
@@ -221,7 +279,7 @@ export default class AllMailServersEdit extends Component{
                 Close
               </Button>
 
-              <Button className="btn" disabled={this.state.saving} onClick={()=>{}}>
+              <Button className="btn" disabled={this.state.saving} onClick={()=> this.submit()}>
                 {this.state.saving?'Saving...':'Save changes'}
               </Button>
             </ModalFooter>
