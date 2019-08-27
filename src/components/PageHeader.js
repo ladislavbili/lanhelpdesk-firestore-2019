@@ -55,7 +55,7 @@ class PageHeader extends Component {
 						<Link to={{ pathname: `/helpdesk/taskList/i/all` }} className={"header-link" + (URL.includes("helpdesk/taskList") ? " header-link-active" : "")}>
 							Úlohy
 						</Link>
-						<Link to={{ pathname: `/lanwiki` }} className={"header-link" + (URL.includes("lanwiki") ? " header-link-active" : "")}>
+						<Link to={{ pathname: `/lanwiki/all` }} className={"header-link" + (URL.includes("lanwiki") ? " header-link-active" : "")}>
 							Návody
 						</Link>
 						<Link to={{ pathname: `/cmdb/all` }} className={"header-link" + (URL.includes("cmdb") ? " header-link-active" : "")}>

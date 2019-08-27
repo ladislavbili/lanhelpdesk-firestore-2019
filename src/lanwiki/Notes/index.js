@@ -101,8 +101,8 @@ class List extends Component {
 							<i className="fa fa-clock-o" /> <span>Start: {note.dateCreated?timestampToString(note.dateCreated):'None'}</span>
 						</p>
 						<div className="m-b-0">
-							<label>{note.name}</label>
-							<div className="m-t-5">
+							<label className="m-b-0">{note.name}</label>
+							<div className="m-t-0">
 								<p className="pull-right m-b-0 font-13">
 									<i className="fa fa-clock-o" /> <span>Updated: {note.lastUpdated&& <TimeAgo className="text-muted" date={new Date(note.lastUpdated)} />}</span>
 								</p>

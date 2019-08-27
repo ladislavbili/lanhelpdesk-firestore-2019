@@ -55,7 +55,7 @@ class List extends Component {
 					<li className="" >
 						<div className="m-b-0">
 							<label>{expenditure.title}</label>
-							<div className="m-t-5">
+							<div className="m-t05">
 								<p className="pull-right m-b-0 font-13">
 									<i className="fa fa-clock-o" /> <span>Start: {expenditure.startDate?timestampToString(expenditure.startDate):'None'}</span>
 								</p>

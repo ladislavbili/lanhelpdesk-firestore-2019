@@ -4,8 +4,7 @@ import React, { Component } from 'react';
 export default class ListHeader extends Component {
 	render() {
 		return (
-			<div className="p-10">
-				<div className="d-flex flex-row align-items-center">
+				<div className="m-r-5 m-l-5 d-flex flex-row align-items-center">
 					<div className="p-2 text-muted">
 						<h4>
 						{this.props.listName?this.props.listName:""}
@@ -42,7 +41,6 @@ export default class ListHeader extends Component {
 						</button>
 				}
 			</div>
-				</div>
 			</div>
 		);
 	}
