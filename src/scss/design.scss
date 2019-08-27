@@ -167,7 +167,7 @@ html{
   font-size: 14px !important;
   color: #797979 !important;
   blockquote{
-    font-size: 14px !important;    
+    font-size: 14px !important;
   }
 }
 
@@ -374,6 +374,28 @@ html{
 .btn-outline-blue:not(:disabled):not(.disabled).active, .btn-outline-blue:not(:disabled):not(.disabled):active, .show>.btn-outline-blue.dropdown-toggle {
     color: #fff;
     background-color: $basic-button-color;
+}
+
+.btn-success{
+  background-color: lawnGreen;
+  border-radius: 30px;
+  /*height: 30px;
+  width: 30px;*/
+}
+
+.btn-danger{
+  background-color: red;
+  border-radius: 30px;
+  /*height: 30px;
+  width: 30px;*/
+}
+
+.btn-success:hover{
+  background-color: lawnGreen;
+}
+
+.btn-danger:hover{
+  background-color: red;
 }
 
 .hidden-button{

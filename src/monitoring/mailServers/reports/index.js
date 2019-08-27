@@ -1,45 +1,42 @@
 import React, { Component } from 'react';
 import { Modal, Button, ModalBody, ModalFooter } from 'reactstrap';
+import {rebase} from "../../../index";
 
 import ReportDetail from "./reportDetail";
-
-const ITEMS =[
-		{
-			id: 0,
-			sendTestDate: "27.6.2016 13:14:25",
-			responseDateTime: "27.6.2016 13:14:25",
-			responseTime: "5",
-			twentyFive: "25",
-			status: "OK",
-			},
-		{
-			id: 1,
-			sendTestDate: "27.6.2016 13:14:25",
-			responseDateTime: "27.6.2016 13:14:25",
-			responseTime: "5",
-			twentyFive: "25",
-			status: "OK",
-		},{
-			id: 2,
-			sendTestDate: "27.6.2016 13:14:25",
-			responseDateTime: "27.6.2016 13:14:25",
-			responseTime: "5",
-			twentyFive: "25",
-			status: "OK",
-		},
-]
 
 export default class Reports extends Component{
   constructor(props){
     super(props);
     this.state={
+			data: [],
 
       opendedModal: false,
       saving:false,
     }
   }
 
+	componentWillMount(){
+		this.ref1 = rebase.listenToCollection('monitoring-servers_results', {
+		context: this,
+		withIds: true,
+		then(data) {
+			 this.setState({
+				 data
+			 });
+		},
+		onFailure(err) {
+			//handle error
+		}
+	});
+	}
+
+	componentWillUnmount(){
+		rebase.removeBinding(this.ref1);
+	}
+
   render(){
+		let ITEMS = this.state.data.filter(datum => datum.mailServer === this.props.id);
+
       return (
         <div className="flex">
 					<table className="table">
@@ -48,7 +45,6 @@ export default class Reports extends Component{
 									<th>Send test date</th>
 									<th>Response date time</th>
 									<th>Response time (min:sec)</th>
-									<th></th>
 									<th>Status</th>
 								</tr>
 							</thead>
@@ -64,11 +60,10 @@ export default class Reports extends Component{
 													reportID: item.id
 												})
 											}}>
-											<td>{item.sendTestDate}</td>
-											<td>{item.responseDateTime}</td>
-											<td>{item.responseTime}</td>
-											<td>{item.twentyFive}</td>
-											<td>{item.status}</td>
+											<td>{new Date(item.sendTestDate).toLocaleString()}</td>
+											<td>{new Date(item.responseDateTime).toLocaleString()}</td>
+											<td>item.difference}</td>
+											<td>{item.success ? "OK" : "Failed"}</td>
 										</tr>
 									)
 								}

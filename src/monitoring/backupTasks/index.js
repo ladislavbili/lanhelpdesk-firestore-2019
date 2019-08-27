@@ -26,44 +26,41 @@ class BackupTaskList extends Component {
 
 			editOpened:false
 		};
-
-		this.fetchData.bind(this);
-		this.addTask.bind(this);
 	}
 
 	componentWillMount(){
-		rebase.listenToCollection('monitoring-notifications', {
+		this.ref1 = rebase.listenToCollection('monitoring-notifications', {
     context: this,
 		withIds: true,
     then(data) {
 	     this.setState({
-				 data: data.map(datum => {
-					 return {
-						 id: datum.id,
-						 title: datum.title ? datum.title : "no title",
-						 company: datum.company ? datum.company.label : "no company",
-	 					 lastReport: datum.startDate ? datum.startDate : "no reports",
-						 status: "OK"
-					 }
-				 	}),
+				 data
 			 });
     },
     onFailure(err) {
       //handle error
     }
   });
+		this.ref2 = rebase.listenToCollection('companies', {
+		context: this,
+		withIds: true,
+		then(companies) {
+			 this.setState({
+				 companies
+			 });
+		},
+		onFailure(err) {
+			//handle error
+		}
+	});
 	}
 
 	componentWillReceiveProps(props){
 	}
 
-	fetchData(id){
-	}
-
 	componentWillUnmount(){
-	}
-
-	addTask(){
+		rebase.removeBinding(this.ref1);
+		rebase.removeBinding(this.ref2);
 	}
 
 	removeItem(id){
@@ -76,6 +73,23 @@ class BackupTaskList extends Component {
 	}
 
 	render() {
+		let ITEMS = this.state.data.map(datum => {
+			let company = this.state.companies.find(comp => comp.id === datum.company);
+			return {
+				id: datum.id,
+				title: datum.title ? datum.title : "none",
+				status: datum.status ? datum.status : "none",
+				lastReport: datum.lastReport ? datum.lastReport : "none",
+				company: company ? company.title : "none"
+			}
+		}).filter(
+			item =>
+				item.title.toLowerCase().includes(this.state.filterByName.toLowerCase())
+				&& item.company.toLowerCase().includes(this.state.filterByCustomer.toLowerCase())
+				&& item.status.toLowerCase().includes(this.state.filterByStatus.toLowerCase())
+				&& item.lastReport.toLowerCase().includes(this.state.filterByLastReport.toLowerCase())
+		);
+		
 		return (
 			<div>
 				<div className="container-fluid">
@@ -151,14 +165,7 @@ class BackupTaskList extends Component {
 										<td>
 										</td>
 									</tr>
-									{ this.state.data.length > 0 &&
-										this.state.data
-										.filter(item =>
-																item.title.toLowerCase().includes(this.state.filterByName.toLowerCase())
-																&& item.company.toLowerCase().includes(this.state.filterByCustomer.toLowerCase())
-																&& item.status.toLowerCase().includes(this.state.filterByStatus.toLowerCase())
-																&& item.lastReport.toLowerCase().includes(this.state.filterByLastReport.toLowerCase())
-										).map(item =>
+									{ ITEMS.map(item =>
 											<tr className={classnames({ 'active': this.props.match.params.itemID === item.id.toString(), clickable:true })}
 												key={item.id}
 												onClick={()=>{

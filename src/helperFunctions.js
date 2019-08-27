@@ -74,5 +74,5 @@ export const getItemDisplayValue= (item,value) => {
 }
 
 export const arraySelectToString = (arr) => {
-  return arr.map(a => " " + a.label).toString();
+  return arr.map(a => " " + a).toString();
 }

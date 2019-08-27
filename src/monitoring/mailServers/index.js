@@ -12,13 +12,14 @@ class MailServerList extends Component {
 		super(props);
 		this.state = {
 			data: [],
+			companies: [],
 			search:'',
 
 			filterByTitle: "",
 			filterByCompany: "",
 			filterByTestMail: "",
 			filterByStatus: "",
-			filterByLastResponse: "",
+			filterByLastResp: "",
 
 			saving:false,
 			openedID:null,
@@ -28,27 +29,35 @@ class MailServerList extends Component {
 	}
 
 	componentWillMount(){
-		rebase.listenToCollection('monitoring-servers', {
+		this.ref1 = rebase.listenToCollection('monitoring-servers', {
     context: this,
 		withIds: true,
     then(data) {
 	     this.setState({
-				 data: data.map(datum => {
-					 return {
-						 id: datum.id,
-						 title: datum.title ? datum.title : "no title",
-						 company: datum.company ? datum.company.label : "no company",
-						 testEmail: datum.testEmail ? datum.testEmail : "no test mail",
-	 					 lastResponse: "12.08.2019",
-						 status: "OK"
-					 }
-				 	}),
+				 data
 			 });
     },
     onFailure(err) {
       //handle error
     }
-  	});
+  });
+		this.ref2 = rebase.listenToCollection('companies', {
+		context: this,
+		withIds: true,
+		then(companies) {
+			 this.setState({
+				 companies
+			 });
+		},
+		onFailure(err) {
+			//handle error
+		}
+	});
+	}
+
+	componentWillUnmount(){
+		rebase.removeBinding(this.ref1);
+		rebase.removeBinding(this.ref2);
 	}
 
 	removeItem(id){
@@ -61,6 +70,24 @@ class MailServerList extends Component {
 	}
 
 	render() {
+		let ITEMS = this.state.data.map(datum => {
+			let company = this.state.companies.find(comp => comp.id === datum.company);
+			return {
+				id: datum.id ? datum.id : "none",
+				title: datum.title ? datum.title : "none",
+				company: company ? company.title : "none",
+				testEmail: datum.testEmail ? datum.testEmail : "none",
+				status: datum.status ? datum.status : "none",
+				lastResp: datum.lastResp ? datum.lastResp : "none",
+			}
+		}).filter(item =>
+					item.title.toLowerCase().includes(this.state.filterByTitle.toLowerCase())
+					&& item.company.toLowerCase().includes(this.state.filterByCompany.toLowerCase())
+					&& item.testEmail.toLowerCase().includes(this.state.filterByTestMail.toLowerCase())
+					&& item.status.toLowerCase().includes(this.state.filterByStatus.toLowerCase())
+					&& item.lastResp.toLowerCase().includes(this.state.filterByLastResp.toLowerCase())
+				);
+
 		return (
 			<div>
 				<div className="container-fluid">
@@ -139,23 +166,16 @@ class MailServerList extends Component {
 										<td>
 											<input
 											type="text"
-											value={this.state.filterByLastResponse}
+											value={this.state.filterByLastResp}
 											className="form-control commandbar-search"
-											onChange={(e)=>this.setState({filterByLastResponse:e.target.value})}
+											onChange={(e)=>this.setState({filterByLastResp:e.target.value})}
 											placeholder="Filter by last response" />
 										</td>
 										<td>
 										</td>
 									</tr>
 									{
-										this.state.data
-												.filter(item =>
-													item.title.toLowerCase().includes(this.state.filterByTitle.toLowerCase())
-													&& item.company.toLowerCase().includes(this.state.filterByCompany.toLowerCase())
-													&& item.testEmail.toLowerCase().includes(this.state.filterByTestMail.toLowerCase())
-													&& item.status.toLowerCase().includes(this.state.filterByStatus.toLowerCase())
-													&& item.lastResponse.toLowerCase().includes(this.state.filterByLastResponse.toLowerCase())
-												).map(item =>
+										ITEMS.map(item =>
 													<tr
 														className={classnames({ 'active': this.props.match.params.itemID === item.id.toString(), clickable:true })}
 														key={item.id}

@@ -38,7 +38,7 @@ export default class BackupTaskShowInfo extends Component{
 				 this.setState({
 					 title: datum.title ? datum.title : "untitled",
 		       company: datum.company ? datum.company.label : "no company",
-		       startDate: datum.startDate ? datum.startDate : "no start date",
+		       startDate: datum.startDate ? new Date(datum.startDate).toLocaleString() : "no start date",
 		       repeatEvery: this.msToTime(datum.repeatNumber, datum.repeatTime),
 
 		       from: (datum.from ? datum.from : "no sender") + (datum.fromDisabled ? " (sender disabled)" : "") ,
@@ -74,6 +74,8 @@ export default class BackupTaskShowInfo extends Component{
 
 
   render(){
+
+    console.log(this.state.startDate.toString());
       return (
         <div className="flex">
 					<div className="row m-b-30">

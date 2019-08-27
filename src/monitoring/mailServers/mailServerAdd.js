@@ -3,6 +3,7 @@ import { Button, FormGroup, Label, Input } from 'reactstrap';
 import {rebase} from "../../index";
 import Select from 'react-select';
 import {selectStyle} from '../../scss/selectStyles';
+import {isEmail} from "../../helperFunctions";
 
 export default class MailServerAdd extends Component{
   constructor(props){
@@ -11,8 +12,10 @@ export default class MailServerAdd extends Component{
       title: "",
       company: null,
       testEmail: "",
+      numberOfTests: "",
+      repeatNumber: "",
       note: "",
-      timeout: "",
+      success: true,
 
       saving:false,
     }
@@ -39,10 +42,12 @@ export default class MailServerAdd extends Component{
     })
     let data = {
       title: this.state.title,
-      company: this.state.company,
+      company: this.state.company.value,
       testEmail: this.state.testEmail,
+      numberOfTests: this.state.numberOfTests,
+      repeatNumber: this.state.repeatNumber,
       note: this.state.note,
-      timeout: this.state.timeout * 60000,
+      success: this.state.success
     };
     rebase.addToCollection('/monitoring-servers', data)
     .then(() => {
@@ -61,11 +66,19 @@ export default class MailServerAdd extends Component{
 				</div>
 
 					<div className={"card-box p-t-15 scrollable fit-with-header-and-commandbar " + (!this.props.columns ? " center-ver w-50" : "")}>
-            <h1>Add mail server</h1>
+            <div className="row">
+            <h1 className="flex">Add mail server</h1>
+              <Button
+                className={this.state.success ? "btn-success" : "btn-danger"}
+                onClick={() => this.setState({success: !this.state.success})}
+              > {this.state.success ? "working" : "failed"}
+              </Button>
+
+            </div>
 
               <FormGroup>
                 <Label>Title *</Label>
-                <Input type="text" placeholder="Enter mailserver name" value={this.state.name} onChange={(e)=>this.setState({name: e.target.value})} />
+                <Input type="text" placeholder="Enter mailserver name" value={this.state.title} onChange={(e)=>this.setState({title: e.target.value})} />
               </FormGroup>
 
               <FormGroup>
@@ -79,13 +92,18 @@ export default class MailServerAdd extends Component{
               </FormGroup>
 
               <FormGroup>
-                <Label>Timeout (min) *</Label>
-                <Input type="number" placeholder="Enter timeout" value={this.state.timeout} onChange={(e)=>this.setState({timeout: e.target.value})} />
+                <Label>Test e-mail *</Label>
+                <Input type="text" placeholder="Enter test mail" value={this.state.testEmail} onChange={(e)=>this.setState({testEmail: e.target.value})} />
               </FormGroup>
 
               <FormGroup>
-                <Label>Test e-mail *</Label>
-                <Input type="text" placeholder="Enter test mail" value={this.state.testEmail} onChange={(e)=>this.setState({testEmail: e.target.value})} />
+                <Label>Number of tests for fail</Label>
+                <Input type="text" placeholder="Enter number of tests for alert" value={this.state.numberOfTests} onChange={(e)=>this.setState({numberOfTests: e.target.value})}  />
+              </FormGroup>
+
+              <FormGroup>
+                <Label>Repeat test every ... minutes</Label>
+                <Input type="number" placeholder="Enter number of tests for alert" value={this.state.repeatNumber} onChange={(e)=>this.setState({repeatNumber: e.target.value})}  />
               </FormGroup>
 
               <FormGroup>
@@ -97,8 +115,7 @@ export default class MailServerAdd extends Component{
     						className="btn pull-right"
                 disabled={this.state.saving
                   || this.state.title === ""
-                  || this.state.timeout <= 0
-                  || this.state.testEmail === ""
+                  || !isEmail(this.state.testEmail)
                 }
                 onClick={() => this.submit()}
     					> { this.state.saving ? "Adding..." : "Add mail server"}

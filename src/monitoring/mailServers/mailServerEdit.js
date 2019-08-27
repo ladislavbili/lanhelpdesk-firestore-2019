@@ -3,6 +3,7 @@ import { Button, FormGroup, Label, Input } from 'reactstrap';
 import {rebase} from "../../index";
 import Select from 'react-select';
 import {selectStyle} from '../../scss/selectStyles';
+import {isEmail} from "../../helperFunctions";
 
 export default class MailServerEdit extends Component{
   constructor(props){
@@ -11,15 +12,16 @@ export default class MailServerEdit extends Component{
 			title: "",
       company: null,
       testEmail: "",
+      numberOfTests: "",
+      repeatNumber: "",
       note: "",
-      timeout: "",
+      success: false,
 
 			companies: [],
 
       saving:false,
     }
 		this.fetch.bind(this);
-		this.msToTime.bind(this);
 		this.submit.bind(this);
   }
 
@@ -38,17 +40,18 @@ export default class MailServerEdit extends Component{
 	}
 
 	fetch(id){
-		console.log("here");
 		rebase.get(`monitoring-servers/${id}`, {
 			context: this,
 			withIds: true,
 		}).then(datum => {
 				 this.setState({
 					 title: datum.title,
-		 			 company: datum.company,
+		 			 company: {label: this.state.companies.find(comp => comp.value === datum.company).label, value: datum.company},
 		 			 testEmail: datum.testEmail,
+           numberOfTests: datum.numberOfTests,
+           repeatNumber: datum.repeatNumber,
+           success: datum.success,
 					 note: datum.note,
-		       timeout: this.msToTime(datum.timeout),
 				 });
 			});
 	}
@@ -66,10 +69,12 @@ export default class MailServerEdit extends Component{
 		})
 		let data = {
 			title: this.state.title,
-			company: this.state.company,
+			company: this.state.company.value,
 			testEmail: this.state.testEmail,
+      numberOfTests: this.state.numberOfTests,
+      repeatNumber: this.state.repeatNumber,
 			note: this.state.note,
-			timeout: this.state.timeout * 60000,
+      success: this.state.success,
 		};
 
 		rebase.updateDoc(`monitoring-servers/${this.props.id}`, data)
@@ -82,13 +87,17 @@ export default class MailServerEdit extends Component{
 		});
 	}
 
-	msToTime(time){
-		return time / 60000;
-	}
+
 
   render(){
       return (
         <div className="flex">
+
+          <Button
+            className={this.state.success ? "btn-success" : "btn-danger"}
+            onClick={() => this.setState({success: !this.state.success})}
+          > {this.state.success ? "working" : "failed"}
+          </Button>
 
             <FormGroup>
               <Label>Title *</Label>
@@ -105,14 +114,19 @@ export default class MailServerEdit extends Component{
 								/>
 						</FormGroup>
 
-						<FormGroup>
-							<Label>Timeout (min) *</Label>
-							<Input type="number" placeholder="Enter timeout" value={this.state.timeout} onChange={(e)=>this.setState({timeout: e.target.value})} />
-						</FormGroup>
-
             <FormGroup>
               <Label>Test e-mail *</Label>
               <Input type="text" placeholder="Enter port" value={this.state.testEmail} onChange={(e)=>this.setState({testEmail: e.target.value})} />
+            </FormGroup>
+
+            <FormGroup>
+              <Label>Number of tests for fail</Label>
+              <Input type="text" placeholder="Enter number of tests for alert" value={this.state.numberOfTests} onChange={(e)=>this.setState({numberOfTests: e.target.value})}  />
+            </FormGroup>
+
+            <FormGroup>
+              <Label>Repeat test every ... minutes</Label>
+              <Input type="number" placeholder="Enter number of tests for alert" value={this.state.repeatNumber} onChange={(e)=>this.setState({repeatNumber: e.target.value})}  />
             </FormGroup>
 
             <FormGroup>
@@ -124,8 +138,7 @@ export default class MailServerEdit extends Component{
   						className="btn pull-right"
 							disabled={this.state.saving
 								|| this.state.title === ""
-								|| this.state.timeout <= 0
-								|| this.state.testEmail === ""
+								|| !isEmail(this.state.testEmail)
 							}
 							onClick={() => this.submit()}
   					> { this.state.saving ? "Saving..." : "Save changes"}

@@ -1,38 +1,41 @@
 import React, { Component } from 'react';
 import { Modal, Button, ModalBody, ModalFooter } from 'reactstrap';
 import ReportDetail from "./reportDetail";
-
-const ITEMS =[
-		{
-			id: 0,
-			receiveDate: "27.6.2016 13:14:25",
-			subject: "Daily test",
-			status: "OK",
-			},
-		{
-			id: 1,
-			receiveDate: "27.6.2016 13:14:25",
-			subject: "Daily test 2",
-			status: "OK",
-		},{
-			id: 2,
-			receiveDate: "27.6.2016 13:14:25",
-			subject: "Daily test 3",
-			status: "OK",
-		},
-]
+import {rebase} from "../../../index";
 
 export default class Reports extends Component{
   constructor(props){
     super(props);
     this.state={
+			data: [],
 
       opendedModal: false,
       saving:false,
     }
   }
 
+	componentWillMount(){
+		this.ref1 = rebase.listenToCollection('monitoring-notifications_results', {
+		context: this,
+		withIds: true,
+		then(data) {
+			 this.setState({
+				 data
+			 });
+		},
+		onFailure(err) {
+			//handle error
+		}
+	});
+	}
+
+	componentWillUnmount(){
+		rebase.removeBinding(this.ref1);
+	}
+
   render(){
+			let ITEMS = this.state.data.filter(datum => datum.notification === this.props.id);
+
       return (
         <div className="flex">
 					<table className="table">
@@ -55,9 +58,9 @@ export default class Reports extends Component{
 													reportID: item.id
 												})
 											}}>
-											<td>{item.receiveDate}</td>
+											<td>{new Date(item.receiveDate).toLocaleString()}</td>
 											<td>{item.subject}</td>
-											<td>{item.status}</td>
+											<td>{item.success ? "OK" : "Failed"}</td>
 										</tr>
 									)
 								}

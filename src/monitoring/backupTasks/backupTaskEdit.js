@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button, FormGroup, Label, Input } from 'reactstrap';
 import Select, { Creatable }  from 'react-select';
 import {selectStyle} from '../../scss/selectStyles';
+import {isEmail} from "../../helperFunctions";
 
 import {rebase} from "../../index";
 
@@ -18,6 +19,7 @@ export default class BackupTaskEdit extends Component{
 			title: "",
       company: {},
       startDate: "",
+      startDateDisabled: false,
       repeatNumber: "",
       repeatTime: "",
 
@@ -27,9 +29,13 @@ export default class BackupTaskEdit extends Component{
       subjectDisabled: false,
       mailOK: [],
       mailInvalid: [],
+      alertMailDisabled: false,
       alertMail: "",
 
       note: "",
+      wait: "",
+      waitDisabled: false,
+
 			options: [
 				{ label: "ok", value: "ok"},
 				{ label: "success", value: "success"},
@@ -64,20 +70,24 @@ export default class BackupTaskEdit extends Component{
 		}).then(datum => {
 				 this.setState({
 					 title: datum.title,
-					 company: datum.company,
-					 startDate: datum.startDate,
+					 company: datum.company ? {label: this.state.companies.find(comp => comp.value === datum.company).label, value: datum.company} : {},
+					 startDate: datum.startDate ? new Date(datum.startDate).toISOString().replace("Z", "") : "",
+           startDateDisabled: datum.startDateDisabled,
 					 repeatNumber: this.msToNormal(datum.repeatNumber, datum.repeatTime),
-					 repeatTime: datum.repeatTime,
+					 repeatTime: {value: datum.repeatTime, label: datum.repeatTime},
 
 					 from: datum.from,
 					 fromDisabled: datum.fromDisabled,
 					 subject: datum.subject,
 					 subjectDisabled: datum.subjectDisabled,
-					 mailOK: datum.mailOK,
-					 mailInvalid: datum.mailInvalid,
+					 mailOK: datum.mailOK.map(t => {return ({value: t, label: t});}),
+					 mailInvalid: datum.mailInvalid.map(t => {return ({value: t, label: t});}),
 					 alertMail: datum.alertMail,
+           alertMailDisabled: datum.alertMailDisabled,
 
 					 note: datum.note,
+           wait: datum.wait,
+           waitDisabled: datum.waitDisabled,
 				 });
 			});
 	}
@@ -91,18 +101,22 @@ export default class BackupTaskEdit extends Component{
 	submit(){
     let data = {
       title: this.state.title,
-      company: this.state.company,
-      startDate: this.state.startDate,
-      repeatTime: this.state.repeatTime,
+      company: this.state.company.value ? this.state.company.value : "",
+      startDate: new Date(this.state.startDate).getTime(),
+      startDateDisabled: this.state.startDateDisabled,
+      repeatTime: this.state.repeatTime.label,
       repeatNumber: this.toMillisec(this.state.repeatNumber),
       from: this.state.from,
       fromDisabled: this.state.fromDisabled,
       subject: this.state.subject,
       subjectDisabled: this.state.subjectDisabled,
-      mailOK: this.state.mailOK,
-      mailInvalid: this.state.mailInvalid,
+      mailOK: this.state.mailOK.map(b => b.label),
+      mailInvalid: this.state.mailInvalid.map(b => b.label),
       alertMail: this.state.alertMail,
+      alertMailDisabled: this.state.alertMailDisabled,
       note: this.state.note,
+      wait: this.state.wait,
+      waitDisabled: this.state.waitDisabled,
 
       status: "OK",
       lastReport: this.state.startDate,
@@ -124,13 +138,13 @@ export default class BackupTaskEdit extends Component{
 	}
 
 	msToNormal(time, type){
-		if (type.value === "m"){
+		if (type === "minutes"){
 			return time / 60000;
 		}
-		if (type.value === "h"){
+		if (type === "hours"){
 			return time / 60000 / 60;
 		}
-		if (type.value === "d"){
+		if (type === "days"){
 			return time / 60000 / 60 / 24;
 		}
 	}
@@ -153,10 +167,18 @@ export default class BackupTaskEdit extends Component{
 						/>
 				</FormGroup>
 
-				<FormGroup>
-					<Label>Start Date *</Label>
-					<Input type="datetime-local" placeholder="Enter start date" value={this.state.startDate} onChange={(e)=>this.setState({startDate: e.target.value})} />
-				</FormGroup>
+        <FormGroup>
+          <div  className="row">
+            <Label htmlFor="startDis">Start Date *</Label>
+            <div className="m-l-15">
+                <Input type="checkbox" id="startDis" className="position-inherit" checked={this.state.startDateDisabled} onChange={(e)=>this.setState({startDateDisabled: !this.state.startDateDisabled})} />
+            </div>
+            <div className="m-l-15 w-10" htmlFor="startDis">Disabled</div>
+          </div>
+          <div className="m-r-10">
+            <Input type="datetime-local" disabled={this.state.startDateDisabled} placeholder="Enter start date" value={this.state.startDate} onChange={(e)=>this.setState({startDate: e.target.value})} />
+          </div>
+        </FormGroup>
 
 				<FormGroup>
 					<Label>Repeat every *</Label>
@@ -175,14 +197,27 @@ export default class BackupTaskEdit extends Component{
 					</div>
 				</FormGroup>
 
+        <FormGroup>
+          <div  className="row">
+            <Label htmlFor="waitDis">Wait period (hour)</Label>
+            <div className="m-l-15">
+                <Input type="checkbox" id="waitDis" className="position-inherit" checked={this.state.waitDisabled} onChange={(e)=>this.setState({waitDisabled: !this.state.waitDisabled})} />
+            </div>
+            <div className="m-l-15 w-10" htmlFor="waitDis">Disabled</div>
+          </div>
+          <div className="m-r-10">
+            <Input type="number" disabled={this.state.waitDisabled} placeholder="Enter wait period" value={this.state.wait} onChange={(e)=>this.setState({wait: e.target.value})} />
+          </div>
+          </FormGroup>
+
 
 					<FormGroup>
 						<div  className="row">
-							<Label>From {!this.state.fromDisabled ? "*" : ""}</Label>
+							<Label htmlFor="fromDis">From {!this.state.fromDisabled ? "*" : ""}</Label>
 							<div className="m-l-15">
-									<Input type="checkbox" className="position-inherit" checked={this.state.fromDisabled} onChange={(e)=>this.setState({fromDisabled: !this.state.fromDisabled})} />
+									<Input type="checkbox" id="fromDis" className="position-inherit" checked={this.state.fromDisabled} onChange={(e)=>this.setState({fromDisabled: !this.state.fromDisabled})} />
 							</div>
-							<div className="m-l-15 w-10">Disabled</div>
+							<div className="m-l-15 w-10" htmlFor="fromDis">Disabled</div>
 						</div>
 						<div className="m-r-10">
 							<Input type="text" disabled={this.state.fromDisabled} placeholder="Enter sender" value={this.state.from} onChange={(e)=>this.setState({from: e.target.value})} />
@@ -191,11 +226,11 @@ export default class BackupTaskEdit extends Component{
 
 				<FormGroup>
 					<div  className="row">
-						<Label>Subject {!this.state.subjectDisabled ? "*" : ""}</Label>
+						<Label htmlFor="subjectDis">Subject {!this.state.subjectDisabled ? "*" : ""}</Label>
 						<div className="m-l-15">
-								<Input type="checkbox" className="position-inherit" checked={this.state.subjectDisabled} onChange={(e)=>this.setState({subjectDisabled: !this.state.subjectDisabled})} />
+								<Input type="checkbox" id="subjectDis" className="position-inherit" checked={this.state.subjectDisabled} onChange={(e)=>this.setState({subjectDisabled: !this.state.subjectDisabled})} />
 						</div>
-						<div className="m-l-15 w-10">Disabled</div>
+						<div className="m-l-15 w-10" htmlFor="subjectDis">Disabled</div>
 					</div>
 					<div className="m-r-10">
 						<Input type="text" disabled={this.state.subjectDisabled} placeholder="Enter subject" value={this.state.subject} onChange={(e)=>this.setState({subject: e.target.value})} />
@@ -224,11 +259,18 @@ export default class BackupTaskEdit extends Component{
 					/>
 				</FormGroup>
 
-
-				<FormGroup>
-					<Label>Alert mail</Label>
-					<Input type="text" placeholder="Enter the body of alert mail" value={this.state.alertMail} onChange={(e)=>this.setState({alertMail: e.target.value})} />
-				</FormGroup>
+        <FormGroup>
+          <div  className="row">
+            <Label htmlFor="alertDis">Alert mail</Label>
+            <div className="m-l-15">
+                <Input type="checkbox" id="alertDis" className="position-inherit" checked={this.state.alertMailDisabled} onChange={(e)=>this.setState({alertMailDisabled: !this.state.alertMailDisabled})} />
+            </div>
+            <div className="m-l-15 w-10" htmlFor="alertDis">Disabled</div>
+          </div>
+          <div className="m-r-10">
+            <Input type="text" disabled={this.state.alertMailDisabled} placeholder="Enter alert mail" value={this.state.alertMail} onChange={(e)=>this.setState({alertMail: e.target.value})} />
+          </div>
+        </FormGroup>
 
 				<FormGroup>
 					<Label>Note</Label>
@@ -238,13 +280,14 @@ export default class BackupTaskEdit extends Component{
 				<Button
 					className="btn pull-right"
 					disabled={this.state.saving
-						|| this.state.startDate === ""
+						|| (!this.state.startDateDisabled === this.state.startDate === "")
 						|| !this.checkNumber(this.state.repeatNumber)
 						|| this.state.repeatTime === ""
-						|| (!this.state.fromDisabled && this.state.from === "")
+						|| (!this.state.fromDisabled && !isEmail(this.state.from))
 						|| (!this.state.subjectDisabled && this.state.subject === "")
 						|| this.state.mailOK.length === 0
-						|| this.state.mailInvalid.length === 0}
+						|| this.state.mailInvalid.length === 0
+            || (this.state.alertMail !== "" && !isEmail(this.state.alertMail))}
 					onClick={() => this.submit()}
 				> { this.state.saving ? "Saving..." : "Save changes"}
 				</Button>

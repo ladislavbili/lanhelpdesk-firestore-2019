@@ -3,6 +3,7 @@ import { ModalBody, ModalFooter, Button, FormGroup, Label, Input  } from 'reacts
 import Select from 'react-select';
 import {selectStyle} from '../../scss/selectStyles';
 import {rebase} from "../../index";
+import {isEmail} from "../../helperFunctions";
 
 export default class AllMailServersEdit extends Component{
   constructor(props){
@@ -10,6 +11,7 @@ export default class AllMailServersEdit extends Component{
     this.state={
       repeat: "",
       numberOfTests: "",
+      timeout: "",
       notificationEmails: "",
       testMail: "I am a test mail.",
 
@@ -19,7 +21,7 @@ export default class AllMailServersEdit extends Component{
       smtpSecure: false,
       smtpUser: "",
       smtpPass: "",
-      smtpSsl: false,
+      smtpTls: false,
       smtpRejectUnauthorized: false,
 
       imapServer: "",
@@ -28,7 +30,6 @@ export default class AllMailServersEdit extends Component{
       imapUser: "",
       imapPassword: "",
       imapTll: false,
-      imapSsl: false,
       imapRejectUnauthorized: false,
 
 
@@ -36,6 +37,7 @@ export default class AllMailServersEdit extends Component{
       opened:false
     }
 
+    this.msToTime.bind(this);
     this.submit.bind(this);
     this.sendTestMail.bind(this);
     this.testIMAPServer.bind(this);
@@ -52,6 +54,7 @@ export default class AllMailServersEdit extends Component{
       this.setState({
         repeat: data.repeat,
         numberOfTests: data.numberOfTests,
+        timeout: this.msToTime(data.timeout),
         notificationEmails: data.notificationEmails,
         testMail: data.testMail,
 
@@ -61,7 +64,7 @@ export default class AllMailServersEdit extends Component{
         smtpSecure: data.smtp.secure,
         smtpUser: data.smtp.user,
         smtpPass: data.smtp.pass,
-        smtpSsl: data.smtp.ssl,
+        smtpTls: data.smtp.tls,
         smtpRejectUnauthorized: data.smtp.rejectUnauthorized,
 
         imapServer: data.imap.server,
@@ -70,7 +73,6 @@ export default class AllMailServersEdit extends Component{
         imapUser: data.imap.user,
         imapPassword: data.imap.password,
         imapTls: data.imap.tls,
-        imapSsl: data.imap.ssl,
         imapRejectUnauthorized: data.imap.rejectUnauthorized,
       });
       }).catch(err => {
@@ -88,7 +90,7 @@ export default class AllMailServersEdit extends Component{
       secure: this.state.smtpSecure,
       user: this.state.smtpUser,
       pass: this.state.smtpPass,
-      ssl: this.state.smtpSsl,
+      tls: this.state.smtpTls,
       rejectUnauthorized: this.state.smtpRejectUnauthorized,
     };
     let imap = {
@@ -97,13 +99,13 @@ export default class AllMailServersEdit extends Component{
       port: this.state.imapPort,
       user: this.state.imapUser,
       password: this.state.imapPassword,
-      ssl: this.state.imapSsl,
       tls: this.state.imapTls,
       rejectUnauthorized: this.state.imapRejectUnauthorized,
     };
     let data = {
       repeat: this.state.repeat,
       numberOfTests: this.state.numberOfTests,
+      timeout: this.state.timeout * 60000,
       notificationEmails: this.state.notificationEmails,
       testMail: this.state.testMail,
       smtp,
@@ -126,23 +128,31 @@ export default class AllMailServersEdit extends Component{
 
   }
 
+  msToTime(time){
+		return time / 60000;
+	}
+
   render(){
     return (
       <div>
             <ModalBody>
               <h1>Mail settings</h1>
               <FormGroup>
-                <Label>Test mail repeat</Label>
+                <Label>Test mail repeat (min)</Label>
                 <Input type="text" placeholder="Enter port" value={this.state.repeat} onChange={(e)=>this.setState({repeat: e.target.value})} />
               </FormGroup>
 
 
-
               <FormGroup>
-                <Label>Number of tests for alert</Label>
+  							<Label>Timeout (min)</Label>
+  							<Input type="number" placeholder="Enter timeout" value={this.state.timeout} onChange={(e)=>this.setState({timeout: e.target.value})} />
+  						</FormGroup>
+  {/*
+              <FormGroup>
+                <Label>Number of tests for fail</Label>
                 <Input type="text" placeholder="Enter number of tests for alert" value={this.state.numberOfTests} onChange={(e)=>this.setState({numberOfTests: e.target.value})}  />
               </FormGroup>
-        {/*      <FormGroup>
+            <FormGroup>
                 <Label>Notification emails</Label>
                 <Select
                   value={this.state.notificationEmails}
@@ -187,12 +197,12 @@ export default class AllMailServersEdit extends Component{
               </FormGroup>
               <FormGroup className="row">
                 <div className="m-r-10">
-                  <Label >SSL</Label>
+                  <Label >TLS/SSL</Label>
                 </div>
                 <div className="m-l-15">
-                  <Input  type="checkbox" checked={this.state.smtpSsl} onChange={(e)=>this.setState({smtpSsl: !this.state.smtpSsl})} />
+                  <Input  type="checkbox" checked={this.state.smtpTls} onChange={(e)=>this.setState({smtpTls: !this.state.smtpTls})} />
                 </div>
-                <div className="m-l-15">{this.state.smtpSsl ? "YES" : "NO"}</div>
+                <div className="m-l-15">{this.state.smtpTls ? "YES" : "NO"}</div>
               </FormGroup>
               <FormGroup className="row m-b-15">
                 <div className="m-r-10">
@@ -239,21 +249,12 @@ export default class AllMailServersEdit extends Component{
                 </FormGroup>
                 <FormGroup className="row">
                   <div className="m-r-10">
-                    <Label >TLS</Label>
+                    <Label >TLS/SSL</Label>
                   </div>
                   <div className="m-l-15">
                     <Input  type="checkbox" checked={this.state.imapTls} onChange={(e)=>this.setState({imapTls: !this.state.imapTls})} />
                   </div>
                   <div className="m-l-15">{this.state.imapTls ? "YES" : "NO"}</div>
-                </FormGroup>
-                <FormGroup className="row">
-                  <div className="m-r-10">
-                    <Label >SSL</Label>
-                  </div>
-                  <div className="m-l-15">
-                    <Input  type="checkbox" checked={this.state.imapSsl} onChange={(e)=>this.setState({imapSsl: !this.state.imapSsl})} />
-                  </div>
-                  <div className="m-l-15">{this.state.imapSsl ? "YES" : "NO"}</div>
                 </FormGroup>
                 <FormGroup className="row m-b-15">
                   <div className="m-r-10">
@@ -275,7 +276,12 @@ export default class AllMailServersEdit extends Component{
 
 
               <ModalFooter>
-              <Button className="mr-auto btn-link" disabled={this.state.saving} onClick={() => this.props.close()}>
+              <Button
+                className="mr-auto btn-link"
+                 disabled={this.state.saving
+                 || !isEmail(this.state.imapUser)
+                 || !isEmail(this.state.smtpUser)}
+                 onClick={() => this.props.close()}>
                 Close
               </Button>
 

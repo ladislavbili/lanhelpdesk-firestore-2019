@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { ModalBody, ModalFooter, Button, FormGroup, Label, Input  } from 'reactstrap';
 import {rebase} from "../../index";
+import {isEmail} from "../../helperFunctions";
 
 export default class ProjectEdit extends Component{
   constructor(props){
     super(props);
     this.state={
       wait: "",
+      numberOfTests: "",
 
       smtpServer: "",
       smtpHost: "",
@@ -14,7 +16,7 @@ export default class ProjectEdit extends Component{
       smtpSecure: false,
       smtpUser: "",
       smtpPass: "",
-      smtpSsl: false,
+      smtpTls: false,
       smtpRejectUnauthorized: false,
 
       imapServer: "",
@@ -23,7 +25,6 @@ export default class ProjectEdit extends Component{
       imapUser: "",
       imapPassword: "",
       imapTls: false,
-      imapSsl: false,
       imapRejectUnauthorized: false,
 
       testMail: "I am a test mail.",
@@ -47,6 +48,7 @@ export default class ProjectEdit extends Component{
       this.setState({
         wait: data.wait,
         testMail: data.testMail,
+        numberOfTests: data.numberOfTests,
 
         smtpServer: data.smtp.server,
         smtpHost: data.smtp.host,
@@ -54,7 +56,7 @@ export default class ProjectEdit extends Component{
         smtpSecure: data.smtp.secure,
         smtpUser: data.smtp.user,
         smtpPass: data.smtp.pass,
-        smtpSsl: data.smtp.ssl,
+        smtpTls: data.smtp.tls,
         smtpRejectUnauthorized: data.smtp.rejectUnauthorized,
 
         imapServer: data.imap.server,
@@ -63,7 +65,6 @@ export default class ProjectEdit extends Component{
         imapUser: data.imap.user,
         imapPassword: data.imap.password,
         imapTls: data.imap.tls,
-        imapSsl: data.imap.ssl,
         imapRejectUnauthorized: data.imap.rejectUnauthorized,
       });
       }).catch(err => {
@@ -82,7 +83,7 @@ export default class ProjectEdit extends Component{
       secure: this.state.smtpSecure,
       user: this.state.smtpUser,
       pass: this.state.smtpPass,
-      ssl: this.state.smtpSsl,
+      tls: this.state.smtpTls,
       rejectUnauthorized: this.state.smtpRejectUnauthorized,
     };
     let imap = {
@@ -91,13 +92,13 @@ export default class ProjectEdit extends Component{
       port: this.state.imapPort,
       user: this.state.imapUser,
       password: this.state.imapPassword,
-      ssl: this.state.imapSsl,
       tls: this.state.imapTls,
       rejectUnauthorized: this.state.imapRejectUnauthorized,
     };
     let data = {
       wait: this.state.wait,
       testMail: this.state.testMail,
+      numberOfTests: this.state.numberOfTests,
       smtp,
       imap,
     };
@@ -123,9 +124,10 @@ export default class ProjectEdit extends Component{
       <div>
             <ModalBody>
               <h1>Email notification settings</h1>
+
               <FormGroup>
-                <Label>Wait period (hour)</Label>
-                <Input type="number" placeholder="Enter hours to wait" value={this.state.wait} onChange={(e)=>this.setState({wait: e.target.value})}  />
+                <Label>Number of tests for fail</Label>
+                <Input type="text" placeholder="Enter number of tests for fail" value={this.state.numberOfTests} onChange={(e)=>this.setState({numberOfTests: e.target.value})}  />
               </FormGroup>
               <hr/>
 
@@ -152,21 +154,21 @@ export default class ProjectEdit extends Component{
                 </FormGroup>
                 <FormGroup className="row">
                   <div className="m-r-10">
-                    <Label >Secure</Label>
+                    <Label htmlFor="secure">Secure</Label>
                   </div>
                   <div className="m-l-15">
-                    <Input  type="checkbox" checked={this.state.smtpSecure} value={this.state.smtpSecure} onChange={(e)=>this.setState({smtpSecure: !this.state.smtpSecure})} />
+                    <Input id="secure" type="checkbox" checked={this.state.smtpSecure} value={this.state.smtpSecure} onChange={(e)=>this.setState({smtpSecure: !this.state.smtpSecure})} />
                   </div>
-                  <div className="m-l-15">{this.state.smtpSecure ? "YES" : "NO"}</div>
+                  <div className="m-l-15" htmlFor="secure">{this.state.smtpSecure ? "YES" : "NO"}</div>
                 </FormGroup>
                 <FormGroup className="row">
                   <div className="m-r-10">
-                    <Label >SSL</Label>
+                    <Label >TLS/SSL</Label>
                   </div>
                   <div className="m-l-15">
-                    <Input  type="checkbox" checked={this.state.smtpSsl} value={this.state.smtpSsl} onChange={(e)=>this.setState({smtpSsl: !this.state.smtpSsl})} />
+                    <Input  type="checkbox" checked={this.state.smtpTls} value={this.state.smtpTls} onChange={(e)=>this.setState({smtpTls: !this.state.smtpTls})} />
                   </div>
-                  <div className="m-l-15">{this.state.smtpSsl ? "YES" : "NO"}</div>
+                  <div className="m-l-15">{this.state.smtpTls ? "YES" : "NO"}</div>
                 </FormGroup>
                 <FormGroup className="row m-b-15">
                   <div className="m-r-10">
@@ -214,21 +216,12 @@ export default class ProjectEdit extends Component{
                 </FormGroup>
                 <FormGroup className="row">
                   <div className="m-r-10">
-                    <Label >TLS</Label>
+                    <Label >TLS/SSL</Label>
                   </div>
                   <div className="m-l-15">
                     <Input  type="checkbox" checked={this.state.imapTls} value={this.state.imapTls} onChange={(e)=>this.setState({imapTls: !this.state.imapTls})} />
                   </div>
                   <div className="m-l-15">{this.state.imapTls ? "YES" : "NO"}</div>
-                </FormGroup>
-                <FormGroup className="row">
-                  <div className="m-r-10">
-                    <Label >SSL</Label>
-                  </div>
-                  <div className="m-l-15">
-                    <Input  type="checkbox" checked={this.state.imapSsl} value={this.state.imapSsl} onChange={(e)=>this.setState({imapSsl: !this.state.imapSsl})} />
-                  </div>
-                  <div className="m-l-15">{this.state.imapSsl ? "YES" : "NO"}</div>
                 </FormGroup>
                 <FormGroup className="row m-b-15">
                   <div className="m-r-10">
@@ -247,7 +240,12 @@ export default class ProjectEdit extends Component{
               </ModalBody>
 
               <ModalFooter>
-              <Button className="mr-auto btn-link" disabled={this.state.saving} onClick={() => this.props.close()}>
+              <Button
+                className="mr-auto btn-link"
+                disabled={this.state.saving
+                  || !isEmail(this.state.imapUser)
+                  || !isEmail(this.state.smtpUser)} 
+                onClick={() => this.props.close()}>
                 Close
               </Button>
 

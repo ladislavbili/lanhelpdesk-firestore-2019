@@ -9,9 +9,11 @@ export default class MailServerShowInfo extends Component{
     this.state={
 			title: "",
 			company: "",
-			timeout: "",
 			testEmail: "",
+      numberOfTests: "",
+      repeatNumber: "",
 			note: "",
+      success: false,
 
       saving: false,
     }
@@ -32,13 +34,21 @@ export default class MailServerShowInfo extends Component{
 			context: this,
 			withIds: true,
 		}).then(datum => {
-				 this.setState({
-					 title: datum.title ? datum.title : "no title",
-		 			 company: datum.company ? datum.company.label : "no company",
-		 			 testEmail: datum.testEmail ? datum.testEmail : "no test mail",
-					 note: datum.note ? datum.note : "no notes",
-					 timeout: datum.timeout ? this.msToTime(datum.timeout) : "no test mail",
-				 });
+      rebase.get(`companies`, {
+  			context: this,
+  			withIds: true,
+  		}).then(companies => {
+          let company = companies.find(comp => comp.id === datum.company);
+  				 this.setState({
+  					 title: datum.title ? datum.title : "no title",
+  		 			 company: company ? company.title : "no company",
+  		 			 testEmail: datum.testEmail ? datum.testEmail : "no test mail",
+             numberOfTests: datum.numberOfTests ? datum.numberOfTests : "not provided",
+             repeatNumber: datum.repeatNumber ? datum.repeatNumber : "not provided",
+  					 note: datum.note ? datum.note : "no notes",
+             success: datum.success,
+  				 });
+  			});
 			});
 	}
 
@@ -50,8 +60,14 @@ export default class MailServerShowInfo extends Component{
       return (
         <div className="flex">
 					<div className="row m-b-30">
-						<div className="mr-auto">
+						<div >
 							<h1>{this.state.title}</h1>
+						</div>
+            <div className="mr-auto m-l-15">
+              <Button
+                className={this.state.success ? "btn-success" : "btn-danger"}
+              > {this.state.success ? "working" : "failed"}
+              </Button>
 						</div>
 						<div className="pull-right">
 							<Button
@@ -89,7 +105,25 @@ export default class MailServerShowInfo extends Component{
 						</div>
 					</div>
 
-					<div className="row">
+          <div className="row">
+						<div className="mr-auto">
+							<strong>Number of tests fo fail:</strong>
+						</div>
+						<div className="pull-right">
+							{this.state.numberOfTests}
+						</div>
+					</div>
+
+          <div className="row">
+						<div className="mr-auto">
+							<strong>Repeating tests every (min):</strong>
+						</div>
+						<div className="pull-right">
+							{this.state.repeatNumber}
+						</div>
+					</div>
+
+			{/*			<div className="row">
 						<div className="mr-auto">
 							<strong>Timeout (mins):</strong>
 						</div>
@@ -98,7 +132,7 @@ export default class MailServerShowInfo extends Component{
 						</div>
 					</div>
 
-					{/*<div className="row">
+				<div className="row">
 						<div className="mr-auto">
 							<strong>Number of tests for alert</strong>
 						</div>
