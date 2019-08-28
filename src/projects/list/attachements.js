@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import firebase from 'firebase';
+import { Button } from 'reactstrap';
 
 export default class Attachements extends Component{
 
@@ -81,12 +82,12 @@ export default class Attachements extends Component{
                   });
                 }}
                 />
-              <label
+              <Button
                 htmlFor="fileUpload"
                 className="btn"
                 >
                 <i className="fa fa-plus" /> new file
-                </label>
+                </Button>
               </td>
             </tr>
             {

@@ -135,3 +135,45 @@ export const invisibleSelectStyle = {
 	}),
 
 };
+
+
+export const taskEditModalSelectStyle = {
+	control: base => ({
+		...base,
+		minHeight: 30,
+		backgroundColor: 'white',
+		borderRadius: 0,
+		color: "#737373",
+		fontWeight: 600,
+	}),
+	dropdownIndicator: base => ({
+		...base,
+		padding: 4,
+	}),
+	clearIndicator: base => ({
+		...base,
+		padding: 4,
+	}),
+	multiValue: base => ({
+		...base,
+		backgroundColor: 'white',
+		borderRadius: 0
+	}),
+	valueContainer: base => ({
+		...base,
+		padding: '0px 6px',
+		borderRadius: 0
+	}),
+	input: base => ({
+		...base,
+		margin: 0,
+		padding: 0,
+		backgroundColor: 'white',
+		borderRadius: 0
+	}),
+	indicatorSeparator: base => ({
+		...base,
+		width: 0,
+	}),
+
+};

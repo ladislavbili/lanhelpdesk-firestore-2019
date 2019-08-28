@@ -3,7 +3,7 @@ import { rebase, database } from '../../index';
 import { FormGroup, Label, Input } from 'reactstrap';
 import { toSelArr, snapshotToArray } from '../../helperFunctions';
 import Select from 'react-select';
-import { selectStyle } from '../../scss/selectStyles';
+import { taskEditModalSelectStyle } from '../../scss/selectStyles';
 import Subtasks from './subtasks';
 import Comments from './comments';
 import Attachements from './attachements';
@@ -114,7 +114,7 @@ export default class TaskEdit extends Component {
 
   render() {
     return (
-      <div>
+      <div className="task-edit-modal-projects">
         {/*TOOLBAR*/}
         <div className="row m-b-10">
 
@@ -171,8 +171,7 @@ export default class TaskEdit extends Component {
         <div>
           <FormGroup className="row">
             <p className="task-title-input" style={{paddingTop:9}}># 100</p>
-            <div className="flex">
-
+            <div className="">
               <Input type="text" placeholder="Task name" className="task-title-input text-extra-slim hidden-input m-0" value={this.state.title} onChange={(e) => this.setState({ title: e.target.value }, this.submitTask.bind(this))} />
             </div>
           </FormGroup>
@@ -184,73 +183,94 @@ export default class TaskEdit extends Component {
           </FormGroup>
 
 
-          <FormGroup>
-            <Label className="text-slim">Tags</Label>
-            <Select
-              styles={selectStyle}
-              options={this.state.allTags}
-              value={this.state.tags}
-              onChange={(tags) => this.setState({ tags }, this.submitTask.bind(this))}
-              isMulti
-            />
+          <FormGroup className="row m-b-5">
+            <Label className="w-100px">Tags</Label>
+            <div className="w-40">
+              <Select
+                styles={taskEditModalSelectStyle}
+                options={this.state.allTags}
+                value={this.state.tags}
+                onChange={(tags) => this.setState({ tags }, this.submitTask.bind(this))}
+                isMulti
+              />
+            </div>
           </FormGroup>
 
-            <div className="flex m-r-5">
-                <FormGroup class="row" >
-                  <Label className="text-slim">Project</Label>
-                  <Select
-                    styles={selectStyle}
-                    options={this.state.projects}
-                    value={this.state.project}
-                    onChange={e => { this.setState({ project: e }, this.submitTask.bind(this)); }}
-                  />
-                </FormGroup>
+            <FormGroup className="row m-b-5">
+              <Label className="w-100px">Project</Label>
+              <div className="w-40">
+                <Select
+                  styles={taskEditModalSelectStyle}
+                  options={this.state.projects}
+                  value={this.state.project}
+                  onChange={e => { this.setState({ project: e }, this.submitTask.bind(this)); }}
+                />
+              </div>
+            </FormGroup>
 
-                <FormGroup>
-                  <Label className="text-slim">Task type</Label>
-                  <Select
-                    styles={selectStyle}
-                    options={this.state.users}
-                    value={this.state.assignedBy}
-                    onChange={e => { this.setState({ assignedBy: e }, this.submitTask.bind(this)); }}
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <Label className="text-slim">Requester</Label>
-                  <Select
-                    styles={selectStyle}
-                    options={this.state.users}
-                    value={this.state.assignedBy}
-                    onChange={e => { this.setState({ assignedBy: e }, this.submitTask.bind(this)); }}
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <Label className="text-slim">Assigned to</Label>
-                  <Select
-                    styles={selectStyle}
-                    options={this.state.users}
-                    value={this.state.assignedTo}
-                    onChange={e => { this.setState({ assignedTo: e }, this.submitTask.bind(this)); }}
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <Label className="text-slim">Deadline</Label>
-                  <Input type="datetime-local" placeholder="Enter deadline" value={this.state.deadline} onChange={(e) => this.setState({ deadline: e.target.value }, this.submitTask.bind(this))} />
-                </FormGroup>
-                <FormGroup>
-                  <Label className="text-slim">Hours</Label>
-                  <Input type="number" placeholder="Enter hours" value={this.state.hours} onChange={(e) => this.setState({ hours: e.target.value }, this.submitTask.bind(this))} />
-                </FormGroup>
-              <FormGroup>
-                <Label className="text-slim">Description</Label>
-                <Input type="textarea" placeholder="Description" value={this.state.description} onChange={(e) => this.setState({ description: e.target.value }, this.submitTask.bind(this))} />
-              </FormGroup>
-              <Subtasks id={this.props.id} />
-              <Attachements id={this.props.id} attachements={this.state.attachements} onChange={(attachements) => this.setState({ attachements }, this.submitTask.bind(this))} />
-              <Comments id={this.props.id} users={this.state.users} />
-
-
+            <FormGroup className="row m-b-5">
+              <Label className="w-100px">Task type</Label>
+              <div className="w-40">
+                <Select
+                  styles={taskEditModalSelectStyle}
+                  options={this.state.users}
+                  value={this.state.assignedBy}
+                  onChange={e => { this.setState({ assignedBy: e }, this.submitTask.bind(this)); }}
+                />
             </div>
+            </FormGroup>
+
+            <FormGroup className="row m-b-5">
+              <Label className="w-100px">Requester</Label>
+              <div className="w-40">
+              <Select
+                styles={taskEditModalSelectStyle}
+                options={this.state.users}
+                value={this.state.assignedBy}
+                onChange={e => { this.setState({ assignedBy: e }, this.submitTask.bind(this)); }}
+              />
+            </div>
+            </FormGroup>
+
+          <FormGroup className="row m-b-5">
+            <Label className="w-100px">Assigned to</Label>
+            <div className="w-40">
+              <Select
+                styles={taskEditModalSelectStyle}
+                options={this.state.users}
+                value={this.state.assignedTo}
+                onChange={e => { this.setState({ assignedTo: e }, this.submitTask.bind(this)); }}
+              />
+            </div>
+          </FormGroup>
+
+          <FormGroup className="row m-b-5">
+            <Label className="w-100px">Deadline</Label>
+            <div className="w-40">
+              <Input type="datetime-local" placeholder="Enter deadline" value={this.state.deadline} onChange={(e) => this.setState({ deadline: e.target.value }, this.submitTask.bind(this))} />
+            </div>
+          </FormGroup>
+
+          <FormGroup className="row m-b-5">
+            <Label className="w-100px">Hours</Label>
+            <div className="w-40">
+              <Input type="number" placeholder="Enter hours" value={this.state.hours} onChange={(e) => this.setState({ hours: e.target.value }, this.submitTask.bind(this))} />
+            </div>
+          </FormGroup>
+
+          <FormGroup>
+            <Label className="">Description</Label>
+            <div>
+            <Input type="textarea" placeholder="Description" style={{fontWeight: 600}} className="hidden-input" value={this.state.description} onChange={(e) => this.setState({ description: e.target.value }, this.submitTask.bind(this))} />
+            </div>
+        </FormGroup>
+
+          <Subtasks id={this.props.id} />
+
+          <Attachements id={this.props.id} attachements={this.state.attachements} onChange={(attachements) => this.setState({ attachements }, this.submitTask.bind(this))} />
+
+          <Comments id={this.props.id} users={this.state.users} />
+
         </div>
       </div>
     );

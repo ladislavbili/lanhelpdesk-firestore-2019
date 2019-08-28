@@ -51,8 +51,7 @@ getData(id){
 
         </div>
         {this.state.comments.sort((item1,item2)=>item2.createdAt-item1.createdAt).map((comment)=>
-          <div key={comment.id}>
-            <hr/>
+          <div key={comment.id} className="comment p-5">
               <div className="row m-b-10 m-t-10">
                 <img
                   className="d-flex mr-3 rounded-circle thumb-sm"
@@ -61,11 +60,11 @@ getData(id){
                   />
                 <div className="flex">
                   <span className="pull-right">{timestampToString(comment.createdAt)}</span>
-                  <h4 className="text-highlight m-0">{comment.user!==undefined?(comment.user.name + ' '+comment.user.surname):'Unknown sender'}</h4>
+                  <h4 className="m-0" style={{color: "black", fontWeight: 400}}>{comment.user!==undefined?(comment.user.name + ' '+comment.user.surname):'Unknown sender'}</h4>
                   <small className="text-muted">From: {comment.user!==undefined?(comment.user.email):'Unknown sender'}</small>
                 </div>
               </div>
-              <div  dangerouslySetInnerHTML={{__html: comment.comment.replace(/(?:\r\n|\r|\n)/g, '<br>') }}>
+              <div className="p-l-40" dangerouslySetInnerHTML={{__html: comment.comment.replace(/(?:\r\n|\r|\n)/g, '<br>') }}>
               </div>
           </div>
         )}
