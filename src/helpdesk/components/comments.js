@@ -125,16 +125,17 @@ getData(id){
 
         </div>
         {this.state.comments.sort((item1,item2)=>item2.createdAt-item1.createdAt).map((comment)=>
-          <div key={comment.id} style={{width:900}}>
+          <div key={comment.id} >
             { comment.isMail &&
-              <div className="" style={{borderTop:"1px solid rgba(54, 64, 74, 0.05)", borderBottom:"1px solid rgba(54, 64, 74, 0.05)"}}>
-                <div className="media m-b-30 m-t-30">
+              <div style={{borderTop:"1px solid rgba(54, 64, 74, 0.05)", borderBottom:"1px solid rgba(54, 64, 74, 0.05)"}}>
+                  <div className="media m-b-30 m-t-30">
+
                   <img
                     className="d-flex mr-3 rounded-circle thumb-sm"
                     src="https://i.pinimg.com/originals/08/a9/0a/08a90a48a9386c314f97a07ba1f0db56.jpg"
                     alt="Generic placeholder XX"
                     />
-                  <div className="media-body">
+                  <div className="flex" >
                     <p>
                       <span className="media-meta pull-right">{timestampToString(comment.createdAt)}</span>
                       <h4 className="text-primary font-16 m-0">{comment.from.map((item)=>item.address).toString()}</h4>
@@ -184,20 +185,21 @@ getData(id){
             						</Dropdown>
                       <small className="text-muted">{comment.subject}</small>
                       <div className="ignore-css" dangerouslySetInnerHTML={{__html: comment.html?comment.html:unescape(comment.text).replace(/(?:\r\n|\r|\n)/g, '<br>') }}>
-                  </div>
-                </div>
-                </div>
+                      </div>
+              </div>
+              </div>
               </div>
             }
             { !comment.isMail &&
-              <div className="" style={{borderTop:"1px solid rgba(54, 64, 74, 0.05)", borderBottom:"1px solid rgba(54, 64, 74, 0.05)"}}>
-                <div className="media m-b-30 m-t-30">
+              <div style={{borderTop:"1px solid rgba(54, 64, 74, 0.05)", borderBottom:"1px solid rgba(54, 64, 74, 0.05)"}}>
+                  Hello
+                  <div className="media m-b-30 m-t-30">
                   <img
                     className="d-flex mr-3 rounded-circle thumb-sm"
                     src="https://i.pinimg.com/originals/08/a9/0a/08a90a48a9386c314f97a07ba1f0db56.jpg"
                     alt="Generic placeholder XX"
                     />
-                  <div className="media-body">
+                  <div className="flex">
                     <span className="media-meta pull-right">{timestampToString(comment.createdAt)}</span>
                     <h4 className="text-primary font-16 m-0">{comment.user!==undefined?(comment.user.name + ' '+comment.user.surname):'Unknown sender'}</h4>
                     <small className="text-muted">From: {comment.user!==undefined?(comment.user.email):'Unknown sender'}</small>

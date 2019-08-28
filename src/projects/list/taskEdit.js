@@ -183,21 +183,67 @@ export default class TaskEdit extends Component {
             </Label>
           </FormGroup>
 
-          <div className="row">
+
+          <FormGroup>
+            <Label className="text-slim">Tags</Label>
+            <Select
+              styles={selectStyle}
+              options={this.state.allTags}
+              value={this.state.tags}
+              onChange={(tags) => this.setState({ tags }, this.submitTask.bind(this))}
+              isMulti
+            />
+          </FormGroup>
+
             <div className="flex m-r-5">
+                <FormGroup class="row" >
+                  <Label className="text-slim">Project</Label>
+                  <Select
+                    styles={selectStyle}
+                    options={this.state.projects}
+                    value={this.state.project}
+                    onChange={e => { this.setState({ project: e }, this.submitTask.bind(this)); }}
+                  />
+                </FormGroup>
+
+                <FormGroup>
+                  <Label className="text-slim">Task type</Label>
+                  <Select
+                    styles={selectStyle}
+                    options={this.state.users}
+                    value={this.state.assignedBy}
+                    onChange={e => { this.setState({ assignedBy: e }, this.submitTask.bind(this)); }}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label className="text-slim">Requester</Label>
+                  <Select
+                    styles={selectStyle}
+                    options={this.state.users}
+                    value={this.state.assignedBy}
+                    onChange={e => { this.setState({ assignedBy: e }, this.submitTask.bind(this)); }}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label className="text-slim">Assigned to</Label>
+                  <Select
+                    styles={selectStyle}
+                    options={this.state.users}
+                    value={this.state.assignedTo}
+                    onChange={e => { this.setState({ assignedTo: e }, this.submitTask.bind(this)); }}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label className="text-slim">Deadline</Label>
+                  <Input type="datetime-local" placeholder="Enter deadline" value={this.state.deadline} onChange={(e) => this.setState({ deadline: e.target.value }, this.submitTask.bind(this))} />
+                </FormGroup>
+                <FormGroup>
+                  <Label className="text-slim">Hours</Label>
+                  <Input type="number" placeholder="Enter hours" value={this.state.hours} onChange={(e) => this.setState({ hours: e.target.value }, this.submitTask.bind(this))} />
+                </FormGroup>
               <FormGroup>
                 <Label className="text-slim">Description</Label>
                 <Input type="textarea" placeholder="Description" value={this.state.description} onChange={(e) => this.setState({ description: e.target.value }, this.submitTask.bind(this))} />
-              </FormGroup>
-              <FormGroup>
-                <Label className="text-slim">Tags</Label>
-                <Select
-                  styles={selectStyle}
-                  options={this.state.allTags}
-                  value={this.state.tags}
-                  onChange={(tags) => this.setState({ tags }, this.submitTask.bind(this))}
-                  isMulti
-                />
               </FormGroup>
               <Subtasks id={this.props.id} />
               <Attachements id={this.props.id} attachements={this.state.attachements} onChange={(attachements) => this.setState({ attachements }, this.submitTask.bind(this))} />
@@ -205,58 +251,6 @@ export default class TaskEdit extends Component {
 
 
             </div>
-            <div className="flex m-l-5" style={{ maxWidth: 300 }}>
-              <FormGroup class="row" >
-                <Label className="text-slim">Project</Label>
-                <Select
-                  styles={selectStyle}
-                  options={this.state.projects}
-                  value={this.state.project}
-                  onChange={e => { this.setState({ project: e }, this.submitTask.bind(this)); }}
-                />
-              </FormGroup>
-
-              <FormGroup>
-                <Label className="text-slim">Task type</Label>
-                <Select
-                  styles={selectStyle}
-                  options={this.state.users}
-                  value={this.state.assignedBy}
-                  onChange={e => { this.setState({ assignedBy: e }, this.submitTask.bind(this)); }}
-                />
-              </FormGroup>
-              <FormGroup>
-                <Label className="text-slim">Requester</Label>
-                <Select
-                  styles={selectStyle}
-                  options={this.state.users}
-                  value={this.state.assignedBy}
-                  onChange={e => { this.setState({ assignedBy: e }, this.submitTask.bind(this)); }}
-                />
-              </FormGroup>
-              <FormGroup>
-                <Label className="text-slim">Assigned to</Label>
-                <Select
-                  styles={selectStyle}
-                  options={this.state.users}
-                  value={this.state.assignedTo}
-                  onChange={e => { this.setState({ assignedTo: e }, this.submitTask.bind(this)); }}
-                />
-              </FormGroup>
-              <FormGroup>
-                <Label className="text-slim">Deadline</Label>
-                <Input type="datetime-local" placeholder="Enter deadline" value={this.state.deadline} onChange={(e) => this.setState({ deadline: e.target.value }, this.submitTask.bind(this))} />
-              </FormGroup>
-              <FormGroup>
-                <Label className="text-slim">Hours</Label>
-                <Input type="number" placeholder="Enter hours" value={this.state.hours} onChange={(e) => this.setState({ hours: e.target.value }, this.submitTask.bind(this))} />
-              </FormGroup>
-            </div>
-          </div>
-
-
-
-
         </div>
       </div>
     );

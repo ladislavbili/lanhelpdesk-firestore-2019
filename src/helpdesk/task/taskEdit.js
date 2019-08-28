@@ -322,10 +322,10 @@ export default class TasksTwoEdit extends Component {
 		return (
 			<div className="flex">
 				<div className="container-fluid p-2">
-					<div className="d-flex flex-row align-items-center p-l-18">
+					<div className={"d-flex flex-row" + (!this.props.columns ? " w-70  ml-auto mr-auto" : "p-l-18") }>
 						<div className="center-hor">
 							{!this.props.columns &&
-								<button type="button" className="btn btn-link waves-effect" onClick={() => /*this.props.history.goBack()*/this.props.history.push(`/helpdesk/taskList/i/${this.props.match.params.listID}`)}>
+								<button type="button" className="btn btn-link waves-effect" onClick={() => this.props.history.push(`/helpdesk/taskList/i/${this.props.match.params.listID}`)}>
 									<i
 										className="fas fa-arrow-left commandbar-command-icon icon-M"
 										/>

@@ -136,9 +136,9 @@ export default class Note extends Component{
 
   render(){
     return (
-      <div className="flex">
+      <div className="flex" onClick={() => this.state.editBodyOpen ? this.setState({editBodyOpen: false}) : null}>
 				<div className="container-fluid p-2">
-					<div className="d-flex flex-row align-items-center  p-l-18">
+					<div className={"d-flex flex-row" + (!this.props.columns ? " w-50  ml-auto mr-auto" : "p-l-18") }>
 						<div className="center-hor">
 							{!this.props.columns &&
 								<button type="button" className="btn btn-link waves-effect" onClick={()=>this.props.history.goBack()}>
@@ -204,7 +204,7 @@ export default class Note extends Component{
               }
 
               { this.state.editBodyOpen &&
-              <FormGroup className="m-t-15">
+              <FormGroup className="m-t-15"  >
                   <Button className="btn-link" onClick={this.toggleModal.bind(this)}>Pridať obrázok z uložiska</Button>
                   <Modal isOpen={this.state.modalOpen} toggle={this.toggleModal.bind(this)} >
                     <ModalBody className="m-t-15">
@@ -214,7 +214,6 @@ export default class Note extends Component{
                       <Button className="btn-link mr-auto" onClick={this.toggleModal.bind(this)}>Close</Button>{'  '}
                     </ModalFooter>
                   </Modal>
-
                   <CKEditor
                     data={this.state.body}
                     onChange={this.onEditorChange.bind(this)}

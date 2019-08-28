@@ -8,7 +8,7 @@ export default class MailServerEditIndex extends Component{
     super(props);
     this.state={
       showEdit: false,
-      openedID: props.match.params.itemID,
+      openedID: props.id,
     }
 		this.toggleEdit.bind(this);
   }
@@ -16,7 +16,7 @@ export default class MailServerEditIndex extends Component{
   componentWillReceiveProps(props){
     if (this.props !== props){
       this.setState({
-        openedID: props.match.params.itemID,
+        openedID: props.id,
       });
     }
   }

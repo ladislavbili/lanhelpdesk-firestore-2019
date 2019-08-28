@@ -80,7 +80,7 @@ class List extends Component {
 											pass.shown &&
 											<Input type="text" placeholder="No pass" className="mb-auto mt-auto w-a" id={'input'+pass.id}	value={pass.password} disabled={true}/>
 										}
-										{!pass.shown && <Button  className="mb-auto mt-auto btn" onClick={()=>{
+										{!pass.shown && <Button  className="btn" style={{height: 20, padding: 0, paddingLeft: 4, paddingRight: 4, marginTop: 4}} onClick={()=>{
 											let newPasswords = [...this.state.passwords];
 											newPasswords.find((item2)=>pass.id===item2.id).shown=true;
 											this.setState({passwords:newPasswords});

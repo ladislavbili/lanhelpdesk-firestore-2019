@@ -77,7 +77,7 @@ class TaskInfo extends Component {
 						<div className="row flex">
 							<h1 className="center-hor text-extra-slim"># {this.props.match.params.taskID}</h1>
 							<span className="center-hor">
-					    	<input type="text" value={this.props.title} className="task-title-input text-extra-slim hidden-input"/>
+					    	<input type="text" value={this.props.title} onChange={() => {}} className="task-title-input text-extra-slim hidden-input"/>
 							</span>
 							<div className="ml-auto center-hor">
 								<span className="label label-info" style={{backgroundColor:this.props.status && this.props.status.color?this.props.status.color:'white'}}>{this.props.status?this.props.status.title:'Neznámy status'}</span>
@@ -182,7 +182,7 @@ class TaskInfo extends Component {
 
 
 					<label className="m-t-5  text-slim">Popis</label>
-					<textarea className="form-control b-r-0" placeholder="Enter task description" value={this.props.description} />
+					<textarea className="form-control b-r-0" placeholder="Enter task description" value={this.props.description} onChange={() => {}} />
 
 						<Subtasks
 							taskAssigned={this.props.assignedTo}
