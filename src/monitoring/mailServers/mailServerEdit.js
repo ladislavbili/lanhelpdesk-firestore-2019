@@ -121,7 +121,7 @@ export default class MailServerEdit extends Component{
 
             <FormGroup>
               <Label>Number of tests for fail</Label>
-              <Input type="text" placeholder="Enter number of tests for alert" value={this.state.numberOfTests} onChange={(e)=>this.setState({numberOfTests: e.target.value})}  />
+              <Input type="number" placeholder="Enter number of tests for alert" value={this.state.numberOfTests} onChange={(e)=>this.setState({numberOfTests: e.target.value})}  />
             </FormGroup>
 
             <FormGroup>

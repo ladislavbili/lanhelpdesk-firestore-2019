@@ -88,7 +88,8 @@ class MailServerList extends Component {
 					&& item.lastResp.toLowerCase().includes(this.state.filterByLastResp.toLowerCase())
 				);
 
-		return (
+
+			return (
 			<div>
 				<div className="container-fluid">
 					<div className="d-flex flex-row align-items-center">
@@ -182,8 +183,10 @@ class MailServerList extends Component {
 														onClick={()=>{
 															if(this.props.layout===1){
 																this.setState({editOpened:true, openedID:item.id});
+
 															}else{
-																this.props.history.push(`/monitoring/mail-servers/edit/${item.id}`)
+																this.props.history.push(`/monitoring/mail-servers/edit/${item.id}`);
+																	this.setState({openedID:item.id});
 															}
 														}}>
 														<td>{item.title}</td>
@@ -203,9 +206,9 @@ class MailServerList extends Component {
 							</table>
 					</div>
 
-					{!this.props.match.params.itemID && this.props.layout === 0 && <Empty />}
+					{!this.state.openedID && this.props.layout === 0 && <Empty />}
 
-					{this.props.match.params.itemID && this.props.layout === 0 && <MailServerEditIndex {...this.props} isModal={false}/>}
+					{this.state.openedID && this.props.layout === 0 && <MailServerEditIndex id={this.state.openedID} {...this.props} isModal={false}/>}
 
 					</div>
 					<Modal className="w-50" isOpen={this.state.editOpened} toggle={() => this.setState({editOpened:!this.state.editOpened})} >

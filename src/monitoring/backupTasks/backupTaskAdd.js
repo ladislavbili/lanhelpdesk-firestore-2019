@@ -6,7 +6,7 @@ import {rebase} from "../../index";
 import {isEmail} from "../../helperFunctions";
 
 const TIME_OPTIONS = [
-  { label: "minutes", value: "m"},
+//  { label: "minutes", value: "m"},
   { label: "hours", value: "h"},
   { label: "days", value: "d"},
 ];

@@ -74,8 +74,6 @@ export default class BackupTaskShowInfo extends Component{
 
 
   render(){
-
-    console.log(this.state.startDate.toString());
       return (
         <div className="flex">
 					<div className="row m-b-30">

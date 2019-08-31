@@ -7,7 +7,7 @@ import {isEmail} from "../../helperFunctions";
 import {rebase} from "../../index";
 
 const TIME_OPTIONS = [
-  { label: "minutes", value: "m"},
+//  { label: "minutes", value: "m"},
   { label: "hours", value: "h"},
   { label: "days", value: "d"},
 ];
@@ -83,11 +83,11 @@ export default class BackupTaskEdit extends Component{
 					 mailOK: datum.mailOK.map(t => {return ({value: t, label: t});}),
 					 mailInvalid: datum.mailInvalid.map(t => {return ({value: t, label: t});}),
 					 alertMail: datum.alertMail,
-           alertMailDisabled: datum.alertMailDisabled,
+           alertMailDisabled: datum.alertMailDisabled ? datum.alertMailDisabled : false, //daj vsade
 
 					 note: datum.note,
-           wait: datum.wait,
-           waitDisabled: datum.waitDisabled,
+           wait: datum.wait ? datum.wait : "",
+           waitDisabled: datum.waitDisabled ? datum.waitDisabled : false,
 				 });
 			});
 	}
@@ -118,8 +118,7 @@ export default class BackupTaskEdit extends Component{
       wait: this.state.wait,
       waitDisabled: this.state.waitDisabled,
 
-      status: "OK",
-      lastReport: this.state.startDate,
+      success: "OK",
     };
 
     rebase.updateDoc(`monitoring-notifications/${this.props.id}`, data)
@@ -134,7 +133,7 @@ export default class BackupTaskEdit extends Component{
 	}
 
 	toMillisec(number){
-		return number * (this.state.repeatTime.value === "d" ? 24*60*60*1000 : 1) * (this.state.repeatTime.value === "h" ? 60*60*1000 : 1) * (this.state.repeatTime.value === "m" ? 60*1000 : 1);
+		return number * (this.state.repeatTime.value === "days" ? 24*60*60*1000 : 1) * (this.state.repeatTime.value === "hours" ? 60*60*1000 : 1);
 	}
 
 	msToNormal(time, type){

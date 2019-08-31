@@ -89,7 +89,7 @@ class BackupTaskList extends Component {
 				&& item.status.toLowerCase().includes(this.state.filterByStatus.toLowerCase())
 				&& item.lastReport.toLowerCase().includes(this.state.filterByLastReport.toLowerCase())
 		);
-		
+
 		return (
 			<div>
 				<div className="container-fluid">
@@ -173,6 +173,7 @@ class BackupTaskList extends Component {
 														this.setState({editOpened:true, openedID:item.id});
 													}else{
 														this.props.history.push(`/monitoring/mail-notifications/edit/${item.id}`)
+														this.setState({openedID:item.id});
 													}
 												}}>
 												<td>{item.title}</td>
@@ -191,9 +192,9 @@ class BackupTaskList extends Component {
 							</table>
 					</div>
 
-					{!this.props.match.params.itemID && this.props.layout === 0 && <Empty />}
+					{!this.state.openedID && this.props.layout === 0 && <Empty />}
 
-					{this.props.match.params.itemID && this.props.layout === 0 && <BackupTaskEditIndex {...this.props} isModal={false}/>}
+					{this.state.openedID && this.props.layout === 0 && <BackupTaskEditIndex id={this.state.openedID} {...this.props} isModal={false}/>}
 
 					</div>
 					<Modal className="w-50" isOpen={this.state.editOpened} toggle={() => this.setState({editOpened:!this.state.editOpened})} >

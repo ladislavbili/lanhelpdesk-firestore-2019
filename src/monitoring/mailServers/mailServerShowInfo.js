@@ -19,7 +19,6 @@ export default class MailServerShowInfo extends Component{
     }
 		this.fetch.bind(this);
 		this.msToTime.bind(this);
-		console.log(this.props.id);
 		this.fetch(this.props.id);
   }
 

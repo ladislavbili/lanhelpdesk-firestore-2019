@@ -8,7 +8,7 @@ export default class MailServerEditIndex extends Component{
     super(props);
     this.state={
       showEdit: false,
-      openedID: props.id,
+      id: props.id,
     }
 		this.toggleEdit.bind(this);
   }
@@ -16,7 +16,7 @@ export default class MailServerEditIndex extends Component{
   componentWillReceiveProps(props){
     if (this.props !== props){
       this.setState({
-        openedID: props.id,
+        id: props.id,
       });
     }
   }
@@ -32,12 +32,12 @@ export default class MailServerEditIndex extends Component{
         <div className={"flex p-t-15 scrollable " + (this.props.isModal ? "" : " card-box fit-with-header-and-commandbar ")}>
 					{ this.state.showEdit
 						&&
-						<MailServerEdit id={this.state.openedID} toggleEdit={() => this.toggleEdit()} />
+						<MailServerEdit id={this.props.id} toggleEdit={() => this.toggleEdit()} />
 					}
 					{
 						!this.state.showEdit
 						&&
-						<MailServerShowInfo id={this.state.openedID} toggleEdit={() => this.toggleEdit()} />
+						<MailServerShowInfo id={this.props.id} toggleEdit={() => this.toggleEdit()} />
 					}
   			</div>
       )
