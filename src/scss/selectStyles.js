@@ -181,7 +181,7 @@ export const taskEditModalSelectStyle = {
 		...base,
 		minHeight: 30,
 		backgroundColor: 'white',
-		borderRadius: 0,
+		borderRadius: 3,
 		color: "#737373",
 		fontWeight: 600,
 	}),

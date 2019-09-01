@@ -4,9 +4,9 @@ import { FormGroup, Label, Input } from 'reactstrap';
 import { toSelArr, snapshotToArray } from '../../helperFunctions';
 import Select from 'react-select';
 import { taskEditModalSelectStyle } from '../../scss/selectStyles';
-import Subtasks from './subtasks';
-import Comments from './comments';
-import Attachements from './attachements';
+import Subtasks from './newDesign/subtasks';
+import Comments from './newDesign/comments';
+import Attachements from './newDesign/attachements';
 
 const statuses = [{ id: 0, title: 'New', color: '#1087e2' }, { id: 1, title: 'Open', color: '#155724' }, { id: 2, title: 'Pending', color: '#f3ba0d' }, { id: 3, title: 'Closed', color: '#e2e3e5' }]
 
@@ -116,9 +116,18 @@ export default class TaskEdit extends Component {
     return (
       <div className="task-edit-modal-projects">
         {/*TOOLBAR*/}
-        <div className="row m-b-10">
 
-          <div style={{border: "2px solid #578FFB", borderRadius: "5px"}}>
+          <div>
+            <Label className="label m-r-5 center-hor center-ver pull-right"
+              style={{ marginRight: "80px", marginTop: "-24px", paddingTop: "30px", color: "white", height: "60px", width: "100px", fontSize: "20px", fontWeight: "500", backgroundColor: statuses.find((item) => item.id === this.state.status).color }}
+              >
+              {statuses.find((item) => item.id === this.state.status).title}
+            </Label>
+          </div>
+
+        <div className="row m-b-10" style={{marginLeft: "80px"}}>
+
+          <div style={{border: "2px solid #578FFB", borderRadius: "5px", marginRight: "5px"}}>
             <button type="button"
               className="btn-link"
               style={{padding: "0px 25px", fontSize: "20px", fontWeight: "500", color: "#578FFB"}}
@@ -127,34 +136,35 @@ export default class TaskEdit extends Component {
               </button>
           </div>
 
-          <div className="toolbar-item">
+          <div style={{border: "2px solid #578FFB", borderRadius: "5px", marginRight: "5px"}}>
             <button type="button" className="btn-link"
+              style={{padding: "0px 25px", fontSize: "20px", fontWeight: "500", color: "#578FFB"}}
               onClick={() => { this.setState({ status: 2 }, this.submitTask.bind(this)) }}
-            >
-              <i className="fa fa-pause" /> Pending
+            > Pending
               </button>
           </div>
 
-          <div className="toolbar-item">
+          <div style={{border: "2px solid #578FFB", borderRadius: "5px", marginRight: "5px"}}>
             <button type="button" className="btn-link"
+            style={{padding: "0px 25px", fontSize: "20px", fontWeight: "500", color: "#578FFB"}}
               onClick={() => { this.setState({ status: 3 }, this.submitTask.bind(this)) }}
-            >
-              <i className="fa fa-check-circle" /> Close
+            > Close
               </button>
           </div>
 
           {
             this.state.saving &&
-            <div className="toolbar-item">
-              <button type="button" className="btn-link">
-                <i className="fas fa-save"
-                /> Saving
+            <div style={{border: "2px solid #578FFB", borderRadius: "5px", marginRight: "5px"}}>
+              <button type="button" className="btn-link"
+              style={{padding: "0px 25px", fontSize: "20px", fontWeight: "500", color: "#578FFB"}}>
+                Saving
                 </button>
             </div>
           }
 
-          <div className="toolbar-item">
+          <div style={{border: "2px solid #578FFB", borderRadius: "5px", marginRight: "5px"}}>
             <button type="button" className="btn-link"
+            style={{padding: "0px 25px", fontSize: "20px", fontWeight: "500", color: "#578FFB"}}
               onClick={() => {
                 if (window.confirm('Are you sure?')) {
                   rebase.removeDoc('/proj-tasks/' + this.props.id).then(() => {
@@ -163,28 +173,24 @@ export default class TaskEdit extends Component {
                 }
               }}
             >
-              <i className="fa fa-trash" /> Delete
+              Delete
             </button>
           </div>
         </div>
 
         {/*MAIN*/}
         <div>
-          <FormGroup className="row">
-            <p className="task-title-input" style={{paddingTop:9}}># 100</p>
+          <FormGroup className="row" style={{marginLeft: "80px"}}>
+            <p className="task-title-input" style={{paddingTop:9, color: "black"}}># 100</p>
             <div className="">
-              <Input type="text" placeholder="Task name" className="task-title-input text-extra-slim hidden-input m-0" value={this.state.title} onChange={(e) => this.setState({ title: e.target.value }, this.submitTask.bind(this))} />
+              <Input type="text" placeholder="Task name"
+                style={{color: "black"}} className="task-title-input text-extra-slim hidden-input m-0" value={this.state.title} onChange={(e) => this.setState({ title: e.target.value }, this.submitTask.bind(this))} />
             </div>
           </FormGroup>
 
-          <FormGroup>
-            <Label className="label m-r-5 center-hor center-ver" style={{ backgroundColor: statuses.find((item) => item.id === this.state.status).color }}>
-              {statuses.find((item) => item.id === this.state.status).title}
-            </Label>
-          </FormGroup>
 
 
-          <FormGroup className="row m-b-5">
+          <FormGroup className="row m-b-5" style={{marginLeft: "80px", marginTop: "30px"}}>
             <Label className="w-100px">Tags</Label>
             <div className="w-40">
               <Select
@@ -197,7 +203,7 @@ export default class TaskEdit extends Component {
             </div>
           </FormGroup>
 
-            <FormGroup className="row m-b-5">
+            <FormGroup className="row m-b-5" style={{marginLeft: "80px"}}>
               <Label className="w-100px">Project</Label>
               <div className="w-40">
                 <Select
@@ -209,7 +215,7 @@ export default class TaskEdit extends Component {
               </div>
             </FormGroup>
 
-            <FormGroup className="row m-b-5">
+            <FormGroup className="row m-b-5" style={{marginLeft: "80px"}}>
               <Label className="w-100px">Task type</Label>
               <div className="w-40">
                 <Select
@@ -221,7 +227,7 @@ export default class TaskEdit extends Component {
             </div>
             </FormGroup>
 
-            <FormGroup className="row m-b-5">
+            <FormGroup className="row m-b-5"style={{marginLeft: "80px"}}>
               <Label className="w-100px">Requester</Label>
               <div className="w-40">
               <Select
@@ -233,7 +239,7 @@ export default class TaskEdit extends Component {
             </div>
             </FormGroup>
 
-          <FormGroup className="row m-b-5">
+          <FormGroup className="row m-b-5" style={{marginLeft: "80px"}}>
             <Label className="w-100px">Assigned to</Label>
             <div className="w-40">
               <Select
@@ -245,32 +251,36 @@ export default class TaskEdit extends Component {
             </div>
           </FormGroup>
 
-          <FormGroup className="row m-b-5">
+          <FormGroup className="row m-b-5" style={{marginLeft: "80px"}}>
             <Label className="w-100px">Deadline</Label>
             <div className="w-40">
-              <Input type="datetime-local" placeholder="Enter deadline" value={this.state.deadline} onChange={(e) => this.setState({ deadline: e.target.value }, this.submitTask.bind(this))} />
+              <Input style={{borderRadius: "3px"}} type="datetime-local" placeholder="Enter deadline" value={this.state.deadline} onChange={(e) => this.setState({ deadline: e.target.value }, this.submitTask.bind(this))} />
             </div>
           </FormGroup>
 
-          <FormGroup className="row m-b-5">
+          <FormGroup className="row m-b-5" style={{marginLeft: "80px"}}>
             <Label className="w-100px">Hours</Label>
             <div className="w-40">
-              <Input type="number" placeholder="Enter hours" value={this.state.hours} onChange={(e) => this.setState({ hours: e.target.value }, this.submitTask.bind(this))} />
+              <Input style={{borderRadius: "3px"}} type="number" placeholder="Enter hours" value={this.state.hours} onChange={(e) => this.setState({ hours: e.target.value }, this.submitTask.bind(this))} />
             </div>
           </FormGroup>
 
-          <FormGroup>
+          <FormGroup style={{marginLeft: "80px", marginRight: "80px"}}>
             <Label className="">Description</Label>
             <div>
-            <Input type="textarea" placeholder="Description" style={{fontWeight: 600}} className="hidden-input" value={this.state.description} onChange={(e) => this.setState({ description: e.target.value }, this.submitTask.bind(this))} />
+            <Input type="textarea" placeholder="Description" style={{fontWeight: 400}} className="hidden-input" value={this.state.description} onChange={(e) => this.setState({ description: e.target.value }, this.submitTask.bind(this))} />
             </div>
         </FormGroup>
 
+        <div  style={{marginLeft: "80px", marginRight: "80px"}}>
           <Subtasks id={this.props.id} />
-
+        </div>
+        <div  style={{marginLeft: "80px", marginRight: "80px"}}>
           <Attachements id={this.props.id} attachements={this.state.attachements} onChange={(attachements) => this.setState({ attachements }, this.submitTask.bind(this))} />
-
+        </div>
+        <div>
           <Comments id={this.props.id} users={this.state.users} />
+        </div>
 
         </div>
       </div>
