@@ -1,55 +1,73 @@
 import React, { Component } from 'react';
+import {rebase} from "../../../index";
+import {arraySelectToString} from "../../../helperFunctions";
 
-const ITEMS =[
-		{
-			id: 0,
-			sendTestDate: "27.6.2016 13:14:25",
-			responseDateTime: "27.6.2016 13:14:25",
-			responseTime: "5",
-			twentyFive: "25",
-			status: "OK",
-			},
-		{
-			id: 1,
-			sendTestDate: "27.6.2016 13:14:25",
-			responseDateTime: "27.6.2016 13:14:25",
-			responseTime: "5",
-			twentyFive: "25",
-			status: "OK",
-		},{
-			id: 2,
-			sendTestDate: "27.6.2016 13:14:25",
-			responseDateTime: "27.6.2016 13:14:25",
-			responseTime: "5",
-			twentyFive: "25",
-			status: "OK",
-		},
-]
 
 export default class ReportDetail extends Component{
   constructor(props){
     super(props);
     this.state={
-      name: ITEMS[this.props.id].name,
-			testEmail: ITEMS[this.props.id].testEmail,
-			timeout: ITEMS[this.props.id].timeout,
-			numberOfTests: ITEMS[this.props.id].numberOfTests,
-			notificationEmails: ITEMS[this.props.id].notificationEmails,
-			lastResp: ITEMS[this.props.id].lastResp,
-			status: ITEMS[this.props.id].status,
-			note: ITEMS[this.props.id].note,
-
-      saving:false,
+      datum: {},
     }
   }
 
+	componentWillMount(){
+		rebase.get(`monitoring-servers_results/${this.props.id}`, {
+			context: this,
+			withIds: true,
+		}).then(datum => {
+  				 this.setState({
+  					 datum
+  				 });
+			});
+	}
+
   render(){
+		const FROM = this.state.datum && this.state.datum.email ? arraySelectToString(Object.values(this.state.datum.email.from).map(val => val.address)) : "no senders";
+
       return (
         <div className="flex">
 
-					<div>
-					HELLO
+					<div className="row">
+						<div className="m-r-5">
+							<strong>Received: </strong>
+						</div>
+						<div>
+						{this.state.datum &&
+							(new Date(this.state.datum.receiveDate).toLocaleString())}
+						</div>
 					</div>
+
+					<div className="row">
+						<div className="m-r-5">
+							<strong>From:</strong>
+						</div>
+						<div>
+							{FROM}
+						</div>
+					</div>
+
+					<div className="row">
+						<div className="m-r-5">
+							<strong>Subject: </strong>
+						</div>
+						<div>
+						{this.state.datum &&
+							this.state.datum.email &&
+							this.state.datum.email.subject}
+						</div>
+					</div>
+
+					<div className="row">
+						<div className="m-r-5">
+							<strong>Body: </strong>
+						</div>
+						<div>
+							{this.state.datum &&
+							this.state.datum.email &&
+							this.state.datum.email.text}
+						</div>
+			  	</div>
 
 
 

@@ -9,10 +9,7 @@ export default class AllMailServersEdit extends Component{
   constructor(props){
     super(props);
     this.state={
-      repeat: "",
-      numberOfTests: "",
       timeout: "",
-      notificationEmails: "",
       testMail: "I am a test mail.",
 
       smtpServer: "",
@@ -52,10 +49,7 @@ export default class AllMailServersEdit extends Component{
     }
     ).then((data) => {
       this.setState({
-        repeat: data.repeat,
-        numberOfTests: data.numberOfTests,
         timeout: this.msToTime(data.timeout),
-        notificationEmails: data.notificationEmails,
         testMail: data.testMail,
 
         smtpServer: data.smtp.server,
@@ -103,10 +97,7 @@ export default class AllMailServersEdit extends Component{
       rejectUnauthorized: this.state.imapRejectUnauthorized,
     };
     let data = {
-      repeat: this.state.repeat,
-      numberOfTests: this.state.numberOfTests,
       timeout: this.state.timeout * 60000,
-      notificationEmails: this.state.notificationEmails,
       testMail: this.state.testMail,
       smtp,
       imap,
@@ -137,31 +128,15 @@ export default class AllMailServersEdit extends Component{
       <div>
             <ModalBody>
               <h1>Mail settings</h1>
-              <FormGroup>
-                <Label>Test mail repeat (min)</Label>
-                <Input type="text" placeholder="Enter port" value={this.state.repeat} onChange={(e)=>this.setState({repeat: e.target.value})} />
-              </FormGroup>
-
 
               <FormGroup>
   							<Label>Timeout (min)</Label>
-  							<Input type="number" placeholder="Enter timeout" value={this.state.timeout} onChange={(e)=>this.setState({timeout: e.target.value})} />
-  						</FormGroup>
-  {/*
-              <FormGroup>
-                <Label>Number of tests for fail</Label>
-                <Input type="text" placeholder="Enter number of tests for alert" value={this.state.numberOfTests} onChange={(e)=>this.setState({numberOfTests: e.target.value})}  />
-              </FormGroup>
-            <FormGroup>
-                <Label>Notification emails</Label>
-                <Select
-                  value={this.state.notificationEmails}
-                  isMulti
-                  onChange={()=> {}}
-                  options={[]}
-                  styles={selectStyle}
-                  />
-              </FormGroup>*/}
+  							<Input type="number" className={(this.state.timeout < 0 ) ? "form-control-warning" : ""} placeholder="Enter timeout" value={this.state.timeout} onChange={(e)=>this.setState({timeout: e.target.value})} />
+                { this.state.timeout &&
+                  this.state.timeout < 0 &&
+                    <Label className="pull-right warning">This value must be non-negative.</Label>
+                }
+             </FormGroup>
 
               <hr className="m-b-15"/>
 
@@ -180,15 +155,19 @@ export default class AllMailServersEdit extends Component{
               </FormGroup>
               <FormGroup>
                 <Label>Login</Label>
-                <Input type="text" placeholder="Enter login" value={this.state.smtpUser} onChange={(e)=>this.setState({smtpUser: e.target.value})} />
-              </FormGroup>
+                <Input type="text" className={(this.state.smtpUser.length > 0 && !isEmail(this.state.smtpUser)) ? "form-control-warning" : ""} placeholder="Enter login" value={this.state.smtpUser} onChange={(e)=>this.setState({smtpUser: e.target.value})} />
+                { this.state.smtpUser.length > 0 &&
+                  !isEmail(this.state.smtpUser) &&
+                  <Label className="pull-right warning">This mail address is invalid.</Label>
+                }
+             </FormGroup>
               <FormGroup>
                 <Label>Password</Label>
                 <Input type="password" placeholder="Enter password" value={this.state.smtpPass} onChange={(e)=>this.setState({smtpPass: e.target.value})}  />
               </FormGroup>
               <FormGroup className="row">
                 <div className="m-r-10">
-                  <Label >Secure</Label>
+                  <Label>Secure</Label>
                 </div>
                 <div className="m-l-15">
                   <Input  type="checkbox" checked={this.state.smtpSecure} onChange={(e)=>this.setState({smtpSecure: !this.state.smtpSecure})} />
@@ -241,8 +220,12 @@ export default class AllMailServersEdit extends Component{
                 </FormGroup>
                 <FormGroup>
                   <Label>Login</Label>
-                  <Input type="text" placeholder="Enter login" value={this.state.imapUser} onChange={(e)=>this.setState({imapUser: e.target.value})} />
-                </FormGroup>
+                  <Input type="text" className={(this.state.imapUser.length > 0 && !isEmail(this.state.imapUser)) ? "form-control-warning" : ""} placeholder="Enter login" value={this.state.imapUser} onChange={(e)=>this.setState({imapUser: e.target.value})} />
+                  { this.state.imapUser.length > 0 &&
+                    !isEmail(this.state.imapUser) &&
+                    <Label className="pull-right warning">This mail address is invalid.</Label>
+                  }
+               </FormGroup>
                 <FormGroup>
                   <Label>Password</Label>
                   <Input type="password" placeholder="Enter password" value={this.state.imapPassword} onChange={(e)=>this.setState({imapPassword: e.target.value})} />
@@ -252,9 +235,9 @@ export default class AllMailServersEdit extends Component{
                     <Label >TLS/SSL</Label>
                   </div>
                   <div className="m-l-15">
-                    <Input  type="checkbox" checked={this.state.imapTls} onChange={(e)=>this.setState({imapTls: !this.state.imapTls})} />
+                    <Input id="imapTls" type="checkbox" checked={this.state.imapTls} onChange={(e)=>this.setState({imapTls: !this.state.imapTls})} />
                   </div>
-                  <div className="m-l-15">{this.state.imapTls ? "YES" : "NO"}</div>
+                  <div className="m-l-15" htmlFor="imapTls">{this.state.imapTls ? "YES" : "NO"}</div>
                 </FormGroup>
                 <FormGroup className="row m-b-15">
                   <div className="m-r-10">
@@ -272,20 +255,18 @@ export default class AllMailServersEdit extends Component{
                 </div>
               </ModalBody>
 
-
-
-
               <ModalFooter>
               <Button
                 className="mr-auto btn-link"
-                 disabled={this.state.saving
-                 || !isEmail(this.state.imapUser)
-                 || !isEmail(this.state.smtpUser)}
                  onClick={() => this.props.close()}>
                 Close
               </Button>
 
-              <Button className="btn" disabled={this.state.saving} onClick={()=> this.submit()}>
+              <Button className="btn"
+                disabled={this.state.saving
+                || !isEmail(this.state.imapUser)
+                || !isEmail(this.state.smtpUser)}
+                onClick={()=> this.submit()}>
                 {this.state.saving?'Saving...':'Save changes'}
               </Button>
             </ModalFooter>

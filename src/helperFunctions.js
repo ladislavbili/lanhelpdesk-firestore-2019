@@ -76,3 +76,33 @@ export const getItemDisplayValue= (item,value) => {
 export const arraySelectToString = (arr) => {
   return arr.map(a => " " + a).toString();
 }
+
+export const toMillisec = (number, time) => {
+  switch (time) {
+    case 'seconds':
+      return number*1000;
+    case 'minutes':
+      return number*60*1000;
+    case 'hours':
+      return number*60*60*1000;
+    case 'days':
+      return number*24*60*60*1000;
+    default:
+      return number;
+  }
+}
+
+export const fromMillisec = (number, time) => {
+  switch (time) {
+    case 'seconds':
+      return +(number/1000).toFixed(2);
+    case 'minutes':
+      return +(number/60/1000).toFixed(2);
+    case 'hours':
+      return +(number/60/60/1000).toFixed(2);
+    case 'days':
+      return +(number/24/60/60/1000).toFixed(2);
+    default:
+      return number;
+  }
+}

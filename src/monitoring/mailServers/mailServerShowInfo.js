@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button } from 'reactstrap';
 import Reports from "./reports"
 import {rebase} from "../../index";
+import {fromMillisec} from "../../helperFunctions";
 
 export default class MailServerShowInfo extends Component{
   constructor(props){
@@ -18,7 +19,6 @@ export default class MailServerShowInfo extends Component{
       saving: false,
     }
 		this.fetch.bind(this);
-		this.msToTime.bind(this);
 		this.fetch(this.props.id);
   }
 
@@ -42,17 +42,13 @@ export default class MailServerShowInfo extends Component{
   					 title: datum.title ? datum.title : "no title",
   		 			 company: company ? company.title : "no company",
   		 			 testEmail: datum.testEmail ? datum.testEmail : "no test mail",
-             numberOfTests: datum.numberOfTests ? datum.numberOfTests : "not provided",
-             repeatNumber: datum.repeatNumber ? datum.repeatNumber : "not provided",
+             numberOfTests: datum.numberOfTests ? datum.numberOfTests : "0",
+             repeatNumber: datum.repeatNumber ? fromMillisec(datum.repeatNumber, "minutes") + " min." : "15",
   					 note: datum.note ? datum.note : "no notes",
              success: datum.success,
   				 });
   			});
 			});
-	}
-
-	msToTime(time){
-		return time / 60000;
 	}
 
   render(){
@@ -106,7 +102,7 @@ export default class MailServerShowInfo extends Component{
 
           <div className="row">
 						<div className="mr-auto">
-							<strong>Number of tests fo fail:</strong>
+							<strong>Number of tests for fail:</strong>
 						</div>
 						<div className="pull-right">
 							{this.state.numberOfTests}
@@ -115,75 +111,12 @@ export default class MailServerShowInfo extends Component{
 
           <div className="row">
 						<div className="mr-auto">
-							<strong>Repeating tests every (min):</strong>
+							<strong>Repeating tests every:</strong>
 						</div>
 						<div className="pull-right">
 							{this.state.repeatNumber}
 						</div>
 					</div>
-
-			{/*			<div className="row">
-						<div className="mr-auto">
-							<strong>Timeout (mins):</strong>
-						</div>
-						<div className="pull-right">
-							{this.state.timeout}
-						</div>
-					</div>
-
-				<div className="row">
-						<div className="mr-auto">
-							<strong>Number of tests for alert</strong>
-						</div>
-						<div className="pull-right">
-							{this.state.numberOfTests}
-						</div>
-					</div>
-
-					<div className="row">
-						<div className="mr-auto">
-							<strong>Notification emails:</strong>
-						</div>
-						<div className="pull-right">
-							{this.state.notificationEmails}
-						</div>
-					</div>
-
-					<div className="row">
-						<div className="mr-auto">
-							<strong>Last response:</strong>
-						</div>
-						<div className="pull-right">
-							{this.state.lastResponse}
-						</div>
-					</div>
-
-					<div className="row">
-						<div className="mr-auto">
-							<strong>Average response time for last 1 hour:</strong>
-						</div>
-						<div className="pull-right">
-							4:25
-						</div>
-					</div>
-
-					<div className="row">
-						<div className="mr-auto">
-							<strong>Average response time for last 24 hours:</strong>
-						</div>
-						<div className="pull-right">
-							4:25
-						</div>
-					</div>
-
-					<div className="row">
-						<div className="mr-auto">
-							<strong>Average response time for last 1 month:</strong>
-						</div>
-						<div className="pull-right">
-							4:25
-						</div>
-					</div>*/}
 
 					<hr className="m-t-15 m-b-15"/>
 

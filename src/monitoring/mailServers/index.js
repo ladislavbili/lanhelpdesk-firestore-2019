@@ -77,14 +77,14 @@ class MailServerList extends Component {
 				title: datum.title ? datum.title : "none",
 				company: company ? company.title : "none",
 				testEmail: datum.testEmail ? datum.testEmail : "none",
-				status: datum.status ? datum.status : "none",
+				success: (datum.success !== null && datum.success !== undefined) ? (datum.success ? "OK" : "FAILED") : "unknown",
 				lastResp: datum.lastResp ? datum.lastResp : "none",
 			}
 		}).filter(item =>
 					item.title.toLowerCase().includes(this.state.filterByTitle.toLowerCase())
 					&& item.company.toLowerCase().includes(this.state.filterByCompany.toLowerCase())
 					&& item.testEmail.toLowerCase().includes(this.state.filterByTestMail.toLowerCase())
-					&& item.status.toLowerCase().includes(this.state.filterByStatus.toLowerCase())
+					&& item.success.toLowerCase().includes(this.state.filterByStatus.toLowerCase())
 					&& item.lastResp.toLowerCase().includes(this.state.filterByLastResp.toLowerCase())
 				);
 
@@ -186,13 +186,12 @@ class MailServerList extends Component {
 
 															}else{
 																this.props.history.push(`/monitoring/mail-servers/edit/${item.id}`);
-																	this.setState({openedID:item.id});
 															}
 														}}>
 														<td>{item.title}</td>
 														<td>{item.company}</td>
 														<td>{item.testEmail}</td>
-														<td>{item.status}</td>
+														<td>{item.success}</td>
 														<td>{item.lastResp}</td>
 														<td>
 															<Button className="btn-link" onClick={() => this.removeItem(item.id)}>
@@ -206,9 +205,9 @@ class MailServerList extends Component {
 							</table>
 					</div>
 
-					{!this.state.openedID && this.props.layout === 0 && <Empty />}
+					{!this.props.match.params.itemID && this.props.layout === 0 && <Empty />}
 
-					{this.state.openedID && this.props.layout === 0 && <MailServerEditIndex id={this.state.openedID} {...this.props} isModal={false}/>}
+					{this.props.match.params.itemID && this.props.layout === 0 && <MailServerEditIndex id={this.props.match.params.itemID} isModal={false}/>}
 
 					</div>
 					<Modal className="w-50" isOpen={this.state.editOpened} toggle={() => this.setState({editOpened:!this.state.editOpened})} >

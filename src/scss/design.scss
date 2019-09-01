@@ -500,6 +500,12 @@ td {
   border-color: $basic-button-color;
 }
 
+.form-control-warning:focus{
+  box-shadow: none;
+  border-width: 1px;
+  border-color: red;
+}
+
 .hidden-input{
 	background-color: inherit;
 	border-width: 0;

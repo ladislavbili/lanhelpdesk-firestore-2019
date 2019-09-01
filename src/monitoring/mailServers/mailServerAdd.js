@@ -3,7 +3,7 @@ import { Button, FormGroup, Label, Input } from 'reactstrap';
 import {rebase} from "../../index";
 import Select from 'react-select';
 import {selectStyle} from '../../scss/selectStyles';
-import {isEmail} from "../../helperFunctions";
+import {isEmail, toMillisec} from "../../helperFunctions";
 
 export default class MailServerAdd extends Component{
   constructor(props){
@@ -12,8 +12,8 @@ export default class MailServerAdd extends Component{
       title: "",
       company: null,
       testEmail: "",
-      numberOfTests: "",
-      repeatNumber: "",
+      numberOfTests: null,
+      repeatNumber: null,
       note: "",
       success: true,
 
@@ -42,11 +42,11 @@ export default class MailServerAdd extends Component{
     })
     let data = {
       title: this.state.title,
-      company: this.state.company.value,
+      company: this.state.company ? this.state.company.value : null,
       testEmail: this.state.testEmail,
-      numberOfTests: this.state.numberOfTests,
-      repeatNumber: this.state.repeatNumber,
-      note: this.state.note,
+      numberOfTests: this.state.numberOfTests ? parseInt(this.state.numberOfTests) : 0,
+      repeatNumber: this.state.repeatNumber ? toMillisec(this.state.repeatNumber, "minutes") : 15,
+      note: this.state.note ? this.state.note : null,
       success: this.state.success
     };
     rebase.addToCollection('/monitoring-servers', data)
@@ -93,17 +93,34 @@ export default class MailServerAdd extends Component{
 
               <FormGroup>
                 <Label>Test e-mail *</Label>
-                <Input type="text" placeholder="Enter test mail" value={this.state.testEmail} onChange={(e)=>this.setState({testEmail: e.target.value})} />
+                <Input type="text" className={(this.state.testEmail.length > 0 && !isEmail(this.state.testEmail)) ? "form-control-warning" : ""} placeholder="Enter test mail" value={this.state.testEmail} onChange={(e)=>this.setState({testEmail: e.target.value})} />
+                { this.state.testEmail.length > 0 &&
+                  !isEmail(this.state.testEmail) &&
+                  <Label className="pull-right warning">This mail address is invalid.</Label>
+                }
               </FormGroup>
 
               <FormGroup>
-                <Label>Number of tests for fail</Label>
-                <Input type="number" placeholder="Enter number of tests for alert" value={this.state.numberOfTests} onChange={(e)=>this.setState({numberOfTests: e.target.value})}  />
-              </FormGroup>
+                <Label>Number of tests for fail *</Label>
+                <Input type="number" className={(this.state.numberOfTests < 0 ) ? "form-control-warning" : ""} placeholder="Enter number of tests for fail" value={this.state.numberOfTests} onChange={(e)=>this.setState({numberOfTests: (e.target.value.length > 0 && isNaN(parseInt(e.target.value)) ? 0 : e.target.value)})}/>
+                { this.state.numberOfTests &&
+                  this.state.numberOfTests < 0 &&
+                  <Label className="pull-right warning">This value must be non-negative.</Label>
+                }
+             </FormGroup>
 
               <FormGroup>
-                <Label>Repeat test every ... minutes</Label>
-                <Input type="number" placeholder="Enter number of tests for alert" value={this.state.repeatNumber} onChange={(e)=>this.setState({repeatNumber: e.target.value})}  />
+                <Label>Repeat test every ... minutes *</Label>
+                <Input type="number" className={(this.state.repeatNumber < 15 ) ? "form-control-warning" : ""} placeholder="Enter the interval between tests" value={this.state.repeatNumber} onChange={(e)=>this.setState({repeatNumber: e.target.value.length > 0 && isNaN(parseInt(e.target.value)) ? 0 : e.target.value})}  />
+                { this.state.repeatNumber &&
+                  this.state.repeatNumber < 0 &&
+                  <Label className="pull-right warning">This value must be non-negative.</Label>
+                }
+                { this.state.repeatNumber &&
+                  this.state.repeatNumber >= 0 &&
+                  this.state.repeatNumber < 15 &&
+                  <Label className="pull-right warning">The minimum time to repeat a test is 15 minutes.</Label>
+                }
               </FormGroup>
 
               <FormGroup>
@@ -116,6 +133,10 @@ export default class MailServerAdd extends Component{
                 disabled={this.state.saving
                   || this.state.title === ""
                   || !isEmail(this.state.testEmail)
+                  || !this.state.repeatNumber
+                  || !this.state.numberOfTests
+                  || this.state.repeatNumber < 15
+                  || this.state.numberOfTests < 0
                 }
                 onClick={() => this.submit()}
     					> { this.state.saving ? "Adding..." : "Add mail server"}

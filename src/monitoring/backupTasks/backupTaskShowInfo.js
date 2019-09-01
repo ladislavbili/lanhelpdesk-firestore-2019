@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button } from 'reactstrap';
 import Reports from "./reports"
 import {rebase} from "../../index";
-import {arraySelectToString} from "../../helperFunctions";
+import {arraySelectToString, fromMillisec} from "../../helperFunctions";
 
 export default class BackupTaskShowInfo extends Component{
   constructor(props){
@@ -12,7 +12,6 @@ export default class BackupTaskShowInfo extends Component{
       company: {},
       startDate: "",
       repeatNumber: "",
-      repeatTime: "",
 
       from: "",
       fromDisabled: false,
@@ -25,7 +24,6 @@ export default class BackupTaskShowInfo extends Component{
       note: "",
     }
 		this.fetch.bind(this);
-		this.msToTime.bind(this);
 		this.fetch(this.props.id);
   }
 
@@ -39,13 +37,13 @@ export default class BackupTaskShowInfo extends Component{
 					 title: datum.title ? datum.title : "untitled",
 		       company: datum.company ? datum.company.label : "no company",
 		       startDate: datum.startDate ? new Date(datum.startDate).toLocaleString() : "no start date",
-		       repeatEvery: this.msToTime(datum.repeatNumber, datum.repeatTime),
+		       repeatEvery: datum.repeatNumber ? fromMillisec(datum.repeatNumber, "minutes") + " min." : "not provided",
 
 		       from: (datum.from ? datum.from : "no sender") + (datum.fromDisabled ? " (sender disabled)" : "") ,
 		       subject: (datum.subject ? datum.subject : "no subject")  + (datum.subjectDisabled ? " (subject disabled)" : "") ,
 		       mailOK: datum.mailOK ? datum.mailOK : ["no phrases"],
 		       mailInvalid: datum.mailInvalid ? datum.mailInvalid : ["no phrases"],
-		       alertMail: datum.alertMail ? datum.alertMail : "no alert mail",
+		       alertMail: (datum.alertMail ? datum.alertMail : "no alert mail")  + (datum.alertMailDisabled ? " (disabled)" : ""),
 
 		       note: datum.note ? datum.note : "no note",
 				 });
@@ -58,27 +56,19 @@ export default class BackupTaskShowInfo extends Component{
 		}
 	}
 
-	msToTime(time, type){
-		let t = 0;
-		if (type.value === "m"){
-			t = time / 60000;
-		}
-		if (type.value === "h"){
-			t = time / 60000 / 60;
-		}
-		if (type.value === "d"){
-			t = time / 60000 / 60 / 24;
-		}
-		return t + " " + type.label;
-	}
-
 
   render(){
       return (
         <div className="flex">
 					<div className="row m-b-30">
-						<div className="mr-auto">
+            <div >
 							<h1>{this.state.title}</h1>
+						</div>
+            <div className="mr-auto m-l-15">
+              <Button
+                className={this.state.success ? "btn-success" : "btn-danger"}
+              > {this.state.success ? "working" : "failed"}
+              </Button>
 						</div>
 						<div className="pull-right">
 							<Button

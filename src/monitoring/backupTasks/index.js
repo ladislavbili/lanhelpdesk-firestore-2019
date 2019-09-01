@@ -78,7 +78,7 @@ class BackupTaskList extends Component {
 			return {
 				id: datum.id,
 				title: datum.title ? datum.title : "none",
-				status: datum.status ? datum.status : "none",
+				success: (datum.success !== null && datum.success !== undefined) ? (datum.success ? "OK" : "FAILED") : "unknown",
 				lastReport: datum.lastReport ? datum.lastReport : "none",
 				company: company ? company.title : "none"
 			}
@@ -86,7 +86,7 @@ class BackupTaskList extends Component {
 			item =>
 				item.title.toLowerCase().includes(this.state.filterByName.toLowerCase())
 				&& item.company.toLowerCase().includes(this.state.filterByCustomer.toLowerCase())
-				&& item.status.toLowerCase().includes(this.state.filterByStatus.toLowerCase())
+				&& item.success.toLowerCase().includes(this.state.filterByStatus.toLowerCase())
 				&& item.lastReport.toLowerCase().includes(this.state.filterByLastReport.toLowerCase())
 		);
 
@@ -173,12 +173,11 @@ class BackupTaskList extends Component {
 														this.setState({editOpened:true, openedID:item.id});
 													}else{
 														this.props.history.push(`/monitoring/mail-notifications/edit/${item.id}`)
-														this.setState({openedID:item.id});
 													}
 												}}>
 												<td>{item.title}</td>
 												<td>{item.company}</td>
-												<td>{item.status}</td>
+												<td>{item.success}</td>
 												<td>{item.lastReport}</td>
 												<td>
 													<Button className="btn-link" onClick={() => this.removeItem(item.id)}>
@@ -192,9 +191,9 @@ class BackupTaskList extends Component {
 							</table>
 					</div>
 
-					{!this.state.openedID && this.props.layout === 0 && <Empty />}
+					{!this.props.match.params.itemID && this.props.layout === 0 && <Empty />}
 
-					{this.state.openedID && this.props.layout === 0 && <BackupTaskEditIndex id={this.state.openedID} {...this.props} isModal={false}/>}
+					{this.props.match.params.itemID && this.props.layout === 0 && <BackupTaskEditIndex id={this.props.match.params.itemID} isModal={false}/>}
 
 					</div>
 					<Modal className="w-50" isOpen={this.state.editOpened} toggle={() => this.setState({editOpened:!this.state.editOpened})} >

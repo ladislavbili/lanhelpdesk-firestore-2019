@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label, Input } from 'reactstrap';
 import Select, { Creatable }  from 'react-select';
-import {selectStyle} from '../../scss/selectStyles';
-import {isEmail} from "../../helperFunctions";
+import {selectStyle, disabledSelectStyle} from '../../scss/selectStyles';
+import {isEmail, toMillisec, fromMillisec} from "../../helperFunctions";
 
 import {rebase} from "../../index";
 
 const TIME_OPTIONS = [
 //  { label: "minutes", value: "m"},
-  { label: "hours", value: "h"},
-  { label: "days", value: "d"},
+  { label: "hours", value: "hours"},
+  { label: "days", value: "days"},
 ];
 
 export default class BackupTaskEdit extends Component{
@@ -17,7 +17,7 @@ export default class BackupTaskEdit extends Component{
     super(props);
     this.state={
 			title: "",
-      company: {},
+      company: null,
       startDate: "",
       startDateDisabled: false,
       repeatNumber: "",
@@ -29,12 +29,11 @@ export default class BackupTaskEdit extends Component{
       subjectDisabled: false,
       mailOK: [],
       mailInvalid: [],
-      alertMailDisabled: false,
       alertMail: "",
-
+      alertMailDisabled: false,
       note: "",
-      wait: "",
-      waitDisabled: false,
+
+      success: false,
 
 			options: [
 				{ label: "ok", value: "ok"},
@@ -45,9 +44,6 @@ export default class BackupTaskEdit extends Component{
     }
 		this.fetch.bind(this);
 		this.submit.bind(this);
-    this.checkNumber.bind(this);
-    this.toMillisec.bind(this);
-		this.msToNormal.bind(this);
   }
 
 	componentWillMount(){
@@ -70,24 +66,23 @@ export default class BackupTaskEdit extends Component{
 		}).then(datum => {
 				 this.setState({
 					 title: datum.title,
-					 company: datum.company ? {label: this.state.companies.find(comp => comp.value === datum.company).label, value: datum.company} : {},
-					 startDate: datum.startDate ? new Date(datum.startDate).toISOString().replace("Z", "") : "",
+					 company: datum.company ? {label: this.state.companies.find(comp => comp.value === datum.company).label, value: datum.company} : null,
+					 startDate: datum.startDate ? new Date(datum.startDate).toISOString().replace("Z", "") : null,
            startDateDisabled: datum.startDateDisabled,
-					 repeatNumber: this.msToNormal(datum.repeatNumber, datum.repeatTime),
-					 repeatTime: {value: datum.repeatTime, label: datum.repeatTime},
+					 repeatNumber: datum.repeatNumber ? fromMillisec(datum.repeatNumber, datum.repeatTime) : null,
+					 repeatTime: datum.repeatTime ? {value: datum.repeatTime, label: datum.repeatTime} : null,
 
-					 from: datum.from,
+					 from: datum.from ? datum.from : null,
 					 fromDisabled: datum.fromDisabled,
-					 subject: datum.subject,
+					 subject: datum.subject ? datum.subject : null,
 					 subjectDisabled: datum.subjectDisabled,
-					 mailOK: datum.mailOK.map(t => {return ({value: t, label: t});}),
-					 mailInvalid: datum.mailInvalid.map(t => {return ({value: t, label: t});}),
-					 alertMail: datum.alertMail,
-           alertMailDisabled: datum.alertMailDisabled ? datum.alertMailDisabled : false, //daj vsade
+					 mailOK: datum.mailOK ? datum.mailOK.map(t => {return ({value: t, label: t});}) : [],
+					 mailInvalid: datum.mailInvalid ? datum.mailInvalid.map(t => {return ({value: t, label: t});}) : [],
+					 alertMail: datum.alertMail ? datum.alertMail : null,
+           alertMailDisabled: datum.alertMailDisabled,
 
-					 note: datum.note,
-           wait: datum.wait ? datum.wait : "",
-           waitDisabled: datum.waitDisabled ? datum.waitDisabled : false,
+					 note: datum.note ? datum.note : null,
+           success: datum.success,
 				 });
 			});
 	}
@@ -101,24 +96,22 @@ export default class BackupTaskEdit extends Component{
 	submit(){
     let data = {
       title: this.state.title,
-      company: this.state.company.value ? this.state.company.value : "",
-      startDate: new Date(this.state.startDate).getTime(),
+      company: this.state.company ? this.state.company.value : null,
+      startDate: this.state.startDate ? new Date(this.state.startDate).getTime() : null,
       startDateDisabled: this.state.startDateDisabled,
-      repeatTime: this.state.repeatTime.label,
-      repeatNumber: this.toMillisec(this.state.repeatNumber),
-      from: this.state.from,
+      repeatTime: this.state.repeatTime ? this.state.repeatTime.label : null,
+      repeatNumber: this.state.repeatNumber ? toMillisec(this.state.repeatNumber) : null,
+      from: this.state.from ? this.state.from : null,
       fromDisabled: this.state.fromDisabled,
-      subject: this.state.subject,
+      subject: this.state.subject ? this.state.subject : null,
       subjectDisabled: this.state.subjectDisabled,
-      mailOK: this.state.mailOK.map(b => b.label),
-      mailInvalid: this.state.mailInvalid.map(b => b.label),
-      alertMail: this.state.alertMail,
+      mailOK: this.state.mailOK.length > 0 ? this.state.mailOK.map(b => b.label) : null,
+      mailInvalid: this.state.mailInvalid.length > 0 ? this.state.mailInvalid.map(b => b.label) : null,
+      alertMail: this.state.alertMail ? this.state.alertMail : null,
       alertMailDisabled: this.state.alertMailDisabled,
-      note: this.state.note,
-      wait: this.state.wait,
-      waitDisabled: this.state.waitDisabled,
+      note: this.state.note ? this.state.note : null,
 
-      success: "OK",
+      success: this.state.success,
     };
 
     rebase.updateDoc(`monitoring-notifications/${this.props.id}`, data)
@@ -128,29 +121,15 @@ export default class BackupTaskEdit extends Component{
   	});
   }
 
-	checkNumber(number){
-		return !isNaN(number);
-	}
-
-	toMillisec(number){
-		return number * (this.state.repeatTime.value === "days" ? 24*60*60*1000 : 1) * (this.state.repeatTime.value === "hours" ? 60*60*1000 : 1);
-	}
-
-	msToNormal(time, type){
-		if (type === "minutes"){
-			return time / 60000;
-		}
-		if (type === "hours"){
-			return time / 60000 / 60;
-		}
-		if (type === "days"){
-			return time / 60000 / 60 / 24;
-		}
-	}
-
   render(){
     return (
       <div className="flex">
+        <Button
+          className={this.state.success ? "btn-success" : "btn-danger"}
+          onClick={() => this.setState({success: !this.state.success})}
+        > {this.state.success ? "working" : "failed"}
+        </Button>
+
 				<FormGroup>
 					<Label>Name</Label>
 					<Input type="text" placeholder="Enter name" value={this.state.title} onChange={(e)=>this.setState({title: e.target.value})} />
@@ -181,34 +160,25 @@ export default class BackupTaskEdit extends Component{
 
 				<FormGroup>
 					<Label>Repeat every *</Label>
-					<div className="row">
-						<div className="w-50 p-r-20">
-							<Input type="number" placeholder="Enter number" value={this.state.repeatNumber} onChange={(e)=>this.setState({repeatNumber: e.target.value})} />
-						</div>
-						<div className="w-50">
-							<Select
-								value={this.state.repeatTime}
-								onChange={(e)=> this.setState({repeatTime: e})}
-								options={TIME_OPTIONS}
-								styles={selectStyle}
-								/>
-						</div>
-					</div>
-				</FormGroup>
-
-        <FormGroup>
-          <div  className="row">
-            <Label htmlFor="waitDis">Wait period (hour)</Label>
-            <div className="m-l-15">
-                <Input type="checkbox" id="waitDis" className="position-inherit" checked={this.state.waitDisabled} onChange={(e)=>this.setState({waitDisabled: !this.state.waitDisabled})} />
+            <div className="row">
+            <div className="w-50 p-r-20">
+              <Input type="number"  className={(this.state.repeatNumber < 0 ) ? "form-control-warning" : ""} disabled={this.state.startDateDisabled} placeholder="Enter number" value={this.state.repeatNumber} onChange={(e)=>this.setState({repeatNumber: e.target.value})} />
+              { this.state.repeatNumber &&
+                this.state.repeatNumber < 0 &&
+                <Label className="warning">This value must be non-negative.</Label>
+              }
+          </div>
+            <div className="w-50">
+              <Select
+                isDisabled={this.state.startDateDisabled}
+                value={this.state.repeatTime}
+                onChange={(e)=> this.setState({repeatTime: e})}
+                options={TIME_OPTIONS}
+                styles={this.state.startDateDisabled ? disabledSelectStyle : selectStyle}
+                />
             </div>
-            <div className="m-l-15 w-10" htmlFor="waitDis">Disabled</div>
           </div>
-          <div className="m-r-10">
-            <Input type="number" disabled={this.state.waitDisabled} placeholder="Enter wait period" value={this.state.wait} onChange={(e)=>this.setState({wait: e.target.value})} />
-          </div>
-          </FormGroup>
-
+				</FormGroup>
 
 					<FormGroup>
 						<div  className="row">
@@ -219,9 +189,14 @@ export default class BackupTaskEdit extends Component{
 							<div className="m-l-15 w-10" htmlFor="fromDis">Disabled</div>
 						</div>
 						<div className="m-r-10">
-							<Input type="text" disabled={this.state.fromDisabled} placeholder="Enter sender" value={this.state.from} onChange={(e)=>this.setState({from: e.target.value})} />
-						</div>
-						</FormGroup>
+              <Input type="text"  className={(this.state.from && this.state.from.length > 0 && !isEmail(this.state.from)) ? "form-control-warning" : ""} disabled={this.state.fromDisabled} placeholder="Enter sender" value={this.state.from} onChange={(e)=>this.setState({from: e.target.value})} />
+              { this.state.from &&
+                this.state.from.length > 0 &&
+                !isEmail(this.state.from) &&
+                <Label className="pull-right warning">This mail address is invalid.</Label>
+              }
+            </div>
+					</FormGroup>
 
 				<FormGroup>
 					<div  className="row">
@@ -248,7 +223,7 @@ export default class BackupTaskEdit extends Component{
 				</FormGroup>
 
 				<FormGroup>
-					<Label>Mail body INVALID *</Label>
+					<Label>Mail body INVALID</Label>
 					<Creatable
 						isMulti
 						value={this.state.mailInvalid}
@@ -260,15 +235,20 @@ export default class BackupTaskEdit extends Component{
 
         <FormGroup>
           <div  className="row">
-            <Label htmlFor="alertDis">Alert mail</Label>
+            <Label htmlFor="alertDis">Alert mail *</Label>
             <div className="m-l-15">
                 <Input type="checkbox" id="alertDis" className="position-inherit" checked={this.state.alertMailDisabled} onChange={(e)=>this.setState({alertMailDisabled: !this.state.alertMailDisabled})} />
             </div>
             <div className="m-l-15 w-10" htmlFor="alertDis">Disabled</div>
           </div>
-          <div className="m-r-10">
-            <Input type="text" disabled={this.state.alertMailDisabled} placeholder="Enter alert mail" value={this.state.alertMail} onChange={(e)=>this.setState({alertMail: e.target.value})} />
-          </div>
+          <div>
+            <Input type="text"  className={(this.state.alertMail && this.state.alertMail.length > 0 && !isEmail(this.state.alertMail)) ? "form-control-warning" : ""} disabled={this.state.alertMailDisabled} placeholder="Enter alert mail" value={this.state.alertMail} onChange={(e)=>this.setState({alertMail: e.target.value})} />
+            {  this.state.alertMail &&
+              this.state.alertMail.length > 0 &&
+              !isEmail(this.state.alertMail) &&
+              <Label className="pull-right warning">This mail address is invalid.</Label>
+            }
+         </div>
         </FormGroup>
 
 				<FormGroup>
@@ -279,14 +259,14 @@ export default class BackupTaskEdit extends Component{
 				<Button
 					className="btn pull-right"
 					disabled={this.state.saving
-						|| (!this.state.startDateDisabled === this.state.startDate === "")
-						|| !this.checkNumber(this.state.repeatNumber)
-						|| this.state.repeatTime === ""
-						|| (!this.state.fromDisabled && !isEmail(this.state.from))
-						|| (!this.state.subjectDisabled && this.state.subject === "")
-						|| this.state.mailOK.length === 0
-						|| this.state.mailInvalid.length === 0
-            || (this.state.alertMail !== "" && !isEmail(this.state.alertMail))}
+            || this.state.title === ""
+            || (!this.state.startDateDisabled && this.state.startDate === "")
+            || (!this.state.startDateDisabled && this.state.repeatNumber < 0)
+            || (!this.state.startDateDisabled && !this.state.repeatTime )
+            || (!this.state.fromDisabled && !isEmail(this.state.from))
+            || (!this.state.subjectDisabled && this.state.subject === "")
+            || this.state.mailOK.length === 0
+            || (!this.state.alertMailDisabled && !isEmail(this.state.alertMail))}
 					onClick={() => this.submit()}
 				> { this.state.saving ? "Saving..." : "Save changes"}
 				</Button>

@@ -7,8 +7,6 @@ export default class ProjectEdit extends Component{
   constructor(props){
     super(props);
     this.state={
-      wait: "",
-      numberOfTests: "",
 
       smtpServer: "",
       smtpHost: "",
@@ -46,9 +44,7 @@ export default class ProjectEdit extends Component{
     }
     ).then((data) => {
       this.setState({
-        wait: data.wait,
         testMail: data.testMail,
-        numberOfTests: data.numberOfTests,
 
         smtpServer: data.smtp.server,
         smtpHost: data.smtp.host,
@@ -96,9 +92,7 @@ export default class ProjectEdit extends Component{
       rejectUnauthorized: this.state.imapRejectUnauthorized,
     };
     let data = {
-      wait: this.state.wait,
       testMail: this.state.testMail,
-      numberOfTests: this.state.numberOfTests,
       smtp,
       imap,
     };
@@ -125,12 +119,6 @@ export default class ProjectEdit extends Component{
             <ModalBody>
               <h1>Email notification settings</h1>
 
-              <FormGroup>
-                <Label>Number of tests for fail</Label>
-                <Input type="text" placeholder="Enter number of tests for fail" value={this.state.numberOfTests} onChange={(e)=>this.setState({numberOfTests: e.target.value})}  />
-              </FormGroup>
-              <hr/>
-
               <h1>Send e-mail SMTP settings</h1>
                 <FormGroup>
                   <Label>Server</Label>
@@ -146,7 +134,11 @@ export default class ProjectEdit extends Component{
                 </FormGroup>
                 <FormGroup>
                   <Label>Login</Label>
-                  <Input type="text" placeholder="Enter login" value={this.state.smtpUser} onChange={(e)=>this.setState({smtpUser: e.target.value})} />
+                  <Input type="text" className={(this.state.smtpUser.length > 0 && !isEmail(this.state.smtpUser)) ? "form-control-warning" : ""} placeholder="Enter login" value={this.state.smtpUser} onChange={(e)=>this.setState({smtpUser: e.target.value})} />
+                  { this.state.smtpUser.length > 0 &&
+                    !isEmail(this.state.smtpUser) &&
+                    <Label className="pull-right warning">This mail address is invalid.</Label>
+                  }
                 </FormGroup>
                 <FormGroup>
                   <Label>Password</Label>
@@ -208,7 +200,11 @@ export default class ProjectEdit extends Component{
                 </FormGroup>
                 <FormGroup>
                   <Label>Login</Label>
-                  <Input type="text" placeholder="Enter login" value={this.state.imapUser} onChange={(e)=>this.setState({imapUser: e.target.value})} />
+                  <Input type="text" className={(this.state.imapUser.length > 0 && !isEmail(this.state.imapUser)) ? "form-control-warning" : ""} placeholder="Enter login" value={this.state.imapUser} onChange={(e)=>this.setState({imapUser: e.target.value})} />
+                  { this.state.imapUser.length > 0 &&
+                    !isEmail(this.state.imapUser) &&
+                    <Label className="pull-right warning">This mail address is invalid.</Label>
+                  }
                 </FormGroup>
                 <FormGroup>
                   <Label>Password</Label>
@@ -242,14 +238,16 @@ export default class ProjectEdit extends Component{
               <ModalFooter>
               <Button
                 className="mr-auto btn-link"
-                disabled={this.state.saving
-                  || !isEmail(this.state.imapUser)
-                  || !isEmail(this.state.smtpUser)} 
                 onClick={() => this.props.close()}>
                 Close
               </Button>
 
-              <Button className="btn" disabled={this.state.saving} onClick={() => this.submit()}>
+              <Button
+                className="btn"
+                disabled={this.state.saving
+                  || !isEmail(this.state.imapUser)
+                  || !isEmail(this.state.smtpUser)}
+                onClick={() => this.submit()}>
                 {this.state.saving?'Saving...':'Save changes'}</Button>
             </ModalFooter>
 
