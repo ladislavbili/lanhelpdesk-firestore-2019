@@ -118,11 +118,12 @@ export default class TaskEdit extends Component {
         {/*TOOLBAR*/}
         <div className="row m-b-10">
 
-          <div className="toolbar-item">
-            <button type="button" className="btn-link"
+          <div style={{border: "2px solid #578FFB", borderRadius: "5px"}}>
+            <button type="button"
+              className="btn-link"
+              style={{padding: "0px 25px", fontSize: "20px", fontWeight: "500", color: "#578FFB"}}
               onClick={() => { this.setState({ status: 1 }, this.submitTask.bind(this)) }}
-            >
-              <i className="fa fa-play" /> Open
+            > Open
               </button>
           </div>
 

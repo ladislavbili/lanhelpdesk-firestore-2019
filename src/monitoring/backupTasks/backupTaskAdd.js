@@ -65,7 +65,7 @@ export default class BackupTaskAdd extends Component{
       startDate: this.state.startDate ? new Date(this.state.startDate).getTime() : null,
       startDateDisabled: this.state.startDateDisabled,
       repeatTime: this.state.repeatTime ? this.state.repeatTime.label : null,
-      repeatNumber: this.state.repeatNumber ? toMillisec(this.state.repeatNumber) : null,
+      repeatNumber: this.state.repeatNumber ? toMillisec(this.state.repeatNumber, this.state.repeatTime.label) : null,
       from: this.state.from ? this.state.from : null,
       fromDisabled: this.state.fromDisabled,
       subject: this.state.subject ? this.state.subject : null,
