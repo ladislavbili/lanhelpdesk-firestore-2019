@@ -268,7 +268,7 @@ export default class TaskEdit extends Component {
           <FormGroup style={{marginLeft: "80px", marginRight: "80px"}}>
             <Label className="">Description</Label>
             <div>
-            <Input type="textarea" placeholder="Description" style={{fontWeight: 400}} className="hidden-input" value={this.state.description} onChange={(e) => this.setState({ description: e.target.value }, this.submitTask.bind(this))} />
+            <Input type="textarea" placeholder="Description" style={{fontWeight: 400, borderRadius: "3px"}} value={this.state.description} onChange={(e) => this.setState({ description: e.target.value }, this.submitTask.bind(this))} />
             </div>
         </FormGroup>
 
