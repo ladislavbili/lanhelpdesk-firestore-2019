@@ -5,7 +5,7 @@ import {rebase, database} from '../../index';
 import { Button } from 'reactstrap';
 import Materials from '../components/materials';
 import Subtasks from '../components/subtasks';
-import {invisibleSelectStyle} from '../../scss/selectStyles';
+import {selectStyle} from '../../scss/selectStyles';
 
 const noDef={
 	status:{def:false,fixed:false, value: null},
@@ -253,7 +253,7 @@ export default class TaskAdd extends Component{
 
 			return (
 				<div>
-					<div>
+					<div className="m-b-15">
 						{
 							this.state.statuses.sort((item1,item2)=>{
 								if(item1.order &&item2.order){
@@ -269,43 +269,42 @@ export default class TaskAdd extends Component{
 							</Button>
 						)
 					}
-				</div>
+					</div>
 				<div className="scrollable">
 					<div className="p-t-0">
-						<div className="row">
+						<div className="row m-b-15">
 							<h1 className="center-hor"># NEW</h1>
 							<span className="center-hor">
-								<input type="text" value={this.state.title} className="task-title-input hidden-input" onChange={(e)=>this.setState({title:e.target.value})} placeholder="Enter task name" />
+								<input type="text" value={this.state.title} className="task-title-input-add required" onChange={(e)=>this.setState({title:e.target.value})} placeholder="Enter task name" />
 							</span>
 							<div className="ml-auto center-hor">
 								<span className="label label-info" style={{backgroundColor:this.state.status && this.state.status.color?this.state.status.color:'white'}}>{this.state.status?this.state.status.title:'Neznámy status'}</span>
 							</div>
-
 						</div>
 						<div className="row">
-							<div className="col-lg-12 row">
+							<div className="col-lg-12 row m-b-5">
 								<strong className="center-hor">Tagy: </strong>
-								<div className="f-1">
+								<div className="f-1 m-l-5">
 									<Select
 										value={this.state.tags}
 										isDisabled={this.state.defaults.tags.fixed}
 										isMulti
 										onChange={(tags)=>this.setState({tags})}
 										options={this.state.allTags}
-										styles={invisibleSelectStyle}
+										styles={selectStyle}
 										/>
 								</div>
 							</div>
-							<div className="col-lg-12 row">
+							<div className="col-lg-12 row m-b-5">
 								<strong className="center-hor">Assigned to: </strong>
-								<div className="f-1">
+								<div className="f-1 m-l-5">
 									<Select
 										value={this.state.assignedTo}
 										isDisabled={this.state.defaults.assignedTo.fixed}
 										isMulti
 										onChange={(users)=>this.setState({assignedTo:users})}
 										options={this.state.users}
-										styles={invisibleSelectStyle}
+										styles={selectStyle}
 										/>
 								</div>
 							</div>
@@ -319,7 +318,7 @@ export default class TaskAdd extends Component{
 												<Select
 													value={this.state.type}
 													isDisabled={this.state.defaults.type.fixed}
-													styles={invisibleSelectStyle}
+													styles={selectStyle}
 													onChange={(type)=>this.setState({type})}
 													options={this.state.taskTypes}
 													/>
@@ -327,12 +326,12 @@ export default class TaskAdd extends Component{
 										</div>
 										<div className="row">
 											<label className="col-5 col-form-label">Projekt</label>
-											<div className="col-7">
+											<div className="col-7 required">
 												<Select
 													value={this.state.project}
 													onChange={(project)=>this.setState({project},()=>this.setDefaults(project.id, true))}
 													options={this.state.projects}
-													styles={invisibleSelectStyle}
+													styles={selectStyle}
 													/>
 											</div>
 										</div>
@@ -344,7 +343,7 @@ export default class TaskAdd extends Component{
 													isDisabled={this.state.defaults.requester.fixed}
 													onChange={(requester)=>this.setState({requester})}
 													options={this.state.users}
-													styles={invisibleSelectStyle}
+													styles={selectStyle}
 													/>
 											</div>
 										</div>
@@ -354,13 +353,13 @@ export default class TaskAdd extends Component{
 									<div>
 										<div className="row">
 											<label className="col-5 col-form-label">Firma</label>
-											<div className="col-7">
+											<div className="col-7 required">
 												<Select
 													value={this.state.company}
 													isDisabled={this.state.defaults.company.fixed}
 													onChange={(company)=>this.setState({company})}
 													options={this.state.companies}
-													styles={invisibleSelectStyle}
+													styles={selectStyle}
 													/>
 											</div>
 										</div>
@@ -368,7 +367,7 @@ export default class TaskAdd extends Component{
 											<label className="col-5 col-form-label">Deadline</label>
 											<div className="col-7">
 												<input
-													className='form-control hidden-input'
+													className='form-control'
 													placeholder="Status change date"
 													type="datetime-local"
 													value={this.state.deadline}
@@ -381,7 +380,7 @@ export default class TaskAdd extends Component{
 										<div className="row">
 											<label className="col-5 col-form-label">Opakovanie</label>
 											<div className="col-7">
-												<Select options={repeat} styles={invisibleSelectStyle} />
+												<Select options={repeat} styles={selectStyle} />
 											</div>
 										</div>
 									</div>
@@ -452,11 +451,12 @@ export default class TaskAdd extends Component{
 								/>}
 							</div>
 							<button
-								className="btn m-r-10"
+								className="btn pull-right"
 								disabled={this.state.title==="" || this.state.status===null || this.state.project === null || this.state.company === null || this.state.saving || this.props.loading}
 								onClick={this.submitTask.bind(this)}
 								> Add
 							</button>
+							<div></div>
 						</div>
 					</div>
 				);

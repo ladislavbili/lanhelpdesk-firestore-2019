@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {rebase, database} from '../../index';
 import {toSelArr, snapshotToArray} from '../../helperFunctions';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
+import { Modal, ModalBody, Button } from 'reactstrap';
 import TaskAdd from './taskAdd';
 
 export default class TaskAddContainer extends Component{
@@ -114,9 +114,7 @@ export default class TaskAddContainer extends Component{
 			}
 
 
-			<Modal size="lg"  isOpen={this.state.openAddTaskModal} toggle={()=>{this.setState({openAddTaskModal:!this.state.openAddTaskModal})}} >
-					<ModalHeader toggle={()=>{this.setState({openAddTaskModal:!this.state.openAddTaskModal})}} >
-					</ModalHeader>
+			<Modal size="width-1000"  isOpen={this.state.openAddTaskModal} toggle={()=>{this.setState({openAddTaskModal:!this.state.openAddTaskModal})}} >
 					<ModalBody>
             {  this.state.openAddTaskModal &&
 						   <TaskAdd {...this.props}
@@ -134,8 +132,6 @@ export default class TaskAddContainer extends Component{
                  />
             }
 					</ModalBody>
-					<ModalFooter>
-					</ModalFooter>
 				</Modal>
 		</div>
     );

@@ -21,6 +21,15 @@
 - input-group-append
 */
 
+@media (min-width: 576px) {
+  .modal-dialog {
+    max-width: none;
+  }
+}
+
+.modal-width-1000{
+  width: 1000px;
+}
 
 body{
   font-family: $main-font;
@@ -571,6 +580,9 @@ td {
   font-weight: 600;
 }
 
+.required{
+  border: 1px solid red;
+}
 
 //----------------END-všeobecné-elementy----------------
 
@@ -824,6 +836,19 @@ td {
   color: $main-font-color;
   box-shadow: none;
   margin-left: 10px;
+}
+
+.task-title-input-add{
+  font-size: 2.5rem;
+  line-height: 1.2;
+  color: $main-font-color;
+  box-shadow: none;
+  margin-left: 10px;
+  border: 2px solid red !important;
+}
+
+.task-title-input-add:focus{
+  border: 2px solid red !important;
 }
 
 .card-box{

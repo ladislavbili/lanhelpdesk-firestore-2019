@@ -248,7 +248,7 @@ export default class ProjectAdd extends Component{
                 Close
               </Button>
 
-              <Button className="btn" 
+              <Button className="btn"
                 disabled={this.state.saving||this.state.title===""||(this.state.company.value===null&&this.state.company.fixed)||(this.state.status.value===null&&this.state.status.fixed)}
                 onClick={()=>{
                   this.setState({saving:true});
