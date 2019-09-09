@@ -29,11 +29,10 @@ export default class Prace extends Component {
 				newWorkType:null,
 				newQuantity:0,
 				newExtraWork:false,
-				newDiscount:0,
-				newAssigned:null,
+				newDiscount:0
 			})
 		}
-		if(this.props.taskAssigned.length!==props.taskAssigned.length){
+		if(this.props.taskAssigned.length!==props.taskAssigned.length || (props.taskAssigned.length>0 && props.taskAssigned[0].id!==this.props.taskAssigned[0].id) ){
 			if(!props.taskAssigned.some((item)=>item.id===(this.state.newAssigned?this.state.newAssigned.id:null))){
 				if(props.taskAssigned.length>0){
 					this.setState({newAssigned:props.taskAssigned[0]});

@@ -35,7 +35,7 @@ export default class Reports extends Component{
 
   render(){
 			let ITEMS = this.state.data.filter(datum => datum.notification === this.props.id);
-
+      ITEMS.sort((item1,item2)=>item1.receiveDate>item2.receiveDate?-1:1);
       return (
         <div className="flex">
 					<table className="table">
