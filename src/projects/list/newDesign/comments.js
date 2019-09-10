@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import {rebase,database} from '../../../index';
 import {snapshotToArray, timestampToString} from '../../../helperFunctions';
 
+import "../../../scss/CRMMertel.scss";
+
 class Comments extends Component{
 
 constructor(props){
@@ -35,10 +37,9 @@ getData(id){
       <div className="m-b-15">
         <div>
           <FormGroup style={{marginLeft: "80px", marginRight: "80px"}}>
-            <Label style={{color: "#B0B0B0", fontWeight: "600", fontSize: "17px"}}>Comment</Label>
-            <Input type="textarea" style={{borderRadius: "3px"}} className="form-control m-b-10" placeholder="Enter comment" value={this.state.newComment} onChange={(e)=>this.setState({newComment:e.target.value})}/>
+            <Label>Comment</Label>
+            <Input type="textarea" style={{border: "1px solid #E4E4E4"}} className="form-control m-b-10" placeholder="Enter comment" value={this.state.newComment} onChange={(e)=>this.setState({newComment:e.target.value})}/>
             <Button className="btn pull-right"
-              style={{color: "white", backgroundColor: "#578FFB", borderRadius: "3px" }}
                disabled={this.state.newComment===''||this.state.saving} onClick={()=>{
                 this.setState({saving:true});
                 let body={
@@ -62,7 +63,7 @@ getData(id){
                   alt="Generic placeholder XX"
                   />
                 <div className="flex">
-                  <span className="pull-right">{timestampToString(comment.createdAt)}</span>
+                  <span className="pull-right time">{timestampToString(comment.createdAt)}</span>
                   <h4 className="m-0" style={{color: "black", fontWeight: 400}}>{comment.user!==undefined?(comment.user.name + ' '+comment.user.surname):'Unknown sender'}</h4>
                   <small className="text-muted">From: {comment.user!==undefined?(comment.user.email):'Unknown sender'}</small>
                 </div>

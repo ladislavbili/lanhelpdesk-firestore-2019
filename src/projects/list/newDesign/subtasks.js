@@ -3,6 +3,8 @@ import { Input} from 'reactstrap';
 import {rebase,database} from '../../../index';
 import {snapshotToArray} from '../../../helperFunctions';
 
+import "../../../scss/CRMMertel.scss";
+
 export default class Subtasks extends Component{
   constructor(props){
     super(props);
@@ -54,7 +56,7 @@ export default class Subtasks extends Component{
         <table className="table table-borderless">
           <thead>
             <tr>
-              <th colSpan={3} style={{color: "#B0B0B0", fontWeight: "600", fontSize: "17px"}}>Subtasks</th>
+              <th colSpan={3} style={{paddingLeft: 40}}>Subtasks</th>
             </tr>
           </thead>
           <tbody>
@@ -62,19 +64,22 @@ export default class Subtasks extends Component{
               this.state.subtasks.map((item,index)=>
               <tr key={item.id}>
                 <td className="table-checkbox">
-                  <Input type="checkbox"
-                    style={{}}
-                    checked={item.done} onChange={()=>{
-                    let newData=[...this.state.subtasks];
-                    newData[index].done=!newData[index].done;
-                    rebase.updateDoc('proj-subtasks/'+item.id,{done:item.done});
-                    this.setState({subtasks:newData});
-                  }} /></td>
+                  <label className="container">
+                    <Input type="checkbox"
+                      checked={item.done} onChange={()=>{
+                      let newData=[...this.state.subtasks];
+                      newData[index].done=!newData[index].done;
+                      rebase.updateDoc('proj-subtasks/'+item.id,{done:item.done});
+                      this.setState({subtasks:newData});
+                    }} />
+                    <span className="checkmark"> </span>
+                  </label>
+                </td>
                 <td>
                   <Input
                       type="text"
-                      className="form-control hidden-input"
-                      style={{borderRadius: "3px"}}
+                      className="input"
+                      style={{borderRadius: "3px", marginLeft: "-40px"}}
                       value={this.state.focusedSubtask===item.id?this.state.editedSubtaskTitle:item.title}
                       onBlur={() => {
                       rebase.updateDoc('proj-subtasks/'+item.id,{title:this.state.editedSubtaskTitle});
@@ -95,27 +100,33 @@ export default class Subtasks extends Component{
                 <td className="w-20px">
                   <button
                     className="btn-link"
-                    style={{color: "#578FFB", borderRadius: "3px", width: "30px"}}
                     type="button"
+                    onClick={()=>this.deleteSubtask(item.id)}
                     >
-                    <i className="fa fa-trash" onClick={()=>this.deleteSubtask(item.id)} />
+                    X
                   </button>
                 </td>
               </tr>
             )
           }
             <tr>
-              <td colSpan={2}>
-                <Input type="text" className="form-control" style={{borderRadius: "3px"}} value={this.state.newSubtask} onChange={(e)=>this.setState({newSubtask:e.target.value})} />
+              <td>
+              </td>
+              <td >
+                <Input
+                  type="text"
+                  style={{marginLeft: "-40px"}}
+                  className="input-visible"
+                  value={this.state.newSubtask}
+                  onChange={(e)=>this.setState({newSubtask:e.target.value})} />
               </td>
               <td>
                 <button
-                  className="btn-link"
+                  className="btn"
                   type="button"
-                  style={{color: "white", backgroundColor: "#578FFB", borderRadius: "3px", width: "30px"}}
                   onClick={this.submitSubtask.bind(this)}
                 >
-                  <i className="fa fa-plus" />
+                  +
                 </button>
               </td>
             </tr>

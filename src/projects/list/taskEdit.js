@@ -3,12 +3,15 @@ import { rebase, database } from '../../index';
 import { FormGroup, Label, Input } from 'reactstrap';
 import { toSelArr, snapshotToArray } from '../../helperFunctions';
 import Select from 'react-select';
-import { taskEditModalSelectStyle } from '../../scss/selectStyles';
+import { CRMMertelSelectStyle } from '../../scss/selectStyles';
 import Subtasks from './newDesign/subtasks';
 import Comments from './newDesign/comments';
 import Attachements from './newDesign/attachements';
 
-const statuses = [{ id: 0, title: 'New', color: '#1087e2' }, { id: 1, title: 'Open', color: '#155724' }, { id: 2, title: 'Pending', color: '#f3ba0d' }, { id: 3, title: 'Closed', color: '#e2e3e5' }]
+import "../../scss/CRMMertel.scss";
+
+
+const statuses = [{ id: 0, title: 'New', color: '#1087e2' }, { id: 1, title: 'Open', color: '#155724' }, { id: 2, title: 'Pending', color: '#f3ba0d' }, { id: 3, title: 'Closed', color: '#e2e3e5' }, { id: 4, title: 'Invalid', color: 'red' }]
 
 
 export default class TaskEdit extends Component {
@@ -114,49 +117,53 @@ export default class TaskEdit extends Component {
 
   render() {
     return (
-      <div className="task-edit-modal-projects">
+      <div className="crm-mertel">
         {/*TOOLBAR*/}
 
           <div>
-            <Label className="label m-r-5 center-hor center-ver pull-right"
-              style={{ marginRight: "80px", marginTop: "-24px", paddingTop: "30px", color: "white", height: "60px", width: "100px", fontSize: "20px", fontWeight: "500", backgroundColor: statuses.find((item) => item.id === this.state.status).color }}
+            <Label className="pull-right status"
+              style={{backgroundColor: statuses.find((item) => item.id === this.state.status).color }}
               >
               {statuses.find((item) => item.id === this.state.status).title}
             </Label>
+            <div className="flag"></div>
           </div>
 
         <div className="row m-b-10" style={{marginLeft: "80px"}}>
 
-          <div style={{border: "2px solid #578FFB", borderRadius: "5px", marginRight: "5px"}}>
+          <div className={this.state.status === 1 ? "active-tag" : "tag"}>
             <button type="button"
               className="btn-link"
-              style={{padding: "0px 25px", fontSize: "20px", fontWeight: "500", color: "#578FFB"}}
               onClick={() => { this.setState({ status: 1 }, this.submitTask.bind(this)) }}
             > OPEN
               </button>
           </div>
 
-          <div style={{border: "2px solid #578FFB", borderRadius: "5px", marginRight: "5px"}}>
+          <div className={this.state.status === 2 ? "active-tag" : "tag"}>
             <button type="button" className="btn-link"
-              style={{padding: "0px 25px", fontSize: "20px", fontWeight: "500", color: "#578FFB"}}
               onClick={() => { this.setState({ status: 2 }, this.submitTask.bind(this)) }}
             > PENDING
               </button>
           </div>
 
-          <div style={{border: "2px solid #578FFB", borderRadius: "5px", marginRight: "5px"}}>
+          <div className={this.state.status === 3 ? "active-tag" : "tag"}>
             <button type="button" className="btn-link"
-            style={{padding: "0px 25px", fontSize: "20px", fontWeight: "500", color: "#578FFB"}}
               onClick={() => { this.setState({ status: 3 }, this.submitTask.bind(this)) }}
             > CLOSED
               </button>
           </div>
 
+          <div className={this.state.status === 4 ? "active-tag" : "tag"}>
+            <button type="button" className="btn-link"
+              onClick={() => { this.setState({ status: 4 }, this.submitTask.bind(this)) }}
+            > INVALID
+              </button>
+          </div>
+
           {
             this.state.saving &&
-            <div style={{border: "2px solid #578FFB", borderRadius: "5px", marginRight: "5px"}}>
-              <button type="button" className="btn-link"
-              style={{padding: "0px 25px", fontSize: "20px", fontWeight: "500", color: "#578FFB"}}>
+            <div className="tag">
+              <button type="button" className="btn-link">
                 Saving
                 </button>
             </div>
@@ -181,10 +188,10 @@ export default class TaskEdit extends Component {
         {/*MAIN*/}
         <div>
           <FormGroup className="row" style={{marginLeft: "80px"}}>
-            <p className="task-title-input" style={{paddingTop:9, color: "black"}}># 100</p>
-            <div className="">
+            <p className="title m-t-10 m-r-10"># 100</p>
+            <div className="flex m-r-10">
               <Input type="text" placeholder="Task name"
-                style={{color: "black"}} className="task-title-input text-extra-slim hidden-input m-0" value={this.state.title} onChange={(e) => this.setState({ title: e.target.value }, this.submitTask.bind(this))} />
+                className="title flex" value={this.state.title} onChange={(e) => this.setState({ title: e.target.value }, this.submitTask.bind(this))} />
             </div>
           </FormGroup>
 
@@ -194,7 +201,7 @@ export default class TaskEdit extends Component {
             <Label className="w-100px">Tags</Label>
             <div className="w-40">
               <Select
-                styles={taskEditModalSelectStyle}
+                styles={CRMMertelSelectStyle}
                 options={this.state.allTags}
                 value={this.state.tags}
                 onChange={(tags) => this.setState({ tags }, this.submitTask.bind(this))}
@@ -207,7 +214,7 @@ export default class TaskEdit extends Component {
               <Label className="w-100px">Project</Label>
               <div className="w-40">
                 <Select
-                  styles={taskEditModalSelectStyle}
+                  styles={CRMMertelSelectStyle}
                   options={this.state.projects}
                   value={this.state.project}
                   onChange={e => { this.setState({ project: e }, this.submitTask.bind(this)); }}
@@ -219,7 +226,7 @@ export default class TaskEdit extends Component {
               <Label className="w-100px">Task type</Label>
               <div className="w-40">
                 <Select
-                  styles={taskEditModalSelectStyle}
+                  styles={CRMMertelSelectStyle}
                   options={this.state.users}
                   value={this.state.assignedBy}
                   onChange={e => { this.setState({ assignedBy: e }, this.submitTask.bind(this)); }}
@@ -231,7 +238,7 @@ export default class TaskEdit extends Component {
               <Label className="w-100px">Requester</Label>
               <div className="w-40">
               <Select
-                styles={taskEditModalSelectStyle}
+                styles={CRMMertelSelectStyle}
                 options={this.state.users}
                 value={this.state.assignedBy}
                 onChange={e => { this.setState({ assignedBy: e }, this.submitTask.bind(this)); }}
@@ -243,7 +250,7 @@ export default class TaskEdit extends Component {
             <Label className="w-100px">Assigned to</Label>
             <div className="w-40">
               <Select
-                styles={taskEditModalSelectStyle}
+                styles={CRMMertelSelectStyle}
                 options={this.state.users}
                 value={this.state.assignedTo}
                 onChange={e => { this.setState({ assignedTo: e }, this.submitTask.bind(this)); }}
@@ -254,21 +261,21 @@ export default class TaskEdit extends Component {
           <FormGroup className="row m-b-5" style={{marginLeft: "80px"}}>
             <Label className="w-100px">Deadline</Label>
             <div className="w-40">
-              <Input style={{borderRadius: "3px"}} type="datetime-local" placeholder="Enter deadline" value={this.state.deadline} onChange={(e) => this.setState({ deadline: e.target.value }, this.submitTask.bind(this))} />
+              <Input type="datetime-local" placeholder="Enter deadline" value={this.state.deadline} onChange={(e) => this.setState({ deadline: e.target.value }, this.submitTask.bind(this))} />
             </div>
           </FormGroup>
 
           <FormGroup className="row m-b-5" style={{marginLeft: "80px"}}>
             <Label className="w-100px">Hours</Label>
             <div className="w-40">
-              <Input style={{borderRadius: "3px"}} type="number" placeholder="Enter hours" value={this.state.hours} onChange={(e) => this.setState({ hours: e.target.value }, this.submitTask.bind(this))} />
+              <Input  type="number" placeholder="Enter hours" value={this.state.hours} onChange={(e) => this.setState({ hours: e.target.value }, this.submitTask.bind(this))} />
             </div>
           </FormGroup>
 
-          <FormGroup style={{marginLeft: "80px", marginRight: "80px"}}>
-            <Label className="">Description</Label>
+          <FormGroup className="m-t-30" style={{marginLeft: "80px", marginRight: "80px"}}>
+            <Label >Description</Label>
             <div>
-            <Input type="textarea" placeholder="Description" style={{fontWeight: 400, borderRadius: "3px"}} value={this.state.description} onChange={(e) => this.setState({ description: e.target.value }, this.submitTask.bind(this))} />
+            <Input type="textarea" placeholder="Description" className="textarea" value={this.state.description} onChange={(e) => this.setState({ description: e.target.value }, this.submitTask.bind(this))} />
             </div>
         </FormGroup>
 

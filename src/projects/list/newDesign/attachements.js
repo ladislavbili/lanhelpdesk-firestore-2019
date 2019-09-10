@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import firebase from 'firebase';
 import { Button } from 'reactstrap';
 
+import "../../../scss/CRMMertel.scss";
+
 export default class Attachements extends Component{
 
   constructor(props){
@@ -52,78 +54,66 @@ export default class Attachements extends Component{
 
   render(){
     return (
-      <table className="table">
-        <thead>
-          <tr>
-            <th style={{color: "#B0B0B0", fontWeight: "600", fontSize: "17px"}}>Attachements</th>
-            <th className="w-20px"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <input
-                type="file"
-                id="fileUpload"
-                style={{ display: "none" }}
-                onChange={e => {
-                  let file = e.target.files[0];
-                  if(file===undefined){
-                    return;
-                  }
-                  let storageRef = firebase.storage().ref();
-                  let fileRef = storageRef.child('projects-attachements/'+this.props.id+'/'+file.name);
-                  fileRef.put(file).then((response)=>{
-                    if(!this.props.attachements.includes('projects-attachements/'+this.props.id+'/'+file.name)){
-                      let newAttachements=[...this.props.attachements,'projects-attachements/'+this.props.id+'/'+file.name];
-                      this.props.onChange(newAttachements);
-                    }
-                    this.getFile('projects-attachements/'+this.props.id+'/'+file.name);
-                  });
-                }}
-                />
-              <Button
-                htmlFor="fileUpload"
-                className="btn"
-                style={{color: "white", backgroundColor: "#578FFB", borderRadius: "3px", }}
-                >
-                <i className="fa fa-plus" /> new file
-                </Button>
-              </td>
-            </tr>
+      <div className="m-b-20">
+        <label style={{display: 'block'}}>Attachements</label>
+        <div className="m-r-5" style={{display: 'inline'}}>
+          <input
+            type="file"
+            id="fileUpload"
+            style={{ display: "none" }}
+            onChange={e => {
+              let file = e.target.files[0];
+              if(file===undefined){
+                return;
+              }
+              let storageRef = firebase.storage().ref();
+              let fileRef = storageRef.child('projects-attachements/'+this.props.id+'/'+file.name);
+              fileRef.put(file).then((response)=>{
+                if(!this.props.attachements.includes('projects-attachements/'+this.props.id+'/'+file.name)){
+                  let newAttachements=[...this.props.attachements,'projects-attachements/'+this.props.id+'/'+file.name];
+                  this.props.onChange(newAttachements);
+                }
+                this.getFile('projects-attachements/'+this.props.id+'/'+file.name);
+              });
+            }}
+            />
+            <Button
+              htmlFor="fileUpload"
+              className="btn"
+              >
+              +
+              </Button>
+          </div>
             {
               this.state.files.map((file)=>
-                <tr key={file.path}>
-                  <td>
+                <div className="m-r-5 file" style={{display: "inline"}}>
+                  <label className="file-name">
                     <a href={file.url} rel="noopener noreferrer" target="_blank">{file.name}</a>
-                  </td>
-                  <td>
-                    <button
-                      className="btn-link"
-                      type="button"
-                      onClick={()=>{
-                          if(window.confirm('Are you sure?')){
-                            let storageRef = firebase.storage().ref();
-                            storageRef.child(file.path).delete().then((resp)=>{
-                              let newAttachements=[...this.props.attachements];
-                              newAttachements.splice(newAttachements.findIndex((item)=>item===file.path),1);
-                              let newFiles=[...this.state.files];
-                              newFiles.splice(newFiles.findIndex((item)=>item.path===file.path),1);
-                              this.setState({files:newFiles});
-                              this.props.onChange(newAttachements);
-                            });
+                  </label>
+                  <button
+                    className="btn"
+                    type="button"
+                    onClick={()=>{
+                        if(window.confirm('Are you sure?')){
+                          let storageRef = firebase.storage().ref();
+                          storageRef.child(file.path).delete().then((resp)=>{
+                            let newAttachements=[...this.props.attachements];
+                            newAttachements.splice(newAttachements.findIndex((item)=>item===file.path),1);
+                            let newFiles=[...this.state.files];
+                            newFiles.splice(newFiles.findIndex((item)=>item.path===file.path),1);
+                            this.setState({files:newFiles});
+                            this.props.onChange(newAttachements);
+                          });
 
-                          }
-                        }}
-                      >
-                      <i className="fa fa-trash"  />
-                    </button>
-                  </td>
-                </tr>
+                        }
+                      }}
+                    >
+                    X
+                  </button>
+                </div>
               )
             }
-          </tbody>
-        </table>
+        </div>
       );
     }
   }

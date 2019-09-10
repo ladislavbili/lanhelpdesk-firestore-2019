@@ -176,14 +176,15 @@ export const disabledSelectStyle = {
 };
 
 
-export const taskEditModalSelectStyle = {
+export const CRMMertelSelectStyle = {
 	control: base => ({
 		...base,
 		minHeight: 30,
 		backgroundColor: 'white',
-		borderRadius: 3,
-		color: "#737373",
+		borderRadius: 4.13,
 		fontWeight: 600,
+		fontSize: 11,
+	  alignItems: "center",
 	}),
 	dropdownIndicator: base => ({
 		...base,
@@ -196,19 +197,19 @@ export const taskEditModalSelectStyle = {
 	multiValue: base => ({
 		...base,
 		backgroundColor: 'white',
-		borderRadius: 0
+		borderRadius: 0,
 	}),
 	valueContainer: base => ({
 		...base,
 		padding: '0px 6px',
-		borderRadius: 0
+		borderRadius: 0,
 	}),
 	input: base => ({
 		...base,
 		margin: 0,
 		padding: 0,
 		backgroundColor: 'white',
-		borderRadius: 0
+		borderRadius: 0,
 	}),
 	indicatorSeparator: base => ({
 		...base,
