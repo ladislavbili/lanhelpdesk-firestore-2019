@@ -263,7 +263,7 @@ class TaskList extends Component {
 										)
 									}
 									<tr>
-										<td colspan="6">
+										<td colSpan="6">
 											<b>Totals:</b>
 										</td>
 										<td>

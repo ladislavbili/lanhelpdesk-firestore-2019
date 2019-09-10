@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, Button, ModalBody, ModalFooter } from 'reactstrap';
+import { Modal, Button, ModalBody, ModalFooter, FormGroup, Label, Input } from 'reactstrap';
 import {database} from "../../../index";
 import {fromMillisec, snapshotToArray} from "../../../helperFunctions";
 
@@ -12,10 +12,13 @@ export default class Reports extends Component{
 			testResults: [],
       reportID: null,
 
+      seeAll: false,
+
       opendedModal: false,
       saving:false,
     }
     this.createListener.bind(this);
+    this.handleListenerChange.bind(this);
   }
 
 	componentWillMount(){
@@ -48,9 +51,40 @@ export default class Reports extends Component{
     });
   }
 
+  handleListenerChange(){
+    if(this.ref) {
+      this.ref();
+    }
+    if (this.state.seeAll) {
+      this.ref = database.collection("monitoring-servers_results")
+      .where("server", "==", this.props.id)
+      .orderBy("startDate", "desc")
+      .onSnapshot((doc) => {
+          let data = snapshotToArray(doc);
+          this.setState({
+            testResults: data
+          });
+      });
+    } else {
+      this.createListener(this.props.id);
+    }
+  }
+
   render(){
       return (
         <div className="flex">
+          <FormGroup className="row">
+            <div className="m-r-10">
+              <Label >See all results</Label>
+            </div>
+            <div className="m-l-15">
+              <Input  type="checkbox" checked={this.state.seeAll} onChange={(e)=> {
+                  this.setState({seeAll: !this.state.seeAll}, () => this.handleListenerChange());
+                }} />
+            </div>
+            <div className="m-l-15">{this.state.seeAll ? "YES" : "NO"}</div>
+          </FormGroup>
+
 					<table className="table">
 							<thead>
 								<tr>

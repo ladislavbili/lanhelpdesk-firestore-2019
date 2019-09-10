@@ -34,7 +34,7 @@ getData(id){
 
   render(){
     return (
-      <div className="m-b-15">
+      <div className="m-b-15 comments">
         <div>
           <FormGroup style={{marginLeft: "80px", marginRight: "80px"}}>
             <Label>Comment</Label>
@@ -55,7 +55,7 @@ getData(id){
 
         </div>
         {this.state.comments.sort((item1,item2)=>item2.createdAt-item1.createdAt).map((comment)=>
-          <div key={comment.id} className="comment p-5">
+          <div key={comment.id} className="p-5">
               <div className="row m-b-10 m-t-10"  style={{marginLeft: "80px", marginRight: "80px"}}>
                 <img
                   className="d-flex mr-3 rounded-circle thumb-sm"
