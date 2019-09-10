@@ -4,7 +4,7 @@ import Reports from "./reports"
 import {rebase} from "../../index";
 import {fromMillisec} from "../../helperFunctions";
 
-export default class MailServerShowInfo extends Component{
+export default class MailServerInfo extends Component{
   constructor(props){
     super(props);
     this.state={

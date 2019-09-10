@@ -4,7 +4,7 @@ import { Route } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import PageHeader from '../components/PageHeader';
 import MailServersList from './mailServers';
-import MailServerAdd from './mailServers/mailServerAdd';
+import MailServerAdd from './mailServers/add';
 
 import NotificationServersList from './notificationServers';
 import NotificationServersAdd from './notificationServers/add';

@@ -3,7 +3,7 @@ import {NavItem, Nav, Modal, Button} from 'reactstrap';
 import { NavLink as Link } from 'react-router-dom';
 
 import SelectPage from '../components/SelectPage';
-import MailServersEdit from './mailServers/allMailServersEdit';
+import MailServersEdit from './mailServers/settings';
 import NotificationServersEdit from './notificationServers/settings';
 
 export default class Sidebar extends Component {

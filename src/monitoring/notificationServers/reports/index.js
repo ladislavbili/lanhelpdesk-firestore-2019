@@ -1,41 +1,52 @@
 import React, { Component } from 'react';
 import { Modal, Button, ModalBody, ModalFooter } from 'reactstrap';
 import ReportDetail from "./reportDetail";
-import {rebase} from "../../../index";
+import {database} from "../../../index";
+import {fromMillisec, snapshotToArray} from "../../../helperFunctions";
 
 export default class Reports extends Component{
   constructor(props){
     super(props);
     this.state={
-			data: [],
+			testResults: [],
 
       opendedModal: false,
       saving:false,
     }
+    this.createListener.bind(this);
   }
 
 	componentWillMount(){
-		this.ref1 = rebase.listenToCollection('monitoring-notifications_results', {
-		context: this,
-		withIds: true,
-		then(data) {
-			 this.setState({
-				 data
-			 });
-		},
-		onFailure(err) {
-			//handle error
-		}
-	});
+    this.createListener(this.props.id);
 	}
+
+  componentWillReceiveProps(props){
+    if (props.id !== this.props.id){
+      if (this.ref) {
+        this.ref();
+      }
+      this.createListener(props.id);
+    }
+  }
 
 	componentWillUnmount(){
-		rebase.removeBinding(this.ref1);
+    this.ref();
 	}
 
+  createListener(id){
+    this.ref = database.collection("monitoring-notifications_results")
+    .where("notification", "==", id)
+    .orderBy("receiveDate", "desc")
+    .limit(50)
+    .onSnapshot((doc) => {
+        let data = snapshotToArray(doc);
+        this.setState({
+          testResults: data
+        });
+    });
+  }
+
   render(){
-			let ITEMS = this.state.data.filter(datum => datum.notification === this.props.id);
-      ITEMS.sort((item1,item2)=>item1.receiveDate>item2.receiveDate?-1:1);
       return (
         <div className="flex">
 					<table className="table">
@@ -48,7 +59,7 @@ export default class Reports extends Component{
 							</thead>
 							<tbody>
 								{
-									ITEMS.map(item =>
+									this.state.testResults.map(item =>
 										<tr
 											className="clickable"
 											key={item.id}

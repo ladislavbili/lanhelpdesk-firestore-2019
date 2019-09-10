@@ -3,7 +3,7 @@ import { Button, Modal, ModalBody, ModalFooter } from 'reactstrap';
 import { connect } from "react-redux";
 
 import classnames from 'classnames';
-import MailServerEditIndex from './mailServerEditIndex';
+import Container from './container';
 import Empty from '../empty';
 import {rebase, database} from "../../index";
 import {snapshotToArray} from "../../helperFunctions";
@@ -74,7 +74,7 @@ class MailServerList extends Component {
 							});
 						})
 
-					this.props.history.push(`/monitoring/mail-servers`);
+					this.props.history.push(`/monitoring/mail-notifications`);
 				}).catch(err => {
 				//handle error
 			});
@@ -219,12 +219,12 @@ class MailServerList extends Component {
 
 					{!this.props.match.params.itemID && this.props.layout === 0 && <Empty />}
 
-					{this.props.match.params.itemID && this.props.layout === 0 && <MailServerEditIndex id={this.props.match.params.itemID} isModal={false}/>}
+					{this.props.match.params.itemID && this.props.layout === 0 && <Container id={this.props.match.params.itemID} isModal={false}/>}
 
 					</div>
 					<Modal className="w-50" isOpen={this.state.editOpened} toggle={() => this.setState({editOpened:!this.state.editOpened})} >
 		        <ModalBody>
-		          <MailServerEditIndex id={this.state.openedID} isModal={true} />
+		          <Container id={this.state.openedID} isModal={true} />
 		        </ModalBody>
 		        <ModalFooter>
 		          <Button className="btn-link mr-auto" onClick={() => this.setState({editOpened:!this.state.editOpened})}>

@@ -50,24 +50,24 @@ export default class AllMailServersEdit extends Component{
     ).then((data) => {
       this.setState({
         timeout: this.msToTime(data.timeout),
-        testMail: data.testMail,
+        testMail: data.testMail ? data.testMail : "",
 
-        smtpServer: data.smtp.server,
-        smtpHost: data.smtp.host,
-        smtpPort: data.smtp.port,
-        smtpSecure: data.smtp.secure,
-        smtpUser: data.smtp.user,
-        smtpPass: data.smtp.pass,
-        smtpTls: data.smtp.tls,
-        smtpRejectUnauthorized: data.smtp.rejectUnauthorized,
+        smtpServer: data.smtp.server ? data.smtp.server : "",
+        smtpHost: data.smtp.host ? data.smtp.host : "",
+        smtpPort: data.smtp.port ? data.smtp.port : "",
+        smtpSecure: data.smtp.secure ? data.smtp.secure : false,
+        smtpUser: data.smtp.user ? data.smtp.user : "",
+        smtpPass: data.smtp.pass ? data.smtp.pass : "",
+        smtpTls: data.smtp.tls ? data.smtp.tls : false,
+        smtpRejectUnauthorized: data.smtp.rejectUnauthorized ? data.smtp.rejectUnauthorized : false,
 
-        imapServer: data.imap.server,
-        imapHost: data.imap.host,
-        imapPort: data.imap.port,
-        imapUser: data.imap.user,
-        imapPassword: data.imap.password,
-        imapTls: data.imap.tls,
-        imapRejectUnauthorized: data.imap.rejectUnauthorized,
+        imapServer: data.imap.server ? data.imap.server : "",
+        imapHost: data.imap.host ? data.imap.host : "",
+        imapPort: data.imap.port ? data.imap.port : "",
+        imapUser: data.imap.user ? data.imap.user : "",
+        imapPassword: data.imap.password ? data.imap.password : "",
+        imapTls: data.imap.tls ? data.imap.tls : false,
+        imapRejectUnauthorized: data.imap.rejectUnauthorized ? data.imap.rejectUnauthorized : false,
       });
       }).catch(err => {
     });

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
-import MailServerEdit from './mailServerEdit';
-import MailServerShowInfo from './mailServerShowInfo';
+import Edit from './edit';
+import Info from './info';
 
 export default class MailServerEditIndex extends Component{
   constructor(props){
@@ -32,12 +32,12 @@ export default class MailServerEditIndex extends Component{
         <div className={"flex p-t-15 scrollable " + (this.props.isModal ? "" : " card-box fit-with-header-and-commandbar ")}>
 					{ this.state.showEdit
 						&&
-						<MailServerEdit id={this.props.id} toggleEdit={() => this.toggleEdit()} />
+						<Edit id={this.props.id} toggleEdit={() => this.toggleEdit()} />
 					}
 					{
 						!this.state.showEdit
 						&&
-						<MailServerShowInfo id={this.props.id} toggleEdit={() => this.toggleEdit()} />
+						<Info id={this.props.id} toggleEdit={() => this.toggleEdit()} />
 					}
   			</div>
       )

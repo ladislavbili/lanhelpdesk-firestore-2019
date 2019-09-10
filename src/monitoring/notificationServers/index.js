@@ -5,7 +5,8 @@ import { connect } from "react-redux";
 import classnames from 'classnames';
 import Container from './container';
 import Empty from '../empty';
-import {rebase} from "../../index";
+import {rebase, database} from "../../index";
+import {snapshotToArray} from "../../helperFunctions";
 
 class NotificationList extends Component {
 	constructor(props) {
@@ -66,6 +67,16 @@ class NotificationList extends Component {
 	removeItem(id){
 		rebase.removeDoc(`monitoring-notifications/${id}`)
 		    .then(() => {
+					database.collection("monitoring-notifications_results")
+				    .where("notification", "==", id)
+				    .get()
+						.then((col) => {
+							let data = snapshotToArray(col);
+							data.forEach(d => {
+								rebase.removeDoc(`monitoring-notifications_results/${d.id}`);
+							});
+						})
+
 		      this.props.history.push(`/monitoring/mail-notifications`);
 		    }).catch(err => {
 		    //handle error
