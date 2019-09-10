@@ -27,8 +27,19 @@
   }
 }
 
+@media (min-width: 768px){
+.modal-dialog {
+    width: 600px;
+    margin: 30px auto;
+  }
+}
+
 .modal-width-1000{
   width: 1000px;
+}
+
+.modal-width-1023{
+  width: 1023px;
 }
 
 body{

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Modal, Button, ModalBody, ModalFooter } from 'reactstrap';
-import {rebase} from "../../../index";
-import {fromMillisec} from "../../../helperFunctions";
+import {database} from "../../../index";
+import {fromMillisec, snapshotToArray} from "../../../helperFunctions";
 
 import ReportDetail from "./reportDetail";
 
@@ -9,37 +9,46 @@ export default class Reports extends Component{
   constructor(props){
     super(props);
     this.state={
-			data: [],
+			testResults: [],
       reportID: null,
 
       opendedModal: false,
       saving:false,
     }
+    this.createListener.bind(this);
   }
 
 	componentWillMount(){
-		this.ref1 = rebase.listenToCollection('monitoring-servers_results', {
-		context: this,
-		withIds: true,
-		then(data) {
-			 this.setState({
-				 data
-			 });
-		},
-		onFailure(err) {
-			//handle error
-		}
-	});
+    this.createListener(this.props.id);
 	}
+
+  componentWillReceiveProps(props){
+    if (props.id !== this.props.id){
+      if (this.ref) {
+        this.ref();
+      }
+      this.createListener(props.id);
+    }
+  }
 
 	componentWillUnmount(){
-		rebase.removeBinding(this.ref1);
+    this.ref();
 	}
 
+  createListener(id){
+    this.ref = database.collection("monitoring-servers_results")
+    .where("server", "==", id)
+    .orderBy("startDate", "desc")
+    .limit(50)
+    .onSnapshot((doc) => {
+        let data = snapshotToArray(doc);
+        this.setState({
+          testResults: data
+        });
+    });
+  }
+
   render(){
-		const ITEMS = this.state.data
-                  .filter(datum => datum.server === this.props.id)
-                  .sort((a, b) => b.startDate - a.startDate);
       return (
         <div className="flex">
 					<table className="table">
@@ -53,7 +62,7 @@ export default class Reports extends Component{
 							</thead>
 							<tbody>
 								{
-									ITEMS.map(item =>
+									this.state.testResults.map(item =>
 										<tr
 											className="clickable"
 											key={item.id}

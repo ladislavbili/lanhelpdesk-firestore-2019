@@ -12,7 +12,7 @@ const TIME_OPTIONS = [
   { label: "days", value: "days"},
 ];
 
-export default class BackupTaskEdit extends Component{
+export default class NotificationEdit extends Component{
   constructor(props){
     super(props);
     this.state={

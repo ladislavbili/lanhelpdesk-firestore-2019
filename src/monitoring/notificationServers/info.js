@@ -4,7 +4,7 @@ import Reports from "./reports"
 import {rebase} from "../../index";
 import {arraySelectToString, fromMillisec} from "../../helperFunctions";
 
-export default class BackupTaskShowInfo extends Component{
+export default class NotificationInfo extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -22,6 +22,8 @@ export default class BackupTaskShowInfo extends Component{
       alertMail: "",
 
       note: "",
+
+      success: false,
     }
 		this.fetch.bind(this);
 		this.fetch(this.props.id);
@@ -46,6 +48,7 @@ export default class BackupTaskShowInfo extends Component{
 		       alertMail: (datum.alertMail ? datum.alertMail : "no alert mail")  + (datum.alertMailDisabled ? " (disabled)" : ""),
 
 		       note: datum.note ? datum.note : "no note",
+           success: datum.success ? datum.success : false,
 				 });
 			});
 	}

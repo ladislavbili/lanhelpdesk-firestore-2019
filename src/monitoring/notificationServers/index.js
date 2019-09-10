@@ -3,11 +3,11 @@ import { Button, Modal, ModalBody, ModalFooter } from 'reactstrap';
 import { connect } from "react-redux";
 
 import classnames from 'classnames';
-import BackupTaskEditIndex from './backupTaskEditIndex';
+import Container from './container';
 import Empty from '../empty';
 import {rebase} from "../../index";
 
-class BackupTaskList extends Component {
+class NotificationList extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -193,12 +193,12 @@ class BackupTaskList extends Component {
 
 					{!this.props.match.params.itemID && this.props.layout === 0 && <Empty />}
 
-					{this.props.match.params.itemID && this.props.layout === 0 && <BackupTaskEditIndex id={this.props.match.params.itemID} isModal={false}/>}
+					{this.props.match.params.itemID && this.props.layout === 0 && <Container id={this.props.match.params.itemID} isModal={false}/>}
 
 					</div>
 					<Modal className="w-50" isOpen={this.state.editOpened} toggle={() => this.setState({editOpened:!this.state.editOpened})} >
 		        <ModalBody>
-		          <BackupTaskEditIndex id={this.state.openedID} isModal={true} />
+		          <Container id={this.state.openedID} isModal={true} />
 		        </ModalBody>
 		        <ModalFooter>
 		          <Button className="btn-link mr-auto" onClick={() => this.setState({editOpened:!this.state.editOpened})}>
@@ -216,4 +216,4 @@ class BackupTaskList extends Component {
 		return { layout:appReducer.layout };
 	};
 
-	export default connect(mapStateToProps, { })(BackupTaskList);
+	export default connect(mapStateToProps, { })(NotificationList);

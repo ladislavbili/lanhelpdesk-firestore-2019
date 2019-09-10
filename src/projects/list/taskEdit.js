@@ -132,7 +132,7 @@ export default class TaskEdit extends Component {
               className="btn-link"
               style={{padding: "0px 25px", fontSize: "20px", fontWeight: "500", color: "#578FFB"}}
               onClick={() => { this.setState({ status: 1 }, this.submitTask.bind(this)) }}
-            > Open
+            > OPEN
               </button>
           </div>
 
@@ -140,7 +140,7 @@ export default class TaskEdit extends Component {
             <button type="button" className="btn-link"
               style={{padding: "0px 25px", fontSize: "20px", fontWeight: "500", color: "#578FFB"}}
               onClick={() => { this.setState({ status: 2 }, this.submitTask.bind(this)) }}
-            > Pending
+            > PENDING
               </button>
           </div>
 
@@ -148,7 +148,7 @@ export default class TaskEdit extends Component {
             <button type="button" className="btn-link"
             style={{padding: "0px 25px", fontSize: "20px", fontWeight: "500", color: "#578FFB"}}
               onClick={() => { this.setState({ status: 3 }, this.submitTask.bind(this)) }}
-            > Close
+            > CLOSED
               </button>
           </div>
 
@@ -162,7 +162,7 @@ export default class TaskEdit extends Component {
             </div>
           }
 
-          <div style={{border: "2px solid #578FFB", borderRadius: "5px", marginRight: "5px"}}>
+        {false &&  <div style={{border: "2px solid #578FFB", borderRadius: "5px", marginRight: "5px"}}>
             <button type="button" className="btn-link"
             style={{padding: "0px 25px", fontSize: "20px", fontWeight: "500", color: "#578FFB"}}
               onClick={() => {
@@ -175,7 +175,7 @@ export default class TaskEdit extends Component {
             >
               Delete
             </button>
-          </div>
+          </div>}
         </div>
 
         {/*MAIN*/}

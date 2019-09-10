@@ -11,7 +11,7 @@ const TIME_OPTIONS = [
   { label: "days", value: "days"},
 ];
 
-export default class BackupTaskAdd extends Component{
+export default class NotificationAdd extends Component{
   constructor(props){
     super(props);
     this.state={

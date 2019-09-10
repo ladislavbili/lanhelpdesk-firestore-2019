@@ -6,8 +6,8 @@ import PageHeader from '../components/PageHeader';
 import MailServersList from './mailServers';
 import MailServerAdd from './mailServers/mailServerAdd';
 
-import BackupTasksList from './backupTasks';
-import BackupTaskAdd from './backupTasks/backupTaskAdd';
+import NotificationServersList from './notificationServers';
+import NotificationServersAdd from './notificationServers/add';
 
 export default class Navigation extends Component {
 	render() {
@@ -23,9 +23,9 @@ export default class Navigation extends Component {
 						<Route exact path='/monitoring/mail-servers/add' component={MailServerAdd} />
 
 
-							<Route exact path='/monitoring/mail-notifications' component={BackupTasksList} />
-							<Route exact path='/monitoring/mail-notifications/edit/:itemID' component={BackupTasksList} />
-							<Route exact path='/monitoring/mail-notifications/add' component={BackupTaskAdd} />
+							<Route exact path='/monitoring/mail-notifications' component={NotificationServersList} />
+							<Route exact path='/monitoring/mail-notifications/edit/:itemID' component={NotificationServersList} />
+							<Route exact path='/monitoring/mail-notifications/add' component={NotificationServersAdd} />
 					</div>
 				</div>
 			</div>

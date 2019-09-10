@@ -5,7 +5,8 @@ import { connect } from "react-redux";
 import classnames from 'classnames';
 import MailServerEditIndex from './mailServerEditIndex';
 import Empty from '../empty';
-import {rebase} from "../../index";
+import {rebase, database} from "../../index";
+import {snapshotToArray} from "../../helperFunctions";
 
 class MailServerList extends Component {
 	constructor(props) {
@@ -63,10 +64,21 @@ class MailServerList extends Component {
 	removeItem(id){
 		rebase.removeDoc(`monitoring-servers/${id}`)
 				.then(() => {
+					database.collection("monitoring-servers_results")
+				    .where("server", "==", id)
+				    .get()
+						.then((col) => {
+							let data = snapshotToArray(col);
+							data.forEach(d => {
+								rebase.removeDoc(`monitoring-servers_results/${d.id}`);
+							});
+						})
+
 					this.props.history.push(`/monitoring/mail-servers`);
 				}).catch(err => {
 				//handle error
 			});
+
 	}
 
 	render() {

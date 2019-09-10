@@ -4,17 +4,17 @@ import { NavLink as Link } from 'react-router-dom';
 
 import SelectPage from '../components/SelectPage';
 import MailServersEdit from './mailServers/allMailServersEdit';
-import BackupTasksEdit from './backupTasks/allBackupTasksEdit';
+import NotificationServersEdit from './notificationServers/settings';
 
 export default class Sidebar extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			openedEditServers: false,
-			openedEditBackupTasks: false,
+			openedEditNotifications: false,
 		};
 		this.toggleEditServers.bind(this);
-		this.toggleEditBackupTasks.bind(this);
+		this.toggleEditNotificationServers.bind(this);
 	}
 
 	componentWillMount(){
@@ -27,8 +27,8 @@ export default class Sidebar extends Component {
 		this.setState({openedEditServers:!this.state.openedEditServers})
 	}
 
-	toggleEditBackupTasks(){
-		this.setState({openedEditBackupTasks:!this.state.openedEditBackupTasks})
+	toggleEditNotificationServers(){
+		this.setState({openedEditNotifications:!this.state.openedEditNotifications})
 	}
 
 	render() {
@@ -48,7 +48,7 @@ export default class Sidebar extends Component {
 								<Button
 									key={0}
 									className='hidden-button full-width full-height'
-									onClick={() => {this.setState({openedEditBackupTasks: true})}}
+									onClick={() => {this.setState({openedEditNotifications: true})}}
 									>
 									<i className="fa fa-cog"/>
 								</Button>
@@ -78,8 +78,8 @@ export default class Sidebar extends Component {
 						<MailServersEdit close={this.toggleEditServers.bind(this)}/>
 					</Modal>
 
-					<Modal isOpen={this.state.openedEditBackupTasks} toggle={this.toggleEditBackupTasks.bind(this)}>
-						<BackupTasksEdit close={this.toggleEditBackupTasks.bind(this)}/>
+					<Modal isOpen={this.state.openedEditNotifications} toggle={this.toggleEditNotificationServers.bind(this)}>
+						<NotificationServersEdit close={this.toggleEditNotificationServers.bind(this)}/>
 					</Modal>
 
 				</div>
