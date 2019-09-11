@@ -12,6 +12,7 @@ export default class Backups extends Component{
       editID:null,
       editFake:null,
       newID:0,
+
       editTextHeight:29,
     }
   }
@@ -19,6 +20,7 @@ export default class Backups extends Component{
   render(){
     return (
       <div>
+
         {
           this.props.items.map((item,index)=>
           <div key={item.id} className="row">
@@ -68,12 +70,16 @@ export default class Backups extends Component{
                 this.props.onChange(newData);
               }}
             />
-          <Button className="btn-link" onClick={()=>{this.props.removeItem(item.id);}}>Remove</Button>
+          {
+            !item.def &&
+           <Button className="btn-link" onClick={()=>{this.props.removeItem(item.id);}}>Remove</Button>
+          }
           <hr className="m-b-10"/>
           </div>
         )}
-        <Button className="btn" onClick={()=>{this.props.onChange([{id:this.state.newID,text:"",textHeight:29,fake:true,backupList:[]},...this.props.items]);this.setState({newID:this.state.newID+1})}}>{this.props.addLabel}</Button>
-      </div>
+        <Button className="btn pull-right" onClick={()=>{this.props.onChange([{id:this.state.newID,text:"",textHeight:29,fake:true,backupList:[]},...this.props.items]);this.setState({newID:this.state.newID+1})}}>{this.props.addLabel}</Button>
+        <div></div>
+    </div>
     );
   }
 }

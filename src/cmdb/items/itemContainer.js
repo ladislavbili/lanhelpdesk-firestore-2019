@@ -6,7 +6,7 @@ export default class ItemContainer extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			edit:true,
+			edit:false,
 			saving:false,
 			delete:false
 		};
@@ -16,7 +16,7 @@ export default class ItemContainer extends Component {
 		return (
 			<div className="form-background scrollable fit-with-header" style={{padding:0,border:'none'}}>
 				<div className="container-fluid">
-					<div className="d-flex flex-row align-items-center w-50 ml-auto mr-auto" >
+					<div className="d-flex flex-row align-items-center ml-auto mr-auto" >
 						<div className="p-2">
 							{ !this.state.edit &&
 								<button type="button" className="btn btn-link waves-effect" onClick={()=>this.setState({edit:true})}>
@@ -53,7 +53,7 @@ export default class ItemContainer extends Component {
 				</div>
 				{
 					this.state.edit &&
-					<ItemEdit {...this.props} delete={this.state.delete} saving={this.state.saving} setDeleting={(deleting)=>this.setState({delete:deleting})} setSaving={(saving)=>this.setState({saving})} />
+					<ItemEdit {...this.props} toView={() => this.setState({edit: false})} delete={this.state.delete} saving={this.state.saving} setDeleting={(deleting)=>this.setState({delete:deleting})} setSaving={(saving)=>this.setState({saving})} />
 				}
 				{
 					!this.state.edit &&

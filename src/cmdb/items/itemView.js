@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {rebase,database} from '../../index';
-import { FormGroup, Label, TabContent, TabPane, Nav, NavItem, NavLink, Table } from 'reactstrap';
+import { FormGroup, Label, Table } from 'reactstrap';
 import {snapshotToArray, getAttributeDefaultValue, htmlFixNewLines} from '../../helperFunctions';
 import classnames from 'classnames';
 
@@ -97,76 +97,60 @@ export default class ItemView extends Component{
 
   render(){
     return (
-        <div className="form-background card-box scrollable fit-with-header" style={{padding:0,border:'none'}}>
-          <div className="ml-auto mr-auto" style={{maxWidth:1000}}>
-            <FormGroup>
-              <Label>Name</Label>
-              <div>{this.state.item===null?'':this.state.item.title}</div>
+        <div className="card-box fit-with-header-and-commandbar scrollable p-t-15">
+          <div >
+            <FormGroup className="row  m-b-10">
+              <div className="m-r-5 w-10">
+                <Label>Name:</Label>
+              </div>
+              <div className="flex">
+                {this.state.item===null?'':this.state.item.title}
+              </div>
             </FormGroup>
-            <FormGroup>
-              <Label>Company</Label>
-              <div>{this.state.item===null?'':this.state.companies.find((item)=>item.id===this.state.item.company).title}</div>
+            <FormGroup className="row m-b-10">
+              <div className="m-r-5 w-10">
+                <Label>Company:</Label>
+              </div>
+              <div className="flex">
+                {this.state.item===null?'':this.state.companies.find((item)=>item.id===this.state.item.company).title}
+              </div>
             </FormGroup>
-            <FormGroup>
-              <Label>Status</Label>
-              <div>{this.state.item===null?'':this.state.statuses.find((item)=>item.id===this.state.item.status).title}</div>
+            <FormGroup className="row m-b-10">
+              <div className="m-r-5 w-10">
+                <Label>Status:</Label>
+              </div>
+              <div className="flex">
+                {this.state.item===null?'':this.state.statuses.find((item)=>item.id===this.state.item.status).title}
+              </div>
             </FormGroup>
 
-            <Nav tabs>
-              <NavItem>
-                <NavLink
-                  className={classnames({ active: this.state.tab === '0', clickable:true })}
-                  onClick={() => { this.setState({tab:'0'}); }}
-                >
-                  Description
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink
-                  className={classnames({ active: this.state.tab === '1', clickable:true })}
-                  onClick={() => { this.setState({tab:'1'}); }}
-                >
-                  IP list
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink
-                  className={classnames({ active: this.state.tab === '2' , clickable:true   })}
-                  onClick={() => { this.setState({tab:'2'}); }}
-                >
-                  Backup tasks
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink
-                  className={classnames({ active: this.state.tab === '3', clickable:true })}
-                  onClick={() => { this.setState({tab:'3'}); }}
-                >
-                  Attributes
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink
-                  className={classnames({ active: this.state.tab === '4', clickable:true })}
-                  onClick={() => { this.setState({tab:'4'}); }}
-                >
-                  Passwords
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink
-                  className={classnames({ active: this.state.tab === '5', clickable:true })}
-                  onClick={() => { this.setState({tab:'5'}); }}
-                >
-                  Links
-                </NavLink>
-              </NavItem>
-            </Nav>
-            <TabContent activeTab={this.state.tab} style={{marginBottom:30,borderRadius:4}}>
-              <TabPane tabId="0">
-                <div  dangerouslySetInnerHTML={{__html:this.state.item===null?'': this.state.item.description.replace(/(?:\r\n|\r|\n)/g, '<br>') }}></div>
-              </TabPane>
-              <TabPane tabId="1">
+              <FormGroup className="row m-b-10">
+                <div className="m-r-5 w-10">
+                  <Label>Description</Label>
+                </div>
+                <div className="flex" dangerouslySetInnerHTML={{__html:this.state.item===null?'': this.state.item.description.replace(/(?:\r\n|\r|\n)/g, '<br>') }}></div>
+              </FormGroup>
+
+
+                { (this.state.sidebarItem ? this.state.sidebarItem.attributes : []).map((item)=>
+                  <FormGroup key={item.id} className="row m-b-10">
+                    <div className="m-r-5 w-10">
+                      <Label>{item.title}</Label>
+                    </div>
+                    { item.type.id==='select' &&
+                      <div className="flex">{this.state.attributes[item.id].label}</div>
+                    }
+                    { item.type.id==='input' &&
+                      <div className="flex">{this.state.attributes[item.id]}</div>
+                    }
+                    { item.type.id==='textarea' &&
+                      <div className="flex" dangerouslySetInnerHTML ={{__html:htmlFixNewLines(this.state.attributes[item.id])}}></div>
+                    }
+                  </FormGroup>
+                )}
+
+              <div className="m-t-10">
+                <Label className="font-16">IP list</Label>
                 <Table striped>
                   <thead>
                     <tr>
@@ -191,8 +175,9 @@ export default class ItemView extends Component{
                     )}
                   </tbody>
                 </Table>
-              </TabPane>
-              <TabPane tabId="2">
+              </div>
+              <div className="m-t-10">
+                <Label className="font-16">Backup tasks</Label>
                 { this.state.backups.map((item,index)=>
                   <div className="row" key={item.id}>
                     <Label>
@@ -202,24 +187,9 @@ export default class ItemView extends Component{
                     </div>
                   </div>
                 )}
-              </TabPane>
-              <TabPane tabId="3">
-                { (this.state.sidebarItem ? this.state.sidebarItem.attributes : []).map((item)=>
-                  <FormGroup key={item.id}>
-                    <Label>{item.title}</Label>
-                    { item.type.id==='select' &&
-                      <div>{this.state.attributes[item.id].label}</div>
-                    }
-                    { item.type.id==='input' &&
-                      <div>{this.state.attributes[item.id]}</div>
-                    }
-                    { item.type.id==='textarea' &&
-                      <div dangerouslySetInnerHTML ={{__html:htmlFixNewLines(this.state.attributes[item.id])}}></div>
-                    }
-                  </FormGroup>
-                )}
-              </TabPane>
-              <TabPane tabId="4">
+              </div>
+              <div className="m-t-10">
+                <Label className="font-16">Passwords</Label>
                 <Table striped>
                   <thead>
                     <tr>
@@ -242,8 +212,9 @@ export default class ItemView extends Component{
                     )}
                   </tbody>
                 </Table>
-              </TabPane>
-              <TabPane tabId="5">
+              </div>
+              <div className="m-t-10">
+                <Label className="font-16">Links</Label>
                 <Table striped>
                   <thead>
                     <tr>
@@ -260,8 +231,7 @@ export default class ItemView extends Component{
                     )}
                   </tbody>
                 </Table>
-              </TabPane>
-            </TabContent>
+              </div>
         </div>
       </div>
     );

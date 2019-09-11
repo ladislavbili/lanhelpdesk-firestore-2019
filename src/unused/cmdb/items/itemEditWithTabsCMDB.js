@@ -23,7 +23,7 @@ export default class ItemEdit extends Component{
       allLinks:[],
       originalIPs:[],
       originalPasswords:[],
-      originalBackups:[{id:-1, def: true}],
+      originalBackups:[],
       originalLinks:[],
       sidebarItem:null,
       tab:0,
@@ -115,14 +115,14 @@ export default class ItemEdit extends Component{
       status,
       IPlist:IPs.map((item)=>{return {...item,fake:false}}),
       passwords:passwords.map((item)=>{return {...item,fake:false}}),
-      backupTasks: backups.length > 0 ? backups.map((item)=>{return {...item,fake:false}}) : [{id: -1, def: true, fake: true}],
+      backupTasks:backups.map((item)=>{return {...item,fake:false}}),
       links:links.map((item)=>{return {...item,fake:false,link:items.find((item2)=>item2.id===item.link)}}),
       attributes,
 
       originalLinks:links.map((item)=>item.id),
       originalIPs:IPs.map((item)=> item.id),
       originalPasswords:passwords.map((item)=> item.id),
-      originalBackups: backups.map((item)=> item.id),
+      originalBackups:backups.map((item)=> item.id),
     });
   }
 
@@ -226,9 +226,6 @@ export default class ItemEdit extends Component{
 
     ///
     this.state.backupTasks.filter((item)=>item.fake).forEach((item)=>{
-      if (item.def) {
-        return;
-      }
       promises.push(rebase.addToCollection('/cmdb-backups',{text:item.text,itemID:ID,textHeight:item.textHeight,backupList:item.backupList?item.backupList:[]}));
     });
     this.state.backupTasks.filter((item)=>!item.fake).forEach((item)=>{
@@ -262,8 +259,7 @@ export default class ItemEdit extends Component{
         );
         this.props.setSaving(false);
       });
-    });
-    this.props.toView();
+    })
   }
 
   removeBackupTask(id){
@@ -274,77 +270,98 @@ export default class ItemEdit extends Component{
 
   render(){
     return (
-          <div className="ml-auto mr-auto card-box fit-with-header-and-commandbar scrollable p-t-15">
-
-            <FormGroup className="row m-b-10">
-              <div className="w-10">
-                <Label>Name</Label>
-              </div>
-              <div className="flex">
-                <Input type="text" placeholder="Enter name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
-              </div>
+          <div className="ml-auto mr-auto card-box fit-with-header p-t-15 w-50">
+            <FormGroup>
+              <Label>Name</Label>
+              <Input type="text" placeholder="Enter name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
+            </FormGroup>
+            <FormGroup>
+              <Label>Company</Label>
+              <Select
+                styles={selectStyle}
+                options={this.state.companies}
+                value={this.state.company}
+                onChange={e =>{ this.setState({ company: e }); }}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label>Status</Label>
+              <Select
+                styles={selectStyle}
+                options={this.state.statuses}
+                value={this.state.status}
+                onChange={e =>{ this.setState({ status: e }); }}
+              />
             </FormGroup>
 
-            <FormGroup className="row m-b-10">
-              <div className="w-10">
-                <Label>Company</Label>
-              </div>
-              <div className="flex">
-                <Select
-                  styles={selectStyle}
-                  options={this.state.companies}
-                  value={this.state.company}
-                  onChange={e =>{ this.setState({ company: e }); }}
-                  />
-              </div>
-            </FormGroup>
-
-            <FormGroup className="row m-b-10">
-              <div className="w-10">
-                <Label>Status</Label>
-              </div>
-              <div className="flex">
-                <Select
-                  styles={selectStyle}
-                  options={this.state.statuses}
-                  value={this.state.status}
-                  onChange={e =>{ this.setState({ status: e }); }}
-                  />
-              </div>
-            </FormGroup>
-
-            <FormGroup className="row m-b-10">
-              <div  className="w-10">
-                <Label>Description</Label>
-              </div>
-              <div className="flex">
+            <Nav tabs>
+              <NavItem>
+                <NavLink
+                  className={classnames({ active: this.state.tab === 0, clickable:true })}
+                  onClick={() => { this.setState({tab:0}); }}
+                >
+                  Description
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  className={classnames({ active: this.state.tab === 1, clickable:true })}
+                  onClick={() => { this.setState({tab:1}); }}
+                >
+                  IP list
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  className={classnames({ active: this.state.tab === 2 , clickable:true   })}
+                  onClick={() => { this.setState({tab:2}); }}
+                >
+                  Backup tasks
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  className={classnames({ active: this.state.tab === 3, clickable:true })}
+                  onClick={() => { this.setState({tab:3}); }}
+                >
+                  Attributes
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  className={classnames({ active: this.state.tab === 4, clickable:true })}
+                  onClick={() => { this.setState({tab:4}); }}
+                >
+                  Passwords
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  className={classnames({ active: this.state.tab === 5, clickable:true })}
+                  onClick={() => { this.setState({tab:5}); }}
+                  >
+                  Links
+                </NavLink>
+              </NavItem>
+            </Nav>
+            <TabContent activeTab={this.state.tab} className="m-t-15">
+              <TabPane tabId={0}>
                 <CKEditor
                   data={this.state.description}
                   onChange={(e)=>this.setState({description:e.editor.getData()})}
                   config={ {
-                    //height: [ '60vh' ],
-                    codeSnippet_languages: {
-                      javascript: 'JavaScript',
-                      php: 'PHP'
-                    }
+                      //height: [ '60vh' ],
+                      codeSnippet_languages: {
+                        javascript: 'JavaScript',
+                        php: 'PHP'
+                      }
                   } }
                   />
-              </div>
-              </FormGroup>
-
-              <AttributesHandler attributes={this.state.sidebarItem ? this.state.sidebarItem.attributes : []} values={this.state.attributes}
-                setValue={(id, val)=>{
-                  let newAttributes={...this.state.attributes};
-                  newAttributes[id] = val;
-                  this.setState({attributes:newAttributes})
-                }} />
-
-              <div className="m-t-10">
-                <Label className="font-16">IP list</Label>
+              </TabPane>
+              <TabPane tabId={1}>
                 <IPList items={this.state.IPlist} onChange={(items)=>this.setState({IPlist:items})} />
-              </div>
-              <div className="m-t-10">
-                <Label className="font-16">Backup tasks</Label>
+              </TabPane>
+              <TabPane tabId={2}>
                 <TextareaList
                   items={this.state.backupTasks}
                   onChange={(items)=>this.setState({backupTasks:items})}
@@ -354,16 +371,22 @@ export default class ItemEdit extends Component{
                   label={htmlFixNewLines(this.state.sidebarItem?this.state.sidebarItem.bacupTasksLabel:'')}
                   addLabel="Add backup task"
                 />
-            </div>
-
-              <div className="m-t-10">
-                <Label className="font-16">Passwords</Label>
+              </TabPane>
+              <TabPane tabId={3}>
+                <AttributesHandler attributes={this.state.sidebarItem ? this.state.sidebarItem.attributes : []} values={this.state.attributes}
+                  setValue={(id, val)=>{
+                    let newAttributes={...this.state.attributes};
+                    newAttributes[id] = val;
+                    this.setState({attributes:newAttributes})
+                  }} />
+              </TabPane>
+              <TabPane tabId={4}>
                 <Passwords items={this.state.passwords} onChange={(items)=>this.setState({passwords:items})} />
-              </div>
-              <div className="m-t-10">
-                <Label className="font-16">Links</Label>
+              </TabPane>
+              <TabPane tabId={5}>
                 <Links items={this.state.links} links={this.state.allLinks} onChange={(links)=>this.setState({links})} />
-              </div>
+              </TabPane>
+            </TabContent>
         </div>
     );
   }
