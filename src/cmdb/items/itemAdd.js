@@ -9,7 +9,6 @@ import Links from './links';
 import Passwords from './passwords';
 import AttributesHandler from './attributesHandler';
 import TextareaList from '../components/backups';
-import classnames from 'classnames';
 import CKEditor from 'ckeditor4-react';
 
 export default class ItemAdd extends Component{

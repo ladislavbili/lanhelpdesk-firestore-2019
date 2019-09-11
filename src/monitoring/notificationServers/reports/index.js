@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Modal, Button, ModalBody, ModalFooter, FormGroup, Label, Input  } from 'reactstrap';
 import ReportDetail from "./reportDetail";
 import {database} from "../../../index";
-import {fromMillisec, snapshotToArray} from "../../../helperFunctions";
+import {snapshotToArray} from "../../../helperFunctions";
 
 export default class Reports extends Component{
   constructor(props){

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {rebase,database} from '../../index';
-import {  FormGroup, Label, Input, TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
+import {  FormGroup, Label, Input } from 'reactstrap';
 import {toSelArr, snapshotToArray, getAttributeDefaultValue, htmlFixNewLines} from '../../helperFunctions';
 import Select from 'react-select';
 import {selectStyle} from "../../scss/selectStyles";
@@ -8,7 +8,6 @@ import IPList from './ipList';
 import Passwords from './passwords';
 import AttributesHandler from './attributesHandler';
 import TextareaList from '../components/backups';
-import classnames from 'classnames';
 import CKEditor from 'ckeditor4-react';
 import Links from './links';
 

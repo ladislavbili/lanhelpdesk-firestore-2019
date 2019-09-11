@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import {rebase,database} from '../../index';
 import { FormGroup, Label, Table } from 'reactstrap';
 import {snapshotToArray, getAttributeDefaultValue, htmlFixNewLines} from '../../helperFunctions';
-import classnames from 'classnames';
-
 
 export default class ItemView extends Component{
   constructor(props){

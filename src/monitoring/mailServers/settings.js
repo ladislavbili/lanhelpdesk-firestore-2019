@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { ModalBody, ModalFooter, Button, FormGroup, Label, Input  } from 'reactstrap';
-import Select from 'react-select';
-import {selectStyle} from '../../scss/selectStyles';
 import {rebase} from "../../index";
 import {isEmail} from "../../helperFunctions";
 
