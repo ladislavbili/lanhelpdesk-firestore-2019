@@ -76,7 +76,7 @@ export default class Reports extends Component{
               <Label >See all results</Label>
             </div>
             <div className="m-l-15">
-              <Input  type="checkbox" checked={this.state.seeAll} onChange={(e)=> {
+              <Input  type="checkbox" style={{position: "relative"}} checked={this.state.seeAll} onChange={(e)=> {
                   this.setState({seeAll: !this.state.seeAll}, () => this.handleListenerChange());
                 }} />
             </div>
