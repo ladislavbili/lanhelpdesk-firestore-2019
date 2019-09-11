@@ -109,7 +109,7 @@ getData(id){
                 rebase.addToCollection('/help-comments',body).then(()=>{this.setState({saving:false,newComment:''});this.getData(this.props.id)})
                 if(this.state.isEmail){
                   firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then((token)=>{
-                    fetch('https://lanhelpdesk-mail-2019.appspot.com/send-mail',{ //127.0.0.1 https://lanhelpdesk-mail-2019.appspot.com
+                    fetch('https://api01.lansystems.sk:8080/send-mail',{ //127.0.0.1 https://api01.lansystems.sk:8080
                       headers: {
                         'Content-Type': 'application/json'
                       },
