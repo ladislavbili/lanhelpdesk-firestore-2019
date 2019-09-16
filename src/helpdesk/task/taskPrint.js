@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactToPrint from 'react-to-print';
 import Materials from '../components/materials/materialsPrint';
-import Subtasks from '../components/subtasks/pracePrint';
+import Services from '../components/services/pracePrint';
 
 import {timestampToString} from '../../helperFunctions';
 
@@ -184,7 +184,7 @@ class TaskInfo extends Component {
 					<label className="m-t-5  text-slim">Popis</label>
 					<textarea className="form-control b-r-0" placeholder="Enter task description" value={this.props.description} onChange={() => {}} />
 
-						<Subtasks
+						<Services
 							taskAssigned={this.props.assignedTo}
 							subtasks={taskWorks}
 							workTypes={this.props.workTypes}

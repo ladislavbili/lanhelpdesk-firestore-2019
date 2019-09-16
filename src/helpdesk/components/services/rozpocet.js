@@ -48,10 +48,10 @@ export default class Rozpocet extends Component {
 			}
 		}
 
-		if(((this.props.company===null && props.company!==null)||
-		(props.company===null && this.props.company!==null)||
-		(this.props.company!==null && this.props.company.id!==props.company.id))
-		&& this.state.newWorkType ){
+		if(this.state.newWorkType &&
+			((this.props.company===null && props.company!==null)||
+			(props.company===null && this.props.company!==null)||
+			(this.props.company!==null && props.company!==null && this.props.company.id!==props.company.id))){
 			let price = this.state.newWorkType.prices.find((item)=>props.company!==null && item.pricelist===props.company.pricelist.id);
 			if(price === undefined){
 				price = 0;

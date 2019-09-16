@@ -3,7 +3,7 @@ import Select from 'react-select';
 import {Button} from 'reactstrap';
 import Comments from '../components/comments.js';
 import Materials from '../components/materials';
-import Subtasks from '../components/subtasks';
+import Services from '../components/services';
 
 import TaskAdd from './taskAddContainer';
 import TaskPrint from './taskPrint';
@@ -531,7 +531,7 @@ export default class TasksTwoEdit extends Component {
 							<label className="m-t-5  text-slim">Popis</label>
 							<textarea className="form-control b-r-0" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value},this.submitTask.bind(this))} />
 
-							<Subtasks
+							<Services
 								taskAssigned={this.state.assignedTo}
 								submitService={this.submitService.bind(this)}
 								updatePrices={(ids)=>{

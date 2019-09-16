@@ -4,6 +4,7 @@ import {rebase, database} from '../../index';
 //import {toSelArr, snapshotToArray} from '../../helperFunctions';
 import { Button } from 'reactstrap';
 import Materials from '../components/materials';
+import Services from '../components/services';
 import Subtasks from '../components/subtasks';
 import {selectStyle} from '../../scss/selectStyles';
 
@@ -34,6 +35,7 @@ export default class TaskAdd extends Component{
 			projects:[],
 			taskWorks:[],
 			taskMaterials:[],
+			subtasks:[],
 			allTags:[],
 			taskTypes:[],
 			hidden:true,
@@ -391,7 +393,26 @@ export default class TaskAdd extends Component{
 						<label className="m-t-5">Popis</label>
 						<textarea className="form-control b-r-0" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value})} />
 
-						{!this.state.hidden && <Subtasks
+							{!this.state.hidden && <Subtasks
+								taskAssigned={this.state.assignedTo}
+								submitService={(newSubtask)=>{
+									this.setState({subtasks:[...this.state.subtasks,{id:this.getNewID(),...newSubtask}]});
+								}}
+								subtasks={this.state.subtasks}
+								updateSubtask={(id,newData)=>{
+									let newSubtasks=[...this.state.subtasks];
+									newSubtasks[newSubtasks.findIndex((subtask)=>subtask.id===id)]={...newSubtasks.find((subtask)=>subtask.id===id),...newData};
+									this.setState({subtasks:newSubtasks});
+								}}
+								removeSubtask={(id)=>{
+									let newSubtasks=[...this.state.subtasks];
+									newSubtasks.splice(newSubtasks.findIndex((subtask)=>subtask.id===id),1);
+									this.setState({subtasks:newSubtasks});
+								}}
+								match={{params:{taskID:null}}}
+							/>}
+
+						{!this.state.hidden && <Services
 							taskAssigned={this.state.assignedTo}
 							submitService={(newService)=>{
 								this.setState({taskWorks:[...this.state.taskWorks,{id:this.getNewID(),...newService}]});
@@ -429,9 +450,6 @@ export default class TaskAdd extends Component{
 							{!this.state.hidden && <Materials
 								materials={taskMaterials}
 								submitMaterial={(newMaterial)=>{
-									console.log("-------------------------------");
-									console.log(newMaterial);
-									console.log(this.state.taskMaterials);
 									this.setState({taskMaterials:[...this.state.taskMaterials,{id:this.getNewID(),...newMaterial}]});
 								}}
 								updateMaterial={(id,newData)=>{
