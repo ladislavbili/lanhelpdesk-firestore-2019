@@ -49,15 +49,15 @@ export default class Sidebar extends Component {
 
 				<ModalBody>
 
-					<FormGroup check className="m-t-10 m-b-10">
+					<FormGroup className="m-t-10 m-b-10">
 							<Input
 								type="checkbox"
 								checked={this.state.active}
 								onChange={(e) => this.setState({active: e.target.checked})}
 								/>
-							<Label check>
-							Active
-						</Label>
+							<Label className="m-l-15">
+								Active
+							</Label>
 					</FormGroup>
 
 						<FormGroup>

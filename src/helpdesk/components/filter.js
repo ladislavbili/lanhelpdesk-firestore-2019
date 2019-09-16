@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {NavItem, Nav} from 'reactstrap';
+import {NavItem, Nav, Input} from 'reactstrap';
 import Select from 'react-select';
 import { connect } from "react-redux";
 
@@ -8,7 +8,7 @@ import {setFilter} from '../../redux/actions';
 import {toSelArr, snapshotToArray} from '../../helperFunctions';
 import AddFilter from './filterAdd';
 
-import {selectStyle} from '../../scss/selectStyles';
+import {invisibleSelectStyle} from '../../scss/selectStyles';
 
 class Filter extends Component {
   constructor(props) {
@@ -25,8 +25,12 @@ class Filter extends Component {
       workType:{id:null,label:'Žiadny',value:null},
       statusDateFrom:'',
       statusDateTo:'',
-      loading:true
+      loading:true,
+
+      newFilterName: "",
+      openEditName: false,
     };
+    this.renameFilter.bind(this);
     this.fetchData();
   }
 
@@ -138,12 +142,139 @@ class Filter extends Component {
       this.props.setFilter(body);
     }
 
+    renameFilter(){
+      if (this.props.filterData.title !== this.state.newFilterName
+        && this.state.newFilterName.length > 0){
+        rebase.updateDoc('/help-filters/'+this.props.filterID, {title: this.state.newFilterName})
+        .then(()=> {
+        });
+      }
+    }
+
+
     render() {
       return (
-        <Nav vertical className="p-10">
-          <NavItem>
+        <div>
+
+          <div
+            className="row sidebar-btn text-highlight"
+            onClick={() => this.setState({openEditName: (this.props.filterID ? true : false)})}
+            >
+
+            {!this.state.openEditName &&
+              <h5 className=""><i className="fa fa-cog sidebar-icon-center"/> {this.props.filterID?' '+ (this.state.newFilterName ? this.state.newFilterName : this.props.filterData.title):' Všetky'}</h5>
+            }
+            {this.state.openEditName &&
+                <Input
+                  type="text"
+                  className="from-control sidebar-input"
+                  placeholder="Enter filter name"
+                  autoFocus
+                  value={this.state.newFilterName ? this.state.newFilterName : this.props.filterData.title}
+                  onChange={(e)=>this.setState({newFilterName: e.target.value})}
+                  onBlur={() => this.setState({openEditName: false}, () => this.renameFilter())}
+              />
+          }
+          </div>
+
+
+          <Nav vertical className="p-10 p-r-20 p-l-20 sidebar-filter">
+
+            <NavItem>
+              <div className="m-b-5 row sidebar-filter-row">
+                <label htmlFor="example-input-small">Status:</label>
+                <div className="flex m-t--5 m-l-5">
+                  <Select
+                    options={[{label:'Žiadny',value:null,id:null}].concat(this.state.statuses)}
+                    onChange={(newValue)=>this.setState({status:newValue})}
+                    value={this.state.status}
+                    styles={invisibleSelectStyle} />
+                </div>
+              </div>
+            </NavItem>
+            <NavItem>
+              <div className="m-b-5 row sidebar-filter-row">
+                <label htmlFor="example-input-small">Zadal:</label>
+                <div className="flex m-t--5 m-l-5">
+                  <Select
+                    options={[{label:'Žiadny',value:null,id:null}].concat(this.state.users)}
+                    onChange={(newValue)=>this.setState({requester:newValue})}
+                    value={this.state.requester}
+                    styles={invisibleSelectStyle} />
+                </div>
+              </div>
+            </NavItem>
+            <NavItem>
+              <div className="m-b-5 row sidebar-filter-row">
+                <label htmlFor="example-input-small">Firma:</label>
+                <div className="flex m-t--5 m-l-5">
+                  <Select
+                    options={[{label:'Žiadny',value:null,id:null}].concat(this.state.companies)}
+                    onChange={(newValue)=>this.setState({company:newValue})}
+                    value={this.state.company}
+                    styles={invisibleSelectStyle} />
+                </div>
+              </div>
+            </NavItem>
+            <NavItem>
+              <div className="m-b-5 row sidebar-filter-row">
+                <label htmlFor="example-input-small">Riesi:</label>
+                <div className="flex m-t--5 m-l-5">
+                  <Select
+                    options={[{label:'Žiadny',value:null,id:null}].concat(this.state.users)}
+                    onChange={(newValue)=>this.setState({assigned:newValue})}
+                    value={this.state.assigned}
+                    styles={invisibleSelectStyle} />
+                </div>
+              </div>
+            </NavItem>
+            <NavItem>
+              <div className="m-b-5 row sidebar-filter-row">
+                <label>Start:</label>
+                <div className="flex m-t--5">
+                  <Input
+                    type="datetime-local"
+                    value={this.state.statusDateFrom}
+                    onChange={(e)=>{
+                      this.setState({statusDateFrom:e.target.value})}
+                    }
+                    className="form-control invisible-input"
+                    placeholder="Od" />
+                </div>
+              </div>
+            </NavItem>
+            <NavItem>
+              <div className="m-b-5 row sidebar-filter-row">
+                <div>
+                  <label>Due:</label>
+                </div>
+                <div className="flex m-t--5">
+                  <Input
+                    type="datetime-local"
+                    value={this.state.statusDateTo}
+                    onChange={(e)=>{
+                      this.setState({statusDateTo:e.target.value})}
+                    }
+                    className="form-control invisible-input"
+                    placeholder="Od" />
+                </div>
+              </div>
+            </NavItem>
+            <NavItem>
+              <div className="m-b-5 row sidebar-filter-row">
+                <label htmlFor="example-input-small">Typ práce:</label>
+                <div className="flex m-t--5 m-l-5">
+                  <Select
+                    options={[{label:'Žiadny',value:null,id:null}].concat(this.state.workTypes)}
+                    onChange={(newValue)=>this.setState({workType:newValue})}
+                    value={this.state.workType}
+                    styles={invisibleSelectStyle} />
+                </div>
+              </div>
+            </NavItem>
+          <NavItem className="center-ver">
             <div className="d-flex m-b-2">
-              <button type="button" className="btn-link" onClick={this.applyFilter.bind(this)}>Apply</button>
+              <button type="button" className="btn-link-reversed m-2" onClick={this.applyFilter.bind(this)}><i className="fa fa-check icon-M"/></button>
               <AddFilter
                 filter={{
                   requester:this.state.requester.id,
@@ -156,89 +287,13 @@ class Filter extends Component {
                 }}
                 filterID={this.props.filterID}
                 filterData={this.props.filterData}
-              />
-              <button type="button" className="btn-link" onClick={this.resetFilter.bind(this)}>Reset</button>
-              <button type="button" className="btn-link" onClick={this.deleteFilter.bind(this)}>Delete</button>
-            </div>
-          </NavItem>
-          <h5>{this.props.filterID?'Filter: '+this.props.filterData.title:'No filter selected'}</h5>
-          <NavItem>
-            <div className="m-b-3">
-              <label htmlFor="example-input-small">Status</label>
-              <Select
-                options={[{label:'Žiadny',value:null,id:null}].concat(this.state.statuses)}
-                onChange={(newValue)=>this.setState({status:newValue})}
-                value={this.state.status}
-                styles={selectStyle} />
-            </div>
-          </NavItem>
-          <NavItem>
-            <div className="m-b-3">
-              <label htmlFor="example-input-small">Zadal</label>
-              <Select
-                options={[{label:'Žiadny',value:null,id:null}].concat(this.state.users)}
-                onChange={(newValue)=>this.setState({requester:newValue})}
-                value={this.state.requester}
-                styles={selectStyle} />
-            </div>
-          </NavItem>
-          <NavItem>
-            <div className="m-b-3">
-              <label htmlFor="example-input-small">Firma</label>
-              <Select
-                options={[{label:'Žiadny',value:null,id:null}].concat(this.state.companies)}
-                onChange={(newValue)=>this.setState({company:newValue})}
-                value={this.state.company}
-                styles={selectStyle} />
-            </div>
-          </NavItem>
-          <NavItem>
-            <div className="m-b-3">
-              <label htmlFor="example-input-small">Riesi</label>
-              <Select
-                options={[{label:'Žiadny',value:null,id:null}].concat(this.state.users)}
-                onChange={(newValue)=>this.setState({assigned:newValue})}
-                value={this.state.assigned}
-                styles={selectStyle} />
-            </div>
-          </NavItem>
-          <NavItem>
-            <div className="m-b-3">
-              <label htmlFor="example-input-small">Status date from</label>
-              <input
-                type="datetime-local"
-                value={this.state.statusDateFrom}
-                onChange={(e)=>{
-                  this.setState({statusDateFrom:e.target.value})}
-                }
-                className="form-control active"
-                placeholder="Od" />
-            </div>
-          </NavItem>
-          <NavItem>
-            <div className=" m-b-3">
-              <label htmlFor="example-input-small">Status date to</label>
-              <input
-                type="datetime-local"
-                value={this.state.statusDateTo}
-                onChange={(e)=>{
-                  this.setState({statusDateTo:e.target.value})}
-                }
-                className="form-control active"
-                placeholder="Od" />
-            </div>
-          </NavItem>
-          <NavItem>
-            <div className="m-b-3">
-              <label htmlFor="example-input-small">Typ práce</label>
-              <Select
-                options={[{label:'Žiadny',value:null,id:null}].concat(this.state.workTypes)}
-                onChange={(newValue)=>this.setState({workType:newValue})}
-                value={this.state.workType}
-                styles={selectStyle} />
+                />
+              <button type="button" className="btn-link-reversed m-2" onClick={this.resetFilter.bind(this)}><i className="fa fa-sync icon-M"/></button>
+              <button type="button" className="btn-link-reversed m-2" onClick={this.deleteFilter.bind(this)}><i className="far fa-trash-alt icon-M"/></button>
             </div>
           </NavItem>
         </Nav>
+      </div>
       )
     }
   }

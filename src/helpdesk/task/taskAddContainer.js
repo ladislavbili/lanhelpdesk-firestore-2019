@@ -94,9 +94,9 @@ export default class TaskAddContainer extends Component{
 			{
 				!this.props.task &&
 				<Button
-					className="btn-link t-a-l sidebar-menu-item"
+					className="btn sidebar-btn"
 					onClick={()=>{this.setState({openAddTaskModal:true,hidden:false})}}
-				> <i className="fa fa-plus sidebar-icon-center"/> Add task
+				>  Add task
 				</Button>
 			}
 

@@ -29,7 +29,7 @@ export default class ProjectAdd extends Component{
 
       ...noDef,
       saving: false,
-      opened: false
+      opened: true
     }
     this.fetchData.bind(this);
     this.fetchData();
@@ -70,14 +70,12 @@ export default class ProjectAdd extends Component{
     if(!this.state.opened){
       this.fetchData();
     }
-    this.setState({opened:!this.state.opened})
+		this.props.close();
+    this.setState({opened:!this.state.opened});
   }
   render(){
     return (
       <div>
-        <Button className="btn-link sidebar-menu-item t-a-l"  onClick={()=>{this.setState({opened:true});}} >
-        <i className="fa fa-plus sidebar-icon-center" /> Project
-        </Button>
           <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
             <ModalHeader toggle={this.toggle.bind(this)}> <h1> Add project </h1></ModalHeader>
             <ModalBody>
@@ -265,12 +263,15 @@ export default class ProjectAdd extends Component{
                     }
                   };
                   rebase.addToCollection('/help-projects', body)
-                  .then(()=>{this.setState({
+                  .then(()=>{
+										this.setState({
                     saving:false,
                     title: '',
                     description: '',
                     ...noDef
-                  })});
+	                  });
+										this.props.close();
+									});
                 }}>
                 {this.state.saving?'Adding...':'Add project'}
               </Button>

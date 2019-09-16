@@ -41,13 +41,13 @@ export const invisibleSelectStyleNoArrow = {
 
 export const sidebarSelectStyle = {
 	singleValue: (provided, state) => {
-		return { ...provided, marginLeft:30, color: "#0078D4" };
+		return { ...provided, marginLeft:30, color: "#212121" };
 	},
 	indicatorSeparator:(provided, state) => {
 		return { ...provided, width:0,  };
 	},
 	control:(provided, state) => {
-		return { ...provided, background: "#F2F1F1", borderRadius: 0 , borderWidth: "0", height: 40 };
+		return { ...provided, background: "#F7F7F7", borderRadius: 0 , borderWidth: "0", height: 40 };
 	},
 	input:(provided, state) => {
 		return { ...provided, marginLeft:30 };
