@@ -5,6 +5,7 @@ import Comments from '../components/comments.js';
 import Materials from '../components/materials';
 import Services from '../components/services';
 import Subtasks from '../components/subtasks';
+import Repeat from '../components/repeat';
 
 import TaskAdd from './taskAddContainer';
 import TaskPrint from './taskPrint';
@@ -22,12 +23,7 @@ const noDef={
 	company:{def:false,fixed:false, value: null}
 }
 
-const repeat = [
-	{ value: 'none', label: 'none' },
-	{ value: 'every day', label: 'every day' },
-];
-
-export default class TasksTwoEdit extends Component {
+export default class TaskEdit extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -61,7 +57,7 @@ export default class TasksTwoEdit extends Component {
 			description:'',
 			status:null,
 			statusChange:null,
-			deadline:null,
+			deadline:"",
 			reminder:null,
 			project:null,
 			tags:[],
@@ -69,6 +65,7 @@ export default class TasksTwoEdit extends Component {
 			overtime:{value:true,label:'Áno'},
 			type:null,
 			createdAt:null,
+			repeat:null,
 
 			/////
 			openAddStatusModal: false,
@@ -97,6 +94,9 @@ export default class TasksTwoEdit extends Component {
 			this.state.taskMaterials.forEach((material)=>rebase.removeDoc('/help-task_materials/'+material.id))
 			this.state.taskWorks.forEach((work)=>rebase.removeDoc('/help-task_works/'+work.id))
 			this.state.subtasks.forEach((subtask)=>rebase.removeDoc('/help-task_subtasks/'+subtask.id))
+			if(this.state.repeat!==null){
+				rebase.removeDoc('/help-repeats/'+this.state.task.id);
+			}
 			database.collection('help-comments').where("task", "==", this.state.task.id).get()
 			.then((data)=>{
 				snapshotToArray(data).forEach((item)=>rebase.removeDoc('/help-comments/'+item.id));
@@ -125,6 +125,7 @@ export default class TasksTwoEdit extends Component {
       overtime: this.state.overtime.value,
 			tags: this.state.tags.map((item)=>item.id),
 			type: this.state.type?this.state.type.id:null,
+			repeat: this.state.repeat!==null?this.state.task.id:null,
     }
 
     rebase.updateDoc('/help-tasks/'+this.state.task.id, body)
@@ -175,10 +176,11 @@ export default class TasksTwoEdit extends Component {
         database.collection('help-task_materials').where("task", "==", taskID).get(),
         database.collection('help-task_works').where("task", "==", taskID).get(),
 				database.collection('help-task_subtasks').where("task", "==", taskID).get(),
+        database.collection('help-repeats').doc(taskID).get(),
 				rebase.get('metadata/0', {
 					context: this,
 				})
-    ]).then(([task,statuses,projects, companies, workTypes, units, prices, pricelists, users, tags,taskTypes, taskMaterials, taskWorks,subtasks,meta])=>{
+    ]).then(([task,statuses,projects, companies, workTypes, units, prices, pricelists, users, tags,taskTypes, taskMaterials, taskWorks,subtasks,repeat,meta])=>{
       this.setData(
 				{id:task.id,...task.data()},
 				toSelArr(snapshotToArray(statuses)),
@@ -194,6 +196,7 @@ export default class TasksTwoEdit extends Component {
 				snapshotToArray(taskWorks),
 				snapshotToArray(subtasks),
 				snapshotToArray(pricelists),
+				repeat.exists ? {id:repeat.id,...repeat.data()} : null,
 				meta.defaultUnit);
     });
   }
@@ -216,7 +219,7 @@ export default class TasksTwoEdit extends Component {
 		});
 	}
 
-  setData(task, statuses, projects,users,tags,companies,workTypes,units,taskTypes, prices,taskMaterials,taskWorks,subtasks,pricelists,defaultUnit){
+  setData(task, statuses, projects,users,tags,companies,workTypes,units,taskTypes, prices,taskMaterials,taskWorks,subtasks,pricelists,repeat,defaultUnit){
 		this.setDefaults(task.project);
     let project = projects.find((item)=>item.id===task.project);
     let status = statuses.find((item)=>item.id===task.status);
@@ -241,7 +244,6 @@ export default class TasksTwoEdit extends Component {
 		if(task.tags){
 			taskTags=tags.filter((tag)=>task.tags.includes(tag.id));
 		}
-
     this.setState({
       task,
       statuses,
@@ -274,13 +276,12 @@ export default class TasksTwoEdit extends Component {
 			defaultUnit,
 			tags:taskTags,
 			type:type?type:null,
-
+			repeat,
 			projectChangeDate:(new Date()).getTime(),
     });
   }
 
 	render() {
-
 		let taskWorks= this.state.taskWorks.map((work)=>{
 			let finalUnitPrice=parseFloat(work.price);
 			if(work.extraWork){
@@ -334,6 +335,7 @@ export default class TasksTwoEdit extends Component {
 					        return -1;
 					      }).map((status)=>
 								<Button
+									key={status.id}
 									className="btn-link"
 									disabled={this.state.defaultFields.status.fixed}
 									onClick={()=>{this.setState({status,statusChange:(new Date().getTime())},this.submitTask.bind(this))}}
@@ -484,10 +486,22 @@ export default class TasksTwoEdit extends Component {
 											</div>
 
 											<div className="row">
-												<label className="col-5 col-form-label text-slim">Opakovanie</label>
-												<div className="col-7">
-													<Select options={repeat} styles={selectStyle} />
-												</div>
+												<Repeat
+													taskID={this.props.match.params.taskID}
+													repeat={this.state.repeat}
+													submitRepeat={(repeat)=>{
+														database.collection('help-repeats').doc(this.props.match.params.taskID).set({
+															...repeat,
+															task:this.props.match.params.taskID,
+															startAt:(new Date(repeat.startAt).getTime()),
+															});
+														this.setState({repeat})
+													}}
+													deleteRepeat={()=>{
+														rebase.removeDoc('/help-repeats/'+this.state.task.id);
+														this.setState({repeat:null})
+													}}
+													/>
 											</div>
 										</div>
 									</div>

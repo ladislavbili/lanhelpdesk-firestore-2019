@@ -104,7 +104,7 @@ class TaskInfo extends Component {
 							}
 								{
 									this.props.tags.map(tag =>
-										<div className="display-inline m-r-5">
+										<div className="display-inline m-r-5" key={tag.id}>
 											{tag.title + " |"}
 										</div>
 									)
@@ -119,7 +119,7 @@ class TaskInfo extends Component {
 								}
 								{
 									this.props.assignedTo.map(at =>
-										<div className="display-inline m-r-5">
+										<div className="display-inline m-r-5" key={at.id}>
 											{at.email + " |"}
 										</div>
 									)
