@@ -5,10 +5,10 @@ export default class ListHeader extends Component {
 	render() {
 		return (
 				<div className="m-r-5 m-l-5 d-flex flex-row align-items-center">
-					<div className="p-2 text-muted">
-						<h4>
-						{this.props.listName?this.props.listName:""}
-					</h4>
+					<div className="p-2 p-l-15">
+						<h4 className="font-24 text-slim">
+							{this.props.listName?this.props.listName:""}
+						</h4>
 					</div>
 				<div className="d-flex flex-row align-items-center ml-auto">
 				<div className="text-basic m-r-5 m-l-5">

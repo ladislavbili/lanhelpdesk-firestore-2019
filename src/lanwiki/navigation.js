@@ -3,10 +3,8 @@ import { Route } from 'react-router-dom';
 
 import Sidebar from './Sidebar';
 import PageHeader from '../components/PageHeader';
-//import ListExample from './listExample';
 
 import ListNotes from './Notes';
-import "../scss/lanwiki.scss";
 
 export default class Navigation extends Component {
 	render() {

@@ -37,11 +37,12 @@ class Sidebar extends Component {
 		this.state = {
 			openAddStatusModal: false,
 			openAddTaskModal: false,
+			openProjectAdd: false,
 			isColumn: false,
 			filters:[],
 			search: '',
 			activeTab:0,
-			projects:[{id:null,title:'Dashboard',body:'dashboard', label:'Dashboard',value:null}],
+			projects:[{id:-1,title:'+ Add project',body:'add', label:'+ Add project',value:null},{id:null,title:'Dashboard',body:'dashboard', label:'Dashboard',value:null}],
 			project:{id:null,title:'Dashboard',body:'dashboard', label:'Dashboard',value:null},
 			filterID:null,
 			filterData:null,
@@ -56,7 +57,7 @@ class Sidebar extends Component {
 			withIds: true,
 			then:content=>{
 				this.setState({
-				projects:toSelArr([{id:null,title:'Dashboard', body:'dashboard',}].concat(content)),
+				projects:toSelArr([{id:-1,title:'+ Add project',body:'add', label:'+ Add project',value:null}, {id:null,title:'Dashboard', body:'dashboard',}].concat(content)),
 				project:toSelArr([{id:null,title:'Dashboard', body:'dashboard',}].concat(content)).find((item)=>item.id===this.props.project)
 			});
 		},
@@ -89,7 +90,7 @@ class Sidebar extends Component {
 		return (
 			<div className="sidebar">
 					<SelectPage />
-				<div className="scrollable fit-with-header">
+				<div className="sidebar-content scrollable fit-with-header">
 					{!showSettings && <div>
 						<div>
 						<li>
@@ -98,14 +99,18 @@ class Sidebar extends Component {
 								value={this.state.project}
 								styles={sidebarSelectStyle}
 								onChange={e => {
-									this.setState({project:e});
-									this.props.setProject(e.value);
+									if (e.id === -1) {
+										this.setState({openProjectAdd: true})
+									} else {
+										this.setState({project:e});
+										this.props.setProject(e.value);
+									}
 								}}
 								components={{
 									DropdownIndicator: ({ innerProps, isDisabled }) =>
 									<div style={{marginTop: "-15px"}}>
-										<i className="fa fa-folder-open" style={{position:'absolute', left:15, color: "#0078D4"}}/>
-										<i className="fa fa-chevron-down" style={{position:'absolute', right:15, color: "#0078D4"}}/>
+										<i className="fa fa-folder-open" style={{position:'absolute', left:15, color: "#212121"}}/>
+										<i className="fa fa-chevron-down" style={{position:'absolute', right:15, color: "#212121"}}/>
 									</div>,
 								}}
 								/>
@@ -115,33 +120,25 @@ class Sidebar extends Component {
 
 						<TaskAdd history={this.props.history} project={this.state.project.id} triggerDate={this.state.projectChangeDate} />
 
-						<li>
-							<ProjectAdd />
-						</li>
+						{ this.state.openProjectAdd &&
+								<ProjectAdd close={() => this.setState({openProjectAdd: false})}/>
+						}
 
 						{ this.state.project.id
 							&&
 							<ProjectEdit item={this.state.project} triggerChange={()=>{this.setState({projectChangeDate:(new Date()).getTime()})}}/>
 						}
 
-							<Nav tabs className="sidebar-filter">
-								<NavItem>
-									<NavLink
-										className={"sidebar-filter-navlink " + classnames({ active: this.state.activeTab === 0, clickable:true })}
-										onClick={() => this.setState({activeTab:0})}
-										>
-										<i className="fas fa-filter sidebar-icon-center" ></i> Filters
-									</NavLink>
-								</NavItem>
-								<NavItem>
-									<NavLink
-										className={classnames({ active: this.state.activeTab === 1, clickable:true })}
-										onClick={() => this.setState({activeTab:1})}
-										>
-										Edit
-									</NavLink>
-								</NavItem>
-							</Nav>
+						<div
+							className="sidebar-btn"
+							>
+							<div
+								onClick={() => this.setState({activeTab: (this.state.activeTab === 0 ? 1 : 0)})}>
+								<i className="fa fa-plus pull-right m-r-5 m-t-5 clickable" />
+							</div>
+						 	<div><i className="fas fa-filter sidebar-icon-center" ></i>Filters</div>
+						</div>
+
 							<TabContent activeTab={this.state.activeTab}>
 								<TabPane tabId={0} >
 									<Nav vertical>
@@ -191,7 +188,7 @@ class Sidebar extends Component {
 						<Nav vertical>
 							{settings.map((setting)=>
 								<NavItem key={setting.link}>
-									<Link className={this.props.location.pathname.includes(setting.link) ? "text-basic sidebar-align sidebar-item-active sidebar-menu-item" : "text-basic sidebar-align sidebar-menu-item"}
+									<Link className="text-basic sidebar-align sidebar-menu-item"
 										to={{ pathname:'/helpdesk/settings/'+setting.link }}>{setting.title}</Link>
 								</NavItem>
 							)}

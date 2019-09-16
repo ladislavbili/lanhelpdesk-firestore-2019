@@ -136,32 +136,36 @@ class TasksRow extends Component {
 					{value:'company',type:'object'},
 				]}
 				displayCol={(task)=>
-					<li className="" >
-						<div className="m-b-0">
-							<label>#{task.id} {task.title}</label>
-							<p className="pull-right m-0 font-13">
+					<li className="p-20" >
+						<div className="m-b-0 font-15">
+							<label><span className="text-muted font-15">#{task.id} | </span> {task.title}</label>
+							<p className="pull-right m-0">
 								<span className="label label-info" style={{backgroundColor:task.status && task.status.color?task.status.color:'white'}}>{task.status?task.status.title:'Neznámy status'}</span>
 							</p>
 						</div>
-						<div className="m-t-0">
-							<p className="pull-right m-b-0 font-13">
-								<i className="fa fa-clock-o" /> <span>Created: {task.createdAt?timestampToString(task.createdAt):'None'}</span>
+						<div className="m-t-0 font-12">
+							<p className="pull-right m-b-0">
+									<i className="fa fa-clock-o" /> <span> <span className="text-muted">Dealine:</span> {task.deadline?timestampToString(task.deadline):'None'}</span>
 							</p>
-							<p className="text-muted m-b-0 font-13">
-								<span className="">Zadal: {task.requester?(task.requester.name+' '+task.requester.surname):'Neznámy používateľ'}</span>
+							<p className="m-b-0">
+								<span>
+									<span className="text-muted">Requested by: </span>
+											{task.requester?(" " + task.requester.name+' '+task.requester.surname):' Neznámy používateľ '}
+									<span className="text-muted">{task.company ? ` from ${task.company.title} on ` : " from Unknown on "}</span>
+											{task.createdAt?timestampToString(task.createdAt):'None'}
+									</span>
 							</p>
-							<p className="pull-right m-r-5 font-13">
-								<i className="fa fa-clock-o" /> <span>Dealine: {task.deadline?timestampToString(task.deadline):'None'}</span>
-							</p>
-							<p className="text-muted m-b-0 font-13">
-								<span className="" style={{textOverflow: 'ellipsis'}}>Riesi: {task.assignedTo?task.assignedTo.reduce((total,user)=>total+=user.name+' '+user.surname+', ','').slice(0,-2):'Neznámy používateľ'}</span>
+							<p className="m-b-0">
+								<span style={{textOverflow: 'ellipsis'}}><span className="text-muted">Assigned to: </span>{task.assignedTo?task.assignedTo.reduce((total,user)=>total+=user.name+' '+user.surname+', ','').slice(0,-2):'Neznámy používateľ'}</span>
 							</p>
 						</div>
+						{/*
 							<div className="taskList-tags">
 								{task.tags.map((tag)=>
 									<span key={tag.id} className="label label-info m-r-5">{tag.title}</span>
 								)}
 							</div>
+						*/}
 					</li>
 				}
 				displayValues={[

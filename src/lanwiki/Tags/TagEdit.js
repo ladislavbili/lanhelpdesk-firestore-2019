@@ -106,13 +106,13 @@ export default class Sidebar extends Component {
 			<div >
 				{/*		<Progress value={this.state.value}>{this.state.value === 100 ? "Loaded" : "Loading"}</Progress>*/}
 				<ModalBody>
-					<FormGroup check className="m-t-10 m-b-10">
+					<FormGroup className="m-t-10 m-b-10">
 							<Input
 								type="checkbox"
 								checked={this.state.active}
 								onChange={(e) => this.setState({active: e.target.checked})}
 								/>{'    '}
-								<Label check>
+								<Label className="m-l-15">
 							Active
 						</Label>
 					</FormGroup>

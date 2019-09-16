@@ -23,8 +23,8 @@ export default class FilterAdd extends Component{
   render(){
     return (
       <div>
-        <Button className="btn-link" onClick={this.toggle.bind(this)}>
-          Save
+        <Button className="btn-link-reversed m-2" onClick={this.toggle.bind(this)}>
+          <i className="far fa-save icon-M"/>
         </Button>
 
         <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >

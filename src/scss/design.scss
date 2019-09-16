@@ -85,7 +85,7 @@ html{
 
 //---------------všeobecné-atribúty---------------------
 .text-muted {
-  color: $muted-font-color;
+  color: $muted-font-color !important;
 }
 .text-basic{
   color: $main-font-color;
@@ -93,11 +93,20 @@ html{
 .text-highlight{
   color: $basic-button-color !important;
 }
+.font-12{
+  font-size: 12px;
+}
 .font-13 {
     font-size: 13px;
 }
+.font-15{
+  font-size: 15px;
+}
 .font-16{
   font-size: 16px;
+}
+.font-24{
+  font-size: 24px;
 }
 .center-ver{
 	margin-left: auto;
@@ -265,6 +274,9 @@ html{
 .p-r-20{
 	padding-right: 20px;
 }
+.p-l-15{
+    padding-left: 15px !important;
+}
 .p-l-18{
     padding-left: 18px;
 }
@@ -292,8 +304,14 @@ html{
 .m-0{
   margin: 0px;
 }
+.m-2{
+  margin: 2px;
+}
 .m-100{
   margin: 100px;
+}
+.m-t--5{
+	margin-top: -5px;
 }
 .m-t-0{
 	margin-top: 0px;
@@ -377,9 +395,16 @@ html{
 .t-a-l{
     text-align: left;
 }
+.modal.fade.show{
+  opacity: 1;
+}
 //---------------END-všeobecné-atribúty-----------------
 
 //---------------všeobecné-elementy---------------------
+h4{
+  color: $main-font-color;
+}
+
 .btn{
   background-color: $basic-button-color;
   border: 0px;
@@ -399,15 +424,31 @@ html{
   background-color: inherit;
   border: 0px;
   border-radius: 0px;
-  color: $basic-button-color;
+  color: $main-font-color;
   height: $button-height;
   font-weight: 400;
   font-size: $main-font-size;
 }
 
 .btn-link:hover{
-  background-color: $sidebar-item-color;
+  background-color: inherit;
   color: $basic-button-color;
+  text-decoration: none;
+}
+
+.btn-link-reversed{
+  background-color: inherit;
+  border: 0px;
+  border-radius: 0px;
+  color: $basic-button-color;
+  height: $button-height;
+  font-weight: 400;
+  font-size: $main-font-size;
+}
+
+.btn-link-reversed:hover{
+  background-color: inherit;
+  color: $main-font-color;
   text-decoration: none;
 }
 
@@ -607,6 +648,7 @@ td {
   border: 0px;
   border-right: 2px solid $header-color;
   margin-right: -2px;
+  z-index: 10000;
 
   .lansystems-title{
     display: flex!important;
@@ -662,14 +704,17 @@ td {
   width: $sidebar-width;
   border-right: 1px solid #dee2e6;
   list-style-type: none;
-  background: $main-background-color;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  background: $sidebar-background-color;
   position:relative;
   top: inherit;
+  z-index: 999;
+}
+
+.sidebar-content{
+  box-shadow: 5px 5px 5px $muted-gray;
 }
 
 .sidebar-icon-center{
-  color: $basic-button-color;
   margin-right: 5px;
   margin-left: 5px
 }
@@ -690,10 +735,9 @@ td {
   height: $sidebar-item-height;
 }
 
-
 .sidebar-btn{
   width: calc(#{$sidebar-width} - 20px);
-  margin: 10px;
+  margin: 10px 10px 0px 10px;
   height: $button-height;
 }
 
@@ -704,10 +748,25 @@ td {
 
 
 .sidebar-filter{
-  margin-left: 6px;
+  background-color: white;
   border: none;
+  border-top: 1px solid $basic-button-color;
   margin-bottom: 2px;
+  box-shadow: 0px 5px 5px $muted-gray;
 }
+.sidebar-filter-row{
+  margin: 8px 0px;
+  background-color: white;
+  border-bottom: 1px solid #DADADA;
+
+  .form-control{
+    margin: 0px;
+    margin-left: 5px;
+    margin-right: -60px;
+    border: none;
+  }
+}
+
 .sidebar-filter-navlink{
   padding-left: 0px !important;
 }
@@ -715,6 +774,16 @@ td {
 .sidebar-align{
   padding-left: 33px !important;
 }
+
+.sidebar-input{
+  margin-top: -10px;
+}
+
+.sidebar-input:focus{
+  background-color: inherit;
+  border: none;
+}
+
 
 //--------------------END-sidebar----------------------
 
@@ -754,7 +823,7 @@ td {
 }
 
 .nav:not(.nav-tabs) a.active {
-  background-color: $sidebar-item-color !important;
+//  background-color: $sidebar-item-color !important;
   font-weight: 900;
   color: #0078D4 !important;
 }
@@ -797,7 +866,7 @@ td {
   background-color: #fff;
   border: 0px;
   border-bottom: 1px solid #dee2e6;
-  padding: 10px;
+  padding: 20px;
   margin-bottom: 15px;
   border-radius: 0px;
 }
