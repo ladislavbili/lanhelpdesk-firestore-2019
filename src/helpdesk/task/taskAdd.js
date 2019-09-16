@@ -6,6 +6,7 @@ import { Button } from 'reactstrap';
 import Materials from '../components/materials';
 import Services from '../components/services';
 import Subtasks from '../components/subtasks';
+import Repeat from '../components/repeat';
 import {selectStyle} from '../../scss/selectStyles';
 
 const noDef={
@@ -16,12 +17,6 @@ const noDef={
 	requester:{def:false,fixed:false, value: null},
 	company:{def:false,fixed:false, value: null}
 }
-
-const repeat = [
-	{ value: 'none', label: 'none' },
-	{ value: 'every day', label: 'every day' },
-
-];
 
 export default class TaskAdd extends Component{
 	constructor(props){
@@ -56,6 +51,7 @@ export default class TaskAdd extends Component{
 			pausal:{value:true,label:'Pausal'},
 			overtime:{value:false,label:'Nie'},
 			type:null,
+			repeat:null,
 		}
 		this.counter = 0;
 	}
@@ -76,26 +72,28 @@ export default class TaskAdd extends Component{
 
 	submitTask(){
 		this.setState({saving:true});
-		let body = {
-			title: this.state.title,
-			company: this.state.company?this.state.company.id:null,
-			workHours: this.state.workHours,
-			requester: this.state.requester?this.state.requester.id:null,
-			assignedTo: this.state.assignedTo.map((item)=>item.id),
-			description: this.state.description,
-			status: this.state.status?this.state.status.id:null,
-			deadline: isNaN(new Date(this.state.deadline).getTime()) ? null : (new Date(this.state.deadline).getTime()),
-			createdAt:(new Date()).getTime(),
-			statusChange:(new Date()).getTime(),
-			project: this.state.project?this.state.project.id:null,
-			pausal: this.state.pausal.value,
-			overtime: this.state.overtime.value,
-			tags: this.state.tags.map((item)=>item.id),
-			type: this.state.type?this.state.type.id:null,
-		}
 
 		database.collection('metadata').doc('0').get().then((taskMeta)=>{
 			let newID = (parseInt(taskMeta.data().taskLastID)+1)+"";
+			let body = {
+				title: this.state.title,
+				company: this.state.company?this.state.company.id:null,
+				workHours: this.state.workHours,
+				requester: this.state.requester?this.state.requester.id:null,
+				assignedTo: this.state.assignedTo.map((item)=>item.id),
+				description: this.state.description,
+				status: this.state.status?this.state.status.id:null,
+				deadline: isNaN(new Date(this.state.deadline).getTime()) ? null : (new Date(this.state.deadline).getTime()),
+				createdAt:(new Date()).getTime(),
+				statusChange:(new Date()).getTime(),
+				project: this.state.project?this.state.project.id:null,
+				pausal: this.state.pausal.value,
+				overtime: this.state.overtime.value,
+				tags: this.state.tags.map((item)=>item.id),
+				type: this.state.type?this.state.type.id:null,
+				repeat: this.state.repeat!==null?newID:null
+			}
+
 			this.state.taskWorks.forEach((item)=>{
 				delete item['id'];
 				rebase.addToCollection('help-task_works',{task:newID,...item});
@@ -110,6 +108,14 @@ export default class TaskAdd extends Component{
 				delete item['id'];
 				rebase.addToCollection('help-task_subtasks',{task:newID,...item});
 			})
+
+			if(this.state.repeat !==null){
+				rebase.addToCollection('/help-repeats', {
+					...this.state.repeat,
+					task:newID,
+					startAt:(new Date(this.state.repeat.startAt).getTime()),
+				},newID);
+			}
 
 
 			rebase.addToCollection('/help-tasks', body,newID)
@@ -134,6 +140,7 @@ export default class TaskAdd extends Component{
 					taskWorks:[],
 					taskMaterials:[],
 					subtasks:[],
+					repeat:null
 				})
 				this.props.closeModal();
 				this.props.history.push('/helpdesk/taskList/i/all/'+newID);
@@ -207,6 +214,7 @@ export default class TaskAdd extends Component{
 				workHours: this.props.task ? this.props.task.workHours : 0,
 				requester: this.props.task ? this.props.task.requester : null,
 				assignedTo: this.props.task ? this.props.task.assignedTo : [],
+				repeat: this.props.task ? this.props.task.repeat : null,
 				type: this.props.task ? this.props.task.type : null,
 				tags: this.props.task ? this.props.task.tags : [],
 				taskWorks: this.props.task ? this.props.task.taskWorks.map(w => {
@@ -214,7 +222,7 @@ export default class TaskAdd extends Component{
 						delete w['task'];
 						return {...w, id:this.getNewID()};})
 					 : [],
-			 taskWorks: this.props.task ? this.props.task.subtasks.map(s => {
+			 subtasks: this.props.task ? this.props.task.subtasks.map(s => {
 						delete s['fake'];
 						delete s['task'];
 						return {...s, id:this.getNewID()};})
@@ -275,6 +283,7 @@ export default class TaskAdd extends Component{
 								return -1;
 							}).map((status)=>
 							<Button
+								key={status.id}
 								className="btn-link"
 								disabled={this.state.defaults.status.fixed}
 								onClick={()=>{this.setState({status})}}
@@ -391,10 +400,17 @@ export default class TaskAdd extends Component{
 											</div>
 										</div>
 										<div className="row">
-											<label className="col-5 col-form-label">Opakovanie</label>
-											<div className="col-7">
-												<Select options={repeat} styles={selectStyle} />
-											</div>
+											<Repeat
+												taskID={null}
+												repeat={this.state.repeat}
+												submitRepeat={(repeat)=>{
+													console.log(repeat);
+													this.setState({repeat:repeat})
+												}}
+												deleteRepeat={()=>{
+													this.setState({repeat:null})
+												}}
+												/>
 										</div>
 									</div>
 								</div>
