@@ -4,6 +4,7 @@ import {Button} from 'reactstrap';
 import Comments from '../components/comments.js';
 import Materials from '../components/materials';
 import Services from '../components/services';
+import Subtasks from '../components/subtasks';
 
 import TaskAdd from './taskAddContainer';
 import TaskPrint from './taskPrint';
@@ -40,6 +41,7 @@ export default class TasksTwoEdit extends Component {
 			projects:[],
 			taskMaterials:[],
 			taskWorks:[],
+			subtasks:[],
 			units:[],
 			allTags:[],
 			taskTypes:[],
@@ -80,8 +82,6 @@ export default class TasksTwoEdit extends Component {
     this.submitTask.bind(this);
     this.submitMaterial.bind(this);
     this.submitService.bind(this);
-    this.saveService.bind(this);
-    this.saveMaterial.bind(this);
 		this.canSave.bind(this);
 		this.deleteTask.bind(this);
     this.fetchData(this.props.match.params.taskID);
@@ -96,6 +96,7 @@ export default class TasksTwoEdit extends Component {
 			rebase.removeDoc('/help-tasks/'+this.state.task.id);
 			this.state.taskMaterials.forEach((material)=>rebase.removeDoc('/help-task_materials/'+material.id))
 			this.state.taskWorks.forEach((work)=>rebase.removeDoc('/help-task_works/'+work.id))
+			this.state.subtasks.forEach((subtask)=>rebase.removeDoc('/help-task_subtasks/'+subtask.id))
 			database.collection('help-comments').where("task", "==", this.state.task.id).get()
 			.then((data)=>{
 				snapshotToArray(data).forEach((item)=>rebase.removeDoc('/help-comments/'+item.id));
@@ -132,6 +133,12 @@ export default class TasksTwoEdit extends Component {
     });
   }
 
+	submitSubtask(body){
+		rebase.addToCollection('help-task_subtasks',{task:this.props.match.params.taskID,...body}).then((result)=>{
+			this.setState({subtasks:[...this.state.subtasks, {task:this.props.match.params.taskID,...body,id:result.id}]})
+		});
+	}
+
   submitMaterial(body){
     rebase.addToCollection('help-task_materials',{task:this.props.match.params.taskID,...body}).then((result)=>{
       this.setState({taskMaterials:[...this.state.taskMaterials, {task:this.props.match.params.taskID,...body,id:result.id}]})
@@ -141,22 +148,6 @@ export default class TasksTwoEdit extends Component {
   submitService(body){
     rebase.addToCollection('help-task_works',{task:this.props.match.params.taskID,...body}).then((result)=>{
       this.setState({taskWorks:[...this.state.taskWorks, {task:this.props.match.params.taskID,...body,id:result.id}]})
-    });
-  }
-
-  saveService(body,id){
-    rebase.updateDoc('/help-task_works/'+id,body).then((result)=>{
-      let newTaskWorks=[...this.state.taskWorks];
-      newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...body};
-      this.setState({taskWorks:newTaskWorks,openService:null});
-    });
-  }
-
-  saveMaterial(body,id){
-    rebase.updateDoc('/help-task_materials/'+id,body).then((result)=>{
-      let newTaskMaterials=[...this.state.taskMaterials];
-      newTaskMaterials[newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id)]={...newTaskMaterials.find((taskMaterial)=>taskMaterial.id===id),...body};
-      this.setState({taskMaterials:newTaskMaterials,openMaterial:null});
     });
   }
 
@@ -183,10 +174,11 @@ export default class TasksTwoEdit extends Component {
 				database.collection('help-task_types').get(),
         database.collection('help-task_materials').where("task", "==", taskID).get(),
         database.collection('help-task_works').where("task", "==", taskID).get(),
+				database.collection('help-task_subtasks').where("task", "==", taskID).get(),
 				rebase.get('metadata/0', {
 					context: this,
 				})
-    ]).then(([task,statuses,projects, companies, workTypes, units, prices, pricelists, users, tags,taskTypes, taskMaterials, taskWorks,meta])=>{
+    ]).then(([task,statuses,projects, companies, workTypes, units, prices, pricelists, users, tags,taskTypes, taskMaterials, taskWorks,subtasks,meta])=>{
       this.setData(
 				{id:task.id,...task.data()},
 				toSelArr(snapshotToArray(statuses)),
@@ -200,6 +192,7 @@ export default class TasksTwoEdit extends Component {
 				snapshotToArray(prices),
 				snapshotToArray(taskMaterials),
 				snapshotToArray(taskWorks),
+				snapshotToArray(subtasks),
 				snapshotToArray(pricelists),
 				meta.defaultUnit);
     });
@@ -223,7 +216,7 @@ export default class TasksTwoEdit extends Component {
 		});
 	}
 
-  setData(task, statuses, projects,users,tags,companies,workTypes,units,taskTypes, prices,taskMaterials,taskWorks,pricelists,defaultUnit){
+  setData(task, statuses, projects,users,tags,companies,workTypes,units,taskTypes, prices,taskMaterials,taskWorks,subtasks,pricelists,defaultUnit){
 		this.setDefaults(task.project);
     let project = projects.find((item)=>item.id===task.project);
     let status = statuses.find((item)=>item.id===task.status);
@@ -259,6 +252,7 @@ export default class TasksTwoEdit extends Component {
       units,
       taskMaterials,
       taskWorks,
+			subtasks,
 			taskTypes,
 			allTags:tags,
 
@@ -530,6 +524,33 @@ export default class TasksTwoEdit extends Component {
 
 							<label className="m-t-5  text-slim">Popis</label>
 							<textarea className="form-control b-r-0" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value},this.submitTask.bind(this))} />
+
+							<Subtasks
+								taskAssigned={this.state.assignedTo}
+								submitService={this.submitSubtask.bind(this)}
+								subtasks={this.state.subtasks.map((subtask)=>{
+									let assignedTo=subtask.assignedTo?this.state.users.find((item)=>item.id===subtask.assignedTo):null
+									return {
+										...subtask,
+										assignedTo:assignedTo?assignedTo:null
+									}
+								})}
+								updateSubtask={(id,newData)=>{
+									rebase.updateDoc('help-task_subtasks/'+id,newData);
+									let newSubtasks=[...this.state.subtasks];
+									newSubtasks[newSubtasks.findIndex((subtask)=>subtask.id===id)]={...newSubtasks.find((subtask)=>subtask.id===id),...newData};
+									this.setState({subtasks:newSubtasks});
+								}}
+								removeSubtask={(id)=>{
+									rebase.removeDoc('help-task_subtasks/'+id).then(()=>{
+										let newSubtasks=[...this.state.subtasks];
+										newSubtasks.splice(newSubtasks.findIndex((subtask)=>subtask.id===id),1);
+										this.setState({subtasks:newSubtasks});
+									});
+									}
+								}
+								match={this.props.match}
+							/>
 
 							<Services
 								taskAssigned={this.state.assignedTo}

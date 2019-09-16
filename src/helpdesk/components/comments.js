@@ -117,7 +117,6 @@ getData(id){
                       body:JSON.stringify({message:this.state.emailBody,tos:this.state.tos.map((item)=>item.label), subject:this.state.subject, taskID:this.props.id,token,email:this.props.users.find((user)=>user.id===this.props.userID).email}),
                     }).then((response)=>response.json().then((response)=>{
                       this.setState({subject:'',tos:[], emailBody:''})
-                      console.log(response);
                     }))
                   });
                 }

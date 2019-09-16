@@ -34,8 +34,8 @@ export default class TaskAdd extends Component{
 			statuses:[],
 			projects:[],
 			taskWorks:[],
-			taskMaterials:[],
 			subtasks:[],
+			taskMaterials:[],
 			allTags:[],
 			taskTypes:[],
 			hidden:true,
@@ -106,6 +106,11 @@ export default class TaskAdd extends Component{
 				rebase.addToCollection('help-task_materials',{task:newID,...item});
 			})
 
+			this.state.subtasks.forEach((item)=>{
+				delete item['id'];
+				rebase.addToCollection('help-task_subtasks',{task:newID,...item});
+			})
+
 
 			rebase.addToCollection('/help-tasks', body,newID)
 			.then(()=>{
@@ -128,6 +133,7 @@ export default class TaskAdd extends Component{
 					overtime:{value:false,label:'Nie'},
 					taskWorks:[],
 					taskMaterials:[],
+					subtasks:[],
 				})
 				this.props.closeModal();
 				this.props.history.push('/helpdesk/taskList/i/all/'+newID);
@@ -207,6 +213,11 @@ export default class TaskAdd extends Component{
 						delete w['fake'];
 						delete w['task'];
 						return {...w, id:this.getNewID()};})
+					 : [],
+			 taskWorks: this.props.task ? this.props.task.subtasks.map(s => {
+						delete s['fake'];
+						delete s['task'];
+						return {...s, id:this.getNewID()};})
 					 : [],
 				taskMaterials: this.props.task ? this.props.task.taskMaterials.map(m => {
 						delete m['fake'];
@@ -393,24 +404,30 @@ export default class TaskAdd extends Component{
 						<label className="m-t-5">Popis</label>
 						<textarea className="form-control b-r-0" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value})} />
 
-							{!this.state.hidden && <Subtasks
-								taskAssigned={this.state.assignedTo}
-								submitService={(newSubtask)=>{
-									this.setState({subtasks:[...this.state.subtasks,{id:this.getNewID(),...newSubtask}]});
-								}}
-								subtasks={this.state.subtasks}
-								updateSubtask={(id,newData)=>{
-									let newSubtasks=[...this.state.subtasks];
-									newSubtasks[newSubtasks.findIndex((subtask)=>subtask.id===id)]={...newSubtasks.find((subtask)=>subtask.id===id),...newData};
-									this.setState({subtasks:newSubtasks});
-								}}
-								removeSubtask={(id)=>{
-									let newSubtasks=[...this.state.subtasks];
-									newSubtasks.splice(newSubtasks.findIndex((subtask)=>subtask.id===id),1);
-									this.setState({subtasks:newSubtasks});
-								}}
-								match={{params:{taskID:null}}}
-							/>}
+						{!this.state.hidden && <Subtasks
+							taskAssigned={this.state.assignedTo}
+							submitService={(newSubtask)=>{
+								this.setState({subtasks:[...this.state.subtasks,{id:this.getNewID(),...newSubtask}]});
+							}}
+							subtasks={this.state.subtasks.map((subtask)=>{
+								let assignedTo=subtask.assignedTo?this.state.users.find((item)=>item.id===subtask.assignedTo):null
+								return {
+									...subtask,
+									assignedTo:assignedTo?assignedTo:null
+								}
+							})}
+							updateSubtask={(id,newData)=>{
+								let newSubtasks=[...this.state.subtasks];
+								newSubtasks[newSubtasks.findIndex((subtask)=>subtask.id===id)]={...newSubtasks.find((subtask)=>subtask.id===id),...newData};
+								this.setState({subtasks:newSubtasks});
+							}}
+							removeSubtask={(id)=>{
+								let newSubtasks=[...this.state.subtasks];
+								newSubtasks.splice(newSubtasks.findIndex((subtask)=>subtask.id===id),1);
+								this.setState({subtasks:newSubtasks});
+							}}
+							match={{params:{taskID:null}}}
+						/>}
 
 						{!this.state.hidden && <Services
 							taskAssigned={this.state.assignedTo}
