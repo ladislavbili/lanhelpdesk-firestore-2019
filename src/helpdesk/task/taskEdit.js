@@ -12,7 +12,7 @@ import TaskPrint from './taskPrint';
 
 import {rebase, database} from '../../index';
 import {toSelArr, snapshotToArray, timestampToString} from '../../helperFunctions';
-import {invisibleSelectStyle, invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
+import {invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
 
 const noDef={
 	status:{def:false,fixed:false, value: null},

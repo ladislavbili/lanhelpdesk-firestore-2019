@@ -6,7 +6,6 @@ import {rebase,database} from '../../index';
 import {snapshotToArray, timestampToString} from '../../helperFunctions';
 import { Creatable } from 'react-select';
 import CKEditor from 'ckeditor4-react';
-import classnames from 'classnames';
 import {selectStyle} from '../../scss/selectStyles';
 
 class Comments extends Component{

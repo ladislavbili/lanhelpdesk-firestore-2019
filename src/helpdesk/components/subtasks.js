@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import { TabContent, TabPane, Nav, NavItem, NavLink, Input } from 'reactstrap';
-import classnames from 'classnames';
+import { TabContent, TabPane, Input } from 'reactstrap';
 import { selectStyle, invisibleSelectStyle} from '../../scss/selectStyles';
 
 

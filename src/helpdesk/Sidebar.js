@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import {NavItem, Nav, TabPane, TabContent, NavLink} from 'reactstrap';
-import classnames from 'classnames';
+import {NavItem, Nav, TabPane, TabContent} from 'reactstrap';
 import { NavLink as Link } from 'react-router-dom';
 import Select from "react-select";
 import { connect } from "react-redux";
