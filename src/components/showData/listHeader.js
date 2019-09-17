@@ -16,7 +16,7 @@ export default class ListHeader extends Component {
 				</div>
 					<select
 						value={this.props.orderBy}
-						className="invisible-select"
+						className="invisible-select text-bold"
 						onChange={(e)=>this.props.setOrderBy(e.target.value)}>
 						{
 							this.props.orderByValues.map((item,index)=>

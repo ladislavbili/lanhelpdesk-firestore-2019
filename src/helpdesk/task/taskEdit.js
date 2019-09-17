@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import {Button} from 'reactstrap';
+import {Button, Label} from 'reactstrap';
 import Comments from '../components/comments.js';
 import Materials from '../components/materials';
 import Services from '../components/services';
@@ -12,7 +12,7 @@ import TaskPrint from './taskPrint';
 
 import {rebase, database} from '../../index';
 import {toSelArr, snapshotToArray, timestampToString} from '../../helperFunctions';
-import {selectStyle, invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
+import {invisibleSelectStyle, invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
 
 const noDef={
 	status:{def:false,fixed:false, value: null},
@@ -316,9 +316,9 @@ export default class TaskEdit extends Component {
 
 		return (
 			<div className="flex">
-				<div className="container-fluid p-2">
-					<div className={"d-flex flex-row" + (!this.props.columns ? " w-70  ml-auto mr-auto" : "p-l-18") }>
-						<div className="center-hor">
+				<div className="container-fluid">
+					<div className={"d-flex flex-row center-hor p-2 " + (!this.props.columns ? " w-70  ml-auto mr-auto" : "p-r-20") }>
+							<div className="display-inline center-hor">
 							{!this.props.columns &&
 								<button type="button" className="btn btn-link waves-effect" onClick={() => this.props.history.push(`/helpdesk/taskList/i/${this.props.match.params.listID}`)}>
 									<i
@@ -326,7 +326,6 @@ export default class TaskEdit extends Component {
 										/>
 								</button>
 							}
-							{' '}
 							{
 								this.state.statuses.sort((item1,item2)=>{
 					        if(item1.order &&item2.order){
@@ -343,33 +342,33 @@ export default class TaskEdit extends Component {
 								</Button>
 								)
 							}
-							<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.deleteTask.bind(this)}>
-								<i
-									className="fas fa-trash icon-M"
-									/> Delete
-							</button>
-							{' '}
 							{this.state.project
 								&&
 								<TaskAdd history={this.props.history} project={this.state.project.id} triggerDate={this.state.projectChangeDate} task={this.state} disabled={this.canSave()}/>
 							}
-							{' '}
-							{/*<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.submitTask.bind(this)}>
-								<i
-									className="fas fa-save icon-M mr-3"
-									/>
-								{this.state.saving?'Saving... ':''}
-							</button>*/}
-							<TaskPrint match={this.props.match} {...this.state}/>
 						</div>
+						<div className="ml-auto center-hor">
+							<TaskPrint match={this.props.match} {...this.state}/>
+							<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.deleteTask.bind(this)}>
+								<i
+									className="fas fa-trash icon-M"
+									/> Delete
+								</button>
+								{/*<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.submitTask.bind(this)}>
+								<i
+								className="fas fa-save icon-M mr-3"
+								/>
+								{this.state.saving?'Saving... ':''}
+								</button>*/}
+							</div>
 					</div>
 				</div>
 
 						<div className={"card-box fit-with-header-and-commandbar scrollable" + (!this.props.columns? " center-ver w-70 " : "")}>
 							<div className="d-flex p-2">
 								<div className="row flex">
-									<h1 className="center-hor text-extra-slim"># {this.props.match.params.taskID}</h1>
-									<span className="center-hor">
+									<h1 className="center-hor text-extra-slim">{this.props.match.params.taskID}: </h1>
+									<span className="center-hor flex m-r-15">
 							    	<input type="text" value={this.state.title} className="task-title-input text-extra-slim hidden-input" onChange={(e)=>this.setState({title:e.target.value},this.submitTask.bind(this))} placeholder="Enter task name" />
 									</span>
 									<div className="ml-auto center-hor">
@@ -378,34 +377,23 @@ export default class TaskEdit extends Component {
 								</div>
 							</div>
 
-							<hr/>
 
 							<div className="row">
 								<div className="col-lg-12 d-flex">
-									<p className="text-muted">Created by Branislav Šusta at {this.state.createdAt?(timestampToString(this.state.createdAt)):''}</p>
+									<p className=""><span className="text-muted">Created by</span> Branislav Šusta <span className="text-muted"> at {this.state.createdAt?(timestampToString(this.state.createdAt)):''}</span></p>
 									<p className="text-muted ml-auto">{this.state.statusChange?('Status changed at ' + timestampToString(this.state.statusChange)):''}</p>
 								</div>
 
 							</div>
-							<div className="row">
-								<div className="col-lg-12 row">
-									<div className="center-hor text-slim">Tagy: </div>
-									<div className="f-1">
-										<Select
-											value={this.state.tags}
-											isMulti
-											onChange={(tags)=>this.setState({tags},this.submitTask.bind(this))}
-											options={this.state.allTags}
-											isDisabled={this.state.defaultFields.tags.fixed}
-											styles={invisibleSelectStyleNoArrow}
-											/>
-									</div>
-								</div>
-								<div className="col-lg-12 row">
-									<div className="center-hor text-slim">Assigned to: </div>
+
+							<hr className="m-t-15 m-b-10"/>
+
+								<div className="col-lg-12 row m-b-10">
+									<div className="center-hor m-r-5"><Label className="center-hor">Assigned to: </Label></div>
 									<div className="f-1">
 										<Select
 											value={this.state.assignedTo}
+											placeholder="Zadajte poverených pracovníkov"
 											isMulti
 											isDisabled={this.state.defaultFields.assignedTo.fixed}
 											onChange={(users)=>this.setState({assignedTo:users},this.submitTask.bind(this))}
@@ -414,99 +402,102 @@ export default class TaskEdit extends Component {
 											/>
 									</div>
 								</div>
+
 								<div className="col-lg-12">
-									<div className="col-lg-6">
-										<div className="p-r-20">
-											<div className="row">
-												<label className="col-5 col-form-label text-slim">Typ</label>
-												<div className="col-7">
+
+									<div className="col-lg-4">
+											<div className="row p-r-10 m-b-10">
+												<Label className="col-3 col-form-label">Typ</Label>
+												<div className="col-9">
 													<Select
+														placeholder="Zadajte typ"
 					                  value={this.state.type}
 														isDisabled={this.state.defaultFields.type.fixed}
-														styles={selectStyle}
+														styles={invisibleSelectStyleNoArrow}
 					                  onChange={(type)=>this.setState({type},this.submitTask.bind(this))}
 					                  options={this.state.taskTypes}
 					                  />
 												</div>
 											</div>
-											<div className="row">
-												<label className="col-5 col-form-label text-slim">Projekt</label>
-												<div className="col-7">
+											<div className="row p-r-10 m-b-10">
+												<Label className="col-3 col-form-label">Projekt</Label>
+												<div className="col-9">
 													<Select
+														placeholder="Zadajte projekt"
 														value={this.state.project}
 														onChange={(project)=>this.setState({project, projectChangeDate:(new Date()).getTime()},()=>{this.submitTask();this.setDefaults(project.id)})}
 														options={this.state.projects}
-														styles={selectStyle}
+														styles={invisibleSelectStyleNoArrow}
 														/>
 												</div>
 											</div>
-											<div className="row">
-												<label className="col-5 col-form-label text-slim">Zadal</label>
-												<div className="col-7">
+									</div>
+
+									<div className="col-lg-4">
+											<div className="row p-r-10 m-b-10">
+												<Label className="col-3 col-form-label">Zadal</Label>
+												<div className="col-9">
 													<Select
+														placeholder="Zadajte žiadateľa"
 														value={this.state.requester}
 														isDisabled={this.state.defaultFields.requester.fixed}
 														onChange={(requester)=>this.setState({requester},this.submitTask.bind(this))}
 														options={this.state.users}
-														styles={selectStyle}
+														styles={invisibleSelectStyleNoArrow}
 														/>
 												</div>
 											</div>
-										</div>
-									</div>
-
-									<div className="col-lg-6">
-										<div className="">
-											<div className="row">
-												<label className="col-5 col-form-label text-slim">Firma</label>
-												<div className="col-7">
+											<div className="row p-r-10 m-b-10">
+												<Label className="col-3 col-form-label">Firma</Label>
+												<div className="col-9">
 													<Select
+														placeholder="Zadajte firmu"
 														value={this.state.company}
 														isDisabled={this.state.defaultFields.company.fixed}
 														onChange={(company)=>this.setState({company},this.submitTask.bind(this))}
 														options={this.state.companies}
-														styles={selectStyle}
+														styles={invisibleSelectStyleNoArrow}
 														/>
 												</div>
 											</div>
-											<div className="row">
-												<label className="col-5 col-form-label text-slim">Deadline</label>
-												<div className="col-7">
-													{/*className='form-control hidden-input'*/}
-													<input
-														className='form-control'
-														placeholder="Status change date"
-														type="datetime-local"
-														value={this.state.deadline}
-														onChange={(e)=>{
-															this.setState({deadline:e.target.value},this.submitTask.bind(this))}
-														}
-														/>
-												</div>
-											</div>
+									</div>
 
-											<div className="row">
-												<Repeat
-													taskID={this.props.match.params.taskID}
-													repeat={this.state.repeat}
-													submitRepeat={(repeat)=>{
-														database.collection('help-repeats').doc(this.props.match.params.taskID).set({
-															...repeat,
-															task:this.props.match.params.taskID,
-															startAt:(new Date(repeat.startAt).getTime()),
-															});
-														this.setState({repeat})
-													}}
-													deleteRepeat={()=>{
-														rebase.removeDoc('/help-repeats/'+this.state.task.id);
-														this.setState({repeat:null})
-													}}
+									<div className="col-lg-4">
+										<div className="row p-r-10 m-b-10">
+											<Label className="col-3 col-form-label">Deadline</Label>
+											<div className="col-9">
+												{/*className='form-control hidden-input'*/}
+												<input
+													className='form-control hidden-input'
+													placeholder="Status change date"
+													type="datetime-local"
+													value={this.state.deadline}
+													onChange={(e)=>{
+														this.setState({deadline:e.target.value},this.submitTask.bind(this))}
+													}
 													/>
 											</div>
 										</div>
+											<Repeat
+												taskID={this.props.match.params.taskID}
+												repeat={this.state.repeat}
+												submitRepeat={(repeat)=>{
+													database.collection('help-repeats').doc(this.props.match.params.taskID).set({
+														...repeat,
+														task:this.props.match.params.taskID,
+														startAt:(new Date(repeat.startAt).getTime()),
+														});
+													this.setState({repeat})
+												}}
+												deleteRepeat={()=>{
+													rebase.removeDoc('/help-repeats/'+this.state.task.id);
+													this.setState({repeat:null})
+												}}
+												/>
 									</div>
+
 								</div>
-							</div>
+
 
 							{false && <div className="form-group m-b-0 row">
 								<label className="col-5 col-form-label text-slim">Mimo pracovných hodín</label>
@@ -536,8 +527,23 @@ export default class TaskEdit extends Component {
 							</div>}
 
 
-							<label className="m-t-5  text-slim">Popis</label>
-							<textarea className="form-control b-r-0" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value},this.submitTask.bind(this))} />
+							<Label className="m-t-5  m-b-10">Popis</Label>
+							<textarea className="form-control b-r-0  m-b-10" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value},this.submitTask.bind(this))} />
+
+							<div className="row">
+								<div className="center-hor"><Label className="center-hor">Tagy: </Label></div>
+								<div className="f-1 ">
+									<Select
+										placeholder="Zvoľte tagy"
+										value={this.state.tags}
+										isMulti
+										onChange={(tags)=>this.setState({tags},this.submitTask.bind(this))}
+										options={this.state.allTags}
+										isDisabled={this.state.defaultFields.tags.fixed}
+										styles={invisibleSelectStyleNoArrow}
+										/>
+								</div>
+							</div>
 
 							<Subtasks
 								taskAssigned={this.state.assignedTo}

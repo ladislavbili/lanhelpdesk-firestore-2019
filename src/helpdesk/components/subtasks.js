@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
+import { TabContent, TabPane, Nav, NavItem, NavLink, Input } from 'reactstrap';
 import classnames from 'classnames';
 import { selectStyle, invisibleSelectStyle} from '../../scss/selectStyles';
 
@@ -45,18 +45,18 @@ export default class Subtasks extends Component {
 
 	render() {
 		return (
-			<div className="m-t-30">
+			<div className="m-t-10">
 				<div className="row">
 					<div className="full-width">
-						<Nav tabs className="b-0">
+				{/*		<Nav tabs className="b-0">
 							<NavItem>
 								<NavLink
-									className={classnames({ active: this.state.activeTab === '1'}, "clickable", "form-tab-end")}
+									className={classnames({ active: this.state.activeTab === '1'}, "clickable", "")}
 								>
 									Podúlohy
 								</NavLink>
 							</NavItem>
-						</Nav>
+						</Nav>*/}
 						<TabContent activeTab={this.state.activeTab}>
 							<TabPane tabId="1">
 								<div className="row">
@@ -66,7 +66,7 @@ export default class Subtasks extends Component {
 												<thead >
 													<tr >
 														<th width="25"></th>
-														<th >Názov</th>
+														<th >Subtask</th>
 														{false && <th width="170">Rieši</th>}
 														<th className="t-a-c" width="124">Action</th>
 													</tr>
@@ -75,10 +75,16 @@ export default class Subtasks extends Component {
 													{
 														this.props.subtasks.map((subtask)=>
 														<tr key={subtask.id}>
-															<td className="table-checkbox">
-																<input type="checkbox" checked={subtask.done} onChange={()=>{
-																		this.props.updateSubtask(subtask.id,{done:!subtask.done})
-																	}} />
+															<td className="custom-table-checkbox">
+																	<label className="custom-container">
+								                    <Input type="checkbox"
+																			checked={subtask.done}
+																			onChange={()=>{
+																				console.log("changed");
+																					this.props.updateSubtask(subtask.id,{done:!subtask.done});
+																				}}  />
+																			<span className="checkmark"> </span>
+								                  </label>
 																</td>
 																<td>
 																	<div>
@@ -112,7 +118,7 @@ export default class Subtasks extends Component {
 																		/>
 																</td>}
 																<td className="t-a-r">
-																	<button className="btn btn-link waves-effect" onClick={()=>{
+																	<button className="btn btn-link-reversed waves-effect" onClick={()=>{
 																			if(window.confirm('Are you sure?')){
 																				this.props.removeSubtask(subtask.id);
 																			}
@@ -127,16 +133,17 @@ export default class Subtasks extends Component {
 													<tr>
 														<td>
 														</td>
-														<td>
-															<input
-																type="text"
-																className="form-control"
-																id="inlineFormInput"
-																placeholder=""
-																value={this.state.newTitle}
-																onChange={(e)=>this.setState({newTitle:e.target.value})}
-																/>
-														</td>
+														<td className="row" style={{border: "none"}}>
+															<div className="w-50">
+																<input
+																	type="text"
+																	className="form-control"
+																	id="inlineFormInput"
+																	placeholder=""
+																	value={this.state.newTitle}
+																	onChange={(e)=>this.setState({newTitle:e.target.value})}
+																	/>
+															</div>
 														{false && <td>
 															<Select
 																value={this.state.newAssigned}
@@ -148,7 +155,7 @@ export default class Subtasks extends Component {
 															styles={selectStyle}
 															/>
 													</td>}
-													<td className="t-a-r">
+													<div>
 														<button className="btn btn-link waves-effect"
 															disabled={this.state.newTitle===''}
 															onClick={()=>{
@@ -162,12 +169,14 @@ export default class Subtasks extends Component {
 																	//assignedTo:this.props.taskAssigned.length>0?this.props.taskAssigned[0]:null
 																});
 																this.props.submitService(body);
-															}
-														}
-														>
-														<i className="fa fa-plus" />
-													</button>
-												</td>
+																	}
+																}
+																>
+																<i className="fa fa-plus" />
+															</button>
+														</div>
+												 </td>
+												 <td></td>
 												</tr>
 												</tbody>
 											</table>

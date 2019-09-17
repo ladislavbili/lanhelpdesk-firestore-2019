@@ -13,7 +13,6 @@ export default class ColumnDisplay extends Component {
 
 					<div className="scrollable fit-with-header-and-commandbar">
 						<ListHeader {...this.props.commandBar} listName={this.props.listName}/>
-
 						{
 							this.props.data.map((item, index)=>
 							<ul

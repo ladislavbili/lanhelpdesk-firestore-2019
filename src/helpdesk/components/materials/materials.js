@@ -85,7 +85,7 @@ export default class Rozpocet extends Component {
 									{
 										this.props.materials.map((material)=>
 										<tr key={material.id}>
-											<td className="table-checkbox">
+											<td className="table-checkbox t-a-r">
 												<input
 													type="checkbox"
 													checked={this.state.selectedIDs.includes(material.id)}

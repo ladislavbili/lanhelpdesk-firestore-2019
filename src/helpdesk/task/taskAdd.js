@@ -399,7 +399,6 @@ export default class TaskAdd extends Component{
 													/>
 											</div>
 										</div>
-										<div className="row">
 											<Repeat
 												taskID={null}
 												repeat={this.state.repeat}
@@ -411,7 +410,6 @@ export default class TaskAdd extends Component{
 													this.setState({repeat:null})
 												}}
 												/>
-										</div>
 									</div>
 								</div>
 							</div>

@@ -51,8 +51,8 @@ body{
 
 .container-fluid{
   background-color: $main-background-color;
-  padding: 0px 20px 3px 3px;
-  border-bottom: 1px solid $muted-gray;
+  padding: 0px 35px 0px 25px;
+  border-bottom: 1px solid $main-background-color;
   height: 41px;
 }
 
@@ -238,6 +238,9 @@ html{
 .text-slim{
   font-weight: 400;
 }
+.text-bold{
+  font-weight: 700;
+}
 .h-30{
   height: 30px;
 }
@@ -272,7 +275,10 @@ html{
 	padding-right: 10px;
 }
 .p-r-20{
-	padding-right: 20px;
+	padding-right: 20px !important;
+}
+.p-l-10{
+    padding-left: 10px;
 }
 .p-l-15{
     padding-left: 15px !important;
@@ -281,7 +287,7 @@ html{
     padding-left: 18px;
 }
 .p-l-20{
-	padding-left: 20px;
+	padding-left: 20px !important;
 }
 .p-l-30{
 	padding-left: 30px;
@@ -331,6 +337,9 @@ html{
 .m-t-30 {
     margin-top: 30px;
 }
+.m-t-50 {
+    margin-top: 50px;
+}
 .m-t-sidebar-item {
     margin-top: $sidebar-item-height;
 }
@@ -358,6 +367,9 @@ html{
 .m-b-30{
   margin-bottom: 30px;
 }
+.m-l--10{
+  margin-left: -10px;
+}
 .m-l-5{
   margin-left: 5px;
 }
@@ -369,6 +381,9 @@ html{
 }
 .m-l-25{
   margin-left: 25px;
+}
+.m-l-35{
+  margin-left: 35px !important;
 }
 .m-l-40{
   margin-left: 40px;
@@ -496,6 +511,16 @@ h4{
 
 .hidden-icon:hover{
   color: $basic-button-color;
+}
+
+.repeat-btn{
+  background-color: inherit;
+  color: $main-font-color;
+}
+.repeat-btn:hover{
+  cursor: pointer;
+  background-color: inherit;
+  color: $main-font-color;
 }
 
 .link{
@@ -815,17 +840,21 @@ td {
 
 
 //TABY
+.nav-tabs a {
+  padding-left: 0px !important;
+}
+
 .nav-tabs a.active {
   border: none;
+  font-weight: 900;
+  color: red;
   background-color: inherit !important;
-  border-bottom: 3px solid #0078D4 !important;
-  color: #0078D4 !important;
 }
 
 .nav:not(.nav-tabs) a.active {
-//  background-color: $sidebar-item-color !important;
   font-weight: 900;
   color: #0078D4 !important;
+//  padding-left: 0px !important;
 }
 
 .nav:not(.nav-tabs) a.active + .sidebar-menu-item-btn {
@@ -853,7 +882,7 @@ td {
 
 //---------------------TaskList----------------------
 .taskList-container{
-  background-color: #FFF;
+  background-color: #FCFCFC;
 }
 
 .taskList {
@@ -863,7 +892,7 @@ td {
 }
 
 .taskList li {
-  background-color: #fff;
+  background-color: inherit;
   border: 0px;
   border-bottom: 1px solid #dee2e6;
   padding: 20px;
@@ -932,14 +961,14 @@ td {
 }
 
 .card-box{
-  border: 1px solid rgba(54, 64, 74, 0.05);
-  border-top: none;
+//  border: 1px solid rgba(54, 64, 74, 0.05);
+//  border-top: none;
+  border: none;
   margin-bottom: 0px;
   background-color: #ffffff;
-  background: $form-background-color;
+  background: white;
   border-radius: 0px;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding: 20px 30px;
 }
 
 .form-tab{
@@ -963,7 +992,80 @@ td {
 }
 
 //-------------------END-taskEdit-------------------------
+//--------CUSTOM-CHECKBOX
 
+.custom-table-checkbox{
+  padding-top: 12px !important;
+}
+/* Customize the label (the container) */
+.custom-container {
+  display: block;
+  position: relative;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.custom-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  border: 0.95px solid #636363;
+  border-radius: 0px;
+  background-color: white;
+}
+
+/* On mouse-over, add a grey background color */
+.custom-container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.custom-container input:checked ~ .checkmark {
+  background-color: $basic-button-color;
+  border-color: $basic-button-color;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.custom-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.custom-container .checkmark:after {
+  left: 5px;
+  top: 2px;
+  width: 8px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
 
 // /0078D4
 //background: $main-background-color;

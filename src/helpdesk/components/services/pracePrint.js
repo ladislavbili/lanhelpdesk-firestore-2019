@@ -84,8 +84,8 @@ export default class Prace extends Component {
 													: subtask.quantity
 												}
 											</td>
-											<td>{subtask.assignedTo.email}</td>
-											<td>{subtask.workType.title}</td>
+											<td>{subtask.assignedTo ? subtask.assignedTo.email : "" }</td>
+											<td>{subtask.workType ? subtask.workType.title : ""}</td>
 										</tr>)
 								}
 						</tbody>
