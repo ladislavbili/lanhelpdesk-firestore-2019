@@ -14,7 +14,7 @@ export default class Subtasks extends Component {
 			activeTab: "1",
 
 			newTitle:'',
-			newAssigned:this.props.taskAssigned.length>0?this.props.taskAssigned[0]:null
+			//newAssigned:this.props.taskAssigned.length>0?this.props.taskAssigned[0]:null
 		}
 		this.onFocus.bind(this);
 	}
@@ -32,7 +32,7 @@ export default class Subtasks extends Component {
 				newTitle:'',
 			})
 		}
-		if(this.props.taskAssigned.length!==props.taskAssigned.length || (props.taskAssigned.length>0 && props.taskAssigned[0].id!==this.props.taskAssigned[0].id) ){
+		/*if(this.props.taskAssigned.length!==props.taskAssigned.length || (props.taskAssigned.length>0 && props.taskAssigned[0].id!==this.props.taskAssigned[0].id) ){
 			if(!props.taskAssigned.some((item)=>item.id===(this.state.newAssigned?this.state.newAssigned.id:null))){
 				if(props.taskAssigned.length>0){
 					this.setState({newAssigned:props.taskAssigned[0]});
@@ -40,7 +40,7 @@ export default class Subtasks extends Component {
 					this.setState({newAssigned:null});
 				}
 			}
-		}
+		}*/
 	}
 
 	render() {
@@ -67,7 +67,7 @@ export default class Subtasks extends Component {
 													<tr >
 														<th width="25"></th>
 														<th >Názov</th>
-														<th width="170">Rieši</th>
+														{false && <th width="170">Rieši</th>}
 														<th className="t-a-c" width="124">Action</th>
 													</tr>
 												</thead>
@@ -101,7 +101,7 @@ export default class Subtasks extends Component {
 																			/>
 																	</div>
 																</td>
-																<td>
+																{false && <td>
 																	<Select
 																		value={subtask.assignedTo}
 																		onChange={(assignedTo)=>{
@@ -110,7 +110,7 @@ export default class Subtasks extends Component {
 																		options={this.props.taskAssigned}
 																		styles={invisibleSelectStyle}
 																		/>
-																</td>
+																</td>}
 																<td className="t-a-r">
 																	<button className="btn btn-link waves-effect" onClick={()=>{
 																			if(window.confirm('Are you sure?')){
@@ -137,7 +137,7 @@ export default class Subtasks extends Component {
 																onChange={(e)=>this.setState({newTitle:e.target.value})}
 																/>
 														</td>
-														<td>
+														{false && <td>
 															<Select
 																value={this.state.newAssigned}
 																onChange={(newAssigned)=>{
@@ -147,19 +147,19 @@ export default class Subtasks extends Component {
 															options={this.props.taskAssigned}
 															styles={selectStyle}
 															/>
-													</td>
+													</td>}
 													<td className="t-a-r">
 														<button className="btn btn-link waves-effect"
 															disabled={this.state.newTitle===''}
 															onClick={()=>{
 																let body={
 																	title:this.state.newTitle,
-																	assignedTo:this.state.newAssigned?this.state.newAssigned.id:null,
+																	//assignedTo:this.state.newAssigned?this.state.newAssigned.id:null,
 																	done:false
 																}
 																this.setState({
 																	newTitle:'',
-																	assignedTo:this.props.taskAssigned.length>0?this.props.taskAssigned[0]:null
+																	//assignedTo:this.props.taskAssigned.length>0?this.props.taskAssigned[0]:null
 																});
 																this.props.submitService(body);
 															}

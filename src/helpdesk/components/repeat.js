@@ -11,7 +11,7 @@ constructor(props) {
   this.state = {
     open: false,
     startAt:"",
-    repeatEvery:intervals[0].value,
+    repeatEvery:1,
     repeatInterval:intervals[0],
   };
   this.toggleRepeat = this.toggleRepeat.bind(this);
@@ -34,17 +34,19 @@ nová úloha vytvorená z opakovania je v stave new
 
 toggleRepeat() {
   if(this.props.repeat){
+    let repeatInterval = intervals.find((interval)=>interval.title===this.props.repeat.repeatInterval);
+
     this.setState({
       startAt:this.props.repeat.startAt ? new Date(this.props.repeat.startAt).toISOString().replace("Z", "") : "",
-      repeatEvery:this.props.repeat.repeatEvery,
-      repeatInterval:intervals.find((interval)=>interval.title===this.props.repeat.repeatInterval),
+      repeatEvery:this.props.repeat.repeatEvery/repeatInterval.value,
+      repeatInterval,
       open:!this.state.open
     });
   }else{
     this.setState({
       open: !this.state.open,
       startAt:"",
-      repeatEvery:intervals[0].value,
+      repeatEvery:1,
       repeatInterval:intervals[0],
     });
   }
@@ -54,10 +56,10 @@ render() {
   const repeatInterval = this.props.repeat?(intervals.find((interval)=>interval.title===this.props.repeat.repeatInterval)):null;
   return (
     <div>
-      <Button type="button" id="openPopover" onClick={this.openRepeat}>
-        {this.props.repeat?("Opakovať každý "+ parseFloat((this.props.repeat.repeatEvery/repeatInterval.value).toFixed(2)) + ' ' + repeatInterval.title ) :"No repeat"}
+      <Button type="button" id={"openPopover"+this.props.taskID} onClick={this.toggleRepeat}>
+        {this.props.repeat?("Opakovať každý "+ parseInt(this.props.repeat.repeatEvery/repeatInterval.value) + ' ' + repeatInterval.title) :"No repeat"}
       </Button>
-      <Popover placement="bottom" isOpen={this.state.open} target="openPopover" toggle={this.toggleRepeat}>
+      <Popover placement="bottom" isOpen={this.state.open} target={"openPopover"+this.props.taskID} toggle={this.toggleRepeat}>
         <PopoverHeader>Opakovanie</PopoverHeader>
         <PopoverBody>
           <div>
@@ -75,11 +77,11 @@ render() {
                 <div className="row">
                 <div className="w-50 p-r-20">
                   <Input type="number"
-                    className={(this.state.repeatEvery/this.state.repeatInterval.value < 0 ) ? "form-control-warning" : ""}
+                    className={(this.state.repeatEvery < 0 ) ? "form-control-warning" : ""}
                     placeholder="Enter number"
-                    value={(this.state.repeatEvery/this.state.repeatInterval.value )}
+                    value={(this.state.repeatEvery )}
                     onChange={(e)=>{
-                      this.setState({repeatEvery: e.target.value*this.state.repeatInterval.value})}
+                      this.setState({repeatEvery: parseInt(e.target.value)})}
                     }
                     />
                 </div>
@@ -98,9 +100,9 @@ render() {
               </div>
             </FormGroup>
             <div>
-              <Button type="button" disabled={this.state.repeatEvery <= 0 || isNaN(new Date(this.state.startAt).getTime())  }
+              <Button type="button" disabled={this.state.repeatEvery <= 0 || isNaN(this.state.repeatEvery) || isNaN(new Date(this.state.startAt).getTime())  }
                 onClick={()=>{
-                  this.props.submitRepeat({startAt:this.state.startAt,repeatEvery:this.state.repeatEvery,repeatInterval:this.state.repeatInterval.title});
+                  this.props.submitRepeat({startAt:this.state.startAt,repeatEvery:this.state.repeatEvery*this.state.repeatInterval.value,repeatInterval:this.state.repeatInterval.title});
                   this.setState({open:false});
                 }}>
                 Submit
