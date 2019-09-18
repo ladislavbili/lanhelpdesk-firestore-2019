@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import {rebase} from '../../index';
 import ShowData from '../../components/showData';
 import {timestampToString} from '../../helperFunctions';
-import TaskEdit from './taskEdit';
+import TaskEdit from './taskEditContainer';
 import TaskEmpty from './taskEmpty';
 import {setTasksOrderBy, setTasksAscending} from '../../redux/actions';
 

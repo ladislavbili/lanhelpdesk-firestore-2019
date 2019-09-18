@@ -79,7 +79,7 @@ export default class Rozpocet extends Component {
 										</th>
 										<th className="t-a-l p-l-15">Materiál</th>
 										<th width="100">Mn.</th>
-										<th width="100">Jednotka</th>
+										<th width="190">Jednotka</th>
 										{false && <th width="100">Nákupná cena</th>}
 										{false && <th width="124">Predajná cena</th>}
 										{false && <th width="120">Cena</th>}
@@ -246,18 +246,25 @@ export default class Rozpocet extends Component {
 									{!this.state.showAddItem &&
 										<tr>
 											<td></td>
-										<button className="btn btn-table-add-item"
-											onClick={()=>{
-											 this.setState({showAddItem: true});
-											}}>
-											+ Add New Item
-										</button>
+											<td>
+												<button className="btn btn-table-add-item"
+													onClick={()=>{
+													 this.setState({showAddItem: true});
+													}}>
+													+ Add New Item
+												</button>
+											</td>
 									</tr>
 									}
 
 								{this.state.showAddItem &&
 									<tr>
 										<td>
+											<button className="btn btn-link waves-effect" onClick={()=>{
+													this.setState({showAddItem: false})
+												}}>
+												<i className="fa fa-times"  />
+												</button>
 										</td>
 										<td>
 											<input

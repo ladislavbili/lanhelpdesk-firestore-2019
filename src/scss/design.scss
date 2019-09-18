@@ -152,6 +152,9 @@ html{
 .w-100px{
   width: 100px;
 }
+.w-300px{
+  width: 300px;
+}
 .golden-ratio-618{
   width: 61.8%;
 }
@@ -160,6 +163,9 @@ html{
 }
 .max-width-400{
   max-width: 400px;
+}
+.max-width-1660{
+  max-width: 1660px;
 }
 .full-height{
   height: 100% !important;
@@ -703,6 +709,19 @@ tr:last-child{
   border: 1px solid red;
 }
 
+.task-edit-right-half{
+  width: 300px;
+  padding-left: 20px;
+  border-left: 1px solid #EAEAEA;
+  height: 100%;
+}
+
+.task-edit-left-half{
+  flex: 1;
+  padding-right: 20px;
+}
+
+
 //----------------END-všeobecné-elementy----------------
 
 
@@ -789,6 +808,7 @@ tr:last-child{
 .sidebar-menu-item{
   width: 100%;
   height: $sidebar-item-height;
+  border: none !important;
 }
 
 .sidebar-menu-item-link{
@@ -882,35 +902,35 @@ tr:last-child{
 
 
 //TABY
-.nav-link{
+.nav-link:not(.sidebar-menu-item){
   height: 28px;
   font-size: 15px;
   font-weight: 600;
 }
-.nav-link.active{
+.nav-link:not(.sidebar-menu-item).active{
   font-family: Segoe UI Bold;
   height: 28px !important;
   color: #333 !important;
 }
-.nav>li>a {
+.nav>li>a:not(.sidebar-menu-item) {
   padding: 2px 10px;
   color: #979797 !important;
   border-radius: 0px !important;
   border: none !important;
   border-right: 2px solid #979797 !important;
 }
-.nav>li>a:hover{
+.nav>li>a:not(.sidebar-menu-item):hover{
   background-color: transparent;
   border: none;
   border-right: 2px solid #979797 !important;
   color: #333 !important;
 }
 
-.nav>li:first-of-type{
+.nav>li:not(.sidebar-menu-item):first-of-type{
   padding-left: 0px !important;
 }
 
-.nav>li:last-child {
+.nav>li:not(.sidebar-menu-item):last-child {
   border: none;
 }
 

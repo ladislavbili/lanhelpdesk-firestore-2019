@@ -79,10 +79,10 @@ export default class Rozpocet extends Component {
 												onChange={()=>this.setState({selectedIDs:(this.props.subtasks.length===this.state.selectedIDs.length?[]:this.props.subtasks.map((item)=>item.id))})} />
 										</th>}
 										<th style={{fontSize: "14px", fontFamily: "Segoe UI Bold", color: "#333"}}>Služby</th>
-										<th style={{fontSize: "12px", fontFamily: "Segoe UI", fontWeight: "500", color: "#333"}} width="130">Rieši</th>
+										<th style={{fontSize: "12px", fontFamily: "Segoe UI", fontWeight: "500", color: "#333"}} width="170">Rieši</th>
 										<th width="60">Mn.</th>
 										<th width="100">Typ</th>
-										<th width="50" className="table-highlight-background">Cena/Mn.</th>
+										<th width="100" className="table-highlight-background">Cena/Mn.</th>
 										<th width="60" className="table-highlight-background">Zlava</th>
 										{false && <th width="130">Spolu</th>}
 										<th className="t-a-c" width="100">Action</th>
@@ -285,22 +285,22 @@ export default class Rozpocet extends Component {
 									{/* END OF GENERATED DATA*/}
 
 									{!this.state.showAddItem &&
-										<tr >
-										<button className="btn btn-table-add-item"
-											onClick={()=>{
-											 this.setState({showAddItem: true});
-											}}>
-											+ Add New Item
-										</button>
+									<tr >
+										<td>
+											<button className="btn btn-table-add-item"
+												onClick={()=>{
+												 this.setState({showAddItem: true});
+												}}>
+												+ Add New Item
+											</button>
+										</td>
 										<td></td>
 										<td></td>
 										<td></td>
 										<td></td>
 										<td></td>
-										<p className="text-right">
-											<b>Sub-total:</b>
-											{(this.props.subtasks.map((subtask)=>parseFloat(subtask.totalPrice)).reduce((acc, cur)=> acc+cur,0)).toFixed(2)}
-										</p>
+										<td>
+										</td>
 									</tr>
 									}
 
@@ -397,6 +397,7 @@ export default class Rozpocet extends Component {
 														assignedTo:this.state.newAssigned?this.state.newAssigned.id:null
 													}
 													this.setState({
+														showAddItem: false,
 														newDiscount:0,
 														newExtraWork:false,
 														newQuantity:0,
@@ -409,6 +410,11 @@ export default class Rozpocet extends Component {
 												>
 												<i className="fa fa-plus" />
 											</button>
+											<button className="btn btn-link waves-effect" onClick={()=>{
+													this.setState({showAddItem: false})
+												}}>
+												<i className="fa fa-times"  />
+												</button>
 										</td>
 									</tr>}
 								</tbody>
@@ -416,7 +422,8 @@ export default class Rozpocet extends Component {
 						</div>
 						<div className="row justify-content-end">
 							<div className="col-md-6">
-								<button type="button" className="btn btn-link waves-effect">
+							{false &&
+									<button type="button" className="btn btn-link waves-effect">
 									<i
 										className="fas fa-sync"
 										style={{
@@ -430,15 +437,14 @@ export default class Rozpocet extends Component {
 										}}
 										onClick={()=>this.props.updatePrices(this.state.selectedIDs)}
 										> Aktualizovať ceny podla cenníka</span>
-								</button>
+								</button>}
 							</div>
 							<div className="col-md-6">
-								{this.state.showAddItem &&
-								<p className="text-right">
-									<b>Sub-total:</b>
-									{(this.props.subtasks.map((subtask)=>parseFloat(subtask.totalPrice)).reduce((acc, cur)=> acc+cur,0)).toFixed(2)}
-								</p>
-							}
+									<p className="text-right" style={{marginTop: (this.state.showAddItem ? "" : "-45px")}}>
+										<b>Sub-total:</b>
+										{(this.props.subtasks.map((subtask)=>parseFloat(subtask.totalPrice)).reduce((acc, cur)=> acc+cur,0)).toFixed(2)}
+									</p>
+
 								</div>
 							</div>
 						</div>

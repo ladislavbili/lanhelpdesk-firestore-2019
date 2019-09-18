@@ -75,8 +75,8 @@ export default class Rozpocet extends Component {
 										</th>}
 										<th style={{fontSize: "14px", fontFamily: "Segoe UI Bold", color: "#333"}}>Materiál</th>
 										<th style={{fontSize: "12px", fontFamily: "Segoe UI", fontWeight: "500", color: "#333"}} width="60">Mn.</th>
-										<th width="100">Jednotka</th>
-										<th width="60">Cena</th>
+										<th width="120">Jednotka</th>
+										<th width="110">Cena</th>
 										<th width="100" className="table-highlight-background">Nákup</th>
 										<th width="100" className="table-highlight-background">Marža</th>
 										{false && <th width="124">Predajná cena</th>}
@@ -274,21 +274,21 @@ export default class Rozpocet extends Component {
 
 									{!this.state.showAddItem &&
 										<tr >
-										<button className="btn btn-table-add-item"
-											onClick={()=>{
-											 this.setState({showAddItem: true});
-											}}>
-											+ Add New Item
-										</button>
+										<td>
+											<button className="btn btn-table-add-item"
+												onClick={()=>{
+												 this.setState({showAddItem: true});
+												}}>
+												+ Add New Item
+											</button>
+										</td>
 										<td></td>
 										<td></td>
 										<td></td>
 										<td></td>
 										<td></td>
-											<p className="text-right">
-												<b>Sub-total:</b>
-												{(this.props.materials.map((material)=>parseFloat(material.totalPrice)).reduce((acc, cur)=> acc+cur,0)).toFixed(2)}
-											</p>
+										<td>
+										</td>
 									</tr>
 									}
 
@@ -379,6 +379,7 @@ export default class Rozpocet extends Component {
 											      unit:this.state.newUnit.id
 													}
 													this.setState({
+														showAddItem: false,
 														newTitle:'',
 														newQuantity:1,
 														newMargin:0,
@@ -391,6 +392,11 @@ export default class Rozpocet extends Component {
 												>
 												<i className="fa fa-plus" />
 											</button>
+											<button className="btn btn-link waves-effect" onClick={()=>{
+													this.setState({showAddItem: false})
+												}}>
+												<i className="fa fa-times"  />
+												</button>
 										</td>
 									</tr> }
 								</tbody>
@@ -398,12 +404,11 @@ export default class Rozpocet extends Component {
 						</div>
 						<div className="row justify-content-end">
 							<div className="col-md-6">
-								{this.state.showAddItem &&
-								<p className="text-right">
+								<p className="text-right" style={{marginTop: (this.state.showAddItem ? "" : "-45px")}}>
 									<b>Sub-total:</b>
 									{(this.props.materials.map((material)=>parseFloat(material.totalPrice)).reduce((acc, cur)=> acc+cur,0)).toFixed(2)}
 								</p>
-							}
+
 								</div>
 							</div>
 						</div>

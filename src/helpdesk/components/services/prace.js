@@ -69,9 +69,9 @@ export default class Prace extends Component {
 								<tr >
 									<th width="25"></th>
 									<th >Služby</th>
-									<th width="100">Mn.</th>
+									<th width="50">Mn.</th>
 									{false && <th width="170">Rieši</th>}
-									<th width="100">Typ</th>
+									<th width="190">Typ</th>
 									<th className="t-a-r" width="124">Action</th>
 								</tr>
 							</thead>
@@ -190,18 +190,26 @@ export default class Prace extends Component {
 
 							{!this.state.showAddItem &&
 								<tr >
-									<td></td>
-								<button className="btn btn-table-add-item"
-									onClick={()=>{
-									 this.setState({showAddItem: true});
-									}}>
-									+ Add New Item
-								</button>
-							</tr>
+									<td>
+									</td>
+									<td>
+										<button className="btn btn-table-add-item"
+											onClick={()=>{
+											 this.setState({showAddItem: true});
+											}}>
+											+ Add New Item
+										</button>
+									</td>
+								</tr>
 							}
 
 				{this.state.showAddItem &&			<tr>
 								<td>
+									<button className="btn btn-link waves-effect" onClick={()=>{
+											this.setState({showAddItem: false})
+										}}>
+										<i className="fa fa-times"  />
+										</button>
 								</td>
 								<td>
 									<input
@@ -267,6 +275,7 @@ export default class Prace extends Component {
 												assignedTo:this.state.newAssigned?this.state.newAssigned.id:null,
 											}
 											this.setState({
+												showAddItem: false,
 												newDiscount:0,
 												newExtraWork:false,
 												newQuantity:0,

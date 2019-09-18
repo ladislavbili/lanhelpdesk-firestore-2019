@@ -22,7 +22,7 @@ export default class List extends Component {
 	}
 
 	render() {
-		console.log(this.state.search);
+		console.log(this.props);
 
 		return (
 				<div className="row">

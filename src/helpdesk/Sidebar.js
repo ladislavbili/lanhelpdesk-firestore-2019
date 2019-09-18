@@ -177,7 +177,7 @@ class Sidebar extends Component {
 									</Nav>
 								</TabPane>
 								<TabPane tabId={1}>
-									<Filter filterID={this.state.filterID} filterData={this.state.filterData} resetFilter={()=>this.setState({filterID:null,filterData:null})} />
+									<Filter filterID={this.state.filterID} filterData={this.state.filterData} resetFilter={()=>this.setState({filterID:null,filterData:null})} close={ () => this.setState({activeTab: 0})}/>
 								</TabPane>
 							</TabContent>
 
