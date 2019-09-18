@@ -325,6 +325,9 @@ html{
 .m-t-5{
 	margin-top: 5px;
 }
+.m-t-7{
+	margin-top: 7px !important;
+}
 .m-t-10{
 	margin-top: 10px;
 }
@@ -498,7 +501,6 @@ h4{
 }
 
 .btn-table-add-item{
-  margin-top: 5px;
   background-color: transparent;
   color: #A0A0A0;
 }
@@ -912,36 +914,6 @@ tr:last-child{
   border: none;
 }
 
-/*
-.nav-tabs .nav-link {
-    border-top: none;
-    border-bottom: none;
-    border-left: none;
-    border-radius: 0px;
-    height: 1.5em;
-    padding: 0px 5px;
-    color: #979797;
-    border-right: 2px solid #979797;
-}
-
-.nav-tabs .nav-link:first-child {
-  padding-left: 0px !important;
-}
-
-.nav-tabs .nav-link a:last-child {
-  border-right: none;
-}
-
-.nav-tabs .nav-link:hover {
-  border-right: 2px solid #979797;
-  background-color: transparent;
-  font-family: Segoe UI Bold;
-}
-
-.nav-tabs .nav-link.active {
-  font-family: Segoe UI Bold;
-  background-color: inherit !important;
-}*/
 
 
 //sidebar
@@ -1034,7 +1006,7 @@ tr:last-child{
 //----------------------taskEdit--------------------------
 .task-title-input{
   font-size: 2.5rem;
-  line-height: 1.2;
+  line-height: 1.5;
   color: $main-font-color;
   box-shadow: none;
   margin-left: 10px;

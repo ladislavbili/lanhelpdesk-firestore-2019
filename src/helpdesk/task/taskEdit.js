@@ -327,7 +327,7 @@ export default class TaskEdit extends Component {
 							{!this.props.columns &&
 								<button type="button" className="btn btn-link waves-effect" onClick={() => this.props.history.push(`/helpdesk/taskList/i/${this.props.match.params.listID}`)}>
 									<i
-										className="fas fa-arrow-left commandbar-command-icon icon-M"
+										className="fas fa-arrow-left commandbar-command-icon"
 										/>
 								</button>
 							}
@@ -343,7 +343,7 @@ export default class TaskEdit extends Component {
 									className="btn-link"
 									disabled={this.state.defaultFields.status.fixed}
 									onClick={()=>{this.setState({status,statusChange:(new Date().getTime())},this.submitTask.bind(this))}}
-									><i className={(status.icon?status.icon:"")+" commandbar-command-icon icon-M"}/>{" "+status.title}
+									><i className={(status.icon?status.icon:"")+" commandbar-command-icon"}/>{" "+status.title}
 								</Button>
 								)
 							}
@@ -356,7 +356,7 @@ export default class TaskEdit extends Component {
 							<TaskPrint match={this.props.match} {...this.state}/>
 							<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.deleteTask.bind(this)}>
 								<i
-									className="fas fa-trash icon-M"
+									className="far fa-trash-alt"
 									/> Delete
 								</button>
 								{/*<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.submitTask.bind(this)}>
