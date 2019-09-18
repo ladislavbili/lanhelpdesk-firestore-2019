@@ -105,19 +105,22 @@ render() {
                 }
               </div>
             </FormGroup>
-            <div>
-              <Button type="button" disabled={this.state.repeatEvery <= 0 || isNaN(this.state.repeatEvery) || isNaN(new Date(this.state.startAt).getTime())  }
-                onClick={()=>{
-                  this.props.submitRepeat({startAt:this.state.startAt,repeatEvery:this.state.repeatEvery*this.state.repeatInterval.value,repeatInterval:this.state.repeatInterval.title});
-                  this.setState({open:false});
-                }}>
-                Submit
-              </Button>
-              <Button type="button" disabled={this.props.repeat===null}
-                onClick={this.props.deleteRepeat}>
-                Clear interval
-              </Button>
-
+            <div className="row">
+              <div className="flex">
+                <Button type="button" disabled={this.state.repeatEvery <= 0 || isNaN(this.state.repeatEvery) || isNaN(new Date(this.state.startAt).getTime())  }
+                  onClick={()=>{
+                    this.props.submitRepeat({startAt:this.state.startAt,repeatEvery:this.state.repeatEvery*this.state.repeatInterval.value,repeatInterval:this.state.repeatInterval.title});
+                    this.setState({open:false});
+                  }}>
+                  Submit
+                </Button>
+              </div>
+              <div className="pull-right">
+                <Button type="button" disabled={this.props.repeat===null}
+                  onClick={this.props.deleteRepeat}>
+                  Close
+                </Button>
+              </div>
             </div>
           </div>
         </PopoverBody>
