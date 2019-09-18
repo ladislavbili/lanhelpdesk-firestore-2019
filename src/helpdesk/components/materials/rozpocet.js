@@ -72,7 +72,7 @@ export default class Rozpocet extends Component {
 												checked={this.props.materials.length===this.state.selectedIDs.length}
 												onChange={()=>this.setState({selectedIDs:(this.props.materials.length===this.state.selectedIDs.length?[]:this.props.materials.map((item)=>item.id))})} />
 										</th>
-										<th >Názov</th>
+										<th >Materiál</th>
 										<th width="100">Mn.</th>
 										<th width="170">Jednotka</th>
 										<th width="130">Nákupná cena</th>

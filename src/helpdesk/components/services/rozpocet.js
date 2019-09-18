@@ -76,7 +76,7 @@ export default class Rozpocet extends Component {
 												checked={this.props.subtasks.length===this.state.selectedIDs.length}
 												onChange={()=>this.setState({selectedIDs:(this.props.subtasks.length===this.state.selectedIDs.length?[]:this.props.subtasks.map((item)=>item.id))})} />
 										</th>
-										<th >Názov</th>
+										<th >Služby</th>
 										<th width="100">Mn.</th>
 										<th width="170">Rieši</th>
 										<th width="170">Typ</th>

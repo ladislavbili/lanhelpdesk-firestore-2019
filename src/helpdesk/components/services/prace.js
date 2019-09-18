@@ -67,7 +67,7 @@ export default class Prace extends Component {
 							<thead >
 								<tr >
 									<th width="25"></th>
-									<th >Názov</th>
+									<th >Služby</th>
 									<th width="100">Mn.</th>
 									<th width="170">Rieši</th>
 									<th width="170">Typ</th>

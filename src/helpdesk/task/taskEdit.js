@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import {Button, Label} from 'reactstrap';
+import {Button, Label, TabContent, TabPane, Nav, NavItem, NavLink} from 'reactstrap';
 import Comments from '../components/comments.js';
-import Materials from '../components/materials';
-import Services from '../components/services';
 import Subtasks from '../components/subtasks';
 import Repeat from '../components/repeat';
 
+import ServicesExpenditure from '../components/services/prace';
+import MaterialsExpenditure from '../components/materials/materials';
+import ServicesBudget from '../components/services/rozpocet';
+import MaterialsBudget from '../components/materials/rozpocet';
+
 import TaskAdd from './taskAddContainer';
 import TaskPrint from './taskPrint';
-
+import classnames from "classnames";
 import {rebase, database} from '../../index';
 import {toSelArr, snapshotToArray, timestampToString} from '../../helperFunctions';
 import {invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
@@ -73,6 +76,7 @@ export default class TaskEdit extends Component {
 			isColumn: false,
 			search: '',
 			openCopyModal: false,
+			toggleTab:"1",
 
 			print: false,
 		};
@@ -278,6 +282,7 @@ export default class TaskEdit extends Component {
 			type:type?type:null,
 			repeat,
 			projectChangeDate:(new Date()).getTime(),
+			toggleTab:'1'
     });
   }
 
@@ -526,7 +531,6 @@ export default class TaskEdit extends Component {
 								</div>
 							</div>}
 
-
 							<Label className="m-t-5  m-b-10">Popis</Label>
 							<textarea className="form-control b-r-0  m-b-10" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value},this.submitTask.bind(this))} />
 
@@ -545,97 +549,203 @@ export default class TaskEdit extends Component {
 								</div>
 							</div>
 
-							<Subtasks
-								taskAssigned={this.state.assignedTo}
-								submitService={this.submitSubtask.bind(this)}
-								subtasks={this.state.subtasks.map((subtask)=>{
-									let assignedTo=subtask.assignedTo?this.state.users.find((item)=>item.id===subtask.assignedTo):null
-									return {
-										...subtask,
-										assignedTo:assignedTo?assignedTo:null
-									}
-								})}
-								updateSubtask={(id,newData)=>{
-									rebase.updateDoc('help-task_subtasks/'+id,newData);
-									let newSubtasks=[...this.state.subtasks];
-									newSubtasks[newSubtasks.findIndex((subtask)=>subtask.id===id)]={...newSubtasks.find((subtask)=>subtask.id===id),...newData};
-									this.setState({subtasks:newSubtasks});
-								}}
-								removeSubtask={(id)=>{
-									rebase.removeDoc('help-task_subtasks/'+id).then(()=>{
-										let newSubtasks=[...this.state.subtasks];
-										newSubtasks.splice(newSubtasks.findIndex((subtask)=>subtask.id===id),1);
-										this.setState({subtasks:newSubtasks});
-									});
-									}
-								}
-								match={this.props.match}
-							/>
-
-							<Services
-								taskAssigned={this.state.assignedTo}
-								submitService={this.submitService.bind(this)}
-								updatePrices={(ids)=>{
-									taskWorks.filter((item)=>ids.includes(item.id)).map((item)=>{
-										let price=item.workType.prices.find((item)=>item.pricelist===this.state.company.pricelist.id);
-										if(price === undefined){
-											price = 0;
-										}else{
-											price = price.price;
+								<Subtasks
+									taskAssigned={this.state.assignedTo}
+									submitService={this.submitSubtask.bind(this)}
+									subtasks={this.state.subtasks.map((subtask)=>{
+										let assignedTo=subtask.assignedTo?this.state.users.find((item)=>item.id===subtask.assignedTo):null
+										return {
+											...subtask,
+											assignedTo:assignedTo?assignedTo:null
 										}
-										rebase.updateDoc('help-task_works/'+item.id, {price})
-										.then(()=>{
-											let newTaskWorks=[...this.state.taskWorks];
-											newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===item.id)]={...newTaskWorks.find((taskWork)=>taskWork.id===item.id),price};
-											this.setState({taskWorks:newTaskWorks});
+									})}
+									updateSubtask={(id,newData)=>{
+										rebase.updateDoc('help-task_subtasks/'+id,newData);
+										let newSubtasks=[...this.state.subtasks];
+										newSubtasks[newSubtasks.findIndex((subtask)=>subtask.id===id)]={...newSubtasks.find((subtask)=>subtask.id===id),...newData};
+										this.setState({subtasks:newSubtasks});
+									}}
+									removeSubtask={(id)=>{
+										rebase.removeDoc('help-task_subtasks/'+id).then(()=>{
+											let newSubtasks=[...this.state.subtasks];
+											newSubtasks.splice(newSubtasks.findIndex((subtask)=>subtask.id===id),1);
+											this.setState({subtasks:newSubtasks});
 										});
-										return null;
-									})
-								}}
-								subtasks={taskWorks}
-								workTypes={this.state.workTypes}
-								updateSubtask={(id,newData)=>{
-									rebase.updateDoc('help-task_works/'+id,newData);
-									let newTaskWorks=[...this.state.taskWorks];
-									newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
-									this.setState({taskWorks:newTaskWorks});
-								}}
-								company={this.state.company}
-								removeSubtask={(id)=>{
-									rebase.removeDoc('help-task_works/'+id).then(()=>{
-										let newTaskWorks=[...this.state.taskWorks];
-										newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
-										this.setState({taskWorks:newTaskWorks});
-									});
+										}
 									}
-								}
-								match={this.props.match}
+									match={this.props.match}
 								/>
 
-							<Materials
-								materials={taskMaterials}
-				        submitMaterial={this.submitMaterial.bind(this)}
-								updateMaterial={(id,newData)=>{
-									rebase.updateDoc('help-task_materials/'+id,newData);
-									let newTaskMaterials=[...this.state.taskMaterials];
-									newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
-									this.setState({taskMaterials:newTaskMaterials});
-								}}
-								removeMaterial={(id)=>{
-									rebase.removeDoc('help-task_materials/'+id).then(()=>{
-										let newTaskMaterials=[...this.state.taskMaterials];
-										newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
-										this.setState({taskMaterials:newTaskMaterials});
-									});
-								}}
-				        units={this.state.units}
-								defaultUnit={this.state.defaultUnit}
-								company={this.state.company}
-								match={this.props.match}
-							/>
 
-							<Comments id={this.state.task?this.state.task.id:null} users={this.state.users} />
+								<Nav tabs className="b-0">
+									<NavItem>
+										<NavLink
+											className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "form-tab-end")}
+											onClick={() => { this.setState({toggleTab:'1'}); }}
+										>
+											Komentáre
+		            		</NavLink>
+									</NavItem>
+									<NavItem>
+										<NavLink
+											className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "form-tab-end")}
+											onClick={() => { this.setState({toggleTab:'2'}); }}
+										>
+											Výkaz
+										</NavLink>
+									</NavItem>
+									<NavItem>
+										<NavLink
+											className={classnames({ active: this.state.toggleTab === '3' }, "clickable", "form-tab-end")}
+											onClick={() => { this.setState({toggleTab:'3'}); }}
+										>
+											Rozpočet
+										</NavLink>
+									</NavItem>
+									<NavItem>
+										<NavLink
+											className={classnames({ active: this.state.toggleTab === '4' }, "clickable", "form-tab-end")}
+											onClick={() => { this.setState({toggleTab:'4'}); }}
+										>
+											Prílohy
+										</NavLink>
+									</NavItem>
+								</Nav>
 
+								<TabContent activeTab={this.state.toggleTab}>
+									<TabPane tabId="1">
+										<Comments id={this.state.task?this.state.task.id:null} users={this.state.users} />
+									</TabPane>
+									<TabPane tabId="2">
+										<ServicesExpenditure
+											taskAssigned={this.state.assignedTo}
+											submitService={this.submitService.bind(this)}
+											updatePrices={(ids)=>{
+												taskWorks.filter((item)=>ids.includes(item.id)).map((item)=>{
+													let price=item.workType.prices.find((item)=>item.pricelist===this.state.company.pricelist.id);
+													if(price === undefined){
+														price = 0;
+													}else{
+														price = price.price;
+													}
+													rebase.updateDoc('help-task_works/'+item.id, {price})
+													.then(()=>{
+														let newTaskWorks=[...this.state.taskWorks];
+														newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===item.id)]={...newTaskWorks.find((taskWork)=>taskWork.id===item.id),price};
+														this.setState({taskWorks:newTaskWorks});
+													});
+													return null;
+												})
+											}}
+											subtasks={taskWorks}
+											workTypes={this.state.workTypes}
+											updateSubtask={(id,newData)=>{
+												rebase.updateDoc('help-task_works/'+id,newData);
+												let newTaskWorks=[...this.state.taskWorks];
+												newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
+												this.setState({taskWorks:newTaskWorks});
+											}}
+											company={this.state.company}
+											removeSubtask={(id)=>{
+												rebase.removeDoc('help-task_works/'+id).then(()=>{
+													let newTaskWorks=[...this.state.taskWorks];
+													newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
+													this.setState({taskWorks:newTaskWorks});
+												});
+												}
+											}
+											match={this.props.match}
+											/>
+
+										<MaterialsExpenditure
+											materials={taskMaterials}
+							        submitMaterial={this.submitMaterial.bind(this)}
+											updateMaterial={(id,newData)=>{
+												rebase.updateDoc('help-task_materials/'+id,newData);
+												let newTaskMaterials=[...this.state.taskMaterials];
+												newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
+												this.setState({taskMaterials:newTaskMaterials});
+											}}
+											removeMaterial={(id)=>{
+												rebase.removeDoc('help-task_materials/'+id).then(()=>{
+													let newTaskMaterials=[...this.state.taskMaterials];
+													newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
+													this.setState({taskMaterials:newTaskMaterials});
+												});
+											}}
+							        units={this.state.units}
+											defaultUnit={this.state.defaultUnit}
+											company={this.state.company}
+											match={this.props.match}
+										/>
+									</TabPane>
+									<TabPane tabId="3">
+										<ServicesBudget
+											taskAssigned={this.state.assignedTo}
+											submitService={this.submitService.bind(this)}
+											updatePrices={(ids)=>{
+												taskWorks.filter((item)=>ids.includes(item.id)).map((item)=>{
+													let price=item.workType.prices.find((item)=>item.pricelist===this.state.company.pricelist.id);
+													if(price === undefined){
+														price = 0;
+													}else{
+														price = price.price;
+													}
+													rebase.updateDoc('help-task_works/'+item.id, {price})
+													.then(()=>{
+														let newTaskWorks=[...this.state.taskWorks];
+														newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===item.id)]={...newTaskWorks.find((taskWork)=>taskWork.id===item.id),price};
+														this.setState({taskWorks:newTaskWorks});
+													});
+													return null;
+												})
+											}}
+											subtasks={taskWorks}
+											workTypes={this.state.workTypes}
+											updateSubtask={(id,newData)=>{
+												rebase.updateDoc('help-task_works/'+id,newData);
+												let newTaskWorks=[...this.state.taskWorks];
+												newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
+												this.setState({taskWorks:newTaskWorks});
+											}}
+											company={this.state.company}
+											removeSubtask={(id)=>{
+												rebase.removeDoc('help-task_works/'+id).then(()=>{
+													let newTaskWorks=[...this.state.taskWorks];
+													newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
+													this.setState({taskWorks:newTaskWorks});
+												});
+												}
+											}
+											match={this.props.match}
+											/>
+
+										<MaterialsBudget
+											materials={taskMaterials}
+							        submitMaterial={this.submitMaterial.bind(this)}
+											updateMaterial={(id,newData)=>{
+												rebase.updateDoc('help-task_materials/'+id,newData);
+												let newTaskMaterials=[...this.state.taskMaterials];
+												newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
+												this.setState({taskMaterials:newTaskMaterials});
+											}}
+											removeMaterial={(id)=>{
+												rebase.removeDoc('help-task_materials/'+id).then(()=>{
+													let newTaskMaterials=[...this.state.taskMaterials];
+													newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
+													this.setState({taskMaterials:newTaskMaterials});
+												});
+											}}
+							        units={this.state.units}
+											defaultUnit={this.state.defaultUnit}
+											company={this.state.company}
+											match={this.props.match}
+										/>
+									</TabPane>
+									<TabPane tabId="4">
+										<img src="https://www.seriouseats.com/recipes/images/2016/12/20161201-crispy-roast-potatoes-29-625x469.jpg"/>
+									</TabPane>
+								</TabContent>
 						</div>
 			</div>
 		);
