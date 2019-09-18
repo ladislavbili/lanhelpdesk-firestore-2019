@@ -3,7 +3,7 @@ import Select from 'react-select';
 import { Button, Popover, PopoverHeader, PopoverBody } from 'reactstrap';
 import { FormGroup, Label, Input } from 'reactstrap';
 import {selectStyle} from '../../scss/selectStyles';
-var intervals = [{title:'Deň',value:86400000,label:'Deň'},{title:'Týždeň',value:604800016.56,label:'Týždeň'},{title:'Mesiac',value:2629800000,label:'Mesiac'}];
+var intervals = [{title:null,value:null,label:'Žiadny'},{title:'Deň',value:86400000,label:'Deň'},{title:'Týždeň',value:604800016.56,label:'Týždeň'},{title:'Mesiac',value:2629800000,label:'Mesiac'}];
 
 export default class Repeat extends Component{
 constructor(props) {
@@ -19,7 +19,22 @@ constructor(props) {
 
 componentWillReceiveProps(props){
   if(this.props.taskID!==props.taskID){
-    this.setState({open: false})
+    this.setState({open: false});
+    if(props.repeat===null){
+      this.setState({
+        startAt:"",
+        repeatEvery:1,
+        repeatInterval:intervals[0],
+      });
+    }
+  }
+  if((this.props.repeat===null && props.repeat!==null)|| (this.props.repeat!==null && props.repeat!==null && props.repeat.id!==this.props.repeat.id)){
+      let repeatInterval = intervals.find((interval)=>interval.title===props.repeat.repeatInterval);
+      this.setState({
+        startAt:props.repeat.startAt ? new Date(props.repeat.startAt).toISOString().replace("Z", "") : "",
+        repeatEvery:props.repeat.repeatEvery/repeatInterval.value,
+        repeatInterval,
+      });
   }
 }
 
@@ -33,23 +48,7 @@ nová úloha vytvorená z opakovania je v stave new
 */
 
 toggleRepeat() {
-  if(this.props.repeat){
-    let repeatInterval = intervals.find((interval)=>interval.title===this.props.repeat.repeatInterval);
-
-    this.setState({
-      startAt:this.props.repeat.startAt ? new Date(this.props.repeat.startAt).toISOString().replace("Z", "") : "",
-      repeatEvery:this.props.repeat.repeatEvery/repeatInterval.value,
-      repeatInterval,
-      open:!this.state.open
-    });
-  }else{
-    this.setState({
-      open: !this.state.open,
-      startAt:"",
-      repeatEvery:1,
-      repeatInterval:intervals[0],
-    });
-  }
+  this.setState({open:true});
 }
 
 render() {
@@ -107,17 +106,23 @@ render() {
             </FormGroup>
             <div className="row">
               <div className="flex">
-                <Button type="button" disabled={this.state.repeatEvery <= 0 || isNaN(this.state.repeatEvery) || isNaN(new Date(this.state.startAt).getTime())  }
+                <Button type="button"
                   onClick={()=>{
-                    this.props.submitRepeat({startAt:this.state.startAt,repeatEvery:this.state.repeatEvery*this.state.repeatInterval.value,repeatInterval:this.state.repeatInterval.title});
+                     if(this.state.repeatInterval.value===null || this.state.repeatEvery <= 0 || isNaN(this.state.repeatEvery) || isNaN(new Date(this.state.startAt).getTime())){
+                       if(this.props.repeat!==null){
+                         this.props.deleteRepeat();
+                       }
+                     }else{
+                       this.props.submitRepeat({startAt:this.state.startAt,repeatEvery:this.state.repeatEvery*this.state.repeatInterval.value,repeatInterval:this.state.repeatInterval.title});
+                     }
                     this.setState({open:false});
                   }}>
-                  Submit
+                  Save
                 </Button>
               </div>
               <div className="pull-right">
-                <Button type="button" disabled={this.props.repeat===null}
-                  onClick={this.props.deleteRepeat}>
+                <Button type="button"
+                  onClick={()=>this.setState({open:false})}>
                   Close
                 </Button>
               </div>
