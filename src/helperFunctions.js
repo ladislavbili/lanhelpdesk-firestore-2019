@@ -12,7 +12,7 @@ export const snapshotToArray = (snapshot) => {
 }
 
 export const timestampToString = (timestamp) => {
-  let date = (new Date(timestamp));
+  let date = (new Date(fromCentralTime(timestamp)));
   return date.getHours()+":"+(date.getMinutes() < 10 ? '0' : '') + date.getMinutes()+" "+date.getDate()+"."+(date.getMonth()+1)+"."+date.getFullYear();
 }
 
@@ -105,4 +105,16 @@ export const fromMillisec = (number, time) => {
     default:
       return number;
   }
+}
+
+export const toCentralTime = (time) => {
+  let date = new Date(time);
+  let userTimezoneOffset = date.getTimezoneOffset() * 60*1000;
+  return (new Date(date.getTime() + userTimezoneOffset)).getTime();
+}
+
+export const fromCentralTime = (time)=>{
+  let date = new Date(time);
+  let userTimezoneOffset = date.getTimezoneOffset() * 60*1000;
+  return (new Date(date.getTime() - userTimezoneOffset)).getTime();
 }

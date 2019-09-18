@@ -14,7 +14,7 @@ import TaskAdd from './taskAddContainer';
 import TaskPrint from './taskPrint';
 import classnames from "classnames";
 import {rebase, database} from '../../index';
-import {toSelArr, snapshotToArray, timestampToString} from '../../helperFunctions';
+import {toSelArr, snapshotToArray, timestampToString, toCentralTime, fromCentralTime} from '../../helperFunctions';
 import {invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
 
 const noDef={
@@ -86,6 +86,20 @@ export default class TaskEdit extends Component {
 		this.canSave.bind(this);
 		this.deleteTask.bind(this);
     this.fetchData(this.props.match.params.taskID);
+		/*
+		console.log('----------------');
+		let testTime = new Date();
+		let centralTime = new Date(toCentralTime(testTime.getTime()));
+		let normalTime = new Date(fromCentralTime(centralTime.getTime()));
+		console.log(testTime);
+		console.log(testTime.getTime());
+		console.log('>');
+		console.log(centralTime);
+		console.log(centralTime.getTime());
+		console.log('>');
+		console.log(normalTime);
+		console.log(normalTime.getTime());
+		console.log('----------------');*/
 	}
 
 	canSave(){
@@ -113,6 +127,7 @@ export default class TaskEdit extends Component {
 			return;
 		}
     this.setState({saving:true});
+		console.log(new Date(this.state.deadline));
     let body = {
       title: this.state.title,
       company: this.state.company?this.state.company.id:null,
@@ -121,8 +136,8 @@ export default class TaskEdit extends Component {
 			assignedTo: this.state.assignedTo.map((item)=>item.id),
       description: this.state.description,
       status: this.state.status?this.state.status.id:null,
-			deadline: isNaN(new Date(this.state.deadline).getTime()) ? null : (new Date(this.state.deadline).getTime()),
-			reminder: isNaN(new Date(this.state.reminder).getTime()) ? null : (new Date(this.state.reminder).getTime()),
+			deadline: isNaN(new Date(this.state.deadline).getTime()) ? null : toCentralTime(new Date(this.state.deadline).getTime()),
+			//reminder: isNaN(new Date(this.state.reminder).getTime()) ? null : (new Date(this.state.reminder).getTime()),
       statusChange: this.state.statusChange,
       project: this.state.project?this.state.project.id:null,
       pausal: this.state.pausal.value,
@@ -269,7 +284,7 @@ export default class TaskEdit extends Component {
       status:status?status:null,
 			statusChange:task.statusChange?task.statusChange:null,
 			createdAt:task.createdAt?task.createdAt:null,
-			deadline: task.deadline!==null?new Date(task.deadline).toISOString().replace('Z',''):'',
+			deadline: task.deadline!==null?new Date(fromCentralTime(task.deadline)).toISOString().replace('Z',''):'',
 			reminder: task.reminder?new Date(task.reminder).toISOString().replace('Z',''):'',
       project:project?project:null,
       company:company?company:null,

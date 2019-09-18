@@ -3,6 +3,7 @@ import Select from 'react-select';
 import { Button, Popover, PopoverHeader, PopoverBody } from 'reactstrap';
 import { FormGroup, Label, Input } from 'reactstrap';
 import {selectStyle} from '../../scss/selectStyles';
+import {toCentralTime, fromCentralTime} from '../../helperFunctions';
 var intervals = [{title:null,value:null,label:'Žiadny'},{title:'Deň',value:86400000,label:'Deň'},{title:'Týždeň',value:604800016.56,label:'Týždeň'},{title:'Mesiac',value:2629800000,label:'Mesiac'}];
 
 export default class Repeat extends Component{
@@ -30,8 +31,9 @@ componentWillReceiveProps(props){
   }
   if((this.props.repeat===null && props.repeat!==null)|| (this.props.repeat!==null && props.repeat!==null && props.repeat.id!==this.props.repeat.id)){
       let repeatInterval = intervals.find((interval)=>interval.title===props.repeat.repeatInterval);
+      //console.log(new Date(props.repeat.startAt));
       this.setState({
-        startAt:props.repeat.startAt ? new Date(props.repeat.startAt).toISOString().replace("Z", "") : "",
+        startAt:props.repeat.startAt ? new Date(fromCentralTime(props.repeat.startAt)).toISOString().replace("Z", "") : "",
         repeatEvery:props.repeat.repeatEvery/repeatInterval.value,
         repeatInterval,
       });
@@ -113,7 +115,7 @@ render() {
                          this.props.deleteRepeat();
                        }
                      }else{
-                       this.props.submitRepeat({startAt:this.state.startAt,repeatEvery:this.state.repeatEvery*this.state.repeatInterval.value,repeatInterval:this.state.repeatInterval.title});
+                       this.props.submitRepeat({startAt:toCentralTime(this.state.startAt),repeatEvery:this.state.repeatEvery*this.state.repeatInterval.value,repeatInterval:this.state.repeatInterval.title});
                      }
                     this.setState({open:false});
                   }}>

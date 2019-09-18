@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import {rebase, database} from '../../index';
-//import {toSelArr, snapshotToArray} from '../../helperFunctions';
+import {toCentralTime } from '../../helperFunctions';
 import { Button } from 'reactstrap';
 import Materials from '../components/materials';
 import Services from '../components/services';
@@ -83,9 +83,9 @@ export default class TaskAdd extends Component{
 				assignedTo: this.state.assignedTo.map((item)=>item.id),
 				description: this.state.description,
 				status: this.state.status?this.state.status.id:null,
-				deadline: isNaN(new Date(this.state.deadline).getTime()) ? null : (new Date(this.state.deadline).getTime()),
-				createdAt:(new Date()).getTime(),
-				statusChange:(new Date()).getTime(),
+				deadline: isNaN(new Date(this.state.deadline).getTime()) ? null : toCentralTime(new Date(this.state.deadline).getTime()),
+				createdAt:toCentralTime(new Date().getTime()),
+				statusChange:toCentralTime(new Date().getTime()),
 				project: this.state.project?this.state.project.id:null,
 				pausal: this.state.pausal.value,
 				overtime: this.state.overtime.value,
