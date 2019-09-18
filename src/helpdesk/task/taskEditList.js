@@ -14,7 +14,7 @@ import TaskAdd from './taskAddContainer';
 import TaskPrint from './taskPrint';
 import classnames from "classnames";
 import {rebase, database} from '../../index';
-import {toSelArr, snapshotToArray, timestampToString, toCentralTime, fromCentralTime} from '../../helperFunctions';
+import {toSelArr, snapshotToArray, timestampToString} from '../../helperFunctions';
 import {invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
 
 const noDef={
@@ -86,20 +86,6 @@ export default class TaskEdit extends Component {
 		this.canSave.bind(this);
 		this.deleteTask.bind(this);
     this.fetchData(this.props.match.params.taskID);
-		/*
-		console.log('----------------');
-		let testTime = new Date();
-		let centralTime = new Date(toCentralTime(testTime.getTime()));
-		let normalTime = new Date(fromCentralTime(centralTime.getTime()));
-		console.log(testTime);
-		console.log(testTime.getTime());
-		console.log('>');
-		console.log(centralTime);
-		console.log(centralTime.getTime());
-		console.log('>');
-		console.log(normalTime);
-		console.log(normalTime.getTime());
-		console.log('----------------');*/
 	}
 
 	canSave(){
@@ -127,7 +113,6 @@ export default class TaskEdit extends Component {
 			return;
 		}
     this.setState({saving:true});
-		console.log(new Date(this.state.deadline));
     let body = {
       title: this.state.title,
       company: this.state.company?this.state.company.id:null,
@@ -136,8 +121,8 @@ export default class TaskEdit extends Component {
 			assignedTo: this.state.assignedTo.map((item)=>item.id),
       description: this.state.description,
       status: this.state.status?this.state.status.id:null,
-			deadline: isNaN(new Date(this.state.deadline).getTime()) ? null : toCentralTime(new Date(this.state.deadline).getTime()),
-			//reminder: isNaN(new Date(this.state.reminder).getTime()) ? null : (new Date(this.state.reminder).getTime()),
+			deadline: isNaN(new Date(this.state.deadline).getTime()) ? null : (new Date(this.state.deadline).getTime()),
+			reminder: isNaN(new Date(this.state.reminder).getTime()) ? null : (new Date(this.state.reminder).getTime()),
       statusChange: this.state.statusChange,
       project: this.state.project?this.state.project.id:null,
       pausal: this.state.pausal.value,
@@ -284,7 +269,7 @@ export default class TaskEdit extends Component {
       status:status?status:null,
 			statusChange:task.statusChange?task.statusChange:null,
 			createdAt:task.createdAt?task.createdAt:null,
-			deadline: task.deadline!==null?new Date(fromCentralTime(task.deadline)).toISOString().replace('Z',''):'',
+			deadline: task.deadline!==null?new Date(task.deadline).toISOString().replace('Z',''):'',
 			reminder: task.reminder?new Date(task.reminder).toISOString().replace('Z',''):'',
       project:project?project:null,
       company:company?company:null,
@@ -335,9 +320,9 @@ export default class TaskEdit extends Component {
 		});
 
 		return (
-			<div className="flex">
+			<div className="">
 				<div className="container-fluid">
-					<div className="d-flex flex-row center-hor p-2 ">
+					<div className="d-flex flex-row center-hor p-2  mr-auto ">
 							<div className="display-inline center-hor">
 							{!this.props.columns &&
 								<button type="button" className="btn btn-link waves-effect" onClick={() => this.props.history.push(`/helpdesk/taskList/i/${this.props.match.params.listID}`)}>
@@ -384,7 +369,7 @@ export default class TaskEdit extends Component {
 					</div>
 				</div>
 
-						<div className="card-box fit-with-header-and-commandbar scrollable">
+						<div className="card-box fit-with-header-and-commandbar scrollable max-width-1660">
 							<div className="d-flex p-2">
 								<div className="row flex">
 									<h1 className="center-hor text-extra-slim">{this.props.match.params.taskID}: </h1>
@@ -408,84 +393,289 @@ export default class TaskEdit extends Component {
 
 							<hr className="m-t-15 m-b-10"/>
 
-								<div className="col-lg-12 row m-b-10">
-									<div className="center-hor m-r-5"><Label className="center-hor">Assigned to: </Label></div>
-									<div className="f-1">
-										<Select
-											value={this.state.assignedTo}
-											placeholder="Zadajte poverených pracovníkov"
-											isMulti
-											isDisabled={this.state.defaultFields.assignedTo.fixed}
-											onChange={(users)=>this.setState({assignedTo:users},this.submitTask.bind(this))}
-											options={this.state.users}
-											styles={invisibleSelectStyleNoArrow}
+							<div className="row">
+
+
+						<div className="task-edit-left-half">
+
+							<Label className="m-t-5  m-b-10">Popis</Label>
+							<textarea className="form-control b-r-0  m-b-10 hidden-input" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value},this.submitTask.bind(this))} />
+
+									<Subtasks
+										taskAssigned={this.state.assignedTo}
+										submitService={this.submitSubtask.bind(this)}
+										subtasks={this.state.subtasks.map((subtask)=>{
+											let assignedTo=subtask.assignedTo?this.state.users.find((item)=>item.id===subtask.assignedTo):null
+											return {
+												...subtask,
+												assignedTo:assignedTo?assignedTo:null
+											}
+										})}
+										updateSubtask={(id,newData)=>{
+											rebase.updateDoc('help-task_subtasks/'+id,newData);
+											let newSubtasks=[...this.state.subtasks];
+											newSubtasks[newSubtasks.findIndex((subtask)=>subtask.id===id)]={...newSubtasks.find((subtask)=>subtask.id===id),...newData};
+											this.setState({subtasks:newSubtasks});
+										}}
+										removeSubtask={(id)=>{
+											rebase.removeDoc('help-task_subtasks/'+id).then(()=>{
+												let newSubtasks=[...this.state.subtasks];
+												newSubtasks.splice(newSubtasks.findIndex((subtask)=>subtask.id===id),1);
+												this.setState({subtasks:newSubtasks});
+											});
+											}
+										}
+										match={this.props.match}
+									/>
+
+								<hr className="m-b-15"/>
+
+								<Nav tabs className="b-0 m-b-22 m-l--10">
+										<NavItem>
+											<NavLink
+												className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "")}
+												onClick={() => { this.setState({toggleTab:'1'}); }}
+											>
+												Komentáre
+			            		</NavLink>
+										</NavItem>
+										<NavItem>
+											<NavLink
+												className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
+												onClick={() => { this.setState({toggleTab:'2'}); }}
+											>
+												Výkaz
+											</NavLink>
+										</NavItem>
+										<NavItem>
+											<NavLink
+												className={classnames({ active: this.state.toggleTab === '3' }, "clickable", "")}
+												onClick={() => { this.setState({toggleTab:'3'}); }}
+											>
+												Rozpočet
+											</NavLink>
+										</NavItem>
+										<NavItem>
+											<NavLink
+												className={classnames({ active: this.state.toggleTab === '4' }, "clickable", "")}
+												onClick={() => { this.setState({toggleTab:'4'}); }}
+											>
+												Prílohy
+											</NavLink>
+										</NavItem>
+									</Nav>
+
+									<TabContent activeTab={this.state.toggleTab}>
+										<TabPane tabId="1">
+											<Comments id={this.state.task?this.state.task.id:null} users={this.state.users} />
+										</TabPane>
+										<TabPane tabId="2">
+											<ServicesExpenditure
+												taskAssigned={this.state.assignedTo}
+												submitService={this.submitService.bind(this)}
+												updatePrices={(ids)=>{
+													taskWorks.filter((item)=>ids.includes(item.id)).map((item)=>{
+														let price=item.workType.prices.find((item)=>item.pricelist===this.state.company.pricelist.id);
+														if(price === undefined){
+															price = 0;
+														}else{
+															price = price.price;
+														}
+														rebase.updateDoc('help-task_works/'+item.id, {price})
+														.then(()=>{
+															let newTaskWorks=[...this.state.taskWorks];
+															newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===item.id)]={...newTaskWorks.find((taskWork)=>taskWork.id===item.id),price};
+															this.setState({taskWorks:newTaskWorks});
+														});
+														return null;
+													})
+												}}
+												subtasks={taskWorks}
+												workTypes={this.state.workTypes}
+												updateSubtask={(id,newData)=>{
+													rebase.updateDoc('help-task_works/'+id,newData);
+													let newTaskWorks=[...this.state.taskWorks];
+													newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
+													this.setState({taskWorks:newTaskWorks});
+												}}
+												company={this.state.company}
+												removeSubtask={(id)=>{
+													rebase.removeDoc('help-task_works/'+id).then(()=>{
+														let newTaskWorks=[...this.state.taskWorks];
+														newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
+														this.setState({taskWorks:newTaskWorks});
+													});
+													}
+												}
+												match={this.props.match}
+												/>
+
+											<MaterialsExpenditure
+												materials={taskMaterials}
+								        submitMaterial={this.submitMaterial.bind(this)}
+												updateMaterial={(id,newData)=>{
+													rebase.updateDoc('help-task_materials/'+id,newData);
+													let newTaskMaterials=[...this.state.taskMaterials];
+													newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
+													this.setState({taskMaterials:newTaskMaterials});
+												}}
+												removeMaterial={(id)=>{
+													rebase.removeDoc('help-task_materials/'+id).then(()=>{
+														let newTaskMaterials=[...this.state.taskMaterials];
+														newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
+														this.setState({taskMaterials:newTaskMaterials});
+													});
+												}}
+								        units={this.state.units}
+												defaultUnit={this.state.defaultUnit}
+												company={this.state.company}
+												match={this.props.match}
 											/>
-									</div>
+										</TabPane>
+										<TabPane tabId="3">
+											<ServicesBudget
+												taskAssigned={this.state.assignedTo}
+												submitService={this.submitService.bind(this)}
+												updatePrices={(ids)=>{
+													taskWorks.filter((item)=>ids.includes(item.id)).map((item)=>{
+														let price=item.workType.prices.find((item)=>item.pricelist===this.state.company.pricelist.id);
+														if(price === undefined){
+															price = 0;
+														}else{
+															price = price.price;
+														}
+														rebase.updateDoc('help-task_works/'+item.id, {price})
+														.then(()=>{
+															let newTaskWorks=[...this.state.taskWorks];
+															newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===item.id)]={...newTaskWorks.find((taskWork)=>taskWork.id===item.id),price};
+															this.setState({taskWorks:newTaskWorks});
+														});
+														return null;
+													})
+												}}
+												subtasks={taskWorks}
+												workTypes={this.state.workTypes}
+												updateSubtask={(id,newData)=>{
+													rebase.updateDoc('help-task_works/'+id,newData);
+													let newTaskWorks=[...this.state.taskWorks];
+													newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
+													this.setState({taskWorks:newTaskWorks});
+												}}
+												company={this.state.company}
+												removeSubtask={(id)=>{
+													rebase.removeDoc('help-task_works/'+id).then(()=>{
+														let newTaskWorks=[...this.state.taskWorks];
+														newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
+														this.setState({taskWorks:newTaskWorks});
+													});
+													}
+												}
+												match={this.props.match}
+												/>
+
+											<MaterialsBudget
+												materials={taskMaterials}
+								        submitMaterial={this.submitMaterial.bind(this)}
+												updateMaterial={(id,newData)=>{
+													rebase.updateDoc('help-task_materials/'+id,newData);
+													let newTaskMaterials=[...this.state.taskMaterials];
+													newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
+													this.setState({taskMaterials:newTaskMaterials});
+												}}
+												removeMaterial={(id)=>{
+													rebase.removeDoc('help-task_materials/'+id).then(()=>{
+														let newTaskMaterials=[...this.state.taskMaterials];
+														newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
+														this.setState({taskMaterials:newTaskMaterials});
+													});
+												}}
+								        units={this.state.units}
+												defaultUnit={this.state.defaultUnit}
+												company={this.state.company}
+												match={this.props.match}
+											/>
+										</TabPane>
+										<TabPane tabId="4">
+											<img src="https://www.seriouseats.com/recipes/images/2016/12/20161201-crispy-roast-potatoes-29-625x469.jpg"/>
+										</TabPane>
+									</TabContent>
 								</div>
 
-								<div className="col-lg-12">
 
-									<div className="col-lg-4">
-											<div className="row p-r-10 m-b-10">
-												<Label className="col-3 col-form-label">Typ</Label>
-												<div className="col-9">
-													<Select
-														placeholder="Zadajte typ"
-					                  value={this.state.type}
-														isDisabled={this.state.defaultFields.type.fixed}
-														styles={invisibleSelectStyleNoArrow}
-					                  onChange={(type)=>this.setState({type},this.submitTask.bind(this))}
-					                  options={this.state.taskTypes}
-					                  />
-												</div>
-											</div>
-											<div className="row p-r-10 m-b-10">
-												<Label className="col-3 col-form-label">Projekt</Label>
-												<div className="col-9">
-													<Select
-														placeholder="Zadajte projekt"
-														value={this.state.project}
-														onChange={(project)=>this.setState({project, projectChangeDate:(new Date()).getTime()},()=>{this.submitTask();this.setDefaults(project.id)})}
-														options={this.state.projects}
-														styles={invisibleSelectStyleNoArrow}
-														/>
-												</div>
-											</div>
+								<div className="task-edit-right-half pull-right">
+									<div className="">
+										<div className="center-hor"><Label className="center-hor">Assigned to: </Label></div>
+										<div className="f-1">
+											<Select
+												value={this.state.assignedTo}
+												placeholder="Zadajte poverených pracovníkov"
+												isMulti
+												isDisabled={this.state.defaultFields.assignedTo.fixed}
+												onChange={(users)=>this.setState({assignedTo:users},this.submitTask.bind(this))}
+												options={this.state.users}
+												styles={invisibleSelectStyleNoArrow}
+												/>
+										</div>
 									</div>
 
-									<div className="col-lg-4">
-											<div className="row p-r-10 m-b-10">
-												<Label className="col-3 col-form-label">Zadal</Label>
-												<div className="col-9">
-													<Select
-														placeholder="Zadajte žiadateľa"
-														value={this.state.requester}
-														isDisabled={this.state.defaultFields.requester.fixed}
-														onChange={(requester)=>this.setState({requester},this.submitTask.bind(this))}
-														options={this.state.users}
-														styles={invisibleSelectStyleNoArrow}
-														/>
-												</div>
-											</div>
-											<div className="row p-r-10 m-b-10">
-												<Label className="col-3 col-form-label">Firma</Label>
-												<div className="col-9">
-													<Select
-														placeholder="Zadajte firmu"
-														value={this.state.company}
-														isDisabled={this.state.defaultFields.company.fixed}
-														onChange={(company)=>this.setState({company},this.submitTask.bind(this))}
-														options={this.state.companies}
-														styles={invisibleSelectStyleNoArrow}
-														/>
-												</div>
-											</div>
+									<div className="">
+										<Label className=" col-form-label">Typ</Label>
+										<div className="">
+											<Select
+												placeholder="Zadajte typ"
+			                  value={this.state.type}
+												isDisabled={this.state.defaultFields.type.fixed}
+												styles={invisibleSelectStyleNoArrow}
+			                  onChange={(type)=>this.setState({type},this.submitTask.bind(this))}
+			                  options={this.state.taskTypes}
+			                  />
+										</div>
 									</div>
 
-									<div className="col-lg-4">
-										<div className="row p-r-10 m-b-10">
-											<Label className="col-3 col-form-label">Deadline</Label>
-											<div className="col-9">
+									<div className="">
+										<Label className=" col-form-label">Projekt</Label>
+										<div className="">
+											<Select
+												placeholder="Zadajte projekt"
+												value={this.state.project}
+												onChange={(project)=>this.setState({project, projectChangeDate:(new Date()).getTime()},()=>{this.submitTask();this.setDefaults(project.id)})}
+												options={this.state.projects}
+												styles={invisibleSelectStyleNoArrow}
+												/>
+										</div>
+									</div>
+
+										<div className="">
+											<Label className=" col-form-label">Zadal</Label>
+											<div className="">
+												<Select
+													placeholder="Zadajte žiadateľa"
+													value={this.state.requester}
+													isDisabled={this.state.defaultFields.requester.fixed}
+													onChange={(requester)=>this.setState({requester},this.submitTask.bind(this))}
+													options={this.state.users}
+													styles={invisibleSelectStyleNoArrow}
+													/>
+											</div>
+										</div>
+
+										<div className="">
+											<Label className="col-form-label">Firma</Label>
+											<div className="">
+												<Select
+													placeholder="Zadajte firmu"
+													value={this.state.company}
+													isDisabled={this.state.defaultFields.company.fixed}
+													onChange={(company)=>this.setState({company},this.submitTask.bind(this))}
+													options={this.state.companies}
+													styles={invisibleSelectStyleNoArrow}
+													/>
+											</div>
+										</div>
+
+										<div className="">
+											<Label className="col-form-label">Deadline</Label>
+											<div className="">
 												{/*className='form-control hidden-input'*/}
 												<input
 													className='form-control hidden-input'
@@ -515,254 +705,53 @@ export default class TaskEdit extends Component {
 												}}
 												columns={this.props.columns}
 												/>
+
+
+
+								{false && <div className="form-group m-b-0 row">
+									<label className="col-5 col-form-label text-slim">Mimo pracovných hodín</label>
+									<div className="col-7">
+										<Select
+											value={this.state.overtime}
+											styles={invisibleSelectStyleNoArrow}
+											onChange={(overtime)=>this.setState({overtime},this.submitTask.bind(this))}
+											options={[{value:true,label:'Áno'},{value:false,label:'Nie'}]}
+											/>
 									</div>
+								</div>}
+								{false && <div className="row">
+									<label className="col-5 col-form-label text-slim">Pripomienka</label>
+									<div className="col-7">
+										{/*className='form-control hidden-input'*/}
+										<input
+											className='form-control'
+											placeholder="Status change date"
+											type="datetime-local"
+											value={this.state.reminder}
+											onChange={(e)=>{
+												this.setState({reminder:e.target.value},this.submitTask.bind(this))}
+											}
+											/>
+									</div>
+								</div>}
 
-								</div>
-
-
-							{false && <div className="form-group m-b-0 row">
-								<label className="col-5 col-form-label text-slim">Mimo pracovných hodín</label>
-								<div className="col-7">
-									<Select
-										value={this.state.overtime}
-										styles={invisibleSelectStyleNoArrow}
-										onChange={(overtime)=>this.setState({overtime},this.submitTask.bind(this))}
-										options={[{value:true,label:'Áno'},{value:false,label:'Nie'}]}
-										/>
-								</div>
-							</div>}
-							{false && <div className="row">
-								<label className="col-5 col-form-label text-slim">Pripomienka</label>
-								<div className="col-7">
-									{/*className='form-control hidden-input'*/}
-									<input
-										className='form-control'
-										placeholder="Status change date"
-										type="datetime-local"
-										value={this.state.reminder}
-										onChange={(e)=>{
-											this.setState({reminder:e.target.value},this.submitTask.bind(this))}
-										}
-										/>
-								</div>
-							</div>}
-
-							<Label className="m-t-5  m-b-10">Popis</Label>
-							<textarea className="form-control b-r-0  m-b-10 hidden-input" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value},this.submitTask.bind(this))} />
-
-							<div className="row">
-								<div className="center-hor"><Label className="center-hor">Tagy: </Label></div>
-								<div className="f-1 ">
-									<Select
-										placeholder="Zvoľte tagy"
-										value={this.state.tags}
-										isMulti
-										onChange={(tags)=>this.setState({tags},this.submitTask.bind(this))}
-										options={this.state.allTags}
-										isDisabled={this.state.defaultFields.tags.fixed}
-										styles={invisibleSelectStyleNoArrow}
-										/>
+								<div>
+									<div className="center-hor"><Label className="center-hor">Tagy: </Label></div>
+									<div className="f-1 ">
+										<Select
+											placeholder="Zvoľte tagy"
+											value={this.state.tags}
+											isMulti
+											onChange={(tags)=>this.setState({tags},this.submitTask.bind(this))}
+											options={this.state.allTags}
+											isDisabled={this.state.defaultFields.tags.fixed}
+											styles={invisibleSelectStyleNoArrow}
+											/>
+									</div>
 								</div>
 							</div>
 
-								<Subtasks
-									taskAssigned={this.state.assignedTo}
-									submitService={this.submitSubtask.bind(this)}
-									subtasks={this.state.subtasks.map((subtask)=>{
-										let assignedTo=subtask.assignedTo?this.state.users.find((item)=>item.id===subtask.assignedTo):null
-										return {
-											...subtask,
-											assignedTo:assignedTo?assignedTo:null
-										}
-									})}
-									updateSubtask={(id,newData)=>{
-										rebase.updateDoc('help-task_subtasks/'+id,newData);
-										let newSubtasks=[...this.state.subtasks];
-										newSubtasks[newSubtasks.findIndex((subtask)=>subtask.id===id)]={...newSubtasks.find((subtask)=>subtask.id===id),...newData};
-										this.setState({subtasks:newSubtasks});
-									}}
-									removeSubtask={(id)=>{
-										rebase.removeDoc('help-task_subtasks/'+id).then(()=>{
-											let newSubtasks=[...this.state.subtasks];
-											newSubtasks.splice(newSubtasks.findIndex((subtask)=>subtask.id===id),1);
-											this.setState({subtasks:newSubtasks});
-										});
-										}
-									}
-									match={this.props.match}
-								/>
-
-							<hr className="m-b-15" style={{marginLeft: "-30px", marginRight: "-30px", marginTop: "-5px"}}/>
-
-							<Nav tabs className="b-0 m-b-22 m-l--10">
-									<NavItem>
-										<NavLink
-											className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "")}
-											onClick={() => { this.setState({toggleTab:'1'}); }}
-										>
-											Komentáre
-		            		</NavLink>
-									</NavItem>
-									<NavItem>
-										<NavLink
-											className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
-											onClick={() => { this.setState({toggleTab:'2'}); }}
-										>
-											Výkaz
-										</NavLink>
-									</NavItem>
-									<NavItem>
-										<NavLink
-											className={classnames({ active: this.state.toggleTab === '3' }, "clickable", "")}
-											onClick={() => { this.setState({toggleTab:'3'}); }}
-										>
-											Rozpočet
-										</NavLink>
-									</NavItem>
-									<NavItem>
-										<NavLink
-											className={classnames({ active: this.state.toggleTab === '4' }, "clickable", "")}
-											onClick={() => { this.setState({toggleTab:'4'}); }}
-										>
-											Prílohy
-										</NavLink>
-									</NavItem>
-								</Nav>
-
-								<TabContent activeTab={this.state.toggleTab}>
-									<TabPane tabId="1">
-										<Comments id={this.state.task?this.state.task.id:null} users={this.state.users} />
-									</TabPane>
-									<TabPane tabId="2">
-										<ServicesExpenditure
-											taskAssigned={this.state.assignedTo}
-											submitService={this.submitService.bind(this)}
-											updatePrices={(ids)=>{
-												taskWorks.filter((item)=>ids.includes(item.id)).map((item)=>{
-													let price=item.workType.prices.find((item)=>item.pricelist===this.state.company.pricelist.id);
-													if(price === undefined){
-														price = 0;
-													}else{
-														price = price.price;
-													}
-													rebase.updateDoc('help-task_works/'+item.id, {price})
-													.then(()=>{
-														let newTaskWorks=[...this.state.taskWorks];
-														newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===item.id)]={...newTaskWorks.find((taskWork)=>taskWork.id===item.id),price};
-														this.setState({taskWorks:newTaskWorks});
-													});
-													return null;
-												})
-											}}
-											subtasks={taskWorks}
-											workTypes={this.state.workTypes}
-											updateSubtask={(id,newData)=>{
-												rebase.updateDoc('help-task_works/'+id,newData);
-												let newTaskWorks=[...this.state.taskWorks];
-												newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
-												this.setState({taskWorks:newTaskWorks});
-											}}
-											company={this.state.company}
-											removeSubtask={(id)=>{
-												rebase.removeDoc('help-task_works/'+id).then(()=>{
-													let newTaskWorks=[...this.state.taskWorks];
-													newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
-													this.setState({taskWorks:newTaskWorks});
-												});
-												}
-											}
-											match={this.props.match}
-											/>
-
-										<MaterialsExpenditure
-											materials={taskMaterials}
-							        submitMaterial={this.submitMaterial.bind(this)}
-											updateMaterial={(id,newData)=>{
-												rebase.updateDoc('help-task_materials/'+id,newData);
-												let newTaskMaterials=[...this.state.taskMaterials];
-												newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
-												this.setState({taskMaterials:newTaskMaterials});
-											}}
-											removeMaterial={(id)=>{
-												rebase.removeDoc('help-task_materials/'+id).then(()=>{
-													let newTaskMaterials=[...this.state.taskMaterials];
-													newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
-													this.setState({taskMaterials:newTaskMaterials});
-												});
-											}}
-							        units={this.state.units}
-											defaultUnit={this.state.defaultUnit}
-											company={this.state.company}
-											match={this.props.match}
-										/>
-									</TabPane>
-									<TabPane tabId="3">
-										<ServicesBudget
-											taskAssigned={this.state.assignedTo}
-											submitService={this.submitService.bind(this)}
-											updatePrices={(ids)=>{
-												taskWorks.filter((item)=>ids.includes(item.id)).map((item)=>{
-													let price=item.workType.prices.find((item)=>item.pricelist===this.state.company.pricelist.id);
-													if(price === undefined){
-														price = 0;
-													}else{
-														price = price.price;
-													}
-													rebase.updateDoc('help-task_works/'+item.id, {price})
-													.then(()=>{
-														let newTaskWorks=[...this.state.taskWorks];
-														newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===item.id)]={...newTaskWorks.find((taskWork)=>taskWork.id===item.id),price};
-														this.setState({taskWorks:newTaskWorks});
-													});
-													return null;
-												})
-											}}
-											subtasks={taskWorks}
-											workTypes={this.state.workTypes}
-											updateSubtask={(id,newData)=>{
-												rebase.updateDoc('help-task_works/'+id,newData);
-												let newTaskWorks=[...this.state.taskWorks];
-												newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
-												this.setState({taskWorks:newTaskWorks});
-											}}
-											company={this.state.company}
-											removeSubtask={(id)=>{
-												rebase.removeDoc('help-task_works/'+id).then(()=>{
-													let newTaskWorks=[...this.state.taskWorks];
-													newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
-													this.setState({taskWorks:newTaskWorks});
-												});
-												}
-											}
-											match={this.props.match}
-											/>
-
-										<MaterialsBudget
-											materials={taskMaterials}
-							        submitMaterial={this.submitMaterial.bind(this)}
-											updateMaterial={(id,newData)=>{
-												rebase.updateDoc('help-task_materials/'+id,newData);
-												let newTaskMaterials=[...this.state.taskMaterials];
-												newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
-												this.setState({taskMaterials:newTaskMaterials});
-											}}
-											removeMaterial={(id)=>{
-												rebase.removeDoc('help-task_materials/'+id).then(()=>{
-													let newTaskMaterials=[...this.state.taskMaterials];
-													newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
-													this.setState({taskMaterials:newTaskMaterials});
-												});
-											}}
-							        units={this.state.units}
-											defaultUnit={this.state.defaultUnit}
-											company={this.state.company}
-											match={this.props.match}
-										/>
-									</TabPane>
-									<TabPane tabId="4">
-										<img src="https://www.seriouseats.com/recipes/images/2016/12/20161201-crispy-roast-potatoes-29-625x469.jpg"/>
-									</TabPane>
-								</TabContent>
+							</div>
 						</div>
 			</div>
 		);

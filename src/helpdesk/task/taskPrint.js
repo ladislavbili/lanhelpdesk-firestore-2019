@@ -19,7 +19,7 @@ export default class TaskPrint extends Component {
 						trigger={() =>
 							<button className="btn btn-link waves-effect">
 								<i
-									className="fas fa-print icon-M mr-3"
+									className="fas fa-print mr-3"
 									/>
 								Print
 							</button>

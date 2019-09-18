@@ -108,7 +108,7 @@ export default class TaskAddContainer extends Component{
 					disabled={this.props.disabled}
 					onClick={()=>{this.setState({openAddTaskModal:true,hidden:false})}}>
 					<i
-						className="fas fa-copy icon-M"
+						className="far fa-copy"
 						/> Copy
 				</button>
 			}

@@ -64,9 +64,10 @@ export default class Subtasks extends Component{
               this.state.subtasks.map((item,index)=>
               <tr key={item.id}>
                 <td className="table-checkbox">
-                  <label className="container">
+                  <label className="custom-container">
                     <Input type="checkbox"
-                      checked={item.done} onChange={()=>{
+                      checked={item.done}
+                      onChange={()=>{
                       let newData=[...this.state.subtasks];
                       newData[index].done=!newData[index].done;
                       rebase.updateDoc('proj-subtasks/'+item.id,{done:item.done});

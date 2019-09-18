@@ -67,7 +67,7 @@ export default class Subtasks extends Component {
 														<th width="25"></th>
 														<th >Subtask</th>
 														{false && <th width="170">Rieši</th>}
-														<th className="t-a-c" width="124">Action</th>
+														<th className="t-a-r" width="124">Action</th>
 													</tr>
 												</thead>
 												<tbody>

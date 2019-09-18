@@ -287,7 +287,7 @@ export default class TaskAdd extends Component{
 								className="btn-link"
 								disabled={this.state.defaults.status.fixed}
 								onClick={()=>{this.setState({status})}}
-								> <i className={(status.icon?status.icon:"")+" commandbar-command-icon icon-M"}/>{" "+status.title}
+								> <i className={(status.icon?status.icon:"")+" commandbar-command-icon"}/>{" "+status.title}
 							</Button>
 						)
 					}

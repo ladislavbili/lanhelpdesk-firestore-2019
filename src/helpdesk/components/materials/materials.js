@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {Input} from 'reactstrap';
 import Select from 'react-select';
 import { selectStyle, invisibleSelectStyle} from '../../../scss/selectStyles';
 
@@ -66,19 +67,23 @@ export default class Rozpocet extends Component {
 						<div>
 							<table className="table">
 								<thead>
-									<tr>
-										<th>
-											<input type="checkbox"
-												checked={this.props.materials.length===this.state.selectedIDs.length}
-												onChange={()=>this.setState({selectedIDs:(this.props.materials.length===this.state.selectedIDs.length?[]:this.props.materials.map((item)=>item.id))})} />
+									<tr >
+										<th width="25" className="table-checkbox">
+											<label className="custom-container">
+		                    <Input type="checkbox"
+													checked={this.props.materials.length===this.state.selectedIDs.length}
+													onChange={()=>this.setState({selectedIDs:(this.props.materials.length===this.state.selectedIDs.length?[]:this.props.materials.map((item)=>item.id))})}
+													/>
+												<span className="checkmark" style={{ marginTop: "-8px"}}> </span>
+		                  </label>
 										</th>
-										<th >Materiál</th>
+										<th className="t-a-l p-l-15">Materiál</th>
 										<th width="100">Mn.</th>
-										<th width="170">Jednotka</th>
-										<th width="130">Nákupná cena</th>
-										<th width="124">Predajná cena</th>
-										<th width="120">Cena</th>
-										<th className="t-a-c" width="124">Action</th>
+										<th width="190">Jednotka</th>
+										{false && <th width="100">Nákupná cena</th>}
+										{false && <th width="124">Predajná cena</th>}
+										{false && <th width="120">Cena</th>}
+										<th className="t-a-r" width="124">Action</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -86,19 +91,21 @@ export default class Rozpocet extends Component {
 										this.props.materials.map((material)=>
 										<tr key={material.id}>
 											<td className="table-checkbox t-a-r">
-												<input
-													type="checkbox"
-													checked={this.state.selectedIDs.includes(material.id)}
-													onChange={()=>{
-														if(!this.state.selectedIDs.includes(material.id)){
-															this.setState({selectedIDs:[...this.state.selectedIDs,material.id]})
-														}else{
-															let newSelectedIDs=[...this.state.selectedIDs];
-															newSelectedIDs.splice(newSelectedIDs.findIndex((item)=>item.id===material.id),1);
-															this.setState({selectedIDs:newSelectedIDs})
+												<label className="custom-container">
+			                    <Input type="checkbox"
+														checked={this.state.selectedIDs.includes(material.id)}
+														onChange={()=>{
+															if(!this.state.selectedIDs.includes(material.id)){
+																this.setState({selectedIDs:[...this.state.selectedIDs,material.id]})
+															}else{
+																let newSelectedIDs=[...this.state.selectedIDs];
+																newSelectedIDs.splice(newSelectedIDs.findIndex((item)=>item.id===material.id),1);
+																this.setState({selectedIDs:newSelectedIDs})
+															}
 														}
-													}
-												} />
+													} />
+												<span className="checkmark" style={{ marginTop: "-2px"}}> </span>
+			                  </label>
 											</td>
 											<td>
 													<input
@@ -167,7 +174,7 @@ export default class Rozpocet extends Component {
 													styles={invisibleSelectStyle}
 													/>
 											</td>
-											<td className="table-highlight-background">
+										{false &&			<td className="table-highlight-background">
 												<input
 													type="number"
 													className="form-control hidden-input h-30"
@@ -195,14 +202,14 @@ export default class Rozpocet extends Component {
 														this.setState({ editedMaterialPrice: e.target.value })}
 													}
 													/>
-											</td>
-											<td>
+											</td>}
+											{false &&		<td>
 												{parseFloat(material.id === this.state.focusedMaterial
 														? editedFinalUnitPrice
 														: material.finalUnitPrice).toFixed(2)
 													}
-											</td>
-												<td>
+											</td>}
+									{false &&			<td>
 													{
 														(
 														(parseFloat(material.id === this.state.focusedMaterial
@@ -212,7 +219,7 @@ export default class Rozpocet extends Component {
 														)
 														.toFixed(2)
 													}
-												</td>
+												</td>}
 
 											<td className="t-a-r">
 												<button className="btn btn-link waves-effect">
@@ -236,9 +243,28 @@ export default class Rozpocet extends Component {
 										)
 									}
 
+									{!this.state.showAddItem &&
+										<tr>
+											<td></td>
+											<td>
+												<button className="btn btn-table-add-item"
+													onClick={()=>{
+													 this.setState({showAddItem: true});
+													}}>
+													+ Add New Item
+												</button>
+											</td>
+									</tr>
+									}
 
+								{this.state.showAddItem &&
 									<tr>
 										<td>
+											<button className="btn btn-link waves-effect" onClick={()=>{
+													this.setState({showAddItem: false})
+												}}>
+												<i className="fa fa-times"  />
+												</button>
 										</td>
 										<td>
 											<input
@@ -271,7 +297,7 @@ export default class Rozpocet extends Component {
 											styles={selectStyle}
 											/>
 									</td>
-									<td className="table-highlight-background">
+								{false &&			<td className="table-highlight-background">
 										<input
 											type="number"
 											value={this.state.newPrice}
@@ -291,15 +317,15 @@ export default class Rozpocet extends Component {
 											id="inlineFormInput"
 											placeholder=""
 											/>
-									</td>
-									<td>
+									</td>}
+							{false &&				<td>
 										{unitPrice.toFixed(2)}
-									</td>
-									<td>
+									</td>}
+							{false &&				<td>
 										{
 											(unitPrice*this.state.newQuantity).toFixed(2)
 										}
-									</td>
+									</td>}
 
 										<td className="t-a-r">
 											<button className="btn btn-link waves-effect"
@@ -313,6 +339,7 @@ export default class Rozpocet extends Component {
 											      unit:this.state.newUnit.id
 													}
 													this.setState({
+														showAddItem: false,
 														newTitle:'',
 														newQuantity:1,
 														newMargin:0,
@@ -327,6 +354,7 @@ export default class Rozpocet extends Component {
 											</button>
 										</td>
 									</tr>
+								}
 								</tbody>
 							</table>
 						</div>

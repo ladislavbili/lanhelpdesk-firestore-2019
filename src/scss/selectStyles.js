@@ -29,7 +29,7 @@ export const invisibleSelectStyleNoArrow = {
 		...base,
 		margin: 0,
 		padding: 0,
-		backgroundColor: "#F2F1F1",
+		backgroundColor: "inherit",
 		borderRadius: 0
 	}),
 	indicatorSeparator: base => ({
@@ -86,7 +86,7 @@ export const selectStyle = {
 		...base,
 		margin: 0,
 		padding: 0,
-		backgroundColor: 'white',
+		backgroundColor: 'inherit',
 		borderRadius: 0
 	}),
 	indicatorSeparator: base => ({
@@ -126,7 +126,7 @@ export const invisibleSelectStyle = {
 		...base,
 		margin: 0,
 		padding: 0,
-		backgroundColor: "#F2F1F1",
+		backgroundColor: "inherit",
 		borderRadius: 0
 	}),
 	indicatorSeparator: base => ({

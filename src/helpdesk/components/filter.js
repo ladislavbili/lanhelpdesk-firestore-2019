@@ -140,6 +140,7 @@ class Filter extends Component {
         updatedAt:(new Date()).getTime()
       }
       this.props.setFilter(body);
+      this.props.close();
     }
 
     renameFilter(){

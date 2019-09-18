@@ -152,6 +152,12 @@ getData(id){
               </span>
             </div>
 
+            <Button
+              className="btn btn-table-add-item m-t-7"
+              onClick={()=>{ }}>
+              + Add New Attachement
+            </Button>
+
           </div>
         </div>
 
@@ -159,7 +165,7 @@ getData(id){
           <div key={comment.id} >
             { comment.isMail &&
               <div>
-                  <div className="media m-b-30 m-t-30">
+                  <div className="media m-b-30 m-t-20">
 
                   <img
                     className="d-flex mr-3 rounded-circle thumb-sm"
