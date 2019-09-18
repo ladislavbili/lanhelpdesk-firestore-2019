@@ -576,11 +576,12 @@ export default class TaskEdit extends Component {
 									match={this.props.match}
 								/>
 
+							<hr className="m-b-15" style={{marginLeft: "-30px", marginRight: "-30px", marginTop: "-5px"}}/>
 
-								<Nav tabs className="b-0">
+							<Nav tabs className="b-0 m-b-22 m-l--10">
 									<NavItem>
 										<NavLink
-											className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "form-tab-end")}
+											className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "")}
 											onClick={() => { this.setState({toggleTab:'1'}); }}
 										>
 											Komentáre
@@ -588,7 +589,7 @@ export default class TaskEdit extends Component {
 									</NavItem>
 									<NavItem>
 										<NavLink
-											className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "form-tab-end")}
+											className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
 											onClick={() => { this.setState({toggleTab:'2'}); }}
 										>
 											Výkaz
@@ -596,7 +597,7 @@ export default class TaskEdit extends Component {
 									</NavItem>
 									<NavItem>
 										<NavLink
-											className={classnames({ active: this.state.toggleTab === '3' }, "clickable", "form-tab-end")}
+											className={classnames({ active: this.state.toggleTab === '3' }, "clickable", "")}
 											onClick={() => { this.setState({toggleTab:'3'}); }}
 										>
 											Rozpočet
@@ -604,7 +605,7 @@ export default class TaskEdit extends Component {
 									</NavItem>
 									<NavItem>
 										<NavLink
-											className={classnames({ active: this.state.toggleTab === '4' }, "clickable", "form-tab-end")}
+											className={classnames({ active: this.state.toggleTab === '4' }, "clickable", "")}
 											onClick={() => { this.setState({toggleTab:'4'}); }}
 										>
 											Prílohy

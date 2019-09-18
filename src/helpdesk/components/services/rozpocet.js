@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {Input} from 'reactstrap';
 import Select from 'react-select';
 import { selectStyle, invisibleSelectStyle} from '../../../scss/selectStyles';
 
@@ -65,32 +66,33 @@ export default class Rozpocet extends Component {
 	render() {
 		//const afterHours= this.props.company && this.state.newExtraWork ? this.props.company.pricelist.afterHours : 0;
 		return (
-				<div className="row">
+				<div className="row m-b-30">
 					<div className="col-md-12">
 						<div>
 							<table className="table">
 								<thead>
 									<tr>
-										<th width="25">
+										{false &&
+											<th width="25">
 											<input type="checkbox"
 												checked={this.props.subtasks.length===this.state.selectedIDs.length}
 												onChange={()=>this.setState({selectedIDs:(this.props.subtasks.length===this.state.selectedIDs.length?[]:this.props.subtasks.map((item)=>item.id))})} />
-										</th>
-										<th >Služby</th>
-										<th width="100">Mn.</th>
-										<th width="170">Rieši</th>
-										<th width="170">Typ</th>
-										<th width="120">Cena/Mn.</th>
-										<th width="124">Zlava</th>
-										<th width="130">Spolu</th>
-										<th className="t-a-c" width="124">Action</th>
+										</th>}
+										<th style={{fontSize: "14px", fontFamily: "Segoe UI Bold", color: "#333"}}>Služby</th>
+										<th style={{fontSize: "12px", fontFamily: "Segoe UI", fontWeight: "500", color: "#333"}} width="130">Rieši</th>
+										<th width="60">Mn.</th>
+										<th width="100">Typ</th>
+										<th width="50" className="table-highlight-background">Cena/Mn.</th>
+										<th width="60" className="table-highlight-background">Zlava</th>
+										{false && <th width="130">Spolu</th>}
+										<th className="t-a-c" width="100">Action</th>
 									</tr>
 								</thead>
 								<tbody>
 									{
 										this.props.subtasks.map((subtask)=>
 										<tr key={subtask.id}>
-											<td className="table-checkbox">
+											{false &&<td className="table-checkbox">
 												<input
 													type="checkbox"
 													checked={this.state.selectedIDs.includes(subtask.id)}
@@ -104,7 +106,7 @@ export default class Rozpocet extends Component {
 														}
 													}
 												} />
-											</td>
+											</td>}
 											<td>
 												<div>
 													<input
@@ -136,6 +138,16 @@ export default class Rozpocet extends Component {
 												</div>
 											</td>
 											<td>
+												<Select
+													value={subtask.assignedTo}
+													onChange={(assignedTo)=>{
+														this.props.updateSubtask(subtask.id,{assignedTo:assignedTo.id})
+													}}
+													options={this.props.taskAssigned}
+													styles={invisibleSelectStyle}
+													/>
+											</td>
+											<td>
 												<input
 													type="number"
 													className="form-control hidden-input h-30"
@@ -162,16 +174,6 @@ export default class Rozpocet extends Component {
 													onChange={e =>{
 														this.setState({ editedSubtaskQuantity: e.target.value })}
 													}
-													/>
-											</td>
-											<td>
-												<Select
-													value={subtask.assignedTo}
-													onChange={(assignedTo)=>{
-														this.props.updateSubtask(subtask.id,{assignedTo:assignedTo.id})
-													}}
-													options={this.props.taskAssigned}
-													styles={invisibleSelectStyle}
 													/>
 											</td>
 											<td >
@@ -248,7 +250,8 @@ export default class Rozpocet extends Component {
 														}
 														/>
 												</td>
-												<td className="table-highlight-background">
+												{false &&
+													<td className="table-highlight-background">
 													{
 														(
 														(parseFloat(subtask.id === this.state.focusedSubtask?(this.state.editedSubtaskPrice===''?0:this.state.editedSubtaskPrice):subtask.finalUnitPrice)
@@ -260,7 +263,7 @@ export default class Rozpocet extends Component {
 														)
 														.toFixed(2)
 													}
-												</td>
+												</td>}
 												<td className="t-a-r">
 													<button className="btn btn-link waves-effect">
 														<i className="fa fa-arrow-up"  />
@@ -281,9 +284,28 @@ export default class Rozpocet extends Component {
 									}
 									{/* END OF GENERATED DATA*/}
 
-									<tr>
-										<td>
-										</td>
+									{!this.state.showAddItem &&
+										<tr >
+										<button className="btn btn-table-add-item"
+											onClick={()=>{
+											 this.setState({showAddItem: true});
+											}}>
+											+ Add New Item
+										</button>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<p className="text-right">
+											<b>Sub-total:</b>
+											{(this.props.subtasks.map((subtask)=>parseFloat(subtask.totalPrice)).reduce((acc, cur)=> acc+cur,0)).toFixed(2)}
+										</p>
+									</tr>
+									}
+
+									{this.state.showAddItem &&
+										<tr>
 										<td>
 											<input
 												type="text"
@@ -295,16 +317,6 @@ export default class Rozpocet extends Component {
 												/>
 										</td>
 										<td>
-											<input
-												type="number"
-												value={this.state.newQuantity}
-												onChange={(e)=>this.setState({newQuantity:e.target.value})}
-												className="form-control h-30"
-												id="inlineFormInput"
-												placeholder=""
-												/>
-										</td>
-										<td>
 											<Select
 												value={this.state.newAssigned}
 												onChange={(newAssigned)=>{
@@ -313,6 +325,16 @@ export default class Rozpocet extends Component {
 												}
 												options={this.props.taskAssigned}
 												styles={selectStyle}
+												/>
+										</td>
+										<td>
+											<input
+												type="number"
+												value={this.state.newQuantity}
+												onChange={(e)=>this.setState({newQuantity:e.target.value})}
+												className="form-control h-30"
+												id="inlineFormInput"
+												placeholder=""
 												/>
 										</td>
 										<td>
@@ -354,11 +376,12 @@ export default class Rozpocet extends Component {
 												placeholder=""
 												/>
 										</td>
-										<td className="table-highlight-background">
+										{false &&
+											<td className="table-highlight-background">
 											{
 												((this.state.newPrice-this.state.newPrice*0.01*this.state.newDiscount)*this.state.newQuantity).toFixed(2)
 											}
-										</td>
+										</td>}
 										<td className="t-a-r">
 											<button className="btn btn-link waves-effect"
 												disabled={this.state.newWorkType===null}
@@ -387,7 +410,7 @@ export default class Rozpocet extends Component {
 												<i className="fa fa-plus" />
 											</button>
 										</td>
-									</tr>
+									</tr>}
 								</tbody>
 							</table>
 						</div>
@@ -410,10 +433,12 @@ export default class Rozpocet extends Component {
 								</button>
 							</div>
 							<div className="col-md-6">
+								{this.state.showAddItem &&
 								<p className="text-right">
 									<b>Sub-total:</b>
 									{(this.props.subtasks.map((subtask)=>parseFloat(subtask.totalPrice)).reduce((acc, cur)=> acc+cur,0)).toFixed(2)}
 								</p>
+							}
 								</div>
 							</div>
 						</div>

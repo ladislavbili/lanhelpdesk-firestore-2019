@@ -67,26 +67,28 @@ export default class Rozpocet extends Component {
 							<table className="table">
 								<thead>
 									<tr>
-										<th>
+										{false &&
+											<th>
 											<input type="checkbox"
 												checked={this.props.materials.length===this.state.selectedIDs.length}
 												onChange={()=>this.setState({selectedIDs:(this.props.materials.length===this.state.selectedIDs.length?[]:this.props.materials.map((item)=>item.id))})} />
-										</th>
-										<th >Materiál</th>
-										<th width="100">Mn.</th>
-										<th width="170">Jednotka</th>
-										<th width="130">Nákupná cena</th>
-										<th width="120">Marža</th>
-										<th width="124">Predajná cena</th>
-										<th width="120">Cena</th>
-										<th className="t-a-c" width="124">Action</th>
+										</th>}
+										<th style={{fontSize: "14px", fontFamily: "Segoe UI Bold", color: "#333"}}>Materiál</th>
+										<th style={{fontSize: "12px", fontFamily: "Segoe UI", fontWeight: "500", color: "#333"}} width="60">Mn.</th>
+										<th width="100">Jednotka</th>
+										<th width="60">Cena</th>
+										<th width="100" className="table-highlight-background">Nákup</th>
+										<th width="100" className="table-highlight-background">Marža</th>
+										{false && <th width="124">Predajná cena</th>}
+										<th className="t-a-c" width="100">Action</th>
 									</tr>
 								</thead>
 								<tbody>
 									{
 										this.props.materials.map((material)=>
 										<tr key={material.id}>
-											<td className="table-checkbox">
+											{false &&
+												<td className="table-checkbox">
 												<input
 													type="checkbox"
 													checked={this.state.selectedIDs.includes(material.id)}
@@ -100,7 +102,7 @@ export default class Rozpocet extends Component {
 														}
 													}
 												} />
-											</td>
+											</td>}
 											<td>
 													<input
 														className="form-control hidden-input"
@@ -168,6 +170,19 @@ export default class Rozpocet extends Component {
 													styles={invisibleSelectStyle}
 													/>
 											</td>
+											<td>
+												<div className="p-t-5">
+												{
+													(
+													(parseFloat(material.id === this.state.focusedMaterial
+															? editedFinalUnitPrice
+															: material.finalUnitPrice))*
+													parseInt(material.id === this.state.focusedMaterial?(this.state.editedMaterialQuantity===''?0:this.state.editedMaterialQuantity):material.quantity)
+													)
+													.toFixed(2)
+												}
+											</div>
+											</td>
 											<td className="table-highlight-background">
 												<input
 													type="number"
@@ -225,23 +240,14 @@ export default class Rozpocet extends Component {
 														}
 														/>
 											</td>
-											<td>
+									{	false && 	<td>
 												{parseFloat(material.id === this.state.focusedMaterial
 														? editedFinalUnitPrice
 														: material.finalUnitPrice).toFixed(2)
 													}
-											</td>
-												<td>
-													{
-														(
-														(parseFloat(material.id === this.state.focusedMaterial
-																? editedFinalUnitPrice
-																: material.finalUnitPrice))*
-														parseInt(material.id === this.state.focusedMaterial?(this.state.editedMaterialQuantity===''?0:this.state.editedMaterialQuantity):material.quantity)
-														)
-														.toFixed(2)
-													}
-												</td>
+											</td>}
+
+
 
 
 											<td className="t-a-r">
@@ -266,10 +272,28 @@ export default class Rozpocet extends Component {
 										)
 									}
 
+									{!this.state.showAddItem &&
+										<tr >
+										<button className="btn btn-table-add-item"
+											onClick={()=>{
+											 this.setState({showAddItem: true});
+											}}>
+											+ Add New Item
+										</button>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+										<td></td>
+											<p className="text-right">
+												<b>Sub-total:</b>
+												{(this.props.materials.map((material)=>parseFloat(material.totalPrice)).reduce((acc, cur)=> acc+cur,0)).toFixed(2)}
+											</p>
+									</tr>
+									}
 
+{this.state.showAddItem &&
 									<tr>
-										<td>
-										</td>
 										<td>
 											<input
 												type="text"
@@ -300,6 +324,13 @@ export default class Rozpocet extends Component {
 											options={this.props.units}
 											styles={selectStyle}
 											/>
+									</td>
+									<td>
+										<div className="p-t-5">
+										{
+											(unitPrice*this.state.newQuantity).toFixed(2)
+										}
+										</div>
 									</td>
 									<td className="table-highlight-background">
 										<input
@@ -332,14 +363,10 @@ export default class Rozpocet extends Component {
 											placeholder=""
 											/>
 									</td>
-									<td>
+							{false &&	<td>
 										{unitPrice.toFixed(2)}
-									</td>
-									<td>
-										{
-											(unitPrice*this.state.newQuantity).toFixed(2)
-										}
-									</td>
+									</td>}
+
 										<td className="t-a-r">
 											<button className="btn btn-link waves-effect"
 												disabled={this.state.newUnit===null}
@@ -365,16 +392,18 @@ export default class Rozpocet extends Component {
 												<i className="fa fa-plus" />
 											</button>
 										</td>
-									</tr>
+									</tr> }
 								</tbody>
 							</table>
 						</div>
 						<div className="row justify-content-end">
 							<div className="col-md-6">
+								{this.state.showAddItem &&
 								<p className="text-right">
 									<b>Sub-total:</b>
 									{(this.props.materials.map((material)=>parseFloat(material.totalPrice)).reduce((acc, cur)=> acc+cur,0)).toFixed(2)}
 								</p>
+							}
 								</div>
 							</div>
 						</div>

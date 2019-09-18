@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {Input} from 'reactstrap';
 import Select from 'react-select';
 import { selectStyle, invisibleSelectStyle} from '../../../scss/selectStyles';
 
@@ -69,9 +70,9 @@ export default class Prace extends Component {
 									<th width="25"></th>
 									<th >Služby</th>
 									<th width="100">Mn.</th>
-									<th width="170">Rieši</th>
-									<th width="170">Typ</th>
-									<th className="t-a-c" width="124">Action</th>
+									{false && <th width="170">Rieši</th>}
+									<th width="100">Typ</th>
+									<th className="t-a-r" width="124">Action</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -79,9 +80,13 @@ export default class Prace extends Component {
 									this.props.subtasks.map((subtask)=>
 									<tr key={subtask.id}>
 										<td className="table-checkbox">
-											<input type="checkbox" checked={subtask.done} onChange={()=>{
-												this.props.updateSubtask(subtask.id,{done:!subtask.done})
-												}} />
+											<label className="custom-container">
+												<Input type="checkbox"
+													checked={subtask.done} onChange={()=>{
+														this.props.updateSubtask(subtask.id,{done:!subtask.done})
+														}} />
+													<span className="checkmark" style={{ marginTop: "-4px"}}> </span>
+											</label>
 										</td>
 										<td>
 											<div>
@@ -138,7 +143,7 @@ export default class Prace extends Component {
 										}
 										/>
 									</td>
-									<td >
+									{false && <td >
 										<Select
 											value={subtask.assignedTo}
 											onChange={(assignedTo)=>{
@@ -147,7 +152,7 @@ export default class Prace extends Component {
 											options={this.props.taskAssigned}
 											styles={invisibleSelectStyle}
 											/>
-									</td>
+									</td>}
 									<td>
 										<Select
 											value={subtask.workType}
@@ -183,7 +188,19 @@ export default class Prace extends Component {
 								)
 							}
 
-							<tr>
+							{!this.state.showAddItem &&
+								<tr >
+									<td></td>
+								<button className="btn btn-table-add-item"
+									onClick={()=>{
+									 this.setState({showAddItem: true});
+									}}>
+									+ Add New Item
+								</button>
+							</tr>
+							}
+
+				{this.state.showAddItem &&			<tr>
 								<td>
 								</td>
 								<td>
@@ -206,7 +223,7 @@ export default class Prace extends Component {
 										placeholder=""
 										/>
 								</td>
-								<td>
+								{false && <td>
 									<Select
 										value={this.state.newAssigned}
 										onChange={(newAssigned)=>{
@@ -216,7 +233,7 @@ export default class Prace extends Component {
 										options={this.props.taskAssigned}
 										styles={selectStyle}
 										/>
-								</td>
+								</td>}
 								<td>
 									<Select
 										value={this.state.workType}
@@ -263,7 +280,7 @@ export default class Prace extends Component {
 										<i className="fa fa-plus" />
 									</button>
 								</td>
-							</tr>
+							</tr>}
 						</tbody>
 					</table>
 				</div>
