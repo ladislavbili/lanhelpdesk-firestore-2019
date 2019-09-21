@@ -67,12 +67,19 @@ export default class Prace extends Component {
 						<table className="table">
 							<thead >
 								<tr >
-									<th width="25"></th>
-									<th >Služby</th>
+									<th width="25">
+										<label className="custom-container">
+											<Input type="checkbox"
+												checked={false}
+												/>
+											<span className="checkmark" style={{ marginTop: "-8px"}}> </span>
+										</label>
+									</th>
+									<th className="t-a-l p-l-15">Služby</th>
 									<th width="50">Mn.</th>
 									{false && <th width="170">Rieši</th>}
 									<th width="190">Typ</th>
-									<th className="t-a-r" width="124">Action</th>
+									<th className="t-a-r" width="124"></th>
 								</tr>
 							</thead>
 							<tbody>

@@ -63,23 +63,29 @@ export default class Subtasks extends Component {
 										<div >
 											<table className="table">
 												<thead >
-													<tr >
-														<th width="25"></th>
-														<th >Subtask</th>
+													<tr  className="tr-no-lines">
+														<th width="25">
+															<label className="custom-container">
+																<Input type="checkbox"
+																	checked={false}
+																	onChange={()=>{}}  />
+																	<span className="checkmark" style={{ marginTop: "-8px"}}> </span>
+															</label>
+														</th>
+														<th className="t-a-l p-l-15">Subtask</th>
 														{false && <th width="170">Rieši</th>}
-														<th className="t-a-r" width="124">Action</th>
+														<th className="t-a-r" width="124"></th>
 													</tr>
 												</thead>
 												<tbody>
 													{
 														this.props.subtasks.map((subtask)=>
-														<tr key={subtask.id}>
+														<tr key={subtask.id}  className="tr-no-lines">
 															<td className="custom-table-checkbox">
 																	<label className="custom-container">
 								                    <Input type="checkbox"
 																			checked={subtask.done}
 																			onChange={()=>{
-																				console.log("changed");
 																					this.props.updateSubtask(subtask.id,{done:!subtask.done});
 																				}}  />
 																			<span className="checkmark"> </span>
@@ -129,8 +135,29 @@ export default class Subtasks extends Component {
 														)
 													}
 
+											{!this.state.showAddItem &&
+												<tr >
+													<td>
+													</td>
+													<td>
+														<button className="btn btn-table-add-item"
+															onClick={()=>{
+															 this.setState({showAddItem: true});
+															}}>
+															+ Add New Item
+														</button>
+													</td>
+												</tr>
+											}
+
+								{this.state.showAddItem &&
 													<tr>
 														<td>
+															<button className="btn btn-link waves-effect" onClick={()=>{
+																	this.setState({showAddItem: false})
+																}}>
+																<i className="fa fa-times"  />
+																</button>
 														</td>
 														<td className="row" style={{border: "none"}}>
 															<div className="w-50">
@@ -177,6 +204,7 @@ export default class Subtasks extends Component {
 												 </td>
 												 <td></td>
 												</tr>
+											}
 												</tbody>
 											</table>
 										</div>

@@ -80,7 +80,7 @@ export default class Rozpocet extends Component {
 										<th width="100" className="table-highlight-background">Nákup</th>
 										<th width="100" className="table-highlight-background">Marža</th>
 										{false && <th width="124">Predajná cena</th>}
-										<th className="t-a-c" width="100">Action</th>
+										<th className="t-a-c" width="100"></th>
 									</tr>
 								</thead>
 								<tbody>

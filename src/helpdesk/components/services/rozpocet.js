@@ -85,7 +85,7 @@ export default class Rozpocet extends Component {
 										<th width="100" className="table-highlight-background">Cena/Mn.</th>
 										<th width="60" className="table-highlight-background">Zlava</th>
 										{false && <th width="130">Spolu</th>}
-										<th className="t-a-c" width="100">Action</th>
+										<th className="t-a-c" width="100"></th>
 									</tr>
 								</thead>
 								<tbody>
