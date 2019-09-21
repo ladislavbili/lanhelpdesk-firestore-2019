@@ -71,6 +71,7 @@ export default class Prace extends Component {
 										<label className="custom-container">
 											<Input type="checkbox"
 												checked={false}
+												onChange={() => {}}
 												/>
 											<span className="checkmark" style={{ marginTop: "-8px"}}> </span>
 										</label>

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { TabContent, TabPane, Input } from 'reactstrap';
 
 const LIST = ["picture.jpg", "task-description.pdf", "specification.pdf"];
 

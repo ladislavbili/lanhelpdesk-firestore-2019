@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import {Button, Label, TabContent, TabPane, Nav, NavItem, NavLink} from 'reactstrap';
+import Attachments from '../components/attachments.js';
 import Comments from '../components/comments.js';
 import Subtasks from '../components/subtasks';
 import Repeat from '../components/repeat';
@@ -596,7 +597,7 @@ export default class TaskEdit extends Component {
 											/>
 										</TabPane>
 										<TabPane tabId="4">
-											<img src="https://www.seriouseats.com/recipes/images/2016/12/20161201-crispy-roast-potatoes-29-625x469.jpg"/>
+											<Attachments />
 										</TabPane>
 									</TabContent>
 								</div>
@@ -749,8 +750,7 @@ export default class TaskEdit extends Component {
 											/>
 									</div>
 								</div>
-							</div>
-
+							</div>								
 							</div>
 						</div>
 			</div>

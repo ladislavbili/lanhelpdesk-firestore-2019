@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import {Input} from 'reactstrap';
 import Select from 'react-select';
 import { selectStyle, invisibleSelectStyle} from '../../../scss/selectStyles';
 
