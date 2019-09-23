@@ -18,6 +18,7 @@ constructor(props){
     comments:[],
     subject:'',
     emailBody:'',
+    attachments:[],
     tos:[]
   }
   this.getData.bind(this);
@@ -54,6 +55,64 @@ getData(id){
   });
 }
 
+submitComment(){
+  this.setState({saving:true});
+
+  let time = (new Date()).getTime();
+  let storageRef = firebase.storage().ref();
+  Promise.all([
+    ...this.state.attachments.map((attachment)=>{
+      return storageRef.child(`help-comments/${this.props.id}/${time}-${attachment.size}-${attachment.name}`).put(attachment)
+    })
+  ]).then((resp)=>{
+      Promise.all([
+        ...this.state.attachments.map((attachment)=>{
+          return storageRef.child(`help-comments/${this.props.id}/${time}-${attachment.size}-${attachment.name}`).getDownloadURL()
+        })
+      ]).then((urls)=>{
+          let newAttachments = this.state.attachments.map((attachment,index)=>{
+            return {
+              title:attachment.name,
+              size:attachment.size,
+              path:`help-comments/${this.props.id}/${time}-${attachment.size}-${attachment.name}`,
+              url:urls[index]
+            }
+          });
+          //mame ulozene attachmenty
+          let body={
+            user:this.props.userID,
+            comment:this.state.isEmail?this.state.emailBody: this.state.newComment,
+            subject:this.state.subject,
+            isEmail: this.state.isEmail,
+            tos:this.state.tos.map((item)=>item.value),
+            createdAt: (new Date()).getTime(),
+            task:this.props.id,
+            attachments:newAttachments
+          }
+          rebase.addToCollection('/help-comments',body).then(()=>{this.setState({saving:false,newComment:'',attachments:[]});this.getData(this.props.id)})
+          if(this.state.isEmail){
+            this.submitEmail();
+          }
+
+        })
+    })
+
+
+}
+
+submitEmail(){
+  firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then((token)=>{
+    fetch('https://api01.lansystems.sk:8080/send-mail',{ //127.0.0.1 https://api01.lansystems.sk:8080
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      method: 'POST',
+      body:JSON.stringify({message:this.state.emailBody,tos:this.state.tos.map((item)=>item.label), subject:this.state.subject, taskID:this.props.id,token,email:this.props.users.find((user)=>user.id===this.props.userID).email}),
+    }).then((response)=>response.json().then((response)=>{
+      this.setState({subject:'',tos:[], emailBody:''})
+    }))
+  });
+}
 
   render(){
     return (
@@ -94,32 +153,7 @@ getData(id){
             <Button className="btn waves-effect m-t-5 p-l-20 p-r-20"
               disabled={(!this.state.isEmail && this.state.newComment==='')||
                 (this.state.isEmail&&(this.state.tos.length < 1 ||this.state.subject===''||this.state.emailBody===''))||this.state.saving}
-                onClick={()=>{
-                  this.setState({saving:true});
-                  let body={
-                    user:this.props.userID,
-                    comment:this.state.isEmail?this.state.emailBody: this.state.newComment,
-                    subject:this.state.subject,
-                    isEmail: this.state.isEmail,
-                    tos:this.state.tos.map((item)=>item.value),
-                    createdAt: (new Date()).getTime(),
-                    task:this.props.id
-                  }
-                  rebase.addToCollection('/help-comments',body).then(()=>{this.setState({saving:false,newComment:''});this.getData(this.props.id)})
-                  if(this.state.isEmail){
-                    firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then((token)=>{
-                      fetch('https://api01.lansystems.sk:8080/send-mail',{ //127.0.0.1 https://api01.lansystems.sk:8080
-                        headers: {
-                          'Content-Type': 'application/json'
-                        },
-                        method: 'POST',
-                        body:JSON.stringify({message:this.state.emailBody,tos:this.state.tos.map((item)=>item.label), subject:this.state.subject, taskID:this.props.id,token,email:this.props.users.find((user)=>user.id===this.props.userID).email}),
-                      }).then((response)=>response.json().then((response)=>{
-                        this.setState({subject:'',tos:[], emailBody:''})
-                      }))
-                    });
-                  }
-                }}>Submit</Button>
+                onClick={this.submitComment.bind(this)}>Submit</Button>
               <div>
                 <div className="m-l-10">
                   <label className="custom-container">
@@ -152,13 +186,45 @@ getData(id){
               </span>
             </div>
 
-            <Button
-              className="btn btn-table-add-item m-t-7"
-              onClick={()=>{ }}>
-              + Add New Attachement
-            </Button>
-
+            { !this.state.isEmail &&
+              <span>
+                <label
+                  className="btn btn-table-add-item m-t-7"
+                  htmlFor="uploadCommentAttachments">
+                  + Add New Attachement
+                </label>
+                <input type="file" id="uploadCommentAttachments" multiple={true} style={{display:'none'}}
+                  onChange={(e)=>{
+                    if(e.target.files.length>0){
+                      let files = [...e.target.files];
+                      this.setState({attachments:[...this.state.attachments,...files]})
+                    }
+                  }}
+                  />
+              </span>
+            }
           </div>
+          {!this.state.isEmail &&
+          this.state.attachments.map((attachment,index)=>
+            <div>
+              <span>
+                {attachment.name}
+              </span>
+              <span className="ml-5">
+                {attachment.size}
+              </span>
+              <button className="btn btn-link-reversed waves-effect" onClick={()=>{
+                  if(window.confirm('Are you sure?')){
+                    let newAttachments=[...this.state.attachments];
+                    newAttachments.splice(index,1);
+                    this.setState({attachments:newAttachments})
+                  }
+                }}>
+                <i className="fa fa-times"  />
+              </button>
+            </div>
+          )
+        }
         </div>
 
         {this.state.comments.sort((item1,item2)=>item2.createdAt-item1.createdAt).map((comment)=>
@@ -238,10 +304,18 @@ getData(id){
                   <div className="flex">
                     <span className="media-meta pull-right text-muted">{timestampToString(comment.createdAt)}</span>
                     <h4 className="font-13 m-0"><Label>{comment.user!==undefined?(comment.user.name + ' '+comment.user.surname):'Unknown sender'}</Label></h4>
-              {false &&      <small className="text-muted">From: {comment.user!==undefined?(comment.user.email):'Unknown sender'}</small>}
                   </div>
                 </div>
                 <div className="m-l-40 m-b-30 font-13" style={{marginTop: "-40px"}} dangerouslySetInnerHTML={{__html: comment.isEmail? comment.comment : comment.comment.replace(/(?:\r\n|\r|\n)/g, '<br>') }}>
+                </div>
+                <div>
+                  {comment.attachments && comment.attachments.map((attachment)=>
+                    <span key={attachment.url} style={{border:'2px solid grey',borderRadius:3,marginRight:5}}>
+                      <a target="_blank" href={attachment.url} style={{cursor:'pointer'}} rel="noopener noreferrer">
+                        {attachment.title}
+                      </a>
+                    </span>
+                  )}
                 </div>
               </div>
             }

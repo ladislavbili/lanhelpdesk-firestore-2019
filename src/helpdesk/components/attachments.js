@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 
-const LIST = ["picture.jpg", "task-description.pdf", "specification.pdf"];
 
-export default class Subtasks extends Component {
+export default class Attachments extends Component {
 	constructor(props){
 		super(props);
 		this.state={
@@ -24,20 +23,19 @@ export default class Subtasks extends Component {
 								</thead>
 								<tbody>
 									{
-										LIST.map((subtask)=>
-										<tr key={subtask}  className="tr-no-lines">
+										this.props.attachments.map((attachment,index)=>
+										<tr key={index}  className="tr-no-lines">
 
 												<td>
-													<button className="btn btn-link-reversed waves-effect" onClick={()=>{
-														}}>
-														{subtask}
-													</button>
+													<a target="_blank" href={attachment.url} style={{cursor:'pointer'}} rel="noopener noreferrer">
+														{attachment.title}
+													</a>
 												</td>
 
 												<td className="t-a-r">
 													<button className="btn btn-link-reversed waves-effect" onClick={()=>{
 															if(window.confirm('Are you sure?')){
-
+																this.props.removeAttachment(attachment);
 															}
 														}}>
 														<i className="fa fa-times"  />
@@ -50,11 +48,16 @@ export default class Subtasks extends Component {
 								</tbody>
 							</table>
 
-							<button className="btn waves-effect" onClick={()=>{
-									this.setState({showAddItem: false})
-								}}>
+							<label htmlFor="uploadInput" className="btn waves-effect">
 								+ Add New Attachment
-							</button>
+							</label>
+							<input type="file" id="uploadInput" multiple={true} style={{display:'none'}}
+								onChange={(e)=>{
+									if(e.target.files.length>0){
+										let files = [...e.target.files];
+										this.props.addAttachments(files);
+									}
+								}} />
 
 					</div>
 				</div>

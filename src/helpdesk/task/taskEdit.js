@@ -15,6 +15,7 @@ import TaskAdd from './taskAddContainer';
 import TaskPrint from './taskPrint';
 import classnames from "classnames";
 import {rebase, database} from '../../index';
+import firebase from 'firebase';
 import {toSelArr, snapshotToArray, timestampToString, toCentralTime, fromCentralTime} from '../../helperFunctions';
 import {invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
 
@@ -70,6 +71,7 @@ export default class TaskEdit extends Component {
 			type:null,
 			createdAt:null,
 			repeat:null,
+			attachments:[],
 
 			/////
 			openAddStatusModal: false,
@@ -146,6 +148,7 @@ export default class TaskEdit extends Component {
 			tags: this.state.tags.map((item)=>item.id),
 			type: this.state.type?this.state.type.id:null,
 			repeat: this.state.repeat!==null?this.state.task.id:null,
+			attachments:this.state.attachments,
     }
 
     rebase.updateDoc('/help-tasks/'+this.state.task.id, body)
@@ -292,6 +295,8 @@ export default class TaskEdit extends Component {
       workHours:isNaN(parseInt(task.workHours))?0:parseInt(task.workHours),
       requester:requester?requester:null,
       assignedTo,
+			attachments:task.attachments?task.attachments:[],
+
       loading:false,
 			defaultUnit,
 			tags:taskTags,
@@ -761,7 +766,41 @@ export default class TaskEdit extends Component {
 										/>
 									</TabPane>
 									<TabPane tabId="4">
-										<Attachments />
+										<Attachments
+											attachments={this.state.attachments}
+											addAttachments={(newAttachments)=>{
+												let time = (new Date()).getTime();
+												let storageRef = firebase.storage().ref();
+												Promise.all([
+													...newAttachments.map((attachment)=>{
+														return storageRef.child(`help-tasks/${this.props.match.params.taskID}/${time}-${attachment.size}-${attachment.name}`).put(attachment)
+													})
+												]).then((resp)=>{
+														Promise.all([
+															...newAttachments.map((attachment)=>{
+																return storageRef.child(`help-tasks/${this.props.match.params.taskID}/${time}-${attachment.size}-${attachment.name}`).getDownloadURL()
+															})
+														]).then((urls)=>{
+																newAttachments=newAttachments.map((attachment,index)=>{
+																	return {
+																		title:attachment.name,
+																		size:attachment.size,
+																		path:`help-tasks/${this.props.match.params.taskID}/${time}-${attachment.size}-${attachment.name}`,
+																		url:urls[index]
+																	}
+																});
+																this.setState({attachments:[...this.state.attachments,...newAttachments]},this.submitTask.bind(this));
+															})
+													})
+											}}
+											removeAttachment={(attachment)=>{
+												let storageRef = firebase.storage().ref();
+												let newAttachments = [...this.state.attachments];
+												newAttachments.splice(newAttachments.findIndex((item)=>item.path===attachment.path),1);
+												storageRef.child(attachment.path).delete();
+												this.setState({attachments:newAttachments},this.submitTask.bind(this));
+											}}
+											/>
 									</TabPane>
 								</TabContent>
 						</div>
