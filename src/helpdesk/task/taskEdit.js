@@ -15,6 +15,7 @@ import TaskAdd from './taskAddContainer';
 import TaskPrint from './taskPrint';
 import classnames from "classnames";
 import {rebase, database} from '../../index';
+import firebase from 'firebase';
 import {toSelArr, snapshotToArray, timestampToString, toCentralTime, fromCentralTime} from '../../helperFunctions';
 import {invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
 
@@ -70,6 +71,7 @@ export default class TaskEdit extends Component {
 			type:null,
 			createdAt:null,
 			repeat:null,
+			attachments:[],
 
 			/////
 			openAddStatusModal: false,
@@ -146,6 +148,7 @@ export default class TaskEdit extends Component {
 			tags: this.state.tags.map((item)=>item.id),
 			type: this.state.type?this.state.type.id:null,
 			repeat: this.state.repeat!==null?this.state.task.id:null,
+			attachments:this.state.attachments,
     }
 
     rebase.updateDoc('/help-tasks/'+this.state.task.id, body)
@@ -292,6 +295,8 @@ export default class TaskEdit extends Component {
       workHours:isNaN(parseInt(task.workHours))?0:parseInt(task.workHours),
       requester:requester?requester:null,
       assignedTo,
+			attachments:task.attachments?task.attachments:[],
+
       loading:false,
 			defaultUnit,
 			tags:taskTags,
@@ -565,33 +570,86 @@ export default class TaskEdit extends Component {
 										/>
 								</div>
 							</div>
-
-								<Subtasks
-									taskAssigned={this.state.assignedTo}
-									submitService={this.submitSubtask.bind(this)}
-									subtasks={this.state.subtasks.map((subtask)=>{
-										let assignedTo=subtask.assignedTo?this.state.users.find((item)=>item.id===subtask.assignedTo):null
-										return {
-											...subtask,
-											assignedTo:assignedTo?assignedTo:null
+							{console.log(this.state.toggleTab)}
+							{this.state.toggleTab!=="3" && <ServicesExpenditure
+								taskAssigned={this.state.assignedTo}
+								submitService={this.submitService.bind(this)}
+								updatePrices={(ids)=>{
+									taskWorks.filter((item)=>ids.includes(item.id)).map((item)=>{
+										let price=item.workType.prices.find((item)=>item.pricelist===this.state.company.pricelist.id);
+										if(price === undefined){
+											price = 0;
+										}else{
+											price = price.price;
 										}
-									})}
-									updateSubtask={(id,newData)=>{
-										rebase.updateDoc('help-task_subtasks/'+id,newData);
-										let newSubtasks=[...this.state.subtasks];
-										newSubtasks[newSubtasks.findIndex((subtask)=>subtask.id===id)]={...newSubtasks.find((subtask)=>subtask.id===id),...newData};
-										this.setState({subtasks:newSubtasks});
+										rebase.updateDoc('help-task_works/'+item.id, {price})
+										.then(()=>{
+											let newTaskWorks=[...this.state.taskWorks];
+											newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===item.id)]={...newTaskWorks.find((taskWork)=>taskWork.id===item.id),price};
+											this.setState({taskWorks:newTaskWorks});
+										});
+										return null;
+									})
+								}}
+								subtasks={taskWorks}
+								workTypes={this.state.workTypes}
+								updateSubtask={(id,newData)=>{
+									rebase.updateDoc('help-task_works/'+id,newData);
+									let newTaskWorks=[...this.state.taskWorks];
+									newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
+									this.setState({taskWorks:newTaskWorks});
+								}}
+								company={this.state.company}
+								removeSubtask={(id)=>{
+									rebase.removeDoc('help-task_works/'+id).then(()=>{
+										let newTaskWorks=[...this.state.taskWorks];
+										newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
+										this.setState({taskWorks:newTaskWorks});
+									});
+									}
+								}
+								match={this.props.match}
+								/>}
+
+								{this.state.toggleTab==='3' && <ServicesBudget
+									taskAssigned={this.state.assignedTo}
+									submitService={this.submitService.bind(this)}
+									updatePrices={(ids)=>{
+										taskWorks.filter((item)=>ids.includes(item.id)).map((item)=>{
+											let price=item.workType.prices.find((item)=>item.pricelist===this.state.company.pricelist.id);
+											if(price === undefined){
+												price = 0;
+											}else{
+												price = price.price;
+											}
+											rebase.updateDoc('help-task_works/'+item.id, {price})
+											.then(()=>{
+												let newTaskWorks=[...this.state.taskWorks];
+												newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===item.id)]={...newTaskWorks.find((taskWork)=>taskWork.id===item.id),price};
+												this.setState({taskWorks:newTaskWorks});
+											});
+											return null;
+										})
 									}}
+									subtasks={taskWorks}
+									workTypes={this.state.workTypes}
+									updateSubtask={(id,newData)=>{
+										rebase.updateDoc('help-task_works/'+id,newData);
+										let newTaskWorks=[...this.state.taskWorks];
+										newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
+										this.setState({taskWorks:newTaskWorks});
+									}}
+									company={this.state.company}
 									removeSubtask={(id)=>{
-										rebase.removeDoc('help-task_subtasks/'+id).then(()=>{
-											let newSubtasks=[...this.state.subtasks];
-											newSubtasks.splice(newSubtasks.findIndex((subtask)=>subtask.id===id),1);
-											this.setState({subtasks:newSubtasks});
+										rebase.removeDoc('help-task_works/'+id).then(()=>{
+											let newTaskWorks=[...this.state.taskWorks];
+											newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
+											this.setState({taskWorks:newTaskWorks});
 										});
 										}
 									}
 									match={this.props.match}
-								/>
+									/>}
 
 							<hr className="m-b-15" style={{marginLeft: "-30px", marginRight: "-30px", marginTop: "-5px"}}/>
 
@@ -635,45 +693,7 @@ export default class TaskEdit extends Component {
 										<Comments id={this.state.task?this.state.task.id:null} users={this.state.users} />
 									</TabPane>
 									<TabPane tabId="2">
-										<ServicesExpenditure
-											taskAssigned={this.state.assignedTo}
-											submitService={this.submitService.bind(this)}
-											updatePrices={(ids)=>{
-												taskWorks.filter((item)=>ids.includes(item.id)).map((item)=>{
-													let price=item.workType.prices.find((item)=>item.pricelist===this.state.company.pricelist.id);
-													if(price === undefined){
-														price = 0;
-													}else{
-														price = price.price;
-													}
-													rebase.updateDoc('help-task_works/'+item.id, {price})
-													.then(()=>{
-														let newTaskWorks=[...this.state.taskWorks];
-														newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===item.id)]={...newTaskWorks.find((taskWork)=>taskWork.id===item.id),price};
-														this.setState({taskWorks:newTaskWorks});
-													});
-													return null;
-												})
-											}}
-											subtasks={taskWorks}
-											workTypes={this.state.workTypes}
-											updateSubtask={(id,newData)=>{
-												rebase.updateDoc('help-task_works/'+id,newData);
-												let newTaskWorks=[...this.state.taskWorks];
-												newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
-												this.setState({taskWorks:newTaskWorks});
-											}}
-											company={this.state.company}
-											removeSubtask={(id)=>{
-												rebase.removeDoc('help-task_works/'+id).then(()=>{
-													let newTaskWorks=[...this.state.taskWorks];
-													newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
-													this.setState({taskWorks:newTaskWorks});
-												});
-												}
-											}
-											match={this.props.match}
-											/>
+
 
 										<MaterialsExpenditure
 											materials={taskMaterials}
@@ -698,45 +718,7 @@ export default class TaskEdit extends Component {
 										/>
 									</TabPane>
 									<TabPane tabId="3">
-										<ServicesBudget
-											taskAssigned={this.state.assignedTo}
-											submitService={this.submitService.bind(this)}
-											updatePrices={(ids)=>{
-												taskWorks.filter((item)=>ids.includes(item.id)).map((item)=>{
-													let price=item.workType.prices.find((item)=>item.pricelist===this.state.company.pricelist.id);
-													if(price === undefined){
-														price = 0;
-													}else{
-														price = price.price;
-													}
-													rebase.updateDoc('help-task_works/'+item.id, {price})
-													.then(()=>{
-														let newTaskWorks=[...this.state.taskWorks];
-														newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===item.id)]={...newTaskWorks.find((taskWork)=>taskWork.id===item.id),price};
-														this.setState({taskWorks:newTaskWorks});
-													});
-													return null;
-												})
-											}}
-											subtasks={taskWorks}
-											workTypes={this.state.workTypes}
-											updateSubtask={(id,newData)=>{
-												rebase.updateDoc('help-task_works/'+id,newData);
-												let newTaskWorks=[...this.state.taskWorks];
-												newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
-												this.setState({taskWorks:newTaskWorks});
-											}}
-											company={this.state.company}
-											removeSubtask={(id)=>{
-												rebase.removeDoc('help-task_works/'+id).then(()=>{
-													let newTaskWorks=[...this.state.taskWorks];
-													newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
-													this.setState({taskWorks:newTaskWorks});
-												});
-												}
-											}
-											match={this.props.match}
-											/>
+
 
 										<MaterialsBudget
 											materials={taskMaterials}
@@ -761,7 +743,41 @@ export default class TaskEdit extends Component {
 										/>
 									</TabPane>
 									<TabPane tabId="4">
-										<Attachments />
+										<Attachments
+											attachments={this.state.attachments}
+											addAttachments={(newAttachments)=>{
+												let time = (new Date()).getTime();
+												let storageRef = firebase.storage().ref();
+												Promise.all([
+													...newAttachments.map((attachment)=>{
+														return storageRef.child(`help-tasks/${this.props.match.params.taskID}/${time}-${attachment.size}-${attachment.name}`).put(attachment)
+													})
+												]).then((resp)=>{
+														Promise.all([
+															...newAttachments.map((attachment)=>{
+																return storageRef.child(`help-tasks/${this.props.match.params.taskID}/${time}-${attachment.size}-${attachment.name}`).getDownloadURL()
+															})
+														]).then((urls)=>{
+																newAttachments=newAttachments.map((attachment,index)=>{
+																	return {
+																		title:attachment.name,
+																		size:attachment.size,
+																		path:`help-tasks/${this.props.match.params.taskID}/${time}-${attachment.size}-${attachment.name}`,
+																		url:urls[index]
+																	}
+																});
+																this.setState({attachments:[...this.state.attachments,...newAttachments]},this.submitTask.bind(this));
+															})
+													})
+											}}
+											removeAttachment={(attachment)=>{
+												let storageRef = firebase.storage().ref();
+												let newAttachments = [...this.state.attachments];
+												newAttachments.splice(newAttachments.findIndex((item)=>item.path===attachment.path),1);
+												storageRef.child(attachment.path).delete();
+												this.setState({attachments:newAttachments},this.submitTask.bind(this));
+											}}
+											/>
 									</TabPane>
 								</TabContent>
 						</div>
