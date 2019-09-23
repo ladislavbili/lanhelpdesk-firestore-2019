@@ -235,7 +235,7 @@ class TaskList extends Component {
 										<th>Status</th>
 										<th>Deadline</th>
 										<th>Hours</th>
-										<th>Price</th>
+										{/*<th>Price</th>*/}
 									</tr>
 								</thead>
 								<tbody>
@@ -258,7 +258,7 @@ class TaskList extends Component {
 												<td>{item.status.title}</td>
 												<td>{item.deadline?timestampToString(item.deadline):'No deadline'}</td>
 												<td>{item.hours?item.hours:0}</td>
-												<td>{item.price?item.price:0}</td>
+												{/*<td>{item.price?item.price:0}</td>*/}
 											</tr>
 										)
 									}
@@ -277,6 +277,7 @@ class TaskList extends Component {
 													},0)
 												}
 										</td>
+								{/*
 										<td>
 											{
 												this.getData().reduce((acc, cur)=>{
@@ -288,6 +289,7 @@ class TaskList extends Component {
 												},0)
 											}
 										</td>
+									*/}
 									</tr>
 								</tbody>
 							</table>
