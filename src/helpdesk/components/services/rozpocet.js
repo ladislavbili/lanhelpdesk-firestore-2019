@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {Input} from 'reactstrap';
 import Select from 'react-select';
 import { selectStyle, invisibleSelectStyle} from '../../../scss/selectStyles';
 
@@ -71,12 +72,8 @@ export default class Rozpocet extends Component {
 							<table className="table">
 								<thead>
 									<tr>
-										{false &&
-											<th width="25">
-											<input type="checkbox"
-												checked={this.props.subtasks.length===this.state.selectedIDs.length}
-												onChange={()=>this.setState({selectedIDs:(this.props.subtasks.length===this.state.selectedIDs.length?[]:this.props.subtasks.map((item)=>item.id))})} />
-										</th>}
+										<th width="25">
+										</th>
 										<th style={{fontSize: "14px", fontFamily: "Segoe UI Bold", color: "#333"}}>Služby</th>
 										<th style={{fontSize: "12px", fontFamily: "Segoe UI", fontWeight: "500", color: "#333"}} width="170">Rieši</th>
 										<th width="60">Mn.</th>
@@ -91,21 +88,15 @@ export default class Rozpocet extends Component {
 									{
 										this.props.subtasks.map((subtask)=>
 										<tr key={subtask.id}>
-											{false &&<td className="table-checkbox">
-												<input
-													type="checkbox"
-													checked={this.state.selectedIDs.includes(subtask.id)}
-													onChange={()=>{
-														if(!this.state.selectedIDs.includes(subtask.id)){
-															this.setState({selectedIDs:[...this.state.selectedIDs,subtask.id]})
-														}else{
-															let newSelectedIDs=[...this.state.selectedIDs];
-															newSelectedIDs.splice(newSelectedIDs.findIndex((item)=>item.id===subtask.id),1);
-															this.setState({selectedIDs:newSelectedIDs})
-														}
-													}
-												} />
-											</td>}
+											<td className="table-checkbox">
+												<label className="custom-container">
+													<Input type="checkbox"
+														checked={subtask.done} onChange={()=>{
+															this.props.updateSubtask(subtask.id,{done:!subtask.done})
+															}} />
+														<span className="checkmark" style={{ marginTop: "-4px"}}> </span>
+												</label>
+											</td>
 											<td>
 												<div>
 													<input

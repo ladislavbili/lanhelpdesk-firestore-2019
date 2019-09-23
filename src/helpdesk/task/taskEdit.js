@@ -3,7 +3,7 @@ import Select from 'react-select';
 import {Button, Label, TabContent, TabPane, Nav, NavItem, NavLink} from 'reactstrap';
 import Attachments from '../components/attachments.js';
 import Comments from '../components/comments.js';
-import Subtasks from '../components/subtasks';
+//import Subtasks from '../components/subtasks';
 import Repeat from '../components/repeat';
 
 import ServicesExpenditure from '../components/services/prace';
@@ -111,6 +111,10 @@ export default class TaskEdit extends Component {
 
 	deleteTask(){
 		if(window.confirm("Are you sure?")){
+
+			let storageRef = firebase.storage().ref();
+			this.state.attachments.map((attachment)=>storageRef.child(attachment.path).delete());
+			
 			rebase.removeDoc('/help-tasks/'+this.state.task.id);
 			this.state.taskMaterials.forEach((material)=>rebase.removeDoc('/help-task_materials/'+material.id))
 			this.state.taskWorks.forEach((work)=>rebase.removeDoc('/help-task_works/'+work.id))
@@ -570,7 +574,6 @@ export default class TaskEdit extends Component {
 										/>
 								</div>
 							</div>
-							{console.log(this.state.toggleTab)}
 							{this.state.toggleTab!=="3" && <ServicesExpenditure
 								taskAssigned={this.state.assignedTo}
 								submitService={this.submitService.bind(this)}
@@ -667,7 +670,7 @@ export default class TaskEdit extends Component {
 											className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
 											onClick={() => { this.setState({toggleTab:'2'}); }}
 										>
-											Výkaz
+											Materiál
 										</NavLink>
 									</NavItem>
 									<NavItem>
