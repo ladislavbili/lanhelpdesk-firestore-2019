@@ -11,7 +11,7 @@ export default class ColumnDisplay extends Component {
 					<div className="p-0 golden-ratio-382">
 					<CommandBar {...this.props.commandBar} />
 
-					<div className="scrollable fit-with-header-and-commandbar">
+					<div className="scroll-visible fit-with-header-and-commandbar">
 						<ListHeader {...this.props.commandBar} listName={this.props.listName}/>
 						{
 							this.props.data.map((item, index)=>

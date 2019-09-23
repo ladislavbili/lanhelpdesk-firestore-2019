@@ -75,6 +75,12 @@ html{
   overflow-y: auto;
 	overflow-x: hidden;
 }
+
+.scroll-visible{
+  overflow-y: scroll;
+	overflow-x: hidden;
+}
+
 .fit-with-header{
 	height: $height-without-header;
 }
@@ -325,14 +331,17 @@ html{
 .m-t--5{
 	margin-top: -5px;
 }
+.m-t--30{
+	margin-top: -30px;
+}
 .m-t-0{
 	margin-top: 0px;
 }
 .m-t-5{
 	margin-top: 5px;
 }
-.m-t-7{
-	margin-top: 7px !important;
+.m-t-9{
+	margin-top: 9px !important;
 }
 .m-t-10{
 	margin-top: 10px;
@@ -729,6 +738,11 @@ tr:last-child{
   padding-right: 20px;
 }
 
+.comment-attachment{
+  background-color: #EAEAEA;
+  padding: 2px 5px;
+//  display: inline;
+}
 
 //----------------END-všeobecné-elementy----------------
 

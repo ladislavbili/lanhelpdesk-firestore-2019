@@ -189,7 +189,8 @@ submitEmail(){
             { !this.state.isEmail &&
               <span>
                 <label
-                  className="btn btn-table-add-item m-t-7"
+                  className="btn btn-table-add-item m-t-9"
+                  style={{fontFamily:"Segoe UI"}}
                   htmlFor="uploadCommentAttachments">
                   + Add New Attachement
                 </label>
@@ -203,28 +204,35 @@ submitEmail(){
                   />
               </span>
             }
+            {!this.state.isEmail &&
+              this.state.attachments.map((attachment,index)=>
+              <div className="comment-attachment"
+                style={{    height: "25px", marginTop: "11px", marginRight:"5px"}}
+                >
+                <span style={{color: "#0078D4"}}>
+                  {attachment.name}
+                </span>
+                <span className="ml-5" style={{color: "#0078D4"}}>
+                  {attachment.size}
+                </span>
+                <button className="btn btn-link-reversed waves-effect"
+                  style={{height: "15px",
+                    marginTop: "-8px",
+                    marginLeft: "5px",
+                    padding: "0px"}}
+                    onClick={()=>{
+                      if(window.confirm('Are you sure?')){
+                        let newAttachments=[...this.state.attachments];
+                        newAttachments.splice(index,1);
+                        this.setState({attachments:newAttachments})
+                      }
+                    }}>
+                    <i className="fa fa-times"  />
+                  </button>
+                </div>
+              )
+            }
           </div>
-          {!this.state.isEmail &&
-          this.state.attachments.map((attachment,index)=>
-            <div>
-              <span>
-                {attachment.name}
-              </span>
-              <span className="ml-5">
-                {attachment.size}
-              </span>
-              <button className="btn btn-link-reversed waves-effect" onClick={()=>{
-                  if(window.confirm('Are you sure?')){
-                    let newAttachments=[...this.state.attachments];
-                    newAttachments.splice(index,1);
-                    this.setState({attachments:newAttachments})
-                  }
-                }}>
-                <i className="fa fa-times"  />
-              </button>
-            </div>
-          )
-        }
         </div>
 
         {this.state.comments.sort((item1,item2)=>item2.createdAt-item1.createdAt).map((comment)=>
@@ -306,11 +314,11 @@ submitEmail(){
                     <h4 className="font-13 m-0"><Label>{comment.user!==undefined?(comment.user.name + ' '+comment.user.surname):'Unknown sender'}</Label></h4>
                   </div>
                 </div>
-                <div className="m-l-40 m-b-30 font-13" style={{marginTop: "-40px"}} dangerouslySetInnerHTML={{__html: comment.isEmail? comment.comment : comment.comment.replace(/(?:\r\n|\r|\n)/g, '<br>') }}>
+                <div className="m-l-40 m-b-15 font-13" style={{marginTop: "-40px"}} dangerouslySetInnerHTML={{__html: comment.isEmail? comment.comment : comment.comment.replace(/(?:\r\n|\r|\n)/g, '<br>') }}>
                 </div>
-                <div>
+                <div className="m-l-40 m-b-30">
                   {comment.attachments && comment.attachments.map((attachment)=>
-                    <span key={attachment.url} style={{border:'2px solid grey',borderRadius:3,marginRight:5}}>
+                    <span key={attachment.url} className="comment-attachment m-r-5">
                       <a target="_blank" href={attachment.url} style={{cursor:'pointer'}} rel="noopener noreferrer">
                         {attachment.title}
                       </a>

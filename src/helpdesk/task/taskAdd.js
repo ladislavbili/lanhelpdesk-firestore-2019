@@ -2,12 +2,19 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import {rebase, database} from '../../index';
 import {toCentralTime } from '../../helperFunctions';
-import { Button } from 'reactstrap';
-import Materials from '../components/materials';
+import { Button, Label, TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
+
+import ServicesExpenditure from '../components/services/prace';
+import MaterialsExpenditure from '../components/materials/materials';
+import ServicesBudget from '../components/services/rozpocet';
+import MaterialsBudget from '../components/materials/rozpocet';
 import Services from '../components/services';
+import Materials from '../components/materials';
+
 import Subtasks from '../components/subtasks';
 import Repeat from '../components/repeat';
-import {selectStyle} from '../../scss/selectStyles';
+import classnames from "classnames";
+import {invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
 
 const noDef={
 	status:{def:false,fixed:false, value: null},
@@ -295,130 +302,134 @@ export default class TaskAdd extends Component{
 				<div className="scrollable">
 					<div className="p-t-0">
 						<div className="row m-b-15">
-							<h1 className="center-hor"># NEW</h1>
-							<span className="center-hor">
-								<input type="text" value={this.state.title} className="task-title-input-add required" onChange={(e)=>this.setState({title:e.target.value})} placeholder="Enter task name" />
+							<h1 className="center-hor text-extra-slim">NEW: </h1>
+							<span className="center-hor flex m-r-15">
+								<input type="text" value={this.state.title} className="task-title-input text-extra-slim hidden-input" onChange={(e)=>this.setState({title:e.target.value})} placeholder="Enter task name" />
 							</span>
 							<div className="ml-auto center-hor">
 								<span className="label label-info" style={{backgroundColor:this.state.status && this.state.status.color?this.state.status.color:'white'}}>{this.state.status?this.state.status.title:'Neznámy status'}</span>
 							</div>
 						</div>
-						<div className="row">
-							<div className="col-lg-12 row m-b-5">
-								<strong className="center-hor">Tagy: </strong>
-								<div className="f-1 m-l-5">
-									<Select
-										value={this.state.tags}
-										isDisabled={this.state.defaults.tags.fixed}
-										isMulti
-										onChange={(tags)=>this.setState({tags})}
-										options={this.state.allTags}
-										styles={selectStyle}
-										/>
-								</div>
-							</div>
-							<div className="col-lg-12 row m-b-5">
-								<strong className="center-hor">Assigned to: </strong>
-								<div className="f-1 m-l-5">
+
+						<hr className="m-t-15 m-b-10"/>
+
+							<div className="col-lg-12 row m-b-10">
+								<div className="center-hor m-r-5"><Label className="center-hor">Assigned to: </Label></div>
+								<div className="f-1">
 									<Select
 										value={this.state.assignedTo}
 										isDisabled={this.state.defaults.assignedTo.fixed}
 										isMulti
 										onChange={(users)=>this.setState({assignedTo:users})}
 										options={this.state.users}
-										styles={selectStyle}
+										styles={invisibleSelectStyleNoArrow}
 										/>
 								</div>
 							</div>
 
-							<div className="col-lg-12 p-0">
-								<div className="col-lg-6">
-									<div className="p-r-20">
-										<div className="row">
-											<label className="col-5 col-form-label">Typ</label>
-											<div className="col-7">
-												<Select
-													value={this.state.type}
-													isDisabled={this.state.defaults.type.fixed}
-													styles={selectStyle}
-													onChange={(type)=>this.setState({type})}
-													options={this.state.taskTypes}
-													/>
-											</div>
-										</div>
-										<div className="row">
-											<label className="col-5 col-form-label">Projekt</label>
-											<div className="col-7 required">
-												<Select
-													value={this.state.project}
-													onChange={(project)=>this.setState({project},()=>this.setDefaults(project.id, true))}
-													options={this.state.projects}
-													styles={selectStyle}
-													/>
-											</div>
-										</div>
-										<div className="row">
-											<label className="col-5 col-form-label">Zadal</label>
-											<div className="col-7">
-												<Select
-													value={this.state.requester}
-													isDisabled={this.state.defaults.requester.fixed}
-													onChange={(requester)=>this.setState({requester})}
-													options={this.state.users}
-													styles={selectStyle}
-													/>
-											</div>
-										</div>
+
+					<div className="col-lg-12">
+						<div className="col-lg-4">
+								<div className="row p-r-10 m-b-10">
+									<Label className="col-3 col-form-label">Typ</Label>
+									<div className="col-9">
+										<Select
+											value={this.state.type}
+											isDisabled={this.state.defaults.type.fixed}
+											styles={invisibleSelectStyleNoArrow}
+											onChange={(type)=>this.setState({type})}
+											options={this.state.taskTypes}
+											/>
 									</div>
 								</div>
-								<div className="col-lg-6">
-									<div>
-										<div className="row">
-											<label className="col-5 col-form-label">Firma</label>
-											<div className="col-7 required">
-												<Select
-													value={this.state.company}
-													isDisabled={this.state.defaults.company.fixed}
-													onChange={(company)=>this.setState({company})}
-													options={this.state.companies}
-													styles={selectStyle}
-													/>
-											</div>
-										</div>
-										<div className="row">
-											<label className="col-5 col-form-label">Deadline</label>
-											<div className="col-7">
-												<input
-													className='form-control'
-													placeholder="Status change date"
-													type="datetime-local"
-													value={this.state.deadline}
-													onChange={(e)=>{
-														this.setState({deadline:e.target.value})}
-													}
-													/>
-											</div>
-										</div>
-											<Repeat
-												taskID={null}
-												repeat={this.state.repeat}
-												submitRepeat={(repeat)=>{
-													console.log(repeat);
-													this.setState({repeat:repeat})
-												}}
-												deleteRepeat={()=>{
-													this.setState({repeat:null})
-												}}
-												/>
+								<div className="row p-r-10 m-b-10">
+									<Label className="col-3 col-form-label">Projekt</Label>
+									<div className="col-9">
+										<Select
+											value={this.state.project}
+											onChange={(project)=>this.setState({project},()=>this.setDefaults(project.id, true))}
+											options={this.state.projects}
+											styles={invisibleSelectStyleNoArrow}
+											/>
 									</div>
 								</div>
+						</div>
+
+						<div className="col-lg-4">
+								<div className="row p-r-10 m-b-10">
+									<Label className="col-3 col-form-label">Zadal</Label>
+									<div className="col-9">
+										<Select
+											value={this.state.requester}
+											isDisabled={this.state.defaults.requester.fixed}
+											onChange={(requester)=>this.setState({requester})}
+											options={this.state.users}
+											styles={invisibleSelectStyleNoArrow}
+											/>
+									</div>
+								</div>
+								<div className="row p-r-10 m-b-10">
+									<Label className="col-3 col-form-label">Firma</Label>
+									<div className="col-9">
+										<Select
+											value={this.state.company}
+											isDisabled={this.state.defaults.company.fixed}
+											onChange={(company)=>this.setState({company})}
+											options={this.state.companies}
+											styles={invisibleSelectStyleNoArrow}
+											/>
+									</div>
+								</div>
+						</div>
+
+						<div className="col-lg-4">
+							<div className="row p-r-10 m-b-10">
+								<Label className="col-3 col-form-label">Deadline</Label>
+								<div className="col-9">
+									{/*className='form-control hidden-input'*/}
+									<input
+										className='form-control hidden-input'
+										placeholder="Status change date"
+										type="datetime-local"
+										value={this.state.deadline}
+										onChange={(e)=>{
+											this.setState({deadline:e.target.value})}
+										}
+										/>
+								</div>
+							</div>
+							<Repeat
+								taskID={null}
+								repeat={this.state.repeat}
+								submitRepeat={(repeat)=>{
+									this.setState({repeat:repeat})
+								}}
+								deleteRepeat={()=>{
+									this.setState({repeat:null})
+								}}
+								/>
+						</div>
+
+					</div>
+
+						<Label className="m-t-5  m-b-10">Popis</Label>
+						<textarea className="form-control b-r-0 m-b-10 hidden-input" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value})} />
+
+						<div className="row">
+							<div className="center-hor"><Label className="center-hor">Tagy: </Label></div>
+							<div className="f-1 ">
+								<Select
+									value={this.state.tags}
+									isDisabled={this.state.defaults.tags.fixed}
+									isMulti
+									onChange={(tags)=>this.setState({tags})}
+									options={this.state.allTags}
+									styles={invisibleSelectStyleNoArrow}
+									/>
 							</div>
 						</div>
 
-						<label className="m-t-5">Popis</label>
-						<textarea className="form-control b-r-0" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value})} />
-
-						{!this.state.hidden && <Subtasks
+						{!this.state.hidden && false && <Subtasks
 							taskAssigned={this.state.assignedTo}
 							submitService={(newSubtask)=>{
 								this.setState({subtasks:[...this.state.subtasks,{id:this.getNewID(),...newSubtask}]});
@@ -443,7 +454,8 @@ export default class TaskAdd extends Component{
 							match={{params:{taskID:null}}}
 						/>}
 
-						{!this.state.hidden && <Services
+
+						{this.state.toggleTab!=="1" && <ServicesExpenditure
 							taskAssigned={this.state.assignedTo}
 							submitService={(newService)=>{
 								this.setState({taskWorks:[...this.state.taskWorks,{id:this.getNewID(),...newService}]});
@@ -478,7 +490,146 @@ export default class TaskAdd extends Component{
 							match={{params:{taskID:null}}}
 							/>}
 
-							{!this.state.hidden && <Materials
+							{this.state.toggleTab==='1' && <ServicesBudget
+								taskAssigned={this.state.assignedTo}
+								submitService={(newService)=>{
+									this.setState({taskWorks:[...this.state.taskWorks,{id:this.getNewID(),...newService}]});
+								}}
+								updatePrices={(ids)=>{
+									let newTaskWorks=[...this.state.taskWorks];
+									taskWorks.filter((item)=>ids.includes(item.id)).map((item)=>{
+										let price=item.workType.prices.find((item)=>item.pricelist===this.state.company.pricelist.id);
+										if(price === undefined){
+											price = 0;
+										}else{
+											price = price.price;
+										}
+										newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===item.id)]={...newTaskWorks.find((taskWork)=>taskWork.id===item.id),price};
+										return null;
+									})
+									this.setState({taskWorks:newTaskWorks});
+								}}
+								subtasks={taskWorks}
+								workTypes={this.state.workTypes}
+								updateSubtask={(id,newData)=>{
+									let newTaskWorks=[...this.state.taskWorks];
+									newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
+									this.setState({taskWorks:newTaskWorks});
+								}}
+								company={this.state.company}
+								removeSubtask={(id)=>{
+									let newTaskWorks=[...this.state.taskWorks];
+									newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
+									this.setState({taskWorks:newTaskWorks});
+								}}
+								match={{params:{taskID:null}}}
+								/>}
+
+						<hr className="m-b-15" style={{marginLeft: "-30px", marginRight: "-30px", marginTop: "-5px"}}/>
+
+						<Nav tabs className="b-0 m-b-22 m-l--10">
+								<NavItem>
+									<NavLink
+										className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "")}
+										onClick={() => { this.setState({toggleTab:'1'}); }}
+									>
+										Materiál
+									</NavLink>
+								</NavItem>
+								<NavItem>
+									<NavLink
+										className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
+										onClick={() => { this.setState({toggleTab:'2'}); }}
+									>
+										Rozpočet
+									</NavLink>
+								</NavItem>
+							</Nav>
+
+							<TabContent activeTab={this.state.toggleTab}>
+								<TabPane tabId="1">
+									<MaterialsExpenditure
+										materials={taskMaterials}
+										submitMaterial={(newMaterial)=>{
+											this.setState({taskMaterials:[...this.state.taskMaterials,{id:this.getNewID(),...newMaterial}]});
+										}}
+										updateMaterial={(id,newData)=>{
+											let newTaskMaterials=[...this.state.taskMaterials];
+											newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
+											this.setState({taskMaterials:newTaskMaterials});
+										}}
+										removeMaterial={(id)=>{
+											let newTaskMaterials=[...this.state.taskMaterials];
+											newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
+											this.setState({taskMaterials:newTaskMaterials});
+										}}
+										units={this.state.units}
+										defaultUnit={this.state.defaultUnit}
+										company={this.state.company}
+										match={{params:{taskID:null}}}
+									/>
+								</TabPane>
+								<TabPane tabId="2">
+									<MaterialsBudget
+										materials={taskMaterials}
+										submitMaterial={(newMaterial)=>{
+											this.setState({taskMaterials:[...this.state.taskMaterials,{id:this.getNewID(),...newMaterial}]});
+										}}
+										updateMaterial={(id,newData)=>{
+											let newTaskMaterials=[...this.state.taskMaterials];
+											newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
+											this.setState({taskMaterials:newTaskMaterials});
+										}}
+										removeMaterial={(id)=>{
+											let newTaskMaterials=[...this.state.taskMaterials];
+											newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
+											this.setState({taskMaterials:newTaskMaterials});
+										}}
+										units={this.state.units}
+										defaultUnit={this.state.defaultUnit}
+										company={this.state.company}
+										match={{params:{taskID:null}}}
+									/>
+								</TabPane>
+							</TabContent>
+
+
+						{!this.state.hidden && false && <Services
+							taskAssigned={this.state.assignedTo}
+							submitService={(newService)=>{
+								this.setState({taskWorks:[...this.state.taskWorks,{id:this.getNewID(),...newService}]});
+							}}
+							updatePrices={(ids)=>{
+								let newTaskWorks=[...this.state.taskWorks];
+								taskWorks.filter((item)=>ids.includes(item.id)).map((item)=>{
+									let price=item.workType.prices.find((item)=>item.pricelist===this.state.company.pricelist.id);
+									if(price === undefined){
+										price = 0;
+									}else{
+										price = price.price;
+									}
+									newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===item.id)]={...newTaskWorks.find((taskWork)=>taskWork.id===item.id),price};
+									return null;
+								})
+								this.setState({taskWorks:newTaskWorks});
+							}}
+							subtasks={taskWorks}
+							workTypes={this.state.workTypes}
+							updateSubtask={(id,newData)=>{
+								let newTaskWorks=[...this.state.taskWorks];
+								newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
+								this.setState({taskWorks:newTaskWorks});
+							}}
+							company={this.state.company}
+							removeSubtask={(id)=>{
+								let newTaskWorks=[...this.state.taskWorks];
+								newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
+								this.setState({taskWorks:newTaskWorks});
+							}}
+							match={{params:{taskID:null}}}
+							/>}
+
+							{!this.state.hidden && false && <Materials
 								materials={taskMaterials}
 								submitMaterial={(newMaterial)=>{
 									this.setState({taskMaterials:[...this.state.taskMaterials,{id:this.getNewID(),...newMaterial}]});
@@ -498,7 +649,10 @@ export default class TaskAdd extends Component{
 								company={this.state.company}
 								match={{params:{taskID:null}}}
 								/>}
+
 							</div>
+
+
 							<button
 								className="btn pull-right"
 								disabled={this.state.title==="" || this.state.status===null || this.state.project === null || this.state.company === null || this.state.saving || this.props.loading}

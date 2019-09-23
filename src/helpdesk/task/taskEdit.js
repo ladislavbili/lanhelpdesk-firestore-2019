@@ -114,7 +114,7 @@ export default class TaskEdit extends Component {
 
 			let storageRef = firebase.storage().ref();
 			this.state.attachments.map((attachment)=>storageRef.child(attachment.path).delete());
-			
+
 			rebase.removeDoc('/help-tasks/'+this.state.task.id);
 			this.state.taskMaterials.forEach((material)=>rebase.removeDoc('/help-task_materials/'+material.id))
 			this.state.taskWorks.forEach((work)=>rebase.removeDoc('/help-task_works/'+work.id))
@@ -394,7 +394,7 @@ export default class TaskEdit extends Component {
 					</div>
 				</div>
 
-						<div className="card-box fit-with-header-and-commandbar scrollable">
+						<div className="card-box fit-with-header-and-commandbar scroll-visible">
 							<div className="d-flex p-2">
 								<div className="row flex">
 									<h1 className="center-hor text-extra-slim">{this.props.match.params.taskID}: </h1>

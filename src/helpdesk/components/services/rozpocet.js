@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Input} from 'reactstrap';
+import {Input, Label} from 'reactstrap';
 import Select from 'react-select';
 import { selectStyle, invisibleSelectStyle} from '../../../scss/selectStyles';
 
@@ -66,17 +66,18 @@ export default class Rozpocet extends Component {
 	render() {
 		//const afterHours= this.props.company && this.state.newExtraWork ? this.props.company.pricelist.afterHours : 0;
 		return (
-				<div className="row m-b-30">
+				<div className="row m-b-30 m-t-20">
 					<div className="col-md-12">
 						<div>
-							<table className="table">
+							<Label>Služby</Label>
+							<table className="table m-t--30">
 								<thead>
 									<tr>
 										<th width="25">
 										</th>
-										<th style={{fontSize: "14px", fontFamily: "Segoe UI Bold", color: "#333"}}>Služby</th>
+										<th style={{fontSize: "14px", fontFamily: "Segoe UI Bold", color: "#333"}}></th>
 										<th style={{fontSize: "12px", fontFamily: "Segoe UI", fontWeight: "500", color: "#333"}} width="170">Rieši</th>
-										<th width="60">Mn.</th>
+										<th width="100">Mn.</th>
 										<th width="100">Typ</th>
 										<th width="100" className="table-highlight-background">Cena/Mn.</th>
 										<th width="60" className="table-highlight-background">Zlava</th>
@@ -94,7 +95,7 @@ export default class Rozpocet extends Component {
 														checked={subtask.done} onChange={()=>{
 															this.props.updateSubtask(subtask.id,{done:!subtask.done})
 															}} />
-														<span className="checkmark" style={{ marginTop: "-4px"}}> </span>
+														<span className="checkmark" style={{ marginTop: "-3px", marginLeft:"-8px"}}> </span>
 												</label>
 											</td>
 											<td>
@@ -276,6 +277,8 @@ export default class Rozpocet extends Component {
 
 									{!this.state.showAddItem &&
 									<tr >
+
+										<td></td>
 										<td>
 											<button className="btn btn-table-add-item"
 												onClick={()=>{
@@ -296,6 +299,7 @@ export default class Rozpocet extends Component {
 
 									{this.state.showAddItem &&
 										<tr>
+											<td></td>
 										<td>
 											<input
 												type="text"

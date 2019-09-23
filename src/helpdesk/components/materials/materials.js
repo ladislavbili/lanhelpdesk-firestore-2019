@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Input} from 'reactstrap';
+import {Input, Label} from 'reactstrap';
 import Select from 'react-select';
 import { selectStyle, invisibleSelectStyle} from '../../../scss/selectStyles';
 
@@ -65,7 +65,8 @@ export default class Rozpocet extends Component {
 				<div className="row">
 					<div className="col-md-12">
 						<div>
-							<table className="table">
+							<Label>Material</Label>
+							<table className="table m-t--30">
 								<thead>
 									<tr >
 										{false && <th width="25" className="table-checkbox">
@@ -77,8 +78,8 @@ export default class Rozpocet extends Component {
 												<span className="checkmark" style={{ marginTop: "-8px"}}> </span>
 		                  </label>
 										</th>}
-										<th className="t-a-l p-l-15">Materiál</th>
-										<th width="100">Mn.</th>
+										<th className="t-a-l p-l-15"></th>
+										<th style={{fontSize: "12px", fontFamily: "Segoe UI", fontWeight: "500", color: "#333"}}  width="100">Mn.</th>
 										<th width="190">Jednotka</th>
 										{false && <th width="100">Nákupná cena</th>}
 										{false && <th width="124">Predajná cena</th>}
@@ -245,7 +246,6 @@ export default class Rozpocet extends Component {
 
 									{!this.state.showAddItem &&
 										<tr>
-											<td></td>
 											<td>
 												<button className="btn btn-table-add-item"
 													onClick={()=>{
@@ -254,18 +254,14 @@ export default class Rozpocet extends Component {
 													+ Add New Item
 												</button>
 											</td>
+											<td></td>
+											<td></td>
+											<td></td>
 									</tr>
 									}
 
 								{this.state.showAddItem &&
 									<tr>
-										<td>
-											<button className="btn btn-link waves-effect" onClick={()=>{
-													this.setState({showAddItem: false})
-												}}>
-												<i className="fa fa-times"  />
-												</button>
-										</td>
 										<td>
 											<input
 												type="text"
@@ -352,6 +348,11 @@ export default class Rozpocet extends Component {
 												>
 												<i className="fa fa-plus" />
 											</button>
+											<button className="btn btn-link waves-effect" onClick={()=>{
+													this.setState({showAddItem: false})
+												}}>
+												<i className="fa fa-times"  />
+												</button>
 										</td>
 									</tr>
 								}

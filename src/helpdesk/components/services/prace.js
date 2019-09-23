@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Input} from 'reactstrap';
+import {Input, Label} from 'reactstrap';
 import Select from 'react-select';
 import { selectStyle, invisibleSelectStyle} from '../../../scss/selectStyles';
 
@@ -61,16 +61,17 @@ export default class Prace extends Component {
 		//const afterHours= this.props.company && this.state.newExtraWork ? this.props.company.pricelist.afterHours : 0;
 		//const unitPrice= this.state.newPrice?(this.state.newPrice/100*afterHours+this.state.newPrice):0;
 		return (
-			<div className="row">
+			<div className="row m-t-20">
 				<div className="col-md-12">
-					<div >
-						<table className="table">
+					<div>
+						<Label>Služby</Label>
+						<table className="table m-t--30">
 							<thead >
 								<tr >
 									<th width="25">
 									</th>
-									<th className="t-a-l p-l-15">Služby</th>
-									<th width="50">Mn.</th>
+									<th className="t-a-l p-l-15"></th>
+									<th width="100">Mn.</th>
 									{false && <th width="170">Rieši</th>}
 									<th width="190">Typ</th>
 									<th className="t-a-r" width="124"></th>
@@ -86,7 +87,7 @@ export default class Prace extends Component {
 													checked={subtask.done} onChange={()=>{
 														this.props.updateSubtask(subtask.id,{done:!subtask.done})
 														}} />
-													<span className="checkmark" style={{ marginTop: "-4px"}}> </span>
+													<span className="checkmark" style={{ marginTop: "-3px", marginLeft:"-8px"}}> </span>
 											</label>
 										</td>
 										<td>
@@ -296,7 +297,7 @@ export default class Prace extends Component {
 				</div>
 				<div className="row justify-content-end">
 					<div className="col-md-3">
-						<p className="text-right">
+						<p className="text-right"  style={{marginTop: (this.state.showAddItem ? "" : "-45px")}}>
 							<b>Sub-total:</b>
 							{(this.props.subtasks.map((subtask)=>parseFloat(subtask.totalPrice)).reduce((acc, cur)=> acc+cur,0)).toFixed(2)}
 						</p>

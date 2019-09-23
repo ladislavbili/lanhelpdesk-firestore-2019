@@ -378,7 +378,7 @@ export default class TaskEdit extends Component {
 					</div>
 				</div>
 
-						<div className="card-box fit-with-header-and-commandbar scrollable max-width-1660">
+						<div className="card-box fit-with-header-and-commandbar scroll-visible max-width-1660">
 							<div className="d-flex p-2">
 								<div className="row flex">
 									<h1 className="center-hor text-extra-slim">{this.props.match.params.taskID}: </h1>
