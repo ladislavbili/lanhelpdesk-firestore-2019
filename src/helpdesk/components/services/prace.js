@@ -68,13 +68,6 @@ export default class Prace extends Component {
 							<thead >
 								<tr >
 									<th width="25">
-										<label className="custom-container">
-											<Input type="checkbox"
-												checked={false}
-												onChange={() => {}}
-												/>
-											<span className="checkmark" style={{ marginTop: "-8px"}}> </span>
-										</label>
 									</th>
 									<th className="t-a-l p-l-15">Služby</th>
 									<th width="50">Mn.</th>

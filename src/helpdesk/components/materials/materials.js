@@ -68,7 +68,7 @@ export default class Rozpocet extends Component {
 							<table className="table">
 								<thead>
 									<tr >
-										<th width="25" className="table-checkbox">
+										{false && <th width="25" className="table-checkbox">
 											<label className="custom-container">
 		                    <Input type="checkbox"
 													checked={this.props.materials.length===this.state.selectedIDs.length}
@@ -76,7 +76,7 @@ export default class Rozpocet extends Component {
 													/>
 												<span className="checkmark" style={{ marginTop: "-8px"}}> </span>
 		                  </label>
-										</th>
+										</th>}
 										<th className="t-a-l p-l-15">Materiál</th>
 										<th width="100">Mn.</th>
 										<th width="190">Jednotka</th>
@@ -90,7 +90,7 @@ export default class Rozpocet extends Component {
 									{
 										this.props.materials.map((material)=>
 										<tr key={material.id}>
-											<td className="table-checkbox t-a-r">
+											{false && <td className="table-checkbox t-a-r">
 												<label className="custom-container">
 			                    <Input type="checkbox"
 														checked={this.state.selectedIDs.includes(material.id)}
@@ -106,7 +106,7 @@ export default class Rozpocet extends Component {
 													} />
 												<span className="checkmark" style={{ marginTop: "-2px"}}> </span>
 			                  </label>
-											</td>
+											</td>}
 											<td>
 													<input
 														className="form-control hidden-input"
