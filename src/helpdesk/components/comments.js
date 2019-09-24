@@ -210,10 +210,7 @@ submitEmail(){
                 style={{    height: "25px", marginTop: "11px", marginRight:"5px"}}
                 >
                 <span style={{color: "#0078D4"}}>
-                  {attachment.name}
-                </span>
-                <span className="ml-5" style={{color: "#0078D4"}}>
-                  {attachment.size}
+                  {`${attachment.name} (${Math.round(parseInt(attachment.size)/1024)}kB)`}
                 </span>
                 <button className="btn btn-link-reversed waves-effect"
                   style={{height: "15px",

@@ -177,7 +177,7 @@ class TasksRow extends Component {
 					{value:'assignedTo',label:'Assigned to',type:'list',func:(items)=>
 						(<div>
 							{
-								items.map((item)=><div key={item.id}>{item.name+' '+item.surname + ' ('+item.email+')'}</div>)
+								items.map((item)=><div key={item.id}>{item.name+' '+item.surname}</div>)
 							}
 						</div>)
 					},
