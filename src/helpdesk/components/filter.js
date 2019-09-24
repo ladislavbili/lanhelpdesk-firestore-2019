@@ -18,7 +18,7 @@ class Filter extends Component {
       users:[],
       companies:[],
       workTypes:[],
-      status:{id:null,label:'Žiadny',value:null},
+      status:[],
       requester:{id:null,label:'Žiadny',value:null},
       company:{id:null,label:'Žiadny',value:null},
       assigned:{id:null,label:'Žiadny',value:null},
@@ -40,7 +40,7 @@ class Filter extends Component {
       users,
       companies,
       workTypes,
-      status:{id:null,label:'Žiadny',value:null},
+      status:[],
       requester:{id:null,label:'Žiadny',value:null},
       company:{id:null,label:'Žiadny',value:null},
       assigned:{id:null,label:'Žiadny',value:null},
@@ -54,7 +54,11 @@ class Filter extends Component {
   getItemValue(sourceKey,state,id){
     let value = state[sourceKey].find((item)=>item.id===id);
     if(value===undefined){
-      value={id:null,label:'Žiadny',value:null};
+      if(id==='cur'){
+        value={label:'Current',value:'cur',id:'cur'};
+      }else{
+        value={id:null,label:'Žiadny',value:null};
+      }
     }
     return value;
   }
@@ -63,7 +67,7 @@ class Filter extends Component {
     if(this.props.filter.updatedAt!==props.filter.updatedAt){
       let filter = props.filter;
       this.setState({
-        status:this.getItemValue('statuses',this.state,filter.status),
+        status:this.state.statuses.filter((status)=>filter.status.includes(status.id)),
         requester:this.getItemValue('users',this.state,filter.requester),
         company:this.getItemValue('companies',this.state,filter.company),
         assigned:this.getItemValue('users',this.state,filter.assigned),
@@ -91,7 +95,7 @@ class Filter extends Component {
         rebase.removeDoc('/help-filters/'+this.props.filterID).then(()=>{
           this.props.resetFilter();
           this.setState({
-            status:{id:null,label:'Žiadny',value:null},
+            status:[],
             requester:{id:null,label:'Žiadny',value:null},
             company:{id:null,label:'Žiadny',value:null},
             assigned:{id:null,label:'Žiadny',value:null},
@@ -107,7 +111,7 @@ class Filter extends Component {
     resetFilter(){
       if(this.props.filterID===null){
         this.setState({
-          status:{id:null,label:'Žiadny',value:null},
+          status:[],
           requester:{id:null,label:'Žiadny',value:null},
           company:{id:null,label:'Žiadny',value:null},
           assigned:{id:null,label:'Žiadny',value:null},
@@ -117,7 +121,7 @@ class Filter extends Component {
         })
       }else{
         this.setState({
-          status:this.getItemValue('statuses',this.state,this.props.filterData.filter.status),
+          status:this.state.statuses.filter((status)=>this.props.filterData.filter.status.includes(status.id)),
           requester:this.getItemValue('users',this.state,this.props.filterData.filter.requester),
           company:this.getItemValue('companies',this.state,this.props.filterData.filter.company),
           assigned:this.getItemValue('users',this.state,this.props.filterData.filter.assigned),
@@ -134,7 +138,7 @@ class Filter extends Component {
         company:this.state.company.id,
         assigned:this.state.assigned.id,
         workType:this.state.workType.id,
-        status:this.state.status.id,
+        status:this.state.status.map((item)=>item.id),
         statusDateFrom:isNaN(new Date(this.state.statusDateFrom).getTime())||this.state.statusDateFrom === '' ? '' : (new Date(this.state.statusDateFrom).getTime()),
         statusDateTo:isNaN(new Date(this.state.statusDateTo).getTime())|| this.state.statusDateTo === '' ? '' : (new Date(this.state.statusDateTo).getTime()),
         updatedAt:(new Date()).getTime()
@@ -186,7 +190,8 @@ class Filter extends Component {
                 <label htmlFor="example-input-small">Status:</label>
                 <div className="flex m-t--5 m-l-5">
                   <Select
-                    options={[{label:'Žiadny',value:null,id:null}].concat(this.state.statuses)}
+                    options={this.state.statuses}
+                    isMulti={true}
                     onChange={(newValue)=>this.setState({status:newValue})}
                     value={this.state.status}
                     styles={invisibleSelectStyle} />
@@ -198,7 +203,7 @@ class Filter extends Component {
                 <label htmlFor="example-input-small">Zadal:</label>
                 <div className="flex m-t--5 m-l-5">
                   <Select
-                    options={[{label:'Žiadny',value:null,id:null}].concat(this.state.users)}
+                    options={[{label:'Žiadny',value:null,id:null},{label:'Current',value:'cur',id:'cur'}].concat(this.state.users)}
                     onChange={(newValue)=>this.setState({requester:newValue})}
                     value={this.state.requester}
                     styles={invisibleSelectStyle} />
@@ -210,7 +215,7 @@ class Filter extends Component {
                 <label htmlFor="example-input-small">Firma:</label>
                 <div className="flex m-t--5 m-l-5">
                   <Select
-                    options={[{label:'Žiadny',value:null,id:null}].concat(this.state.companies)}
+                    options={[{label:'Žiadny',value:null,id:null},{label:'Current',value:'cur',id:'cur'}].concat(this.state.companies)}
                     onChange={(newValue)=>this.setState({company:newValue})}
                     value={this.state.company}
                     styles={invisibleSelectStyle} />
@@ -222,7 +227,7 @@ class Filter extends Component {
                 <label htmlFor="example-input-small">Riesi:</label>
                 <div className="flex m-t--5 m-l-5">
                   <Select
-                    options={[{label:'Žiadny',value:null,id:null}].concat(this.state.users)}
+                    options={[{label:'Žiadny',value:null,id:null},{label:'Current',value:'cur',id:'cur'}].concat(this.state.users)}
                     onChange={(newValue)=>this.setState({assigned:newValue})}
                     value={this.state.assigned}
                     styles={invisibleSelectStyle} />
@@ -282,7 +287,7 @@ class Filter extends Component {
                   company:this.state.company.id,
                   assigned:this.state.assigned.id,
                   workType:this.state.workType.id,
-                  status:this.state.status.id,
+                  status:this.state.status.map((item)=>item.id),
                   statusDateFrom:isNaN(new Date(this.state.statusDateFrom).getTime())||this.state.statusDateFrom === '' ? '' : (new Date(this.state.statusDateFrom).getTime()),
                   statusDateTo:isNaN(new Date(this.state.statusDateTo).getTime())|| this.state.statusDateTo === '' ? '' : (new Date(this.state.statusDateTo).getTime())
                 }}

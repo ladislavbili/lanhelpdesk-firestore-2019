@@ -8,7 +8,7 @@ const initialState = {
     workType:null,
     statusDateFrom:'',
     statusDateTo:'',
-    status:null,
+    status:[],
     updatedAt:(new Date()).getTime()
   },
   search:'',

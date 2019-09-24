@@ -100,13 +100,12 @@ class TasksRow extends Component {
 				id:parseInt(task.id)
 			}
 		});
-
 		return newTasks.filter((task)=>{
-			return (this.props.filter.status===null||(task.status && task.status.id===this.props.filter.status)) &&
-			(this.props.filter.requester===null||(task.requester && task.requester.id===this.props.filter.requester)) &&
+			return (this.props.filter.status.length===0||(task.status && this.props.filter.status.includes(task.status.id))) &&
+			(this.props.filter.requester===null||(task.requester && task.requester.id===this.props.filter.requester)||(task.requester && this.props.filter.requester==='cur' && task.requester.id === this.props.currentUser.id)) &&
 			(this.props.filter.workType===null||(task.type===this.props.filter.workType)) &&
-			(this.props.filter.company===null||task.company===this.props.filter.company) &&
-			(this.props.filter.assigned===null||(task.assignedTo && task.assignedTo.includes(this.props.filter.assigned))) &&
+			(this.props.filter.company===null||(task.company && task.company.id===this.props.filter.company) ||(task.company && this.props.filter.company==='cur' && task.company.id===this.props.currentUser.userData.company)) &&
+			(this.props.filter.assigned===null||(task.assignedTo && task.assignedTo.map((item)=>item.id).includes(this.props.filter.assigned))||(task.assignedTo && this.props.filter.requester==='cur' && task.assignedTo.map((item)=>item.id).includes(this.props.currentUser.id))) &&
 			(this.props.filter.statusDateFrom===''||task.statusChange >= this.props.filter.statusDateFrom) &&
 			(this.props.filter.statusDateTo===''||task.statusChange <= this.props.filter.statusDateTo) &&
 			(this.props.project===null||(task.project && task.project.id===this.props.project))
@@ -114,6 +113,11 @@ class TasksRow extends Component {
 	}
 
 	render() {
+		console.log('-----------');
+		console.log(this.props.filter);
+		console.log(this.props.currentUser);
+		console.log(this.filterTasks());
+		console.log('-----------');
 		let link='';
 		if(this.props.match.params.hasOwnProperty('listID')){
 			link = '/helpdesk/taskList/i/'+this.props.match.params.listID;
@@ -219,10 +223,10 @@ class TasksRow extends Component {
 	}
 }
 
-const mapStateToProps = ({ filterReducer, taskReducer }) => {
+const mapStateToProps = ({ filterReducer, taskReducer, userReducer }) => {
 	const { project, filter } = filterReducer;
 	const { orderBy, ascending } = taskReducer;
-	return { project, filter,orderBy,ascending };
+	return { project, filter,orderBy,ascending, currentUser:userReducer };
 };
 
 export default connect(mapStateToProps, { setTasksOrderBy, setTasksAscending })(TasksRow);

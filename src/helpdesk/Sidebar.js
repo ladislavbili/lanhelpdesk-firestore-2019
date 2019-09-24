@@ -147,7 +147,7 @@ class Sidebar extends Component {
 												to={{ pathname: isReport?'/helpdesk/reports/all':`/helpdesk/taskList/i/all` }} onClick={()=>{
 													this.setState({filterID:null,filterData:null});
 													this.props.setFilter({
-														status:null,
+														status:[],
 														requester:null,
 														company:null,
 														assigned:null,
