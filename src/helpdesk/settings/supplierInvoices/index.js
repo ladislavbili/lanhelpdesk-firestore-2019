@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import {Button } from 'reactstrap';
+import { connect } from "react-redux";
+import {storageSuppliersStart, storageSupplierInvoicesStart} from '../../../redux/actions';
+
 import {rebase} from '../../../index';
-import {timestampToString} from '../../../helperFunctions';
+import {timestampToString, sameStringForms} from '../../../helperFunctions';
 import SupplierInvoiceAdd from './supplierInvoiceAdd';
 import SupplierInvoiceEdit from './supplierInvoiceEdit';
 
-export default class SupplierInvoicesList extends Component{
+class SupplierInvoicesList extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -14,22 +17,26 @@ export default class SupplierInvoicesList extends Component{
       supplierInvoiceFilter:''
     }
   }
-  componentWillMount(){
-    this.ref = rebase.listenToCollection('/help-supplier_invoices', {
-      context: this,
-      withIds: true,
-      then:content=>{this.setState({supplierInvoices:content})},
-    });
-    this.ref2 = rebase.listenToCollection('/help-suppliers', {
-      context: this,
-      withIds: true,
-      then:content=>{this.setState({suppliers:content})},
-    });
-  }
+  componentWillReceiveProps(props){
+		if(!sameStringForms(props.supplierInvoices,this.props.supplierInvoices)){
+			this.setState({supplierInvoices:props.supplierInvoices})
+		}
+    if(!sameStringForms(props.suppliers,this.props.suppliers)){
+			this.setState({suppliers:props.suppliers})
+		}
+	}
 
-  componentWillUnmount(){
-    rebase.removeBinding(this.ref);
-    rebase.removeBinding(this.ref2);
+
+  componentWillMount(){
+    if(!this.props.suppliersActive){
+      this.props.storageSuppliersStart();
+    }
+    this.setState({supplierInvoices:this.props.supplierInvoices});
+
+    if(!this.props.supplierInvoicesActive){
+      this.props.storageSupplierInvoicesStart();
+    }
+    this.setState({suppliers:this.props.suppliers});
   }
 
   render(){
@@ -108,3 +115,11 @@ export default class SupplierInvoicesList extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ storageHelpSuppliers,storageHelpSupplierInvoices }) => {
+  const { suppliersActive, suppliers } = storageHelpSuppliers;
+  const { supplierInvoicesActive, supplierInvoices } = storageHelpSupplierInvoices;
+  return { suppliersActive,suppliers,supplierInvoicesActive,supplierInvoices };
+};
+
+export default connect(mapStateToProps, { storageSuppliersStart, storageSupplierInvoicesStart })(SupplierInvoicesList);

@@ -24,9 +24,7 @@ class TaskAddContainer extends Component{
 
       defaultUnit: null,
     }
-    this.fetchData.bind(this);
     this.setData.bind(this);
-    this.fetchData();
   }
 
   componentWillReceiveProps(props){
@@ -37,7 +35,7 @@ class TaskAddContainer extends Component{
       !sameStringForms(props.workTypes,this.props.workTypes)||
       !sameStringForms(props.units,this.props.units)||
       !sameStringForms(props.prices,this.props.prices)||
-      !sameStringForms(props.priceLists,this.props.priceLists)||
+      !sameStringForms(props.pricelists,this.props.pricelists)||
       !sameStringForms(props.tags,this.props.tags)||
       !sameStringForms(props.taskTypes,this.props.taskTypes)||
       !sameStringForms(props.metadata,this.props.metadata)
@@ -92,39 +90,6 @@ class TaskAddContainer extends Component{
     this.setData();
   }
 
-  fetchData(){
-    Promise.all(
-      [
-        database.collection('help-statuses').get(),
-        database.collection('help-projects').get(),
-        database.collection('users').get(),
-        database.collection('companies').get(),
-        database.collection('help-work_types').get(),
-        database.collection('help-units').get(),
-        database.collection('help-prices').get(),
-        database.collection('help-pricelists').get(),
-        database.collection('help-tags').get(),
-        database.collection('help-task_types').get(),
-        rebase.get('metadata/0', {
-          context: this,
-        })
-      ]).then(([statuses,projects,users, companies, workTypes,units, prices, pricelists,tags,taskTypes,meta])=>{
-        this.setData(
-          toSelArr(snapshotToArray(statuses)),
-          toSelArr(snapshotToArray(projects)),
-          toSelArr(snapshotToArray(users),'email'),
-          toSelArr(snapshotToArray(companies)),
-          toSelArr(snapshotToArray(workTypes)),
-          toSelArr(snapshotToArray(units)),
-          snapshotToArray(prices),
-          snapshotToArray(pricelists),
-          toSelArr(snapshotToArray(tags)),
-          toSelArr(snapshotToArray(taskTypes)),
-          meta.defaultUnit
-        );
-      });
-    }
-
     setData(){
       let statuses = toSelArr(this.props.statuses);
       let projects = toSelArr(this.props.projects);
@@ -134,7 +99,6 @@ class TaskAddContainer extends Component{
       let units = toSelArr(this.props.units);
       let prices = this.props.prices;
       let pricelists = this.props.pricelists;
-      console.log(this.props);
       let tags = toSelArr(this.props.tags);
       let taskTypes = toSelArr(this.props.taskTypes);
       let defaultUnit = this.props.metadata?this.props.metadata.defaultUnit:null;

@@ -15,6 +15,8 @@ export * from './storage/help-pricelists';
 export * from './storage/help-prices';
 export * from './storage/help-projects';
 export * from './storage/help-statuses';
+export * from './storage/help-supplier_invoices';
+export * from './storage/help-suppliers';
 export * from './storage/help-tags';
 export * from './storage/help-task_types';
 export * from './storage/help-tasks';
