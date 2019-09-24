@@ -22,6 +22,7 @@ import storageHelpTaskTypes from './reducers/storage/help-task_typesReducer';
 import storageHelpTasks from './reducers/storage/help-tasksReducer';
 import storageHelpUnits from './reducers/storage/help-unitsReducer';
 import storageHelpWorkTypes from './reducers/storage/help-work_typesReducer';
+import storageMetadata from './reducers/storage/metadataReducer';
 import storageUsers from './reducers/storage/usersReducer';
 
 
@@ -47,6 +48,7 @@ const reducers = combineReducers({
     storageHelpTasks,
     storageHelpUnits,
     storageHelpWorkTypes,
+    storageMetadata,
     storageUsers,
   });
 

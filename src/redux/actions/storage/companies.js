@@ -3,9 +3,9 @@ import {database} from '../../../index.js';
 import {snapshotToArray} from '../../../helperFunctions';
 
 
-export const storageUsersStart = () => {
+export const storageCompaniesStart = () => {
   return (dispatch) => {
-    console.log('LOADED');
+    
     database.collection('companies').onSnapshot(querySnapshot => {
       dispatch({ type: STORAGE_SET_COMPANIES,companies:snapshotToArray(querySnapshot)});
       }, err => {

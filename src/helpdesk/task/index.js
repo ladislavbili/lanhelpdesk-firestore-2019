@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import {rebase} from '../../index';
 import ShowData from '../../components/showData';
-import {timestampToString} from '../../helperFunctions';
+import {timestampToString, sameStringForms} from '../../helperFunctions';
 import TaskEdit from './taskEditContainer';
 import TaskEmpty from './taskEmpty';
-import {setTasksOrderBy, setTasksAscending} from '../../redux/actions';
+import {setTasksOrderBy, setTasksAscending,storageCompaniesStart,storageHelpTagsStart,storageUsersStart,storageHelpProjectsStart,storageHelpStatusesStart,storageHelpTasksStart, storageHelpFiltersStart} from '../../redux/actions';
 
 
-class TasksRow extends Component {
+class TasksIndex extends Component {
 
 	constructor(props){
 		super(props);
@@ -23,53 +22,69 @@ class TasksRow extends Component {
 		}
 		this.filterTasks.bind(this);
 	}
-	componentWillMount(){
-		this.ref1 = rebase.listenToCollection('/help-tasks', {
-			context: this,
-			withIds: true,
-			then:content=>{this.setState({tasks:content })},
-		});
-		this.ref2 = rebase.listenToCollection('/help-statuses', {
-			context: this,
-			withIds: true,
-			then:content=>{this.setState({statuses:content })},
-		});
-		this.ref3 = rebase.listenToCollection('/help-projects', {
-			context: this,
-			withIds: true,
-			then:content=>{this.setState({projects:content })},
-		});
-		this.ref4 = rebase.listenToCollection('/users', {
-			context: this,
-			withIds: true,
-			then:content=>{this.setState({users:content })},
-		});
-		this.ref5 = rebase.listenToCollection('/help-tags', {
-			context: this,
-			withIds: true,
-			then:content=>{this.setState({tags:content })},
-		});
-	this.ref6 = rebase.listenToCollection('/companies', {
-		context: this,
-		withIds: true,
-		then:content=>{this.setState({companies:content })},
-	});
-	this.getFilterName(this.props.match.params.listID);
-	}
-
-	componentWillUnmount(){
-		rebase.removeBinding(this.ref1);
-		rebase.removeBinding(this.ref2);
-		rebase.removeBinding(this.ref3);
-		rebase.removeBinding(this.ref4);
-		rebase.removeBinding(this.ref5);
-		rebase.removeBinding(this.ref6);
-	}
 
 	componentWillReceiveProps(props){
-		if(this.props.match.params.listID!==props.match.params.listID){
+		if(this.props.match.params.listID!==props.match.params.listID||!sameStringForms(props.filters,this.props.filters)){
 			this.getFilterName(props.match.params.listID);
 		}
+
+		if(!sameStringForms(props.companies,this.props.companies)){
+			this.setState({companies:props.companies})
+		}
+		if(!sameStringForms(props.statuses,this.props.statuses)){
+			this.setState({statuses:props.statuses})
+		}
+		if(!sameStringForms(props.projects,this.props.projects)){
+			this.setState({projects:props.projects})
+		}
+		if(!sameStringForms(props.users,this.props.users)){
+			this.setState({users:props.users})
+		}
+		if(!sameStringForms(props.tags,this.props.tags)){
+			this.setState({tags:props.tags})
+		}
+
+		if(!sameStringForms(props.tasks,this.props.tasks)){
+			this.setState({tasks:props.tasks})
+		}
+	}
+
+	componentWillMount(){
+		if(!this.props.companiesActive){
+			this.props.storageCompaniesStart();
+		}
+		this.setState({companies:this.props.companies});
+
+		if(!this.props.statusesActive){
+			this.props.storageHelpStatusesStart();
+		}
+		this.setState({statuses:this.props.statuses});
+
+		if(!this.props.projectsActive){
+			this.props.storageHelpProjectsStart();
+		}
+		this.setState({projects:this.props.projects});
+
+		if(!this.props.usersActive){
+			this.props.storageUsersStart();
+		}
+		this.setState({users:this.props.users});
+
+		if(!this.props.tagsActive){
+			this.props.storageHelpTagsStart();
+		}
+		this.setState({tags:this.props.tags});
+
+		if(!this.props.tasksActive){
+			this.props.storageHelpTasksStart();
+		}
+		this.setState({tasks:this.props.tasks});
+
+		if(!this.props.filtersActive){
+			this.props.storageHelpFiltersStart();
+		}
+
+		this.getFilterName(this.props.match.params.listID);
 	}
 
 	getFilterName(id){
@@ -80,11 +95,10 @@ class TasksRow extends Component {
 			this.setState({filterName:'All'});
 			return;
 		}
-		rebase.get('help-filters/'+id, {
-			context: this,
-		}).then((result)=>{
-			this.setState({filterName:result.title});
-		})
+		let filter = this.props.filters.find((filter)=>filter.id===id);
+		if(filter){
+			this.setState({filterName:filter.title});
+		}
 	}
 
 	filterTasks(){
@@ -218,10 +232,19 @@ class TasksRow extends Component {
 	}
 }
 
-const mapStateToProps = ({ filterReducer, taskReducer, userReducer }) => {
+const mapStateToProps = ({ filterReducer, taskReducer, userReducer, storageCompanies, storageHelpTags, storageUsers, storageHelpProjects, storageHelpStatuses,storageHelpTasks,storageHelpFilters }) => {
 	const { project, filter } = filterReducer;
 	const { orderBy, ascending } = taskReducer;
-	return { project, filter,orderBy,ascending, currentUser:userReducer };
+
+	const { companiesActive, companies } = storageCompanies;
+	const { tagsActive, tags } = storageHelpTags;
+	const { usersActive, users } = storageUsers;
+	const { projectsActive, projects } = storageHelpProjects;
+	const { statusesActive, statuses } = storageHelpStatuses;
+	const { tasksActive, tasks } = storageHelpTasks;
+	const { filtersActive, filters } = storageHelpFilters;
+
+	return { project, filter,orderBy,ascending, currentUser:userReducer,companiesActive, companies, tagsActive, tags, usersActive, users, projectsActive, projects, statusesActive, statuses, tasksActive, tasks, filtersActive, filters };
 };
 
-export default connect(mapStateToProps, { setTasksOrderBy, setTasksAscending })(TasksRow);
+export default connect(mapStateToProps, { setTasksOrderBy, setTasksAscending ,storageCompaniesStart,storageHelpTagsStart,storageUsersStart,storageHelpProjectsStart,storageHelpStatusesStart,storageHelpTasksStart, storageHelpFiltersStart})(TasksIndex);

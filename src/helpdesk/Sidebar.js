@@ -9,9 +9,8 @@ import TaskAdd from './task/taskAddContainer';
 import Filter from './components/filter';
 import ProjectEdit from './projects/projectEdit';
 import ProjectAdd from './projects/projectAdd';
-import {rebase} from '../index';
-import {toSelArr} from '../helperFunctions';
-import {setProject, setFilter} from '../redux/actions';
+import {toSelArr, sameStringForms} from '../helperFunctions';
+import {setProject, setFilter, storageHelpFiltersStart, storageHelpProjectsStart} from '../redux/actions';
 
 import {sidebarSelectStyle} from '../scss/selectStyles';
 
@@ -50,31 +49,34 @@ class Sidebar extends Component {
 		};
 	}
 
-	componentWillMount(){
-		this.ref = rebase.listenToCollection('/help-projects', {
-			context: this,
-			withIds: true,
-			then:content=>{
-				this.setState({
-				projects:toSelArr([{id:-1,title:'+ Add project',body:'add', label:'+ Add project',value:null}, {id:null,title:'Dashboard', body:'dashboard',}].concat(content)),
-				project:toSelArr([{id:null,title:'Dashboard', body:'dashboard',}].concat(content)).find((item)=>item.id===this.props.project)
+	componentWillReceiveProps(props){
+		if(!sameStringForms(props.filters,this.props.filters)){
+			this.setState({filters:props.filters})
+		}
+		if(!sameStringForms(props.projects,this.props.projects)){
+			this.setState({
+				projects:toSelArr([{id:-1,title:'+ Add project',body:'add', label:'+ Add project',value:null}, {id:null,title:'Dashboard', body:'dashboard',}].concat(props.projects)),
+				project:toSelArr([{id:null,title:'Dashboard', body:'dashboard',}].concat(props.projects)).find((item)=>item.id===props.project)
 			});
-		},
-		});
-
-		this.ref2 = rebase.listenToCollection('/help-filters', {
-			context: this,
-			withIds: true,
-			then:content=>{
-					this.setState({filters:content})
-			}
-		});
+		}
 	}
 
-	componentWillUnmount() {
-		rebase.removeBinding(this.ref);
-			rebase.removeBinding(this.ref2);
+	componentWillMount(){
+		if(!this.props.projectsActive){
+			this.props.storageHelpProjectsStart();
+		}
+		this.setState({
+			projects:toSelArr([{id:-1,title:'+ Add project',body:'add', label:'+ Add project',value:null}, {id:null,title:'Dashboard', body:'dashboard',}].concat(this.props.projects)),
+			project:toSelArr([{id:null,title:'Dashboard', body:'dashboard',}].concat(this.props.projects)).find((item)=>item.id===this.props.project)
+		});
+
+
+		if(!this.props.filtersActive){
+			this.props.storageHelpFiltersStart();
+		}
+		this.setState({filters:this.props.filters});
 	}
+
 /*
 <Button className="btn-link full-width t-a-l"  onClick={()=>{
 		this.setState({opened:true});
@@ -198,9 +200,11 @@ class Sidebar extends Component {
 			);
 		}
 	}
-	const mapStateToProps = ({ filterReducer }) => {
+	const mapStateToProps = ({ filterReducer,storageHelpFilters, storageHelpProjects }) => {
     const { project } = filterReducer;
-    return { project };
+		const { filtersActive, filters } = storageHelpFilters;
+		const { projectsActive, projects } = storageHelpProjects;
+    return { project,filtersActive,filters,projectsActive,projects };
   };
 
-  export default connect(mapStateToProps, { setProject,setFilter })(Sidebar);
+  export default connect(mapStateToProps, { setProject,setFilter, storageHelpFiltersStart, storageHelpProjectsStart })(Sidebar);

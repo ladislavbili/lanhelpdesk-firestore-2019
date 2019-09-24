@@ -1,8 +1,8 @@
 import {STORAGE_SET_HELP_PRICELISTS, STORAGE_HELP_PRICELISTS_ACTIVE} from '../../types'
 
 const initialState = {
-  priceListsActive:false,
-  priceLists:[]
+  pricelistsActive:false,
+  pricelists:[]
 };
 
 export default function storagePricelistsReducer(state = initialState, action) {

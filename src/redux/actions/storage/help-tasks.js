@@ -3,9 +3,9 @@ import {database} from '../../../index.js';
 import {snapshotToArray} from '../../../helperFunctions';
 
 
-export const storageUsersStart = () => {
+export const storageHelpTasksStart = () => {
   return (dispatch) => {
-    console.log('LOADED');
+    
     database.collection('help-tasks').onSnapshot(querySnapshot => {
       dispatch({ type: STORAGE_SET_HELP_TASKS,tasks:snapshotToArray(querySnapshot)});
       }, err => {

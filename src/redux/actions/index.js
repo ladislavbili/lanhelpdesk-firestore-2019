@@ -21,3 +21,4 @@ export * from './storage/help-tasks';
 export * from './storage/help-units';
 export * from './storage/help-work_types';
 export * from './storage/users';
+export * from './storage/metadata';

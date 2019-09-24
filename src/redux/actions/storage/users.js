@@ -5,7 +5,7 @@ import {snapshotToArray} from '../../../helperFunctions';
 
 export const storageUsersStart = () => {
   return (dispatch) => {
-    console.log('LOADED');
+    
     database.collection('users').onSnapshot(querySnapshot => {
       dispatch({ type: STORAGE_USERS,users:snapshotToArray(querySnapshot)});
       }, err => {
