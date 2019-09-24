@@ -9,6 +9,7 @@ export default class Attachments extends Component {
 	}
 
 	render() {
+		console.log(this.props.attachments);
 		return (
 			<div className="m-t-10">
 				<div className="row">
@@ -16,7 +17,7 @@ export default class Attachments extends Component {
 							<table className="table">
 								<thead >
 									<tr  className="tr-no-lines">
-										<th style={{fontSize: "14px", fontFamily: "Segoe UI Bold", color: "#333"}}>Attachment</th>
+										<th style={{fontSize: "14px", fontFamily: "Segoe UI Bold", color: "#333"}}></th>
 										<th className="t-a-r" width="124">
 										</th>
 									</tr>
@@ -28,7 +29,7 @@ export default class Attachments extends Component {
 
 												<td>
 													<a target="_blank" href={attachment.url} style={{cursor:'pointer'}} rel="noopener noreferrer">
-														{attachment.title}
+														{`${attachment.title} (${Math.round(parseInt(attachment.size)/1024)}kB)`}
 													</a>
 												</td>
 

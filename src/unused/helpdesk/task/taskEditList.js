@@ -400,151 +400,12 @@ export default class TaskEdit extends Component {
 
 							</div>
 
-							<hr className="m-t-5"/>
+							<hr className="m-t-15 m-b-10"/>
 
-						<div className="row">
+							<div className="row">
 
 
 						<div className="task-edit-left-half">
-
-							<div className="col-lg-12 row m-t-5">
-								<div className="center-hor m-r-5"><Label className="center-hor">Assigned to: </Label></div>
-								<div className="f-1">
-									<Select
-										value={this.state.assignedTo}
-										placeholder="Zadajte poverených pracovníkov"
-										isMulti
-										isDisabled={this.state.defaultFields.assignedTo.fixed}
-										onChange={(users)=>this.setState({assignedTo:users},this.submitTask.bind(this))}
-										options={this.state.users}
-										styles={invisibleSelectStyleNoArrow}
-										/>
-								</div>
-							</div>
-
-							<div className="col-lg-12">
-
-								<div className="col-lg-4">
-										<div className="row p-r-10 ">
-											<Label className="col-3 col-form-label">Typ</Label>
-											<div className="col-9">
-												<Select
-													placeholder="Zadajte typ"
-													value={this.state.type}
-													isDisabled={this.state.defaultFields.type.fixed}
-													styles={invisibleSelectStyleNoArrow}
-													onChange={(type)=>this.setState({type},this.submitTask.bind(this))}
-													options={this.state.taskTypes}
-													/>
-											</div>
-										</div>
-										<div className="row p-r-10 ">
-											<Label className="col-3 col-form-label">Projekt</Label>
-											<div className="col-9">
-												<Select
-													placeholder="Zadajte projekt"
-													value={this.state.project}
-													onChange={(project)=>this.setState({project, projectChangeDate:(new Date()).getTime()},()=>{this.submitTask();this.setDefaults(project.id)})}
-													options={this.state.projects}
-													styles={invisibleSelectStyleNoArrow}
-													/>
-											</div>
-										</div>
-								</div>
-
-								<div className="col-lg-4">
-										<div className="row p-r-10 ">
-											<Label className="col-3 col-form-label">Zadal</Label>
-											<div className="col-9">
-												<Select
-													placeholder="Zadajte žiadateľa"
-													value={this.state.requester}
-													isDisabled={this.state.defaultFields.requester.fixed}
-													onChange={(requester)=>this.setState({requester},this.submitTask.bind(this))}
-													options={this.state.users}
-													styles={invisibleSelectStyleNoArrow}
-													/>
-											</div>
-										</div>
-										<div className="row p-r-10 ">
-											<Label className="col-3 col-form-label">Firma</Label>
-											<div className="col-9">
-												<Select
-													placeholder="Zadajte firmu"
-													value={this.state.company}
-													isDisabled={this.state.defaultFields.company.fixed}
-													onChange={(company)=>this.setState({company},this.submitTask.bind(this))}
-													options={this.state.companies}
-													styles={invisibleSelectStyleNoArrow}
-													/>
-											</div>
-										</div>
-								</div>
-
-								<div className="col-lg-4">
-									<div className="row p-r-10">
-										<Label className="col-3 col-form-label">Deadline</Label>
-										<div className="col-9">
-											{/*className='form-control hidden-input'*/}
-											<input
-												className='form-control hidden-input'
-												placeholder="Status change date"
-												type="datetime-local"
-												value={this.state.deadline}
-												onChange={(e)=>{
-													this.setState({deadline:e.target.value},this.submitTask.bind(this))}
-												}
-												/>
-										</div>
-									</div>
-										<Repeat
-											taskID={this.props.match.params.taskID}
-											repeat={this.state.repeat}
-											submitRepeat={(repeat)=>{
-												database.collection('help-repeats').doc(this.props.match.params.taskID).set({
-													...repeat,
-													task:this.props.match.params.taskID,
-													startAt:(new Date(repeat.startAt).getTime()),
-													});
-												this.setState({repeat})
-											}}
-											deleteRepeat={()=>{
-												rebase.removeDoc('/help-repeats/'+this.state.task.id);
-												this.setState({repeat:null})
-											}}
-											columns={!this.props.columns}
-											/>
-								</div>
-
-							</div>
-
-
-						{false && <div className="form-group m-b-0 row">
-							<label className="col-5 col-form-label text-slim">Mimo pracovných hodín</label>
-							<div className="col-7">
-								<Select
-									value={this.state.overtime}
-									styles={invisibleSelectStyleNoArrow}
-									onChange={(overtime)=>this.setState({overtime},this.submitTask.bind(this))}
-									options={[{value:true,label:'Áno'},{value:false,label:'Nie'}]}
-									/>
-							</div>
-						</div>}
-						{false && <div className="row">
-							<label className="col-5 col-form-label text-slim">Pripomienka</label>
-							<div className="col-7">
-								{/*className='form-control hidden-input'*/}
-								<input
-									className='form-control'
-									placeholder="Status change date"
-									type="datetime-local"
-									value={this.state.reminder}
-									onChange={(e)=>{
-										this.setState({reminder:e.target.value},this.submitTask.bind(this))}
-									}
-									/>
-							</div>
-						</div>}
 
 							<Label className="m-t-5  m-b-10">Popis</Label>
 							<textarea className="form-control b-r-0  m-b-10 hidden-input" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value},this.submitTask.bind(this))} />
@@ -787,8 +648,141 @@ export default class TaskEdit extends Component {
 									</TabContent>
 								</div>
 
-								<div className="task-edit-right-half pull-right">
 
+								<div className="task-edit-right-half pull-right">
+									<div className="">
+										<div className="center-hor"><Label className="center-hor">Assigned to: </Label></div>
+										<div className="f-1">
+											<Select
+												value={this.state.assignedTo}
+												placeholder="Zadajte poverených pracovníkov"
+												isMulti
+												isDisabled={this.state.defaultFields.assignedTo.fixed}
+												onChange={(users)=>this.setState({assignedTo:users},this.submitTask.bind(this))}
+												options={this.state.users}
+												styles={invisibleSelectStyleNoArrow}
+												/>
+										</div>
+									</div>
+
+									<div className="">
+										<Label className=" col-form-label">Typ</Label>
+										<div className="">
+											<Select
+												placeholder="Zadajte typ"
+			                  value={this.state.type}
+												isDisabled={this.state.defaultFields.type.fixed}
+												styles={invisibleSelectStyleNoArrow}
+			                  onChange={(type)=>this.setState({type},this.submitTask.bind(this))}
+			                  options={this.state.taskTypes}
+			                  />
+										</div>
+									</div>
+
+									<div className="">
+										<Label className=" col-form-label">Projekt</Label>
+										<div className="">
+											<Select
+												placeholder="Zadajte projekt"
+												value={this.state.project}
+												onChange={(project)=>this.setState({project, projectChangeDate:(new Date()).getTime()},()=>{this.submitTask();this.setDefaults(project.id)})}
+												options={this.state.projects}
+												styles={invisibleSelectStyleNoArrow}
+												/>
+										</div>
+									</div>
+
+										<div className="">
+											<Label className=" col-form-label">Zadal</Label>
+											<div className="">
+												<Select
+													placeholder="Zadajte žiadateľa"
+													value={this.state.requester}
+													isDisabled={this.state.defaultFields.requester.fixed}
+													onChange={(requester)=>this.setState({requester},this.submitTask.bind(this))}
+													options={this.state.users}
+													styles={invisibleSelectStyleNoArrow}
+													/>
+											</div>
+										</div>
+
+										<div className="">
+											<Label className="col-form-label">Firma</Label>
+											<div className="">
+												<Select
+													placeholder="Zadajte firmu"
+													value={this.state.company}
+													isDisabled={this.state.defaultFields.company.fixed}
+													onChange={(company)=>this.setState({company},this.submitTask.bind(this))}
+													options={this.state.companies}
+													styles={invisibleSelectStyleNoArrow}
+													/>
+											</div>
+										</div>
+
+										<div className="">
+											<Label className="col-form-label">Deadline</Label>
+											<div className="">
+												{/*className='form-control hidden-input'*/}
+												<input
+													className='form-control hidden-input'
+													placeholder="Status change date"
+													type="datetime-local"
+													value={this.state.deadline}
+													onChange={(e)=>{
+														this.setState({deadline:e.target.value},this.submitTask.bind(this))}
+													}
+													/>
+											</div>
+										</div>
+											<Repeat
+												taskID={this.props.match.params.taskID}
+												repeat={this.state.repeat}
+												submitRepeat={(repeat)=>{
+													database.collection('help-repeats').doc(this.props.match.params.taskID).set({
+														...repeat,
+														task:this.props.match.params.taskID,
+														startAt:(new Date(repeat.startAt).getTime()),
+														});
+													this.setState({repeat})
+												}}
+												deleteRepeat={()=>{
+													rebase.removeDoc('/help-repeats/'+this.state.task.id);
+													this.setState({repeat:null})
+												}}
+												columns={this.props.columns}
+												/>
+
+
+
+								{false && <div className="form-group m-b-0 row">
+									<label className="col-5 col-form-label text-slim">Mimo pracovných hodín</label>
+									<div className="col-7">
+										<Select
+											value={this.state.overtime}
+											styles={invisibleSelectStyleNoArrow}
+											onChange={(overtime)=>this.setState({overtime},this.submitTask.bind(this))}
+											options={[{value:true,label:'Áno'},{value:false,label:'Nie'}]}
+											/>
+									</div>
+								</div>}
+								{false && <div className="row">
+									<label className="col-5 col-form-label text-slim">Pripomienka</label>
+									<div className="col-7">
+										{/*className='form-control hidden-input'*/}
+										<input
+											className='form-control'
+											placeholder="Status change date"
+											type="datetime-local"
+											value={this.state.reminder}
+											onChange={(e)=>{
+												this.setState({reminder:e.target.value},this.submitTask.bind(this))}
+											}
+											/>
+									</div>
+								</div>}
+
+								<div>
 									<div className="center-hor"><Label className="center-hor">Tagy: </Label></div>
 									<div className="f-1 ">
 										<Select
@@ -802,6 +796,7 @@ export default class TaskEdit extends Component {
 											/>
 									</div>
 								</div>
+							</div>
 							</div>
 						</div>
 			</div>

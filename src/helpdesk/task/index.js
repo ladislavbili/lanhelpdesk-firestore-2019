@@ -127,6 +127,7 @@ class TasksIndex extends Component {
 	}
 
 	render() {
+		console.log(this.filterTasks());
 		let link='';
 		if(this.props.match.params.hasOwnProperty('listID')){
 			link = '/helpdesk/taskList/i/'+this.props.match.params.listID;
@@ -138,7 +139,7 @@ class TasksIndex extends Component {
 				data={this.filterTasks()}
 				filterBy={[
 					{value:'assignedTo',type:'list',func:((total,user)=>total+=user.email+' '+user.name+' '+user.surname+' ')},
-					{value:'tags',type:'list',func:((cur,item)=>cur+item.title+' ')},
+			//		{value:'tags',type:'list',func:((cur,item)=>cur+item.title+' ')},
 					{value:'statusChange',type:'date'},
 					{value:'createdAt',type:'date'},
 					{value:'requester',type:'user'},
@@ -183,25 +184,25 @@ class TasksIndex extends Component {
 				}
 				displayValues={[
 					{value:'id',label:'ID',type:'int'},
-					{value:'status',label:'Status',type:'object'},
 					{value:'title',label:'Title',type:'text'},
+					{value:'status',label:'Status',type:'object'},
 					{value:'requester',label:'Requester',type:'user'},
 					{value:'company',label:'Company',type:'object'},
 					{value:'assignedTo',label:'Assigned to',type:'list',func:(items)=>
 						(<div>
 							{
-								items.map((item)=><div key={item.id}>{item.name+' '+item.surname + ' ('+item.email+')'}</div>)
+								items.map((item)=><div key={item.id}>{item.name+' '+item.surname}</div>)
 							}
 						</div>)
 					},
 					{value:'createdAt',label:'Created at',type:'date'},
-					{value:'tags',label:'Tags',type:'list',func:(items)=>
+			/*		{value:'tags',label:'Tags',type:'list',func:(items)=>
 						(<div>
 						{items.map((item)=>
 							<span key={item.id} className="label label-info m-r-5">{item.title}</span>)
 						}
 						</div>)
-					},
+					},*/
 					{value:'deadline',label:'Deadline',type:'date'}
 				]}
 				orderByValues={[
@@ -211,7 +212,7 @@ class TasksIndex extends Component {
 					{value:'requester',label:'Requester',type:'user'},
 					{value:'assignedTo',label:'Assigned to',type:'list',func:((total,user)=>total+=user.email+' '+user.name+' '+user.surname+' ')},
 					{value:'createdAt',label:'Created at',type:'date'},
-					{value:'tags',label:'Tags',type:'list',func:((cur,item)=>cur+item.title+' ')},
+			//		{value:'tags',label:'Tags',type:'list',func:((cur,item)=>cur+item.title+' ')},
 					{value:'deadline',label:'Deadline',type:'date'}
 				]}
 				link={link}

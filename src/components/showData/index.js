@@ -100,7 +100,7 @@ class ShowDataContainer extends Component {
 										commandBar={this.props}
 										listName={this.props.listName}
 										history={this.props.history}
-										match={this.props.match} 
+										match={this.props.match}
 										data={this.filterData()}
 										itemID={this.props.itemID}
 										listID={this.props.listID}

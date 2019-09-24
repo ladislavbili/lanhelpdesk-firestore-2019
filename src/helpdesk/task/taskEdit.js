@@ -416,9 +416,9 @@ export default class TaskEdit extends Component {
 
 							</div>
 
-							<hr className="m-t-15 m-b-10"/>
+							<hr className="m-t-5 m-b-5"/>
 
-								<div className="col-lg-12 row m-b-10">
+								<div className="col-lg-12 row ">
 									<div className="center-hor m-r-5"><Label className="center-hor">Assigned to: </Label></div>
 									<div className="f-1">
 										<Select
@@ -436,7 +436,7 @@ export default class TaskEdit extends Component {
 								<div className="col-lg-12">
 
 									<div className="col-lg-4">
-											<div className="row p-r-10 m-b-10">
+											<div className="row p-r-10">
 												<Label className="col-3 col-form-label">Typ</Label>
 												<div className="col-9">
 													<Select
@@ -449,7 +449,7 @@ export default class TaskEdit extends Component {
 					                  />
 												</div>
 											</div>
-											<div className="row p-r-10 m-b-10">
+											<div className="row p-r-10">
 												<Label className="col-3 col-form-label">Projekt</Label>
 												<div className="col-9">
 													<Select
@@ -464,7 +464,7 @@ export default class TaskEdit extends Component {
 									</div>
 
 									<div className="col-lg-4">
-											<div className="row p-r-10 m-b-10">
+											<div className="row p-r-10">
 												<Label className="col-3 col-form-label">Zadal</Label>
 												<div className="col-9">
 													<Select
@@ -477,7 +477,7 @@ export default class TaskEdit extends Component {
 														/>
 												</div>
 											</div>
-											<div className="row p-r-10 m-b-10">
+											<div className="row p-r-10">
 												<Label className="col-3 col-form-label">Firma</Label>
 												<div className="col-9">
 													<Select
@@ -493,7 +493,7 @@ export default class TaskEdit extends Component {
 									</div>
 
 									<div className="col-lg-4">
-										<div className="row p-r-10 m-b-10">
+										<div className="row p-r-10">
 											<Label className="col-3 col-form-label">Deadline</Label>
 											<div className="col-9">
 												{/*className='form-control hidden-input'*/}
@@ -530,7 +530,7 @@ export default class TaskEdit extends Component {
 								</div>
 
 
-							{false && <div className="form-group m-b-0 row">
+							{false && <div className="form-group row">
 								<label className="col-5 col-form-label text-slim">Mimo pracovných hodín</label>
 								<div className="col-7">
 									<Select
@@ -557,8 +557,8 @@ export default class TaskEdit extends Component {
 								</div>
 							</div>}
 
-							<Label className="m-t-5  m-b-10">Popis</Label>
-							<textarea className="form-control b-r-0  m-b-10 hidden-input" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value},this.submitTask.bind(this))} />
+							<Label className="m-t-5">Popis</Label>
+							<textarea className="form-control b-r-0 hidden-input" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value},this.submitTask.bind(this))} />
 
 							<div className="row">
 								<div className="center-hor"><Label className="center-hor">Tagy: </Label></div>

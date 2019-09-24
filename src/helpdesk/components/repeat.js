@@ -58,7 +58,7 @@ render() {
   return (
     <div>
       { this.props.columns &&
-        <div className="row p-r-10 m-b-10">
+        <div className="row p-r-10 ">
           <Label className="col-3 col-form-label">Repeat</Label>
           <div className="col-9">
             <Button type="button" className="repeat-btn flex" id={"openPopover"+this.props.taskID} onClick={this.toggleRepeat}>

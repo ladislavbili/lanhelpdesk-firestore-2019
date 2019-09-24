@@ -53,6 +53,9 @@ export const getItemDisplayValue= (item,value) => {
     return 'Neexistuje';
   }
   if(value.type==='object'){
+    if (value.value === "status"){
+      return <span className="label label-info" style={{backgroundColor: item[value.value] ? item[value.value].color : "white"}}>{item[value.value] ? item[value.value].title : "No status"}</span>
+    }
     return item[value.value].title;
   }else if(value.type==='text'){
     return item[value.value];
@@ -67,7 +70,7 @@ export const getItemDisplayValue= (item,value) => {
   }else if(value.type==='date'){
     return timestampToString(item[value.value]);
   }else if(value.type==='user'){
-    return item[value.value].name+' '+item[value.value].surname + ' ('+item[value.value].email+')';
+    return item[value.value].name+' '+item[value.value].surname;
   }else{
     return 'Error'
   }

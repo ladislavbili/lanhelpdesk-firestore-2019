@@ -22,8 +22,6 @@ export default class List extends Component {
 	}
 
 	render() {
-		console.log(this.props);
-
 		return (
 				<div className="row">
 					<CommandBar {...this.props.commandBar} />
@@ -34,16 +32,19 @@ export default class List extends Component {
 								<thead>
 										<tr>
 											{
-												this.props.displayValues.map((display,index)=>
-												<th key={index}>
-													{display.label}
-												</th>
+												this.props.displayValues.map((display,index)=> {
+													return (
+														<th key={index} width={display.value === 'title' ? "30%" : (display.value === "id" ? "50px" : "")}>
+															{display.label}
+														</th>
+													)
+												}
 											)}
 										</tr>
 									</thead>
 
 									<tbody>
-										<tr>
+										<tr style={{backgroundColor: "#F2F1F1"}}>
 											{
 												this.props.displayValues.map((display,index)=>
 												<th key={index}>
@@ -59,7 +60,7 @@ export default class List extends Component {
 																});
 															}
 														}
-														placeholder={`Filter by ${display.label}`} />
+														placeholder={`${display.label}`} />
 												</th>
 											)}
 										</tr>
