@@ -10,6 +10,22 @@ import passReducer from './reducers/passReducer';
 import cmdbReducer from './reducers/cmdbReducer';
 import wikiReducer from './reducers/wikiReducer';
 
+//storage
+import storageCompanies from './reducers/storage/companiesReducer';
+import storageHelpFilters from './reducers/storage/help-filtersReducer';
+import storageHelpPricelists from './reducers/storage/help-pricelistsReducer';
+import storageHelpPrices from './reducers/storage/help-pricesReducer';
+import storageHelpProjects from './reducers/storage/help-projectsReducer';
+import storageHelpStatuses from './reducers/storage/help-statusesReducer';
+import storageHelpTags from './reducers/storage/help-tagsReducer';
+import storageHelpTaskTypes from './reducers/storage/help-task_typesReducer';
+import storageHelpTasks from './reducers/storage/help-tasksReducer';
+import storageHelpUnits from './reducers/storage/help-unitsReducer';
+import storageHelpWorkTypes from './reducers/storage/help-work_typesReducer';
+import storageUsers from './reducers/storage/usersReducer';
+
+
+
 const reducers = combineReducers({
     appReducer,
     userReducer,
@@ -19,6 +35,19 @@ const reducers = combineReducers({
     passReducer,
     cmdbReducer,
     wikiReducer,
+    //storage
+    storageCompanies,
+    storageHelpFilters,
+    storageHelpPricelists,
+    storageHelpPrices,
+    storageHelpProjects,
+    storageHelpStatuses,
+    storageHelpTags,
+    storageHelpTaskTypes,
+    storageHelpTasks,
+    storageHelpUnits,
+    storageHelpWorkTypes,
+    storageUsers,
   });
 
 const enhancers = compose(

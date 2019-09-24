@@ -113,11 +113,6 @@ class TasksRow extends Component {
 	}
 
 	render() {
-		console.log('-----------');
-		console.log(this.props.filter);
-		console.log(this.props.currentUser);
-		console.log(this.filterTasks());
-		console.log('-----------');
 		let link='';
 		if(this.props.match.params.hasOwnProperty('listID')){
 			link = '/helpdesk/taskList/i/'+this.props.match.params.listID;

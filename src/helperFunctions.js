@@ -118,3 +118,7 @@ export const fromCentralTime = (time)=>{
   let userTimezoneOffset = date.getTimezoneOffset() * 60*1000;
   return (new Date(date.getTime() - userTimezoneOffset)).getTime();
 }
+
+export const sameStringForms = (item1,item2)=>{
+  return JSON.stringify(item1)===JSON.stringify(item2)
+}
