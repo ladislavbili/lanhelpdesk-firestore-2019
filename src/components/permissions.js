@@ -29,10 +29,7 @@ export default class Permits extends Component {
 	    then(data) {
 	    },
 	    onFailure(err) {
-				console.log("-----------------");
-	      console.log("Pardon the intrusion, but it seems we have encountered an error. Its descriptionis as follows:");
 				console.log(err);
-				console.log("-----------------");
 	    }
 	  });
 	}
@@ -55,10 +52,6 @@ export default class Permits extends Component {
 	}
 
 	render() {
-		console.log("----------------------");
-		console.log(this.state.view);
-		console.log(this.state.edit);
-		console.log(this.state.permissions);
 		const USERS_TABLE = this.state.users
 												.filter(user => this.state.view.includes(user.id) || this.state.edit.includes(user.id) || this.state.permissions.includes(user.id))
 												.map(user => {

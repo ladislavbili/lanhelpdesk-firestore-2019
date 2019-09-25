@@ -3,7 +3,6 @@ import {Button } from 'reactstrap';
 import { connect } from "react-redux";
 import {storageSuppliersStart, storageSupplierInvoicesStart} from '../../../redux/actions';
 
-import {rebase} from '../../../index';
 import {timestampToString, sameStringForms} from '../../../helperFunctions';
 import SupplierInvoiceAdd from './supplierInvoiceAdd';
 import SupplierInvoiceEdit from './supplierInvoiceEdit';

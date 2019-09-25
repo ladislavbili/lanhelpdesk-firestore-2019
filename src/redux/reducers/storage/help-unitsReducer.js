@@ -2,6 +2,7 @@ import {STORAGE_SET_HELP_UNITS, STORAGE_HELP_UNITS_ACTIVE} from '../../types'
 
 const initialState = {
   unitsActive:false,
+  unitsLoaded:false,
   units:[]
 };
 
@@ -11,6 +12,7 @@ export default function storageUnitsReducer(state = initialState, action) {
       return {
         ...state,
         units: action.units,
+        unitsLoaded:true,
       };
     }
     case STORAGE_HELP_UNITS_ACTIVE:

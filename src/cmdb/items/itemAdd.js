@@ -79,7 +79,6 @@ export default class ItemAdd extends Component{
 
 
   render(){
-    console.log(this.state.backupTasks);
     return (
       <div>
 

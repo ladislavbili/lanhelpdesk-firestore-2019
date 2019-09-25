@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import {rebase, database} from '../../index';
-import {toSelArr, snapshotToArray, sameStringForms } from '../../helperFunctions';
+import {toSelArr, sameStringForms } from '../../helperFunctions';
 import { Modal, ModalBody, Button } from 'reactstrap';
 import TaskAdd from './taskAdd';
 import {storageHelpStatusesStart, storageHelpProjectsStart, storageUsersStart, storageCompaniesStart, storageHelpWorkTypesStart, storageHelpUnitsStart, storageHelpPricesStart, storageHelpPricelistsStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageMetadataStart} from '../../redux/actions';
@@ -28,7 +27,7 @@ class TaskAddContainer extends Component{
   }
 
   componentWillReceiveProps(props){
-		if(!sameStringForms(props.statuses,this.props.statuses)||
+		if((!sameStringForms(props.statuses,this.props.statuses)||
       !sameStringForms(props.projects,this.props.projects)||
       !sameStringForms(props.users,this.props.users)||
       !sameStringForms(props.companies,this.props.companies)||
@@ -38,9 +37,20 @@ class TaskAddContainer extends Component{
       !sameStringForms(props.pricelists,this.props.pricelists)||
       !sameStringForms(props.tags,this.props.tags)||
       !sameStringForms(props.taskTypes,this.props.taskTypes)||
-      !sameStringForms(props.metadata,this.props.metadata)
+      !sameStringForms(props.metadata,this.props.metadata))&&
+      props.statusesLoaded &&
+      props.projectsLoaded &&
+      props.usersLoaded &&
+      props.companiesLoaded &&
+      props.workTypesLoaded &&
+      props.unitsLoaded &&
+      props.pricesLoaded &&
+      props.pricelistsLoaded &&
+      props.tagsLoaded &&
+      props.taskTypesLoaded &&
+      props.metadataLoaded
     ){
-      this.setData();
+      this.setData(props);
 		}
 	}
 
@@ -73,7 +83,7 @@ class TaskAddContainer extends Component{
       this.props.storageHelpPricesStart();
     }
 
-    if(!this.props.priceListsActive){
+    if(!this.props.pricelistsActive){
       this.props.storageHelpPricelistsStart();
     }
 
@@ -87,28 +97,39 @@ class TaskAddContainer extends Component{
     if(!this.props.metadataActive){
       this.props.storageMetadataStart();
     }
-    this.setData();
+    if(this.props.statusesLoaded &&
+      this.props.projectsLoaded &&
+      this.props.usersLoaded &&
+      this.props.companiesLoaded &&
+      this.props.workTypesLoaded &&
+      this.props.unitsLoaded &&
+      this.props.pricesLoaded &&
+      this.props.pricelistsLoaded &&
+      this.props.tagsLoaded &&
+      this.props.taskTypesLoaded &&
+      this.props.metadataLoaded){
+      this.setData(this.props);
+    }
   }
 
-    setData(){
-      let statuses = toSelArr(this.props.statuses);
-      let projects = toSelArr(this.props.projects);
-      let users = toSelArr(this.props.users,'email');
-      let companies = toSelArr(this.props.companies);
-      let workTypes = toSelArr(this.props.workTypes);
-      let units = toSelArr(this.props.units);
-      let prices = this.props.prices;
-      let pricelists = this.props.pricelists;
-      let tags = toSelArr(this.props.tags);
-      let taskTypes = toSelArr(this.props.taskTypes);
-      let defaultUnit = this.props.metadata?this.props.metadata.defaultUnit:null;
-      if(defaultUnit===null){
-        return;
-      }
+    setData(props){
+      let statuses = toSelArr(props.statuses);
+      let projects = toSelArr(props.projects);
+      let users = toSelArr(props.users,'email');
+      let companies = toSelArr(props.companies);
+      let workTypes = toSelArr(props.workTypes);
+      let units = toSelArr(props.units);
+      let prices = props.prices;
+      let pricelists = props.pricelists;
+      let tags = toSelArr(props.tags);
+      let taskTypes = toSelArr(props.taskTypes);
+      let defaultUnit = props.metadata?props.metadata.defaultUnit:null;
+
       let newCompanies=companies.map((company)=>{
         let newCompany={...company,pricelist:pricelists.find((item)=>item.id===company.pricelist)};
         return newCompany;
       });
+
       let newWorkTypes=workTypes.map((workType)=>{
         let newWorkType = {...workType, prices:prices.filter((price)=>price.workType===workType.id)}
         return newWorkType;
@@ -185,19 +206,19 @@ const mapStateToProps = ({ filterReducer, taskReducer, storageHelpStatuses, stor
 	const { project, filter } = filterReducer;
 	const { orderBy, ascending } = taskReducer;
 
-  const { statusesActive, statuses } = storageHelpStatuses;
-  const { projectsActive, projects } = storageHelpProjects;
-  const { usersActive, users } = storageUsers;
-  const { companiesActive, companies } = storageCompanies;
-  const { workTypesActive, workTypes } = storageHelpWorkTypes;
-  const { unitsActive, units } = storageHelpUnits;
-  const { pricesActive, prices } = storageHelpPrices;
-  const { pricelistsActive, pricelists } = storageHelpPricelists;
-  const { tagsActive, tags } = storageHelpTags;
-  const { taskTypesActive, taskTypes } = storageHelpTaskTypes;
-  const { metadataActive, metadata } = storageMetadata;
+  const { statusesLoaded ,statusesActive, statuses } = storageHelpStatuses;
+  const { projectsLoaded ,projectsActive, projects } = storageHelpProjects;
+  const { usersLoaded ,usersActive, users } = storageUsers;
+  const { companiesLoaded ,companiesActive, companies } = storageCompanies;
+  const { workTypesLoaded ,workTypesActive, workTypes } = storageHelpWorkTypes;
+  const { unitsLoaded ,unitsActive, units } = storageHelpUnits;
+  const { pricesLoaded ,pricesActive, prices } = storageHelpPrices;
+  const { pricelistsLoaded ,pricelistsActive, pricelists } = storageHelpPricelists;
+  const { tagsLoaded ,tagsActive, tags } = storageHelpTags;
+  const { taskTypesLoaded ,taskTypesActive, taskTypes } = storageHelpTaskTypes;
+  const { metadataLoaded ,metadataActive, metadata } = storageMetadata;
 
-	return { project, filter,orderBy,ascending, statusesActive, statuses, projectsActive, projects, usersActive, users, companiesActive, companies, workTypesActive, workTypes, unitsActive, units, pricesActive, prices, pricelistsActive, pricelists, tagsActive, tags, taskTypesActive, taskTypes, metadataActive, metadata };
+	return { project, filter,orderBy,ascending, statusesLoaded ,statusesActive, statuses, projectsLoaded ,projectsActive, projects, usersLoaded ,usersActive, users, companiesLoaded ,companiesActive, companies, workTypesLoaded ,workTypesActive, workTypes, unitsLoaded ,unitsActive, units, pricesLoaded ,pricesActive, prices, pricelistsLoaded ,pricelistsActive, pricelists, tagsLoaded ,tagsActive, tags, taskTypesLoaded ,taskTypesActive, taskTypes, metadataLoaded ,metadataActive, metadata };
 };
 
 export default connect(mapStateToProps, { storageHelpStatusesStart, storageHelpProjectsStart, storageUsersStart, storageCompaniesStart, storageHelpWorkTypesStart, storageHelpUnitsStart, storageHelpPricesStart, storageHelpPricelistsStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageMetadataStart})(TaskAddContainer);

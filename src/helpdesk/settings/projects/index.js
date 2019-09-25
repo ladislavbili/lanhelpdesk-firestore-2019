@@ -1,27 +1,32 @@
 import React, { Component } from 'react';
 import {Button } from 'reactstrap';
-import {rebase} from '../../../index';
 import ProjectAdd from './projectAdd';
+import { connect } from "react-redux";
 import ProjectEdit from './projectEdit';
+import {sameStringForms} from '../../../helperFunctions';
+import {storageHelpProjectsStart} from '../../../redux/actions';
 
-export default class ProjectList extends Component{
+class ProjectList extends Component{
   constructor(props){
     super(props);
     this.state={
-      projects:[]
+      projectFilter:''
     }
   }
+
+  componentWillReceiveProps(props){
+		if(!sameStringForms(props.projects,this.props.projects)){
+			this.setState({projectFilter:''});
+		}
+	}
+
+
   componentWillMount(){
-    this.ref = rebase.listenToCollection('/help-projects', {
-      context: this,
-      withIds: true,
-      then:content=>{this.setState({projects:content, projectFilter:''})},
-    });
+    if(!this.props.projectsActive){
+      this.props.storageHelpProjectsStart();
+    }
   }
 
-  componentWillUnmount(){
-    rebase.removeBinding(this.ref);
-  }
 
   render(){
     return (
@@ -64,7 +69,7 @@ export default class ProjectList extends Component{
                   </tr>
                 </thead>
                 <tbody>
-                  {this.state.projects.filter((item)=>item.title.toLowerCase().includes(this.state.projectFilter.toLowerCase())).map((project)=>
+                  {this.props.projects.filter((item)=>item.title.toLowerCase().includes(this.state.projectFilter.toLowerCase())).map((project)=>
                     <tr key={project.id}
                       className={"clickable" + (this.props.match.params.id === project.id ? " sidebar-item-active":"")}
                       onClick={()=>this.props.history.push('/helpdesk/settings/projects/'+project.id)}>
@@ -81,7 +86,7 @@ export default class ProjectList extends Component{
                 this.props.match.params.id && this.props.match.params.id==='add' && <ProjectAdd />
               }
               {
-                this.props.match.params.id && this.props.match.params.id!=='add' && this.state.projects.some((item)=>item.id===this.props.match.params.id) && <ProjectEdit match={this.props.match} history={this.props.history}/>
+                this.props.match.params.id && this.props.match.params.id!=='add' && this.props.projects.some((item)=>item.id===this.props.match.params.id) && <ProjectEdit match={this.props.match} history={this.props.history} id={this.props.match.params.id} />
               }
             </div>
           </div>
@@ -90,3 +95,11 @@ export default class ProjectList extends Component{
     );
   }
 }
+
+
+const mapStateToProps = ({ storageHelpProjects }) => {
+  const { projectsActive, projects } = storageHelpProjects;
+  return { projectsActive, projects };
+};
+
+export default connect(mapStateToProps, { storageHelpProjectsStart })(ProjectList);

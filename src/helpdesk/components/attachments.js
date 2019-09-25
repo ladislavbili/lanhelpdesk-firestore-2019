@@ -9,7 +9,6 @@ export default class Attachments extends Component {
 	}
 
 	render() {
-		console.log(this.props.attachments);
 		return (
 			<div className="m-t-10">
 				<div className="row">

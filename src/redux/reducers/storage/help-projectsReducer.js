@@ -2,6 +2,7 @@ import {STORAGE_SET_HELP_PROJECTS, STORAGE_HELP_PROJECTS_ACTIVE} from '../../typ
 
 const initialState = {
   projectsActive:false,
+  projectsLoaded:false,
   projects:[]
 };
 
@@ -11,6 +12,7 @@ export default function storageProjectsReducer(state = initialState, action) {
       return {
         ...state,
         projects: action.projects,
+        projectsLoaded:true,
       };
     }
     case STORAGE_HELP_PROJECTS_ACTIVE:

@@ -429,9 +429,6 @@ export default class TaskAdd extends Component{
 							{!this.state.hidden && <Materials
 								materials={taskMaterials}
 								submitMaterial={(newMaterial)=>{
-									console.log("-------------------------------");
-									console.log(newMaterial);
-									console.log(this.state.taskMaterials);
 									this.setState({taskMaterials:[...this.state.taskMaterials,{id:this.getNewID(),...newMaterial}]});
 								}}
 								updateMaterial={(id,newData)=>{

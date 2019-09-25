@@ -127,7 +127,6 @@ class TasksIndex extends Component {
 	}
 
 	render() {
-		console.log(this.filterTasks());
 		let link='';
 		if(this.props.match.params.hasOwnProperty('listID')){
 			link = '/helpdesk/taskList/i/'+this.props.match.params.listID;

@@ -2,6 +2,7 @@ import {STORAGE_SET_HELP_TASKS, STORAGE_HELP_TASKS_ACTIVE} from '../../types'
 
 const initialState = {
   tasksActive:false,
+  tasksLoaded:false,
   tasks:[]
 };
 
@@ -11,6 +12,7 @@ export default function storageTasksReducer(state = initialState, action) {
       return {
         ...state,
         tasks: action.tasks,
+        tasksLoaded:true,
       };
     }
     case STORAGE_HELP_TASKS_ACTIVE:

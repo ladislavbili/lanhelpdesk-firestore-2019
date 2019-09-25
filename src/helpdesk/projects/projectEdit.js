@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import { Modal, ModalBody, ModalFooter, Button, FormGroup, Label, Input } from 'reactstrap';
-import {rebase, database} from '../../index';
-import {toSelArr, snapshotToArray} from '../../helperFunctions';
+import { connect } from "react-redux";
+import {storageHelpStatusesStart, storageHelpTagsStart, storageUsersStart, storageHelpTaskTypesStart, storageCompaniesStart, storageHelpProjectsStart} from '../../redux/actions';
+import {rebase} from '../../index';
+import {toSelArr, sameStringForms} from '../../helperFunctions';
 import {invisibleSelectStyle} from '../../scss/selectStyles';
 import Permits from "../../components/permissions";
 
@@ -15,7 +17,7 @@ const noDef={
 	company:{def:false,fixed:false, value: null}
 }
 
-export default class ProjectEdit extends Component{
+class ProjectEdit extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -29,65 +31,110 @@ export default class ProjectEdit extends Component{
 
       ...noDef,
       saving: false,
+			loaded: false,
       opened: false
     }
-    this.fetchData.bind(this);
-    this.fetchData(this.props.item.id);
   }
+
+	storageLoaded(props){
+		return props.statusesLoaded &&
+			props.tagsLoaded &&
+			props.usersLoaded &&
+			props.taskTypesLoaded &&
+			props.companiesLoaded &&
+			props.projectsLoaded
+	}
 
   componentWillReceiveProps(props){
-    if (this.props.item.id !== props.item.id){
-      this.fetchData(props.item.id);
+    if (this.props.item.id !== props.item.id || (this.storageLoaded(props) && !this.storageLoaded(this.props))){
+			this.setProject(props);
     }
+		if(!sameStringForms(props.statuses,this.props.statuses) &&
+			!sameStringForms(props.tags,this.props.tags) &&
+			!sameStringForms(props.users,this.props.users) &&
+			!sameStringForms(props.taskTypes,this.props.taskTypes) &&
+			!sameStringForms(props.companies,this.props.companies)){
+				this.setData(props);
+			}
+
   }
 
-  fetchData(id){
-    Promise.all(
-      [
-        database.collection('help-projects').doc(id).get(),
-        database.collection('help-statuses').get(),
-        database.collection('help-tags').get(),
-        database.collection('users').get(),
-        database.collection('help-task_types').get(),
-        database.collection('companies').get(),
-      ]).then(([project,statuses,tags,users,types,companies])=>this.setData(
-        {id:project.id,...project.data()},
-				toSelArr(snapshotToArray(statuses)),
-				toSelArr(snapshotToArray(tags)),
-				toSelArr(snapshotToArray(users),'email'),
-				toSelArr(snapshotToArray(types)),
-      	toSelArr(snapshotToArray(companies))
-      ));
-  }
+	componentWillMount(){
+		if(!this.props.statusesActive){
+			this.props.storageHelpStatusesStart();
+		}
 
-  setData(project,statuses,allTags,users,types,companies){
-    let status = statuses.find(item=> project.def && item.id===project.def.status.value);
-    let tags = allTags.filter(item=> project.def && project.def.tags.value.includes(item.id));
-    let assignedTo = users.filter(item=> project.def && project.def.assignedTo.value.includes(item.id));
-    let type = types.find(item=> project.def && item.id===project.def.type.value);
-    let requester = users.find(item=> project.def && item.id===project.def.requester.value);
-    let company = companies.find(item=> project.def && item.id===project.def.company.value);
+		if(!this.props.tagsActive){
+			this.props.storageHelpTagsStart();
+		}
+
+		if(!this.props.usersActive){
+			this.props.storageUsersStart();
+		}
+
+		if(!this.props.taskTypesActive){
+			this.props.storageHelpTaskTypesStart();
+		}
+
+		if(!this.props.companiesActive){
+			this.props.storageCompaniesStart();
+		}
+
+		if(!this.props.projectsActive){
+			this.props.storageHelpProjectsStart();
+		}
+	}
+
+	setProject(props){
+		if(!this.storageLoaded(props)){
+			return;
+		}
+
+		let project = props.projects.find((project)=>project.id===props.item.id);
+		let statuses = toSelArr(props.statuses);
+		let allTags = toSelArr(props.tags);
+		let users = toSelArr(props.users,'email');
+		let types = toSelArr(props.taskTypes);
+		let companies = toSelArr(props.companies);
+
+		let status = statuses.find(item=> project.def && item.id===project.def.status.value);
+		let tags = allTags.filter(item=> project.def && project.def.tags.value.includes(item.id));
+		let assignedTo = users.filter(item=> project.def && project.def.assignedTo.value.includes(item.id));
+		let type = types.find(item=> project.def && item.id===project.def.type.value);
+		let requester = users.find(item=> project.def && item.id===project.def.requester.value);
+		let company = companies.find(item=> project.def && item.id===project.def.company.value);
+
+		this.setState({
+			title:project.title,
+			description:project.description?project.description:'',
+
+			status:status?{value:status,def:project.def.status.def,fixed:project.def.status.fixed}:{def:false,fixed:false, value: null},
+			tags:project.def?{value:tags,def:project.def.tags.def,fixed:project.def.tags.fixed}:{def:false,fixed:false, value: []},
+			assignedTo:project.def?{value:assignedTo,def:project.def.assignedTo.def,fixed:project.def.assignedTo.fixed}:{def:false,fixed:false, value: []},
+			type:type?{value:type,def:project.def.type.def,fixed:project.def.type.fixed}:{def:false,fixed:false, value: null},
+			requester:requester?{value:requester,def:project.def.requester.def,fixed:project.def.requester.fixed}:{def:false,fixed:false, value: null},
+			company:company?{value:company,def:project.def.company.def,fixed:project.def.company.fixed}:{def:false,fixed:false, value: null},
+		});
+
+	}
+
+  setData(props){
+		if(!this.storageLoaded(props)){
+			return;
+		}
+
     this.setState({
-      title:project.title,
-      description:project.description?project.description:'',
-      statuses,
-      allTags,
-      users,
-      types,
-      companies,
-
-      status:status?{value:status,def:project.def.status.def,fixed:project.def.status.fixed}:{def:false,fixed:false, value: null},
-      tags:project.def?{value:tags,def:project.def.tags.def,fixed:project.def.tags.fixed}:{def:false,fixed:false, value: []},
-      assignedTo:project.def?{value:assignedTo,def:project.def.assignedTo.def,fixed:project.def.assignedTo.fixed}:{def:false,fixed:false, value: []},
-      type:type?{value:type,def:project.def.type.def,fixed:project.def.type.fixed}:{def:false,fixed:false, value: null},
-      requester:requester?{value:requester,def:project.def.requester.def,fixed:project.def.requester.fixed}:{def:false,fixed:false, value: null},
-      company:company?{value:company,def:project.def.company.def,fixed:project.def.company.fixed}:{def:false,fixed:false, value: null},
+      statuses:toSelArr(props.statuses),
+      allTags: toSelArr(props.tags),
+      users: toSelArr(props.users,'email'),
+      types: toSelArr(props.taskTypes),
+      companies: toSelArr(props.companies),
     });
   }
 
   toggle(){
     if(!this.state.opened){
-      this.fetchData(this.props.item.id);
+			this.setProject(this.props);
     }
     this.setState({opened: !this.state.opened})
   }
@@ -105,8 +152,8 @@ export default class ProjectEdit extends Component{
         <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
             <ModalBody>
               <FormGroup>
-                <Label>Filter name</Label>
-                <Input type="text" className="from-control" placeholder="Enter filter name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
+                <Label>Project name</Label>
+                <Input type="text" className="from-control" placeholder="Enter project name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
               </FormGroup>
 
               <FormGroup>
@@ -301,3 +348,20 @@ export default class ProjectEdit extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ storageHelpStatuses, storageHelpTags, storageUsers, storageHelpTaskTypes, storageCompanies, storageHelpProjects }) => {
+	const { statusesActive, statuses, statusesLoaded } = storageHelpStatuses;
+	const { tagsActive, tags, tagsLoaded } = storageHelpTags;
+	const { usersActive, users, usersLoaded } = storageUsers;
+	const { taskTypesActive, taskTypes, taskTypesLoaded } = storageHelpTaskTypes;
+	const { companiesActive, companies, companiesLoaded } = storageCompanies;
+	const { projectsActive, projects, projectsLoaded } = storageHelpProjects;
+	return { statusesActive, statuses, statusesLoaded,
+		tagsActive, tags, tagsLoaded,
+		usersActive, users, usersLoaded,
+		taskTypesActive, taskTypes, taskTypesLoaded,
+		companiesActive, companies, companiesLoaded,
+		projectsActive, projects, projectsLoaded };
+};
+
+export default connect(mapStateToProps, { storageHelpStatusesStart, storageHelpTagsStart, storageUsersStart, storageHelpTaskTypesStart, storageCompaniesStart, storageHelpProjectsStart })(ProjectEdit);

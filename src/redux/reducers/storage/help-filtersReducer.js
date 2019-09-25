@@ -2,6 +2,7 @@ import {STORAGE_SET_HELP_FILTERS, STORAGE_HELP_FILTERS_ACTIVE} from '../../types
 
 const initialState = {
   filtersActive:false,
+  filtersLoaded:false,
   filters:[]
 };
 
@@ -11,6 +12,7 @@ export default function storageFiltersReducer(state = initialState, action) {
       return {
         ...state,
         filters: action.filters,
+        filtersLoaded:true,
       };
     }
     case STORAGE_HELP_FILTERS_ACTIVE:

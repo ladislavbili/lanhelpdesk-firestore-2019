@@ -17,7 +17,7 @@ export default class TaskPrint extends Component {
 			<div className="display-inline">
 					<ReactToPrint
 						trigger={() =>
-							<button className="btn btn-link waves-effect">
+							<button className="btn btn-link waves-effect" disabled={!this.props.isLoaded}>
 								<i
 									className="fas fa-print mr-3"
 									/>
@@ -39,6 +39,9 @@ class TaskInfo extends Component {
 
 
 	render() {
+		if(!this.props.isLoaded){
+			return null;
+		}
 			let taskWorks= this.props.taskWorks.map((work)=>{
 				let finalUnitPrice=parseFloat(work.price);
 				if(work.extraWork){
@@ -191,7 +194,7 @@ class TaskInfo extends Component {
 							company={this.props.company}
 							match={this.props.match}
 							/>
-
+						
 						<Materials
 							dataOnly={true}
 							materials={taskMaterials}

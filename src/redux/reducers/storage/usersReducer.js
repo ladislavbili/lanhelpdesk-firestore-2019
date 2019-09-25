@@ -2,6 +2,7 @@ import {STORAGE_USERS, STORAGE_USERS_ACTIVE} from '../../types'
 
 const initialState = {
   usersActive:false,
+  usersLoaded:false,
   users:[]
 };
 
@@ -11,6 +12,7 @@ export default function storageUsersReducer(state = initialState, action) {
       return {
         ...state,
         users: action.users,
+        usersLoaded:true,
       };
     }
     case STORAGE_USERS_ACTIVE:

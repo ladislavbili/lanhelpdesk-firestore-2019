@@ -235,8 +235,9 @@ class Filter extends Component {
               </div>
             </NavItem>
             <NavItem>
-              <div className="m-b-5 row sidebar-filter-row">
-                <label>Start:</label>
+              <label>Status change:</label>
+              <div className="m-b-5 mt-0 row sidebar-filter-row">
+                <label>From:</label>
                 <div className="flex m-t--5">
                   <Input
                     type="datetime-local"
@@ -252,7 +253,7 @@ class Filter extends Component {
             <NavItem>
               <div className="m-b-5 row sidebar-filter-row">
                 <div>
-                  <label>Due:</label>
+                  <label>To:</label>
                 </div>
                 <div className="flex m-t--5">
                   <Input

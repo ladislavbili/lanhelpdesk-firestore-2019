@@ -2,6 +2,7 @@ import {STORAGE_SET_HELP_PRICELISTS, STORAGE_HELP_PRICELISTS_ACTIVE} from '../..
 
 const initialState = {
   pricelistsActive:false,
+  pricelistsLoaded:false,
   pricelists:[]
 };
 
@@ -10,13 +11,14 @@ export default function storagePricelistsReducer(state = initialState, action) {
     case STORAGE_SET_HELP_PRICELISTS:{
       return {
         ...state,
-        priceLists: action.priceLists,
+        pricelists: action.pricelists,
+        pricelistsLoaded:true,
       };
     }
     case STORAGE_HELP_PRICELISTS_ACTIVE:
       return {
         ...state,
-        priceListsActive: true,
+        pricelistsActive: true,
       };
     default:
       return state;

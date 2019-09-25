@@ -2,6 +2,7 @@ import {STORAGE_SET_METADATA, STORAGE_METADATA_ACTIVE} from '../../types'
 
 const initialState = {
   metadataActive:false,
+  metadataLoaded:false,
   metadata:null
 };
 
@@ -11,6 +12,7 @@ export default function storageMetadataReducer(state = initialState, action) {
       return {
         ...state,
         metadata: action.metadata,
+        metadataLoaded:true,
       };
     }
     case STORAGE_METADATA_ACTIVE:

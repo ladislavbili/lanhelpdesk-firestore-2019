@@ -2,6 +2,7 @@ import {STORAGE_SET_HELP_STATUSES, STORAGE_HELP_STATUSES_ACTIVE} from '../../typ
 
 const initialState = {
   statusesActive:false,
+  statusesLoaded:false,
   statuses:[]
 };
 
@@ -11,6 +12,7 @@ export default function storageStatusesReducer(state = initialState, action) {
       return {
         ...state,
         statuses: action.statuses,
+        statusesLoaded:true,
       };
     }
     case STORAGE_HELP_STATUSES_ACTIVE:

@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
+import { connect } from "react-redux";
 import {invisibleSelectStyle} from '../../scss/selectStyles';
+import {storageHelpStatusesStart, storageHelpTagsStart, storageUsersStart, storageHelpTaskTypesStart, storageCompaniesStart} from '../../redux/actions';
 import { Button, FormGroup, Label,Input, Modal, ModalHeader, ModalBody, ModalFooter  } from 'reactstrap';
-import {toSelArr, snapshotToArray} from '../../helperFunctions';
-import {rebase, database} from '../../index';
+import {toSelArr, sameStringForms} from '../../helperFunctions';
+import {rebase} from '../../index';
 
 
 const noDef={
@@ -15,7 +17,7 @@ const noDef={
 	company:{def:false,fixed:false, value: null}
 }
 
-export default class ProjectAdd extends Component{
+class ProjectAdd extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -31,44 +33,60 @@ export default class ProjectAdd extends Component{
       saving: false,
       opened: true
     }
-    this.fetchData.bind(this);
-    this.fetchData();
   }
 
-  fetchData(){
-    Promise.all(
-      [
-        database.collection('help-statuses').get(),
-        database.collection('help-tags').get(),
-        database.collection('users').get(),
-        database.collection('help-task_types').get(),
-        database.collection('companies').get(),
-      ]).then(([statuses,tags,users,types,companies])=>this.setData(
-        toSelArr(snapshotToArray(statuses)),
-				toSelArr(snapshotToArray(tags)),
-				toSelArr(snapshotToArray(users),'email'),
-				toSelArr(snapshotToArray(types)),
-      	toSelArr(snapshotToArray(companies))
-      ));
-  }
+	componentWillReceiveProps(props){
+		if(!sameStringForms(props.statuses,this.props.statuses)){
+			this.setState({statuses:toSelArr(props.statuses)})
+		}
+		if(!sameStringForms(props.tags,this.props.tags)){
+			this.setState({tags:toSelArr(props.tags)})
+		}
+		if(!sameStringForms(props.users,this.props.users)){
+			this.setState({users:toSelArr(props.users,'email')})
+		}
+		if(!sameStringForms(props.taskTypes,this.props.taskTypes)){
+			this.setState({taskTypes:toSelArr(props.taskTypes)})
+		}
+		if(!sameStringForms(props.companies,this.props.companies)){
+			this.setState({companies:toSelArr(props.companies)})
+		}
+	}
 
-  setData(statuses,allTags,users,types,companies){
-    this.setState({
-      title:'',
-      description:'',
-      statuses,
-      allTags,
-      users,
-      types,
-      companies,
+	componentWillMount(){
+		if(!this.props.statusesActive){
+			this.props.storageHelpStatusesStart();
+		}
+		this.setState({statuses:toSelArr(this.props.statuses)});
 
-      ...noDef
-    });
-  }
+		if(!this.props.tagsActive){
+			this.props.storageHelpTagsStart();
+		}
+		this.setState({allTags:toSelArr(this.props.tags)});
+
+		if(!this.props.usersActive){
+			this.props.storageUsersStart();
+		}
+		this.setState({users:toSelArr(this.props.users,'email')});
+
+		if(!this.props.taskTypesActive){
+			this.props.storageHelpTaskTypesStart();
+		}
+		this.setState({types:toSelArr(this.props.taskTypes)});
+
+		if(!this.props.companiesActive){
+			this.props.storageCompaniesStart();
+		}
+		this.setState({companies:toSelArr(this.props.companies)});
+	}
 
   toggle(){
     if(!this.state.opened){
-      this.fetchData();
+			this.setState({
+				title:'',
+	      description:'',
+				...noDef,
+			})
     }
 		this.props.close();
     this.setState({opened:!this.state.opened});
@@ -281,3 +299,18 @@ export default class ProjectAdd extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ storageHelpStatuses, storageHelpTags, storageUsers, storageHelpTaskTypes, storageCompanies }) => {
+	const { statusesActive, statuses } = storageHelpStatuses;
+	const { tagsActive, tags } = storageHelpTags;
+	const { usersActive, users } = storageUsers;
+	const { taskTypesActive, taskTypes } = storageHelpTaskTypes;
+	const { companiesActive, companies } = storageCompanies;
+	return { statusesActive, statuses,
+		tagsActive, tags,
+		usersActive, users,
+		taskTypesActive, taskTypes,
+		companiesActive, companies };
+};
+
+export default connect(mapStateToProps, { storageHelpStatusesStart, storageHelpTagsStart, storageUsersStart, storageHelpTaskTypesStart, storageCompaniesStart })(ProjectAdd);

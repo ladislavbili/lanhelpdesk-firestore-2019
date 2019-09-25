@@ -2,6 +2,7 @@ import {STORAGE_SET_HELP_WORK_TYPES, STORAGE_HELP_WORK_TYPES_ACTIVE} from '../..
 
 const initialState = {
   workTypesActive:false,
+  workTypesLoaded:false,
   workTypes:[]
 };
 
@@ -11,6 +12,7 @@ export default function storageWorkTypesReducer(state = initialState, action) {
       return {
         ...state,
         workTypes: action.workTypes,
+        workTypesLoaded:true,
       };
     }
     case STORAGE_HELP_WORK_TYPES_ACTIVE:

@@ -2,6 +2,7 @@ import {STORAGE_HELP_SUPPLIER_INVOICES, STORAGE_HELP_SUPPLIER_INVOICES_ACTIVE} f
 
 const initialState = {
   supplierInvoicesActive:false,
+  supplierInvoicesLoaded:false,
   supplierInvoices:[]
 };
 
@@ -11,6 +12,7 @@ export default function storageSupplierInvoicesReducer(state = initialState, act
       return {
         ...state,
         supplierInvoices: action.supplierInvoices,
+        supplierInvoicesLoaded:true,
       };
     }
     case STORAGE_HELP_SUPPLIER_INVOICES_ACTIVE:

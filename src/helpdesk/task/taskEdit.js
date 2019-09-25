@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
+import { connect } from "react-redux";
 import {Button, Label, TabContent, TabPane, Nav, NavItem, NavLink} from 'reactstrap';
 import Attachments from '../components/attachments.js';
 import Comments from '../components/comments.js';
@@ -16,7 +17,8 @@ import TaskPrint from './taskPrint';
 import classnames from "classnames";
 import {rebase, database} from '../../index';
 import firebase from 'firebase';
-import {toSelArr, snapshotToArray, timestampToString, toCentralTime, fromCentralTime} from '../../helperFunctions';
+import {toSelArr, snapshotToArray, timestampToString, toCentralTime, fromCentralTime, sameStringForms} from '../../helperFunctions';
+import { storageCompaniesStart, storageHelpPricelistsStart, storageHelpPricesStart,storageHelpProjectsStart, storageHelpStatusesStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageHelpTasksStart, storageHelpUnitsStart,storageHelpWorkTypesStart, storageMetadataStart, storageUsersStart } from '../../redux/actions';
 import {invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
 
 const noDef={
@@ -28,26 +30,28 @@ const noDef={
 	company:{def:false,fixed:false, value: null}
 }
 
-export default class TaskEdit extends Component {
+class TaskEdit extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			saving:false,
 			loading:true,
 			addItemModal:false,
+
+			taskMaterials:[],
+			taskWorks:[],
+			pricelists:[],
+			extraDataLoaded:false,
+
 			users:[],
 			companies:[],
 			workTypes:[],
 			statuses:[],
 			projects:[],
-			taskMaterials:[],
-			taskWorks:[],
-			subtasks:[],
 			units:[],
 			allTags:[],
 			taskTypes:[],
 			defaultUnit:null,
-			task:null,
 			openEditServiceModal:false,
 			openService:null,
 			openEditMaterialModal:false,
@@ -88,6 +92,7 @@ export default class TaskEdit extends Component {
     this.submitService.bind(this);
 		this.canSave.bind(this);
 		this.deleteTask.bind(this);
+		this.saveData.bind(this);
     this.fetchData(this.props.match.params.taskID);
 		/*
 		console.log('----------------');
@@ -109,20 +114,35 @@ export default class TaskEdit extends Component {
 		return this.state.title==="" || this.state.status===null || this.state.project === null||this.state.saving;
 	}
 
+	storageLoaded(props){
+		return props.companiesLoaded &&
+			props.pricelistsLoaded &&
+			props.pricesLoaded &&
+			props.projectsLoaded &&
+			props.statusesLoaded &&
+			props.tagsLoaded &&
+			props.taskTypesLoaded &&
+			props.tasksLoaded &&
+			props.unitsLoaded &&
+			props.workTypesLoaded &&
+			props.metadataLoaded &&
+			props.usersLoaded
+	}
+
 	deleteTask(){
 		if(window.confirm("Are you sure?")){
-
+			let taskID = this.props.match.params.taskID;
 			let storageRef = firebase.storage().ref();
 			this.state.attachments.map((attachment)=>storageRef.child(attachment.path).delete());
 
-			rebase.removeDoc('/help-tasks/'+this.state.task.id);
+			rebase.removeDoc('/help-tasks/'+taskID);
 			this.state.taskMaterials.forEach((material)=>rebase.removeDoc('/help-task_materials/'+material.id))
 			this.state.taskWorks.forEach((work)=>rebase.removeDoc('/help-task_works/'+work.id))
-			this.state.subtasks.forEach((subtask)=>rebase.removeDoc('/help-task_subtasks/'+subtask.id))
+			//this.state.subtasks.forEach((subtask)=>rebase.removeDoc('/help-task_subtasks/'+subtask.id))
 			if(this.state.repeat!==null){
-				rebase.removeDoc('/help-repeats/'+this.state.task.id);
+				rebase.removeDoc('/help-repeats/'+taskID);
 			}
-			database.collection('help-comments').where("task", "==", this.state.task.id).get()
+			database.collection('help-comments').where("task", "==", taskID).get()
 			.then((data)=>{
 				snapshotToArray(data).forEach((item)=>rebase.removeDoc('/help-comments/'+item.id));
 			});
@@ -133,8 +153,8 @@ export default class TaskEdit extends Component {
 		if(this.canSave()){
 			return;
 		}
+		let taskID = this.props.match.params.taskID;
     this.setState({saving:true});
-		console.log(new Date(this.state.deadline));
     let body = {
       title: this.state.title,
       company: this.state.company?this.state.company.id:null,
@@ -151,102 +171,137 @@ export default class TaskEdit extends Component {
       overtime: this.state.overtime.value,
 			tags: this.state.tags.map((item)=>item.id),
 			type: this.state.type?this.state.type.id:null,
-			repeat: this.state.repeat!==null?this.state.task.id:null,
+			repeat: this.state.repeat!==null?taskID:null,
 			attachments:this.state.attachments,
     }
 
-    rebase.updateDoc('/help-tasks/'+this.state.task.id, body)
+    rebase.updateDoc('/help-tasks/'+taskID, body)
     .then(()=>{
       this.setState({saving:false});
     });
   }
 
-	submitSubtask(body){
-		rebase.addToCollection('help-task_subtasks',{task:this.props.match.params.taskID,...body}).then((result)=>{
-			this.setState({subtasks:[...this.state.subtasks, {task:this.props.match.params.taskID,...body,id:result.id}]})
-		});
-	}
-
-  submitMaterial(body){
-    rebase.addToCollection('help-task_materials',{task:this.props.match.params.taskID,...body}).then((result)=>{
-      this.setState({taskMaterials:[...this.state.taskMaterials, {task:this.props.match.params.taskID,...body,id:result.id}]})
-    });
-  }
-
-  submitService(body){
-    rebase.addToCollection('help-task_works',{task:this.props.match.params.taskID,...body}).then((result)=>{
-      this.setState({taskWorks:[...this.state.taskWorks, {task:this.props.match.params.taskID,...body,id:result.id}]})
-    });
-  }
-
   componentWillReceiveProps(props){
     if(this.props.match.params.taskID!==props.match.params.taskID){
-      this.setState({loading:true})
+      this.setState({loading:true, extraDataLoaded:false});
       this.fetchData(props.match.params.taskID);
     }
+		if(!sameStringForms(props.companies,this.props.companies)||
+			!sameStringForms(props.pricelists,this.props.pricelists)||
+			!sameStringForms(props.prices,this.props.prices)||
+			!sameStringForms(props.projects,this.props.projects)||
+			!sameStringForms(props.statuses,this.props.statuses)||
+			!sameStringForms(props.tags,this.props.tags)||
+			!sameStringForms(props.taskTypes,this.props.taskTypes)||
+			!sameStringForms(props.tasks,this.props.tasks)||
+			!sameStringForms(props.units,this.props.units)||
+			!sameStringForms(props.workTypes,this.props.workTypes)||
+			!sameStringForms(props.metadata,this.props.metadata)||
+			!sameStringForms(props.users,this.props.users)){
+			this.setData(props);
+		}
+  }
+
+	componentWillMount(){
+		if(!this.props.companiesActive){
+			this.props.storageCompaniesStart();
+		}
+		if(!this.props.pricelistsActive){
+			this.props.storageHelpPricelistsStart();
+		}
+		if(!this.props.pricesActive){
+			this.props.storageHelpPricesStart();
+		}
+		if(!this.props.projectsActive){
+			this.props.storageHelpProjectsStart();
+		}
+		if(!this.props.statusesActive){
+			this.props.storageHelpStatusesStart();
+		}
+		if(!this.props.tagsActive){
+			this.props.storageHelpTagsStart();
+		}
+		if(!this.props.taskTypesActive){
+			this.props.storageHelpTaskTypesStart();
+		}
+		if(!this.props.tasksActive){
+			this.props.storageHelpTasksStart();
+		}
+		if(!this.props.unitsActive){
+			this.props.storageHelpUnitsStart();
+		}
+		if(!this.props.workTypesActive){
+			this.props.storageHelpWorkTypesStart();
+		}
+		if(!this.props.metadataActive){
+			this.props.storageMetadataStart();
+		}
+		if(!this.props.usersActive){
+			this.props.storageUsersStart();
+		}
+		this.setData(this.props);
   }
 
   fetchData(taskID){
     Promise.all(
       [
-        database.collection('help-tasks').doc(taskID).get(),
-        database.collection('help-statuses').get(),
-        database.collection('help-projects').get(),
-        database.collection('companies').get(),
-        database.collection('help-work_types').get(),
-        database.collection('help-units').get(),
-        database.collection('help-prices').get(),
-        database.collection('help-pricelists').get(),
-        database.collection('users').get(),
-				database.collection('help-tags').get(),
-				database.collection('help-task_types').get(),
         database.collection('help-task_materials').where("task", "==", taskID).get(),
         database.collection('help-task_works').where("task", "==", taskID).get(),
-				database.collection('help-task_subtasks').where("task", "==", taskID).get(),
-        database.collection('help-repeats').doc(taskID).get(),
-				rebase.get('metadata/0', {
-					context: this,
-				})
-    ]).then(([task,statuses,projects, companies, workTypes, units, prices, pricelists, users, tags,taskTypes, taskMaterials, taskWorks,subtasks,repeat,meta])=>{
-      this.setData(
-				{id:task.id,...task.data()},
-				toSelArr(snapshotToArray(statuses)),
-				toSelArr(snapshotToArray(projects)),
-				toSelArr(snapshotToArray(users),'email'),
-				toSelArr(snapshotToArray(tags)),
-      	toSelArr(snapshotToArray(companies)),
-				toSelArr(snapshotToArray(workTypes)),
-      	toSelArr(snapshotToArray(units)),
-				toSelArr(snapshotToArray(taskTypes)),
-				snapshotToArray(prices),
+        database.collection('help-repeats').doc(taskID).get()
+    ]).then(([taskMaterials, taskWorks,repeat])=>{
+      this.saveData(
 				snapshotToArray(taskMaterials),
 				snapshotToArray(taskWorks),
-				snapshotToArray(subtasks),
-				snapshotToArray(pricelists),
 				repeat.exists ? {id:repeat.id,...repeat.data()} : null,
-				meta.defaultUnit);
+				);
     });
   }
+
+	saveData(taskMaterials,taskWorks,repeat){
+		this.setState({
+			extraDataLoaded:true,
+			taskMaterials,
+			taskWorks,
+			repeat
+		},()=>{this.setData(this.props)});
+	}
 
 	setDefaults(projectID){
 		if(projectID===null){
 			this.setState({defaultFields:noDef});
 			return;
 		}
-
-		database.collection('help-projects').doc(projectID).get().then((project)=>{
-			let def = project.data().def;
-			if(!def){
-				this.setState({defaultFields:noDef});
-				return;
-			}
-			this.setState({
-				defaultFields:def
-			});
+		let project = this.props.projects.find((project)=>project.id===projectID);
+		if(!project){
+			this.setState({defaultFields:noDef});
+			return;
+		}
+		this.setState({
+			defaultFields:project.def
 		});
 	}
 
-  setData(task, statuses, projects,users,tags,companies,workTypes,units,taskTypes, prices,taskMaterials,taskWorks,subtasks,pricelists,repeat,defaultUnit){
+  setData(props){
+		if(!this.state.extraDataLoaded || !this.storageLoaded(props)){
+			return;
+		}
+		let taskID = this.props.match.params.taskID;
+		let task = props.tasks.find((task)=>task.id===taskID);
+		let statuses = toSelArr(this.props.statuses);
+		let projects = toSelArr(this.props.projects);
+		let users = toSelArr(this.props.users,'email');
+		let tags = toSelArr(this.props.tags);
+		let companies = toSelArr(this.props.companies);
+		let workTypes = toSelArr(this.props.workTypes);
+		let units = toSelArr(this.props.units);
+		let taskTypes = toSelArr(this.props.taskTypes);
+		let prices = this.props.prices;
+		let subtasks = this.props.subtasks;
+		let pricelists = this.props.pricelists;
+		let defaultUnit = this.props.metadata.defaultUnit;
+		let taskMaterials = this.state.taskMaterials;
+		let taskWorks = this.state.taskWorks;
+
 		this.setDefaults(task.project);
     let project = projects.find((item)=>item.id===task.project);
     let status = statuses.find((item)=>item.id===task.status);
@@ -272,7 +327,6 @@ export default class TaskEdit extends Component {
 			taskTags=tags.filter((tag)=>task.tags.includes(tag.id));
 		}
     this.setState({
-      task,
       statuses,
       projects,
       users,
@@ -305,13 +359,13 @@ export default class TaskEdit extends Component {
 			defaultUnit,
 			tags:taskTags,
 			type:type?type:null,
-			repeat,
 			projectChangeDate:(new Date()).getTime(),
 			toggleTab:'1'
     });
   }
 
 	render() {
+		let taskID = this.props.match.params.taskID;
 		let taskWorks= this.state.taskWorks.map((work)=>{
 			let finalUnitPrice=parseFloat(work.price);
 			if(work.extraWork){
@@ -378,7 +432,7 @@ export default class TaskEdit extends Component {
 							}
 						</div>
 						<div className="ml-auto center-hor">
-							<TaskPrint match={this.props.match} {...this.state}/>
+							<TaskPrint match={this.props.match} {...this.state} isLoaded={this.state.extraDataLoaded && this.storageLoaded(this.props) && !this.state.loading} />
 							<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.deleteTask.bind(this)}>
 								<i
 									className="far fa-trash-alt"
@@ -520,7 +574,7 @@ export default class TaskEdit extends Component {
 													this.setState({repeat})
 												}}
 												deleteRepeat={()=>{
-													rebase.removeDoc('/help-repeats/'+this.state.task.id);
+													rebase.removeDoc('/help-repeats/'+taskID);
 													this.setState({repeat:null})
 												}}
 												columns={this.props.columns}
@@ -693,7 +747,7 @@ export default class TaskEdit extends Component {
 
 								<TabContent activeTab={this.state.toggleTab}>
 									<TabPane tabId="1">
-										<Comments id={this.state.task?this.state.task.id:null} users={this.state.users} />
+										<Comments id={taskID?taskID:null} users={this.state.users} />
 									</TabPane>
 									<TabPane tabId="2">
 
@@ -787,4 +841,50 @@ export default class TaskEdit extends Component {
 			</div>
 		);
 	}
+	submitSubtask(body){
+		rebase.addToCollection('help-task_subtasks',{task:this.props.match.params.taskID,...body}).then((result)=>{
+			this.setState({subtasks:[...this.state.subtasks, {task:this.props.match.params.taskID,...body,id:result.id}]})
+		});
+	}
+
+  submitMaterial(body){
+    rebase.addToCollection('help-task_materials',{task:this.props.match.params.taskID,...body}).then((result)=>{
+      this.setState({taskMaterials:[...this.state.taskMaterials, {task:this.props.match.params.taskID,...body,id:result.id}]})
+    });
+  }
+
+  submitService(body){
+    rebase.addToCollection('help-task_works',{task:this.props.match.params.taskID,...body}).then((result)=>{
+      this.setState({taskWorks:[...this.state.taskWorks, {task:this.props.match.params.taskID,...body,id:result.id}]})
+    });
+  }
 }
+
+const mapStateToProps = ({ storageCompanies, storageHelpPricelists, storageHelpPrices, storageHelpProjects, storageHelpStatuses, storageHelpTags, storageHelpTaskTypes, storageHelpTasks, storageHelpUnits, storageHelpWorkTypes, storageMetadata, storageUsers }) => {
+	const { companiesLoaded, companiesActive, companies } = storageCompanies;
+	const { pricelistsLoaded, pricelistsActive, pricelists } = storageHelpPricelists;
+	const { pricesLoaded, pricesActive, prices } = storageHelpPrices;
+	const { projectsLoaded, projectsActive, projects } = storageHelpProjects;
+	const { statusesLoaded, statusesActive, statuses } = storageHelpStatuses;
+	const { tagsLoaded, tagsActive, tags } = storageHelpTags;
+	const { taskTypesLoaded, taskTypesActive, taskTypes } = storageHelpTaskTypes;
+	const { tasksLoaded, tasksActive, tasks } = storageHelpTasks;
+	const { unitsLoaded, unitsActive, units } = storageHelpUnits;
+	const { workTypesLoaded, workTypesActive, workTypes } = storageHelpWorkTypes;
+	const { metadataLoaded, metadataActive, metadata } = storageMetadata;
+	const { usersLoaded, usersActive, users } = storageUsers;
+	return { companiesLoaded, companiesActive, companies,
+		pricelistsLoaded, pricelistsActive, pricelists,
+		pricesLoaded, pricesActive, prices,
+		projectsLoaded, projectsActive, projects,
+		statusesLoaded, statusesActive, statuses,
+		tagsLoaded, tagsActive, tags,
+		taskTypesLoaded, taskTypesActive, taskTypes,
+		tasksLoaded, tasksActive, tasks,
+		unitsLoaded, unitsActive, units,
+		workTypesLoaded, workTypesActive, workTypes,
+		metadataLoaded, metadataActive, metadata,
+		usersLoaded, usersActive, users };
+};
+
+export default connect(mapStateToProps, { storageCompaniesStart, storageHelpPricelistsStart, storageHelpPricesStart,storageHelpProjectsStart, storageHelpStatusesStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageHelpTasksStart, storageHelpUnitsStart,storageHelpWorkTypesStart, storageMetadataStart, storageUsersStart })(TaskEdit);

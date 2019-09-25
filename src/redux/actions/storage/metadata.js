@@ -1,6 +1,5 @@
 import {STORAGE_SET_METADATA, STORAGE_METADATA_ACTIVE } from '../../types';
 import {database} from '../../../index.js';
-import {snapshotToArray} from '../../../helperFunctions';
 
 
 export const storageMetadataStart = () => {

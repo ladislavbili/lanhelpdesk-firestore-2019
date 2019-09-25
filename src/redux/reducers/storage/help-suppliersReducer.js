@@ -2,6 +2,7 @@ import {STORAGE_HELP_SUPPLIERS, STORAGE_HELP_SUPPLIERS_ACTIVE} from '../../types
 
 const initialState = {
   suppliersActive:false,
+  suplliersLoaded:false,
   suppliers:[]
 };
 
@@ -11,6 +12,7 @@ export default function storageSuppliersReducer(state = initialState, action) {
       return {
         ...state,
         suppliers: action.suppliers,
+        suplliersLoaded:true,
       };
     }
     case STORAGE_HELP_SUPPLIERS_ACTIVE:
