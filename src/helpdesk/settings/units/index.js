@@ -4,23 +4,30 @@ import {Button } from 'reactstrap';
 import UnitAdd from './unitAdd';
 import UnitEdit from './unitEdit';
 
-export default class UnitsList extends Component{
+import { connect } from "react-redux";
+import {storageHelpUnitsStart} from '../../../redux/actions';
+import {sameStringForms} from '../../../helperFunctions';
+
+class UnitsList extends Component {
   constructor(props){
     super(props);
     this.state={
-      units:[]
+      units:[],
+      unitFilter:''
     }
   }
-  componentWillMount(){
-    this.ref = rebase.listenToCollection('/help-units', {
-      context: this,
-      withIds: true,
-      then:content=>{this.setState({units:content, unitFilter:''})},
-    });
+
+  componentWillReceiveProps(props){
+    if(!sameStringForms(props.units,this.props.units)){
+      this.setState({units:props.units})
+    }
   }
 
-  componentWillUnmount(){
-    rebase.removeBinding(this.ref);
+  componentWillMount(){
+    if(!this.props.unitsLoaded){
+      this.props.storageHelpUnitsStart();
+    }
+    this.setState({units:this.props.units});
   }
 
   render(){
@@ -91,3 +98,11 @@ export default class UnitsList extends Component{
     );
   }
 }
+
+
+const mapStateToProps = ({ storageHelpUnits}) => {
+  const { unitsActive, units } = storageHelpUnits;
+  return { unitsActive, units };
+};
+
+export default connect(mapStateToProps, { storageHelpUnitsStart })(UnitsList);

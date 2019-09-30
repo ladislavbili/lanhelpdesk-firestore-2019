@@ -4,28 +4,40 @@ import {rebase} from '../../../index';
 import StatusAdd from './statusAdd';
 import StatusEdit from './statusEdit';
 
-export default class StatusesList extends Component{
+import { connect } from "react-redux";
+import {storageHelpStatusesStart} from '../../../redux/actions';
+import {sameStringForms} from '../../../helperFunctions';
+
+class StatusesList extends Component{
   constructor(props){
     super(props);
     this.state={
-      statuses:[]
+      statuses:[],
+      statusFilter:''
     }
   }
-  componentWillMount(){
-    this.ref = rebase.listenToCollection('/help-statuses', {
-      context: this,
-      withIds: true,
-      then:content=>{this.setState({statuses:content.sort((item1,item2)=>{
+
+  componentWillReceiveProps(props){
+    if(!sameStringForms(props.statuses,this.props.statuses)){
+      this.setState({statuses:props.statuses.sort((item1,item2)=>{
         if(item1.order &&item2.order){
           return item1.order > item2.order? 1 :-1;
         }
         return -1;
-      }), statusFilter:''})},
-    });
+      })})
+    }
   }
 
-  componentWillUnmount(){
-    rebase.removeBinding(this.ref);
+  componentWillMount(){
+    if(!this.props.statusesActive){
+      this.props.storageHelpStatusesStart();
+    }
+    this.setState({statuses:this.props.statuses.sort((item1,item2)=>{
+      if(item1.order &&item2.order){
+        return item1.order > item2.order? 1 :-1;
+      }
+      return -1;
+    })});
   }
 
   render(){
@@ -99,3 +111,10 @@ export default class StatusesList extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ storageHelpStatuses}) => {
+  const { statusesActive, statuses } = storageHelpStatuses;
+  return { statusesActive, statuses };
+};
+
+export default connect(mapStateToProps, { storageHelpStatusesStart })(StatusesList);

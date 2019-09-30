@@ -14,13 +14,6 @@ class ProjectList extends Component{
     }
   }
 
-  componentWillReceiveProps(props){
-		if(!sameStringForms(props.projects,this.props.projects)){
-			this.setState({projectFilter:''});
-		}
-	}
-
-
   componentWillMount(){
     if(!this.props.projectsActive){
       this.props.storageHelpProjectsStart();

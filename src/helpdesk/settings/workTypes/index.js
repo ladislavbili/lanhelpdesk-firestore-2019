@@ -4,23 +4,30 @@ import {rebase} from '../../../index';
 import WorkTypeAdd from './workTypeAdd';
 import WorkTypeEdit from './workTypeEdit';
 
-export default class WorkTypesList extends Component{
+import { connect } from "react-redux";
+import {storageHelpWorkTypesStart} from '../../../redux/actions';
+import {sameStringForms} from '../../../helperFunctions';
+
+class WorkTypesList extends Component{
   constructor(props){
     super(props);
     this.state={
-      workTypes:[]
+      workTypes:[],
+      workTypeFilter:''
     }
   }
-  componentWillMount(){
-    this.ref = rebase.listenToCollection('/help-work_types', {
-      context: this,
-      withIds: true,
-      then:content=>{this.setState({workTypes:content, workTypeFilter:''})},
-    });
+
+  componentWillReceiveProps(props){
+    if(!sameStringForms(props.workTypes,this.props.workTypes)){
+      this.setState({workTypes:props.workTypes})
+    }
   }
 
-  componentWillUnmount(){
-    rebase.removeBinding(this.ref);
+  componentWillMount(){
+    if(!this.props.workTypesActive){
+      this.props.storageHelpWorkTypesStart();
+    }
+    this.setState({workTypes:this.props.workTypes});
   }
 
   render(){
@@ -91,3 +98,10 @@ export default class WorkTypesList extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ storageHelpWorkTypes}) => {
+  const { workTypesActive, workTypes } = storageHelpWorkTypes;
+  return { workTypesActive, workTypes };
+};
+
+export default connect(mapStateToProps, { storageHelpWorkTypesStart })(WorkTypesList);

@@ -5,23 +5,30 @@ import {rebase} from '../../../index';
 import TaskTypeAdd from './taskTypeAdd';
 import TaskTypeEdit from './taskTypeEdit';
 
-export default class TaskTypesList extends Component{
+import { connect } from "react-redux";
+import {storageHelpTaskTypesStart} from '../../../redux/actions';
+import {sameStringForms} from '../../../helperFunctions';
+
+class TaskTypesList extends Component{
   constructor(props){
     super(props);
     this.state={
-      taskTypes:[]
+      taskTypes:[],
+      taskTypeFilter:''
     }
   }
-  componentWillMount(){
-    this.ref = rebase.listenToCollection('/help-task_types', {
-      context: this,
-      withIds: true,
-      then:content=>{this.setState({taskTypes:content, taskTypeFilter:''})},
-    });
+
+  componentWillReceiveProps(props){
+    if(!sameStringForms(props.taskTypes,this.props.taskTypes)){
+      this.setState({taskTypes:props.taskTypes})
+    }
   }
 
-  componentWillUnmount(){
-    rebase.removeBinding(this.ref);
+  componentWillMount(){
+    if(!this.props.taskTypesActive){
+      this.props.storageHelpTaskTypesStart();
+    }
+    this.setState({taskTypes:this.props.taskTypes});
   }
 
   render(){
@@ -92,3 +99,10 @@ export default class TaskTypesList extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ storageHelpTaskTypes}) => {
+  const { taskTypesActive, taskTypes } = storageHelpTaskTypes;
+  return { taskTypesActive, taskTypes };
+};
+
+export default connect(mapStateToProps, { storageHelpTaskTypesStart })(TaskTypesList);

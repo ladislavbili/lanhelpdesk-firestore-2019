@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import { Modal, ModalBody, ModalFooter, Button, FormGroup, Label, Input } from 'reactstrap';
 import { connect } from "react-redux";
-import {storageHelpStatusesStart, storageHelpTagsStart, storageUsersStart, storageHelpTaskTypesStart, storageCompaniesStart, storageHelpProjectsStart} from '../../redux/actions';
-import {rebase} from '../../index';
-import {toSelArr, sameStringForms} from '../../helperFunctions';
+import {storageHelpStatusesStart, storageHelpTagsStart, storageUsersStart, storageHelpTaskTypesStart, storageCompaniesStart, storageHelpProjectsStart, setProject, storageHelpTasksStart} from '../../redux/actions';
+import {rebase, database} from '../../index';
+import firebase from 'firebase';
+import {toSelArr, sameStringForms, snapshotToArray} from '../../helperFunctions';
 import {invisibleSelectStyle} from '../../scss/selectStyles';
 import Permits from "../../components/permissions";
 
@@ -42,21 +43,22 @@ class ProjectEdit extends Component{
 			props.usersLoaded &&
 			props.taskTypesLoaded &&
 			props.companiesLoaded &&
-			props.projectsLoaded
+			props.projectsLoaded &&
+			props.tasksLoaded
 	}
 
   componentWillReceiveProps(props){
     if (this.props.item.id !== props.item.id || (this.storageLoaded(props) && !this.storageLoaded(this.props))){
-			this.setProject(props);
+			this.setProjectsData(props);
     }
 		if(!sameStringForms(props.statuses,this.props.statuses) &&
 			!sameStringForms(props.tags,this.props.tags) &&
 			!sameStringForms(props.users,this.props.users) &&
 			!sameStringForms(props.taskTypes,this.props.taskTypes) &&
+			!sameStringForms(props.tasks,this.props.tasks) &&
 			!sameStringForms(props.companies,this.props.companies)){
 				this.setData(props);
 			}
-
   }
 
 	componentWillMount(){
@@ -80,12 +82,17 @@ class ProjectEdit extends Component{
 			this.props.storageCompaniesStart();
 		}
 
+		if(!this.props.tasksActive){
+			this.props.storageHelpTasksStart();
+		}
+
 		if(!this.props.projectsActive){
 			this.props.storageHelpProjectsStart();
 		}
+		this.setProjectsData(this.props);
 	}
 
-	setProject(props){
+	setProjectsData(props){
 		if(!this.storageLoaded(props)){
 			return;
 		}
@@ -130,14 +137,50 @@ class ProjectEdit extends Component{
       types: toSelArr(props.taskTypes),
       companies: toSelArr(props.companies),
     });
-  }
+	}
 
   toggle(){
     if(!this.state.opened){
-			this.setProject(this.props);
+			this.setProjectsData(this.props);
     }
     this.setState({opened: !this.state.opened})
   }
+
+	deleteProject(){
+		let projectID = this.props.item.id;
+		if(window.confirm("Are you sure?")){
+			this.props.tasks.filter((task)=>task.project===projectID).map((task)=>this.deleteTask(task));
+			rebase.removeDoc('/help-projects/'+projectID).then(()=>{
+				this.toggle();
+				this.props.setProject(null);
+			});
+		}
+	}
+
+	deleteTask(task){
+		let taskID = task.id;
+		Promise.all(
+			[
+				database.collection('help-task_materials').where("task", "==", taskID).get(),
+				database.collection('help-task_works').where("task", "==", taskID).get(),
+				database.collection('help-repeats').doc(taskID).get(),
+				database.collection('help-comments').where("task", "==", taskID).get()
+		]).then(([taskMaterials, taskWorks,repeat,comments])=>{
+			console.log('deleting');
+			console.log(task);
+
+			let storageRef = firebase.storage().ref();
+			task.attachments.map((attachment)=>storageRef.child(attachment.path).delete());
+
+			rebase.removeDoc('/help-tasks/'+taskID);
+			snapshotToArray(taskMaterials).forEach((material)=>rebase.removeDoc('/help-task_materials/'+material.id))
+			snapshotToArray(taskWorks).forEach((work)=>rebase.removeDoc('/help-task_works/'+work.id))
+			if(repeat.exists){
+				rebase.removeDoc('/help-repeats/'+taskID);
+			}
+			snapshotToArray(comments).forEach((item)=>rebase.removeDoc('/help-comments/'+item.id));
+		});
+	}
 
   render(){
     return (
@@ -342,6 +385,9 @@ class ProjectEdit extends Component{
               }}>
                 {(this.state.saving?'Saving...':'Save project')}
               </Button>
+							<Button className="mr-auto btn-danger" disabled={this.state.saving} onClick={this.deleteProject.bind(this)}>
+								Delete
+							</Button>
             </ModalFooter>
           </Modal>
           </div>
@@ -349,19 +395,22 @@ class ProjectEdit extends Component{
   }
 }
 
-const mapStateToProps = ({ storageHelpStatuses, storageHelpTags, storageUsers, storageHelpTaskTypes, storageCompanies, storageHelpProjects }) => {
+const mapStateToProps = ({ storageHelpStatuses, storageHelpTags, storageUsers, storageHelpTaskTypes, storageCompanies, storageHelpProjects, storageHelpTasks }) => {
 	const { statusesActive, statuses, statusesLoaded } = storageHelpStatuses;
 	const { tagsActive, tags, tagsLoaded } = storageHelpTags;
 	const { usersActive, users, usersLoaded } = storageUsers;
 	const { taskTypesActive, taskTypes, taskTypesLoaded } = storageHelpTaskTypes;
 	const { companiesActive, companies, companiesLoaded } = storageCompanies;
 	const { projectsActive, projects, projectsLoaded } = storageHelpProjects;
+	const { tasksActive, tasks, tasksLoaded } = storageHelpTasks;
 	return { statusesActive, statuses, statusesLoaded,
 		tagsActive, tags, tagsLoaded,
 		usersActive, users, usersLoaded,
 		taskTypesActive, taskTypes, taskTypesLoaded,
 		companiesActive, companies, companiesLoaded,
-		projectsActive, projects, projectsLoaded };
+		projectsActive, projects, projectsLoaded,
+		tasksActive, tasks, tasksLoaded
+	 };
 };
 
-export default connect(mapStateToProps, { storageHelpStatusesStart, storageHelpTagsStart, storageUsersStart, storageHelpTaskTypesStart, storageCompaniesStart, storageHelpProjectsStart })(ProjectEdit);
+export default connect(mapStateToProps, { storageHelpStatusesStart, storageHelpTagsStart, storageUsersStart, storageHelpTaskTypesStart, storageCompaniesStart, storageHelpProjectsStart, setProject, storageHelpTasksStart })(ProjectEdit);

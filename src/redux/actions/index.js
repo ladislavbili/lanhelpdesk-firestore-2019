@@ -9,7 +9,6 @@ export * from './cmdbActions';
 export * from './wikiActions';
 
 //storage
-export * from './storage/companies';
 export * from './storage/help-filters';
 export * from './storage/help-pricelists';
 export * from './storage/help-prices';
@@ -22,5 +21,11 @@ export * from './storage/help-task_types';
 export * from './storage/help-tasks';
 export * from './storage/help-units';
 export * from './storage/help-work_types';
-export * from './storage/users';
+export * from './storage/help-task_works';
+export * from './storage/help-task_materials';
+
+export * from './storage/companies';
+export * from './storage/imaps';
 export * from './storage/metadata';
+export * from './storage/smtps';
+export * from './storage/users';

@@ -11,7 +11,6 @@ import cmdbReducer from './reducers/cmdbReducer';
 import wikiReducer from './reducers/wikiReducer';
 
 //storage
-import storageCompanies from './reducers/storage/companiesReducer';
 import storageHelpFilters from './reducers/storage/help-filtersReducer';
 import storageHelpPricelists from './reducers/storage/help-pricelistsReducer';
 import storageHelpPrices from './reducers/storage/help-pricesReducer';
@@ -20,11 +19,17 @@ import storageHelpStatuses from './reducers/storage/help-statusesReducer';
 import storageHelpSupplierInvoices from './reducers/storage/help-supplier_invoicesReducer';
 import storageHelpSuppliers from './reducers/storage/help-suppliersReducer';
 import storageHelpTags from './reducers/storage/help-tagsReducer';
+import storageHelpTaskMaterials from './reducers/storage/help-task_materialsReducer';
 import storageHelpTaskTypes from './reducers/storage/help-task_typesReducer';
+import storageHelpTaskWorks from './reducers/storage/help-task_worksReducer';
 import storageHelpTasks from './reducers/storage/help-tasksReducer';
 import storageHelpUnits from './reducers/storage/help-unitsReducer';
 import storageHelpWorkTypes from './reducers/storage/help-work_typesReducer';
+
+import storageCompanies from './reducers/storage/companiesReducer';
+import storageImaps from './reducers/storage/imapsReducer';
 import storageMetadata from './reducers/storage/metadataReducer';
+import storageSmtps from './reducers/storage/smtpsReducer';
 import storageUsers from './reducers/storage/usersReducer';
 
 
@@ -39,7 +44,6 @@ const reducers = combineReducers({
     cmdbReducer,
     wikiReducer,
     //storage
-    storageCompanies,
     storageHelpFilters,
     storageHelpPricelists,
     storageHelpPrices,
@@ -48,11 +52,17 @@ const reducers = combineReducers({
     storageHelpSupplierInvoices,
     storageHelpSuppliers,
     storageHelpTags,
+    storageHelpTaskMaterials,
     storageHelpTaskTypes,
+    storageHelpTaskWorks,
     storageHelpTasks,
     storageHelpUnits,
     storageHelpWorkTypes,
+
+    storageCompanies,
+    storageImaps,
     storageMetadata,
+    storageSmtps,
     storageUsers,
   });
 

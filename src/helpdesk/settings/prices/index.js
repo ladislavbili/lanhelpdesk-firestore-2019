@@ -4,23 +4,31 @@ import PriceAdd from './priceAdd';
 import PriceEdit from './priceEdit';
 import {Button } from 'reactstrap';
 
-export default class PriceList extends Component{
+import { connect } from "react-redux";
+import {storageHelpPricelistsStart} from '../../../redux/actions';
+import {sameStringForms} from '../../../helperFunctions';
+
+
+class PriceList extends Component{
   constructor(props){
     super(props);
     this.state={
-      pricelist:[]
+      pricelist:[],
+      pricelistFilter:''
     }
   }
-  componentWillMount(){
-    this.ref = rebase.listenToCollection('/help-pricelists', {
-      context: this,
-      withIds: true,
-      then:content=>{this.setState({pricelist:content, pricelistFilter:''})},
-    });
+
+  componentWillReceiveProps(props){
+    if(!sameStringForms(props.pricelists,this.props.pricelists)){
+      this.setState({pricelists:props.pricelists})
+    }
   }
 
-  componentWillUnmount(){
-    rebase.removeBinding(this.ref);
+  componentWillMount(){
+    if(!this.props.pricelistsActive){
+      this.props.storageHelpPricelistsStart();
+    }
+    this.setState({pricelists:this.props.pricelists});
   }
 
   render(){
@@ -64,7 +72,7 @@ export default class PriceList extends Component{
                   </tr>
                 </thead>
                 <tbody>
-                  {this.state.pricelist.filter((item)=>item.title.toLowerCase().includes(this.state.pricelistFilter.toLowerCase())).map((pricelist)=>
+                  {this.state.pricelists.filter((item)=>item.title.toLowerCase().includes(this.state.pricelistFilter.toLowerCase())).map((pricelist)=>
                     <tr key={pricelist.id}
                       className={"clickable" + (this.props.match.params.id === pricelist.id ? " sidebar-item-active":"")}
                       onClick={()=>{this.props.history.push('/helpdesk/settings/pricelists/'+pricelist.id)}}>
@@ -81,7 +89,7 @@ export default class PriceList extends Component{
                 this.props.match.params.id && this.props.match.params.id==='add' && <PriceAdd />
               }
               {
-                this.props.match.params.id && this.props.match.params.id!=='add' && this.state.pricelist.some((item)=>item.id===this.props.match.params.id) && <PriceEdit match={this.props.match} history={this.props.history}/>
+                this.props.match.params.id && this.props.match.params.id!=='add' && this.state.pricelists.some((item)=>item.id===this.props.match.params.id) && <PriceEdit match={this.props.match} history={this.props.history}/>
               }
             </div>
           </div>
@@ -90,3 +98,10 @@ export default class PriceList extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ storageHelpPricelists}) => {
+  const { pricelistsActive, pricelists } = storageHelpPricelists;
+  return { pricelistsActive, pricelists };
+};
+
+export default connect(mapStateToProps, { storageHelpPricelistsStart })(PriceList);

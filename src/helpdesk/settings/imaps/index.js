@@ -3,24 +3,29 @@ import {rebase} from '../../../index';
 import {Button } from 'reactstrap';
 import ImapAdd from './imapAdd';
 import ImapEdit from './imapEdit';
+import { connect } from "react-redux";
+import {storageImapsStart} from '../../../redux/actions';
+import {sameStringForms} from '../../../helperFunctions';
 
-export default class ImapsList extends Component{
+class ImapsList extends Component{
   constructor(props){
     super(props);
     this.state={
-      imaps:[]
+      imaps:[],
+      imapFilter:''
     }
   }
-  componentWillMount(){
-    this.ref = rebase.listenToCollection('/imaps', {
-      context: this,
-      withIds: true,
-      then:content=>{this.setState({imaps:content, imapFilter:''})},
-    });
+  componentWillReceiveProps(props){
+    if(!sameStringForms(props.imaps,this.props.imaps)){
+      this.setState({imaps:props.imaps})
+    }
   }
 
-  componentWillUnmount(){
-    rebase.removeBinding(this.ref);
+  componentWillMount(){
+    if(!this.props.imapsActive){
+      this.props.storageImapsStart();
+    }
+    this.setState({imaps:this.props.imaps});
   }
 
   render(){
@@ -112,3 +117,10 @@ export default class ImapsList extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ storageImaps }) => {
+  const { imapsActive, imaps } = storageImaps;
+  return { imapsActive, imaps };
+};
+
+export default connect(mapStateToProps, { storageImapsStart })(ImapsList);

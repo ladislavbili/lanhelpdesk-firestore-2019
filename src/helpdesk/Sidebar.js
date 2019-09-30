@@ -54,9 +54,10 @@ class Sidebar extends Component {
 			this.setState({filters:props.filters})
 		}
 		if(!sameStringForms(props.projects,this.props.projects)){
+			let project = toSelArr([{id:null,title:'Dashboard', body:'dashboard',}].concat(props.projects)).find((item)=>item.id===props.project);
 			this.setState({
-				projects:toSelArr([{id:-1,title:'+ Add project',body:'add', label:'+ Add project',value:null}, {id:null,title:'Dashboard', body:'dashboard',}].concat(props.projects)),
-				project:toSelArr([{id:null,title:'Dashboard', body:'dashboard',}].concat(props.projects)).find((item)=>item.id===props.project)
+				projects:toSelArr([{id:-1,title:'+ Add project',body:'add'}, {id:null,title:'Dashboard', body:'dashboard',}].concat(props.projects)),
+				project:project?project:{id:null,title:'Dashboard', body:'dashboard', label:'Dashboard', value:null}
 			});
 		}
 	}
@@ -67,7 +68,7 @@ class Sidebar extends Component {
 		}
 		this.setState({
 			projects:toSelArr([{id:-1,title:'+ Add project',body:'add', label:'+ Add project',value:null}, {id:null,title:'Dashboard', body:'dashboard',}].concat(this.props.projects)),
-			project:toSelArr([{id:null,title:'Dashboard', body:'dashboard',}].concat(this.props.projects)).find((item)=>item.id===this.props.project)
+			project:toSelArr([{id:null,title:'Dashboard', body:'dashboard'}].concat(this.props.projects)).find((item)=>item.id===this.props.project)
 		});
 
 
@@ -118,15 +119,13 @@ class Sidebar extends Component {
 						</li>
 
 						<hr/>
-
-						<TaskAdd history={this.props.history} project={this.state.project.id} triggerDate={this.state.projectChangeDate} />
+						<TaskAdd history={this.props.history} project={this.state.projects.map((item)=>item.id).includes(this.state.project.id)?this.state.project.id:null} triggerDate={this.state.projectChangeDate} />
 
 						{ this.state.openProjectAdd &&
 								<ProjectAdd close={() => this.setState({openProjectAdd: false})}/>
 						}
-
-						{ this.state.project.id
-							&&
+						{ this.state.project.id &&
+							this.state.projects.map((item)=>item.id).includes(this.state.project.id) &&
 							<ProjectEdit item={this.state.project} triggerChange={()=>{this.setState({projectChangeDate:(new Date()).getTime()})}}/>
 						}
 

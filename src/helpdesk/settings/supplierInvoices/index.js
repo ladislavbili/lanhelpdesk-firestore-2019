@@ -25,7 +25,6 @@ class SupplierInvoicesList extends Component{
 		}
 	}
 
-
   componentWillMount(){
     if(!this.props.suppliersActive){
       this.props.storageSuppliersStart();

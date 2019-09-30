@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import {database} from '../../index';
 import { connect } from "react-redux";
-import { snapshotToArray, timestampToString} from '../../helperFunctions';
+import {storageHelpTasksStart, storageHelpStatusesStart, storageHelpWorkTypesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart, storageHelpTaskWorksStart} from '../../redux/actions';
+import { snapshotToArray, timestampToString, sameStringForms} from '../../helperFunctions';
 import { Link } from 'react-router-dom';
-
-
 
 class Reports extends Component {
 	constructor(props){
@@ -19,47 +18,85 @@ class Reports extends Component {
 			taskWorks:[],
 			loading:false
 		}
-		this.fetchData();
 	}
-	//tasks, materiale a sluzby	worktype user status
 
-	fetchData(){
-		Promise.all(
-			[
-				database.collection('help-tasks').get(),
-				database.collection('help-statuses').get(),
-				database.collection('help-work_types').get(),
-				database.collection('help-units').get(),
-				database.collection('users').get(),
-				database.collection('help-task_materials').get(),
-				database.collection('help-task_works').get()
-			]).then(([tasks,statuses, workTypes, units, users,taskMaterials, taskWorks])=>{
-				this.setData(snapshotToArray(tasks),snapshotToArray(statuses),snapshotToArray(users),
-				snapshotToArray(workTypes), snapshotToArray(units),
-				snapshotToArray(taskMaterials),snapshotToArray(taskWorks));
-			});
-		}
+	storageLoaded(props){
+		return props.tasksLoaded &&
+		props.statusesLoaded &&
+		props.workTypesLoaded &&
+		props.unitsLoaded &&
+		props.usersLoaded &&
+		props.materialsLoaded &&
+		props.taskWorksLoaded
+	}
 
-		setData(tasks,statuses, users,workTypes,units,taskMaterials,taskWorks){
-			let newTasks=tasks.map((task)=>{
-				return {
-					...task,
-					requester:task.requester===null ? null:users.find((user)=>user.id===task.requester),
-					assigned:task.assigned===null ? null:users.find((user)=>user.id===task.assigned),
-					status:task.status===null ? null: statuses.find((status)=>status.id===task.status),
-				}
-			});
-			this.setState({
-				tasks:newTasks,
-				statuses,
-				workTypes,
-				users,
-				units,
-				taskMaterials,
-				taskWorks,
-				loading:false
-			});
+	componentWillReceiveProps(props){
+		if(!sameStringForms(props.tasks,this.props.tasks)||
+			!sameStringForms(props.statuses,this.props.statuses)||
+			!sameStringForms(props.workTypes,this.props.workTypes)||
+			!sameStringForms(props.units,this.props.units)||
+			!sameStringForms(props.users,this.props.users)||
+			!sameStringForms(props.materials,this.props.materials)||
+			!sameStringForms(props.taskWorks,this.props.taskWorks)){
+			this.setData(props);
 		}
+	}
+
+	componentWillMount(){
+		if(!this.props.tasksActive){
+			this.props.storageHelpTasksStart();
+		}
+		if(!this.props.statusesActive){
+			this.props.storageHelpStatusesStart();
+		}
+		if(!this.props.workTypesActive){
+			this.props.storageHelpWorkTypesStart();
+		}
+		if(!this.props.unitsActive){
+			this.props.storageHelpUnitsStart();
+		}
+		if(!this.props.usersActive){
+			this.props.storageUsersStart();
+		}
+		if(!this.props.materialsActive){
+			this.props.storageHelpTaskMaterialsStart();
+		}
+		if(!this.props.taskWorksActive){
+			this.props.storageHelpTaskWorksStart();
+		}
+		this.setData(this.props);
+  }
+
+	setData(props){
+		if(!this.storageLoaded(props)){
+			return;
+		}
+		let tasks = props.tasks;
+		let statuses = props.statuses;
+		let users = props.users;
+		let workTypes = props.workTypes;
+		let units = props.units;
+		let taskMaterials = props.materials;
+		let taskWorks = props.taskWorks;
+		let newTasks=tasks.map((task)=>{
+			return {
+				...task,
+				requester:task.requester===null ? null:users.find((user)=>user.id===task.requester),
+				assigned:task.assigned===null ? null:users.find((user)=>user.id===task.assigned),
+				status:task.status===null ? null: statuses.find((status)=>status.id===task.status),
+			}
+		});
+		this.setState({
+			tasks:newTasks,
+			statuses,
+			workTypes,
+			users,
+			units,
+			taskMaterials,
+			taskWorks,
+			loading:false
+		});
+	}
 
 	processWorks(works){
 		let newWorks = works.map((work)=>{
@@ -82,10 +119,10 @@ class Reports extends Component {
 			}
 		});
 		newWorks = newWorks.filter((work)=>
-			(this.props.filter.status===null||(work.task.status&&work.task.status.id===this.props.filter.status)) &&
-			(this.props.filter.requester===null||(work.task.requester&&work.task.requester.id===this.props.filter.requester)) &&
-			(this.props.filter.company===null||work.task.company===this.props.filter.company) &&
-			(this.props.filter.assigned===null||(work.task.assigned&&work.task.assigned.id===this.props.filter.assigned)) &&
+			(this.props.filter.status.length===0||(work.task.status && this.props.filter.status.includes(work.task.status.id))) &&
+			(this.props.filter.requester===null||(work.task.requester && work.task.requester.id===this.props.filter.requester)||(work.task.requester && this.props.filter.requester==='cur' && work.task.requester.id === this.props.currentUser.id)) &&
+			(this.props.filter.company===null||(work.task.company && work.task.company.id===this.props.filter.company) ||(work.task.company && this.props.filter.company==='cur' && work.task.company.id===this.props.currentUser.userData.company)) &&
+			(this.props.filter.assigned===null||(work.task.assignedTo && work.task.assignedTo.map((item)=>item.id).includes(this.props.filter.assigned))||(work.task.assignedTo && this.props.filter.requester==='cur' && work.task.assignedTo.map((item)=>item.id).includes(this.props.currentUser.id))) &&
 			(this.props.filter.workType===null||(work.workType.id===this.props.filter.workType)) &&
 			(this.props.filter.statusDateFrom===''||work.task.statusChange >= this.props.filter.statusDateFrom) &&
 			(this.props.filter.statusDateTo===''||work.task.statusChange <= this.props.filter.statusDateTo)
@@ -120,10 +157,10 @@ class Reports extends Component {
 			}
 		})
 		newMaterials = newMaterials.filter((material)=>
-			(this.props.filter.status===null||(material.task.status&& material.task.status.id===this.props.filter.status)) &&
-			(this.props.filter.requester===null||(material.task.requester&& material.task.requester.id===this.props.filter.requester)) &&
-			(this.props.filter.company===null||material.task.company===this.props.filter.company) &&
-			(this.props.filter.assigned===null||(material.task.assigned&& material.task.assigned.id===this.props.filter.assigned)) &&
+			(this.props.filter.status.length===0||(material.task.status && this.props.filter.status.includes(material.task.status.id))) &&
+			(this.props.filter.requester===null||(material.task.requester && material.task.requester.id===this.props.filter.requester)||(material.task.requester && this.props.filter.requester==='cur' && material.task.requester.id === this.props.currentUser.id)) &&
+			(this.props.filter.company===null||(material.task.company && material.task.company.id===this.props.filter.company) ||(material.task.company && this.props.filter.company==='cur' && material.task.company.id===this.props.currentUser.userData.company)) &&
+			(this.props.filter.assigned===null||(material.task.assignedTo && material.task.assignedTo.map((item)=>item.id).includes(this.props.filter.assigned))||(material.task.assignedTo && this.props.filter.requester==='cur' && material.task.assignedTo.map((item)=>item.id).includes(this.props.currentUser.id))) &&
 			(this.props.filter.statusDateFrom===''||material.task.statusChange >= this.props.filter.statusDateFrom) &&
 			(this.props.filter.statusDateTo===''||material.task.statusChange <= this.props.filter.statusDateTo)
 		);
@@ -144,8 +181,6 @@ class Reports extends Component {
 			}
 		});
 	}
-
-
 
 	render() {
 		return (
@@ -194,6 +229,8 @@ class Reports extends Component {
 												</tr>
 											</thead>
 											<tbody>
+												{console.log(this.processWorks(this.state.taskWorks))}
+												{console.log(this.processMaterials(this.state.taskMaterials))}
 												{
 													this.processWorks(this.state.taskWorks).map((item,index)=>
 													<tr key={index}>
@@ -317,9 +354,27 @@ class Reports extends Component {
 		}
 	}
 
-	const mapStateToProps = ({ filterReducer }) => {
-		const { filter } = filterReducer;
-		return { filter };
-	};
+const mapStateToProps = ({ filterReducer,userReducer, storageHelpTasks, storageHelpStatuses, storageHelpWorkTypes, storageHelpUnits, storageUsers, storageHelpTaskMaterials, storageHelpTaskWorks }) => {
+	const { filter } = filterReducer;
 
-	export default connect(mapStateToProps, {  })(Reports);
+	const { tasksActive, tasks, tasksLoaded } = storageHelpTasks;
+	const { statusesActive, statuses, statusesLoaded } = storageHelpStatuses;
+	const { workTypesActive, workTypes, workTypesLoaded } = storageHelpWorkTypes;
+	const { unitsActive, units, unitsLoaded } = storageHelpUnits;
+	const { usersActive, users, usersLoaded } = storageUsers;
+	const { materialsActive, materials, materialsLoaded } = storageHelpTaskMaterials;
+	const { taskWorksActive, taskWorks, taskWorksLoaded } = storageHelpTaskWorks;
+
+	return { filter,
+		currentUser:userReducer,
+		tasksActive, tasks,tasksLoaded,
+		statusesActive, statuses,statusesLoaded,
+		workTypesActive, workTypes,workTypesLoaded,
+		unitsActive, units,unitsLoaded,
+		usersActive, users,usersLoaded,
+		materialsActive, materials,materialsLoaded,
+		taskWorksActive, taskWorks,taskWorksLoaded
+	};
+};
+
+export default connect(mapStateToProps, { storageHelpTasksStart, storageHelpStatusesStart, storageHelpWorkTypesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart, storageHelpTaskWorksStart })(Reports);

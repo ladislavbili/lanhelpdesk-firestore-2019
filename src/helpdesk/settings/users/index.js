@@ -4,7 +4,11 @@ import {rebase} from '../../../index';
 import UserAdd from './userAdd';
 import UserEdit from './userEdit';
 
-export default class UsersList extends Component{
+import { connect } from "react-redux";
+import {storageUsersStart} from '../../../redux/actions';
+import {sameStringForms} from '../../../helperFunctions';
+
+class UsersList extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -12,16 +16,18 @@ export default class UsersList extends Component{
       userFilter:''
     }
   }
-  componentWillMount(){
-    this.ref = rebase.listenToCollection('/users', {
-      context: this,
-      withIds: true,
-      then:content=>{this.setState({users:content, userFilter:''})},
-    });
+
+  componentWillReceiveProps(props){
+    if(!sameStringForms(props.users,this.props.users)){
+      this.setState({users:props.users})
+    }
   }
 
-  componentWillUnmount(){
-    rebase.removeBinding(this.ref);
+  componentWillMount(){
+    if(!this.props.usersActive){
+      this.props.storageUsersStart();
+    }
+    this.setState({users:this.props.users});
   }
 
   render(){
@@ -92,3 +98,10 @@ export default class UsersList extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ storageUsers}) => {
+  const { usersActive, users } = storageUsers;
+  return { usersActive, users };
+};
+
+export default connect(mapStateToProps, { storageUsersStart })(UsersList);

@@ -4,24 +4,32 @@ import {rebase} from '../../../index';
 import SupplierAdd from './supplierAdd';
 import SupplierEdit from './supplierEdit';
 
-export default class SuppliersList extends Component{
+import { connect } from "react-redux";
+import {storageSuppliersStart} from '../../../redux/actions';
+import {sameStringForms} from '../../../helperFunctions';
+
+class SuppliersList extends Component{
   constructor(props){
     super(props);
     this.state={
-      suppliers:[]
+      suppliers:[],
+      supplierFilter:''
     }
   }
-  componentWillMount(){
-    this.ref = rebase.listenToCollection('/help-suppliers', {
-      context: this,
-      withIds: true,
-      then:content=>{this.setState({suppliers:content, supplierFilter:''})},
-    });
+
+  componentWillReceiveProps(props){
+    if(!sameStringForms(props.suppliers,this.props.suppliers)){
+      this.setState({suppliers:props.suppliers})
+    }
   }
 
-  componentWillUnmount(){
-    rebase.removeBinding(this.ref);
+  componentWillMount(){
+    if(!this.props.suppliersActive){
+      this.props.storageSuppliersStart();
+    }
+    this.setState({suppliers:this.props.suppliers});
   }
+
 
   render(){
     return (
@@ -91,3 +99,10 @@ export default class SuppliersList extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ storageHelpSuppliers}) => {
+  const { suppliersActive, suppliers } = storageHelpSuppliers;
+  return { suppliersActive, suppliers };
+};
+
+export default connect(mapStateToProps, { storageSuppliersStart })(SuppliersList);

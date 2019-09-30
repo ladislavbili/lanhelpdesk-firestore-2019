@@ -5,23 +5,30 @@ import {rebase} from '../../../index';
 import TagAdd from './tagAdd';
 import TagEdit from './tagEdit';
 
-export default class TagList extends Component{
+import { connect } from "react-redux";
+import {storageHelpTagsStart} from '../../../redux/actions';
+import {sameStringForms} from '../../../helperFunctions';
+
+class TagList extends Component{
   constructor(props){
     super(props);
     this.state={
-      tags:[]
+      tags:[],
+      tagFilter:''
     }
   }
-  componentWillMount(){
-    this.ref = rebase.listenToCollection('/help-tags', {
-      context: this,
-      withIds: true,
-      then:content=>{this.setState({tags:content, tagFilter:''})},
-    });
+
+  componentWillReceiveProps(props){
+    if(!sameStringForms(props.tags,this.props.tags)){
+      this.setState({tags:props.tags})
+    }
   }
 
-  componentWillUnmount(){
-    rebase.removeBinding(this.ref);
+  componentWillMount(){
+    if(!this.props.tagsActive){
+      this.props.storageHelpTagsStart();
+    }
+    this.setState({tags:this.props.tags});
   }
 
   render(){
@@ -92,3 +99,10 @@ export default class TagList extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ storageHelpTags}) => {
+  const { tagsActive, tags } = storageHelpTags;
+  return { tagsActive, tags };
+};
+
+export default connect(mapStateToProps, { storageHelpTagsStart })(TagList);

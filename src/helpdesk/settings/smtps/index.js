@@ -4,23 +4,30 @@ import {Button } from 'reactstrap';
 import SMTPAdd from './smtpAdd';
 import SMTPEdit from './smtpEdit';
 
-export default class SMTPsList extends Component{
+import { connect } from "react-redux";
+import {storageSmtpsStart} from '../../../redux/actions';
+import {sameStringForms} from '../../../helperFunctions';
+
+class SMTPsList extends Component{
   constructor(props){
     super(props);
     this.state={
-      smtps:[]
+      smtps:[],
+      smtpFilter:''
     }
   }
-  componentWillMount(){
-    this.ref = rebase.listenToCollection('/smtps', {
-      context: this,
-      withIds: true,
-      then:content=>{this.setState({smtps:content, smtpFilter:''})},
-    });
+
+  componentWillReceiveProps(props){
+    if(!sameStringForms(props.smtps,this.props.smtps)){
+      this.setState({smtps:props.smtps})
+    }
   }
 
-  componentWillUnmount(){
-    rebase.removeBinding(this.ref);
+  componentWillMount(){
+    if(!this.props.smtpsActive){
+      this.props.storageSmtpsStart();
+    }
+    this.setState({smtps:this.props.smtps});
   }
 
   render(){
@@ -112,3 +119,10 @@ export default class SMTPsList extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ storageSmtps }) => {
+  const { smtpsActive, smtps } = storageSmtps;
+  return { smtpsActive, smtps };
+};
+
+export default connect(mapStateToProps, { storageSmtpsStart })(SMTPsList);

@@ -4,8 +4,8 @@ import Select from 'react-select';
 import { connect } from "react-redux";
 
 import {database, rebase} from '../../index';
-import {setFilter} from '../../redux/actions';
-import {toSelArr, snapshotToArray} from '../../helperFunctions';
+import {setFilter, storageHelpTaskTypesStart,storageUsersStart, storageCompaniesStart, storageHelpStatusesStart} from '../../redux/actions';
+import {toSelArr, snapshotToArray, sameStringForms} from '../../helperFunctions';
 import AddFilter from './filterAdd';
 
 import {invisibleSelectStyle} from '../../scss/selectStyles';
@@ -31,24 +31,6 @@ class Filter extends Component {
       openEditName: false,
     };
     this.renameFilter.bind(this);
-    this.fetchData();
-  }
-
-  setData(statuses,users,companies,workTypes){
-    this.setState({
-      statuses,
-      users,
-      companies,
-      workTypes,
-      status:[],
-      requester:{id:null,label:'Žiadny',value:null},
-      company:{id:null,label:'Žiadny',value:null},
-      assigned:{id:null,label:'Žiadny',value:null},
-      workType:{id:null,label:'Žiadny',value:null},
-      statusDateFrom:'',
-      statusDateTo:'',
-      loading:false
-    });
   }
 
   getItemValue(sourceKey,state,id){
@@ -76,6 +58,40 @@ class Filter extends Component {
         statusDateTo:filter.statusDateTo,
       });
     }
+    if(!sameStringForms(props.statuses,this.props.statuses)){
+			this.setState({statuses:toSelArr(props.statuses)})
+		}
+    if(!sameStringForms(props.users,this.props.users)){
+      this.setState({users:toSelArr(props.users,'email')})
+    }
+    if(!sameStringForms(props.companies,this.props.companies)){
+      this.setState({companies:toSelArr(props.companies)})
+    }
+    if(!sameStringForms(props.taskTypes,this.props.taskTypes)){
+      this.setState({taskTypes:toSelArr(props.taskTypes)})
+    }
+  }
+
+  componentWillMount(){
+		if(!this.props.statusesActive){
+			this.props.storageHelpStatusesStart();
+		}
+		this.setState({statuses:toSelArr(this.props.statuses)});
+
+    if(!this.props.usersActive){
+			this.props.storageUsersStart();
+		}
+		this.setState({users:toSelArr(this.props.users,'email')});
+
+    if(!this.props.companiesActive){
+      this.props.storageCompaniesStart();
+    }
+    this.setState({companies:toSelArr(this.props.companies)});
+
+    if(!this.props.taskTypesActive){
+      this.props.storageHelpTaskTypesStart();
+    }
+    this.setState({workTypes:toSelArr(this.props.taskTypes)});
   }
 
   fetchData(){
@@ -306,9 +322,19 @@ class Filter extends Component {
   }
 
 
-  const mapStateToProps = ({ filterReducer }) => {
+  const mapStateToProps = ({ filterReducer, storageHelpTaskTypes, storageUsers, storageCompanies, storageHelpStatuses }) => {
     const { filter } = filterReducer;
-    return { filter };
+    const { taskTypesActive, taskTypes } = storageHelpTaskTypes;
+    const { usersActive, users } = storageUsers;
+    const { companiesActive, companies } = storageCompanies;
+    const { statusesActive, statuses } = storageHelpStatuses;
+
+    return { filter,
+      taskTypesActive, taskTypes,
+      usersActive, users,
+      companiesActive, companies,
+      statusesActive, statuses
+     };
   };
 
-  export default connect(mapStateToProps, { setFilter })(Filter);
+  export default connect(mapStateToProps, { setFilter, storageHelpTaskTypesStart,storageUsersStart, storageCompaniesStart, storageHelpStatusesStart })(Filter);

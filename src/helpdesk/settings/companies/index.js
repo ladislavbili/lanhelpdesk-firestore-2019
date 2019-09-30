@@ -4,23 +4,30 @@ import {rebase} from '../../../index';
 import CompanyAdd from './companyAdd';
 import CompanyEdit from './companyEdit';
 
-export default class CompaniesList extends Component{
+import { connect } from "react-redux";
+import {storageCompaniesStart} from '../../../redux/actions';
+import {sameStringForms} from '../../../helperFunctions';
+
+class CompaniesList extends Component{
   constructor(props){
     super(props);
     this.state={
-      companies:[]
+      companies:[],
+      companyFilter:''
     }
   }
-  componentWillMount(){
-    this.ref = rebase.listenToCollection('/companies', {
-      context: this,
-      withIds: true,
-      then:content=>{this.setState({companies:content, companyFilter:''})},
-    });
+
+  componentWillReceiveProps(props){
+    if(!sameStringForms(props.companies,this.props.companies)){
+      this.setState({companies:props.companies})
+    }
   }
 
-  componentWillUnmount(){
-    rebase.removeBinding(this.ref);
+  componentWillMount(){
+    if(!this.props.companiesActive){
+      this.props.storageCompaniesStart();
+    }
+    this.setState({companies:this.props.companies});
   }
 
   render(){
@@ -95,3 +102,10 @@ export default class CompaniesList extends Component{
 );
 }
 }
+
+const mapStateToProps = ({ storageCompanies}) => {
+  const { companiesActive, companies } = storageCompanies;
+  return { companiesActive, companies };
+};
+
+export default connect(mapStateToProps, { storageCompaniesStart })(CompaniesList);

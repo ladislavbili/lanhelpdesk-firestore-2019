@@ -451,7 +451,7 @@ class TaskEdit extends Component {
 						<div className="card-box fit-with-header-and-commandbar scroll-visible">
 							<div className="d-flex p-2">
 								<div className="row flex">
-									<h1 className="center-hor text-extra-slim">{this.props.match.params.taskID}: </h1>
+									<h1 className="center-hor text-extra-slim">{taskID}: </h1>
 									<span className="center-hor flex m-r-15">
 							    	<input type="text" value={this.state.title} className="task-title-input text-extra-slim hidden-input" onChange={(e)=>this.setState({title:e.target.value},this.submitTask.bind(this))} placeholder="Enter task name" />
 									</span>
@@ -563,12 +563,12 @@ class TaskEdit extends Component {
 											</div>
 										</div>
 											<Repeat
-												taskID={this.props.match.params.taskID}
+												taskID={taskID}
 												repeat={this.state.repeat}
 												submitRepeat={(repeat)=>{
-													database.collection('help-repeats').doc(this.props.match.params.taskID).set({
+													database.collection('help-repeats').doc(taskID).set({
 														...repeat,
-														task:this.props.match.params.taskID,
+														task:taskID,
 														startAt:(new Date(repeat.startAt).getTime()),
 														});
 													this.setState({repeat})
@@ -807,19 +807,19 @@ class TaskEdit extends Component {
 												let storageRef = firebase.storage().ref();
 												Promise.all([
 													...newAttachments.map((attachment)=>{
-														return storageRef.child(`help-tasks/${this.props.match.params.taskID}/${time}-${attachment.size}-${attachment.name}`).put(attachment)
+														return storageRef.child(`help-tasks/${taskID}/${time}-${attachment.size}-${attachment.name}`).put(attachment)
 													})
 												]).then((resp)=>{
 														Promise.all([
 															...newAttachments.map((attachment)=>{
-																return storageRef.child(`help-tasks/${this.props.match.params.taskID}/${time}-${attachment.size}-${attachment.name}`).getDownloadURL()
+																return storageRef.child(`help-tasks/${taskID}/${time}-${attachment.size}-${attachment.name}`).getDownloadURL()
 															})
 														]).then((urls)=>{
 																newAttachments=newAttachments.map((attachment,index)=>{
 																	return {
 																		title:attachment.name,
 																		size:attachment.size,
-																		path:`help-tasks/${this.props.match.params.taskID}/${time}-${attachment.size}-${attachment.name}`,
+																		path:`help-tasks/${taskID}/${time}-${attachment.size}-${attachment.name}`,
 																		url:urls[index]
 																	}
 																});
