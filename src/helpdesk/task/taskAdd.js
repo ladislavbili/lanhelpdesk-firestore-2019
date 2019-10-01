@@ -63,6 +63,7 @@ export default class TaskAdd extends Component{
 			overtime:{value:false,label:'Nie'},
 			type:null,
 			repeat:null,
+			toggleTab: "1"
 		}
 		this.counter = 0;
 	}
@@ -458,7 +459,7 @@ export default class TaskAdd extends Component{
 										className='form-control hidden-input'
 										placeholder="Status change date"
 										type="datetime-local"
-										value={this.state.deadline}
+										value={this.state.deadline || ""}
 										onChange={(e)=>{
 											this.setState({deadline:e.target.value})}
 										}
@@ -474,6 +475,7 @@ export default class TaskAdd extends Component{
 								deleteRepeat={()=>{
 									this.setState({repeat:null})
 								}}
+								columns={true}
 								/>
 						</div>
 
@@ -522,7 +524,7 @@ export default class TaskAdd extends Component{
 						/>}
 
 
-						{this.state.toggleTab!=="1" && <ServicesExpenditure
+						{this.state.toggleTab==="1" && <ServicesExpenditure
 							taskAssigned={this.state.assignedTo}
 							submitService={(newService)=>{
 								this.setState({taskWorks:[...this.state.taskWorks,{id:this.getNewID(),...newService}]});
@@ -557,7 +559,7 @@ export default class TaskAdd extends Component{
 							match={{params:{taskID:null}}}
 							/>}
 
-							{this.state.toggleTab==='1' && <ServicesBudget
+							{this.state.toggleTab!=='1' && <ServicesBudget
 								taskAssigned={this.state.assignedTo}
 								submitService={(newService)=>{
 									this.setState({taskWorks:[...this.state.taskWorks,{id:this.getNewID(),...newService}]});
@@ -600,7 +602,7 @@ export default class TaskAdd extends Component{
 										className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "")}
 										onClick={() => { this.setState({toggleTab:'1'}); }}
 									>
-										Materiál
+										Výkaz
 									</NavLink>
 								</NavItem>
 								<NavItem>

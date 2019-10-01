@@ -602,11 +602,11 @@ th {
   font-size: 12px;
   font-weight: 500;
 }
-th:nth-child(2){
+/*th:nth-child(2){
   font-size: 14px;
   font-family: Segoe UI Bold;
   color: #333;
-}
+}*/
 th:last-child{
   margin-left: auto;
 }
@@ -953,6 +953,9 @@ tr:last-child{
 .nav>li:not(.sidebar-menu-item):last-child {
   border: none;
 }
+.nav-tabs .nav-link.active{
+  background-color: transparent !important;
+}
 
 
 
@@ -960,24 +963,25 @@ tr:last-child{
 .nav:not(.nav-tabs) a.active {
   font-weight: 900;
   color: #0078D4 !important;
+  background-color: rgb(238,238,238);
 }
 
 .nav:not(.nav-tabs) a.active + .sidebar-menu-item-btn {
   .hidden-button{
-    background-color: $sidebar-item-color !important;
+    color: $basic-button-color;
+    background-color: rgb(238,238,238);
   }
 }
 
 .nav:not(.nav-tabs) a.active:hover + .sidebar-menu-item-btn {
   .hidden-button{
-    background-color: $sidebar-item-color !important;
     color: $basic-button-color;
   }
 }
 
 .nav:not(.nav-tabs) a:hover + .sidebar-menu-item-btn {
   .hidden-button{
-    background-color: #eeeeee !important;
+    background-color: rgb(238,238,238);
     color: $basic-button-color;
   }
 }

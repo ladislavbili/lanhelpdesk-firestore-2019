@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import { connect } from "react-redux";
-import {Button, Label, TabContent, TabPane, Nav, NavItem, NavLink} from 'reactstrap';
+import {Button, Label, TabContent, TabPane, Nav, NavItem, NavLink, Modal, ModalBody} from 'reactstrap';
 import Attachments from '../components/attachments.js';
 import Comments from '../components/comments.js';
 //import Subtasks from '../components/subtasks';
@@ -11,6 +11,9 @@ import ServicesExpenditure from '../components/services/prace';
 import MaterialsExpenditure from '../components/materials/materials';
 import ServicesBudget from '../components/services/rozpocet';
 import MaterialsBudget from '../components/materials/rozpocet';
+
+import UserAdd from '../settings/users/userAdd';
+import CompanyAdd from '../settings/companies/companyAdd';
 
 import TaskAdd from './taskAddContainer';
 import TaskPrint from './taskPrint';
@@ -45,8 +48,8 @@ class TaskEdit extends Component {
 			pricelists:[],
 			extraDataLoaded:false,
 
-			users:[],
-			companies:[],
+			users:[{id:-1,title:'+ Add user', body:'add', label:'+ Add user',value:null}],
+			companies:[{id:-1,title:'+ Add company',body:'add', label:'+ Add company',value:null}],
 			workTypes:[],
 			statuses:[],
 			projects:[],
@@ -88,6 +91,9 @@ class TaskEdit extends Component {
 			search: '',
 			openCopyModal: false,
 			toggleTab:"1",
+
+			openUserAdd: false,
+			openCompanyAdd: false,
 
 			print: false,
 		};
@@ -306,9 +312,9 @@ class TaskEdit extends Component {
 		let task = props.tasks.find((task)=>task.id===taskID);
 		let statuses = toSelArr(this.props.statuses);
 		let projects = toSelArr(this.props.projects);
-		let users = toSelArr(this.props.users,'email');
+		let users = [{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}].concat(toSelArr(this.props.users,'email'));
 		let tags = toSelArr(this.props.tags);
-		let companies = toSelArr(this.props.companies);
+		let companies = [{id:-1,title:'+ Add company',body:'add', label:'+ Add company',value:null}].concat(toSelArr(this.props.companies));
 		let workTypes = toSelArr(this.props.workTypes);
 		let units = toSelArr(this.props.units);
 		let taskTypes = toSelArr(this.props.taskTypes);
@@ -416,6 +422,7 @@ class TaskEdit extends Component {
 				totalPrice
 			}
 		});
+
 
 		return (
 			<div className="flex">
@@ -575,7 +582,17 @@ class TaskEdit extends Component {
 														placeholder="Zadajte žiadateľa"
 														value={this.state.requester}
 														isDisabled={this.state.defaultFields.requester.fixed}
-														onChange={(requester)=>this.setState({requester},this.submitTask.bind(this))}
+														onChange={(requester)=>
+															{
+																if (requester.id === -1) {
+																	this.setState({
+																		openUserAdd: true,
+																	})
+																} else {
+																	this.setState({requester},this.submitTask.bind(this))
+																}
+															}
+														}
 														options={this.state.users}
 														styles={invisibleSelectStyleNoArrow}
 														/>
@@ -588,7 +605,16 @@ class TaskEdit extends Component {
 														placeholder="Zadajte firmu"
 														value={this.state.company}
 														isDisabled={this.state.defaultFields.company.fixed}
-														onChange={(company)=>this.setState({company},this.submitTask.bind(this))}
+														onChange={(company)=> {
+																if (company.id === -1) {
+																	this.setState({
+																		openCompanyAdd: true,
+																	})
+																} else {
+																	this.setState({company},this.submitTask.bind(this));
+																}
+															}
+														}
 														options={this.state.companies}
 														styles={invisibleSelectStyleNoArrow}
 														/>
@@ -692,6 +718,30 @@ class TaskEdit extends Component {
 										/>
 								</div>
 							</div>
+
+							<Modal isOpen={this.state.openUserAdd} >
+			          <ModalBody>
+									<UserAdd close={() => this.setState({openUserAdd: false,})} addUser={(user) => {
+											let newUsers = this.state.users.concat([user]);
+											this.setState({
+												users: newUsers,
+											})
+										}}/>
+			          </ModalBody>
+			        </Modal>
+
+							<Modal isOpen={this.state.openCompanyAdd} >
+			          <ModalBody>
+									<CompanyAdd close={() => this.setState({openCompanyAdd: false,})} addCompany={(company) => {
+											let newCompanies = this.state.companies.concat([company]);
+											this.setState({
+												companies: newCompanies,
+											})
+										}}/>
+			          </ModalBody>
+			        </Modal>
+
+
 							{this.state.toggleTab!=="3" && <ServicesExpenditure
 								taskAssigned={this.state.assignedTo}
 								submitService={this.submitService.bind(this)}

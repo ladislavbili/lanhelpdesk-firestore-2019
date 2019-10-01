@@ -52,8 +52,8 @@ export default class Sidebar extends Component {
 						<Nav vertical>
 							{	this.state.folders.map((item)=>
 							<NavItem key={item.id}  className="sidebar-link">
-								<Link className="text-basic sidebar-align sidebar-menu-item-link" to={{ pathname: `/passmanager/i/`+item.id }}>{item.title}</Link>
-								<div className='sidebar-menu-item-btn'>
+								<Link className="text-basic sidebar-align sidebar-menu-item" to={{ pathname: `/passmanager/i/`+item.id }}>{item.title}</Link>
+								<div className='sidebar-menu-item-btn  sidebar-menu-item'>
 									<Button
 										key={item.id}
 										className='hidden-button full-width full-height'

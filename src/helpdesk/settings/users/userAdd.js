@@ -67,7 +67,8 @@ export default class UserAdd extends Component{
           <Button className="btn" disabled={this.state.saving|| this.state.companies.length===0||!isEmail(this.state.email)||this.state.password.length < 6 } onClick={()=>{
               this.setState({saving:true});
               firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).then((user)=>{
-                rebase.addToCollection('/users', {username:this.state.username,name:this.state.name,surname:this.state.surname,email:this.state.email,company:this.state.company.id},user.user.uid)
+                let newUser = {username:this.state.username,name:this.state.name,surname:this.state.surname,email:this.state.email,company:this.state.company.id};
+                rebase.addToCollection('/users', newUser, user.user.uid)
                 .then(()=>{
                   let company = {...this.state.companies[0],label:this.state.companies[0].title,value:this.state.companies[0].id};
                   this.setState({
@@ -77,10 +78,15 @@ export default class UserAdd extends Component{
                     email:'',
                     company,
                     saving:false
-                  });
+                  }, () => {this.props.addUser({...newUser, id: user.user.id, value: user.user.id, label: newUser.email}); this.props.close();});
                 });
               });
             }}>{this.state.saving?'Adding...':'Add user'}</Button>
+
+          {this.props.close &&
+          <Button className="btn btn-link"
+            onClick={()=>{this.props.close()}}>Cancel</Button>
+          }
         </div>
       </div>
     );
