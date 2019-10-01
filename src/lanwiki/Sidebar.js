@@ -20,6 +20,7 @@ class Sidebar extends Component {
 		};
 		this.toggleEdit.bind(this);
 		this.toggleAdd.bind(this);
+		this.createNew.bind(this);
 	}
 
 	componentWillMount(){
@@ -42,6 +43,26 @@ class Sidebar extends Component {
 		this.setState({openedEdit:!this.state.openedEdit})
 	}
 
+	createNew(){
+		let start = window.location.pathname.indexOf("/i/") + 3;
+		let id = window.location.pathname.substring(start);
+		let end = id.indexOf("/");
+		if (end !== -1){
+			id = id.substring(0, end);
+		}
+
+		rebase.addToCollection('/lanwiki-notes',
+		{ name: "Untitled",
+			tags: (id !== "all" ? [id] : []),
+			body: "",
+			lastUpdated: new Date().getTime(),
+			dateCreated: new Date().getTime(),
+		})
+		.then((note) => {
+			this.props.history.push(`/lanwiki/i/${id}/${note.id}`);
+		});
+	}
+
 	render() {
 		return (
 			<div className="sidebar">
@@ -55,6 +76,16 @@ class Sidebar extends Component {
 						<i className="fa fa-plus sidebar-icon-center"/> Add tag
 					</Button>
 
+					<Button
+						block
+					  className="btn-link t-a-l sidebar-menu-item"
+            onClick={(e) => {
+              e.preventDefault();
+              this.createNew();
+            }}>
+						<i className="fa fa-plus sidebar-icon-center"/> New Note
+					</Button>
+
 
 					<Nav vertical>
 						<NavItem>
@@ -66,8 +97,8 @@ class Sidebar extends Component {
 							.sort((item1,item2)=>item1.title.toLowerCase()>item2.title.toLowerCase()?1:-1)
 							.map((item)=>
 								<NavItem key={item.id}  className="sidebar-link">
-									<Link className= "text-basic sidebar-align sidebar-menu-item-link" to={{ pathname:`/lanwiki/i/`+item.id}}>{item.title}</Link>
-									<div className='sidebar-menu-item-btn'>
+									<Link className= "text-basic sidebar-align sidebar-menu-item" to={{ pathname:`/lanwiki/i/`+item.id}}>{item.title}</Link>
+									<div className='sidebar-menu-item-btn  sidebar-menu-item'>
 										<Button
 											key={item.id}
 											className='hidden-button full-width full-height'

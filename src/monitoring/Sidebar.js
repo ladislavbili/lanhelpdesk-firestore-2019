@@ -39,12 +39,12 @@ export default class Sidebar extends Component {
 					<Nav vertical>
 						<NavItem key={0}  className="sidebar-link">
 							<Link
-								className="text-basic sidebar-align sidebar-menu-item-link"
+								className="text-basic sidebar-align sidebar-menu-item"
 								key={0}
 								to={{ pathname: `/monitoring/mail-notifications`  }}>
 								Mail notifications
 							</Link>
-							<div className='sidebar-menu-item-btn'>
+							<div className='sidebar-menu-item-btn sidebar-menu-item'>
 								<Button
 									key={0}
 									className='hidden-button full-width full-height'
@@ -57,12 +57,12 @@ export default class Sidebar extends Component {
 
 						<NavItem key={1}  className="sidebar-link">
 							<Link
-								className="text-basic sidebar-align sidebar-menu-item-link"
+								className="text-basic sidebar-align sidebar-menu-item"
 								key={1}
 								to={{ pathname: `/monitoring/mail-servers`}}>
 								Mail servers
 							</Link>
-						<div className='sidebar-menu-item-btn'>
+						<div className='sidebar-menu-item-btn  sidebar-menu-item'>
 								<Button
 									key={1}
 									className='hidden-button full-width full-height'

@@ -56,12 +56,12 @@ export default class Sidebar extends Component {
 								this.state.projects.map((item)=>
 								<NavItem key={item.id}  className="sidebar-link">
 									<Link
-										className="text-basic sidebar-align sidebar-menu-item-link"
+										className="text-basic sidebar-align sidebar-menu-item"
 										key={item.id}
 										to={{ pathname: `/projects/`+item.id }}>
 										{item.title}
 									</Link>
-								<div className='sidebar-menu-item-btn'>
+								<div className='sidebar-menu-item-btn  sidebar-menu-item'>
 										<Button
 											key={item.id}
 											className='hidden-button full-width full-height'

@@ -76,9 +76,20 @@ export default class CompanyAdd extends Component{
           </FormGroup>
           <Button className="btn" disabled={this.state.saving} onClick={()=>{
               this.setState({saving:true});
-              rebase.addToCollection('/companies', {title:this.state.companyName,pricelist:this.state.pricelist.id})
-                .then(()=>{this.setState({companyName:'',pausal:this.state.pausal,pricelist:this.state.pricelists.length>0?this.state.pricelists[0]:null,saving:false})});
+              let newCompany = {title:this.state.companyName, pricelist:this.state.pricelist.id};
+              rebase.addToCollection('/companies', newCompany)
+                .then((comp)=>{
+                  this.setState({
+                    companyName:'',
+                    pausal:this.state.pausal,
+                    pricelist:this.state.pricelists.length>0?this.state.pricelists[0]:null,
+                    saving:false}, () => {this.props.addCompany({...newCompany, id: comp.id, label: newCompany.title, value: comp.id}); this.props.close()})});
             }}>{this.state.saving?'Adding...':'Add company'}</Button>
+
+            {this.props.close &&
+            <Button className="btn btn-link"
+              onClick={()=>{this.props.close()}}>Cancel</Button>
+            }
           </div>
       </div>
     );
