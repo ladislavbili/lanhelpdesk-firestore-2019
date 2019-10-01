@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
 import Select from 'react-select';
-import {rebase,database} from '../../../index';
-import {toSelArr,snapshotToArray} from '../../../helperFunctions';
+import {rebase} from '../../../index';
+import {toSelArr} from '../../../helperFunctions';
 import {selectStyle} from "../../../scss/selectStyles";
 
-export default class CompanyEdit extends Component{
+import { connect } from "react-redux";
+import {storageHelpPricelistsStart,storageMetadataStart, storageCompaniesStart} from '../../../redux/actions';
+import {sameStringForms} from '../../../helperFunctions';
+
+class CompanyEdit extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -16,34 +20,55 @@ export default class CompanyEdit extends Component{
       loading:true,
       saving:false
     }
-    this.fetchData.bind(this);
     this.setData.bind(this);
-    this.fetchData(this.props.match.params.id);
   }
 
-  fetchData(id){
-    Promise.all([
-      rebase.get('companies/'+id, {
-        context: this,
-      }),
-      database.collection('help-pricelists').get()
-    ])
-    .then(([company,pricelists])=>this.setData(company,toSelArr(snapshotToArray(pricelists))))
-  }
-
-  setData(company,pricelists){
-    let pricelist=pricelists.find((item)=>item.id===company.pricelist);
-    if(pricelist===undefined && pricelists.length>0){
-      pricelist=pricelists[0];
-    }
-    this.setState({companyName:company.title,pausal:company.pausal,pricelists,pricelist,loading:false})
+  storageLoaded(props){
+    return props.pricelistsLoaded && props.metadataLoaded && props.companiesLoaded
   }
 
   componentWillReceiveProps(props){
+    if(!sameStringForms(props.pricelists,this.props.pricelists)){
+      this.setState({pricelists:toSelArr(props.pricelists)})
+    }
+    if(!this.storageLoaded(this.props) && this.storageLoaded(props)){
+      this.setData(props);
+    }
     if(this.props.match.params.id!==props.match.params.id){
       this.setState({loading:true})
-      this.fetchData(props.match.params.id);
+      if(this.storageLoaded(props)){
+        this.setData(props);
+      }
     }
+  }
+
+  componentWillMount(){
+    if(this.storageLoaded(this.props)){
+      this.setData(this.props);
+    }
+    if(!this.props.metadataActive){
+      this.props.storageMetadataStart();
+    }
+    if(!this.props.pricelistsActive){
+      this.props.storageHelpPricelistsStart();
+    }
+    if(!this.props.companiesActive){
+      this.props.storageCompaniesStart();
+    }
+  }
+
+  setData(props){
+    let pricelists = toSelArr(props.pricelists);
+    let meta = props.metadata;
+    let company = props.companies.find((company)=>company.id===props.match.params.id);
+    let pricelist=pricelists.find((item)=>item.id===company.pricelist);
+    if(pricelist===undefined){
+      pricelist=pricelists.find((item)=>item.id===meta.defaultPricelist);
+      if(pricelist===undefined && pricelists.length>0){
+        pricelist=pricelists[0];
+      }
+    }
+    this.setState({companyName:company.title,pausal:company.pausal,pricelists,pricelist,loading:false})
   }
 
   render(){
@@ -94,3 +119,13 @@ export default class CompanyEdit extends Component{
     );
   }
 }
+
+
+const mapStateToProps = ({ storageMetadata, storageHelpPricelists, storageCompanies}) => {
+  const { metadataActive, metadata, metadataLoaded } = storageMetadata;
+  const { pricelistsActive, pricelists, pricelistsLoaded } = storageHelpPricelists;
+  const { companiesActive, companies, companiesLoaded } = storageCompanies;
+  return { metadataActive, metadata, metadataLoaded, pricelistsActive, pricelists, pricelistsLoaded, companiesActive, companies, companiesLoaded };
+};
+
+export default connect(mapStateToProps, { storageHelpPricelistsStart,storageMetadataStart, storageCompaniesStart })(CompanyEdit);

@@ -16,6 +16,8 @@ import Repeat from '../components/repeat';
 import classnames from "classnames";
 import {invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
 
+const oneDay = 24*60*60*1000;
+
 const noDef={
 	status:{def:false,fixed:false, value: null},
 	tags:{def:false,fixed:false, value: []},
@@ -51,7 +53,9 @@ export default class TaskAdd extends Component{
 			description:'',
 			status:null,
 			statusChange:null,
-			deadline:null,
+			deadline:"",
+			closeDate:"",
+			pendingDate:"",
 			reminder:null,
 			project:null,
 			tags:[],
@@ -80,6 +84,16 @@ export default class TaskAdd extends Component{
 	submitTask(){
 		this.setState({saving:true});
 
+		let pendingDate = null;
+		if(this.state.status.action==='pending'){
+			pendingDate = isNaN(new Date(this.state.pendingDate).getTime()) ? ((new Date()).getTime()+oneDay) : new Date(this.state.pendingDate).getTime()
+		}
+
+		let closeDate = null;
+		if(this.state.status.action==='close'){
+			closeDate = isNaN(new Date(this.state.closeDate).getTime()) ? (new Date()).getTime() : new Date(this.state.closeDate).getTime()
+		}
+
 		database.collection('metadata').doc('0').get().then((taskMeta)=>{
 			let newID = (parseInt(taskMeta.data().taskLastID)+1)+"";
 			let body = {
@@ -98,7 +112,9 @@ export default class TaskAdd extends Component{
 				overtime: this.state.overtime.value,
 				tags: this.state.tags.map((item)=>item.id),
 				type: this.state.type?this.state.type.id:null,
-				repeat: this.state.repeat!==null?newID:null
+				repeat: this.state.repeat!==null?newID:null,
+				closeDate,
+				pendingDate,
 			}
 
 			this.state.taskWorks.forEach((item)=>{
@@ -141,6 +157,9 @@ export default class TaskAdd extends Component{
 					description:'',
 					status:null,
 					statusChange:null,
+					deadline:'',
+					closeDate:'',
+					pendingDate:'',
 					project:null,
 					pausal:{value:true,label:'Pausal'},
 					overtime:{value:false,label:'Nie'},
@@ -157,44 +176,44 @@ export default class TaskAdd extends Component{
 
 
 
-		setDefaults(projectID, forced){
-			if(projectID===null){
+	setDefaults(projectID, forced){
+		if(projectID===null){
+			this.setState({defaults:noDef});
+			return;
+		}
+
+		database.collection('help-projects').doc(projectID).get().then((project)=>{
+			let def = project.data().def;
+			if(!def){
 				this.setState({defaults:noDef});
 				return;
 			}
 
-			database.collection('help-projects').doc(projectID).get().then((project)=>{
-				let def = project.data().def;
-				if(!def){
-					this.setState({defaults:noDef});
-					return;
-				}
-
-				if (this.props.task && !forced) {
-					this.setState({
-						defaults: def,
-					});
-					return;
-				}
-
-				let state  = this.state;
+			if (this.props.task && !forced) {
 				this.setState({
-					assignedTo: def.assignedTo&& (def.assignedTo.fixed||def.assignedTo.def)? state.users.filter((item)=> def.assignedTo.value.includes(item.id)):[],
-					company: def.company&& (def.company.fixed||def.company.def)?state.companies.find((item)=> item.id===def.company.value):null,
-					requester: def.requester&& (def.requester.fixed||def.requester.def)?state.users.find((item)=> item.id===def.requester.value):null,
-					status: def.status&& (def.status.fixed||def.status.def)?state.statuses.find((item)=> item.id===def.status.value):null,
-					tags: def.tags&& (def.tags.fixed||def.tags.def)? state.allTags.filter((item)=> def.tags.value.includes(item.id)):[],
-					type: def.type && (def.type.fixed||def.type.def)?state.taskTypes.find((item)=> item.id===def.type.value):null,
-					project: state.projects.find((item)=>item.id===project.id),
-					defaults: def
+					defaults: def,
 				});
+				return;
+			}
+
+			let state  = this.state;
+			this.setState({
+				assignedTo: def.assignedTo&& (def.assignedTo.fixed||def.assignedTo.def)? state.users.filter((item)=> def.assignedTo.value.includes(item.id)):[],
+				company: def.company&& (def.company.fixed||def.company.def)?state.companies.find((item)=> item.id===def.company.value):null,
+				requester: def.requester&& (def.requester.fixed||def.requester.def)?state.users.find((item)=> item.id===def.requester.value):null,
+				status: def.status&& (def.status.fixed||def.status.def)?state.statuses.find((item)=> item.id===def.status.value):null,
+				tags: def.tags&& (def.tags.fixed||def.tags.def)? state.allTags.filter((item)=> def.tags.value.includes(item.id)):[],
+				type: def.type && (def.type.fixed||def.type.def)?state.taskTypes.find((item)=> item.id===def.type.value):null,
+				project: state.projects.find((item)=>item.id===project.id),
+				defaults: def
 			});
-		}
+		});
+	}
 
 		setData(){
 			let status = this.props.statuses.find((item)=>item.title==='New');
 			if(!status){
-				status=null;
+				status=this.props.statuses[0];
 			}
 
 			this.setState({
@@ -212,7 +231,9 @@ export default class TaskAdd extends Component{
 
 				title: this.props.task ? this.props.task.title : '',
 				description: this.props.task ? this.props.task.description : '',
-				deadline: this.props.task ? this.props.task.deadline : null,
+				deadline: this.props.task ? this.props.task.deadline : '',
+				pendingDate: this.props.task ? this.props.task.pendingDate : '',
+				closeDate: this.props.task ? this.props.task.closeDate : '',
 				pausal: this.props.task ? this.props.task.pausal : {value:true,label:'Pausal'},
 				overtime: this.props.task ? this.props.task.overtime : {value:false,label:'Nie'},
 				statusChange: this.props.task ? this.props.task.statusChange : null,
@@ -278,7 +299,6 @@ export default class TaskAdd extends Component{
 					totalPrice
 				}
 			});
-
 			return (
 				<div>
 					<div className="m-b-15">
@@ -293,7 +313,22 @@ export default class TaskAdd extends Component{
 								key={status.id}
 								className="btn-link"
 								disabled={this.state.defaults.status.fixed}
-								onClick={()=>{this.setState({status})}}
+								onClick={()=>{
+									if(status.action==='pending'){
+										this.setState({
+											status,
+											pendingDate:new Date((new Date()).getTime()+oneDay).toISOString().replace('Z',''),
+										})
+									}else if(status.action==='close'){
+										this.setState({
+											status,
+											closeDate: (new Date()).toISOString().replace('Z',''),
+										})
+									}
+									else{
+										this.setState({status})
+									}
+								}}
 								> <i className={(status.icon?status.icon:"")+" commandbar-command-icon"}/>{" "+status.title}
 							</Button>
 						)
@@ -353,6 +388,22 @@ export default class TaskAdd extends Component{
 											/>
 									</div>
 								</div>
+								<div className="row p-r-10 m-b-10">
+									<Label className="col-3 col-form-label">Close date</Label>
+									<div className="col-9">
+										{/*className='form-control hidden-input'*/}
+										<input
+											className='form-control hidden-input'
+											placeholder="Close date"
+											type="datetime-local"
+											disabled={!this.state.status||this.state.status.action!=='close'}
+											value={this.state.closeDate}
+											onChange={(e)=>{
+												this.setState({closeDate:e.target.value})
+											}}
+											/>
+									</div>
+								</div>
 						</div>
 
 						<div className="col-lg-4">
@@ -377,6 +428,22 @@ export default class TaskAdd extends Component{
 											onChange={(company)=>this.setState({company})}
 											options={this.state.companies}
 											styles={invisibleSelectStyleNoArrow}
+											/>
+									</div>
+								</div>
+								<div className="row p-r-10 m-b-10">
+									<Label className="col-3 col-form-label">Pending</Label>
+									<div className="col-9">
+										{/*className='form-control hidden-input'*/}
+										<input
+											className='form-control hidden-input'
+											placeholder="Pending"
+											disabled={!this.state.status||this.state.status.action!=='pending'}
+											type="datetime-local"
+											value={this.state.pendingDate}
+											onChange={(e)=>{
+												this.setState({pendingDate:e.target.value})
+											}}
 											/>
 									</div>
 								</div>

@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, InputGroup, InputGroupAddon, InputGroupText } from 'reactstrap';
-import {rebase, database} from '../../../index';
-import {snapshotToArray} from '../../../helperFunctions';
+import {rebase } from '../../../index';
+import { connect } from "react-redux";
+import {storageImapsStart} from '../../../redux/actions';
 
 
-export default class ImapAdd extends Component{
+class ImapAdd extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -22,11 +23,18 @@ export default class ImapAdd extends Component{
     }
   }
 
+  componentWillMount(){
+    if(!this.props.imapsActive){
+      this.props.storageImapsStart();
+    }
+  }
+
   canSave(){
     return this.state.title!=='' &&
       this.state.host!=='' &&
       this.state.port!=='' &&
-      this.state.user!==''
+      this.state.user!=='' &&
+      this.props.imapsLoaded
   }
 
 
@@ -84,7 +92,6 @@ export default class ImapAdd extends Component{
 
         <Button className="btn" disabled={this.state.saving|| !this.canSave()} onClick={()=>{
             this.setState({saving:true});
-            Promise.all([database.collection('imaps').get(),
             rebase.addToCollection('/imaps', {
               title:this.state.title ,
               host:this.state.host ,
@@ -94,10 +101,9 @@ export default class ImapAdd extends Component{
               tls:this.state.tls ,
               rejectUnauthorized:this.state.rejectUnauthorized ,
               def:this.state.def,
-            })])
-              .then(([imaps,response])=>{
+            }).then((response)=>{
                 if(this.state.def){
-                  snapshotToArray(imaps).filter((imap)=>imap.id!==response.id && imap.def).forEach((item)=>{
+                  this.props.imaps.filter((imap)=>imap.id!==response.id && imap.def).forEach((item)=>{
                     rebase.updateDoc('/imaps/'+item.id,{def:false})
                   })
                 }
@@ -119,3 +125,10 @@ export default class ImapAdd extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ storageImaps }) => {
+  const { imapsLoaded,imapsActive, imaps } = storageImaps;
+  return { imapsLoaded,imapsActive, imaps };
+};
+
+export default connect(mapStateToProps, { storageImapsStart })(ImapAdd);

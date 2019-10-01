@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
-import {rebase, database} from '../../../index';
-import {snapshotToArray} from '../../../helperFunctions';
+import {rebase } from '../../../index';
+import { connect } from "react-redux";
+import {storageHelpPricesStart,storageHelpWorkTypesStart} from '../../../redux/actions';
 
-export default class PriceEdit extends Component{
+class PriceAdd extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -17,21 +18,32 @@ export default class PriceEdit extends Component{
       workTypes:[],
     }
     this.setData.bind(this);
-    this.loadData.bind(this);
-    this.loadData();
   }
 
-  loadData(){
-    Promise.all(
-      [
-        database.collection('help-work_types').get(),
-        database.collection('help-prices').get()
-    ]).then(([ workTypes,prices])=>{
-      this.setData(snapshotToArray(prices),snapshotToArray(workTypes));
-    });
+  storageLoaded(props){
+    return props.pricesLoaded && props.workTypesLoaded
   }
 
-  setData(prices,workTypes){
+  componentWillReceiveProps(props){
+    if(this.storageLoaded(props) && !this.storageLoaded(this.props)){
+      this.setData(props);
+    }
+  }
+
+  componentWillMount(){
+    if(!this.props.pricesActive){
+      this.props.storageHelpPricesStart();
+    }
+    if(!this.props.workTypesActive){
+      this.props.storageHelpWorkTypesStart();
+    }
+    if(this.storageLoaded(this.props)){
+      this.setData(this.props);
+    };
+  }
+
+  setData(props){
+    let workTypes = props.workTypes;
     let types= workTypes.map((type)=>{
       let newType={...type};
       newType.price={price:0};
@@ -123,3 +135,12 @@ export default class PriceEdit extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ storageHelpPrices, storageHelpWorkTypes}) => {
+  const { pricesActive, prices, pricesLoaded } = storageHelpPrices;
+  const { workTypesActive, workTypes, workTypesLoaded } = storageHelpWorkTypes;
+  return { pricesActive, prices, pricesLoaded,
+    workTypesActive, workTypes, workTypesLoaded, };
+};
+
+export default connect(mapStateToProps, { storageHelpPricesStart,storageHelpWorkTypesStart })(PriceAdd);

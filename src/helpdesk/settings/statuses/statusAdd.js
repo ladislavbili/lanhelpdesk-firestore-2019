@@ -1,7 +1,15 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input } from 'reactstrap';
+import Select from 'react-select';
 import {rebase} from '../../../index';
 import { SketchPicker } from "react-color";
+import {selectStyle} from "../../../scss/selectStyles";
+
+let actions = [
+  {label:'None (nothing happens when status is selected)',value:'none'},
+  {label:'Set close date (sets close date as current)',value:'close'},
+  {label:'Set pending date (sets pending date as 1 day from now)',value:'pending'}
+]
 
 export default class StatusAdd extends Component{
   constructor(props){
@@ -11,7 +19,8 @@ export default class StatusAdd extends Component{
       color: "FFF",
       icon: '',
       order:0,
-      saving:false
+      saving:false,
+      action:actions[0]
     }
   }
 
@@ -31,6 +40,17 @@ export default class StatusAdd extends Component{
             <Label for="order">Order</Label>
             <Input type="number" name="order" id="order" placeholder="Lower means first" value={this.state.order} onChange={(e)=>this.setState({order:e.target.value})} />
           </FormGroup>
+          <FormGroup>
+            <Label for="actionIfSelected">Action if selected</Label>
+            <Select
+              id="actionIfSelected"
+              name="Action"
+              styles={selectStyle}
+              options={actions}
+              value={this.state.action}
+              onChange={e =>{ this.setState({ action: e }); }}
+                />
+          </FormGroup>
           <SketchPicker
             id="color"
             color={this.state.color}
@@ -42,7 +62,7 @@ export default class StatusAdd extends Component{
               if(isNaN(order)){
                 order=0;
               }
-              rebase.addToCollection('/help-statuses', {title:this.state.title, color:this.state.color, icon: this.state.icon, order})
+              rebase.addToCollection('/help-statuses', {title:this.state.title, color:this.state.color, icon: this.state.icon, order,action:this.state.action.value})
                 .then(()=>{this.setState({title:'',saving:false})});
             }}>{this.state.saving?'Adding...':'Add status'}</Button>
         </div>

@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
 import Select from 'react-select';
-import {toSelArr, snapshotToArray} from '../../../helperFunctions';
-import {rebase,database} from '../../../index';
+import {toSelArr} from '../../../helperFunctions';
+import {rebase} from '../../../index';
 import {selectStyle} from "../../../scss/selectStyles";
 
-export default class CompanyAdd extends Component{
+import { connect } from "react-redux";
+import {storageHelpPricelistsStart,storageMetadataStart} from '../../../redux/actions';
+import {sameStringForms} from '../../../helperFunctions';
+
+class CompanyAdd extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -16,24 +20,37 @@ export default class CompanyAdd extends Component{
       loading:true,
       saving:false
     }
-    this.fetchData.bind(this);
     this.setData.bind(this);
-    this.fetchData();
   }
 
-  fetchData(){
-    Promise.all(
-      [
-        database.collection('help-pricelists').get(),
-        rebase.get('metadata/0', {
-          context: this,
-        })
-      ]).then(([pricelists,meta])=>{
-      this.setData(toSelArr(snapshotToArray(pricelists)),meta);
-    });
+  storageLoaded(props){
+    return props.pricelistsLoaded && props.metadataLoaded
   }
 
-  setData(pricelists,meta){
+  componentWillReceiveProps(props){
+    if(!sameStringForms(props.pricelists,this.props.pricelists)){
+      this.setState({pricelists:toSelArr(props.pricelists)})
+    }
+    if(!this.storageLoaded(this.props) && this.storageLoaded(props)){
+      this.setData(props);
+    }
+  }
+
+  componentWillMount(){
+    if(this.storageLoaded(this.props)){
+      this.setData(this.props);
+    }
+    if(!this.props.metadataActive){
+      this.props.storageMetadataStart();
+    }
+    if(!this.props.pricelistsActive){
+      this.props.storageHelpPricelistsStart();
+    }
+  }
+
+  setData(props){
+    let pricelists = toSelArr(props.pricelists);
+    let meta = props.metadata;
     let pricelist = null;
       if(pricelists.length>0){
         if(meta.defaultPricelist!==null){
@@ -84,3 +101,11 @@ export default class CompanyAdd extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ storageMetadata, storageHelpPricelists}) => {
+  const { metadataActive, metadata, metadataLoaded } = storageMetadata;
+  const { pricelistsActive, pricelists, pricelistsLoaded } = storageHelpPricelists;
+  return { metadataActive, metadata, metadataLoaded, pricelistsActive, pricelists, pricelistsLoaded };
+};
+
+export default connect(mapStateToProps, { storageHelpPricelistsStart,storageMetadataStart })(CompanyAdd);

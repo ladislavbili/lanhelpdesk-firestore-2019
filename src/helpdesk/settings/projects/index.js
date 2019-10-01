@@ -3,7 +3,6 @@ import {Button } from 'reactstrap';
 import ProjectAdd from './projectAdd';
 import { connect } from "react-redux";
 import ProjectEdit from './projectEdit';
-import {sameStringForms} from '../../../helperFunctions';
 import {storageHelpProjectsStart} from '../../../redux/actions';
 
 class ProjectList extends Component{

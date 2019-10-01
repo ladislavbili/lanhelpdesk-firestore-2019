@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import {rebase} from '../../../index';
 import {Button } from 'reactstrap';
 import SMTPAdd from './smtpAdd';
 import SMTPEdit from './smtpEdit';

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {Button } from 'reactstrap';
-import {rebase} from '../../../index';
 import SupplierAdd from './supplierAdd';
 import SupplierEdit from './supplierEdit';
 

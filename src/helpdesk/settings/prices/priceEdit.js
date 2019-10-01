@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
-import {rebase, database} from '../../../index';
-import {snapshotToArray} from '../../../helperFunctions';
+import {rebase } from '../../../index';
 
-export default class PriceEdit extends Component{
+import { connect } from "react-redux";
+import {storageMetadataStart,storageHelpPricelistsStart,storageHelpPricesStart,storageHelpWorkTypesStart} from '../../../redux/actions';
+
+class PriceEdit extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -19,29 +21,49 @@ export default class PriceEdit extends Component{
 
     }
     this.setData.bind(this);
-    this.loadData.bind(this);
-    this.loadData(this.props.match.params.id);
   }
 
-  loadData(id){
-    Promise.all(
-      [
-        rebase.get('help-pricelists/'+id, {
-          context: this,
-          withIds: true,
-        }),
-
-        rebase.get('metadata/0', {
-          context: this,
-        }),
-        database.collection('help-work_types').get(),
-        database.collection('help-prices').get()
-    ]).then(([pricelist,meta, workTypes,prices])=>{
-      this.setData(pricelist,meta,snapshotToArray(prices),snapshotToArray(workTypes),id);
-    });
+  storageLoaded(props){
+    return props.pricesLoaded && props.workTypesLoaded && props.pricelistsLoaded && props.metadataLoaded
   }
 
-  setData(pricelist,meta,prices,workTypes, id){
+  componentWillReceiveProps(props){
+    if(this.storageLoaded(props) && !this.storageLoaded(this.props)){
+      this.setData(props);
+    }
+    if(this.props.match.params.id!==props.match.params.id){
+      this.setState({loading:true})
+      if(this.storageLoaded(props)){
+        this.setData(props);
+      }
+    }
+  }
+
+  componentWillMount(){
+    if(!this.props.metadataActive){
+      this.props.storageMetadataStart();
+    }
+    if(!this.props.pricelistsActive){
+      this.props.storageHelpPricelistsStart();
+    }
+    if(!this.props.pricesActive){
+      this.props.storageHelpPricesStart();
+    }
+    if(!this.props.workTypesActive){
+      this.props.storageHelpWorkTypesStart();
+    }
+    if(this.storageLoaded(this.props)){
+      this.setData(this.props);
+    };
+  }
+
+  setData(props){
+    let id = props.match.params.id;
+    let pricelist = props.pricelists.find((pricelist)=>pricelist.id===id);
+    let meta = props.metadata;
+    let prices = props.prices;
+    let workTypes = props.workTypes;
+
     let types= workTypes.map((type)=>{
       let newType={...type};
       newType.price= prices.find((item)=>item.pricelist===id && item.workType === newType.id);
@@ -61,13 +83,6 @@ export default class PriceEdit extends Component{
       def:meta.defaultPricelist===id,
       defaultPricelist:meta.defaultPricelist
     });
-  }
-
-  componentWillReceiveProps(props){
-    if(this.props.match.params.id!==props.match.params.id){
-      this.setState({loading:true});
-      this.loadData(props.match.params.id);
-    }
   }
 
   render(){
@@ -167,3 +182,17 @@ export default class PriceEdit extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ storageMetadata,storageHelpPricelists,storageHelpPrices, storageHelpWorkTypes}) => {
+  const { metadataActive, metadata, metadataLoaded } = storageMetadata;
+  const { pricelistsActive, pricelists, pricelistsLoaded } = storageHelpPricelists;
+  const { pricesActive, prices, pricesLoaded } = storageHelpPrices;
+  const { workTypesActive, workTypes, workTypesLoaded } = storageHelpWorkTypes;
+  return {
+    metadataActive, metadata, metadataLoaded,
+    pricelistsActive, pricelists, pricelistsLoaded,
+    pricesActive, prices, pricesLoaded,
+    workTypesActive, workTypes, workTypesLoaded, };
+};
+
+export default connect(mapStateToProps, { storageMetadataStart,storageHelpPricelistsStart,storageHelpPricesStart,storageHelpWorkTypesStart })(PriceEdit);

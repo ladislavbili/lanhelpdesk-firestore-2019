@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import {database} from '../../index';
 import { connect } from "react-redux";
 import {storageHelpTasksStart, storageHelpStatusesStart, storageHelpWorkTypesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart, storageHelpTaskWorksStart} from '../../redux/actions';
-import { snapshotToArray, timestampToString, sameStringForms} from '../../helperFunctions';
+import { timestampToString, sameStringForms} from '../../helperFunctions';
 import { Link } from 'react-router-dom';
 
 class Reports extends Component {

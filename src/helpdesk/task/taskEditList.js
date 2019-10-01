@@ -21,6 +21,8 @@ import firebase from 'firebase';
 import {toSelArr, snapshotToArray, timestampToString, sameStringForms,toCentralTime,fromCentralTime} from '../../helperFunctions';
 import {invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
 
+const oneDay = 24*60*60*1000;
+
 const noDef={
 	status:{def:false,fixed:false, value: null},
 	tags:{def:false,fixed:false, value: []},
@@ -67,6 +69,8 @@ class TaskEditList extends Component {
 			status:null,
 			statusChange:null,
 			deadline:"",
+			closeDate:"",
+			pendingDate:"",
 			reminder:null,
 			project:null,
 			tags:[],
@@ -155,6 +159,17 @@ class TaskEditList extends Component {
 		}
 		let taskID = this.props.match.params.taskID;
     this.setState({saving:true});
+
+		let pendingDate = null;
+		if(this.state.status.action==='pending'){
+			pendingDate = isNaN(new Date(this.state.pendingDate).getTime()) ? ((new Date()).getTime()+oneDay) : new Date(this.state.pendingDate).getTime()
+		}
+
+		let closeDate = null;
+		if(this.state.status.action==='close'){
+			closeDate = isNaN(new Date(this.state.closeDate).getTime()) ? (new Date()).getTime() : new Date(this.state.closeDate).getTime()
+		}
+
     let body = {
       title: this.state.title,
       company: this.state.company?this.state.company.id:null,
@@ -173,6 +188,8 @@ class TaskEditList extends Component {
 			type: this.state.type?this.state.type.id:null,
 			repeat: this.state.repeat!==null?taskID:null,
 			attachments:this.state.attachments,
+			closeDate,
+			pendingDate,
     }
 
     rebase.updateDoc('/help-tasks/'+taskID, body)
@@ -347,6 +364,8 @@ class TaskEditList extends Component {
 			statusChange:task.statusChange?task.statusChange:null,
 			createdAt:task.createdAt?task.createdAt:null,
 			deadline: task.deadline!==null?new Date(fromCentralTime(task.deadline)).toISOString().replace('Z',''):'',
+			closeDate: task.closeDate!==null && task.closeDate!==undefined ?new Date(fromCentralTime(task.closeDate)).toISOString().replace('Z',''):'',
+			pendingDate: task.pendingDate!==null && task.pendingDate!==undefined ?new Date(fromCentralTime(task.pendingDate)).toISOString().replace('Z',''):'',
 			reminder: task.reminder?new Date(task.reminder).toISOString().replace('Z',''):'',
       project:project?project:null,
       company:company?company:null,
@@ -421,7 +440,24 @@ class TaskEditList extends Component {
 									key={status.id}
 									className="btn-link"
 									disabled={this.state.defaultFields.status.fixed}
-									onClick={()=>{this.setState({status,statusChange:(new Date().getTime())},this.submitTask.bind(this))}}
+									onClick={()=>{
+										if(status.action==='pending'){
+											this.setState({
+												status,
+												statusChange:(new Date().getTime()),
+												pendingDate:new Date((new Date()).getTime()+oneDay).toISOString().replace('Z',''),
+											},this.submitTask.bind(this))
+										}else if(status.action==='closed'){
+											this.setState({
+												status,
+												statusChange:(new Date().getTime()),
+												closeDate: new Date().toISOString().replace('Z',''),
+											},this.submitTask.bind(this))
+										}
+										else{
+											this.setState({status,statusChange:(new Date().getTime())},this.submitTask.bind(this))
+										}
+									}}
 									><i className={(status.icon?status.icon:"")+" commandbar-command-icon"}/>{" "+status.title}
 								</Button>
 								)
@@ -520,6 +556,22 @@ class TaskEditList extends Component {
 													/>
 											</div>
 										</div>
+										<div className="row p-r-10">
+											<Label className="col-3 col-form-label">Close date</Label>
+											<div className="col-9">
+												{/*className='form-control hidden-input'*/}
+												<input
+													className='form-control hidden-input'
+													placeholder="Close date"
+													type="datetime-local"
+													disabled={!this.state.status || this.state.status.action!=='close'}
+													value={this.state.closeDate}
+													onChange={(e)=>{
+														this.setState({closeDate:e.target.value},this.submitTask.bind(this))}
+													}
+													/>
+											</div>
+										</div>
 								</div>
 
 								<div className="col-lg-4">
@@ -546,6 +598,22 @@ class TaskEditList extends Component {
 													onChange={(company)=>this.setState({company},this.submitTask.bind(this))}
 													options={this.state.companies}
 													styles={invisibleSelectStyleNoArrow}
+													/>
+											</div>
+										</div>
+										<div className="row p-r-10">
+											<Label className="col-3 col-form-label">Pending</Label>
+											<div className="col-9">
+												{/*className='form-control hidden-input'*/}
+												<input
+													className='form-control hidden-input'
+													placeholder="Pending date"
+													type="datetime-local"
+													disabled={!this.state.status || this.state.status.action!=='pending'}
+													value={this.state.pendingDate}
+													onChange={(e)=>{
+														this.setState({pendingDate:e.target.value},this.submitTask.bind(this))}
+													}
 													/>
 											</div>
 										</div>

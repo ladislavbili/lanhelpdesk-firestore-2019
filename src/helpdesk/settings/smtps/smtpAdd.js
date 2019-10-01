@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, InputGroup, InputGroupAddon, InputGroupText } from 'reactstrap';
-import {rebase, database} from '../../../index';
-import {snapshotToArray} from '../../../helperFunctions';
+import {rebase } from '../../../index';
 
+import { connect } from "react-redux";
+import {storageSmtpsStart} from '../../../redux/actions';
 
-export default class SMTPAdd extends Component{
+class SMTPAdd extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -22,11 +23,18 @@ export default class SMTPAdd extends Component{
     }
   }
 
+  componentWillMount(){
+    if(!this.props.smtpsActive){
+      this.props.storageSmtpsStart();
+    }
+  }
+
   canSave(){
     return this.state.title!=='' &&
       this.state.host!=='' &&
       this.state.port!=='' &&
-      this.state.user!==''
+      this.state.user!=='' &&
+      this.props.smtpsLoaded
   }
 
   render(){
@@ -83,7 +91,6 @@ export default class SMTPAdd extends Component{
 
         <Button className="btn" disabled={this.state.saving || !this.canSave()} onClick={()=>{
             this.setState({saving:true});
-            Promise.all([database.collection('smtps').get(),
             rebase.addToCollection('/smtps', {
               title:this.state.title,
               host:this.state.host ,
@@ -93,10 +100,9 @@ export default class SMTPAdd extends Component{
               pass:this.state.pass ,
               rejectUnauthorized:this.state.rejectUnauthorized ,
               def:this.state.def,
-            })])
-              .then(([smtps,response])=>{
+            }).then((response)=>{
                 if(this.state.def){
-                  snapshotToArray(smtps).filter((smtp)=>smtp.id!==response.id && smtp.def).forEach((item)=>{
+                  this.props.smtps.filter((smtp)=>smtp.id!==response.id && smtp.def).forEach((item)=>{
                     rebase.updateDoc('/smtps/'+item.id,{def:false})
                   })
                 }
@@ -118,3 +124,10 @@ export default class SMTPAdd extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ storageSmtps }) => {
+  const { smtpsActive, smtps, smtpsLoaded } = storageSmtps;
+  return { smtpsActive, smtps, smtpsLoaded };
+};
+
+export default connect(mapStateToProps, { storageSmtpsStart })(SMTPAdd);

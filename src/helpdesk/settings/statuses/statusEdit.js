@@ -2,8 +2,19 @@ import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
 import {rebase} from '../../../index';
 import { SketchPicker } from "react-color";
+import Select from 'react-select';
+import {selectStyle} from "../../../scss/selectStyles";
 
-export default class StatusEdit extends Component{
+import { connect } from "react-redux";
+import {storageHelpStatusesStart} from '../../../redux/actions';
+
+let actions = [
+  {label:'None (nothing happens when status is selected)',value:'none'},
+  {label:'Set close date (sets close date as current)',value:'close'},
+  {label:'Set pending date (sets pending date as 1 day from now)',value:'pending'}
+]
+
+class StatusEdit extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -12,25 +23,47 @@ export default class StatusEdit extends Component{
       icon: '',
       order: 0,
       loading:true,
-      saving:false
+      saving:false,
+      action:actions[0]
     }
     this.setData.bind(this);
-    rebase.get('help-statuses/'+this.props.match.params.id, {
-      context: this,
-    }).then((status)=>this.setData(status));
-  }
-
-  setData(data){
-    this.setState({title:data.title,color:data.color?data.color:'FFF',icon:data.icon?data.icon:'',loading:false,order:data.order?data.order:0})
   }
 
   componentWillReceiveProps(props){
+    if(props.statusesLoaded && !this.props.statusesLoaded){
+      this.setData(props);
+    }
     if(this.props.match.params.id!==props.match.params.id){
       this.setState({loading:true})
-      rebase.get('help-statuses/'+props.match.params.id, {
-        context: this,
-      }).then((status)=>this.setData(status));
+      if(props.statusesLoaded){
+        this.setData(props);
+      }
     }
+  }
+
+  componentWillMount(){
+    if(!this.props.statusesActive){
+      this.props.storageHelpStatusesStart();
+    }
+    if(this.props.statusesLoaded){
+      this.setData(this.props);
+    };
+  }
+
+  setData(props){
+    let data = props.statuses.find((status)=>status.id===props.match.params.id);
+    let action = actions.find((action)=>action.value===data.action);
+    if(!action){
+      action = actions[0];
+    }
+    this.setState({
+      title:data.title,
+      color:data.color?data.color:'FFF',
+      icon:data.icon?data.icon:'',
+      loading:false,
+      order:data.order?data.order:0,
+      action
+    })
   }
 
   render(){
@@ -45,11 +78,6 @@ export default class StatusEdit extends Component{
         }
         <FormGroup>
           <Label for="name">Status name</Label>
-          <SketchPicker
-            id="color"
-            color={this.state.color}
-            onChangeComplete={value => this.setState({ color: value.hex })}
-          />
           <Input type="text" name="name" id="name" placeholder="Enter status name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
         </FormGroup>
         <FormGroup>
@@ -60,13 +88,35 @@ export default class StatusEdit extends Component{
           <Label for="order">Order</Label>
           <Input type="number" name="order" id="order" placeholder="Lower means first" value={this.state.order} onChange={(e)=>this.setState({order:e.target.value})} />
         </FormGroup>
+        <FormGroup>
+          <Label for="actionIfSelected">Action if selected</Label>
+          <Select
+            id="actionIfSelected"
+            name="Action"
+            styles={selectStyle}
+            options={actions}
+            value={this.state.action}
+            onChange={e =>{ this.setState({ action: e }); }}
+              />
+        </FormGroup>
+        <SketchPicker
+          id="color"
+          color={this.state.color}
+          onChangeComplete={value => this.setState({ color: value.hex })}
+          />
         <Button className="btn" disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
             let order = this.state.order!==''?parseInt(this.state.order):0;
             if(isNaN(order)){
               order=0;
             }
-            rebase.updateDoc('/help-statuses/'+this.props.match.params.id, {title:this.state.title, color:this.state.color, icon:this.state.icon, order})
+            rebase.updateDoc('/help-statuses/'+this.props.match.params.id, {
+              title:this.state.title,
+            color:this.state.color,
+            icon:this.state.icon,
+            order,
+            action:this.state.action.value
+          })
               .then(()=>{this.setState({saving:false})});
           }}>{this.state.saving?'Saving status...':'Save status'}</Button>
         <Button className="btn-link" disabled={this.state.saving} onClick={()=>{
@@ -81,3 +131,10 @@ export default class StatusEdit extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ storageHelpStatuses}) => {
+  const { statusesActive, statuses, statusesLoaded } = storageHelpStatuses;
+  return { statusesActive, statuses, statusesLoaded };
+};
+
+export default connect(mapStateToProps, { storageHelpStatusesStart })(StatusEdit);

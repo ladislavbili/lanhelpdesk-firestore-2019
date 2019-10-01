@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, Alert, InputGroup, InputGroupAddon, InputGroupText } from 'reactstrap';
-import {rebase,database} from '../../../index';
-import {snapshotToArray} from '../../../helperFunctions';
+import {rebase} from '../../../index';
 
-export default class SMTPEdit extends Component{
+import { connect } from "react-redux";
+import {storageSmtpsStart} from '../../../redux/actions';
+import {sameStringForms} from '../../../helperFunctions';
+
+class SMTPEdit extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -23,16 +26,39 @@ export default class SMTPEdit extends Component{
       def:false,
     }
     this.setData.bind(this);
-    database.collection('smtps').get().then((smtps)=>this.setData(snapshotToArray(smtps),this.props.match.params.id))
   }
 
   canSave(){
     return this.state.title!=='' &&
       this.state.host!=='' &&
       this.state.port!=='' &&
-      this.state.user!==''
+      this.state.user!=='' &&
+      this.props.smtpsLoaded
   }
 
+  componentWillReceiveProps(props){
+    if(!sameStringForms(props.smtps,this.props.smtps)){
+      this.setState({smtps:props.smtps})
+    }
+    if(!this.props.smtpsLoaded && props.smtpsLoaded){
+      this.setData(props.smtps,props.match.params.id);
+    }
+    if(this.props.match.params.id!==props.match.params.id){
+      this.setState({loading:true})
+      if(props.smtpsLoaded){
+        this.setData(props.smtps,props.match.params.id);
+      }
+    }
+  }
+
+  componentWillMount(){
+    if(!this.props.smtpsActive){
+      this.props.storageSmtpsStart();
+    }
+    if(this.props.smtpsLoaded){
+      this.setData(this.props.smtps,this.props.match.params.id);
+    }
+  }
 
   setData(smtps,id){
     let smtp=smtps.find((item)=>item.id===id);
@@ -51,13 +77,6 @@ export default class SMTPEdit extends Component{
       rejectUnauthorized: smtp.rejectUnauthorized,
       def:smtp.def,
       })
-  }
-
-  componentWillReceiveProps(props){
-    if(this.props.match.params.id!==props.match.params.id){
-      this.setState({loading:true})
-      database.collection('smtps').get().then((smtps)=>this.setData(snapshotToArray(smtps),this.props.match.params.id));
-    }
   }
 
   render(){
@@ -150,3 +169,10 @@ export default class SMTPEdit extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ storageSmtps }) => {
+  const { smtpsActive, smtps, smtpsLoaded } = storageSmtps;
+  return { smtpsActive, smtps, smtpsLoaded };
+};
+
+export default connect(mapStateToProps, { storageSmtpsStart })(SMTPEdit);

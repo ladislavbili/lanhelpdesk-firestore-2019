@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import {rebase} from '../../../index';
 import {Button } from 'reactstrap';
 import UnitAdd from './unitAdd';
 import UnitEdit from './unitEdit';

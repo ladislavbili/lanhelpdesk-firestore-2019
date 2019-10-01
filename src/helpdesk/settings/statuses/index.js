@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {Button } from 'reactstrap';
-import {rebase} from '../../../index';
 import StatusAdd from './statusAdd';
 import StatusEdit from './statusEdit';
 

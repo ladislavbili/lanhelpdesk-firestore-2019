@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
 import {Button } from 'reactstrap';
-import {rebase} from '../../../index';
 import TagAdd from './tagAdd';
 import TagEdit from './tagEdit';
 

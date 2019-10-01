@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {Button } from 'reactstrap';
-import {rebase} from '../../../index';
 import UserAdd from './userAdd';
 import UserEdit from './userEdit';
 

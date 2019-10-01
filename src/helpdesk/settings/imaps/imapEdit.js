@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, Alert, InputGroup, InputGroupAddon, InputGroupText } from 'reactstrap';
-import {rebase,database} from '../../../index';
-import {snapshotToArray} from '../../../helperFunctions';
+import {rebase } from '../../../index';
+import { connect } from "react-redux";
+import {storageImapsStart} from '../../../redux/actions';
 
-export default class ImapEdit extends Component{
+class ImapEdit extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -23,7 +24,6 @@ export default class ImapEdit extends Component{
       def:false,
     }
     this.setData.bind(this);
-    database.collection('imaps').get().then((imaps)=>this.setData(snapshotToArray(imaps),this.props.match.params.id))
   }
 
   canSave(){
@@ -52,10 +52,24 @@ export default class ImapEdit extends Component{
       })
   }
 
+  componentWillMount(){
+    if(!this.props.imapsActive){
+      this.props.storageImapsStart();
+    }
+    if(this.props.imapsLoaded){
+      this.setData(this.props.imaps,this.props.match.params.id);
+    }
+  }
+
   componentWillReceiveProps(props){
     if(this.props.match.params.id!==props.match.params.id){
       this.setState({loading:true})
-      database.collection('imaps').get().then((imaps)=>this.setData(snapshotToArray(imaps),this.props.match.params.id));
+      if(props.imapsLoaded){
+        this.setData(props.imaps,props.match.params.id);
+      }
+    }
+    if(props.imapsLoaded && !this.props.imapsLoaded){
+      this.setData(props.imaps,props.match.params.id);
     }
   }
 
@@ -149,3 +163,10 @@ export default class ImapEdit extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ storageImaps }) => {
+  const { imapsLoaded,imapsActive, imaps } = storageImaps;
+  return { imapsLoaded,imapsActive, imaps };
+};
+
+export default connect(mapStateToProps, { storageImapsStart })(ImapEdit);

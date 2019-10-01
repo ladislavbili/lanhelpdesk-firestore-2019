@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {Button } from 'reactstrap';
-import {rebase} from '../../../index';
 import CompanyAdd from './companyAdd';
 import CompanyEdit from './companyEdit';
 
