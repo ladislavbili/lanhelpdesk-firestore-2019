@@ -113,7 +113,7 @@ class TaskList extends Component {
 			<div>
 				<div className="container-fluid">
 					<div className="d-flex flex-row align-items-center">
-						<div className="p-2">
+						<div className="">
 							<div className="input-group commandbar-search-case">
 								<input
 									type="text"
@@ -197,10 +197,10 @@ class TaskList extends Component {
 					</div>
 				</div>
 				<div className="fit-with-header-and-commandbar row">
-					<div className="fit-with-header-and-commandbar p-20 scrollable golden-ratio-618" style={this.props.layout===1?{flex:'auto'}:{}}>
+					<div className="fit-with-header-and-commandbar 0 scrollable golden-ratio-618" style={this.props.layout===1?{flex:'auto'}:{}}>
 						<h1>Tasks</h1>
 
-							<div className="p-2 max-width-400">
+							<div className=" max-width-400">
 								<div className="input-group">
 									<input
 										type="text"

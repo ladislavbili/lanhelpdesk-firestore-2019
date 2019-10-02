@@ -29,7 +29,7 @@ export default class TagList extends Component{
         <div className="content" style={{ paddingTop: 0 }}>
           <div className="container-fluid">
             <div className="row align-items-center">
-              <div className="p-2">
+              <div className="">
                 <div className="input-group">
                   <input
                     type="text"

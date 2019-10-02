@@ -347,8 +347,8 @@ export default class TaskEdit extends Component {
 		return (
 			<div className="flex">
 				<div className="container-fluid">
-					<div className="d-flex flex-row center-hor p-2 ">
-							<div className="display-inline center-hor">
+					<div className="d-flex flex-row center-hor icons-taskEdit-row ">
+							<div className="center-hor icons-taskEdit left">
 							{!this.props.columns &&
 								<button type="button" className="btn btn-link waves-effect" onClick={() => this.props.history.push(`/helpdesk/taskList/i/${this.props.match.params.listID}`)}>
 									<i
@@ -377,7 +377,7 @@ export default class TaskEdit extends Component {
 								<TaskAdd history={this.props.history} project={this.state.project.id} triggerDate={this.state.projectChangeDate} task={this.state} disabled={this.canSave()}/>
 							}
 						</div>
-						<div className="ml-auto center-hor">
+						<div className="ml-auto center-hor  icons-taskEdit right">
 							<TaskPrint match={this.props.match} {...this.state}/>
 							<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.deleteTask.bind(this)}>
 								<i
@@ -395,9 +395,9 @@ export default class TaskEdit extends Component {
 				</div>
 
 						<div className="card-box fit-with-header-and-commandbar scroll-visible">
-							<div className="d-flex p-2">
+							<div className="d-flex ">
 								<div className="row flex">
-									<h1 className="center-hor text-extra-slim">{this.props.match.params.taskID}: </h1>
+									<h1 className="center-hor text-extra-slim task-title">{this.props.match.params.taskID}: </h1>
 									<span className="center-hor flex m-r-15">
 							    	<input type="text" value={this.state.title} className="task-title-input text-extra-slim hidden-input" onChange={(e)=>this.setState({title:e.target.value},this.submitTask.bind(this))} placeholder="Enter task name" />
 									</span>
@@ -409,7 +409,7 @@ export default class TaskEdit extends Component {
 
 
 							<div className="row">
-								<div className="col-lg-12 d-flex">
+								<div className="col-lg-12 d-flex task-under-title">
 									<p className=""><span className="text-muted">Created by</span> Branislav Šusta <span className="text-muted"> at {this.state.createdAt?(timestampToString(this.state.createdAt)):''}</span></p>
 									<p className="text-muted ml-auto">{this.state.statusChange?('Status changed at ' + timestampToString(this.state.statusChange)):''}</p>
 								</div>
@@ -419,7 +419,7 @@ export default class TaskEdit extends Component {
 							<hr className="m-t-15 m-b-10"/>
 
 								<div className="col-lg-12 row m-b-10">
-									<div className="center-hor m-r-5"><Label className="center-hor">Assigned to: </Label></div>
+									<div className="center-hor m-r-5"><Label className="center-hor task-detail-label">Assigned to: </Label></div>
 									<div className="f-1">
 										<Select
 											value={this.state.assignedTo}
@@ -557,11 +557,11 @@ export default class TaskEdit extends Component {
 								</div>
 							</div>}
 
-							<Label className="m-t-5  m-b-10">Popis</Label>
+							<Label className="m-t-5  m-b-10 task-detail-label">Popis</Label>
 							<textarea className="form-control b-r-0  m-b-10 hidden-input" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value},this.submitTask.bind(this))} />
 
 							<div className="row">
-								<div className="center-hor"><Label className="center-hor">Tagy: </Label></div>
+								<div className="center-hor"><Label className="center-hor task-detail-label">Tagy: </Label></div>
 								<div className="f-1 ">
 									<Select
 										placeholder="Zvoľte tagy"

@@ -69,7 +69,7 @@ export default class Rozpocet extends Component {
 				<div className="row m-b-30 m-t-20">
 					<div className="col-md-12">
 						<div>
-							<Label>Služby</Label>
+							<label class="task-detail-label">Služby</label>
 							<table className="table m-t--30">
 								<thead>
 									<tr>
@@ -434,8 +434,8 @@ export default class Rozpocet extends Component {
 								</button>}
 							</div>
 							<div className="col-md-6">
-									<p className="text-right" style={{marginTop: (this.state.showAddItem ? "" : "-45px")}}>
-										<b>Sub-total:</b>
+									<p className="text-right subtotal-price" style={{marginTop: (this.state.showAddItem ? "" : "-45px")}}>
+										<span class="subtotal">Sub-total:</span>
 										{(this.props.subtasks.map((subtask)=>parseFloat(subtask.totalPrice)).reduce((acc, cur)=> acc+cur,0)).toFixed(2)}
 									</p>
 

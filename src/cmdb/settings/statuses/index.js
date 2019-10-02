@@ -35,7 +35,7 @@ export default class Statuses extends Component {
 			<div>
 				<div className="container-fluid">
 					<div className="d-flex flex-row align-items-center">
-						<div className="p-2">
+						<div className="">
 							<div className="input-group">
 								<input
 									type="text"
@@ -54,7 +54,7 @@ export default class Statuses extends Component {
 					</div>
 				</div>
 
-				<div className="fit-with-header-and-commandbar p-20">
+				<div className="fit-with-header-and-commandbar 0">
 						<table className="table">
 							<thead >
 								<tr>

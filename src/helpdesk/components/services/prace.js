@@ -64,7 +64,7 @@ export default class Prace extends Component {
 			<div className="row m-t-20">
 				<div className="col-md-12">
 					<div>
-						<Label>Služby</Label>
+						<label class="task-detail-label">Služby</label>
 						<table className="table m-t--30">
 							<thead >
 								<tr >
@@ -171,20 +171,22 @@ export default class Prace extends Component {
 											styles={invisibleSelectStyle}
 											/>
 									</td>
-									<td className="t-a-r">
+									<td className="t-a-r">	<div class="item-action-icons">
 										<button className="btn btn-link waves-effect">
-											<i className="fa fa-arrow-up"  />
+        										<i class="ms-Icon ms-Icon--ChevronUp"></i>
 										</button>
 										<button className="btn btn-link waves-effect">
-												<i className="fa fa-arrow-down"  />
+														<i class="ms-Icon ms-Icon--ChevronDown"></i>
 										</button>
 										<button className="btn btn-link waves-effect" onClick={()=>{
 												if(window.confirm('Are you sure?')){
 													this.props.removeSubtask(subtask.id);
 												}
 											}}>
-											<i className="fa fa-times"  />
+        									<i class="ms-Icon ms-Icon--Cancel"></i>
+													
 											</button>
+											</div>
 										</td>
 									</tr>
 								)
@@ -297,8 +299,8 @@ export default class Prace extends Component {
 				</div>
 				<div className="row justify-content-end">
 					<div className="col-md-3">
-						<p className="text-right"  style={{marginTop: (this.state.showAddItem ? "" : "-45px")}}>
-							<b>Sub-total:</b>
+						<p className="text-right subtotal-price"  style={{marginTop: (this.state.showAddItem ? "" : "-45px")}}>
+							<span class="subtotal">Sub-total:</span>
 							{(this.props.subtasks.map((subtask)=>parseFloat(subtask.totalPrice)).reduce((acc, cur)=> acc+cur,0)).toFixed(2)}
 						</p>
 

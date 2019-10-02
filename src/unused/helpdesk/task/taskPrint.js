@@ -73,7 +73,7 @@ class TaskInfo extends Component {
 
 		return (
 				<div className="m-100">
-					<div className="d-flex p-2">
+					<div className="d-flex ">
 						<div className="row flex">
 							<h1 className="center-hor text-extra-slim"># {this.props.match.params.taskID}</h1>
 							<span className="center-hor">

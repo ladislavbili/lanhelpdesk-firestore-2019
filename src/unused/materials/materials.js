@@ -400,8 +400,8 @@ export default class Rozpocet extends Component {
 						</div>
 						<div className="row justify-content-end">
 							<div className="col-md-6">
-								<p className="text-right">
-									<b>Sub-total:</b>
+								<p className="text-right subtotal-price">
+									<span class="subtotal">Sub-total:</span>
 									{(this.props.materials.map((material)=>parseFloat(material.totalPrice)).reduce((acc, cur)=> acc+cur,0)).toFixed(2)}
 								</p>
 								</div>

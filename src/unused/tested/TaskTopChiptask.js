@@ -71,7 +71,7 @@ export default class TaskTopChiptask extends Component {
 							}}
 						>
 							<div className="d-flex flex-row">
-								<div className="p-2 align-self-center" style={{}}>
+								<div className=" align-self-center" style={{}}>
 									{' '}
 									<button type="button" className="btn btn-link waves-effect" style={{ paddingLeft: 0 }}>
 										<i
@@ -83,10 +83,10 @@ export default class TaskTopChiptask extends Component {
 										/>
 									</button>
 								</div>
-								<div className="p-2">
+								<div className="">
 									<h1># 143 Editácia tasku ako na chiptasku</h1>
 								</div>
-								<div className="ml-auto p-2 align-self-center">
+								<div className="ml-auto  align-self-center">
 									{' '}
 									<button type="button" className="btn btn-link waves-effect">
 										<i

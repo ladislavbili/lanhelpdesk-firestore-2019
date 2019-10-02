@@ -105,7 +105,7 @@ class NotificationList extends Component {
 			<div>
 				<div className="container-fluid">
 					<div className="d-flex flex-row align-items-center">
-						<div className="p-2">
+						<div className="">
 							<div className="input-group commandbar-search-case">
 								<input
 									type="text"
@@ -127,7 +127,7 @@ class NotificationList extends Component {
 					</div>
 				</div>
 				<div className="fit-with-header-and-commandbar row">
-					<div className="fit-with-header-and-commandbar p-20 scrollable golden-ratio-618" style={this.props.layout===1?{flex:'auto'}:{}}>
+					<div className="fit-with-header-and-commandbar 0 scrollable golden-ratio-618" style={this.props.layout===1?{flex:'auto'}:{}}>
 
 						<table className={classnames({ 'project-table-fixed': this.props.layout === 0, table:true })}>
 								<thead>

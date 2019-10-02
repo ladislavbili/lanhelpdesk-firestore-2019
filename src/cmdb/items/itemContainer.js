@@ -17,7 +17,7 @@ export default class ItemContainer extends Component {
 			<div className="form-background scrollable fit-with-header" style={{padding:0,border:'none'}}>
 				<div className="container-fluid">
 					<div className="d-flex flex-row align-items-center ml-auto mr-auto" >
-						<div className="p-2">
+						<div className="">
 							{ !this.state.edit &&
 								<button type="button" className="btn btn-link waves-effect" onClick={()=>this.setState({edit:true})}>
 									<i

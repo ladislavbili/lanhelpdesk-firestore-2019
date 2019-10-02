@@ -109,7 +109,7 @@ class ItemList extends Component {
 				{/*COMMAND BAR*/}
 				<div className="container-fluid">
 					<div className="d-flex flex-row align-items-center">
-						<div className="p-2">
+						<div className="">
 							<div className="input-group commandbar-search-case">
 								<input
 									type="text"
@@ -130,7 +130,7 @@ class ItemList extends Component {
 								</div>
 							</div>
 						</div>
-						<div className="p-2">
+						<div className="">
 							<Button
 								className="btn-link"
 								onClick={()=>{
@@ -140,7 +140,7 @@ class ItemList extends Component {
 								Global
 							</Button>
 						</div>
-						<div className="p-2">
+						<div className="">
 							<Button
 								className="btn-link"
 								onClick={()=>{
@@ -187,7 +187,7 @@ class ItemList extends Component {
 
 
 				<div className="fit-with-header-and-commandbar scrollable">
-					<div className="p-20 full-width">
+					<div className="0 full-width">
 					<h1>{this.state.sidebarItem?this.state.sidebarItem.title:'Item'}</h1>
 
 						<table className="table">

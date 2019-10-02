@@ -88,13 +88,13 @@ export default class TasksRow2 extends Component {
 									</tbody>
 								</table>
 								<div className="d-flex justify-content-between">
-									<div className="p-2">
+									<div className="">
 										<p>Page 1 of 0 ｜ Task number: 0 </p>
 									</div>
-									<div className="p-2">
+									<div className="">
 										<p>0</p>
 									</div>
-									<div className="p-2">
+									<div className="">
 										<p>Items per page: 20</p>
 									</div>
 								</div>

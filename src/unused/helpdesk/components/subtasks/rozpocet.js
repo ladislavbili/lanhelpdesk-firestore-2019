@@ -262,6 +262,7 @@ export default class Rozpocet extends Component {
 													}
 												</td>
 												<td className="t-a-r">
+												<div class="item-action-icons">
 													<button className="btn btn-link waves-effect">
 														<i className="fa fa-arrow-up"  />
 													</button>
@@ -275,6 +276,7 @@ export default class Rozpocet extends Component {
 														}}>
 														<i className="fa fa-times" />
 													</button>
+													</div> 
 												</td>
 											</tr>
 										)
@@ -410,8 +412,8 @@ export default class Rozpocet extends Component {
 								</button>
 							</div>
 							<div className="col-md-6">
-								<p className="text-right">
-									<b>Sub-total:</b>
+								<p className="text-right subtotal-price">
+									<span class="subtotal">Sub-total:</span>
 									{(this.props.subtasks.map((subtask)=>parseFloat(subtask.totalPrice)).reduce((acc, cur)=> acc+cur,0)).toFixed(2)}
 								</p>
 								</div>

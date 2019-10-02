@@ -362,7 +362,7 @@ export default class TasksTwoEdit extends Component {
 
 		return (
 			<div className="flex">
-				<div className="container-fluid p-2">
+				<div className="container-fluid ">
 					<div className="d-flex flex-row align-items-center p-l-18">
 						<div className="center-hor">
 							{
@@ -416,7 +416,7 @@ export default class TasksTwoEdit extends Component {
 				</div>
 
 						<div className={"card-box scrollable fit-with-header-and-commandbar " + (!this.props.columns ? " center-ver w-50" : "")}>
-							<div className="d-flex p-2">
+							<div className="d-flex ">
 								<div className="row flex">
 									<h1 className="center-hor text-extra-slim"># {this.props.match.params.taskID}</h1>
 									<span className="center-hor">

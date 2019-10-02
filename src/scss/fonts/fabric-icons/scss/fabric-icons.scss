@@ -1,0 +1,83 @@
+/*
+  Your use of the content in the files referenced here is subject to the terms of the license at https://aka.ms/fabric-assets-license
+*/
+@font-face {
+  font-family: 'FabricMDL2Icons';
+  src: url('../fonts/fabric-icons.woff') format('woff');
+}
+
+.ms-Icon {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-family: 'FabricMDL2Icons';
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+}
+
+// Mixins
+@mixin ms-Icon--ChevronDown { content: "\E70D"; }
+@mixin ms-Icon--ChevronUp { content: "\E70E"; }
+@mixin ms-Icon--Add { content: "\E710"; }
+@mixin ms-Icon--Cancel { content: "\E711"; }
+@mixin ms-Icon--Settings { content: "\E713"; }
+@mixin ms-Icon--Mail { content: "\E715"; }
+@mixin ms-Icon--Stop { content: "\E71A"; }
+@mixin ms-Icon--Filter { content: "\E71C"; }
+@mixin ms-Icon--Zoom { content: "\E71E"; }
+@mixin ms-Icon--Search { content: "\E721"; }
+@mixin ms-Icon--Checkbox { content: "\E739"; }
+@mixin ms-Icon--CheckMark { content: "\E73E"; }
+@mixin ms-Icon--Print { content: "\E749"; }
+@mixin ms-Icon--Up { content: "\E74A"; }
+@mixin ms-Icon--Down { content: "\E74B"; }
+@mixin ms-Icon--Play { content: "\E768"; }
+@mixin ms-Icon--Pause { content: "\E769"; }
+@mixin ms-Icon--Warning { content: "\E7BA"; }
+@mixin ms-Icon--Clear { content: "\E894"; }
+@mixin ms-Icon--ChromeClose { content: "\E8BB"; }
+@mixin ms-Icon--Copy { content: "\E8C8"; }
+@mixin ms-Icon--RadioBullet { content: "\E915"; }
+@mixin ms-Icon--ChevronUpSmall { content: "\E96D"; }
+@mixin ms-Icon--ChevronDownSmall { content: "\E96E"; }
+@mixin ms-Icon--ChevronUpMed { content: "\E971"; }
+@mixin ms-Icon--ChevronDownMed { content: "\E972"; }
+@mixin ms-Icon--SortLines { content: "\E9D0"; }
+@mixin ms-Icon--OpenFolderHorizontal { content: "\ED25"; }
+@mixin ms-Icon--FolderHorizontal { content: "\F12B"; }
+@mixin ms-Icon--SignOut { content: "\F3B1"; }
+
+
+// Classes
+.ms-Icon--ChevronDown:before { @include ms-Icon--ChevronDown }
+.ms-Icon--ChevronUp:before { @include ms-Icon--ChevronUp }
+.ms-Icon--Add:before { @include ms-Icon--Add }
+.ms-Icon--Cancel:before { @include ms-Icon--Cancel }
+.ms-Icon--Settings:before { @include ms-Icon--Settings }
+.ms-Icon--Mail:before { @include ms-Icon--Mail }
+.ms-Icon--Stop:before { @include ms-Icon--Stop }
+.ms-Icon--Filter:before { @include ms-Icon--Filter }
+.ms-Icon--Zoom:before { @include ms-Icon--Zoom }
+.ms-Icon--Search:before { @include ms-Icon--Search }
+.ms-Icon--Checkbox:before { @include ms-Icon--Checkbox }
+.ms-Icon--CheckMark:before { @include ms-Icon--CheckMark }
+.ms-Icon--Print:before { @include ms-Icon--Print }
+.ms-Icon--Up:before { @include ms-Icon--Up }
+.ms-Icon--Down:before { @include ms-Icon--Down }
+.ms-Icon--Play:before { @include ms-Icon--Play }
+.ms-Icon--Pause:before { @include ms-Icon--Pause }
+.ms-Icon--Warning:before { @include ms-Icon--Warning }
+.ms-Icon--Clear:before { @include ms-Icon--Clear }
+.ms-Icon--ChromeClose:before { @include ms-Icon--ChromeClose }
+.ms-Icon--Copy:before { @include ms-Icon--Copy }
+.ms-Icon--RadioBullet:before { @include ms-Icon--RadioBullet }
+.ms-Icon--ChevronUpSmall:before { @include ms-Icon--ChevronUpSmall }
+.ms-Icon--ChevronDownSmall:before { @include ms-Icon--ChevronDownSmall }
+.ms-Icon--ChevronUpMed:before { @include ms-Icon--ChevronUpMed }
+.ms-Icon--ChevronDownMed:before { @include ms-Icon--ChevronDownMed }
+.ms-Icon--SortLines:before { @include ms-Icon--SortLines }
+.ms-Icon--OpenFolderHorizontal:before { @include ms-Icon--OpenFolderHorizontal }
+.ms-Icon--FolderHorizontal:before { @include ms-Icon--FolderHorizontal }
+.ms-Icon--SignOut:before { @include ms-Icon--SignOut }
+

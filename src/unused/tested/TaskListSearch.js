@@ -40,7 +40,7 @@ export default class TaskListContainer extends Component {
 										Filter
 									</button>
 								</div>
-								<div className="p-2">
+								<div className="">
 									<div className="input-group">
 										<input type="text" className="form-control" placeholder="Search string" />
 										<div className="input-group-append">
@@ -50,10 +50,10 @@ export default class TaskListContainer extends Component {
 										</div>
 									</div>
 								</div>
-								<div className="p-2">
+								<div className="">
 									<p className="m-0">Global</p>
 								</div>
-								<div className="p-2">
+								<div className="">
 									<div
 										className="checkbox form-check-inline"
 										style={{ marginLeft: 38, marginRight: 30 }}
@@ -76,7 +76,7 @@ export default class TaskListContainer extends Component {
 								</div>
 							</div>
 
-							<div className="p-2 ml-auto">
+							<div className=" ml-auto">
 								<div className="btn-group btn-group-toggle" data-toggle="buttons">
 									<label
 										className={

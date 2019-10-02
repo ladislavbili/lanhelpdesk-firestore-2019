@@ -388,8 +388,8 @@ export default class Rozpocet extends Component {
 								</button>
 							</div>
 							<div className="col-md-6">
-								<p className="text-right">
-									<b>Sub-total:</b>
+								<p className="text-right subtotal-price">
+									<span class="subtotal">Sub-total:</span>
 									{(this.props.subtasks.map((subtask)=>parseFloat(subtask.totalPrice)).reduce((acc, cur)=> acc+cur,0)).toFixed(2)}
 								</p>
 								</div>

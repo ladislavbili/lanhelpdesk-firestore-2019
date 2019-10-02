@@ -331,8 +331,8 @@ export default class TaskEdit extends Component {
 		return (
 			<div className="">
 				<div className="container-fluid">
-					<div className="d-flex flex-row center-hor p-2  mr-auto ">
-							<div className="display-inline center-hor">
+					<div className="d-flex flex-row center-hor   mr-auto ">
+							<div className="display-inline center-hor icons-taskEditList">
 							{!this.props.columns &&
 								<button type="button" className="btn btn-link waves-effect" onClick={() => this.props.history.push(`/helpdesk/taskList/i/${this.props.match.params.listID}`)}>
 									<i
@@ -379,9 +379,9 @@ export default class TaskEdit extends Component {
 				</div>
 
 						<div className="card-box fit-with-header-and-commandbar scroll-visible max-width-1660">
-							<div className="d-flex p-2">
+							<div className="d-flex ">
 								<div className="row flex">
-									<h1 className="center-hor text-extra-slim">{this.props.match.params.taskID}: </h1>
+									<h1 className="center-hor text-extra-slim task-title">{this.props.match.params.taskID}: </h1>
 									<span className="center-hor flex m-r-15">
 							    	<input type="text" value={this.state.title} className="task-title-input text-extra-slim hidden-input" onChange={(e)=>this.setState({title:e.target.value},this.submitTask.bind(this))} placeholder="Enter task name" />
 									</span>
@@ -407,7 +407,7 @@ export default class TaskEdit extends Component {
 
 						<div className="task-edit-left-half">
 
-							<Label className="m-t-5  m-b-10">Popis</Label>
+							<Label className="m-t-5  m-b-10 task-detail-label">Popis</Label>
 							<textarea className="form-control b-r-0  m-b-10 hidden-input" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value},this.submitTask.bind(this))} />
 
 									{false && <Subtasks
@@ -783,7 +783,7 @@ export default class TaskEdit extends Component {
 								</div>}
 
 								<div>
-									<div className="center-hor"><Label className="center-hor">Tagy: </Label></div>
+									<div className="center-hor"><Label className="center-hor task-detail-label">Tagy: </Label></div>
 									<div className="f-1 ">
 										<Select
 											placeholder="Zvoľte tagy"

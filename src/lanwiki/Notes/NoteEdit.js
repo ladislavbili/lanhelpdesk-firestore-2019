@@ -137,7 +137,7 @@ export default class Note extends Component{
   render(){
     return (
       <div className="flex" onClick={() => this.state.editBodyOpen ? this.setState({editBodyOpen: false}) : null}>
-				<div className="container-fluid p-2">
+				<div className="container-fluid ">
 					<div className={"d-flex flex-row" + (!this.props.columns ? " w-50  ml-auto mr-auto" : "p-l-18") }>
 						<div className="center-hor">
 							{!this.props.columns &&
@@ -165,7 +165,7 @@ export default class Note extends Component{
 				</div>
 
         <div className={"card-box scrollable fit-with-header-and-commandbar " + (!this.props.columns ? " center-ver w-50" : "")}>
-          <div className="d-flex p-2">
+          <div className="d-flex ">
               <div className="row">
                 <h1 className="center-hor text-extra-slim">#</h1>
                 <span className="center-hor">

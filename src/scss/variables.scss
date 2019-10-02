@@ -1,21 +1,26 @@
-$header-height: 40px;
-$height-without-header: calc( 100vh - calc(#{$header-height} + 15px)  );
+$header-height: 50px;
+$height-without-header: calc(100vh - calc(#{$header-height} + 15px));
 $sidebar-width: 260px;
 $sidebar-item-height: 40px;
 $inputs-border: 6px solid red;
-$main-font: Segoe UI;
+$main-font: "Segoe UI";
 $main-font-size: 14px;
 $button-height: 30px;
 
 //farby
-$main-background-color: #F2F1F1;
-$sidebar-background-color: #F7F7F7;
+$main-background-color: #f2f1f1;
+$sidebar-background-color: #f7f7f7;
 $form-background-color: #faf9f8;
-$main-font-color: #3C3C3C;
-$muted-font-color: #BDBDBD;
+$main-font-color: #3c3c3c;
+$muted-font-color: #909090;
 $contrasting-font-color: #494949;
 $header-color: #004578;
-$basic-button-color: #0078D4;
+$basic-button-color: #0078d4;
 $muted-gray: #d9d8d8;
-$sidebar-item-color: #DCECF9;
+$sidebar-item-color: #dcecf9;
 $table-lines: #f1f1f1;
+
+// mixin
+@mixin trans {
+  transition: all 0.25s ease;
+}

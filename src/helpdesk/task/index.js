@@ -136,7 +136,7 @@ class TasksRow extends Component {
 					{value:'company',type:'object'},
 				]}
 				displayCol={(task)=>
-					<li className="p-20" >
+					<li className="0" >
 						<div className="m-b-0 font-15">
 							<label><span className="text-muted font-15">#{task.id} | </span> {task.title}</label>
 							<p className="pull-right m-0">

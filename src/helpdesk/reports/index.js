@@ -151,7 +151,7 @@ class Reports extends Component {
 		return (
 				<div className="scrollable fit-with-header">
 					<div className="container-fluid">
-						<div className="d-flex flex-row align-items-center p-2">
+						<div className="d-flex flex-row align-items-center ">
 							<button type="button" className="btn-link waves-effect">
 								<i
 									className="fa fa-file-pdf"

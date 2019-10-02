@@ -245,11 +245,12 @@ export default class Rozpocet extends Component {
 														/>
 											</td>
 											<td className="t-a-r">
+											<div class="item-action-icons">
 												<button className="btn btn-link waves-effect">
-													<i className="fa fa-arrow-up"  />
+        										<i class="ms-Icon ms-Icon--ChevronUp"></i>
 												</button>
 												<button className="btn btn-link waves-effect">
-														<i className="fa fa-arrow-down"  />
+														<i class="ms-Icon ms-Icon--ChevronDown"></i>
 												</button>
 
 												<button className="btn btn-link waves-effect"
@@ -258,8 +259,9 @@ export default class Rozpocet extends Component {
 															this.props.removeMaterial(material.id);
 														}
 													}}>
-													<i className="fa fa-times" />
+        									<i class="ms-Icon ms-Icon--Cancel"></i>
 												</button>
+												</div>
 											</td>
 
 											</tr>
@@ -371,8 +373,8 @@ export default class Rozpocet extends Component {
 						</div>
 						<div className="row justify-content-end">
 							<div className="col-md-6">
-								<p className="text-right">
-									<b>Sub-total:</b>
+								<p className="text-right subtotal-price">
+									<span class="subtotal">Sub-total:</span>
 									{(this.props.materials.map((material)=>parseFloat(material.totalPrice)).reduce((acc, cur)=> acc+cur,0)).toFixed(2)}
 								</p>
 								</div>

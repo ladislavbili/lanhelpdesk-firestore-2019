@@ -104,8 +104,8 @@ export default class Items extends Component {
 						</div>
 						<div className="row justify-content-end">
 							<div className="col-md-3">
-								<p className="text-right m-b-0">
-									<b>Sub-total:</b> 2930.00
+								<p className="text-right subtotal-price m-b-0">
+									<span class="subtotal">Sub-total:</span> 2930.00
 								</p>
 
 							</div>

@@ -72,7 +72,7 @@ export default class EditFolder extends Component{
   render(){
     return (
       <div className="flex">
-				<div className="container-fluid p-2">
+				<div className="container-fluid ">
 					<div className="d-flex flex-row align-items-center p-l-18">
           </div>
 				</div>

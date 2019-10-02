@@ -412,11 +412,11 @@ export default class TaskAdd extends Component{
 
 					</div>
 
-						<Label className="m-t-5  m-b-10">Popis</Label>
+						<Label className="m-t-5  m-b-10 task-detail-label">Popis</Label>
 						<textarea className="form-control b-r-0 m-b-10 hidden-input" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value})} />
 
 						<div className="row">
-							<div className="center-hor"><Label className="center-hor">Tagy: </Label></div>
+							<div className="center-hor"><Label className="center-hor task-detail-label">Tagy: </Label></div>
 							<div className="f-1 ">
 								<Select
 									value={this.state.tags}

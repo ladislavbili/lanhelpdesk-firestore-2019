@@ -396,7 +396,7 @@ export default class TaskAdd extends Component{
 								</div>
 							<div className="row">
 								<div className="col-lg-12 row">
-									<strong className="center-hor">Tagy: </strong>
+									<strong className="center-hor task-detail-label">Tagy: </strong>
 									<div className="f-1">
 										<Select
 											value={this.state.tags}

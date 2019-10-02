@@ -58,7 +58,7 @@ class TaskListContainer extends Component {
 							</Button>
 						</div>
 					}
-					{false && <div className="ml-auto p-2 align-self-center">
+					{false && <div className="ml-auto  align-self-center">
 						{this.props.extraCommands?this.props.extraCommands():null}
 					</div>}
 				</div>
