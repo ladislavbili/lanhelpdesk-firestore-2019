@@ -28,7 +28,7 @@ export default class UserAdd extends Component{
   render(){
     return (
       <div className="full-height card-box scrollable fit-with-header-and-commandbar">
-        <div className="m-t-20">
+        <div className="">
           <FormGroup>
             <Label for="username">Username</Label>
             <Input type="text" name="username" id="username" placeholder="Enter username" value={this.state.username} onChange={(e)=>this.setState({username:e.target.value})} />
@@ -78,7 +78,13 @@ export default class UserAdd extends Component{
                     email:'',
                     company,
                     saving:false
-                  }, () => {this.props.addUser({...newUser, id: user.user.id, value: user.user.id, label: newUser.email}); this.props.close();});
+                  }, () => {
+                    if (this.props.userAdd){
+                      this.props.addUser({...newUser, id: user.user.id, value: user.user.id, label: newUser.email});
+                      this.props.close();
+                    }
+                  }
+                );
                 });
               });
             }}>{this.state.saving?'Adding...':'Add user'}</Button>

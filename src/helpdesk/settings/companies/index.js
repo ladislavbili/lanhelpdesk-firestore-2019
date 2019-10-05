@@ -89,7 +89,7 @@ class CompaniesList extends Component{
             </div>
             <div className="col-lg-8 p-0">
               {
-                this.props.match.params.id && this.props.match.params.id==='add' && <CompanyAdd />
+                this.props.match.params.id && this.props.match.params.id==='add' && <CompanyAdd {...this.props}/>
               }
               {
                 this.props.match.params.id && this.props.match.params.id!=='add' && this.state.companies.some((item)=>item.id===this.props.match.params.id) && <CompanyEdit match={this.props.match} history = {this.props.history} />
