@@ -502,8 +502,8 @@ class CompanyEdit extends Component{
               onClick={()=>{
                 this.setState({changedMail: false, mail: this.state.oldMail, oldMail: ""})
               }}>Cancel</Button>
-          </div>
-        }
+            </div>
+          }
 
         </FormGroup>
 
