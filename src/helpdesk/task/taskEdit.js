@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import { connect } from "react-redux";
 import {Button, Label, TabContent, TabPane, Nav, NavItem, NavLink, Modal, ModalBody} from 'reactstrap';
+import DatePicker from 'react-datepicker';
+import moment from 'moment';
+
 import Attachments from '../components/attachments.js';
 import Comments from '../components/comments.js';
 //import Subtasks from '../components/subtasks';
@@ -20,7 +23,7 @@ import TaskPrint from './taskPrint';
 import classnames from "classnames";
 import {rebase, database} from '../../index';
 import firebase from 'firebase';
-import {toSelArr, snapshotToArray, timestampToString, toCentralTime, fromCentralTime, sameStringForms} from '../../helperFunctions';
+import {toSelArr, snapshotToArray, timestampToString, sameStringForms} from '../../helperFunctions';
 import { storageCompaniesStart, storageHelpPricelistsStart, storageHelpPricesStart,storageHelpProjectsStart, storageHelpStatusesStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageHelpTasksStart, storageHelpUnitsStart,storageHelpWorkTypesStart, storageMetadataStart, storageUsersStart } from '../../redux/actions';
 import {invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
 
@@ -71,7 +74,7 @@ class TaskEdit extends Component {
 			description:'',
 			status:null,
 			statusChange:null,
-			deadline:"",
+			deadline:null,
 			closeDate:"",
 			pendingDate:"",
 			reminder:null,
@@ -104,20 +107,6 @@ class TaskEdit extends Component {
 		this.deleteTask.bind(this);
 		this.saveData.bind(this);
     this.fetchData(this.props.match.params.taskID);
-		/*
-		console.log('----------------');
-		let testTime = new Date();
-		let centralTime = new Date(toCentralTime(testTime.getTime()));
-		let normalTime = new Date(fromCentralTime(centralTime.getTime()));
-		console.log(testTime);
-		console.log(testTime.getTime());
-		console.log('>');
-		console.log(centralTime);
-		console.log(centralTime.getTime());
-		console.log('>');
-		console.log(normalTime);
-		console.log(normalTime.getTime());
-		console.log('----------------');*/
 	}
 
 	canSave(){
@@ -184,7 +173,7 @@ class TaskEdit extends Component {
 			assignedTo: this.state.assignedTo.map((item)=>item.id),
       description: this.state.description,
       status: this.state.status?this.state.status.id:null,
-			deadline: isNaN(new Date(this.state.deadline).getTime()) ? null : toCentralTime(new Date(this.state.deadline).getTime()),
+			deadline: this.state.deadline!==null?this.state.deadline.unix()*1000:null,
 			//reminder: isNaN(new Date(this.state.reminder).getTime()) ? null : (new Date(this.state.reminder).getTime()),
       statusChange: this.state.statusChange,
       project: this.state.project?this.state.project.id:null,
@@ -369,9 +358,9 @@ class TaskEdit extends Component {
       status:status?status:null,
 			statusChange:task.statusChange?task.statusChange:null,
 			createdAt:task.createdAt?task.createdAt:null,
-			deadline: task.deadline!==null?new Date(fromCentralTime(task.deadline)).toISOString().replace('Z',''):'',
-			closeDate: task.closeDate!==null && task.closeDate!==undefined ?new Date(fromCentralTime(task.closeDate)).toISOString().replace('Z',''):'',
-			pendingDate: task.pendingDate!==null && task.pendingDate!==undefined ?new Date(fromCentralTime(task.pendingDate)).toISOString().replace('Z',''):'',
+			deadline: task.deadline!==null?moment(task.deadline):null,
+			closeDate: task.closeDate!==null && task.closeDate!==undefined ?new Date(task.closeDate).toISOString().replace('Z',''):'',
+			pendingDate: task.pendingDate!==null && task.pendingDate!==undefined ?new Date(task.pendingDate).toISOString().replace('Z',''):'',
 			reminder: task.reminder?new Date(task.reminder).toISOString().replace('Z',''):'',
       project:project?project:null,
       company:company?company:null,
@@ -556,22 +545,23 @@ class TaskEdit extends Component {
 														/>
 												</div>
 											</div>
-											<div className="row p-r-10">
-												<Label className="col-3 col-form-label">Close date</Label>
-												<div className="col-9">
-													{/*className='form-control hidden-input'*/}
-													<input
-														className='form-control hidden-input'
-														placeholder="Close date"
-														type="datetime-local"
-														disabled={!this.state.status || this.state.status.action!=='close'}
-														value={this.state.closeDate}
-														onChange={(e)=>{
-															this.setState({closeDate:e.target.value},this.submitTask.bind(this))}
-														}
-														/>
-												</div>
-											</div>
+											<Repeat
+												taskID={taskID}
+												repeat={this.state.repeat}
+												submitRepeat={(repeat)=>{
+													database.collection('help-repeats').doc(taskID).set({
+														...repeat,
+														task:taskID,
+														startAt:(new Date(repeat.startAt).getTime()),
+														});
+													this.setState({repeat})
+												}}
+												deleteRepeat={()=>{
+													rebase.removeDoc('/help-repeats/'+taskID);
+													this.setState({repeat:null})
+												}}
+												columns={this.props.columns}
+												/>
 									</div>
 
 									<div className="col-lg-4">
@@ -620,57 +610,60 @@ class TaskEdit extends Component {
 														/>
 												</div>
 											</div>
-											<div className="row p-r-10">
-												<Label className="col-3 col-form-label">Pending</Label>
-												<div className="col-9">
-													{/*className='form-control hidden-input'*/}
-													<input
-														className='form-control hidden-input'
-														placeholder="Pending date"
-														type="datetime-local"
-														disabled={!this.state.status || this.state.status.action!=='pending'}
-														value={this.state.pendingDate}
-														onChange={(e)=>{
-															this.setState({pendingDate:e.target.value},this.submitTask.bind(this))}
-														}
-														/>
-												</div>
-											</div>
+
 									</div>
 
 									<div className="col-lg-4">
 										<div className="row p-r-10">
-											<Label className="col-3 col-form-label">Deadline</Label>
+											<Label className="col-3 col-form-label">Pending</Label>
 											<div className="col-9">
 												{/*className='form-control hidden-input'*/}
 												<input
 													className='form-control hidden-input'
-													placeholder="Status change date"
+													placeholder="Pending date"
 													type="datetime-local"
-													value={this.state.deadline}
+													disabled={!this.state.status || this.state.status.action!=='pending'}
+													value={this.state.pendingDate}
 													onChange={(e)=>{
-														this.setState({deadline:e.target.value},this.submitTask.bind(this))}
+														this.setState({pendingDate:e.target.value},this.submitTask.bind(this))}
 													}
 													/>
 											</div>
 										</div>
-											<Repeat
-												taskID={taskID}
-												repeat={this.state.repeat}
-												submitRepeat={(repeat)=>{
-													database.collection('help-repeats').doc(taskID).set({
-														...repeat,
-														task:taskID,
-														startAt:(new Date(repeat.startAt).getTime()),
-														});
-													this.setState({repeat})
-												}}
-												deleteRepeat={()=>{
-													rebase.removeDoc('/help-repeats/'+taskID);
-													this.setState({repeat:null})
-												}}
-												columns={this.props.columns}
-												/>
+										<div className="row p-r-10">
+											<Label className="col-3 col-form-label">Deadline</Label>
+											<div className="col-9">
+												<DatePicker
+													selected={this.state.deadline}
+													onChange={date => {
+														this.setState({ deadline: date },this.submitTask.bind(this));
+													}}
+													locale="en-gb"
+													placeholderText="No deadline"
+													showTimeSelect
+													className="form-control hidden-input"
+										      todayButton="Today"
+													timeFormat="HH:mm"
+													timeIntervals={15}
+													dateFormat="HH:mm DD.MM.YYYY"
+													/>
+											</div>
+										</div>
+										<div className="row p-r-10">
+											<Label className="col-3 col-form-label">Close date</Label>
+											<div className="col-9">
+												<input
+													className='form-control hidden-input'
+													placeholder="Close date"
+													type="datetime-local"
+													disabled={!this.state.status || this.state.status.action!=='close'}
+													value={this.state.closeDate}
+													onChange={(e)=>{
+														this.setState({closeDate:e.target.value},this.submitTask.bind(this))}
+													}
+													/>
+											</div>
+										</div>
 									</div>
 								</div>
 

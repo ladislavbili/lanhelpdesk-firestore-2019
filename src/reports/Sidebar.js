@@ -5,10 +5,9 @@ import Select from "react-select";
 import { connect } from "react-redux";
 
 import SelectPage from '../components/SelectPage';
-import TaskAdd from './task/taskAddContainer';
 import Filter from './components/filter';
-import ProjectEdit from './projects/projectEdit';
-import ProjectAdd from './projects/projectAdd';
+import ProjectEdit from './components/projects/projectEdit';
+import ProjectAdd from './components/projects/projectAdd';
 import {toSelArr, sameStringForms} from '../helperFunctions';
 import {setProject, setFilter, storageHelpFiltersStart, storageHelpProjectsStart} from '../redux/actions';
 
@@ -118,8 +117,6 @@ class Sidebar extends Component {
 						</li>
 
 						<hr/>
-						<TaskAdd history={this.props.history} project={this.state.projects.map((item)=>item.id).includes(this.state.project.id)?this.state.project.id:null} triggerDate={this.state.projectChangeDate} />
-
 						{ this.state.openProjectAdd &&
 								<ProjectAdd close={() => this.setState({openProjectAdd: false})}/>
 						}
@@ -144,7 +141,7 @@ class Sidebar extends Component {
 										<NavItem>
 											<Link
 												className="text-basic sidebar-align sidebar-menu-item"
-												to={{ pathname: `/helpdesk/taskList/i/all` }} onClick={()=>{
+												to={{ pathname: `/reports/i/all` }} onClick={()=>{
 													this.setState({filterID:null,filterData:null});
 													this.props.setFilter({
 														status:[],
@@ -163,7 +160,7 @@ class Sidebar extends Component {
 											<NavItem key={item.id}>
 												<Link
 													className = "text-basic sidebar-align sidebar-menu-item"
-													to={{ pathname: `/helpdesk/taskList/i/`+item.id }} onClick={()=>{
+													to={{ pathname: `/reports/i/`+item.id }} onClick={()=>{
 														this.setState({filterID:item.id,filterData:item});
 														this.props.setFilter({
 															...item.filter,
@@ -180,7 +177,7 @@ class Sidebar extends Component {
 									<Filter filterID={this.state.filterID} filterData={this.state.filterData} resetFilter={()=>this.setState({filterID:null,filterData:null})} close={ () => this.setState({activeTab: 0})}/>
 								</TabPane>
 							</TabContent>
-
+							<hr/>
 						</div>
 					</div>}
 					{showSettings &&
@@ -188,7 +185,7 @@ class Sidebar extends Component {
 							{settings.map((setting)=>
 								<NavItem key={setting.link}>
 									<Link className="text-basic sidebar-align sidebar-menu-item"
-										to={{ pathname:'/helpdesk/settings/'+setting.link }}>{setting.title}</Link>
+										to={{ pathname:'/reports/settings/'+setting.link }}>{setting.title}</Link>
 								</NavItem>
 							)}
 						</Nav>

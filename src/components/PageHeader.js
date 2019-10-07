@@ -26,6 +26,8 @@ class PageHeader extends Component {
 			return '/expenditures';
 		} else if (url.includes('projects')) {
 			return '/projects';
+		} else if (url.includes('reports')) {
+			return '/reports';
 		} else if (url.includes('monitoring')) {
 			return '/monitoring';
 		} else {
@@ -67,7 +69,7 @@ class PageHeader extends Component {
 						<Link to={{ pathname: `/expenditures` }} className={"header-link" + (URL.includes("expenditures") ? " header-link-active" : "")}>
 							Náklady
 						</Link>
-						<Link to={{ pathname: `/helpdesk/reports` }} className={"header-link" + (URL.includes("helpdesk/reports") ? " header-link-active" : "")}>
+						<Link to={{ pathname: `/reports` }} className={"header-link" + (URL.includes("reports") ? " header-link-active" : "")}>
 								Vykazy
 						</Link>
 						<Link to={{ pathname: `/projects` }} className={"header-link" + (URL.includes("projects") ? " header-link-active" : "")}>

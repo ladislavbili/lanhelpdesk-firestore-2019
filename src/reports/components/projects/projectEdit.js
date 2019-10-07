@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import { Modal, ModalBody, ModalFooter, Button, FormGroup, Label, Input } from 'reactstrap';
 import { connect } from "react-redux";
-import {storageHelpStatusesStart, storageHelpTagsStart, storageUsersStart, storageHelpTaskTypesStart, storageCompaniesStart, storageHelpProjectsStart, setProject, storageHelpTasksStart} from '../../redux/actions';
-import {rebase, database} from '../../index';
+import {storageHelpStatusesStart, storageHelpTagsStart, storageUsersStart, storageHelpTaskTypesStart, storageCompaniesStart, storageHelpProjectsStart, setProject, storageHelpTasksStart} from '../../../redux/actions';
+import {rebase, database} from '../../../index';
 import firebase from 'firebase';
-import {toSelArr, sameStringForms, snapshotToArray} from '../../helperFunctions';
-import {invisibleSelectStyle} from '../../scss/selectStyles';
-import Permits from "../../components/permissions";
+import {toSelArr, sameStringForms, snapshotToArray} from '../../../helperFunctions';
+import {invisibleSelectStyle} from '../../../scss/selectStyles';
+import Permits from "../../../components/permissions";
 
 const noDef={
 	status:{def:false,fixed:false, value: null},
@@ -166,6 +166,8 @@ class ProjectEdit extends Component{
 				database.collection('help-repeats').doc(taskID).get(),
 				database.collection('help-comments').where("task", "==", taskID).get()
 		]).then(([taskMaterials, taskWorks,repeat,comments])=>{
+			console.log('deleting');
+			console.log(task);
 
 			let storageRef = firebase.storage().ref();
 			task.attachments.map((attachment)=>storageRef.child(attachment.path).delete());

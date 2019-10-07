@@ -12,6 +12,7 @@ import LanWikiNavigation from './lanwiki/navigation';
 import PassManagerNavigation from './passmanager/navigation';
 import ExpendituresNavigation from './expenditures/navigation';
 import ProjectsNavigation from './projects/navigation';
+import ReportsNavigation from './reports/navigation';
 import MonitoringNavigation from './monitoring/navigation';
 import Login from './login';
 
@@ -38,6 +39,7 @@ class Navigation extends Component {
           <Route path='/helpdesk' component={HelpdeskNavigation} />
           <Route path='/cmdb' component={CMDBNavigation} />
           <Route path='/lanwiki' component={LanWikiNavigation} />
+          <Route path='/reports' component={ReportsNavigation} />
           <Route path='/passmanager' component={PassManagerNavigation} />
           <Route path='/expenditures' component={ExpendituresNavigation} />
           <Route path='/projects' component={ProjectsNavigation} />

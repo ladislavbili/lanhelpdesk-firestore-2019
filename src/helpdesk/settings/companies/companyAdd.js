@@ -145,7 +145,6 @@ class CompanyAdd extends Component{
   }
 
   render(){
-    console.log(this.props);
 
     return (
       <div className="card-box scroll-visible fit-with-header-and-commandbar">

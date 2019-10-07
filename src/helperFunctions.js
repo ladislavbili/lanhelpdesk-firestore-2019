@@ -12,7 +12,7 @@ export const snapshotToArray = (snapshot) => {
 }
 
 export const timestampToString = (timestamp) => {
-  let date = (new Date(fromCentralTime(timestamp)));
+  let date = (new Date(timestamp));
   return date.getHours()+":"+(date.getMinutes() < 10 ? '0' : '') + date.getMinutes()+" "+date.getDate()+"."+(date.getMonth()+1)+"."+date.getFullYear();
 }
 
@@ -124,4 +124,12 @@ export const fromCentralTime = (time)=>{
 
 export const sameStringForms = (item1,item2)=>{
   return JSON.stringify(item1)===JSON.stringify(item2)
+}
+
+export const timestampToInput = (timestamp)=>{
+  return timestamp!==null && timestamp!=='' && timestamp!==undefined ?new Date(timestamp).toISOString().replace('Z',''):''
+}
+
+export const inputToTimestamp = (input)=>{
+  return isNaN(new Date(input).getTime())|| input === '' ? '' : (new Date(input).getTime())
 }

@@ -8,6 +8,10 @@ const initialState = {
     workType:null,
     statusDateFrom:'',
     statusDateTo:'',
+    pendingDateFrom:'',
+    pendingDateTo:'',
+    closeDateFrom:'',
+    closeDateTo:'',
     status:[],
     updatedAt:(new Date()).getTime()
   },

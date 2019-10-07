@@ -3,7 +3,6 @@ import { Route } from 'react-router-dom';
 
 import Sidebar from './Sidebar';
 import PageHeader from '../components/PageHeader';
-import Reports from './reports';
 
 import TaskList from './task/';
 
@@ -47,8 +46,6 @@ export default class Navigation extends Component {
 						{title:'SMTPs',link:'smtps'},
 					]} />
 
-					<Route exact path="/helpdesk/reports" component={Reports} />
-					<Route exact path="/helpdesk/reports/:id" component={Reports} />
 					<Route exact path="/helpdesk" component={TaskList} />
 					<Route exact path="/helpdesk/taskList" component={TaskList} />
 					<Route exact path="/helpdesk/taskList/i/:listID" component={TaskList} />

@@ -31,7 +31,6 @@ componentWillReceiveProps(props){
   }
   if((this.props.repeat===null && props.repeat!==null)|| (this.props.repeat!==null && props.repeat!==null && props.repeat.id!==this.props.repeat.id)){
       let repeatInterval = intervals.find((interval)=>interval.title===props.repeat.repeatInterval);
-      //console.log(new Date(props.repeat.startAt));
       this.setState({
         startAt:props.repeat.startAt ? new Date(fromCentralTime(props.repeat.startAt)).toISOString().replace("Z", "") : "",
         repeatEvery:props.repeat.repeatEvery/repeatInterval.value,

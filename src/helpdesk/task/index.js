@@ -114,14 +114,19 @@ class TasksIndex extends Component {
 				id:parseInt(task.id)
 			}
 		});
+		let filter = this.props.filter;
 		return newTasks.filter((task)=>{
-			return (this.props.filter.status.length===0||(task.status && this.props.filter.status.includes(task.status.id))) &&
-			(this.props.filter.requester===null||(task.requester && task.requester.id===this.props.filter.requester)||(task.requester && this.props.filter.requester==='cur' && task.requester.id === this.props.currentUser.id)) &&
-			(this.props.filter.workType===null||(task.type===this.props.filter.workType)) &&
-			(this.props.filter.company===null||(task.company && task.company.id===this.props.filter.company) ||(task.company && this.props.filter.company==='cur' && task.company.id===this.props.currentUser.userData.company)) &&
-			(this.props.filter.assigned===null||(task.assignedTo && task.assignedTo.map((item)=>item.id).includes(this.props.filter.assigned))||(task.assignedTo && this.props.filter.requester==='cur' && task.assignedTo.map((item)=>item.id).includes(this.props.currentUser.id))) &&
-			(this.props.filter.statusDateFrom===''||task.statusChange >= this.props.filter.statusDateFrom) &&
-			(this.props.filter.statusDateTo===''||task.statusChange <= this.props.filter.statusDateTo) &&
+			return (filter.status.length===0||(task.status && filter.status.includes(task.status.id))) &&
+			(filter.requester===null||(task.requester && task.requester.id===filter.requester)||(task.requester && filter.requester==='cur' && task.requester.id === this.props.currentUser.id)) &&
+			(filter.workType===null||(task.type===filter.workType)) &&
+			(filter.company===null||(task.company && task.company.id===filter.company) ||(task.company && filter.company==='cur' && task.company.id===this.props.currentUser.userData.company)) &&
+			(filter.assigned===null||(task.assignedTo && task.assignedTo.map((item)=>item.id).includes(filter.assigned))||(task.assignedTo && filter.requester==='cur' && task.assignedTo.map((item)=>item.id).includes(this.props.currentUser.id))) &&
+			(filter.statusDateFrom===''||task.statusChange >= filter.statusDateFrom) &&
+			(filter.statusDateTo===''||task.statusChange <= filter.statusDateTo) &&
+			(filter.closeDateFrom===''||filter.closeDateFrom===undefined||task.closeDate >= filter.closeDateFrom) &&
+			(filter.closeDateTo===''||filter.closeDateTo===undefined||task.closeDate <= filter.closeDateTo) &&
+			(filter.pendingDateFrom===''||filter.pendingDateFrom===undefined||task.pendingDate >= filter.pendingDateFrom) &&
+			(filter.pendingDateTo===''||filter.pendingDateTo===undefined||task.pendingDate <= filter.pendingDateTo) &&
 			(this.props.project===null||(task.project && task.project.id===this.props.project))
 		})
 	}

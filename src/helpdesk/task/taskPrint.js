@@ -161,7 +161,7 @@ class TaskInfo extends Component {
 									<div className="row">
 										<label className="col-5 col-form-label text-slim">Deadline</label>
 										<div className="col-7">
-											{this.props.deadline ? this.props.deadline : "no deadline"}
+											{this.props.deadline!==null? timestampToString(this.props.deadline.unix()*1000) :'No deadline'}
 										</div>
 									</div>
 
@@ -194,7 +194,7 @@ class TaskInfo extends Component {
 							company={this.props.company}
 							match={this.props.match}
 							/>
-						
+
 						<Materials
 							dataOnly={true}
 							materials={taskMaterials}

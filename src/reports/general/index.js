@@ -117,14 +117,19 @@ class Reports extends Component {
 
 			}
 		});
+		let filter = this.props.filter;
 		newWorks = newWorks.filter((work)=>
-			(this.props.filter.status.length===0||(work.task.status && this.props.filter.status.includes(work.task.status.id))) &&
-			(this.props.filter.requester===null||(work.task.requester && work.task.requester.id===this.props.filter.requester)||(work.task.requester && this.props.filter.requester==='cur' && work.task.requester.id === this.props.currentUser.id)) &&
-			(this.props.filter.company===null||(work.task.company && work.task.company.id===this.props.filter.company) ||(work.task.company && this.props.filter.company==='cur' && work.task.company.id===this.props.currentUser.userData.company)) &&
-			(this.props.filter.assigned===null||(work.task.assignedTo && work.task.assignedTo.map((item)=>item.id).includes(this.props.filter.assigned))||(work.task.assignedTo && this.props.filter.requester==='cur' && work.task.assignedTo.map((item)=>item.id).includes(this.props.currentUser.id))) &&
-			(this.props.filter.workType===null||(work.workType.id===this.props.filter.workType)) &&
-			(this.props.filter.statusDateFrom===''||work.task.statusChange >= this.props.filter.statusDateFrom) &&
-			(this.props.filter.statusDateTo===''||work.task.statusChange <= this.props.filter.statusDateTo)
+			(filter.status.length===0||(work.task.status && filter.status.includes(work.task.status.id))) &&
+			(filter.requester===null||(work.task.requester && work.task.requester.id===filter.requester)||(work.task.requester && filter.requester==='cur' && work.task.requester.id === this.props.currentUser.id)) &&
+			(filter.company===null||(work.task.company && work.task.company.id===filter.company) ||(work.task.company && filter.company==='cur' && work.task.company.id===this.props.currentUser.userData.company)) &&
+			(filter.assigned===null||(work.task.assignedTo && work.task.assignedTo.map((item)=>item.id).includes(filter.assigned))||(work.task.assignedTo && filter.requester==='cur' && work.task.assignedTo.map((item)=>item.id).includes(this.props.currentUser.id))) &&
+			(filter.workType===null||(work.workType.id===filter.workType)) &&
+			(filter.statusDateFrom===''||work.task.statusChange >= filter.statusDateFrom) &&
+			(filter.statusDateTo===''||work.task.statusChange <= filter.statusDateTo) &&
+			(filter.closeDateFrom===undefined || filter.closeDateFrom===''||(work.task.closeDate && work.task.closeDate >= filter.closeDateFrom)) &&
+			(filter.closeDateTo===undefined || filter.closeDateTo===''||(work.task.closeDate && work.task.closeDate <= filter.closeDateTo)) &&
+			(filter.pendingDateFrom===undefined || filter.pendingDateFrom===''||(work.task.pendingDate && work.task.pendingDate >= filter.pendingDateFrom)) &&
+			(filter.pendingDateTo===undefined || filter.pendingDateTo===''||(work.task.pendingDate && work.task.pendingDate <= filter.pendingDateTo))
 			);
 
 		let groupedWorks = newWorks.filter((item, index)=>{
@@ -155,13 +160,18 @@ class Reports extends Component {
 				totalPrice
 			}
 		})
+		let filter = this.props.filter;
 		newMaterials = newMaterials.filter((material)=>
-			(this.props.filter.status.length===0||(material.task.status && this.props.filter.status.includes(material.task.status.id))) &&
-			(this.props.filter.requester===null||(material.task.requester && material.task.requester.id===this.props.filter.requester)||(material.task.requester && this.props.filter.requester==='cur' && material.task.requester.id === this.props.currentUser.id)) &&
-			(this.props.filter.company===null||(material.task.company && material.task.company.id===this.props.filter.company) ||(material.task.company && this.props.filter.company==='cur' && material.task.company.id===this.props.currentUser.userData.company)) &&
-			(this.props.filter.assigned===null||(material.task.assignedTo && material.task.assignedTo.map((item)=>item.id).includes(this.props.filter.assigned))||(material.task.assignedTo && this.props.filter.requester==='cur' && material.task.assignedTo.map((item)=>item.id).includes(this.props.currentUser.id))) &&
-			(this.props.filter.statusDateFrom===''||material.task.statusChange >= this.props.filter.statusDateFrom) &&
-			(this.props.filter.statusDateTo===''||material.task.statusChange <= this.props.filter.statusDateTo)
+			(filter.status.length===0||(material.task.status && filter.status.includes(material.task.status.id))) &&
+			(filter.requester===null||(material.task.requester && material.task.requester.id===filter.requester)||(material.task.requester && filter.requester==='cur' && material.task.requester.id === this.props.currentUser.id)) &&
+			(filter.company===null||(material.task.company && material.task.company.id===filter.company) ||(material.task.company && filter.company==='cur' && material.task.company.id===this.props.currentUser.userData.company)) &&
+			(filter.assigned===null||(material.task.assignedTo && material.task.assignedTo.map((item)=>item.id).includes(filter.assigned))||(material.task.assignedTo && filter.requester==='cur' && material.task.assignedTo.map((item)=>item.id).includes(this.props.currentUser.id))) &&
+			(filter.statusDateFrom===''||material.task.statusChange >= filter.statusDateFrom) &&
+			(filter.statusDateTo===''||material.task.statusChange <= filter.statusDateTo) &&
+			(filter.closeDateFrom===undefined || filter.closeDateFrom===''||(material.task.closeDate && material.task.closeDate >= filter.closeDateFrom)) &&
+			(filter.closeDateTo===undefined || filter.closeDateTo===''||(material.task.closeDate && material.task.closeDate <= filter.closeDateTo)) &&
+			(filter.pendingDateFrom===undefined || filter.pendingDateFrom===''||(material.task.pendingDate && material.task.pendingDate >= filter.pendingDateFrom)) &&
+			(filter.pendingDateTo===undefined || filter.pendingDateTo===''||(material.task.pendingDate && material.task.pendingDate <= filter.pendingDateTo))
 		);
 
 		let groupedMaterials = newMaterials.filter((item, index)=>{
@@ -228,8 +238,6 @@ class Reports extends Component {
 												</tr>
 											</thead>
 											<tbody>
-												{console.log(this.processWorks(this.state.taskWorks))}
-												{console.log(this.processMaterials(this.state.taskMaterials))}
 												{
 													this.processWorks(this.state.taskWorks).map((item,index)=>
 													<tr key={index}>
