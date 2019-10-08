@@ -25,7 +25,7 @@ export default class TaskEditColumn extends Component {
       status: 0,
       tags: [],
       attachements: [],
-      price:0,
+    //  price:0,
 
       saving: false,
       loading: true,
@@ -87,7 +87,7 @@ export default class TaskEditColumn extends Component {
       status: task.status,
       attachements: task.attachements ? task.attachements : [],
       tags,
-      price:task.price?task.price:0,
+  //    price:task.price?task.price:0,
 
       loading: false,
       users,
@@ -116,7 +116,7 @@ export default class TaskEditColumn extends Component {
       description: this.state.description,
       status: this.state.status,
       attachements: this.state.attachements,
-      price:this.state.price,
+  //    price:this.state.price,
     }
 
     rebase.updateDoc('/proj-tasks/' + this.props.id, body).then(() => this.setState({ saving: false }));
@@ -203,51 +203,62 @@ export default class TaskEditColumn extends Component {
               />
           </FormGroup>
           <div className="flex m-l-5">
-            <FormGroup class="row" >
-              <Label className="text-slim">Project</Label>
-              <Select
-                styles={selectStyle}
-                options={this.state.projects}
-                value={this.state.project}
-                onChange={e => { this.setState({ project: e }, this.submitTask.bind(this)); }}
-              />
-            </FormGroup>
+            <div className="col-lg-12">
+              <div className="col-lg-6 p-r-5">
+                <FormGroup class="row" >
+                  <Label className="text-slim">Project</Label>
+                  <Select
+                    styles={selectStyle}
+                    options={this.state.projects}
+                    value={this.state.project}
+                    onChange={e => { this.setState({ project: e }, this.submitTask.bind(this)); }}
+                  />
+                </FormGroup>
 
-            <FormGroup>
-              <Label className="text-slim">Requester</Label>
-              <Select
-                styles={selectStyle}
-                options={this.state.users}
-                value={this.state.assignedBy}
-                onChange={e => { this.setState({ assignedBy: e }, this.submitTask.bind(this)); }}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label className="text-slim">Assigned to</Label>
-              <Select
-                styles={selectStyle}
-                options={this.state.users}
-                value={this.state.assignedTo}
-                onChange={e => { this.setState({ assignedTo: e }, this.submitTask.bind(this)); }}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label className="text-slim">Deadline</Label>
-              <Input type="datetime-local" placeholder="Enter deadline" value={this.state.deadline} onChange={(e) => this.setState({ deadline: e.target.value }, this.submitTask.bind(this))} />
-            </FormGroup>
-            <FormGroup>
-              <Label className="text-slim">Hours</Label>
-              <Input type="number" placeholder="Enter hours" value={this.state.hours} onChange={(e) => this.setState({ hours: e.target.value }, this.submitTask.bind(this))} />
-            </FormGroup>
+                <FormGroup>
+                  <Label className="text-slim">Requester</Label>
+                  <Select
+                    styles={selectStyle}
+                    options={this.state.users}
+                    value={this.state.assignedBy}
+                    onChange={e => { this.setState({ assignedBy: e }, this.submitTask.bind(this)); }}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label className="text-slim">Assigned to</Label>
+                  <Select
+                    styles={selectStyle}
+                    options={this.state.users}
+                    value={this.state.assignedTo}
+                    onChange={e => { this.setState({ assignedTo: e }, this.submitTask.bind(this)); }}
+                  />
+                </FormGroup>
+
+              </div>
+              <div className="col-lg-6 p-l-5">
+
+                <FormGroup>
+                  <Label className="text-slim">Deadline</Label>
+                  <Input type="datetime-local" placeholder="Enter deadline" value={this.state.deadline} onChange={(e) => this.setState({ deadline: e.target.value }, this.submitTask.bind(this))} />
+                </FormGroup>
+                <FormGroup>
+                  <Label className="text-slim">Hours</Label>
+                  <Input type="number" placeholder="Enter hours" value={this.state.hours} onChange={(e) => this.setState({ hours: e.target.value }, this.submitTask.bind(this))} />
+                </FormGroup>
+
+              </div>
+            </div>
+            { false &&
             <FormGroup>
               <Label className="text-slim">Price</Label>
               <Input type="number" placeholder="Enter price" value={this.state.price} onChange={(e) => this.setState({ price: e.target.value }, this.submitTask.bind(this))} />
-            </FormGroup>
+            </FormGroup> }
             <FormGroup>
               <Label className="text-slim">Description</Label>
               <Input type="textarea" placeholder="Description" value={this.state.description} onChange={(e) => this.setState({ description: e.target.value }, this.submitTask.bind(this))} />
             </FormGroup>
           </div>
+
           <div className="flex m-r-5">
             <Subtasks id={this.props.id} />
             <Attachements id={this.props.id} attachements={this.state.attachements} onChange={(attachements) => this.setState({ attachements }, this.submitTask.bind(this))} />

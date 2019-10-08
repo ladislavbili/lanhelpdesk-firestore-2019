@@ -54,13 +54,13 @@ export default class Attachements extends Component{
     return (
       <table className="table">
         <thead>
-          <tr>
+          <tr className="tr-no-lines">
             <th>Attachements</th>
             <th className="w-20px"></th>
           </tr>
         </thead>
         <tbody>
-          <tr>
+          <tr  className="tr-no-lines">
             <td>
               <input
                 type="file"
@@ -92,7 +92,7 @@ export default class Attachements extends Component{
             </tr>
             {
               this.state.files.map((file)=>
-                <tr key={file.path}>
+                <tr key={file.path} className="tr-no-lines">
                   <td>
                     <a href={file.url} rel="noopener noreferrer" target="_blank">{file.name}</a>
                   </td>

@@ -51,24 +51,24 @@ export default class Subtasks extends Component{
   render(){
     return (
       <div>
-        <table className="table table-borderless">
+        <table className="table">
           <thead>
-            <tr>
+            <tr className="tr-no-lines">
               <th colSpan={3} >Subtasks</th>
             </tr>
           </thead>
           <tbody>
             {
               this.state.subtasks.map((item,index)=>
-              <tr key={item.id}>
-                <td className="table-checkbox">
+              <tr key={item.id} className="tr-no-lines">
+                <td className="table-checkbox" style={{border: "none"}}>
                   <Input type="checkbox" checked={item.done} onChange={()=>{
                     let newData=[...this.state.subtasks];
                     newData[index].done=!newData[index].done;
                     rebase.updateDoc('proj-subtasks/'+item.id,{done:item.done});
                     this.setState({subtasks:newData});
                   }} /></td>
-                <td>
+                <td  style={{border: "none"}}>
                   <Input
                       type="text"
                       className="form-control hidden-input"
@@ -89,7 +89,7 @@ export default class Subtasks extends Component{
                         this.setState({ editedSubtaskTitle: e.target.value })}
                       }/>
                 </td>
-                <td className="w-20px">
+                <td className="w-20px"  style={{border: "none"}}>
                   <button
                     className="btn-link"
                     type="button"
@@ -100,11 +100,11 @@ export default class Subtasks extends Component{
               </tr>
             )
           }
-            <tr>
-              <td colSpan={2}>
+            <tr className="tr-no-lines">
+              <td colSpan={2}  className="">
                 <Input type="text" className="form-control" value={this.state.newSubtask} onChange={(e)=>this.setState({newSubtask:e.target.value})} />
               </td>
-              <td>
+              <td >
                 <button
                   className="btn-link"
                   type="button"

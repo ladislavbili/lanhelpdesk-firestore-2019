@@ -283,11 +283,17 @@ html{
 .m-100{
   margin: 100px;
 }
+.p-r-5{
+	padding-right: 5px !important;
+}
 .p-r-10{
 	padding-right: 10px;
 }
 .p-r-20{
 	padding-right: 20px !important;
+}
+.p-l-5{
+    padding-left: 5px !important;
 }
 .p-l-10{
     padding-left: 10px;
@@ -622,6 +628,9 @@ tr:last-child{
 .tr-no-lines>th {
   border-bottom: 0px solid $table-lines !important;
 }
+.tr-no-lines>td {
+  border-top: 0px solid $table-lines !important;
+}
 .tr-no-lines{
   border: 0px !important;
 }
@@ -632,7 +641,7 @@ tr:last-child{
 .table>tfoot>tr>th,
 .table>thead>tr>td,
 .table>thead>tr>th {
-    border-top: 0px solid #ddd;
+//    border-top: 0px solid #ddd;
 }
 
 .table>tbody>tr.active>td, .table>tbody>tr.active>th, .table>tbody>tr>td.active,
