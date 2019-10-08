@@ -3,9 +3,13 @@ import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
 import {rebase} from '../../../index';
 import Select from 'react-select';
 import {selectStyle} from "../../../scss/selectStyles";
+
+import { connect } from "react-redux";
+import {storageHelpTaskTypesStart} from '../../../redux/actions';
+
 let typeOptions = [{label:'Z paušálu',value:'prepaid'},{label:'Samostatný projekt',value:'project'}]
 
-export default class TaskTypeEdit extends Component{
+class TaskTypeEdit extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -15,22 +19,32 @@ export default class TaskTypeEdit extends Component{
       saving:false
     }
     this.setData.bind(this);
-    rebase.get('help-task_types/'+this.props.match.params.id, {
-      context: this,
-    }).then((taskType)=>this.setData(taskType));
-  }
-
-  setData(data){
-    this.setState({title:data.title,type:data.type?typeOptions.find((item)=>item.value===data.type):typeOptions[0],loading:false})
   }
 
   componentWillReceiveProps(props){
+    if(props.taskTypesLoaded && !this.props.taskTypesLoaded){
+      this.setData(props);
+    }
     if(this.props.match.params.id!==props.match.params.id){
       this.setState({loading:true})
-      rebase.get('help-task_types/'+props.match.params.id, {
-        context: this,
-      }).then((taskType)=>this.setData(taskType));
+      if(props.taskTypesLoaded){
+        this.setData(props);
+      }
     }
+  }
+
+  componentWillMount(){
+    if(!this.props.taskTypesActive){
+      this.props.storageHelpTaskTypesStart();
+    }
+    if(this.props.taskTypesLoaded){
+      this.setData(this.props);
+    };
+  }
+
+  setData(props){
+    let data = props.taskTypes.find((item)=>item.id===props.match.params.id);
+    this.setState({title:data.title,type:data.type?typeOptions.find((item)=>item.value===data.type):typeOptions[0],loading:false})
   }
 
   render(){
@@ -77,3 +91,11 @@ export default class TaskTypeEdit extends Component{
     );
   }
 }
+
+
+const mapStateToProps = ({ storageHelpTaskTypes}) => {
+  const { taskTypesActive, taskTypes, taskTypesLoaded } = storageHelpTaskTypes;
+  return { taskTypesActive, taskTypes, taskTypesLoaded };
+};
+
+export default connect(mapStateToProps, { storageHelpTaskTypesStart })(TaskTypeEdit);

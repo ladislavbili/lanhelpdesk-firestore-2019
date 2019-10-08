@@ -5,7 +5,7 @@ import Sidebar from './Sidebar';
 import PageHeader from '../components/PageHeader';
 import GeneralReports from './general';
 import CompanyMonthlyReport from './monthly/company';
-import RequesterMonthlyReport from './monthly/requester';
+import AssignedMonthlyReport from './monthly/assigned';
 
 import StatusList from './../helpdesk/settings/statuses';
 import ProjectList from './../helpdesk/settings/projects';
@@ -50,7 +50,7 @@ export default class Navigation extends Component {
 					<Route exact path="/reports" component={GeneralReports} />
 					<Route exact path="/reports/i/:id" component={GeneralReports} />
 					<Route exact path="/reports/monthly/companies" component={CompanyMonthlyReport} />
-					<Route exact path="/reports/monthly/requester" component={RequesterMonthlyReport} />
+					<Route exact path="/reports/monthly/requester" component={AssignedMonthlyReport} />
 
 					<Route exact path='/reports/settings/statuses' component={StatusList} />
 	        <Route exact path='/reports/settings/statuses/:id' component={StatusList} />

@@ -2,11 +2,14 @@ import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
 import Select from 'react-select';
 import InvoiceItems from './invoiceItems';
-import {rebase, database} from '../../../index';
-import {toSelArr, snapshotToArray} from '../../../helperFunctions';
+import {rebase} from '../../../index';
+import {toSelArr, sameStringForms} from '../../../helperFunctions';
 import {selectStyle} from "../../../scss/selectStyles";
 
-export default class SupplierInvoiceAdd extends Component{
+import { connect } from "react-redux";
+import {storageHelpUnitsStart, storageHelpSuppliersStart, storageHelpInvoiceItemsStart, storageHelpSupplierInvoicesStart, storageHelpStoredItemsStart} from '../../../redux/actions';
+
+class SupplierInvoiceEdit extends Component{
   constructor(props){
     super(props);
     let date = new Date().toISOString();
@@ -22,44 +25,86 @@ export default class SupplierInvoiceAdd extends Component{
       invoiceItems:[],
       newItemID:0
     }
-    this.fetchData.bind(this);
     this.fetchInvoiceItems.bind(this);
     this.setData.bind(this);
-    this.fetchData(this.props.match.params.id);
+  }
+
+  storageLoaded(props){
+    return props.unitsLoaded &&
+     props.suppliersLoaded &&
+     props.invoiceItemsLoaded &&
+     props.supplierInvoicesLoaded &&
+     props.storedItemsLoaded
+  }
+
+
+  componentWillReceiveProps(props){
+    if(!this.storageLoaded(this.props) && this.storageLoaded(props)){
+      this.setData(props);
+    }
+    if(!sameStringForms(props.units,this.props.units)||
+      !sameStringForms(props.suppliers,this.props.suppliers)||
+      !sameStringForms(props.invoiceItems,this.props.invoiceItems)||
+      !sameStringForms(props.supplierInvoices,this.props.supplierInvoices)||
+      !sameStringForms(props.storedItems,this.props.storedItems)
+    ){
+      if(this.storageLoaded(props)){
+        this.setData(props);
+        }
+      }
+      if(this.props.match.params.id!==props.match.params.id){
+        this.setState({loading:true})
+        if(this.storageLoaded(props)){
+          this.setData(props);
+        }
+      }
+    }
+
+  componentWillMount(){
+    if(!this.props.unitsActive){
+      this.props.storageHelpUnitsStart();
+    }
+    if(!this.props.suppliersActive){
+      this.props.storageHelpSuppliersStart();
+    }
+    if(!this.props.invoiceItemsActive){
+      this.props.storageHelpInvoiceItemsStart();
+    }
+    if(!this.props.supplierInvoicesActive){
+      this.props.storageHelpSupplierInvoicesStart();
+    }
+    if(!this.props.storedItemsLoaded){
+      this.props.storageHelpStoredItemsStart();
+    }
+    if(this.storageLoaded(this.props)){
+      this.setData(this.props);
+    };
   }
 
   fetchInvoiceItems(){
-    database.collection('help-invoice_items').where("invoice", "==", this.props.match.params.id).get().then((response)=>{
-      this.setState({invoiceItems:snapshotToArray(response)});
-    })
+    this.setState({invoiceItems:this.props.invoiceItems.filter((item)=>item.invoice===this.props.match.params.id)});
   }
 
-  fetchData(id){
-    Promise.all([
-    database.collection('help-units').get(),
-    database.collection('help-suppliers').get(),
-    database.collection('help-invoice_items').where("invoice", "==", id).get(),
-    rebase.get('help-supplier_invoices/'+id, {
-      context: this
-    })
-    ])
-    .then(([units,suppliers,invoiceItems,supplierInvoice])=>this.setData(toSelArr(snapshotToArray(units)),toSelArr(snapshotToArray(suppliers)),snapshotToArray(invoiceItems),supplierInvoice));
-  }
-
-  componentWillReceiveProps(props){
-    if(this.props.match.params.id!==props.match.params.id){
-      this.setState({loading:true})
-      this.fetchData(props.match.params.id);
-    }
-  }
-
-  setData(units,suppliers,invoiceItems, supplierInvoice){
+  setData(props){
+    let units=toSelArr(props.units);
+    let suppliers=toSelArr(props.suppliers);
+    let invoiceItems=props.invoiceItems.filter((item)=>item.invoice===props.match.params.id);
+    let supplierInvoice=props.supplierInvoices.find((item)=>item.id===props.match.params.id);
     let date=new Date().toISOString();
     if(supplierInvoice.date){
        date = new Date(supplierInvoice.date).toISOString();
     }
     date=date.substring(0,date.indexOf('.'));
-    this.setState({units,suppliers, invoiceItems,loading:false, identifier:supplierInvoice.identifier,supplier:suppliers.find((supplier)=>supplier.id===supplierInvoice.supplier),date,note:supplierInvoice.note})
+    this.setState({
+        units,
+        suppliers,
+        invoiceItems,
+        loading:false,
+        identifier:supplierInvoice.identifier,
+        supplier:suppliers.find((supplier)=>supplier.id===supplierInvoice.supplier),
+        date,
+        note:supplierInvoice.note
+      })
   }
 
   render(){
@@ -117,12 +162,10 @@ export default class SupplierInvoiceAdd extends Component{
           deleteItem={(id)=>{
             rebase.removeDoc('/help-invoice_items/'+id).then(()=>{
               this.fetchInvoiceItems();
-              database.collection('help-stored_items').where("invoiceItem", "==", id).get().then((item)=>{
-                let data=snapshotToArray(item);
+                let data=this.props.storedItems.find((item)=>item.invoiceItem===id);
                 if(data.length===1){
                   rebase.removeDoc('/help-stored_items/'+data[0].id);
                 }
-              })
           });
           }}
           editItem={(newItem)=>{
@@ -135,17 +178,15 @@ export default class SupplierInvoiceAdd extends Component{
               sn:newItem.sn
             }).then((response)=>{
               this.fetchInvoiceItems();
-              database.collection('help-stored_items').where("invoiceItem", "==", newItem.id).get().then((item)=>{
-                let data=snapshotToArray(item);
+                let data=this.props.storedItems.find((item)=>item.invoiceItem===newItem.id);
                 if(data.length===1){
                   rebase.updateDoc('/help-stored_items/'+data[0].id, {quantity:data[0].quantity+quantityDifference});
               }
-            });
           })}}
           disabled={this.state.saving||this.state.loading}
           newItemID={this.state.newItemID}
           />
-        
+
         <Button className="btn" disabled={this.state.saving||this.state.loading||this.state.supplier===undefined} onClick={()=>{
             this.setState({saving:true});
             rebase.updateDoc('/help-supplier_invoices/'+this.props.match.params.id, {supplier:this.state.supplier.id,identifier:this.state.identifier,note:this.state.note,date:this.state.date!==null?(new Date(this.state.date)).getTime():0})
@@ -157,12 +198,10 @@ export default class SupplierInvoiceAdd extends Component{
               if(window.confirm("Are you sure?")){
                 this.state.invoiceItems.forEach((invoiceItem)=>{
                   rebase.removeDoc('/help-invoice_items/'+invoiceItem.id).then(()=>{
-                    database.collection('help-stored_items').where("invoiceItem", "==", invoiceItem.id).get().then((item)=>{
-                      let data=snapshotToArray(item);
+                      let data=this.props.storedItems.find((item)=>item.invoiceItem===invoiceItem.id);
                       if(data.length===1){
                         rebase.removeDoc('/help-stored_items/'+data[0].id);
                       }
-                    })
                   });
                 });
                 rebase.removeDoc('/help-supplier_invoices/'+this.props.match.params.id).then(()=>{
@@ -175,3 +214,20 @@ export default class SupplierInvoiceAdd extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ storageHelpUnits, storageHelpSuppliers, storageHelpInvoiceItems, storageHelpSupplierInvoices, storageHelpStoredItems }) => {
+  const { unitsActive, units, unitsLoaded } = storageHelpUnits;
+  const { suppliersActive, suppliers, suppliersLoaded } = storageHelpSuppliers;
+  const { invoiceItemsActive, invoiceItems, invoiceItemsLoaded } = storageHelpInvoiceItems;
+  const { supplierInvoicesActive, supplierInvoices, supplierInvoicesLoaded } = storageHelpSupplierInvoices;
+  const { storedItemsActive, storedItems, storedItemsLoaded } = storageHelpStoredItems;
+  return {
+    unitsActive, units, unitsLoaded,
+    suppliersActive, suppliers, suppliersLoaded,
+    invoiceItemsActive, invoiceItems, invoiceItemsLoaded,
+    supplierInvoicesActive, supplierInvoices, supplierInvoicesLoaded,
+    storedItemsActive, storedItems, storedItemsLoaded,
+   };
+};
+
+export default connect(mapStateToProps, { storageHelpUnitsStart, storageHelpSuppliersStart, storageHelpInvoiceItemsStart, storageHelpSupplierInvoicesStart,storageHelpStoredItemsStart })(SupplierInvoiceEdit);

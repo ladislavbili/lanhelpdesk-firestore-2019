@@ -98,7 +98,6 @@ class UnitsList extends Component {
   }
 }
 
-
 const mapStateToProps = ({ storageHelpUnits}) => {
   const { unitsActive, units } = storageHelpUnits;
   return { unitsActive, units };

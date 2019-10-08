@@ -5,12 +5,10 @@ import { timestampToString, sameStringForms} from '../../helperFunctions';
 import { Link } from 'react-router-dom';
 import MonthSelector from '../components/monthSelector';
 
-class MothlyReportsRequester extends Component {
+class MothlyReportsAssigned extends Component {
 	constructor(props){
 		super(props);
 		this.state={
-			taskMaterials:[],
-			taskWorks:[],
 			users:[],
 			showUser:null,
 			loading:false
@@ -91,8 +89,6 @@ class MothlyReportsRequester extends Component {
 		let taskWorks = this.processWorks(props.taskWorks,props.workTypes,tasks,props);
 		let users = this.processUsers(taskWorks, taskMaterials);
 		this.setState({
-			taskMaterials,
-			taskWorks,
 			users,
 			loading:false
 		});
@@ -100,23 +96,34 @@ class MothlyReportsRequester extends Component {
 
 	processUsers(works,materials){
 		let users = [];
+		let tasks = new Set([]);
+		//userom priradit works a materials, sucty a tasks
 		works.forEach((work)=>{
-			let user = work.task.requester;
+			tasks.add(work.task.id);
+			let user = work.assignedTo;
 			if(users.map((user)=>user.id).includes(user.id)){
-				users.find((item)=>item.id===user.id).hours+=work.quantity.reduce((total,num)=>total+=parseInt(num),0);
+				let userIndex = users.findIndex((item)=>item.id===user.id);
+				users[userIndex].works.push(work);
+				users[userIndex].tasks.add(work.task.id);
+				users[userIndex].hours+=work.quantity.reduce((total,num)=>total+=parseInt(num),0);
  			}else{
-				users.push({...user,materials:0,hours:work.quantity.reduce((total,num)=>total+=parseInt(num),0)});
+				users.push({
+					...user,
+					works:[work],
+					tasks: new Set([work.task.id]),
+					materials:[],
+					numOfMaterials:0,
+					hours:work.quantity.reduce((total,num)=>total+=parseInt(num),0)
+				});
 			}
 		})
-		materials.forEach((material)=>{
-			let user = material.task.requester;
-			if(users.map((user)=>user.id).includes(user.id)){
-				users.find((item)=>item.id===user.id).materials+=material.quantity.reduce((total,num)=>total+=parseInt(num),0);
-			}else{
-				users.push({...user,hours:0,materials:material.quantity.reduce((total,num)=>total+=parseInt(num),0)});
-			}
-		})
-		return users.filter((user)=>user.hours>0||user.materials>0);
+		materials.filter((item)=>tasks.has(item.task.id)).forEach((material)=>{
+			users.filter((user)=>user.tasks.has(material.task.id)).forEach((user)=>{
+				user.materials.push(material);
+				user.numOfMaterials+=material.quantity.reduce((total,num)=>total+=parseInt(num),0);
+			})
+		});
+		return users.filter((user)=>user.hours>0 || user.numOfMaterials>0);
 	}
 
 	processWorks(works,workTypes,tasks,props){
@@ -131,6 +138,7 @@ class MothlyReportsRequester extends Component {
 			let workType= workTypes.find((item)=>item.id===work.workType);
 			return{
 				...work,
+				assignedTo:props.users.find((user)=>user.id===work.assignedTo),
 				task:tasks.find((task)=>work.task===task.id),
 				workType:workType?workType:{title:'Unknown',id:Math.random()},
 				finalUnitPrice,
@@ -235,7 +243,7 @@ class MothlyReportsRequester extends Component {
 						<table className="table m-b-10">
 							<thead>
 								<tr>
-									<th>Company name</th>
+									<th>Assigned to</th>
 									<th>Work hours</th>
 									<th>Materials</th>
 								</tr>
@@ -246,7 +254,7 @@ class MothlyReportsRequester extends Component {
 									<tr key={user.id} className="clickable" onClick={()=>this.setState({showUser:user.id})}>
 										<td>{user.email}</td>
 										<td>{user.hours}</td>
-										<td>{user.materials}</td>
+										<td>{user.numOfMaterials}</td>
 									</tr>
 								)}
 							</tbody>
@@ -276,7 +284,7 @@ class MothlyReportsRequester extends Component {
 									</thead>
 									<tbody>
 										{
-											this.state.taskWorks.filter((work)=>work.task.requester && work.task.requester.id===this.state.showUser).map((item,index)=>
+											this.state.users.find((user)=>user.id===this.state.showUser).works.map((item,index)=>
 											<tr key={index}>
 												<td>{item.task.id}</td>
 												<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/`+item.task.id }} style={{ color: "#1976d2" }}>{item.task.title}</Link></td>
@@ -314,13 +322,13 @@ class MothlyReportsRequester extends Component {
 									}
 								 </tbody>
 							</table>
-							<p className="m-0">Spolu zlava bez DPH: {(this.state.taskWorks.reduce((acc,item)=>{
+							<p className="m-0">Spolu zlava bez DPH: {(this.state.users.find((user)=>user.id===this.state.showUser).works.reduce((acc,item)=>{
 									return acc+item.totalDiscount.reduce((acc,item)=>acc+=isNaN(parseFloat(item))?0:parseFloat(item),0)
 								},0)).toFixed(2)} EUR</p>
-								<p className="m-0">Spolu cena bez DPH: {(this.state.taskWorks.reduce((acc,item)=>{
+								<p className="m-0">Spolu cena bez DPH: {(this.state.users.find((user)=>user.id===this.state.showUser).works.reduce((acc,item)=>{
 										return acc+item.totalPrice.reduce((acc,item)=>acc+=isNaN(parseFloat(item))?0:parseFloat(item),0)
 									},0)).toFixed(2)} EUR</p>
-								<p className="m-0">Spolu cena s DPH: {(this.state.taskWorks.reduce((acc,item)=>{
+								<p className="m-0">Spolu cena s DPH: {(this.state.users.find((user)=>user.id===this.state.showUser).works.reduce((acc,item)=>{
 										return acc+item.totalPrice.reduce((acc,item)=>acc+=isNaN(parseFloat(item))?0:parseFloat(item),0)
 									},0)*1.2).toFixed(2)} EUR</p>
 						</div>
@@ -346,7 +354,7 @@ class MothlyReportsRequester extends Component {
 								</thead>
 								<tbody>
 									{
-										this.state.taskMaterials.filter((material)=>material.task.company.id===this.state.showCompany).map((material, index)=>
+										this.state.users.find((user)=>user.id===this.state.showUser).materials.map((material, index)=>
 										<tr key={index}>
 											<td>{material.task.id}</td>
 											<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/`+material.task.id }} style={{ color: "#1976d2" }}>{material.task.title}</Link></td>
@@ -383,10 +391,10 @@ class MothlyReportsRequester extends Component {
 									)}
 								</tbody>
 							</table>
-							<p className="m-0">Spolu cena bez DPH: {(this.state.taskMaterials.reduce((acc,item)=>{
+							<p className="m-0">Spolu cena bez DPH: {(this.state.users.find((user)=>user.id===this.state.showUser).materials.reduce((acc,item)=>{
 									return acc+item.totalPrice.reduce((acc,item)=>acc+=isNaN(parseFloat(item))?0:parseFloat(item),0)
 								},0)).toFixed(2)} EUR</p>
-							<p className="m-0">Spolu cena s DPH: {(this.state.taskMaterials.reduce((acc,item)=>{
+							<p className="m-0">Spolu cena s DPH: {(this.state.users.find((user)=>user.id===this.state.showUser).materials.reduce((acc,item)=>{
 									return acc+item.totalPrice.reduce((acc,item)=>acc+=isNaN(parseFloat(item))?0:parseFloat(item),0)
 								},0)*1.2).toFixed(2)} EUR</p>
 						</div>
@@ -424,4 +432,4 @@ const mapStateToProps = ({ filterReducer,reportReducer,userReducer, storageCompa
 	};
 };
 
-export default connect(mapStateToProps, { storageCompaniesStart, storageHelpTasksStart, storageHelpStatusesStart, storageHelpWorkTypesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart, storageHelpTaskWorksStart })(MothlyReportsRequester);
+export default connect(mapStateToProps, { storageCompaniesStart, storageHelpTasksStart, storageHelpStatusesStart, storageHelpWorkTypesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart, storageHelpTaskWorksStart })(MothlyReportsAssigned);

@@ -4,9 +4,12 @@ import {rebase} from '../../../index';
 import Select from 'react-select';
 import {selectStyle} from "../../../scss/selectStyles";
 
+import { connect } from "react-redux";
+import {storageHelpWorkTypesStart} from '../../../redux/actions';
+
 let typeOptions = [{label:'Paušál hodín',value:'work'},{label:'Paušál výjazdov',value:'trip'}]
 
-export default class WorkTypeEdit extends Component{
+class WorkTypeEdit extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -16,22 +19,32 @@ export default class WorkTypeEdit extends Component{
       type:typeOptions[0],
     }
     this.setData.bind(this);
-    rebase.get('help-work_types/'+this.props.match.params.id, {
-      context: this,
-    }).then((workType)=>this.setData(workType));
-  }
-
-  setData(data){
-    this.setState({title:data.title,type:data.type?typeOptions.find((item)=>item.value===data.type):typeOptions[0],loading:false})
   }
 
   componentWillReceiveProps(props){
+    if(props.workTypesLoaded && !this.props.workTypesLoaded){
+      this.setData(props);
+    }
     if(this.props.match.params.id!==props.match.params.id){
       this.setState({loading:true})
-      rebase.get('help-work_types/'+props.match.params.id, {
-        context: this,
-      }).then((workType)=>this.setData(workType));
+      if(props.workTypesLoaded){
+        this.setData(props);
+      }
     }
+  }
+
+  componentWillMount(){
+    if(!this.props.workTypesActive){
+      this.props.storageHelpWorkTypesStart();
+    }
+    if(this.props.workTypesLoaded){
+      this.setData(this.props);
+    };
+  }
+
+  setData(props){
+    let data = props.workTypes.find((item)=>item.id===props.match.params.id);
+    this.setState({title:data.title,type:data.type?typeOptions.find((item)=>item.value===data.type):typeOptions[0],loading:false})
   }
 
   render(){
@@ -78,3 +91,10 @@ export default class WorkTypeEdit extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ storageHelpWorkTypes}) => {
+  const { workTypesActive, workTypes, workTypesLoaded } = storageHelpWorkTypes;
+  return { workTypesActive, workTypes, workTypesLoaded };
+};
+
+export default connect(mapStateToProps, { storageHelpWorkTypesStart })(WorkTypeEdit);

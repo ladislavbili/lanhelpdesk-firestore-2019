@@ -4,7 +4,7 @@ import SupplierAdd from './supplierAdd';
 import SupplierEdit from './supplierEdit';
 
 import { connect } from "react-redux";
-import {storageSuppliersStart} from '../../../redux/actions';
+import {storageHelpSuppliersStart} from '../../../redux/actions';
 import {sameStringForms} from '../../../helperFunctions';
 
 class SuppliersList extends Component{
@@ -24,7 +24,7 @@ class SuppliersList extends Component{
 
   componentWillMount(){
     if(!this.props.suppliersActive){
-      this.props.storageSuppliersStart();
+      this.props.storageHelpSuppliersStart();
     }
     this.setState({suppliers:this.props.suppliers});
   }
@@ -104,4 +104,4 @@ const mapStateToProps = ({ storageHelpSuppliers}) => {
   return { suppliersActive, suppliers };
 };
 
-export default connect(mapStateToProps, { storageSuppliersStart })(SuppliersList);
+export default connect(mapStateToProps, { storageHelpSuppliersStart })(SuppliersList);

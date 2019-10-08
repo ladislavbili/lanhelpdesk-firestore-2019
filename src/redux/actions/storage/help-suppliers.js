@@ -3,7 +3,7 @@ import {database} from '../../../index.js';
 import {snapshotToArray} from '../../../helperFunctions';
 
 
-export const storageSuppliersStart = () => {
+export const storageHelpSuppliersStart = () => {
   return (dispatch) => {
 
     database.collection('help-suppliers').onSnapshot(querySnapshot => {

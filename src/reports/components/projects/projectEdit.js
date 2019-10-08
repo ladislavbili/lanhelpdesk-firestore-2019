@@ -166,8 +166,6 @@ class ProjectEdit extends Component{
 				database.collection('help-repeats').doc(taskID).get(),
 				database.collection('help-comments').where("task", "==", taskID).get()
 		]).then(([taskMaterials, taskWorks,repeat,comments])=>{
-			console.log('deleting');
-			console.log(task);
 
 			let storageRef = firebase.storage().ref();
 			task.attachments.map((attachment)=>storageRef.child(attachment.path).delete());

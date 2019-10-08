@@ -2,12 +2,16 @@ import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
 import Select from 'react-select';
 import firebase from 'firebase';
-import {rebase, database} from '../../../index';
-import {snapshotToArray, isEmail} from '../../../helperFunctions';
 
+import {rebase} from '../../../index';
+import { isEmail} from '../../../helperFunctions';
 import {selectStyle} from "../../../scss/selectStyles";
 
-export default class UserEdit extends Component{
+import { connect } from "react-redux";
+import {storageCompaniesStart,storageUsersStart} from '../../../redux/actions';
+import {toSelArr} from '../../../helperFunctions';
+
+class UserEdit extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -23,48 +27,58 @@ export default class UserEdit extends Component{
       companies:[]
     }
     this.setData.bind(this);
-
-    Promise.all(
-      [
-        database.collection('companies').get(),
-        rebase.get('users/'+this.props.match.params.id, {
-          context: this,
-        })
-    ]).then(([ companiesData,user])=>{
-      let companies = snapshotToArray(companiesData);
-      let company;
-      if(companies.length===0){
-        company=null;
-      }else{
-        company=companies.find((item)=>item.id===user.company);
-        if(company){
-          company= {...company,label:company.title,value:company.id};
-        }else{
-          company=null;
-        }
-      }
-      this.setData(user);
-      this.setState({companies,company});
-    });
   }
 
-  setData(data){
-    this.setState({
-      username:data.username,
-      name:data.name,
-      surname:data.surname,
-      email:data.email,
-      loading:false
-    })
+  storageLoaded(props){
+    return props.companiesLoaded &&
+    props.usersLoaded
   }
 
   componentWillReceiveProps(props){
+    if(this.storageLoaded(props) && !this.storageLoaded(this.props)){
+      this.setData(props);
+    }
     if(this.props.match.params.id!==props.match.params.id){
       this.setState({loading:true})
-      rebase.get('users/'+props.match.params.id, {
-        context: this,
-      }).then((user)=>this.setData(user));
+      if(this.storageLoaded(props)){
+        this.setData(props);
+      }
     }
+  }
+
+  componentWillMount(){
+    if(!this.props.companiesActive){
+      this.props.storageCompaniesStart();
+    }
+    if(!this.props.usersActive){
+      this.props.storageUsersStart();
+    }
+    if(this.storageLoaded(this.props)){
+      this.setData(this.props);
+    };
+  }
+
+  setData(props){
+    let user = props.users.find((item)=>item.id===props.match.params.id);
+    let companies = toSelArr(props.companies);
+    let company;
+    if(companies.length===0){
+      company=null;
+    }else{
+      company=companies.find((item)=>item.id===user.company);
+      if(!company){
+        company=companies[0];
+      }
+    }
+    this.setState({
+      company,
+      companies,
+      username:user.username,
+      name:user.name,
+      surname:user.surname,
+      email:user.email,
+      loading:false
+    })
   }
 
   render(){
@@ -97,12 +111,7 @@ export default class UserEdit extends Component{
             <Label for="company">Company</Label>
             <Select
               styles={selectStyle}
-              options={
-                this.state.companies.map(company => {
-                company.label = company.title;
-                company.value = company.id;
-                return company;
-                })}
+              options={this.state.companies}
               value={this.state.company}
               onChange={e =>{ this.setState({ company: e }); }}
               />
@@ -135,3 +144,11 @@ export default class UserEdit extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ storageCompanies, storageUsers}) => {
+  const { companiesActive, companies, companiesLoaded } = storageCompanies;
+  const { usersActive, users, usersLoaded } = storageUsers;
+  return { companiesActive, companies, companiesLoaded, usersActive, users, usersLoaded };
+};
+
+export default connect(mapStateToProps, { storageCompaniesStart,storageUsersStart })(UserEdit);

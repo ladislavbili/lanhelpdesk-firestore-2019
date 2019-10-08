@@ -13,10 +13,12 @@ import reportReducer from './reducers/reportReducer';
 
 //storage
 import storageHelpFilters from './reducers/storage/help-filtersReducer';
+import storageHelpInvoiceItems from './reducers/storage/help-invoice_itemsReducer';
 import storageHelpPricelists from './reducers/storage/help-pricelistsReducer';
 import storageHelpPrices from './reducers/storage/help-pricesReducer';
 import storageHelpProjects from './reducers/storage/help-projectsReducer';
 import storageHelpStatuses from './reducers/storage/help-statusesReducer';
+import storageHelpStoredItems from './reducers/storage/help-stored_itemsReducer';
 import storageHelpSupplierInvoices from './reducers/storage/help-supplier_invoicesReducer';
 import storageHelpSuppliers from './reducers/storage/help-suppliersReducer';
 import storageHelpTags from './reducers/storage/help-tagsReducer';
@@ -47,10 +49,12 @@ const reducers = combineReducers({
     reportReducer,
     //storage
     storageHelpFilters,
+    storageHelpInvoiceItems,
     storageHelpPricelists,
     storageHelpPrices,
     storageHelpProjects,
     storageHelpStatuses,
+    storageHelpStoredItems,
     storageHelpSupplierInvoices,
     storageHelpSuppliers,
     storageHelpTags,

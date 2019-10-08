@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Button } from 'reactstrap';
 import { connect } from "react-redux";
-import {storageSuppliersStart, storageSupplierInvoicesStart} from '../../../redux/actions';
+import {storageHelpSuppliersStart, storageHelpSupplierInvoicesStart} from '../../../redux/actions';
 
 import {timestampToString, sameStringForms} from '../../../helperFunctions';
 import SupplierInvoiceAdd from './supplierInvoiceAdd';
@@ -27,12 +27,12 @@ class SupplierInvoicesList extends Component{
 
   componentWillMount(){
     if(!this.props.suppliersActive){
-      this.props.storageSuppliersStart();
+      this.props.storageHelpSuppliersStart();
     }
     this.setState({supplierInvoices:this.props.supplierInvoices});
 
     if(!this.props.supplierInvoicesActive){
-      this.props.storageSupplierInvoicesStart();
+      this.props.storageHelpSupplierInvoicesStart();
     }
     this.setState({suppliers:this.props.suppliers});
   }
@@ -120,4 +120,4 @@ const mapStateToProps = ({ storageHelpSuppliers,storageHelpSupplierInvoices }) =
   return { suppliersActive,suppliers,supplierInvoicesActive,supplierInvoices };
 };
 
-export default connect(mapStateToProps, { storageSuppliersStart, storageSupplierInvoicesStart })(SupplierInvoicesList);
+export default connect(mapStateToProps, { storageHelpSuppliersStart, storageHelpSupplierInvoicesStart })(SupplierInvoicesList);

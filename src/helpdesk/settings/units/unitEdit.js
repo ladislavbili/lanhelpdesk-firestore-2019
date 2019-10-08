@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
 import {rebase} from '../../../index';
 
-export default class UnitEdit extends Component{
+import { connect } from "react-redux";
+import {storageHelpUnitsStart, storageMetadataStart} from '../../../redux/actions';
+
+class UnitEdit extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -13,27 +16,41 @@ export default class UnitEdit extends Component{
       saving:false
     }
     this.setData.bind(this);
-    rebase.get('help-units/'+this.props.match.params.id, {
-      context: this,
-    }).then((unit)=>this.setData(unit));
-
-    rebase.get('metadata/0', {
-      context: this,
-    }).then((metadata)=>this.setState({def:metadata.defaultUnit===this.props.match.params.id,defaultUnit:metadata.defaultUnit }));
-
   }
 
-  setData(data,id){
-    this.setState({title:data.title,loading:false,def:this.state.defaultUnit?id===this.state.defaultUnit:false})
+  storageLoaded(props){
+    return props.unitsLoaded && props.metadataLoaded
   }
 
   componentWillReceiveProps(props){
+    if(this.storageLoaded(props) && !this.storageLoaded(this.props)){
+      this.setData(props);
+    }
+
     if(this.props.match.params.id!==props.match.params.id){
       this.setState({loading:true})
-      rebase.get('help-units/'+props.match.params.id, {
-        context: this,
-      }).then((unit)=>this.setData(unit,props.match.params.id));
+      if(this.storageLoaded(props)){
+        this.setData(props);
+      }
     }
+  }
+
+  componentWillMount(){
+    if(!this.props.unitsActive){
+      this.props.storageHelpUnitsStart();
+    }
+    if(!this.props.metadataActive){
+      this.props.storageMetadataStart();
+    }
+    if(this.storageLoaded(this.props)){
+      this.setData(this.props);
+    };
+  }
+
+  setData(props){
+    let data = props.units.find((item)=>item.id===props.match.params.id) ;
+    let id = props.metadata.defaultUnit;
+    this.setState({title:data.title,loading:false,def: props.match.params.id===id, defaultUnit:id})
   }
 
   render(){
@@ -83,3 +100,11 @@ export default class UnitEdit extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ storageHelpUnits,storageMetadata}) => {
+  const { unitsActive, units, unitsLoaded } = storageHelpUnits;
+	const { metadataLoaded, metadataActive, metadata } = storageMetadata;
+  return { unitsActive, units, unitsLoaded, metadataLoaded, metadataActive, metadata };
+};
+
+export default connect(mapStateToProps, { storageHelpUnitsStart, storageMetadataStart })(UnitEdit);
