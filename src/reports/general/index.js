@@ -124,6 +124,7 @@ class Reports extends Component {
 			(filter.company===null||(work.task.company && work.task.company.id===filter.company) ||(work.task.company && filter.company==='cur' && work.task.company.id===this.props.currentUser.userData.company)) &&
 			(filter.assigned===null||(work.task.assignedTo && work.task.assignedTo.map((item)=>item.id).includes(filter.assigned))||(work.task.assignedTo && filter.requester==='cur' && work.task.assignedTo.map((item)=>item.id).includes(this.props.currentUser.id))) &&
 			(filter.workType===null||(work.workType.id===filter.workType)) &&
+			(this.props.project===null || (work.task.project && work.task.project===this.props.project)) &&
 			(filter.statusDateFrom===''||work.task.statusChange >= filter.statusDateFrom) &&
 			(filter.statusDateTo===''||work.task.statusChange <= filter.statusDateTo) &&
 			(filter.closeDateFrom===undefined || filter.closeDateFrom===''||(work.task.closeDate && work.task.closeDate >= filter.closeDateFrom)) &&
@@ -166,6 +167,7 @@ class Reports extends Component {
 			(filter.requester===null||(material.task.requester && material.task.requester.id===filter.requester)||(material.task.requester && filter.requester==='cur' && material.task.requester.id === this.props.currentUser.id)) &&
 			(filter.company===null||(material.task.company && material.task.company.id===filter.company) ||(material.task.company && filter.company==='cur' && material.task.company.id===this.props.currentUser.userData.company)) &&
 			(filter.assigned===null||(material.task.assignedTo && material.task.assignedTo.map((item)=>item.id).includes(filter.assigned))||(material.task.assignedTo && filter.requester==='cur' && material.task.assignedTo.map((item)=>item.id).includes(this.props.currentUser.id))) &&
+			(this.props.project===null || (material.task.project && material.task.project===this.props.project)) &&
 			(filter.statusDateFrom===''||material.task.statusChange >= filter.statusDateFrom) &&
 			(filter.statusDateTo===''||material.task.statusChange <= filter.statusDateTo) &&
 			(filter.closeDateFrom===undefined || filter.closeDateFrom===''||(material.task.closeDate && material.task.closeDate >= filter.closeDateFrom)) &&
@@ -362,7 +364,7 @@ class Reports extends Component {
 	}
 
 const mapStateToProps = ({ filterReducer,userReducer, storageHelpTasks, storageHelpStatuses, storageHelpWorkTypes, storageHelpUnits, storageUsers, storageHelpTaskMaterials, storageHelpTaskWorks }) => {
-	const { filter } = filterReducer;
+	const { filter, project } = filterReducer;
 
 	const { tasksActive, tasks, tasksLoaded } = storageHelpTasks;
 	const { statusesActive, statuses, statusesLoaded } = storageHelpStatuses;
@@ -372,7 +374,7 @@ const mapStateToProps = ({ filterReducer,userReducer, storageHelpTasks, storageH
 	const { materialsActive, materials, materialsLoaded } = storageHelpTaskMaterials;
 	const { taskWorksActive, taskWorks, taskWorksLoaded } = storageHelpTaskWorks;
 
-	return { filter,
+	return { filter, project,
 		currentUser:userReducer,
 		tasksActive, tasks,tasksLoaded,
 		statusesActive, statuses,statusesLoaded,

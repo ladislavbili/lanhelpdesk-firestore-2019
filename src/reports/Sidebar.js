@@ -178,6 +178,20 @@ class Sidebar extends Component {
 								</TabPane>
 							</TabContent>
 							<hr/>
+							<div>
+								<Nav>
+									<NavItem>
+										<Link
+											className="text-basic sidebar-align sidebar-menu-item"
+											to={{ pathname: `/reports/monthly/companies` }}>Mesačné firmy</Link>
+									</NavItem>
+									<NavItem>
+										<Link
+											className="text-basic sidebar-align sidebar-menu-item"
+											to={{ pathname: `/reports/monthly/requester` }}>Mesačný agenti</Link>
+									</NavItem>
+								</Nav>
+							</div>
 						</div>
 					</div>}
 					{showSettings &&

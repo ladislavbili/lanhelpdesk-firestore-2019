@@ -4,6 +4,8 @@ import { Route } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import PageHeader from '../components/PageHeader';
 import GeneralReports from './general';
+import CompanyMonthlyReport from './monthly/company';
+import RequesterMonthlyReport from './monthly/requester';
 
 import StatusList from './../helpdesk/settings/statuses';
 import ProjectList from './../helpdesk/settings/projects';
@@ -45,31 +47,33 @@ export default class Navigation extends Component {
 						{title:'SMTPs',link:'smtps'},
 					]} />
 
-				<Route exact path="/reports" component={GeneralReports} />
+					<Route exact path="/reports" component={GeneralReports} />
 					<Route exact path="/reports/i/:id" component={GeneralReports} />
+					<Route exact path="/reports/monthly/companies" component={CompanyMonthlyReport} />
+					<Route exact path="/reports/monthly/requester" component={RequesterMonthlyReport} />
 
 					<Route exact path='/reports/settings/statuses' component={StatusList} />
-          <Route exact path='/reports/settings/statuses/:id' component={StatusList} />
-          <Route exact path='/reports/settings/projects' component={ProjectList} />
-          <Route exact path='/reports/settings/projects/:id' component={ProjectList} />
-          <Route exact path='/reports/settings/units' component={UnitList} />
-          <Route exact path='/reports/settings/units/:id' component={UnitList} />
-          <Route exact path='/reports/settings/companies' component={CompanyList} />
-          <Route exact path='/reports/settings/companies/:id' component={CompanyList} />
-          <Route exact path='/reports/settings/workTypes' component={WorkTypeList} />
-          <Route exact path='/reports/settings/workTypes/:id' component={WorkTypeList} />
-          <Route exact path='/reports/settings/users' component={UserList} />
-          <Route exact path='/reports/settings/users/:id' component={UserList} />
-          <Route exact path='/reports/settings/pricelists' component={PriceList} />
-          <Route exact path='/reports/settings/pricelists/:id' component={PriceList} />
-          <Route exact path='/reports/settings/suppliers' component={SupplierList} />
-          <Route exact path='/reports/settings/suppliers/:id' component={SupplierList} />
-          <Route exact path='/reports/settings/supplierInvoices' component={SupplierInvoiceList} />
-          <Route exact path='/reports/settings/supplierInvoices/:id' component={SupplierInvoiceList} />
+	        <Route exact path='/reports/settings/statuses/:id' component={StatusList} />
+	        <Route exact path='/reports/settings/projects' component={ProjectList} />
+	        <Route exact path='/reports/settings/projects/:id' component={ProjectList} />
+	        <Route exact path='/reports/settings/units' component={UnitList} />
+	        <Route exact path='/reports/settings/units/:id' component={UnitList} />
+	        <Route exact path='/reports/settings/companies' component={CompanyList} />
+	        <Route exact path='/reports/settings/companies/:id' component={CompanyList} />
+	        <Route exact path='/reports/settings/workTypes' component={WorkTypeList} />
+	        <Route exact path='/reports/settings/workTypes/:id' component={WorkTypeList} />
+	        <Route exact path='/reports/settings/users' component={UserList} />
+	        <Route exact path='/reports/settings/users/:id' component={UserList} />
+	        <Route exact path='/reports/settings/pricelists' component={PriceList} />
+	        <Route exact path='/reports/settings/pricelists/:id' component={PriceList} />
+	        <Route exact path='/reports/settings/suppliers' component={SupplierList} />
+	        <Route exact path='/reports/settings/suppliers/:id' component={SupplierList} />
+	        <Route exact path='/reports/settings/supplierInvoices' component={SupplierInvoiceList} />
+	        <Route exact path='/reports/settings/supplierInvoices/:id' component={SupplierInvoiceList} />
 					<Route exact path='/reports/settings/tags' component={TagList} />
 					<Route exact path='/reports/settings/tags/:id' component={TagList} />
 					<Route exact path='/reports/settings/taskTypes' component={TaskTypeList} />
-          <Route exact path='/reports/settings/taskTypes/:id' component={TaskTypeList} />
+	        <Route exact path='/reports/settings/taskTypes/:id' component={TaskTypeList} />
 					<Route exact path='/reports/settings/imaps' component={ImapList} />
 					<Route exact path='/reports/settings/imaps/:id' component={ImapList} />
 					<Route exact path='/reports/settings/smtps' component={SMTPList} />

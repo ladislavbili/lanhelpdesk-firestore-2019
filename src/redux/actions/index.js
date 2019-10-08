@@ -7,6 +7,7 @@ export * from './expendituresActions';
 export * from './passwordsActions';
 export * from './cmdbActions';
 export * from './wikiActions';
+export * from './reports';
 
 //storage
 export * from './storage/help-filters';
