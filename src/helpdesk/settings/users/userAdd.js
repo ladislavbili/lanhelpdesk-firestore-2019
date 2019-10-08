@@ -2,11 +2,15 @@ import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input } from 'reactstrap';
 import Select from 'react-select';
 import firebase from 'firebase';
-import {rebase, database} from '../../../index';
-import {snapshotToArray, isEmail} from '../../../helperFunctions';
+import {rebase} from '../../../index';
+import {isEmail} from '../../../helperFunctions';
 import {selectStyle} from "../../../scss/selectStyles";
 
-export default class UserAdd extends Component{
+import { connect } from "react-redux";
+import {storageCompaniesStart} from '../../../redux/actions';
+import {sameStringForms, toSelArr} from '../../../helperFunctions';
+
+class UserAdd extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -19,10 +23,24 @@ export default class UserAdd extends Component{
       password:'',
       companies:[]
     }
-    database.collection('companies').get().then((data)=>{
-      let companies=snapshotToArray(data);
-      this.setState({companies,company:companies.length===0 ? null :{...companies[0],label:companies[0].title,value:companies[0].id}});
-    });
+  }
+
+  componentWillReceiveProps(props){
+    if(!sameStringForms(props.companies,this.props.companies)){
+      this.setState({companies:toSelArr(props.companies)})
+    }
+    if(!this.props.companiesLoaded&&props.companiesLoaded){
+      let companies = toSelArr(props.companies);
+      this.setState({companies,company:companies.length===0 ? null :companies[0]});
+    }
+  }
+
+  componentWillMount(){
+    if(!this.props.companiesActive){
+      this.props.storageCompaniesStart();
+    }
+    let companies = toSelArr(this.props.companies);
+    this.setState({companies,company:companies.length===0 ? null :companies[0]});
   }
 
   render(){
@@ -53,12 +71,7 @@ export default class UserAdd extends Component{
             <Label for="company">Company</Label>
             <Select
               styles={selectStyle}
-              options={
-                this.state.companies.map(company => {
-                company.label = company.title;
-                company.value = company.id;
-                return company;
-                })}
+              options={this.state.companies}
               value={this.state.company}
               onChange={e =>{ this.setState({ company: e }); }}
               />
@@ -98,3 +111,10 @@ export default class UserAdd extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ storageCompanies}) => {
+  const { companiesActive, companies, companiesLoaded } = storageCompanies;
+  return { companiesActive, companies, companiesLoaded };
+};
+
+export default connect(mapStateToProps, { storageCompaniesStart })(UserAdd);

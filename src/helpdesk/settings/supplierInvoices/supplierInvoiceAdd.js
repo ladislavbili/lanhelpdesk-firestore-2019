@@ -2,11 +2,14 @@ import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input } from 'reactstrap';
 import Select from 'react-select';
 import InvoiceItems from './invoiceItems';
-import {rebase, database} from '../../../index';
-import {toSelArr, snapshotToArray} from '../../../helperFunctions';
+import {rebase} from '../../../index';
+import {toSelArr, sameStringForms} from '../../../helperFunctions';
 import {selectStyle} from "../../../scss/selectStyles";
 
-export default class SupplierInvoiceAdd extends Component{
+import { connect } from "react-redux";
+import {storageHelpSuppliersStart, storageHelpUnitsStart} from '../../../redux/actions';
+
+class SupplierInvoiceAdd extends Component{
   constructor(props){
     super(props);
     let date = new Date().toISOString();
@@ -22,19 +25,42 @@ export default class SupplierInvoiceAdd extends Component{
       invoiceItems:[],
       newItemID:0
     }
-    this.fetchData.bind(this);
     this.setData.bind(this);
-    this.fetchData();
   }
 
-  fetchData(){
-    Promise.all([
-    database.collection('help-units').get(),
-    database.collection('help-suppliers').get()
-    ])
-    .then(([units,suppliers])=>this.setData(toSelArr(snapshotToArray(units)),toSelArr(snapshotToArray(suppliers))));
+  storageLoaded(props){
+    return props.suppliersLoaded &&
+      props.unitsLoaded
   }
-  setData(units,suppliers){
+
+  componentWillReceiveProps(props){
+    if(!this.storageLoaded(this.props) && this.storageLoaded(props)){
+      this.setData(props);
+    }
+    if(!sameStringForms(props.units,this.props.units)||
+      !sameStringForms(props.suppliers,this.props.suppliers)){
+        if(this.storageLoaded(props)){
+          this.setData(props);
+        }
+      }
+  }
+
+  componentWillMount(){
+    if(!this.props.suppliersActive){
+      this.props.storageHelpSuppliersStart();
+    }
+    if(!this.props.unitsActive){
+      this.props.storageHelpUnitsStart();
+    }
+    if(this.storageLoaded(this.props)){
+      this.setData(this.props);
+    };
+  }
+
+  setData(props){
+    let units = toSelArr(props.units);
+    let suppliers = toSelArr(props.suppliers);
+
     let supplier = null;
     if(suppliers.length>0){
       supplier=suppliers[0];
@@ -106,3 +132,11 @@ export default class SupplierInvoiceAdd extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ storageHelpSuppliers,storageHelpUnits }) => {
+  const { suppliersActive, suppliers, suppliersLoaded } = storageHelpSuppliers;
+  const { unitsActive, units, unitsLoaded } = storageHelpUnits;
+  return { suppliersActive,suppliers, suppliersLoaded,unitsActive,units, unitsLoaded };
+};
+
+export default connect(mapStateToProps, { storageHelpSuppliersStart, storageHelpUnitsStart })(SupplierInvoiceAdd);

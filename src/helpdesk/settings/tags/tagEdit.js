@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
 import {rebase} from '../../../index';
 
-export default class WorkTypeEdit extends Component{
+import { connect } from "react-redux";
+import {storageHelpTagsStart} from '../../../redux/actions';
+
+class TagEdit extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -11,22 +14,32 @@ export default class WorkTypeEdit extends Component{
       saving:false
     }
     this.setData.bind(this);
-    rebase.get('help-tags/'+this.props.match.params.id, {
-      context: this,
-    }).then((workType)=>this.setData(workType));
-  }
-
-  setData(data){
-    this.setState({title:data.title,loading:false})
   }
 
   componentWillReceiveProps(props){
+    if(props.tagsLoaded && !this.props.tagsLoaded){
+      this.setData(props);
+    }
     if(this.props.match.params.id!==props.match.params.id){
       this.setState({loading:true})
-      rebase.get('help-tags/'+props.match.params.id, {
-        context: this,
-      }).then((tag)=>this.setData(tag));
+      if(props.tagsLoaded){
+        this.setData(props);
+      }
     }
+  }
+
+  componentWillMount(){
+    if(!this.props.tagsActive){
+      this.props.storageHelpTagsStart();
+    }
+    if(this.props.tagsLoaded){
+      this.setData(this.props);
+    };
+  }
+
+  setData(props){
+    let data = props.tags.find((item)=>item.id===props.match.params.id);
+    this.setState({title:data.title,loading:false})
   }
 
   render(){
@@ -60,3 +73,10 @@ export default class WorkTypeEdit extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ storageHelpTags}) => {
+  const { tagsActive, tags, tagsLoaded } = storageHelpTags;
+  return { tagsActive, tags, tagsLoaded };
+};
+
+export default connect(mapStateToProps, { storageHelpTagsStart })(TagEdit);

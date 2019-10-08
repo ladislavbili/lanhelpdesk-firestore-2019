@@ -314,13 +314,13 @@ class MothlyReportsCompany extends Component {
 									}
 								 </tbody>
 							</table>
-							<p className="m-0">Spolu zlava bez DPH: {(this.state.taskWorks.reduce((acc,item)=>{
+							<p className="m-0">Spolu zlava bez DPH: {(this.state.taskWorks.filter((work)=>work.task.company.id===this.state.showCompany).reduce((acc,item)=>{
 									return acc+item.totalDiscount.reduce((acc,item)=>acc+=isNaN(parseFloat(item))?0:parseFloat(item),0)
 								},0)).toFixed(2)} EUR</p>
-								<p className="m-0">Spolu cena bez DPH: {(this.state.taskWorks.reduce((acc,item)=>{
+								<p className="m-0">Spolu cena bez DPH: {(this.state.taskWorks.filter((work)=>work.task.company.id===this.state.showCompany).reduce((acc,item)=>{
 										return acc+item.totalPrice.reduce((acc,item)=>acc+=isNaN(parseFloat(item))?0:parseFloat(item),0)
 									},0)).toFixed(2)} EUR</p>
-								<p className="m-0">Spolu cena s DPH: {(this.state.taskWorks.reduce((acc,item)=>{
+								<p className="m-0">Spolu cena s DPH: {(this.state.taskWorks.filter((work)=>work.task.company.id===this.state.showCompany).reduce((acc,item)=>{
 										return acc+item.totalPrice.reduce((acc,item)=>acc+=isNaN(parseFloat(item))?0:parseFloat(item),0)
 									},0)*1.2).toFixed(2)} EUR</p>
 						</div>
@@ -383,10 +383,10 @@ class MothlyReportsCompany extends Component {
 									)}
 								</tbody>
 							</table>
-							<p className="m-0">Spolu cena bez DPH: {(this.state.taskMaterials.reduce((acc,item)=>{
+							<p className="m-0">Spolu cena bez DPH: {(this.state.taskMaterials.filter((material)=>material.task.company.id===this.state.showCompany).reduce((acc,item)=>{
 									return acc+item.totalPrice.reduce((acc,item)=>acc+=isNaN(parseFloat(item))?0:parseFloat(item),0)
 								},0)).toFixed(2)} EUR</p>
-							<p className="m-0">Spolu cena s DPH: {(this.state.taskMaterials.reduce((acc,item)=>{
+							<p className="m-0">Spolu cena s DPH: {(this.state.taskMaterials.filter((material)=>material.task.company.id===this.state.showCompany).reduce((acc,item)=>{
 									return acc+item.totalPrice.reduce((acc,item)=>acc+=isNaN(parseFloat(item))?0:parseFloat(item),0)
 								},0)*1.2).toFixed(2)} EUR</p>
 						</div>

@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
 import {rebase} from '../../../index';
 
-export default class WorkTypeEdit extends Component{
+import { connect } from "react-redux";
+import {storageHelpSuppliersStart} from '../../../redux/actions';
+
+class SupplierEdit extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -11,22 +14,32 @@ export default class WorkTypeEdit extends Component{
       saving:false
     }
     this.setData.bind(this);
-    rebase.get('help-suppliers/'+this.props.match.params.id, {
-      context: this,
-    }).then((workType)=>this.setData(workType));
-  }
-
-  setData(data){
-    this.setState({title:data.title,loading:false})
   }
 
   componentWillReceiveProps(props){
+    if(props.suppliersLoaded && !this.props.suppliersLoaded){
+      this.setData(props);
+    }
     if(this.props.match.params.id!==props.match.params.id){
       this.setState({loading:true})
-      rebase.get('help-suppliers/'+props.match.params.id, {
-        context: this,
-      }).then((supplier)=>this.setData(supplier));
+      if(props.suppliersLoaded){
+        this.setData(props);
+      }
     }
+  }
+
+  componentWillMount(){
+    if(!this.props.suppliersActive){
+      this.props.storageHelpSuppliersStart();
+    }
+    if(this.props.suppliersLoaded){
+      this.setData(this.props);
+    };
+  }
+
+  setData(props){
+    let data = props.suppliers.find((item)=>item.id===props.match.params.id);
+    this.setState({title:data.title,loading:false})
   }
 
   render(){
@@ -60,3 +73,10 @@ export default class WorkTypeEdit extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ storageHelpSuppliers}) => {
+  const { suppliersActive, suppliers, suppliersLoaded } = storageHelpSuppliers;
+  return { suppliersActive, suppliers, suppliersLoaded };
+};
+
+export default connect(mapStateToProps, { storageHelpSuppliersStart })(SupplierEdit);

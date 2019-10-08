@@ -179,7 +179,7 @@ class Sidebar extends Component {
 							</TabContent>
 							<hr/>
 							<div>
-								<Nav>
+								<Nav vertical>
 									<NavItem>
 										<Link
 											className="text-basic sidebar-align sidebar-menu-item"
