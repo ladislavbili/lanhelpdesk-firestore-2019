@@ -271,6 +271,9 @@ html{
 .p-t-5{
   padding-top: 5px;
 }
+.p-t-9{
+  padding-top: 9px;
+}
 .p-t-10{
   padding-top: 10px;
 }
@@ -504,6 +507,18 @@ h4{
   border-radius: 30px;
   /*height: 30px;
   width: 30px;*/
+}
+
+.btn-red{
+  background-color: white;
+  color: red;
+  border: 1px solid red;
+}
+
+.btn-red:hover{
+  background-color: red;
+  color: white;
+  border: inherit;
 }
 
 .btn-danger{
@@ -899,6 +914,11 @@ tr:last-child{
   padding-left: 33px !important;
 }
 
+.sidebar-subset{
+  padding-left: 66px !important;
+}
+
+
 .sidebar-input{
   margin-top: -10px;
 }
@@ -979,6 +999,20 @@ tr:last-child{
   font-weight: 900;
   color: #0078D4 !important;
   background-color: rgb(238,238,238);
+  text-decoration: none !important;
+}
+
+.nav:not(.nav-tabs) a:focus {
+  font-weight: 900;
+  color: #0078D4 !important;
+  background-color: rgb(238,238,238);
+  text-decoration: none !important;
+}
+
+.nav:not(.nav-tabs) a:hover {
+  background-color: rgb(238,238,238);
+  color: #0078D4 !important;
+  text-decoration: none !important;
 }
 
 .nav:not(.nav-tabs) a.active + .sidebar-menu-item-btn {
@@ -1000,8 +1034,6 @@ tr:last-child{
     color: $basic-button-color;
   }
 }
-
-
 
 
 //---------------------TaskList----------------------

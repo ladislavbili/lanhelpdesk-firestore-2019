@@ -18,6 +18,28 @@ export default class ProjectEdit extends Component{
       saving:false,
       opened:false
     }
+    this.remove.bind(this);
+  }
+
+  remove(){
+    rebase.get(`proj-tasks`, {
+    context: this,
+    query: (ref) => ref.where('project', '==', this.props.project.id),
+    withIds: true,
+    }).then(data => {
+
+      data.forEach(datum => {
+        rebase.removeDoc(`/proj-tasks/${datum.id}`);
+      }
+      );
+      rebase.removeDoc(`/proj-projects/${this.props.project.id}`).then(() => {
+        this.props.close();
+        this.props.history.push("/projects/all");
+      }
+      );
+    }).catch(err => {
+      //handle error
+    })
   }
 
   render(){
@@ -40,8 +62,19 @@ export default class ProjectEdit extends Component{
               </ModalBody>
 
               <ModalFooter>
+
+
+
               <Button className="mr-auto btn-link" disabled={this.state.saving} onClick={() => this.props.close()}>
                 Close
+              </Button>
+
+              <Button className="btn-red" disabled={this.state.saving} onClick={() => {
+                  if (window.confirm('Are you sure you want to delete this project? WARNING: all asociated tasks will be deleted too')) {
+                    this.remove()
+                  }
+                }}>
+                Delete
               </Button>
 
               <Button className="btn" disabled={this.state.saving||this.state.title===""} onClick={()=>{

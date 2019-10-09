@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { rebase, database } from '../../index';
-import { FormGroup, Label, Input } from 'reactstrap';
+import { FormGroup, Label, Input, Modal, ModalBody } from 'reactstrap';
 import { toSelArr, snapshotToArray } from '../../helperFunctions';
 import Select from 'react-select';
 import { selectStyle } from '../../scss/selectStyles';
 import Subtasks from './subtasks';
 import Comments from './comments';
 import Attachements from './attachements';
+import MilestoneAdd from '../milestones/milestoneAdd';
 
 const statuses = [{ id: 0, title: 'New', color: '#1087e2' }, { id: 1, title: 'Open', color: '#155724' }, { id: 2, title: 'Pending', color: '#f3ba0d' }, { id: 3, title: 'Closed', color: '#e2e3e5' }]
 
@@ -25,13 +26,15 @@ export default class TaskEditColumn extends Component {
       status: 0,
       tags: [],
       attachements: [],
+      milestone: null,
     //  price:0,
 
       saving: false,
       loading: true,
       projects: [],
       allTags: [],
-      users: []
+      users: [],
+      milestones: [{value: -1, label: "+ Add Milestone"}],
     }
     this.submitTask.bind(this);
     this.canSave.bind(this);
@@ -55,13 +58,14 @@ export default class TaskEditColumn extends Component {
       database.collection('proj-projects').get(),
       database.collection('users').get(),
       database.collection('proj-tags').get(),
+      database.collection('proj-milestones').get(),
     ])
-      .then(([task, projects, users, tags]) => {
-        this.setData(task, toSelArr(snapshotToArray(projects)), toSelArr(snapshotToArray(users), 'email'), toSelArr(snapshotToArray(tags)), id);
+      .then(([task, projects, users, tags, milestones]) => {
+        this.setData(task, toSelArr(snapshotToArray(projects)), toSelArr(snapshotToArray(users), 'email'), toSelArr(snapshotToArray(tags)), toSelArr(snapshotToArray(milestones)), id);
       });
   }
 
-  setData(task, projects, users, allTags, id) {
+  setData(task, projects, users, allTags, milestones, id) {
     let project = projects.find((item) => item.id === task.project);
     if (project === undefined) {
       project = null;
@@ -74,6 +78,10 @@ export default class TaskEditColumn extends Component {
     if (assignedTo === undefined) {
       assignedTo = null;
     }
+    let milestone = milestones.find((item) => item.id === task.milestone);
+    if (milestone === undefined) {
+      milestone = null;
+    }
 
     let tags = allTags.filter((item) => (task.tags !== undefined ? task.tags : []).includes(item.id));
     this.setState({
@@ -82,6 +90,7 @@ export default class TaskEditColumn extends Component {
       hours: task.hours ? task.hours : 0,
       assignedBy,
       assignedTo,
+      milestone,
       deadline: task.deadline ? new Date(task.deadline).toISOString().replace('Z', '') : '',
       description: task.description ? task.description : '',
       status: task.status,
@@ -92,7 +101,8 @@ export default class TaskEditColumn extends Component {
       loading: false,
       users,
       projects,
-      allTags
+      allTags,
+      milestones: [{value: -1, label: "+ Add Milestone"}].concat(milestones),
     });
   }
 
@@ -113,6 +123,7 @@ export default class TaskEditColumn extends Component {
       assignedTo: this.state.assignedTo ? this.state.assignedTo.id : null,
       deadline: isNaN(new Date(this.state.deadline).getTime()) ? null : (new Date(this.state.deadline).getTime()),
       tags: this.state.tags.map((item) => item.id),
+      milestone: this.state.milestone ? this.state.milestone.id : null,
       description: this.state.description,
       status: this.state.status,
       attachements: this.state.attachements,
@@ -205,7 +216,7 @@ export default class TaskEditColumn extends Component {
           <div className="flex m-l-5">
             <div className="col-lg-12">
               <div className="col-lg-6 p-r-5">
-                <FormGroup class="row" >
+                <FormGroup >
                   <Label className="text-slim">Project</Label>
                   <Select
                     styles={selectStyle}
@@ -241,9 +252,28 @@ export default class TaskEditColumn extends Component {
                   <Label className="text-slim">Deadline</Label>
                   <Input type="datetime-local" placeholder="Enter deadline" value={this.state.deadline} onChange={(e) => this.setState({ deadline: e.target.value }, this.submitTask.bind(this))} />
                 </FormGroup>
+
                 <FormGroup>
                   <Label className="text-slim">Hours</Label>
                   <Input type="number" placeholder="Enter hours" value={this.state.hours} onChange={(e) => this.setState({ hours: e.target.value }, this.submitTask.bind(this))} />
+                </FormGroup>
+
+                <FormGroup>
+                  <Label className="text-slim">Milestone</Label>
+                  <Select
+                    styles={selectStyle}
+                    options={this.state.milestones}
+                    value={this.state.milestone}
+                    onChange={e => {
+                      if (e.value === -1){
+                        this.setState({
+                          milestoneAddOpen: true,
+                        })
+                      } else {
+                        this.setState({ milestone: e }, this.submitTask.bind(this));
+                      }
+                    }}
+                  />
                 </FormGroup>
 
               </div>
@@ -258,6 +288,21 @@ export default class TaskEditColumn extends Component {
               <Input type="textarea" placeholder="Description" value={this.state.description} onChange={(e) => this.setState({ description: e.target.value }, this.submitTask.bind(this))} />
             </FormGroup>
           </div>
+
+          <Modal isOpen={this.state.milestoneAddOpen} >
+            <ModalBody>
+              <MilestoneAdd
+                project={this.state.project}
+                close={() => this.setState({milestoneAddOpen: false,})}
+                addMilestone={(milestone) => {
+                  let newMilestones = this.state.milestones.concat([milestone]);
+                  this.setState({
+                    milestones: newMilestones,
+                    milestoneAddOpen: false,
+                  })
+                }}/>
+            </ModalBody>
+          </Modal>
 
           <div className="flex m-r-5">
             <Subtasks id={this.props.id} />

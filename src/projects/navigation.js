@@ -14,8 +14,8 @@ export default class Navigation extends Component {
 						<Sidebar {...this.props} />
 					<div className="flex main">
 						<PageHeader {...this.props} showLayoutSwitch={true} settings={[{title:'Tags',link:'tags'}]} />
-						<Route exact path='/projects/:projectID' component={List} />
-						<Route exact path='/projects/:projectID/edit/:taskID' component={List} />
+						<Route exact path='/projects/:projectID/:milestoneID' component={List} />
+						<Route exact path='/projects/:projectID/:milestoneID/edit/:taskID' component={List} />
 						<Route exact path='/projects/settings/tags' component={TagList} />
 	          <Route exact path='/projects/settings/tags/:id' component={TagList} />
 					</div>

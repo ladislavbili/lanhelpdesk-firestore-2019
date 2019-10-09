@@ -78,7 +78,8 @@ class TaskList extends Component {
 			}
 		});
 		return tasks.filter((item)=>
-				item.status && this.state.statuses.includes(item.status.id)
+				item.status && this.state.statuses.includes(item.status.id) &&
+				(this.props.match.params.milestoneID === 'all' || (item.milestone ? item.milestone === this.props.match.params.milestoneID : false))
 			).filter((item)=>
 			(item.title && item.title.toLowerCase().includes(this.state.search.toLowerCase()))||
 			(item.createdAt && timestampToString(item.createdAt).toLowerCase().includes(this.state.search.toLowerCase()))||
@@ -100,6 +101,7 @@ class TaskList extends Component {
 			createdAt: (new Date()).getTime(),
 			hours: 0,
 			price:0,
+			milestone: this.props.match.params.milestoneID !== 'all' ? this.props.match.params.milestoneID : null,
 		})
 		.then(()=>{
 			this.setState({newTitle:'',saving:false})
@@ -248,7 +250,7 @@ class TaskList extends Component {
 													if(this.props.layout===1){
 														this.setState({editOpened:true, openedID:item.id});
 													}else{
-														this.props.history.push('/projects/'+this.props.match.params.projectID+'/edit/'+item.id)
+														this.props.history.push(`/projects/${this.props.match.params.projectID}/${this.props.match.params.milestoneID}/edit/${item.id}`)
 													}
 											}}>
 												<td>{item.createdAt?timestampToString(item.createdAt):'No date'}</td>
