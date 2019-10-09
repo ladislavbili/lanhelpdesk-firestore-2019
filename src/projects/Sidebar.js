@@ -57,7 +57,6 @@ export default class Sidebar extends Component {
 	}
 
 	render() {
-		console.log(	this.props.location.pathname.split("/")[2]);
 		return (
 			<div className="sidebar">
 				<SelectPage />
