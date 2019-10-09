@@ -9,7 +9,8 @@ import Comments from './comments';
 import Attachements from './attachements';
 import MilestoneAdd from '../milestones/milestoneAdd';
 
-const statuses = [{ id: 0, title: 'New', color: '#1087e2' }, { id: 1, title: 'Open', color: '#155724' }, { id: 2, title: 'Pending', color: '#f3ba0d' }, { id: 3, title: 'Closed', color: '#e2e3e5' }]
+const statuses = [{ id: 0, title: 'New', color: '#1087e2' }, { id: 1, title: 'Open', color: '#155724' }, { id: 2, title: 'Pending', color: '#f3ba0d' },
+{ id: 3, title: 'Closed', color: '#e2e3e5' }, { id: 4, title: 'No status', color: '#777' }]
 
 
 export default class TaskEditColumn extends Component {
@@ -23,7 +24,7 @@ export default class TaskEditColumn extends Component {
       assignedTo: null,
       deadline: '',
       description: '',
-      status: 0,
+      status: 4,
       tags: [],
       attachements: [],
       milestone: null,
@@ -83,6 +84,17 @@ export default class TaskEditColumn extends Component {
       milestone = null;
     }
 
+    let status = 4;
+    if (task.deadline && milestone){
+      if (task.deadline < milestone.od) {
+        status = 2;
+      } else if (task.deadline >= milestone.od && task.deadline <= milestone.do) {
+        status = 1;
+      } else if (task.deadline >= milestone.do) {
+        status = 3;
+      }
+    }
+
     let tags = allTags.filter((item) => (task.tags !== undefined ? task.tags : []).includes(item.id));
     this.setState({
       title: task.title,
@@ -93,7 +105,8 @@ export default class TaskEditColumn extends Component {
       milestone,
       deadline: task.deadline ? new Date(task.deadline).toISOString().replace('Z', '') : '',
       description: task.description ? task.description : '',
-      status: task.status,
+      status,
+//      status: task.status,
       attachements: task.attachements ? task.attachements : [],
       tags,
   //    price:task.price?task.price:0,
@@ -125,7 +138,7 @@ export default class TaskEditColumn extends Component {
       tags: this.state.tags.map((item) => item.id),
       milestone: this.state.milestone ? this.state.milestone.id : null,
       description: this.state.description,
-      status: this.state.status,
+  //    status: this.state.status,
       attachements: this.state.attachements,
   //    price:this.state.price,
     }
@@ -139,6 +152,8 @@ export default class TaskEditColumn extends Component {
         {/*TOOLBAR*/}
         <div className="row m-b-10">
 
+        {false &&
+
           <div className="toolbar-item">
             <button type="button" className="btn-link"
               onClick={() => { this.setState({ status: 1 }, this.submitTask.bind(this)) }}
@@ -146,7 +161,9 @@ export default class TaskEditColumn extends Component {
               <i className="fa fa-play" /> Open
               </button>
           </div>
+        }
 
+        {false &&
           <div className="toolbar-item">
             <button type="button" className="btn-link"
               onClick={() => { this.setState({ status: 2 }, this.submitTask.bind(this)) }}
@@ -154,7 +171,9 @@ export default class TaskEditColumn extends Component {
               <i className="fa fa-pause" /> Pending
               </button>
           </div>
+        }
 
+          {false &&
           <div className="toolbar-item">
             <button type="button" className="btn-link"
               onClick={() => { this.setState({ status: 3 }, this.submitTask.bind(this)) }}
@@ -162,6 +181,7 @@ export default class TaskEditColumn extends Component {
               <i className="fa fa-check-circle" /> Close
               </button>
           </div>
+        }
 
           {
             this.state.saving &&
@@ -250,7 +270,23 @@ export default class TaskEditColumn extends Component {
 
                 <FormGroup>
                   <Label className="text-slim">Deadline</Label>
-                  <Input type="datetime-local" placeholder="Enter deadline" value={this.state.deadline} onChange={(e) => this.setState({ deadline: e.target.value }, this.submitTask.bind(this))} />
+                  <Input type="datetime-local" placeholder="Enter deadline" value={this.state.deadline} onChange={(e) => {
+                      let deadline = isNaN(new Date(e.target.value).getTime()) ? null : (new Date(e.target.value).getTime());
+                      let status = 4;
+                      if (deadline && this.state.milestone){
+                        if (deadline < this.state.milestone.od) {
+                          status = 2;
+                        } else if (deadline >= this.state.milestone.od && deadline <= this.state.milestone.do) {
+                          status = 1;
+                        } else if (deadline >= this.state.milestone.do) {
+                          status = 3;
+                        }
+                      }
+                      this.setState({
+                        deadline: e.target.value,
+                        status,
+                      }, this.submitTask.bind(this))
+                    }} />
                 </FormGroup>
 
                 <FormGroup>
