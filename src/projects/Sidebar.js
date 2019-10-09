@@ -57,6 +57,7 @@ export default class Sidebar extends Component {
 	}
 
 	render() {
+		console.log(	this.props.location.pathname.split("/")[2]);
 		return (
 			<div className="sidebar">
 				<SelectPage />
@@ -70,6 +71,32 @@ export default class Sidebar extends Component {
 								All
 							</Link>
 						</NavItem>
+						{
+							this.props.location.pathname.split("/")[2] === "all" &&
+							this.state.milestones.map((mil) => {
+									if (mil.project === null){
+										return (
+											<NavItem key={mil.id}  className="sidebar-link" >
+												<Link
+													className="text-basic sidebar-menu-item sidebar-subset p-t-9"
+													key={mil.id}
+													to={{ pathname: `/projects/all/${mil.id}` }}>
+													{mil.title}
+												</Link>
+												<div className='sidebar-menu-item-btn  sidebar-menu-item'>
+													<Button
+														key={mil.id}
+														className='hidden-button full-width full-height'
+														onClick={() => {this.setState({milestoneEdit: mil, openMilestoneEdit: true})}}
+														>
+														<i className="fa fa-cog"/>
+													</Button>
+												</div>
+											</NavItem>
+									)
+									}
+							})
+						}
 							{
 								this.state.projects.map((project)=>
 								<div key={project.id}>
@@ -91,7 +118,7 @@ export default class Sidebar extends Component {
 										</div>
 									</NavItem>
 									{
-										this.props.location.pathname.substring(10, this.props.location.pathname.lastIndexOf("/")) === project.id &&
+										this.props.location.pathname.split("/")[2] === project.id &&
 										this.state.milestones.map((mil) => {
 												if (mil.project === project.id){
 													return (
