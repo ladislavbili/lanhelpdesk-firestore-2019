@@ -69,7 +69,7 @@ export default class Sidebar extends Component {
 								to={{ pathname: `/projects/all/all` }}>
 								All
 							</Link>
-						</NavItem>						
+						</NavItem>
 							{
 								this.state.projects.map((project)=>
 								<div key={project.id}>
@@ -113,7 +113,9 @@ export default class Sidebar extends Component {
 															</div>
 														</NavItem>
 												)
-												}
+											} else {
+												return null
+											}
 										})
 									}
 								</div>

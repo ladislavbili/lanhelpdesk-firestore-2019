@@ -84,7 +84,7 @@ export default class TaskEditColumn extends Component {
       milestone = null;
     }
 
-    let status = 4;
+    /*let status = 4;
     if (task.deadline && milestone){
       if (task.deadline < milestone.od) {
         status = 2;
@@ -93,7 +93,7 @@ export default class TaskEditColumn extends Component {
       } else if (task.deadline >= milestone.do) {
         status = 3;
       }
-    }
+    }*/
 
     let tags = allTags.filter((item) => (task.tags !== undefined ? task.tags : []).includes(item.id));
     this.setState({
@@ -105,7 +105,6 @@ export default class TaskEditColumn extends Component {
       milestone,
       deadline: task.deadline ? new Date(task.deadline).toISOString().replace('Z', '') : '',
       description: task.description ? task.description : '',
-      status,
       status: task.status,
       attachements: task.attachements ? task.attachements : [],
       tags,
