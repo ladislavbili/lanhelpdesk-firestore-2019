@@ -14,6 +14,7 @@ import reportReducer from './reducers/reportReducer';
 //storage
 import storageHelpFilters from './reducers/storage/help-filtersReducer';
 import storageHelpInvoiceItems from './reducers/storage/help-invoice_itemsReducer';
+import storageHelpMilestones from './reducers/storage/help-milestonesReducer';
 import storageHelpPricelists from './reducers/storage/help-pricelistsReducer';
 import storageHelpPrices from './reducers/storage/help-pricesReducer';
 import storageHelpProjects from './reducers/storage/help-projectsReducer';
@@ -50,6 +51,7 @@ const reducers = combineReducers({
     //storage
     storageHelpFilters,
     storageHelpInvoiceItems,
+    storageHelpMilestones,
     storageHelpPricelists,
     storageHelpPrices,
     storageHelpProjects,

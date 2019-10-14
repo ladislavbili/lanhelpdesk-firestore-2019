@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import { connect } from "react-redux";
-import {invisibleSelectStyle} from '../../scss/selectStyles';
-import {storageHelpStatusesStart, storageHelpTagsStart, storageUsersStart, storageHelpTaskTypesStart, storageCompaniesStart} from '../../redux/actions';
+import {invisibleSelectStyle} from '../../../scss/selectStyles';
+import {storageHelpStatusesStart, storageHelpTagsStart, storageUsersStart, storageHelpTaskTypesStart, storageCompaniesStart} from '../../../redux/actions';
 import { Button, FormGroup, Label,Input, Modal, ModalHeader, ModalBody, ModalFooter  } from 'reactstrap';
-import {toSelArr, sameStringForms} from '../../helperFunctions';
-import {rebase} from '../../index';
+import {toSelArr, sameStringForms} from '../../../helperFunctions';
+import {rebase} from '../../../index';
 
 
 const noDef={

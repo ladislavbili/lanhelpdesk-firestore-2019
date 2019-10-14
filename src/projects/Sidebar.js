@@ -94,6 +94,7 @@ export default class Sidebar extends Component {
 											</NavItem>
 									)
 									}
+									return null;
 							})
 						}
 							{
@@ -140,6 +141,7 @@ export default class Sidebar extends Component {
 														</NavItem>
 												)
 												}
+												return null;
 										})
 									}
 								</div>

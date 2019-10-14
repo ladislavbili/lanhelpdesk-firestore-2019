@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import { Modal, ModalBody, ModalFooter, Button, FormGroup, Label, Input } from 'reactstrap';
 import { connect } from "react-redux";
-import {storageHelpStatusesStart, storageHelpTagsStart, storageUsersStart, storageHelpTaskTypesStart, storageCompaniesStart, storageHelpProjectsStart, setProject, storageHelpTasksStart} from '../../redux/actions';
-import {rebase, database} from '../../index';
+import {storageHelpStatusesStart, storageHelpTagsStart, storageUsersStart, storageHelpTaskTypesStart, storageCompaniesStart, storageHelpProjectsStart, setProject, storageHelpTasksStart} from '../../../redux/actions';
+import {rebase, database} from '../../../index';
 import firebase from 'firebase';
-import {toSelArr, sameStringForms, snapshotToArray} from '../../helperFunctions';
-import {invisibleSelectStyle} from '../../scss/selectStyles';
-import Permits from "../../components/permissions";
+import {toSelArr, sameStringForms, snapshotToArray} from '../../../helperFunctions';
+import {invisibleSelectStyle} from '../../../scss/selectStyles';
+import Permits from "../../../components/permissions";
 
 const noDef={
 	status:{def:false,fixed:false, value: null},
@@ -378,8 +378,10 @@ class ProjectEdit extends Component{
                     }
                   };
                   rebase.updateDoc(`/help-projects/${this.props.item.id}`, body)
-                        .then(()=>{this.setState({saving:false, opened: false})});
-                        this.props.triggerChange();
+                        .then(()=>{
+													this.setState({saving:false, opened: false});
+													this.props.triggerChange();
+											});
               }}>
                 {(this.state.saving?'Saving...':'Save project')}
               </Button>

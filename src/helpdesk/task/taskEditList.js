@@ -19,12 +19,13 @@ import TaskAdd from './taskAddContainer';
 import TaskPrint from './taskPrint';
 import classnames from "classnames";
 import {rebase, database} from '../../index';
-import { storageCompaniesStart, storageHelpPricelistsStart, storageHelpPricesStart,storageHelpProjectsStart, storageHelpStatusesStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageHelpTasksStart, storageHelpUnitsStart,storageHelpWorkTypesStart, storageMetadataStart, storageUsersStart } from '../../redux/actions';
+import { storageCompaniesStart, storageHelpPricelistsStart, storageHelpPricesStart,storageHelpProjectsStart, storageHelpStatusesStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageHelpTasksStart, storageHelpUnitsStart,storageHelpWorkTypesStart, storageMetadataStart, storageUsersStart, storageHelpMilestonesStart } from '../../redux/actions';
 import firebase from 'firebase';
 import {toSelArr, snapshotToArray, timestampToString, sameStringForms} from '../../helperFunctions';
 import {invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
 
 const oneDay = 24*60*60*1000;
+const noMilestone = {id:null,value:null,title:'None',label:'None'};
 
 const noDef={
 	status:{def:false,fixed:false, value: null},
@@ -53,6 +54,7 @@ class TaskEditList extends Component {
 			workTypes:[],
 			statuses:[],
 			projects:[],
+			milestones:[noMilestone],
 			units:[],
 			allTags:[],
 			taskTypes:[],
@@ -82,6 +84,7 @@ class TaskEditList extends Component {
 			type:null,
 			createdAt:null,
 			repeat:null,
+			milestone:noMilestone,
 			attachments:[],
 
 			/////
@@ -119,7 +122,8 @@ class TaskEditList extends Component {
 			props.unitsLoaded &&
 			props.workTypesLoaded &&
 			props.metadataLoaded &&
-			props.usersLoaded
+			props.usersLoaded &&
+			props.milestonesLoaded
 	}
 
 	deleteTask(){
@@ -176,6 +180,7 @@ class TaskEditList extends Component {
 			tags: this.state.tags.map((item)=>item.id),
 			type: this.state.type?this.state.type.id:null,
 			repeat: this.state.repeat!==null?taskID:null,
+			milestone:this.state.milestone.id,
 			attachments:this.state.attachments,
 			closeDate,
 			pendingDate,
@@ -203,7 +208,9 @@ class TaskEditList extends Component {
 			!sameStringForms(props.units,this.props.units)||
 			!sameStringForms(props.workTypes,this.props.workTypes)||
 			!sameStringForms(props.metadata,this.props.metadata)||
-			!sameStringForms(props.users,this.props.users)){
+			!sameStringForms(props.users,this.props.users)||
+			!sameStringForms(props.milestones,this.props.milestones)
+		){
 			this.setData(props);
 		}
   }
@@ -244,6 +251,9 @@ class TaskEditList extends Component {
 		}
 		if(!this.props.usersActive){
 			this.props.storageUsersStart();
+		}
+		if(!this.props.milestonesActive){
+			this.props.storageHelpMilestonesStart();
 		}
 		this.setData(this.props);
   }
@@ -307,7 +317,15 @@ class TaskEditList extends Component {
 		let defaultUnit = this.props.metadata.defaultUnit;
 		let taskMaterials = this.state.taskMaterials;
 		let taskWorks = this.state.taskWorks;
+		let milestones = [noMilestone,...toSelArr(props.milestones)];
 
+		let milestone = noMilestone;
+		if(task.milestone!==undefined){
+			milestone = milestones.find((item)=>item.id===task.milestone);
+			if(milestone===undefined){
+				milestone=noMilestone;
+			}
+		}
 		this.setDefaults(task.project);
     let project = projects.find((item)=>item.id===task.project);
     let status = statuses.find((item)=>item.id===task.status);
@@ -361,6 +379,8 @@ class TaskEditList extends Component {
       workHours:isNaN(parseInt(task.workHours))?0:parseInt(task.workHours),
       requester:requester?requester:null,
       assignedTo,
+			milestone,
+			milestones,
 			attachments:task.attachments?task.attachments:[],
 
       loading:false,
@@ -539,7 +559,7 @@ class TaskEditList extends Component {
 												<Select
 													placeholder="Zadajte projekt"
 													value={this.state.project}
-													onChange={(project)=>this.setState({project, projectChangeDate:(new Date()).getTime()},()=>{this.submitTask();this.setDefaults(project.id)})}
+													onChange={(project)=>this.setState({project, projectChangeDate:(new Date()).getTime(),milestone:noMilestone},()=>{this.submitTask();this.setDefaults(project.id)})}
 													options={this.state.projects}
 													styles={invisibleSelectStyleNoArrow}
 													/>
@@ -645,6 +665,20 @@ class TaskEditList extends Component {
 											}}
 											columns={!this.props.columns}
 											/>
+											<div className="row p-r-10">
+												<Label className="col-3 col-form-label">Milestone</Label>
+												<div className="col-9">
+													<Select
+														value={this.state.milestone}
+														onChange={(milestone)=> {
+															this.setState({milestone},this.submitTask.bind(this));
+															}
+														}
+														options={this.state.milestones.filter((milestone)=>milestone.id===null || (this.state.project!== null &&  milestone.project===this.state.project.id))}
+														styles={invisibleSelectStyleNoArrow}
+														/>
+												</div>
+											</div>
 								</div>
 
 							</div>
@@ -958,7 +992,7 @@ submitService(body){
 }
 }
 
-const mapStateToProps = ({ storageCompanies, storageHelpPricelists, storageHelpPrices, storageHelpProjects, storageHelpStatuses, storageHelpTags, storageHelpTaskTypes, storageHelpTasks, storageHelpUnits, storageHelpWorkTypes, storageMetadata, storageUsers }) => {
+const mapStateToProps = ({ storageCompanies, storageHelpPricelists, storageHelpPrices, storageHelpProjects, storageHelpStatuses, storageHelpTags, storageHelpTaskTypes, storageHelpTasks, storageHelpUnits, storageHelpWorkTypes, storageMetadata, storageUsers, storageHelpMilestones }) => {
 	const { companiesLoaded, companiesActive, companies } = storageCompanies;
 	const { pricelistsLoaded, pricelistsActive, pricelists } = storageHelpPricelists;
 	const { pricesLoaded, pricesActive, prices } = storageHelpPrices;
@@ -971,6 +1005,7 @@ const mapStateToProps = ({ storageCompanies, storageHelpPricelists, storageHelpP
 	const { workTypesLoaded, workTypesActive, workTypes } = storageHelpWorkTypes;
 	const { metadataLoaded, metadataActive, metadata } = storageMetadata;
 	const { usersLoaded, usersActive, users } = storageUsers;
+	const { milestonesLoaded, milestonesActive, milestones } = storageHelpMilestones;
 	return { companiesLoaded, companiesActive, companies,
 		pricelistsLoaded, pricelistsActive, pricelists,
 		pricesLoaded, pricesActive, prices,
@@ -982,7 +1017,9 @@ const mapStateToProps = ({ storageCompanies, storageHelpPricelists, storageHelpP
 		unitsLoaded, unitsActive, units,
 		workTypesLoaded, workTypesActive, workTypes,
 		metadataLoaded, metadataActive, metadata,
-		usersLoaded, usersActive, users };
+		usersLoaded, usersActive, users,
+		milestonesLoaded, milestonesActive, milestones
+	};
 };
 
-export default connect(mapStateToProps, { storageCompaniesStart, storageHelpPricelistsStart, storageHelpPricesStart,storageHelpProjectsStart, storageHelpStatusesStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageHelpTasksStart, storageHelpUnitsStart,storageHelpWorkTypesStart, storageMetadataStart, storageUsersStart })(TaskEditList);
+export default connect(mapStateToProps, { storageCompaniesStart, storageHelpPricelistsStart, storageHelpPricesStart,storageHelpProjectsStart, storageHelpStatusesStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageHelpTasksStart, storageHelpUnitsStart,storageHelpWorkTypesStart, storageMetadataStart, storageUsersStart, storageHelpMilestonesStart })(TaskEditList);

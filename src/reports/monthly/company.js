@@ -40,7 +40,9 @@ class MothlyReportsCompany extends Component {
 			!sameStringForms(props.taskWorks,this.props.taskWorks)||
 			(props.year!==null && this.props.year===null)||
 			(props.year && this.props.year && props.year.value!==this.props.year.value)||
-			(props.month && this.props.month && props.month.value!==this.props.month.value)
+			(props.month && this.props.month && props.month.value!==this.props.month.value)||
+			(props.project!==this.props.project)||
+			(props.milestone!==this.props.milestone)
 		){
 			this.setData(props);
 		}
@@ -157,7 +159,8 @@ class MothlyReportsCompany extends Component {
 			(filter.closeDateFrom===undefined || filter.closeDateFrom===''||(work.task.closeDate && work.task.closeDate >= filter.closeDateFrom)) &&
 			(filter.closeDateTo===undefined || filter.closeDateTo===''||(work.task.closeDate && work.task.closeDate <= filter.closeDateTo)) &&
 			(filter.pendingDateFrom===undefined || filter.pendingDateFrom===''||(work.task.pendingDate && work.task.pendingDate >= filter.pendingDateFrom)) &&
-			(filter.pendingDateTo===undefined || filter.pendingDateTo===''||(work.task.pendingDate && work.task.pendingDate <= filter.pendingDateTo))
+			(filter.pendingDateTo===undefined || filter.pendingDateTo===''||(work.task.pendingDate && work.task.pendingDate <= filter.pendingDateTo))&&
+			(props.milestone===null||(work.task.milestone&& work.task.milestone === props.milestone))
 			);
 
 		let groupedWorks = newWorks.filter((item, index)=>{
@@ -205,7 +208,8 @@ class MothlyReportsCompany extends Component {
 			(filter.closeDateFrom===undefined || filter.closeDateFrom===''||(material.task.closeDate && material.task.closeDate >= filter.closeDateFrom)) &&
 			(filter.closeDateTo===undefined || filter.closeDateTo===''||(material.task.closeDate && material.task.closeDate <= filter.closeDateTo)) &&
 			(filter.pendingDateFrom===undefined || filter.pendingDateFrom===''||(material.task.pendingDate && material.task.pendingDate >= filter.pendingDateFrom)) &&
-			(filter.pendingDateTo===undefined || filter.pendingDateTo===''||(material.task.pendingDate && material.task.pendingDate <= filter.pendingDateTo))
+			(filter.pendingDateTo===undefined || filter.pendingDateTo===''||(material.task.pendingDate && material.task.pendingDate <= filter.pendingDateTo))&&
+			(props.milestone===null||(material.task.milestone&& material.task.milestone === props.milestone))
 		);
 
 		let groupedMaterials = newMaterials.filter((item, index)=>{
@@ -231,7 +235,8 @@ class MothlyReportsCompany extends Component {
 					<div style={{maxWidth:500}}>
 						<MonthSelector />
 					</div>
-					{ this.props.month!==null && this.props.year!==null && <div className="p-20">
+					{ this.props.month!==null && this.props.year!==null &&
+						<div className="p-20">
 						<table className="table m-b-10">
 							<thead>
 								<tr>
@@ -243,7 +248,7 @@ class MothlyReportsCompany extends Component {
 							<tbody>
 								{
 									this.state.companies.map((company)=>
-									<tr key={company.id} className="clickable" onClick={()=>this.setState({showCompany:company.id})}>
+									<tr key={company.id} className="clickable" onClick={()=>this.setState({showCompany:company})}>
 										<td>{company.title}</td>
 										<td>{company.hours}</td>
 										<td>{company.materials}</td>
@@ -255,6 +260,7 @@ class MothlyReportsCompany extends Component {
 				}
 					{this.props.month!==null && this.props.year!==null && this.state.showCompany!==null &&
 						<div className="p-20">
+							<h2>Mesačný výkaz - {this.state.showCompany.title} {this.props.month.label} {this.props.year.value}</h2>
 							<h3>Služby</h3>
 							<hr />
 							<div className="m-b-30">
@@ -276,7 +282,7 @@ class MothlyReportsCompany extends Component {
 									</thead>
 									<tbody>
 										{
-											this.state.taskWorks.filter((work)=>work.task.company.id===this.state.showCompany).map((item,index)=>
+											this.state.taskWorks.filter((work)=>work.task.company.id===this.state.showCompany.id).map((item,index)=>
 											<tr key={index}>
 												<td>{item.task.id}</td>
 												<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/`+item.task.id }} style={{ color: "#1976d2" }}>{item.task.title}</Link></td>
@@ -314,13 +320,13 @@ class MothlyReportsCompany extends Component {
 									}
 								 </tbody>
 							</table>
-							<p className="m-0">Spolu zlava bez DPH: {(this.state.taskWorks.filter((work)=>work.task.company.id===this.state.showCompany).reduce((acc,item)=>{
+							<p className="m-0">Spolu zlava bez DPH: {(this.state.taskWorks.filter((work)=>work.task.company.id===this.state.showCompany.id).reduce((acc,item)=>{
 									return acc+item.totalDiscount.reduce((acc,item)=>acc+=isNaN(parseFloat(item))?0:parseFloat(item),0)
 								},0)).toFixed(2)} EUR</p>
-								<p className="m-0">Spolu cena bez DPH: {(this.state.taskWorks.filter((work)=>work.task.company.id===this.state.showCompany).reduce((acc,item)=>{
+							<p className="m-0">Spolu cena bez DPH: {(this.state.taskWorks.filter((work)=>work.task.company.id===this.state.showCompany.id).reduce((acc,item)=>{
 										return acc+item.totalPrice.reduce((acc,item)=>acc+=isNaN(parseFloat(item))?0:parseFloat(item),0)
 									},0)).toFixed(2)} EUR</p>
-								<p className="m-0">Spolu cena s DPH: {(this.state.taskWorks.filter((work)=>work.task.company.id===this.state.showCompany).reduce((acc,item)=>{
+								<p className="m-0">Spolu cena s DPH: {(this.state.taskWorks.filter((work)=>work.task.company.id===this.state.showCompany.id).reduce((acc,item)=>{
 										return acc+item.totalPrice.reduce((acc,item)=>acc+=isNaN(parseFloat(item))?0:parseFloat(item),0)
 									},0)*1.2).toFixed(2)} EUR</p>
 						</div>
@@ -346,7 +352,7 @@ class MothlyReportsCompany extends Component {
 								</thead>
 								<tbody>
 									{
-										this.state.taskMaterials.filter((material)=>material.task.company.id===this.state.showCompany).map((material, index)=>
+										this.state.taskMaterials.filter((material)=>material.task.company.id===this.state.showCompany.id).map((material, index)=>
 										<tr key={index}>
 											<td>{material.task.id}</td>
 											<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/`+material.task.id }} style={{ color: "#1976d2" }}>{material.task.title}</Link></td>
@@ -383,10 +389,10 @@ class MothlyReportsCompany extends Component {
 									)}
 								</tbody>
 							</table>
-							<p className="m-0">Spolu cena bez DPH: {(this.state.taskMaterials.filter((material)=>material.task.company.id===this.state.showCompany).reduce((acc,item)=>{
+							<p className="m-0">Spolu cena bez DPH: {(this.state.taskMaterials.filter((material)=>material.task.company.id===this.state.showCompany.id).reduce((acc,item)=>{
 									return acc+item.totalPrice.reduce((acc,item)=>acc+=isNaN(parseFloat(item))?0:parseFloat(item),0)
 								},0)).toFixed(2)} EUR</p>
-							<p className="m-0">Spolu cena s DPH: {(this.state.taskMaterials.filter((material)=>material.task.company.id===this.state.showCompany).reduce((acc,item)=>{
+							<p className="m-0">Spolu cena s DPH: {(this.state.taskMaterials.filter((material)=>material.task.company.id===this.state.showCompany.id).reduce((acc,item)=>{
 									return acc+item.totalPrice.reduce((acc,item)=>acc+=isNaN(parseFloat(item))?0:parseFloat(item),0)
 								},0)*1.2).toFixed(2)} EUR</p>
 						</div>
@@ -397,7 +403,7 @@ class MothlyReportsCompany extends Component {
 	}
 
 const mapStateToProps = ({ filterReducer,reportReducer,userReducer, storageCompanies, storageHelpTasks, storageHelpStatuses, storageHelpWorkTypes, storageHelpUnits, storageUsers, storageHelpTaskMaterials, storageHelpTaskWorks }) => {
-	const { filter, project } = filterReducer;
+	const { filter, project, milestone } = filterReducer;
 	const { month, year } = reportReducer;
 
 	const { companiesActive, companies, companiesLoaded } = storageCompanies;
@@ -411,7 +417,7 @@ const mapStateToProps = ({ filterReducer,reportReducer,userReducer, storageCompa
 
 	return {
 		month, year,
-		filter, project,
+		filter, project, milestone,
 		currentUser:userReducer,
 		companiesActive, companies, companiesLoaded,
 		tasksActive, tasks,tasksLoaded,
