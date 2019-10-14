@@ -51,7 +51,10 @@ export default class ProjectAdd extends Component{
         }
         );
       }).catch(err => {
-        //handle error
+          rebase.removeDoc(`/proj-milestones/${this.props.milestone.id}`).then(() => {
+            this.props.close();
+            this.props.history.push(`/projects/${this.props.milestone.project}/all`);
+          });
       })
   }
 

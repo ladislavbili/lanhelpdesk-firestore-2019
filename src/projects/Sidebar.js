@@ -69,33 +69,7 @@ export default class Sidebar extends Component {
 								to={{ pathname: `/projects/all/all` }}>
 								All
 							</Link>
-						</NavItem>
-						{
-							this.props.location.pathname.split("/")[2] === "all" &&
-							this.state.milestones.map((mil) => {
-									if (mil.project === null){
-										return (
-											<NavItem key={mil.id}  className="sidebar-link" >
-												<Link
-													className="text-basic sidebar-menu-item sidebar-subset p-t-9"
-													key={mil.id}
-													to={{ pathname: `/projects/all/${mil.id}` }}>
-													{mil.title}
-												</Link>
-												<div className='sidebar-menu-item-btn  sidebar-menu-item'>
-													<Button
-														key={mil.id}
-														className='hidden-button full-width full-height'
-														onClick={() => {this.setState({milestoneEdit: mil, openMilestoneEdit: true})}}
-														>
-														<i className="fa fa-cog"/>
-													</Button>
-												</div>
-											</NavItem>
-									)
-									}
-							})
-						}
+						</NavItem>						
 							{
 								this.state.projects.map((project)=>
 								<div key={project.id}>

@@ -33,7 +33,7 @@ export default class ProjectAdd extends Component{
             description:'',
             od: null,
             do: null,
-            saving:false}, () => this.props.addMilestone({id: mil.id, value: mil.id, label: milestone.title}));
+            saving:false}, () => this.props.addMilestone({id: mil.id, value: mil.id, label: milestone.title, project: milestone.project}));
       });
 
   }

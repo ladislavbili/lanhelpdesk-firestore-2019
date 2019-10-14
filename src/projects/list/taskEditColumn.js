@@ -106,7 +106,7 @@ export default class TaskEditColumn extends Component {
       deadline: task.deadline ? new Date(task.deadline).toISOString().replace('Z', '') : '',
       description: task.description ? task.description : '',
       status,
-//      status: task.status,
+      status: task.status,
       attachements: task.attachements ? task.attachements : [],
       tags,
   //    price:task.price?task.price:0,
@@ -115,7 +115,7 @@ export default class TaskEditColumn extends Component {
       users,
       projects,
       allTags,
-      milestones: [{value: -1, label: "+ Add Milestone"}].concat(milestones),
+      milestones,
     });
   }
 
@@ -138,7 +138,7 @@ export default class TaskEditColumn extends Component {
       tags: this.state.tags.map((item) => item.id),
       milestone: this.state.milestone ? this.state.milestone.id : null,
       description: this.state.description,
-  //    status: this.state.status,
+      status: this.state.status,
       attachements: this.state.attachements,
   //    price:this.state.price,
     }
@@ -147,12 +147,13 @@ export default class TaskEditColumn extends Component {
   }
 
   render() {
+    const MILESTONES = [{value: -1, label: "+ Add Milestone"}].concat(this.state.project ? this.state.milestones.filter(mile => mile.project === this.state.project.id) : []);
+
     return (
       <div className='card-box flex fit-with-header-and-commandbar scrollable p-20'>
         {/*TOOLBAR*/}
         <div className="row m-b-10">
 
-        {false &&
 
           <div className="toolbar-item">
             <button type="button" className="btn-link"
@@ -161,9 +162,6 @@ export default class TaskEditColumn extends Component {
               <i className="fa fa-play" /> Open
               </button>
           </div>
-        }
-
-        {false &&
           <div className="toolbar-item">
             <button type="button" className="btn-link"
               onClick={() => { this.setState({ status: 2 }, this.submitTask.bind(this)) }}
@@ -171,9 +169,6 @@ export default class TaskEditColumn extends Component {
               <i className="fa fa-pause" /> Pending
               </button>
           </div>
-        }
-
-          {false &&
           <div className="toolbar-item">
             <button type="button" className="btn-link"
               onClick={() => { this.setState({ status: 3 }, this.submitTask.bind(this)) }}
@@ -181,7 +176,7 @@ export default class TaskEditColumn extends Component {
               <i className="fa fa-check-circle" /> Close
               </button>
           </div>
-        }
+
 
           {
             this.state.saving &&
@@ -242,7 +237,11 @@ export default class TaskEditColumn extends Component {
                     styles={selectStyle}
                     options={this.state.projects}
                     value={this.state.project}
-                    onChange={e => { this.setState({ project: e }, this.submitTask.bind(this)); }}
+                    onChange={e => {
+                      this.setState({
+                        milestone: this.state.project ? (e.id !== this.state.project.id ? null : this.state.milestone) : null,
+                        project: e,
+                       }, this.submitTask.bind(this)); }}
                   />
                 </FormGroup>
 
@@ -298,7 +297,7 @@ export default class TaskEditColumn extends Component {
                   <Label className="text-slim">Milestone</Label>
                   <Select
                     styles={selectStyle}
-                    options={this.state.milestones}
+                    options={MILESTONES}
                     value={this.state.milestone}
                     onChange={e => {
                       if (e.value === -1){
