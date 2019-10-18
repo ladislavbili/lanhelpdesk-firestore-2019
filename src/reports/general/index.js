@@ -130,7 +130,8 @@ class Reports extends Component {
 			(filter.closeDateFrom===undefined || filter.closeDateFrom===''||(work.task.closeDate && work.task.closeDate >= filter.closeDateFrom)) &&
 			(filter.closeDateTo===undefined || filter.closeDateTo===''||(work.task.closeDate && work.task.closeDate <= filter.closeDateTo)) &&
 			(filter.pendingDateFrom===undefined || filter.pendingDateFrom===''||(work.task.pendingDate && work.task.pendingDate >= filter.pendingDateFrom)) &&
-			(filter.pendingDateTo===undefined || filter.pendingDateTo===''||(work.task.pendingDate && work.task.pendingDate <= filter.pendingDateTo))
+			(filter.pendingDateTo===undefined || filter.pendingDateTo===''||(work.task.pendingDate && work.task.pendingDate <= filter.pendingDateTo))&&
+			(this.props.milestone===null||(work.task.milestone && work.task.milestone === this.props.milestone))
 			);
 
 		let groupedWorks = newWorks.filter((item, index)=>{
@@ -173,7 +174,8 @@ class Reports extends Component {
 			(filter.closeDateFrom===undefined || filter.closeDateFrom===''||(material.task.closeDate && material.task.closeDate >= filter.closeDateFrom)) &&
 			(filter.closeDateTo===undefined || filter.closeDateTo===''||(material.task.closeDate && material.task.closeDate <= filter.closeDateTo)) &&
 			(filter.pendingDateFrom===undefined || filter.pendingDateFrom===''||(material.task.pendingDate && material.task.pendingDate >= filter.pendingDateFrom)) &&
-			(filter.pendingDateTo===undefined || filter.pendingDateTo===''||(material.task.pendingDate && material.task.pendingDate <= filter.pendingDateTo))
+			(filter.pendingDateTo===undefined || filter.pendingDateTo===''||(material.task.pendingDate && material.task.pendingDate <= filter.pendingDateTo))&&
+			(this.props.milestone===null||(material.task.milestone&& material.task.milestone === this.props.milestone))
 		);
 
 		let groupedMaterials = newMaterials.filter((item, index)=>{
@@ -364,7 +366,7 @@ class Reports extends Component {
 	}
 
 const mapStateToProps = ({ filterReducer,userReducer, storageHelpTasks, storageHelpStatuses, storageHelpWorkTypes, storageHelpUnits, storageUsers, storageHelpTaskMaterials, storageHelpTaskWorks }) => {
-	const { filter, project } = filterReducer;
+	const { filter, project, milestone } = filterReducer;
 
 	const { tasksActive, tasks, tasksLoaded } = storageHelpTasks;
 	const { statusesActive, statuses, statusesLoaded } = storageHelpStatuses;
@@ -374,7 +376,7 @@ const mapStateToProps = ({ filterReducer,userReducer, storageHelpTasks, storageH
 	const { materialsActive, materials, materialsLoaded } = storageHelpTaskMaterials;
 	const { taskWorksActive, taskWorks, taskWorksLoaded } = storageHelpTaskWorks;
 
-	return { filter, project,
+	return { filter, project, milestone,
 		currentUser:userReducer,
 		tasksActive, tasks,tasksLoaded,
 		statusesActive, statuses,statusesLoaded,

@@ -15,6 +15,7 @@ class UserEdit extends Component{
   constructor(props){
     super(props);
     this.state={
+      isAdmin:false,
       username:'',
       name:'',
       surname:'',
@@ -77,6 +78,7 @@ class UserEdit extends Component{
       name:user.name,
       surname:user.surname,
       email:user.email,
+      isAdmin:user.isAdmin ? true : false,
       loading:false
     })
   }
@@ -91,6 +93,10 @@ class UserEdit extends Component{
               Loading data...
             </Alert>
           }
+          <FormGroup>
+            <Label for="isAdmin">Admin</Label>
+            <Input type="checkbox" id="isAdmin" placeholder="Enter username" checked={this.state.isAdmin} onChange={(e)=>this.setState({isAdmin:!this.state.isAdmin})} />
+          </FormGroup>
           <FormGroup>
             <Label for="username">Username</Label>
             <Input type="text" name="username" id="username" placeholder="Enter username" value={this.state.username} onChange={(e)=>this.setState({username:e.target.value})} />
@@ -119,7 +125,7 @@ class UserEdit extends Component{
 
           <Button className="btn" disabled={this.state.saving|| this.state.companies.length===0||!isEmail(this.state.email)} onClick={()=>{
             this.setState({saving:true});
-            rebase.updateDoc('/users/'+this.props.match.params.id, {username:this.state.username,name:this.state.name,surname:this.state.surname,email:this.state.email,company:this.state.company.id})
+            rebase.updateDoc('/users/'+this.props.match.params.id, {username:this.state.username,name:this.state.name,surname:this.state.surname,email:this.state.email,company:this.state.company.id, isAdmin:this.state.isAdmin})
               .then(()=>{
                 this.setState({saving:false})});
               }}>{this.state.saving?'Saving user...':'Save user'}</Button>

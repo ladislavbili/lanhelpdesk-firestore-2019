@@ -12,6 +12,7 @@ export * from './reports';
 //storage
 export * from './storage/help-filters';
 export * from './storage/help-invoice_items';
+export * from './storage/help-milestones';
 export * from './storage/help-pricelists';
 export * from './storage/help-prices';
 export * from './storage/help-projects';

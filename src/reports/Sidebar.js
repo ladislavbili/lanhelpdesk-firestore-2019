@@ -8,8 +8,9 @@ import SelectPage from '../components/SelectPage';
 import Filter from './components/filter';
 import ProjectEdit from './components/projects/projectEdit';
 import ProjectAdd from './components/projects/projectAdd';
+import MilestoneAdd from './components/milestones/milestoneAdd';
 import {toSelArr, sameStringForms} from '../helperFunctions';
-import {setProject, setFilter, storageHelpFiltersStart, storageHelpProjectsStart} from '../redux/actions';
+import {setProject, setMilestone, setFilter, storageHelpFiltersStart, storageHelpProjectsStart, storageHelpMilestonesStart} from '../redux/actions';
 
 import {sidebarSelectStyle} from '../scss/selectStyles';
 
@@ -28,6 +29,11 @@ let settings=[{title:'Projects',link:'projects'},
 {title:'SMTPs',link:'smtps'},
 ]
 
+const dashboard = {id:null,title:'Dashboard', label:'Dashboard',value:null};
+const addProject = {id:-1,title:'+ Add project', label:'+ Add project',value:null};
+const allMilestones = {id:null,title:'Any', label:'Any',value:null};
+const addMilestone = {id:-1,title:'+ Add milestone', label:'+ Add milestone',value:null};
+
 class Sidebar extends Component {
 	constructor(props) {
 		super(props);
@@ -35,12 +41,15 @@ class Sidebar extends Component {
 			openAddStatusModal: false,
 			openAddTaskModal: false,
 			openProjectAdd: false,
+			openMilestoneAdd: false,
 			isColumn: false,
 			filters:[],
 			search: '',
 			activeTab:0,
-			projects:[{id:-1,title:'+ Add project',body:'add', label:'+ Add project',value:null},{id:null,title:'Dashboard',body:'dashboard', label:'Dashboard',value:null}],
-			project:{id:null,title:'Dashboard',body:'dashboard', label:'Dashboard',value:null},
+			projects:[dashboard,addProject],
+			project:dashboard,
+			milestones:[allMilestones,addMilestone],
+			milestone:allMilestones,
 			filterID:null,
 			filterData:null,
 
@@ -53,10 +62,17 @@ class Sidebar extends Component {
 			this.setState({filters:props.filters})
 		}
 		if(!sameStringForms(props.projects,this.props.projects)){
-			let project = toSelArr([{id:null,title:'Dashboard', body:'dashboard',}].concat(props.projects)).find((item)=>item.id===props.project);
+			let project = toSelArr([dashboard].concat(props.projects)).find((item)=>item.id===props.project);
 			this.setState({
-				projects:toSelArr([{id:-1,title:'+ Add project',body:'add'}, {id:null,title:'Dashboard', body:'dashboard',}].concat(props.projects)),
-				project:project?project:{id:null,title:'Dashboard', body:'dashboard', label:'Dashboard', value:null}
+				projects:toSelArr([dashboard].concat(props.projects).concat([addProject])),
+				project:project?project:dashboard
+			});
+		}
+		if(!sameStringForms(props.milestones,this.props.milestones)){
+			let milestone = toSelArr([allMilestones].concat(props.milestones)).find((item)=>item.id===props.milestone);
+			this.setState({
+				milestones:toSelArr([allMilestones].concat(props.milestones).concat([addMilestone])),
+				milestone:milestone?milestone:dashboard
 			});
 		}
 	}
@@ -66,8 +82,16 @@ class Sidebar extends Component {
 			this.props.storageHelpProjectsStart();
 		}
 		this.setState({
-			projects:toSelArr([{id:-1,title:'+ Add project',body:'add', label:'+ Add project',value:null}, {id:null,title:'Dashboard', body:'dashboard',}].concat(this.props.projects)),
-			project:toSelArr([{id:null,title:'Dashboard', body:'dashboard'}].concat(this.props.projects)).find((item)=>item.id===this.props.project)
+			projects:toSelArr([dashboard].concat(this.props.projects).concat([addProject])),
+			project:toSelArr([dashboard].concat(this.props.projects)).find((item)=>item.id===this.props.project)
+		});
+
+		if(!this.props.milestonesActive){
+			this.props.storageHelpMilestonesStart();
+		}
+		this.setState({
+			milestones:toSelArr([allMilestones].concat(this.props.milestones).concat([addMilestone])),
+			milestone:toSelArr([allMilestones].concat(this.props.milestones)).find((item)=>item.id===this.props.milestone)
 		});
 
 
@@ -102,8 +126,9 @@ class Sidebar extends Component {
 									if (e.id === -1) {
 										this.setState({openProjectAdd: true})
 									} else {
-										this.setState({project:e});
+										this.setState({project:e,milestone:allMilestones});
 										this.props.setProject(e.value);
+										this.props.setMilestone(null);
 									}
 								}}
 								components={{
@@ -115,8 +140,29 @@ class Sidebar extends Component {
 								}}
 								/>
 						</li>
-
 						<hr/>
+							{ this.props.project!==null && this.props.project!==-1 && <li>
+								<Select
+									options={this.state.milestones.filter((milestone)=> milestone.id===-1|| milestone.id===null|| milestone.project===this.props.project)}
+									value={this.state.milestone}
+									styles={sidebarSelectStyle}
+									onChange={e => {
+										if (e.id === -1) {
+											this.setState({openMilestoneAdd: true})
+										} else {
+											this.setState({milestone:e});
+											this.props.setMilestone(e.value);
+										}
+									}}
+									components={{
+										DropdownIndicator: ({ innerProps, isDisabled }) =>
+										<div style={{marginTop: "-15px"}}>
+											<i className="fa fa-folder-open" style={{position:'absolute', left:15, color: "#212121"}}/>
+											<i className="fa fa-chevron-down" style={{position:'absolute', right:15, color: "#212121"}}/>
+										</div>,
+									}}
+									/>
+							</li>}
 						{ this.state.openProjectAdd &&
 								<ProjectAdd close={() => this.setState({openProjectAdd: false})}/>
 						}
@@ -124,7 +170,9 @@ class Sidebar extends Component {
 							this.state.projects.map((item)=>item.id).includes(this.state.project.id) &&
 							<ProjectEdit item={this.state.project} triggerChange={()=>{this.setState({projectChangeDate:(new Date()).getTime()})}}/>
 						}
-
+						{ this.state.openMilestoneAdd &&
+							<MilestoneAdd close={() => this.setState({openMilestoneAdd: false})}/>
+						}
 						<div
 							className="sidebar-btn"
 							>
@@ -209,11 +257,12 @@ class Sidebar extends Component {
 			);
 		}
 	}
-	const mapStateToProps = ({ filterReducer,storageHelpFilters, storageHelpProjects }) => {
+	const mapStateToProps = ({ filterReducer,storageHelpFilters, storageHelpProjects, storageHelpMilestones }) => {
     const { project } = filterReducer;
 		const { filtersActive, filters } = storageHelpFilters;
 		const { projectsActive, projects } = storageHelpProjects;
-    return { project,filtersActive,filters,projectsActive,projects };
+		const { milestonesActive, milestones } = storageHelpMilestones;
+    return { project,filtersActive,filters,projectsActive,projects, milestonesActive, milestones };
   };
 
-  export default connect(mapStateToProps, { setProject,setFilter, storageHelpFiltersStart, storageHelpProjectsStart })(Sidebar);
+  export default connect(mapStateToProps, { setProject, setMilestone, setFilter, storageHelpFiltersStart, storageHelpProjectsStart, storageHelpMilestonesStart })(Sidebar);

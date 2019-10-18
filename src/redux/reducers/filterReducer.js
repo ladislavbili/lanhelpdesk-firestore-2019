@@ -1,4 +1,4 @@
-import {SET_FILTER, SET_SEARCH, SET_PROJECT,SET_COMPANY} from '../types'
+import {SET_FILTER, SET_SEARCH, SET_PROJECT,SET_COMPANY, SET_MILESTONE} from '../types'
 
 const initialState = {
   filter: {
@@ -17,6 +17,7 @@ const initialState = {
   },
   search:'',
   project:null,
+  milestone:null,
   company:null,
 };
 
@@ -31,6 +32,12 @@ export default function filterReducer(state = initialState, action) {
       return {
         ...state,
         search: action.search,
+      };
+
+    case SET_MILESTONE:
+      return {
+        ...state,
+        milestone: action.milestone,
       };
     case SET_PROJECT:
       return {

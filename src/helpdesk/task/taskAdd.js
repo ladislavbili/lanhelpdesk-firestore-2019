@@ -17,6 +17,7 @@ import classnames from "classnames";
 import {invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
 
 const oneDay = 24*60*60*1000;
+const noMilestone = {id:null,value:null,title:'None',label:'None'};
 
 const noDef={
 	status:{def:false,fixed:false, value: null},
@@ -40,6 +41,7 @@ export default class TaskAdd extends Component{
 			taskWorks:[],
 			subtasks:[],
 			taskMaterials:[],
+			milestones:[noMilestone],
 			allTags:[],
 			taskTypes:[],
 			hidden:true,
@@ -58,6 +60,7 @@ export default class TaskAdd extends Component{
 			pendingDate:"",
 			reminder:null,
 			project:null,
+			milestone:noMilestone,
 			tags:[],
 			pausal:{value:true,label:'Pausal'},
 			overtime:{value:false,label:'Nie'},
@@ -95,8 +98,7 @@ export default class TaskAdd extends Component{
 			closeDate = isNaN(new Date(this.state.closeDate).getTime()) ? (new Date()).getTime() : new Date(this.state.closeDate).getTime()
 		}
 
-		database.collection('metadata').doc('0').get().then((taskMeta)=>{
-			let newID = (parseInt(taskMeta.data().taskLastID)+1)+"";
+			let newID = (parseInt(this.props.newID)+1)+"";
 			let body = {
 				title: this.state.title,
 				company: this.state.company?this.state.company.id:null,
@@ -110,6 +112,7 @@ export default class TaskAdd extends Component{
 				statusChange:toCentralTime(new Date().getTime()),
 				project: this.state.project?this.state.project.id:null,
 				pausal: this.state.pausal.value,
+				milestone: this.state.milestone.value,
 				overtime: this.state.overtime.value,
 				tags: this.state.tags.map((item)=>item.id),
 				type: this.state.type?this.state.type.id:null,
@@ -127,12 +130,12 @@ export default class TaskAdd extends Component{
 				delete item['id'];
 				rebase.addToCollection('help-task_materials',{task:newID,...item});
 			})
-
+			/*
 			this.state.subtasks.forEach((item)=>{
 				delete item['id'];
 				rebase.addToCollection('help-task_subtasks',{task:newID,...item});
 			})
-
+			*/
 			if(this.state.repeat !==null){
 				rebase.addToCollection('/help-repeats', {
 					...this.state.repeat,
@@ -162,6 +165,7 @@ export default class TaskAdd extends Component{
 					closeDate:'',
 					pendingDate:'',
 					project:null,
+					milestone:noMilestone,
 					pausal:{value:true,label:'Pausal'},
 					overtime:{value:false,label:'Nie'},
 					taskWorks:[],
@@ -172,7 +176,6 @@ export default class TaskAdd extends Component{
 				this.props.closeModal();
 				this.props.history.push('/helpdesk/taskList/i/all/'+newID);
 			});
-		})
 	}
 
 
@@ -224,6 +227,7 @@ export default class TaskAdd extends Component{
 				companies: this.props.companies,
 				workTypes: this.props.workTypes,
 				taskTypes: this.props.taskTypes,
+				milestones:this.props.milestones,
 				allTags: this.props.allTags,
 				units: this.props.units,
 				defaultUnit: this.props.defaultUnit,
@@ -235,6 +239,7 @@ export default class TaskAdd extends Component{
 				deadline: this.props.task ? this.props.task.deadline : '',
 				pendingDate: this.props.task ? this.props.task.pendingDate : '',
 				closeDate: this.props.task ? this.props.task.closeDate : '',
+				milestone: this.props.task? this.props.task.milestone : noMilestone,
 				pausal: this.props.task ? this.props.task.pausal : {value:true,label:'Pausal'},
 				overtime: this.props.task ? this.props.task.overtime : {value:false,label:'Nie'},
 				statusChange: this.props.task ? this.props.task.statusChange : null,
@@ -250,12 +255,12 @@ export default class TaskAdd extends Component{
 						delete w['fake'];
 						delete w['task'];
 						return {...w, id:this.getNewID()};})
-					 : [],
+					 : [],/*
 			 subtasks: this.props.task ? this.props.task.subtasks.map(s => {
 						delete s['fake'];
 						delete s['task'];
 						return {...s, id:this.getNewID()};})
-					 : [],
+					 : [],*/
 				taskMaterials: this.props.task ? this.props.task.taskMaterials.map(m => {
 						delete m['fake'];
 						delete m['task'];
@@ -383,7 +388,7 @@ export default class TaskAdd extends Component{
 									<div className="col-9">
 										<Select
 											value={this.state.project}
-											onChange={(project)=>this.setState({project},()=>this.setDefaults(project.id, true))}
+											onChange={(project)=>this.setState({project,milestone:noMilestone},()=>this.setDefaults(project.id, true))}
 											options={this.state.projects}
 											styles={invisibleSelectStyleNoArrow}
 											/>
@@ -477,6 +482,20 @@ export default class TaskAdd extends Component{
 								}}
 								columns={true}
 								/>
+								<div className="row p-r-10">
+									<Label className="col-3 col-form-label">Milestone</Label>
+									<div className="col-9">
+										<Select
+											value={this.state.milestone}
+											onChange={(milestone)=> {
+												this.setState({milestone});
+												}
+											}
+											options={this.state.milestones.filter((milestone)=>milestone.id===null || (this.state.project!== null && milestone.project===this.state.project.id))}
+											styles={invisibleSelectStyleNoArrow}
+											/>
+									</div>
+								</div>
 						</div>
 
 					</div>
@@ -724,7 +743,7 @@ export default class TaskAdd extends Component{
 
 							<button
 								className="btn pull-right"
-								disabled={this.state.title==="" || this.state.status===null || this.state.project === null || this.state.company === null || this.state.saving || this.props.loading}
+								disabled={this.state.title==="" || this.state.status===null || this.state.project === null || this.state.company === null || this.state.saving || this.props.loading||this.props.newID===null}
 								onClick={this.submitTask.bind(this)}
 								> Add
 							</button>

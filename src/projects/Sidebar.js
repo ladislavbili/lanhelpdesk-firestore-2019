@@ -113,9 +113,8 @@ export default class Sidebar extends Component {
 															</div>
 														</NavItem>
 												)
-											} else {
-												return null
-											}
+												}
+												return null;
 										})
 									}
 								</div>

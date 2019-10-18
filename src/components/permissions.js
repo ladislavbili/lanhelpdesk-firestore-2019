@@ -6,7 +6,7 @@ import {selectStyle} from "../scss/selectStyles";
 
 import {rebase} from '../index';
 
-export default class Permits extends Component {
+export default class Permissions extends Component {
 	constructor(props) {
 		super();
 		this.state = {

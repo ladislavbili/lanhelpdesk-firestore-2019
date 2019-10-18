@@ -127,11 +127,13 @@ class TasksIndex extends Component {
 			(filter.closeDateTo===''||filter.closeDateTo===undefined||task.closeDate <= filter.closeDateTo) &&
 			(filter.pendingDateFrom===''||filter.pendingDateFrom===undefined||task.pendingDate >= filter.pendingDateFrom) &&
 			(filter.pendingDateTo===''||filter.pendingDateTo===undefined||task.pendingDate <= filter.pendingDateTo) &&
-			(this.props.project===null||(task.project && task.project.id===this.props.project))
+			(this.props.project===null||(task.project && task.project.id===this.props.project))&&
+			//(this.props.currentUser.userData.isAdmin||(task.project && task.project.permissions.some((permission)=>permission.user === this.props.currentUser.id) && task.project.permissions.find((permission)=>permission.user === this.props.currentUser.id).read))&&
+			(this.props.milestone===null||((task.milestone)&& task.milestone === this.props.milestone))
 		})
 	}
-
 	render() {
+		console.log(this.props.currentUser);
 		let link='';
 		if(this.props.match.params.hasOwnProperty('listID')){
 			link = '/helpdesk/taskList/i/'+this.props.match.params.listID;
@@ -237,8 +239,8 @@ class TasksIndex extends Component {
 	}
 }
 
-const mapStateToProps = ({ filterReducer, taskReducer, userReducer, storageCompanies, storageHelpTags, storageUsers, storageHelpProjects, storageHelpStatuses,storageHelpTasks,storageHelpFilters }) => {
-	const { project, filter } = filterReducer;
+const mapStateToProps = ({ userReducer, filterReducer, taskReducer, storageCompanies, storageHelpTags, storageUsers, storageHelpProjects, storageHelpStatuses,storageHelpTasks,storageHelpFilters }) => {
+	const { project, milestone, filter } = filterReducer;
 	const { orderBy, ascending } = taskReducer;
 
 	const { companiesActive, companies } = storageCompanies;
@@ -249,7 +251,7 @@ const mapStateToProps = ({ filterReducer, taskReducer, userReducer, storageCompa
 	const { tasksActive, tasks } = storageHelpTasks;
 	const { filtersActive, filters } = storageHelpFilters;
 
-	return { project, filter,orderBy,ascending, currentUser:userReducer,companiesActive, companies, tagsActive, tags, usersActive, users, projectsActive, projects, statusesActive, statuses, tasksActive, tasks, filtersActive, filters };
+	return { project, milestone, filter,orderBy,ascending, currentUser:userReducer,companiesActive, companies, tagsActive, tags, usersActive, users, projectsActive, projects, statusesActive, statuses, tasksActive, tasks, filtersActive, filters };
 };
 
 export default connect(mapStateToProps, { setTasksOrderBy, setTasksAscending ,storageCompaniesStart,storageHelpTagsStart,storageUsersStart,storageHelpProjectsStart,storageHelpStatusesStart,storageHelpTasksStart, storageHelpFiltersStart})(TasksIndex);

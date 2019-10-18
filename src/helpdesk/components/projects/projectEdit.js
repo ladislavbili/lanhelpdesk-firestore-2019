@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import { Modal, ModalBody, ModalFooter, Button, FormGroup, Label, Input } from 'reactstrap';
 import { connect } from "react-redux";
-import {storageHelpStatusesStart, storageHelpTagsStart, storageUsersStart, storageHelpTaskTypesStart, storageCompaniesStart, storageHelpProjectsStart, setProject, storageHelpTasksStart} from '../../redux/actions';
-import {rebase, database} from '../../index';
+import {storageHelpStatusesStart, storageHelpTagsStart, storageUsersStart, storageHelpTaskTypesStart, storageCompaniesStart, storageHelpProjectsStart, setProject, storageHelpTasksStart} from '../../../redux/actions';
+import {rebase, database} from '../../../index';
 import firebase from 'firebase';
-import {toSelArr, sameStringForms, snapshotToArray} from '../../helperFunctions';
-import {invisibleSelectStyle} from '../../scss/selectStyles';
-import Permits from "../../components/permissions";
+import {toSelArr, sameStringForms, snapshotToArray} from '../../../helperFunctions';
+import {invisibleSelectStyle} from '../../../scss/selectStyles';
+import Permissions from "./permissions";
 
 const noDef={
 	status:{def:false,fixed:false, value: null},
@@ -29,6 +29,7 @@ class ProjectEdit extends Component{
       users:[],
       types:[],
       companies:[],
+			permissions:[],
 
       ...noDef,
       saving: false,
@@ -110,10 +111,17 @@ class ProjectEdit extends Component{
 		let type = types.find(item=> project.def && item.id===project.def.type.value);
 		let requester = users.find(item=> project.def && item.id===project.def.requester.value);
 		let company = companies.find(item=> project.def && item.id===project.def.company.value);
-
+		let permissions = project.permissions?project.permissions:[];
+		permissions = permissions.map((permission)=>{
+			return {
+				...permission,
+				user:users.find((user)=>user.id===permission.user)
+			}
+		})
 		this.setState({
 			title:project.title,
 			description:project.description?project.description:'',
+			permissions,
 
 			status:status?{value:status,def:project.def.status.def,fixed:project.def.status.fixed}:{def:false,fixed:false, value: null},
 			tags:project.def?{value:tags,def:project.def.tags.def,fixed:project.def.tags.fixed}:{def:false,fixed:false, value: []},
@@ -125,12 +133,12 @@ class ProjectEdit extends Component{
 
 	}
 
-  setData(props){
+	setData(props){
 		if(!this.storageLoaded(props)){
 			return;
 		}
 
-    this.setState({
+		this.setState({
       statuses:toSelArr(props.statuses),
       allTags: toSelArr(props.tags),
       users: toSelArr(props.users,'email'),
@@ -202,9 +210,26 @@ class ProjectEdit extends Component{
                 <Input type="textarea" className="form-control" id="body" placeholder="Zadajte text" value={this.state.description} onChange={(e) => this.setState({description: e.target.value})}/>
               </FormGroup>
 
-              {false &&   <Permits id={this.props.item.id} view={this.props.item.view} edit={this.props.item.edit} permissions={this.props.item.permissions} db="help-projects" />}
+              <Permissions
+								addUser={(user)=>{
+									this.setState({
+										permissions:[...this.state.permissions,{user,read:true,write:false,delete:false}]
+									})
+								}}
+								givePermission={(user,permission)=>{
+									let permissions=[...this.state.permissions];
+									let index = permissions.findIndex((permission)=>permission.user.id===user.id);
+									let item = permissions[index];
+									item[permission]=!item[permission];
+									if(!item.read && !item.write && !item.delete){
+										permissions.splice(index,1);
+									}
+									this.setState({permissions});
+								}}
+								permissions={this.state.permissions}
+								/>
 
-              <h3 className="m-t-20"> DEMO - Default values </h3>
+              <h3 className="m-t-20"> Default values </h3>
 
                 <table className="table">
                   <thead>
@@ -375,11 +400,19 @@ class ProjectEdit extends Component{
                       type:this.state.type.value?{...this.state.type,value:this.state.type.value.id}:{def:false,fixed:false, value: null},
                       requester:this.state.requester.value?{...this.state.requester,value:this.state.requester.value.id}:{def:false,fixed:false, value: null},
                       company:this.state.company.value?{...this.state.company,value:this.state.company.value.id}:{def:false,fixed:false, value: null}
-                    }
+                    },
+										permissions:this.state.permissions.map((permission)=>{
+											return {
+												...permission,
+												user:permission.user.id
+											}
+										})
                   };
                   rebase.updateDoc(`/help-projects/${this.props.item.id}`, body)
-                        .then(()=>{this.setState({saving:false, opened: false})});
-                        this.props.triggerChange();
+                        .then(()=>{
+													this.setState({saving:false, opened: false});
+													this.props.triggerChange();
+											});
               }}>
                 {(this.state.saving?'Saving...':'Save project')}
               </Button>
