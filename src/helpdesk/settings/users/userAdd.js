@@ -14,6 +14,7 @@ class UserAdd extends Component{
   constructor(props){
     super(props);
     this.state={
+      isAdmin:false,
       username:'',
       name:'',
       surname:'',
@@ -48,6 +49,10 @@ class UserAdd extends Component{
       <div className="full-height card-box scrollable fit-with-header-and-commandbar">
         <div className="">
           <FormGroup>
+            <Label for="isAdmin">Admin</Label>
+            <Input type="checkbox" id="isAdmin" placeholder="Enter username" checked={this.state.isAdmin} onChange={(e)=>this.setState({isAdmin:!this.state.isAdmin})} />
+          </FormGroup>
+          <FormGroup>
             <Label for="username">Username</Label>
             <Input type="text" name="username" id="username" placeholder="Enter username" value={this.state.username} onChange={(e)=>this.setState({username:e.target.value})} />
           </FormGroup>
@@ -80,7 +85,7 @@ class UserAdd extends Component{
           <Button className="btn" disabled={this.state.saving|| this.state.companies.length===0||!isEmail(this.state.email)||this.state.password.length < 6 } onClick={()=>{
               this.setState({saving:true});
               firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).then((user)=>{
-                let newUser = {username:this.state.username,name:this.state.name,surname:this.state.surname,email:this.state.email,company:this.state.company.id};
+                let newUser = {username:this.state.username,name:this.state.name,surname:this.state.surname,email:this.state.email,company:this.state.company.id,isAdmin:this.state.isAdmin};
                 rebase.addToCollection('/users', newUser, user.user.uid)
                 .then(()=>{
                   let company = {...this.state.companies[0],label:this.state.companies[0].title,value:this.state.companies[0].id};
@@ -90,6 +95,7 @@ class UserAdd extends Component{
                     surname:'',
                     email:'',
                     company,
+                    isAdmin:false,
                     saving:false
                   }, () => {
                     if (this.props.userAdd){

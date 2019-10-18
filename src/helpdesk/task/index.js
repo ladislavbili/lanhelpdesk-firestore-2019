@@ -128,12 +128,12 @@ class TasksIndex extends Component {
 			(filter.pendingDateFrom===''||filter.pendingDateFrom===undefined||task.pendingDate >= filter.pendingDateFrom) &&
 			(filter.pendingDateTo===''||filter.pendingDateTo===undefined||task.pendingDate <= filter.pendingDateTo) &&
 			(this.props.project===null||(task.project && task.project.id===this.props.project))&&
+			(this.props.currentUser.userData.isAdmin||(task.project && task.project.permissions.some((permission)=>permission.user === this.props.currentUser.id) && task.project.permissions.find((permission)=>permission.user === this.props.currentUser.id).read))&&
 			(this.props.milestone===null||((task.milestone)&& task.milestone === this.props.milestone))
-
 		})
 	}
-
 	render() {
+		console.log(this.props.currentUser);
 		let link='';
 		if(this.props.match.params.hasOwnProperty('listID')){
 			link = '/helpdesk/taskList/i/'+this.props.match.params.listID;
@@ -239,7 +239,7 @@ class TasksIndex extends Component {
 	}
 }
 
-const mapStateToProps = ({ filterReducer, taskReducer, userReducer, storageCompanies, storageHelpTags, storageUsers, storageHelpProjects, storageHelpStatuses,storageHelpTasks,storageHelpFilters }) => {
+const mapStateToProps = ({ userReducer, filterReducer, taskReducer, storageCompanies, storageHelpTags, storageUsers, storageHelpProjects, storageHelpStatuses,storageHelpTasks,storageHelpFilters }) => {
 	const { project, milestone, filter } = filterReducer;
 	const { orderBy, ascending } = taskReducer;
 
