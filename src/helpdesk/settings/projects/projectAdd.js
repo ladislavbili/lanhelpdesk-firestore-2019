@@ -249,6 +249,7 @@ class ProjectAdd extends Component{
                   let body = {
                     title: this.state.title,
                     description: this.state.description,
+										permissions:[{user:this.props.currentUser.id,read:true,write:true,delete:true}],
                     def:{
                       status:this.state.status.value?{...this.state.status,value:this.state.status.value.id}:{def:false,fixed:false, value: null},
                       tags:this.state.tags.value?{...this.state.tags,value:this.state.tags.value.map(item=>item.id)}:{def:false,fixed:false, value: []},
@@ -276,7 +277,7 @@ class ProjectAdd extends Component{
   }
 }
 
-const mapStateToProps = ({ storageHelpStatuses, storageHelpTags, storageUsers, storageHelpTaskTypes, storageCompanies }) => {
+const mapStateToProps = ({ storageHelpStatuses, storageHelpTags, storageUsers, storageHelpTaskTypes, storageCompanies, userReducer }) => {
 	const { statusesActive, statuses } = storageHelpStatuses;
 	const { tagsActive, tags } = storageHelpTags;
 	const { usersActive, users } = storageUsers;
@@ -286,7 +287,8 @@ const mapStateToProps = ({ storageHelpStatuses, storageHelpTags, storageUsers, s
 		tagsActive, tags,
 		usersActive, users,
 		taskTypesActive, taskTypes,
-		companiesActive, companies };
+		companiesActive, companies,
+		currentUser:userReducer };
 };
 
 export default connect(mapStateToProps, { storageHelpStatusesStart, storageHelpTagsStart, storageUsersStart, storageHelpTaskTypesStart, storageCompaniesStart })(ProjectAdd);

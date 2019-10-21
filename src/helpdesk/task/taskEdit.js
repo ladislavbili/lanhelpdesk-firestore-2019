@@ -100,7 +100,7 @@ class TaskEdit extends Component {
 
 			openUserAdd: false,
 			openCompanyAdd: false,
-
+			viewOnly:false,
 			print: false,
 		};
     this.submitTask.bind(this);
@@ -455,7 +455,7 @@ class TaskEdit extends Component {
 								<Button
 									key={status.id}
 									className="btn-link"
-									disabled={this.state.defaultFields.status.fixed}
+									disabled={this.state.defaultFields.status.fixed||this.state.viewOnly}
 									onClick={()=>{
 										if(status.action==='pending'){
 											this.setState({
@@ -485,11 +485,11 @@ class TaskEdit extends Component {
 						</div>
 						<div className="ml-auto center-hor">
 							<TaskPrint match={this.props.match} {...this.state} isLoaded={this.state.extraDataLoaded && this.storageLoaded(this.props) && !this.state.loading} />
-							<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.deleteTask.bind(this)}>
+							{<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.deleteTask.bind(this)}>
 								<i
 									className="far fa-trash-alt"
 									/> Delete
-								</button>
+								</button>}
 								{/*<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.submitTask.bind(this)}>
 								<i
 								className="fas fa-save icon-M mr-3"
@@ -505,7 +505,7 @@ class TaskEdit extends Component {
 								<div className="row flex">
 									<h1 className="center-hor text-extra-slim">{taskID}: </h1>
 									<span className="center-hor flex m-r-15">
-							    	<input type="text" value={this.state.title} className="task-title-input text-extra-slim hidden-input" onChange={(e)=>this.setState({title:e.target.value},this.submitTask.bind(this))} placeholder="Enter task name" />
+							    	<input type="text" disabled={this.state.viewOnly} value={this.state.title} className="task-title-input text-extra-slim hidden-input" onChange={(e)=>this.setState({title:e.target.value},this.submitTask.bind(this))} placeholder="Enter task name" />
 									</span>
 									<div className="ml-auto center-hor">
 									<span className="label label-info" style={{backgroundColor:this.state.status && this.state.status.color?this.state.status.color:'white'}}>{this.state.status?this.state.status.title:'Neznámy status'}</span>
@@ -530,7 +530,7 @@ class TaskEdit extends Component {
 											value={this.state.assignedTo}
 											placeholder="Zadajte poverených pracovníkov"
 											isMulti
-											isDisabled={this.state.defaultFields.assignedTo.fixed}
+											isDisabled={this.state.defaultFields.assignedTo.fixed||this.state.viewOnly}
 											onChange={(users)=>this.setState({assignedTo:users},this.submitTask.bind(this))}
 											options={this.state.users}
 											styles={invisibleSelectStyleNoArrow}
@@ -546,7 +546,7 @@ class TaskEdit extends Component {
 													<Select
 														placeholder="Zadajte typ"
 					                  value={this.state.type}
-														isDisabled={this.state.defaultFields.type.fixed}
+														isDisabled={this.state.defaultFields.type.fixed||this.state.viewOnly}
 														styles={invisibleSelectStyleNoArrow}
 					                  onChange={(type)=>this.setState({type},this.submitTask.bind(this))}
 					                  options={this.state.taskTypes}
@@ -558,6 +558,7 @@ class TaskEdit extends Component {
 												<div className="col-9">
 													<Select
 														placeholder="Zadajte projekt"
+														isDisabled={this.state.viewOnly}
 														value={this.state.project}
 														onChange={(project)=>this.setState({project, projectChangeDate:(new Date()).getTime(),milestone:noMilestone},()=>{this.submitTask();this.setDefaults(project.id)})}
 														options={this.state.projects}
@@ -566,6 +567,7 @@ class TaskEdit extends Component {
 												</div>
 											</div>
 											<Repeat
+												disabled={this.state.viewOnly}
 												taskID={taskID}
 												repeat={this.state.repeat}
 												submitRepeat={(repeat)=>{
@@ -591,7 +593,7 @@ class TaskEdit extends Component {
 													<Select
 														placeholder="Zadajte žiadateľa"
 														value={this.state.requester}
-														isDisabled={this.state.defaultFields.requester.fixed}
+														isDisabled={this.state.defaultFields.requester.fixed||this.state.viewOnly}
 														onChange={(requester)=>
 															{
 																if (requester.id === -1) {
@@ -614,7 +616,7 @@ class TaskEdit extends Component {
 													<Select
 														placeholder="Zadajte firmu"
 														value={this.state.company}
-														isDisabled={this.state.defaultFields.company.fixed}
+														isDisabled={this.state.defaultFields.company.fixed||this.state.viewOnly}
 														onChange={(company)=> {
 																if (company.id === -1) {
 																	this.setState({
@@ -634,6 +636,7 @@ class TaskEdit extends Component {
 												<Label className="col-3 col-form-label">Milestone</Label>
 												<div className="col-9">
 													<Select
+														disabled={this.state.viewOnly}
 														value={this.state.milestone}
 														onChange={(milestone)=> {
 															this.setState({milestone},this.submitTask.bind(this));
@@ -655,7 +658,7 @@ class TaskEdit extends Component {
 													className='form-control hidden-input'
 													placeholder="Pending date"
 													type="datetime-local"
-													disabled={!this.state.status || this.state.status.action!=='pending'}
+													disabled={!this.state.status || this.state.status.action!=='pending'||this.state.viewOnly}
 													value={this.state.pendingDate}
 													onChange={(e)=>{
 														this.setState({pendingDate:e.target.value},this.submitTask.bind(this))}
@@ -668,6 +671,7 @@ class TaskEdit extends Component {
 											<div className="col-9">
 												<DatePicker
 													selected={this.state.deadline}
+													disabled={this.state.viewOnly}
 													onChange={date => {
 														this.setState({ deadline: date },this.submitTask.bind(this));
 													}}
@@ -689,7 +693,7 @@ class TaskEdit extends Component {
 													className='form-control hidden-input'
 													placeholder="Close date"
 													type="datetime-local"
-													disabled={!this.state.status || this.state.status.action!=='close'}
+													disabled={!this.state.status || this.state.status.action!=='close'||this.state.viewOnly}
 													value={this.state.closeDate}
 													onChange={(e)=>{
 														this.setState({closeDate:e.target.value},this.submitTask.bind(this))}
@@ -705,6 +709,7 @@ class TaskEdit extends Component {
 								<div className="col-7">
 									<Select
 										value={this.state.overtime}
+										disabled={this.state.viewOnly}
 										styles={invisibleSelectStyleNoArrow}
 										onChange={(overtime)=>this.setState({overtime},this.submitTask.bind(this))}
 										options={[{value:true,label:'Áno'},{value:false,label:'Nie'}]}
@@ -719,6 +724,7 @@ class TaskEdit extends Component {
 										className='form-control'
 										placeholder="Status change date"
 										type="datetime-local"
+										disabled={this.state.viewOnly}
 										value={this.state.reminder}
 										onChange={(e)=>{
 											this.setState({reminder:e.target.value},this.submitTask.bind(this))}
@@ -739,7 +745,7 @@ class TaskEdit extends Component {
 										isMulti
 										onChange={(tags)=>this.setState({tags},this.submitTask.bind(this))}
 										options={this.state.allTags}
-										isDisabled={this.state.defaultFields.tags.fixed}
+										isDisabled={this.state.defaultFields.tags.fixed||this.state.viewOnly}
 										styles={invisibleSelectStyleNoArrow}
 										/>
 								</div>
@@ -769,6 +775,7 @@ class TaskEdit extends Component {
 
 
 							{this.state.toggleTab!=="3" && <ServicesExpenditure
+								disabled={this.state.viewOnly}
 								taskAssigned={this.state.assignedTo}
 								submitService={this.submitService.bind(this)}
 								updatePrices={(ids)=>{
@@ -809,6 +816,7 @@ class TaskEdit extends Component {
 								/>}
 
 								{this.state.toggleTab==='3' && <ServicesBudget
+									disabled={this.state.viewOnly}
 									taskAssigned={this.state.assignedTo}
 									submitService={this.submitService.bind(this)}
 									updatePrices={(ids)=>{
@@ -893,6 +901,7 @@ class TaskEdit extends Component {
 
 
 										<MaterialsExpenditure
+											disabled={this.state.viewOnly}
 											materials={taskMaterials}
 							        submitMaterial={this.submitMaterial.bind(this)}
 											updateMaterial={(id,newData)=>{
@@ -917,6 +926,7 @@ class TaskEdit extends Component {
 									<TabPane tabId="3">
 
 										<MaterialsBudget
+											disabled={this.state.viewOnly}
 											materials={taskMaterials}
 							        submitMaterial={this.submitMaterial.bind(this)}
 											updateMaterial={(id,newData)=>{
@@ -940,6 +950,7 @@ class TaskEdit extends Component {
 									</TabPane>
 									<TabPane tabId="4">
 										<Attachments
+											disabled={this.state.viewOnly}
 											attachments={this.state.attachments}
 											addAttachments={(newAttachments)=>{
 												let time = (new Date()).getTime();

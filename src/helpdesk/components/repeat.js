@@ -49,6 +49,9 @@ nová úloha vytvorená z opakovania je v stave new
 */
 
 toggleRepeat() {
+  if(this.props.disabled){
+    return;
+  }
   this.setState({open:true});
 }
 

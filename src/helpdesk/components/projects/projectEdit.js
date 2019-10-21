@@ -227,6 +227,8 @@ class ProjectEdit extends Component{
 									this.setState({permissions});
 								}}
 								permissions={this.state.permissions}
+								userID={this.props.currentUser.id}
+								isAdmin={this.props.currentUser.userData.isAdmin||true}
 								/>
 
               <h3 className="m-t-20"> Default values </h3>
@@ -403,7 +405,9 @@ class ProjectEdit extends Component{
                     },
 										permissions:this.state.permissions.map((permission)=>{
 											return {
-												...permission,
+												read:permission.read||permission.write||permission.delete,
+												write:permission.write||permission.delete,
+												delete:permission.delete,
 												user:permission.user.id
 											}
 										})
@@ -426,7 +430,7 @@ class ProjectEdit extends Component{
   }
 }
 
-const mapStateToProps = ({ storageHelpStatuses, storageHelpTags, storageUsers, storageHelpTaskTypes, storageCompanies, storageHelpProjects, storageHelpTasks }) => {
+const mapStateToProps = ({ storageHelpStatuses, storageHelpTags, storageUsers, storageHelpTaskTypes, storageCompanies, storageHelpProjects, storageHelpTasks,userReducer }) => {
 	const { statusesActive, statuses, statusesLoaded } = storageHelpStatuses;
 	const { tagsActive, tags, tagsLoaded } = storageHelpTags;
 	const { usersActive, users, usersLoaded } = storageUsers;
@@ -434,7 +438,9 @@ const mapStateToProps = ({ storageHelpStatuses, storageHelpTags, storageUsers, s
 	const { companiesActive, companies, companiesLoaded } = storageCompanies;
 	const { projectsActive, projects, projectsLoaded } = storageHelpProjects;
 	const { tasksActive, tasks, tasksLoaded } = storageHelpTasks;
-	return { statusesActive, statuses, statusesLoaded,
+	return {
+		currentUser:userReducer,
+		statusesActive, statuses, statusesLoaded,
 		tagsActive, tags, tagsLoaded,
 		usersActive, users, usersLoaded,
 		taskTypesActive, taskTypes, taskTypesLoaded,

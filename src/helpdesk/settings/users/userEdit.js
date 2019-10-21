@@ -8,7 +8,7 @@ import { isEmail} from '../../../helperFunctions';
 import {selectStyle} from "../../../scss/selectStyles";
 
 import { connect } from "react-redux";
-import {storageCompaniesStart,storageUsersStart} from '../../../redux/actions';
+import {storageCompaniesStart,storageUsersStart, setUserData} from '../../../redux/actions';
 import {toSelArr} from '../../../helperFunctions';
 
 class UserEdit extends Component{
@@ -125,8 +125,10 @@ class UserEdit extends Component{
 
           <Button className="btn" disabled={this.state.saving|| this.state.companies.length===0||!isEmail(this.state.email)} onClick={()=>{
             this.setState({saving:true});
-            rebase.updateDoc('/users/'+this.props.match.params.id, {username:this.state.username,name:this.state.name,surname:this.state.surname,email:this.state.email,company:this.state.company.id, isAdmin:this.state.isAdmin})
+            let body = {username:this.state.username,name:this.state.name,surname:this.state.surname,email:this.state.email,company:this.state.company.id, isAdmin:this.state.isAdmin}
+            rebase.updateDoc('/users/'+this.props.match.params.id, body)
               .then(()=>{
+                this.props.setUserData(body);
                 this.setState({saving:false})});
               }}>{this.state.saving?'Saving user...':'Save user'}</Button>
 
@@ -157,4 +159,4 @@ const mapStateToProps = ({ storageCompanies, storageUsers}) => {
   return { companiesActive, companies, companiesLoaded, usersActive, users, usersLoaded };
 };
 
-export default connect(mapStateToProps, { storageCompaniesStart,storageUsersStart })(UserEdit);
+export default connect(mapStateToProps, { storageCompaniesStart,storageUsersStart,setUserData })(UserEdit);

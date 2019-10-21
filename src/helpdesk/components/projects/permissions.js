@@ -65,7 +65,7 @@ class Permissions extends Component {
 							</tr>
 						</thead>
 
-						<tbody>	
+						<tbody>
 							{
 								this.props.permissions.map(permission =>
 								<tr key={permission.user.id}>
@@ -73,6 +73,7 @@ class Permissions extends Component {
 										<td className="table-checkbox t-a-c">
 											<input
 												type="checkbox"
+												disabled={this.props.userID===permission.user.id && !this.props.isAdmin}
 												checked={permission.read}
 												onChange={()=>this.props.givePermission(permission.user,'read')}
 											/>
@@ -81,6 +82,7 @@ class Permissions extends Component {
 										<td className="table-checkbox t-a-c">
 											<input
 												type="checkbox"
+												disabled={this.props.userID===permission.user.id && !this.props.isAdmin}
 												checked={permission.write}
 												onChange={()=>this.props.givePermission(permission.user,'write')}
 											/>
@@ -89,6 +91,7 @@ class Permissions extends Component {
 										<td className="table-checkbox t-a-c">
 											<input
 												type="checkbox"
+												disabled={this.props.userID===permission.user.id && !this.props.isAdmin}
 												checked={permission.delete}
 												onChange={()=>this.props.givePermission(permission.user,'delete')}
 											/>

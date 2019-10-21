@@ -30,13 +30,13 @@ export default class Navigation extends Component {
 
 					<PageHeader {...this.props}
 						showLayoutSwitch={true}
-						settings={
-						[{title:'Projects',link:'projects'},
+						settings={[
+						{title:'Users',link:'users'},
+						{title:'Companies',link:'companies'},
+						{title:'Projects',link:'projects'},
 						{title:'Statuses',link:'statuses'},
 						{title:'Units',link:'units'},
-						{title:'Companies',link:'companies'},
 						{title:'Work Type',link:'workTypes'},
-						{title:'Users',link:'users'},
 						{title:'Prices',link:'pricelists'},
 						{title:'Supplier',link:'suppliers'},
 						{title:'Tags',link:'tags'},

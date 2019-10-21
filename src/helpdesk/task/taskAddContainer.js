@@ -207,7 +207,7 @@ class TaskAddContainer extends Component{
   }
 }
 
-const mapStateToProps = ({ filterReducer, taskReducer, storageHelpStatuses, storageHelpProjects,storageUsers,storageCompanies,storageHelpWorkTypes,storageHelpUnits,storageHelpPrices,storageHelpPricelists,storageHelpTags,storageHelpTaskTypes, storageMetadata, storageHelpMilestones }) => {
+const mapStateToProps = ({userReducer, filterReducer, taskReducer, storageHelpStatuses, storageHelpProjects,storageUsers,storageCompanies,storageHelpWorkTypes,storageHelpUnits,storageHelpPrices,storageHelpPricelists,storageHelpTags,storageHelpTaskTypes, storageMetadata, storageHelpMilestones }) => {
 	const { project, filter } = filterReducer;
 	const { orderBy, ascending } = taskReducer;
 
@@ -224,7 +224,7 @@ const mapStateToProps = ({ filterReducer, taskReducer, storageHelpStatuses, stor
   const { metadataLoaded ,metadataActive, metadata } = storageMetadata;
   const { milestonesLoaded, milestonesActive, milestones } = storageHelpMilestones;
 
-	return { project, filter,orderBy,ascending,
+	return { project, filter,orderBy,ascending,currentUser:userReducer,
     statusesLoaded ,statusesActive, statuses,
     projectsLoaded ,projectsActive, projects,
     usersLoaded ,usersActive, users,

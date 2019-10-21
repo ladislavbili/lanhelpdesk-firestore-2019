@@ -6,7 +6,7 @@ import {storageHelpStatusesStart, storageHelpTagsStart, storageUsersStart, stora
 import {rebase} from '../../../index';
 import {toSelArr, sameStringForms} from '../../../helperFunctions';
 import {invisibleSelectStyle} from '../../../scss/selectStyles';
-import Permits from "../../../components/permissions";
+import Permissions from "../../components/projects/permissions";
 
 const noDef={
 	status:{def:false,fixed:false, value: null},
@@ -28,6 +28,7 @@ class ProjectEdit extends Component{
       users:[],
       types:[],
       companies:[],
+			permissions:[],
 
       ...noDef,
       saving: false,
@@ -103,10 +104,17 @@ class ProjectEdit extends Component{
 		let type = types.find(item=> project.def && item.id===project.def.type.value);
 		let requester = users.find(item=> project.def && item.id===project.def.requester.value);
 		let company = companies.find(item=> project.def && item.id===project.def.company.value);
-
+		let permissions = project.permissions?project.permissions:[];
+		permissions = permissions.map((permission)=>{
+			return {
+				...permission,
+				user:users.find((user)=>user.id===permission.user)
+			}
+		})
 		this.setState({
 			title:project.title,
 			description:project.description?project.description:'',
+			permissions,
 
 			status:status?{value:status,def:project.def.status.def,fixed:project.def.status.fixed}:{def:false,fixed:false, value: null},
 			tags:project.def?{value:tags,def:project.def.tags.def,fixed:project.def.tags.fixed}:{def:false,fixed:false, value: []},
@@ -134,7 +142,7 @@ class ProjectEdit extends Component{
 
   render(){
     return (
-      <div>
+      <div className="fit-with-header-and-commandbar scroll-visible">
         <FormGroup>
           <Label>Project name</Label>
           <Input type="text" className="from-control" placeholder="Enter project name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
@@ -145,7 +153,26 @@ class ProjectEdit extends Component{
           <Input type="textarea" className="form-control" id="body" placeholder="Zadajte text" value={this.state.description} onChange={(e) => this.setState({description: e.target.value})}/>
         </FormGroup>
 
-        {false &&   <Permits id={this.props.id} view={this.props.item.view} edit={this.props.item.edit} permissions={this.props.item.permissions} db="help-projects" />}
+				<Permissions
+					addUser={(user)=>{
+						this.setState({
+							permissions:[...this.state.permissions,{user,read:true,write:false,delete:false}]
+						})
+					}}
+					givePermission={(user,permission)=>{
+						let permissions=[...this.state.permissions];
+						let index = permissions.findIndex((permission)=>permission.user.id===user.id);
+						let item = permissions[index];
+						item[permission]=!item[permission];
+						if(!item.read && !item.write && !item.delete){
+							permissions.splice(index,1);
+						}
+						this.setState({permissions});
+					}}
+					permissions={this.state.permissions}
+					userID={this.props.currentUser.id}
+					isAdmin={this.props.currentUser.userData.isAdmin}
+					/>
 
         <h3 className="m-t-20"> DEMO - Default values </h3>
 
@@ -313,11 +340,18 @@ class ProjectEdit extends Component{
                 type:this.state.type.value?{...this.state.type,value:this.state.type.value.id}:{def:false,fixed:false, value: null},
                 requester:this.state.requester.value?{...this.state.requester,value:this.state.requester.value.id}:{def:false,fixed:false, value: null},
                 company:this.state.company.value?{...this.state.company,value:this.state.company.value.id}:{def:false,fixed:false, value: null}
-              }
+              },
+							permissions:this.state.permissions.map((permission)=>{
+								return {
+									read:permission.read||permission.write||permission.delete,
+									write:permission.write||permission.delete,
+									delete:permission.delete,
+									user:permission.user.id
+								}
+							})
             };
             rebase.updateDoc(`/help-projects/${this.props.id}`, body)
                   .then(()=>{this.setState({saving:false, opened: false})});
-                  this.props.triggerChange();
         }}>
           {(this.state.saving?'Saving...':'Save project')}
         </Button>
@@ -326,14 +360,16 @@ class ProjectEdit extends Component{
   }
 }
 
-const mapStateToProps = ({ storageHelpStatuses, storageHelpTags, storageUsers, storageHelpTaskTypes, storageCompanies, storageHelpProjects }) => {
+const mapStateToProps = ({ storageHelpStatuses, storageHelpTags, storageUsers, storageHelpTaskTypes, storageCompanies, storageHelpProjects, userReducer }) => {
 	const { statusesActive, statuses, statusesLoaded } = storageHelpStatuses;
 	const { tagsActive, tags, tagsLoaded } = storageHelpTags;
 	const { usersActive, users, usersLoaded } = storageUsers;
 	const { taskTypesActive, taskTypes, taskTypesLoaded } = storageHelpTaskTypes;
 	const { companiesActive, companies, companiesLoaded } = storageCompanies;
 	const { projectsActive, projects, projectsLoaded } = storageHelpProjects;
-	return { statusesActive, statuses, statusesLoaded,
+	return {
+		currentUser:userReducer,
+		statusesActive, statuses, statusesLoaded,
 		tagsActive, tags, tagsLoaded,
 		usersActive, users, usersLoaded,
 		taskTypesActive, taskTypes, taskTypesLoaded,

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import {rebase, database} from '../../index';
+import {rebase} from '../../index';
 import {toCentralTime } from '../../helperFunctions';
 import { Button, Label, TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
 
@@ -50,10 +50,10 @@ export default class TaskAdd extends Component{
 			title:'',
 			company:null,
 			workHours:'0',
-			requester:null,
+			requester:this.props.users?this.props.users.find((user)=>user.id===this.props.currentUser.id):null,
 			assignedTo:[],
 			description:'',
-			status:null,
+			status:this.props.statuses?this.props.statuses:null,
 			statusChange:null,
 			deadline:"",
 			closeDate:"",
@@ -66,7 +66,8 @@ export default class TaskAdd extends Component{
 			overtime:{value:false,label:'Nie'},
 			type:null,
 			repeat:null,
-			toggleTab: "1"
+			toggleTab: "1",
+			viewOnly:true
 		}
 		this.counter = 0;
 	}
@@ -103,7 +104,7 @@ export default class TaskAdd extends Component{
 				title: this.state.title,
 				company: this.state.company?this.state.company.id:null,
 				workHours: this.state.workHours,
-				requester: this.state.requester?this.state.requester.id:null,
+				requester: this.state.requester?this.state.requester.id:this.props.users.find((user)=>user.id===this.props.currentUser.id),
 				assignedTo: this.state.assignedTo.map((item)=>item.id),
 				description: this.state.description,
 				status: this.state.status?this.state.status.id:null,
@@ -154,17 +155,18 @@ export default class TaskAdd extends Component{
 					title:'',
 					company:null,
 					workHours:'0',
-					requester:null,
+					requester:this.props.users.find((user)=>user.id===this.props.currentUser.id),
 					assignedTo:[],
 					tags:[],
 					type:null,
 					description:'',
-					status:null,
+					status:this.props.statuses[0],
 					statusChange:null,
 					deadline:'',
 					closeDate:'',
 					pendingDate:'',
 					project:null,
+					viewOnly:true,
 					milestone:noMilestone,
 					pausal:{value:true,label:'Pausal'},
 					overtime:{value:false,label:'Nie'},
@@ -185,9 +187,8 @@ export default class TaskAdd extends Component{
 			this.setState({defaults:noDef});
 			return;
 		}
-
-		database.collection('help-projects').doc(projectID).get().then((project)=>{
-			let def = project.data().def;
+		let project = this.props.projects.find((proj)=>proj.id===projectID);
+		let def = project.def;
 			if(!def){
 				this.setState({defaults:noDef});
 				return;
@@ -201,23 +202,31 @@ export default class TaskAdd extends Component{
 			}
 
 			let state  = this.state;
+			let permission = project.permissions.find((permission)=>permission.user===this.props.currentUser.id);
 			this.setState({
 				assignedTo: def.assignedTo&& (def.assignedTo.fixed||def.assignedTo.def)? state.users.filter((item)=> def.assignedTo.value.includes(item.id)):[],
 				company: def.company&& (def.company.fixed||def.company.def)?state.companies.find((item)=> item.id===def.company.value):null,
 				requester: def.requester&& (def.requester.fixed||def.requester.def)?state.users.find((item)=> item.id===def.requester.value):null,
-				status: def.status&& (def.status.fixed||def.status.def)?state.statuses.find((item)=> item.id===def.status.value):null,
+				status: def.status&& (def.status.fixed||def.status.def)?state.statuses.find((item)=> item.id===def.status.value):state.statuses[0],
 				tags: def.tags&& (def.tags.fixed||def.tags.def)? state.allTags.filter((item)=> def.tags.value.includes(item.id)):[],
 				type: def.type && (def.type.fixed||def.type.def)?state.taskTypes.find((item)=> item.id===def.type.value):null,
-				project: state.projects.find((item)=>item.id===project.id),
+				project,
+				viewOnly: !this.props.currentUser.userData.isAdmin && !permission.write && !permission.delete,
 				defaults: def
 			});
-		});
 	}
 
 		setData(){
 			let status = this.props.statuses.find((item)=>item.title==='New');
 			if(!status){
 				status=this.props.statuses[0];
+			}
+
+			let permission = null;
+			if(this.props.task){
+				if(this.props.task.project){
+					permission = this.props.task.project.permissions.find((permission)=>permission.user===this.props.currentUser.id);
+				}
 			}
 
 			this.setState({
@@ -244,9 +253,10 @@ export default class TaskAdd extends Component{
 				overtime: this.props.task ? this.props.task.overtime : {value:false,label:'Nie'},
 				statusChange: this.props.task ? this.props.task.statusChange : null,
 				project: this.props.task ? this.props.task.project : null,
+				viewOnly: !this.props.currentUser.userData.isAdmin && (permission===null || (!permission.delete && !permission.write)),
 				company: this.props.task ? this.props.task.company : null,
 				workHours: this.props.task ? this.props.task.workHours : 0,
-				requester: this.props.task ? this.props.task.requester : null,
+				requester: this.props.task ? this.props.task.requester : this.props.users.find((user)=>user.id===this.props.currentUser.id),
 				assignedTo: this.props.task ? this.props.task.assignedTo : [],
 				repeat: this.props.task ? this.props.task.repeat : null,
 				type: this.props.task ? this.props.task.type : null,
@@ -274,7 +284,7 @@ export default class TaskAdd extends Component{
 		}
 
 		render(){
-
+			console.log(this.state.viewOnly);
 			let taskWorks= this.state.taskWorks.map((work)=>{
 				let finalUnitPrice=parseFloat(work.price);
 				if(work.extraWork){
@@ -318,7 +328,7 @@ export default class TaskAdd extends Component{
 							<Button
 								key={status.id}
 								className="btn-link"
-								disabled={this.state.defaults.status.fixed}
+								disabled={this.state.defaults.status.fixed||this.state.viewOnly}
 								onClick={()=>{
 									if(status.action==='pending'){
 										this.setState({
@@ -359,7 +369,7 @@ export default class TaskAdd extends Component{
 								<div className="f-1">
 									<Select
 										value={this.state.assignedTo}
-										isDisabled={this.state.defaults.assignedTo.fixed}
+										isDisabled={this.state.defaults.assignedTo.fixed||this.state.viewOnly}
 										isMulti
 										onChange={(users)=>this.setState({assignedTo:users})}
 										options={this.state.users}
@@ -376,7 +386,7 @@ export default class TaskAdd extends Component{
 									<div className="col-9">
 										<Select
 											value={this.state.type}
-											isDisabled={this.state.defaults.type.fixed}
+											isDisabled={this.state.defaults.type.fixed||this.state.viewOnly}
 											styles={invisibleSelectStyleNoArrow}
 											onChange={(type)=>this.setState({type})}
 											options={this.state.taskTypes}
@@ -388,8 +398,19 @@ export default class TaskAdd extends Component{
 									<div className="col-9">
 										<Select
 											value={this.state.project}
-											onChange={(project)=>this.setState({project,milestone:noMilestone},()=>this.setDefaults(project.id, true))}
-											options={this.state.projects}
+											onChange={(project)=>this.setState(
+												{project,
+													milestone:noMilestone,
+													viewOnly:!this.props.currentUser.userData.isAdmin && !project.permissions.find((permission)=>permission.user===this.props.currentUser.id).write&&!project.permissions.find((permission)=>permission.user===this.props.currentUser.id).delete
+												},()=>this.setDefaults(project.id, true))}
+											options={this.state.projects.filter((project)=>{
+												let curr = this.props.currentUser;
+												if(curr.userData.isAdmin){
+													return true;
+												}
+												let permission = project.permissions.find((permission)=>permission.user===curr.id);
+												return permission && permission.read;
+											})}
 											styles={invisibleSelectStyleNoArrow}
 											/>
 									</div>
@@ -402,7 +423,7 @@ export default class TaskAdd extends Component{
 											className='form-control hidden-input'
 											placeholder="Close date"
 											type="datetime-local"
-											disabled={!this.state.status||this.state.status.action!=='close'}
+											disabled={!this.state.status||this.state.status.action!=='close'||this.state.viewOnly}
 											value={this.state.closeDate}
 											onChange={(e)=>{
 												this.setState({closeDate:e.target.value})
@@ -418,7 +439,7 @@ export default class TaskAdd extends Component{
 									<div className="col-9">
 										<Select
 											value={this.state.requester}
-											isDisabled={this.state.defaults.requester.fixed}
+											isDisabled={this.state.defaults.requester.fixed||this.state.viewOnly}
 											onChange={(requester)=>this.setState({requester})}
 											options={this.state.users}
 											styles={invisibleSelectStyleNoArrow}
@@ -444,7 +465,7 @@ export default class TaskAdd extends Component{
 										<input
 											className='form-control hidden-input'
 											placeholder="Pending"
-											disabled={!this.state.status||this.state.status.action!=='pending'}
+											disabled={!this.state.status||this.state.status.action!=='pending'||this.state.viewOnly}
 											type="datetime-local"
 											value={this.state.pendingDate}
 											onChange={(e)=>{
@@ -464,6 +485,7 @@ export default class TaskAdd extends Component{
 										className='form-control hidden-input'
 										placeholder="Status change date"
 										type="datetime-local"
+										disabled={this.state.viewOnly}
 										value={this.state.deadline || ""}
 										onChange={(e)=>{
 											this.setState({deadline:e.target.value})}
@@ -474,6 +496,7 @@ export default class TaskAdd extends Component{
 							<Repeat
 								taskID={null}
 								repeat={this.state.repeat}
+								disabled={this.state.viewOnly}
 								submitRepeat={(repeat)=>{
 									this.setState({repeat:repeat})
 								}}
@@ -486,6 +509,7 @@ export default class TaskAdd extends Component{
 									<Label className="col-3 col-form-label">Milestone</Label>
 									<div className="col-9">
 										<Select
+											isDisabled={this.state.viewOnly}
 											value={this.state.milestone}
 											onChange={(milestone)=> {
 												this.setState({milestone});
@@ -508,7 +532,7 @@ export default class TaskAdd extends Component{
 							<div className="f-1 ">
 								<Select
 									value={this.state.tags}
-									isDisabled={this.state.defaults.tags.fixed}
+									isDisabled={this.state.defaults.tags.fixed||this.state.viewOnly}
 									isMulti
 									onChange={(tags)=>this.setState({tags})}
 									options={this.state.allTags}
@@ -518,6 +542,7 @@ export default class TaskAdd extends Component{
 						</div>
 
 						{!this.state.hidden && false && <Subtasks
+							disabled={this.state.viewOnly}
 							taskAssigned={this.state.assignedTo}
 							submitService={(newSubtask)=>{
 								this.setState({subtasks:[...this.state.subtasks,{id:this.getNewID(),...newSubtask}]});
@@ -543,7 +568,8 @@ export default class TaskAdd extends Component{
 						/>}
 
 
-						{this.state.toggleTab==="1" && <ServicesExpenditure
+						{this.state.toggleTab==="1" && !this.state.viewOnly && <ServicesExpenditure
+							disabled={this.state.viewOnly}
 							taskAssigned={this.state.assignedTo}
 							submitService={(newService)=>{
 								this.setState({taskWorks:[...this.state.taskWorks,{id:this.getNewID(),...newService}]});
@@ -579,6 +605,7 @@ export default class TaskAdd extends Component{
 							/>}
 
 							{this.state.toggleTab!=='1' && <ServicesBudget
+								disabled={this.state.viewOnly}
 								taskAssigned={this.state.assignedTo}
 								submitService={(newService)=>{
 									this.setState({taskWorks:[...this.state.taskWorks,{id:this.getNewID(),...newService}]});
@@ -615,7 +642,7 @@ export default class TaskAdd extends Component{
 
 						<hr className="m-b-15" style={{marginLeft: "-30px", marginRight: "-30px", marginTop: "-5px"}}/>
 
-						<Nav tabs className="b-0 m-b-22 m-l--10">
+						{!this.state.viewOnly && <Nav tabs className="b-0 m-b-22 m-l--10">
 								<NavItem>
 									<NavLink
 										className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "")}
@@ -632,11 +659,12 @@ export default class TaskAdd extends Component{
 										Rozpočet
 									</NavLink>
 								</NavItem>
-							</Nav>
+							</Nav>}
 
-							<TabContent activeTab={this.state.toggleTab}>
+							{!this.state.viewOnly && <TabContent activeTab={this.state.toggleTab}>
 								<TabPane tabId="1">
 									<MaterialsExpenditure
+										disabled={this.state.viewOnly}
 										materials={taskMaterials}
 										submitMaterial={(newMaterial)=>{
 											this.setState({taskMaterials:[...this.state.taskMaterials,{id:this.getNewID(),...newMaterial}]});
@@ -659,6 +687,7 @@ export default class TaskAdd extends Component{
 								</TabPane>
 								<TabPane tabId="2">
 									<MaterialsBudget
+										disabled={this.state.viewOnly}
 										materials={taskMaterials}
 										submitMaterial={(newMaterial)=>{
 											this.setState({taskMaterials:[...this.state.taskMaterials,{id:this.getNewID(),...newMaterial}]});
@@ -679,10 +708,11 @@ export default class TaskAdd extends Component{
 										match={{params:{taskID:null}}}
 									/>
 								</TabPane>
-							</TabContent>
+							</TabContent>}
 
 
 						{!this.state.hidden && false && <Services
+							disabled={this.state.viewOnly}
 							taskAssigned={this.state.assignedTo}
 							submitService={(newService)=>{
 								this.setState({taskWorks:[...this.state.taskWorks,{id:this.getNewID(),...newService}]});
@@ -718,6 +748,7 @@ export default class TaskAdd extends Component{
 							/>}
 
 							{!this.state.hidden && false && <Materials
+								disabled={this.state.viewOnly}
 								materials={taskMaterials}
 								submitMaterial={(newMaterial)=>{
 									this.setState({taskMaterials:[...this.state.taskMaterials,{id:this.getNewID(),...newMaterial}]});

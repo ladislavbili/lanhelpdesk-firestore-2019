@@ -16,12 +16,13 @@ import {setProject, setMilestone, setFilter, storageHelpFiltersStart, storageHel
 
 import {sidebarSelectStyle} from '../scss/selectStyles';
 
-let settings=[{title:'Projects',link:'projects'},
+let settings=[
+{title:'Users',link:'users'},
+{title:'Companies',link:'companies'},
+{title:'Projects',link:'projects'},
 {title:'Statuses',link:'statuses'},
 {title:'Units',link:'units'},
-{title:'Companies',link:'companies'},
 {title:'Work Type',link:'workTypes'},
-{title:'Users',link:'users'},
 {title:'Prices',link:'pricelists'},
 {title:'Supplier',link:'suppliers'},
 {title:'Tags',link:'tags'},
@@ -113,7 +114,14 @@ class Sidebar extends Component {
 						<div>
 						<li>
 							<Select
-								options={this.state.projects}
+								options={this.state.projects.filter((project)=>{
+									let curr = this.props.currentUser;
+									if((curr.userData && curr.userData.isAdmin)||(project.id===-1||project.id===null)){
+										return true;
+									}
+									let permission = project.permissions.find((permission)=>permission.user===curr.id);
+									return permission && permission.read;
+								})}
 								value={this.state.project}
 								styles={sidebarSelectStyle}
 								onChange={e => {
@@ -245,12 +253,12 @@ class Sidebar extends Component {
 			);
 		}
 	}
-	const mapStateToProps = ({ filterReducer,storageHelpFilters, storageHelpProjects, storageHelpMilestones }) => {
+	const mapStateToProps = ({ filterReducer,storageHelpFilters, storageHelpProjects, storageHelpMilestones, userReducer }) => {
     const { project, milestone } = filterReducer;
 		const { filtersActive, filters } = storageHelpFilters;
 		const { projectsActive, projects } = storageHelpProjects;
 		const { milestonesActive, milestones } = storageHelpMilestones;
-    return { project, milestone, filtersActive,filters,projectsActive,projects, milestonesActive, milestones };
+    return { project, milestone, filtersActive,filters,projectsActive,projects, milestonesActive, milestones, currentUser:userReducer };
   };
 
   export default connect(mapStateToProps, { setProject, setMilestone, setFilter, storageHelpFiltersStart, storageHelpProjectsStart, storageHelpMilestonesStart })(Sidebar);
