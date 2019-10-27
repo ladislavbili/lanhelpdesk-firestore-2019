@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
+import { connect } from "react-redux";
+import {testing} from '../helperFunctions';
 
 import Sidebar from './Sidebar';
 import PageHeader from '../components/PageHeader';
@@ -20,7 +22,7 @@ import TaskTypeList from './settings/taskTypes';
 import ImapList from './settings/imaps';
 import SMTPList from './settings/smtps';
 
-export default class Navigation extends Component {
+class Navigation extends Component {
 	render() {
 		return (
 			<div>
@@ -51,35 +53,43 @@ export default class Navigation extends Component {
 					<Route exact path="/helpdesk/taskList/i/:listID" component={TaskList} />
 					<Route exact path="/helpdesk/taskList/i/:listID/:taskID" component={TaskList} />
 
-					<Route exact path='/helpdesk/settings/statuses' component={StatusList} />
-          <Route exact path='/helpdesk/settings/statuses/:id' component={StatusList} />
-          <Route exact path='/helpdesk/settings/projects' component={ProjectList} />
-          <Route exact path='/helpdesk/settings/projects/:id' component={ProjectList} />
-          <Route exact path='/helpdesk/settings/units' component={UnitList} />
-          <Route exact path='/helpdesk/settings/units/:id' component={UnitList} />
-          <Route exact path='/helpdesk/settings/companies' component={CompanyList} />
-          <Route exact path='/helpdesk/settings/companies/:id' component={CompanyList} />
-          <Route exact path='/helpdesk/settings/workTypes' component={WorkTypeList} />
-          <Route exact path='/helpdesk/settings/workTypes/:id' component={WorkTypeList} />
-          <Route exact path='/helpdesk/settings/users' component={UserList} />
-          <Route exact path='/helpdesk/settings/users/:id' component={UserList} />
-          <Route exact path='/helpdesk/settings/pricelists' component={PriceList} />
-          <Route exact path='/helpdesk/settings/pricelists/:id' component={PriceList} />
-          <Route exact path='/helpdesk/settings/suppliers' component={SupplierList} />
-          <Route exact path='/helpdesk/settings/suppliers/:id' component={SupplierList} />
-          <Route exact path='/helpdesk/settings/supplierInvoices' component={SupplierInvoiceList} />
-          <Route exact path='/helpdesk/settings/supplierInvoices/:id' component={SupplierInvoiceList} />
-					<Route exact path='/helpdesk/settings/tags' component={TagList} />
-					<Route exact path='/helpdesk/settings/tags/:id' component={TagList} />
-					<Route exact path='/helpdesk/settings/taskTypes' component={TaskTypeList} />
-          <Route exact path='/helpdesk/settings/taskTypes/:id' component={TaskTypeList} />
-					<Route exact path='/helpdesk/settings/imaps' component={ImapList} />
-					<Route exact path='/helpdesk/settings/imaps/:id' component={ImapList} />
-					<Route exact path='/helpdesk/settings/smtps' component={SMTPList} />
-					<Route exact path='/helpdesk/settings/smtps/:id' component={SMTPList} />
+				{((this.props.currentUser.userData && this.props.currentUser.userData.isAdmin) || testing) && <div>
+						<Route exact path='/helpdesk/settings/statuses' component={StatusList} />
+	          <Route exact path='/helpdesk/settings/statuses/:id' component={StatusList} />
+	          <Route exact path='/helpdesk/settings/projects' component={ProjectList} />
+	          <Route exact path='/helpdesk/settings/projects/:id' component={ProjectList} />
+	          <Route exact path='/helpdesk/settings/units' component={UnitList} />
+	          <Route exact path='/helpdesk/settings/units/:id' component={UnitList} />
+	          <Route exact path='/helpdesk/settings/companies' component={CompanyList} />
+	          <Route exact path='/helpdesk/settings/companies/:id' component={CompanyList} />
+	          <Route exact path='/helpdesk/settings/workTypes' component={WorkTypeList} />
+	          <Route exact path='/helpdesk/settings/workTypes/:id' component={WorkTypeList} />
+	          <Route exact path='/helpdesk/settings/users' component={UserList} />
+	          <Route exact path='/helpdesk/settings/users/:id' component={UserList} />
+	          <Route exact path='/helpdesk/settings/pricelists' component={PriceList} />
+	          <Route exact path='/helpdesk/settings/pricelists/:id' component={PriceList} />
+	          <Route exact path='/helpdesk/settings/suppliers' component={SupplierList} />
+	          <Route exact path='/helpdesk/settings/suppliers/:id' component={SupplierList} />
+	          <Route exact path='/helpdesk/settings/supplierInvoices' component={SupplierInvoiceList} />
+	          <Route exact path='/helpdesk/settings/supplierInvoices/:id' component={SupplierInvoiceList} />
+						<Route exact path='/helpdesk/settings/tags' component={TagList} />
+						<Route exact path='/helpdesk/settings/tags/:id' component={TagList} />
+						<Route exact path='/helpdesk/settings/taskTypes' component={TaskTypeList} />
+	          <Route exact path='/helpdesk/settings/taskTypes/:id' component={TaskTypeList} />
+						<Route exact path='/helpdesk/settings/imaps' component={ImapList} />
+						<Route exact path='/helpdesk/settings/imaps/:id' component={ImapList} />
+						<Route exact path='/helpdesk/settings/smtps' component={SMTPList} />
+						<Route exact path='/helpdesk/settings/smtps/:id' component={SMTPList} />
+					</div>}
 				</div>
 			</div>
 		</div>
 	);
 }
 }
+
+const mapStateToProps = ({ userReducer}) => {
+	return { currentUser:userReducer };
+};
+
+export default connect(mapStateToProps, {  })(Navigation);

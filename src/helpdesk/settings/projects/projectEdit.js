@@ -171,7 +171,7 @@ class ProjectEdit extends Component{
 					}}
 					permissions={this.state.permissions}
 					userID={this.props.currentUser.id}
-					isAdmin={this.props.currentUser.userData.isAdmin}
+					isAdmin={this.props.currentUser.userData.isAgent}
 					/>
 
         <h3 className="m-t-20"> DEMO - Default values </h3>

@@ -84,6 +84,7 @@ export default class Prace extends Component {
 										<td className="table-checkbox">
 											<label className="custom-container">
 												<Input type="checkbox"
+													disabled={this.props.disabled}
 													checked={subtask.done} onChange={()=>{
 														this.props.updateSubtask(subtask.id,{done:!subtask.done})
 														}} />
@@ -94,6 +95,7 @@ export default class Prace extends Component {
 											<div>
 												<input
 													className="form-control hidden-input"
+													disabled={this.props.disabled}
 													value={
 														subtask.id === this.state.focusedSubtask
 														? this.state.editedSubtaskTitle
@@ -121,6 +123,7 @@ export default class Prace extends Component {
 									<td>
 										<input
 											type="number"
+											disabled={this.props.disabled}
 											className="form-control hidden-input h-30"
 											value={
 												subtask.id === this.state.focusedSubtask
@@ -158,6 +161,7 @@ export default class Prace extends Component {
 									<td>
 										<Select
 											value={subtask.workType}
+											isDisabled={this.props.disabled}
 											onChange={(workType)=>{
 												let price = workType.prices.find((item)=>this.props.company && item.pricelist===this.props.company.pricelist.id);
 												if(price === undefined){
@@ -172,13 +176,13 @@ export default class Prace extends Component {
 											/>
 									</td>
 									<td className="t-a-r">
-										<button className="btn btn-link waves-effect">
+										<button className="btn btn-link waves-effect" disabled={this.props.disabled}>
 											<i className="fa fa-arrow-up"  />
 										</button>
-										<button className="btn btn-link waves-effect">
+										<button className="btn btn-link waves-effect" disabled={this.props.disabled}>
 												<i className="fa fa-arrow-down"  />
 										</button>
-										<button className="btn btn-link waves-effect" onClick={()=>{
+										<button className="btn btn-link waves-effect" disabled={this.props.disabled} onClick={()=>{
 												if(window.confirm('Are you sure?')){
 													this.props.removeSubtask(subtask.id);
 												}
@@ -190,12 +194,13 @@ export default class Prace extends Component {
 								)
 							}
 
-							{!this.state.showAddItem &&
+							{!this.state.showAddItem && !this.props.disabled &&
 								<tr >
 									<td>
 									</td>
 									<td>
 										<button className="btn btn-table-add-item"
+											disabled={this.props.disabled}
 											onClick={()=>{
 											 this.setState({showAddItem: true});
 											}}>
@@ -205,9 +210,11 @@ export default class Prace extends Component {
 								</tr>
 							}
 
-				{this.state.showAddItem &&			<tr>
+				{this.state.showAddItem && !this.props.disabled && <tr>
 								<td>
-									<button className="btn btn-link waves-effect" onClick={()=>{
+									<button className="btn btn-link waves-effect"
+										disabled={this.props.disabled}
+										onClick={()=>{
 											this.setState({showAddItem: false})
 										}}>
 										<i className="fa fa-times"  />
@@ -215,6 +222,7 @@ export default class Prace extends Component {
 								</td>
 								<td>
 									<input
+										disabled={this.props.disabled}
 										type="text"
 										className="form-control"
 										id="inlineFormInput"
@@ -225,6 +233,7 @@ export default class Prace extends Component {
 								</td>
 								<td>
 									<input
+										disabled={this.props.disabled}
 										type="number"
 										value={this.state.newQuantity}
 										onChange={(e)=>this.setState({newQuantity:e.target.value})}
@@ -235,6 +244,7 @@ export default class Prace extends Component {
 								</td>
 								{false && <td>
 									<Select
+										isDisabled={this.props.disabled}
 										value={this.state.newAssigned}
 										onChange={(newAssigned)=>{
 											this.setState({newAssigned})
@@ -246,6 +256,7 @@ export default class Prace extends Component {
 								</td>}
 								<td>
 									<Select
+										isDisabled={this.props.disabled}
 										value={this.state.workType}
 										onChange={(workType)=>{
 											let price=0;
@@ -264,7 +275,7 @@ export default class Prace extends Component {
 								</td>
 								<td className="t-a-r">
 									<button className="btn btn-link waves-effect"
-										disabled={this.state.newWorkType===null}
+										disabled={this.state.newWorkType===null||this.props.disabled}
 										onClick={()=>{
 											let body={
 												discount:this.state.newDiscount!==''?this.state.newDiscount:0,
@@ -297,7 +308,7 @@ export default class Prace extends Component {
 				</div>
 				<div className="row justify-content-end">
 					<div className="col-md-3">
-						<p className="text-right"  style={{marginTop: (this.state.showAddItem ? "" : "-45px")}}>
+						<p className="text-right"  style={{marginTop: ((this.state.showAddItem || this.props.disabled) ? "" : "-45px")}}>
 							<b>Sub-total:</b>
 							{(this.props.subtasks.map((subtask)=>parseFloat(subtask.totalPrice)).reduce((acc, cur)=> acc+cur,0)).toFixed(2)}
 						</p>

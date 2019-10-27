@@ -94,6 +94,7 @@ export default class Rozpocet extends Component {
 											{false && <td className="table-checkbox t-a-r">
 												<label className="custom-container">
 			                    <Input type="checkbox"
+														disabled={this.props.disabled}
 														checked={this.state.selectedIDs.includes(material.id)}
 														onChange={()=>{
 															if(!this.state.selectedIDs.includes(material.id)){
@@ -110,6 +111,7 @@ export default class Rozpocet extends Component {
 											</td>}
 											<td>
 													<input
+														disabled={this.props.disabled}
 														className="form-control hidden-input"
 														value={
 															material.id === this.state.focusedMaterial
@@ -138,6 +140,7 @@ export default class Rozpocet extends Component {
 											</td>
 											<td>
 												<input
+													disabled={this.props.disabled}
 													type="number"
 													className="form-control hidden-input h-30"
 													value={
@@ -167,6 +170,7 @@ export default class Rozpocet extends Component {
 											</td>
 											<td>
 												<Select
+													isDisabled={this.props.disabled}
 													value={material.unit}
 													onChange={(unit)=>{
 														this.props.updateMaterial(material.id,{unit})
@@ -194,6 +198,7 @@ export default class Rozpocet extends Component {
 											</td>
 										<td className="table-highlight-background">
 												<input
+													disabled={this.props.disabled}
 													type="number"
 													className="form-control hidden-input h-30"
 													value={
@@ -223,14 +228,15 @@ export default class Rozpocet extends Component {
 											</td>
 
 											<td className="t-a-r">
-												<button className="btn btn-link waves-effect">
+												<button className="btn btn-link waves-effect" disabled={this.props.disabled}>
 													<i className="fa fa-arrow-up"  />
 												</button>
-												<button className="btn btn-link waves-effect">
+												<button className="btn btn-link waves-effect" disabled={this.props.disabled}>
 														<i className="fa fa-arrow-down"  />
 												</button>
 
 												<button className="btn btn-link waves-effect"
+													disabled={this.props.disabled}
 													onClick={()=>{
 														if(window.confirm('Are you sure?')){
 															this.props.removeMaterial(material.id);
@@ -244,10 +250,11 @@ export default class Rozpocet extends Component {
 										)
 									}
 
-									{!this.state.showAddItem &&
+									{!this.state.showAddItem && !this.props.disabled &&
 										<tr>
 											<td>
 												<button className="btn btn-table-add-item"
+													disabled={this.props.disabled}
 													onClick={()=>{
 													 this.setState({showAddItem: true});
 													}}>
@@ -260,10 +267,11 @@ export default class Rozpocet extends Component {
 									</tr>
 									}
 
-								{this.state.showAddItem &&
+								{this.state.showAddItem && !this.props.disabled &&
 									<tr>
 										<td>
 											<input
+												disabled={this.props.disabled}
 												type="text"
 												className="form-control h-30"
 												id="inlineFormInput"
@@ -274,6 +282,7 @@ export default class Rozpocet extends Component {
 										</td>
 										<td >
 											<input
+												disabled={this.props.disabled}
 												type="number"
 												value={this.state.newQuantity}
 												onChange={(e)=>this.setState({newQuantity:e.target.value})}
@@ -284,6 +293,7 @@ export default class Rozpocet extends Component {
 										</td>
 										<td>
 											<Select
+												isDisabled={this.props.disabled}
 												value={this.state.newUnit}
 												onChange={(newUnit)=>{
 													this.setState({newUnit})
@@ -304,6 +314,7 @@ export default class Rozpocet extends Component {
 									<td className="table-highlight-background">
 										<input
 											type="number"
+											disabled={this.props.disabled}
 											value={this.state.newPrice}
 											onChange={(e)=>{
 												let newPrice = e.target.value;
@@ -325,7 +336,7 @@ export default class Rozpocet extends Component {
 
 										<td className="t-a-r">
 											<button className="btn btn-link waves-effect"
-												disabled={this.state.newUnit===null}
+												disabled={this.state.newUnit===null||this.state.disabled}
 												onClick={()=>{
 													let body={
 											      margin:this.state.newMargin!==''?this.state.newMargin:0,
@@ -348,7 +359,9 @@ export default class Rozpocet extends Component {
 												>
 												<i className="fa fa-plus" />
 											</button>
-											<button className="btn btn-link waves-effect" onClick={()=>{
+											<button className="btn btn-link waves-effect"
+												disabled={this.props.disabled}
+												onClick={()=>{
 													this.setState({showAddItem: false})
 												}}>
 												<i className="fa fa-times"  />

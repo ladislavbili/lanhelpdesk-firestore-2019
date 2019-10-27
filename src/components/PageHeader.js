@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { connect } from "react-redux";
 import firebase from 'firebase';
 import {deleteUserData, setLayout} from '../redux/actions';
+import {testing} from '../helperFunctions';
 
 class PageHeader extends Component {
 	constructor() {
@@ -60,21 +61,29 @@ class PageHeader extends Component {
 						<Link to={{ pathname: `/lanwiki/i/all` }} className={"header-link" + (URL.includes("lanwiki") ? " header-link-active" : "")}>
 							Návody
 						</Link>
-						<Link to={{ pathname: `/cmdb/all` }} className={"header-link" + (URL.includes("cmdb") ? " header-link-active" : "")}>
-							CMDB
-						</Link>
-						<Link to={{ pathname: `/passmanager` }} className={"header-link" + (URL.includes("passmanager") ? " header-link-active" : "")}>
-							Heslá
-						</Link>
+						{ ((this.props.currentUser.userData && this.props.currentUser.userData.isAgent)|| testing) &&
+							<Link to={{ pathname: `/cmdb/all` }} className={"header-link" + (URL.includes("cmdb") ? " header-link-active" : "")}>
+								CMDB
+							</Link>
+						}
+						{ ((this.props.currentUser.userData && this.props.currentUser.userData.isAgent)|| testing) &&
+							<Link to={{ pathname: `/passmanager` }} className={"header-link" + (URL.includes("passmanager") ? " header-link-active" : "")}>
+								Heslá
+							</Link>
+						}
 						<Link to={{ pathname: `/expenditures` }} className={"header-link" + (URL.includes("expenditures") ? " header-link-active" : "")}>
 							Náklady
 						</Link>
-						<Link to={{ pathname: `/reports` }} className={"header-link" + (URL.includes("reports") ? " header-link-active" : "")}>
+						{ ((this.props.currentUser.userData && this.props.currentUser.userData.isAgent)|| testing) &&
+							<Link to={{ pathname: `/reports` }} className={"header-link" + (URL.includes("reports") ? " header-link-active" : "")}>
 								Vykazy
-						</Link>
-						<Link to={{ pathname: `/projects` }} className={"header-link" + (URL.includes("projects") ? " header-link-active" : "")}>
-							Projekty
-						</Link>
+							</Link>
+						}
+						{ ((this.props.currentUser.userData && this.props.currentUser.userData.isAgent)|| testing) &&
+							<Link to={{ pathname: `/projects` }} className={"header-link" + (URL.includes("projects") ? " header-link-active" : "")}>
+								Projekty
+							</Link>
+						}
 						<Link to={{ pathname: `/monitoring` }} className={"header-link" + (URL.includes("monitoring") ? " header-link-active" : "")}>
 							Monitoring
 						</Link>
@@ -134,7 +143,7 @@ class PageHeader extends Component {
 
 						<i className="header-icon fa fa-exclamation-triangle center-hor"/>
 						<i className="header-icon fa fa-envelope center-hor" />
-						<Dropdown className="center-hor" isOpen={this.state.settingsOpen} toggle={()=>this.setState({settingsOpen:!this.state.settingsOpen})}>
+						{((this.props.currentUser.userData && this.props.currentUser.userData.isAdmin)||testing) && <Dropdown className="center-hor" isOpen={this.state.settingsOpen} toggle={()=>this.setState({settingsOpen:!this.state.settingsOpen})}>
 			        <DropdownToggle className="header-dropdown">
 								<i className="header-icon fa fa-cog"/>
 			        </DropdownToggle>
@@ -146,7 +155,7 @@ class PageHeader extends Component {
 									<DropdownItem key={index} onClick={()=>this.props.history.push(this.getLocation()+'/settings/'+item.link)}>{item.title}</DropdownItem>
 								)}
 			        </DropdownMenu>
-			      </Dropdown>
+			      </Dropdown>}
 						<i className="header-icon clickable fa fa-sign-out-alt center-hor" onClick={()=>{
 								if(window.confirm('Are you sure you want to log out?')){
 									this.props.deleteUserData();
@@ -161,8 +170,8 @@ class PageHeader extends Component {
 }
 
 
-const mapStateToProps = ({appReducer}) => {
-	return { layout:appReducer.layout };
+const mapStateToProps = ({appReducer, userReducer}) => {
+	return { layout:appReducer.layout,currentUser:userReducer };
 };
 
 export default connect(mapStateToProps, { deleteUserData, setLayout })(PageHeader);

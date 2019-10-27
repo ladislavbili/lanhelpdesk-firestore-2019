@@ -15,6 +15,7 @@ class UserAdd extends Component{
     super(props);
     this.state={
       isAdmin:false,
+      isAgent:false,
       username:'',
       name:'',
       surname:'',
@@ -50,7 +51,11 @@ class UserAdd extends Component{
         <div className="">
           <FormGroup>
             <Label for="isAdmin">Admin</Label>
-            <Input type="checkbox" id="isAdmin" placeholder="Enter username" checked={this.state.isAdmin} onChange={(e)=>this.setState({isAdmin:!this.state.isAdmin})} />
+            <Input type="checkbox" id="isAdmin" checked={this.state.isAdmin} onChange={(e)=>this.setState({isAdmin:!this.state.isAdmin })} />
+          </FormGroup>
+          <FormGroup>
+            <Label for="isAgent">Agent</Label>
+            <Input type="checkbox" id="isAgent" checked={this.state.isAgent||this.state.isAdmin} onChange={(e)=>this.setState({isAgent:!this.state.isAgent})} disabled={this.state.isAdmin} />
           </FormGroup>
           <FormGroup>
             <Label for="username">Username</Label>
@@ -85,7 +90,15 @@ class UserAdd extends Component{
           <Button className="btn" disabled={this.state.saving|| this.state.companies.length===0||!isEmail(this.state.email)||this.state.password.length < 6 } onClick={()=>{
               this.setState({saving:true});
               firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).then((user)=>{
-                let newUser = {username:this.state.username,name:this.state.name,surname:this.state.surname,email:this.state.email,company:this.state.company.id,isAdmin:this.state.isAdmin};
+                let newUser = {
+                  username:this.state.username,
+                  name:this.state.name,
+                  surname:this.state.surname,
+                  email:this.state.email,
+                  company:this.state.company.id,
+                  isAdmin:this.state.isAdmin,
+                  isAgent:this.state.isAdmin || this.state.isAgent,
+                };
                 rebase.addToCollection('/users', newUser, user.user.uid)
                 .then(()=>{
                   let company = {...this.state.companies[0],label:this.state.companies[0].title,value:this.state.companies[0].id};
@@ -96,6 +109,7 @@ class UserAdd extends Component{
                     email:'',
                     company,
                     isAdmin:false,
+                    isAgent:false,
                     saving:false
                   }, () => {
                     if (this.props.userAdd){

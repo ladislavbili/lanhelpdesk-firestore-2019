@@ -11,7 +11,7 @@ import ProjectEdit from './components/projects/projectEdit';
 import ProjectAdd from './components/projects/projectAdd';
 import MilestoneEdit from './components/milestones/milestoneEdit';
 import MilestoneAdd from './components/milestones/milestoneAdd';
-import {toSelArr, sameStringForms} from '../helperFunctions';
+import {toSelArr, sameStringForms,testing} from '../helperFunctions';
 import {setProject, setMilestone, setFilter, storageHelpFiltersStart, storageHelpProjectsStart, storageHelpMilestonesStart} from '../redux/actions';
 
 import {sidebarSelectStyle} from '../scss/selectStyles';
@@ -33,9 +33,9 @@ let settings=[
 ]
 
 const dashboard = {id:null,title:'Dashboard', label:'Dashboard',value:null};
-const addProject = {id:-1,title:'+ Add project', label:'+ Add project',value:null};
+const addProject = {id:-1,title:'+ Add project', label:'+ Add project',value:-1};
 const allMilestones = {id:null,title:'Any', label:'Any',value:null};
-const addMilestone = {id:-1,title:'+ Add milestone', label:'+ Add milestone',value:null};
+const addMilestone = {id:-1,title:'+ Add milestone', label:'+ Add milestone',value:-1};
 
 class Sidebar extends Component {
 	constructor(props) {
@@ -49,9 +49,9 @@ class Sidebar extends Component {
 			filters:[],
 			search: '',
 			activeTab:0,
-			projects:[dashboard,addProject],
+			projects:this.props.currentUser.userData.isAgent?[dashboard,addProject]:[dashboard],
 			project:dashboard,
-			milestones:[allMilestones,addMilestone],
+			milestones:[allMilestones],
 			milestone:allMilestones,
 			filterID:null,
 			filterData:null,
@@ -65,17 +65,17 @@ class Sidebar extends Component {
 		if(!sameStringForms(props.filters,this.props.filters)){
 			this.setState({filters:props.filters})
 		}
-		if(!sameStringForms(props.projects,this.props.projects)){
+		if(!sameStringForms(props.projects,this.props.projects)||!sameStringForms(this.props.currentUser,props.currentUser)){
 			let project = toSelArr([dashboard].concat(props.projects)).find((item)=>item.id===props.project);
 			this.setState({
-				projects:toSelArr([dashboard].concat(props.projects).concat([addProject])),
+				projects:toSelArr([dashboard].concat(props.projects).concat(props.currentUser.userData.isAgent?[addProject]:[])),
 				project:project?project:dashboard
 			});
 		}
-		if(!sameStringForms(props.milestones,this.props.milestones)){
+		if(!sameStringForms(props.milestones,this.props.milestones)||!sameStringForms(this.props.currentUser,props.currentUser)){
 			let milestone = toSelArr([allMilestones].concat(props.milestones)).find((item)=>item.id===props.milestone);
 			this.setState({
-				milestones:toSelArr([allMilestones].concat(props.milestones).concat([addMilestone])),
+				milestones:toSelArr([allMilestones].concat(props.milestones)),
 				milestone:milestone?milestone:dashboard
 			});
 		}
@@ -86,7 +86,7 @@ class Sidebar extends Component {
 			this.props.storageHelpProjectsStart();
 		}
 		this.setState({
-			projects:toSelArr([dashboard].concat(this.props.projects).concat([addProject])),
+			projects:toSelArr([dashboard].concat(this.props.projects).concat(this.props.currentUser.userData.isAgent?[addProject]:[])),
 			project:toSelArr([dashboard].concat(this.props.projects)).find((item)=>item.id===this.props.project)
 		});
 
@@ -94,7 +94,7 @@ class Sidebar extends Component {
 			this.props.storageHelpMilestonesStart();
 		}
 		this.setState({
-			milestones:toSelArr([allMilestones].concat(this.props.milestones).concat([addMilestone])),
+			milestones:toSelArr([allMilestones].concat(this.props.milestones)),
 			milestone:toSelArr([allMilestones].concat(this.props.milestones)).find((item)=>item.id===this.props.milestone)
 		});
 
@@ -105,7 +105,15 @@ class Sidebar extends Component {
 	}
 
 	render() {
-		let showSettings= this.props.history.location.pathname.includes('settings');
+		let showSettings= this.props.history.location.pathname.includes('settings')&&(this.props.currentUser.userData.isAdmin||testing);
+		let managesProjects = this.state.project.id!==null && this.state.project.id!==-1 && (
+			this.props.currentUser.userData.isAgent || testing ||
+			(this.state.project.permissions.find((permission)=>permission.user===this.props.currentUser.id)!==undefined && this.state.project.permissions.find((permission)=>permission.user===this.props.currentUser.id).isAdmin)
+		);
+		let addsMilestones = this.state.project.id!==null && this.state.project.id!==-1 && (
+			this.props.currentUser.userData.isAgent || testing ||
+			(this.state.project.permissions.find((permission)=>permission.user===this.props.currentUser.id)!==undefined && this.state.project.permissions.find((permission)=>permission.user===this.props.currentUser.id).write)
+		);
 		return (
 			<div className="sidebar">
 					<SelectPage />
@@ -116,7 +124,7 @@ class Sidebar extends Component {
 							<Select
 								options={this.state.projects.filter((project)=>{
 									let curr = this.props.currentUser;
-									if((curr.userData && curr.userData.isAdmin)||(project.id===-1||project.id===null)){
+									if((curr.userData && curr.userData.isAgent)||(project.id===-1||project.id===null)){
 										return true;
 									}
 									let permission = project.permissions.find((permission)=>permission.user===curr.id);
@@ -138,14 +146,15 @@ class Sidebar extends Component {
 									<div style={{marginTop: "-15px"}}>
 										<i className="fa fa-folder-open" style={{position:'absolute', left:15, color: "#212121"}}/>
 										<i className="fa fa-chevron-down" style={{position:'absolute', right:15, color: "#212121"}}/>
-									</div>,
+									</div>
 								}}
 								/>
 						</li>
 						<hr/>
 							{ this.props.project!==null && this.props.project!==-1 && <li>
 								<Select
-									options={this.state.milestones.filter((milestone)=> milestone.id===-1|| milestone.id===null|| milestone.project===this.props.project)}
+									options={this.state.milestones.concat(addsMilestones?[addMilestone]:[])
+										.filter((milestone)=> milestone.id===-1|| milestone.id===null|| milestone.project===this.props.project)}
 									value={this.state.milestone}
 									styles={sidebarSelectStyle}
 									onChange={e => {
@@ -170,8 +179,7 @@ class Sidebar extends Component {
 							{ this.state.openProjectAdd &&
 								<ProjectAdd close={() => this.setState({openProjectAdd: false})}/>
 							}
-							{ this.state.project.id &&
-								this.state.projects.map((item)=>item.id).includes(this.state.project.id) &&
+							{ managesProjects &&
 								<ProjectEdit item={this.state.project} triggerChange={()=>{this.setState({projectChangeDate:(new Date()).getTime()})}}/>
 							}
 							{ this.state.openMilestoneAdd &&
@@ -258,7 +266,7 @@ class Sidebar extends Component {
 		const { filtersActive, filters } = storageHelpFilters;
 		const { projectsActive, projects } = storageHelpProjects;
 		const { milestonesActive, milestones } = storageHelpMilestones;
-    return { project, milestone, filtersActive,filters,projectsActive,projects, milestonesActive, milestones, currentUser:userReducer };
+    return { project, milestone, filtersActive,filters,projectsActive,projects, milestonesActive, milestones, currentUser:{...userReducer, userData:{...(userReducer.userData?userReducer.userData:{isAdmin:false,isAgent:false})}} };
   };
 
   export default connect(mapStateToProps, { setProject, setMilestone, setFilter, storageHelpFiltersStart, storageHelpProjectsStart, storageHelpMilestonesStart })(Sidebar);

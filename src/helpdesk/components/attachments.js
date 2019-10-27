@@ -33,13 +33,15 @@ export default class Attachments extends Component {
 												</td>
 
 												<td className="t-a-r">
-													<button className="btn btn-link-reversed waves-effect" onClick={()=>{
+													{!this.props.disabled && <button className="btn btn-link-reversed waves-effect"
+														disabled={this.props.disabled}
+														onClick={()=>{
 															if(window.confirm('Are you sure?')){
 																this.props.removeAttachment(attachment);
 															}
 														}}>
 														<i className="fa fa-times"  />
-													</button>
+													</button>}
 												</td>
 											</tr>
 										)
@@ -47,17 +49,18 @@ export default class Attachments extends Component {
 
 								</tbody>
 							</table>
-
-							<label htmlFor="uploadInput" className="btn waves-effect">
-								+ Add New Attachment
-							</label>
-							<input type="file" id="uploadInput" multiple={true} style={{display:'none'}}
-								onChange={(e)=>{
-									if(e.target.files.length>0){
-										let files = [...e.target.files];
-										this.props.addAttachments(files);
-									}
-								}} />
+							{!this.props.disabled && <div>
+								<label htmlFor="uploadInput" className="btn waves-effect">
+									+ Add New Attachment
+								</label>
+								<input type="file" id="uploadInput" multiple={true} style={{display:'none'}}
+									onChange={(e)=>{
+										if(e.target.files.length>0){
+											let files = [...e.target.files];
+											this.props.addAttachments(files);
+										}
+									}} />
+							</div>}
 
 					</div>
 				</div>

@@ -116,6 +116,10 @@ class TasksIndex extends Component {
 		});
 		let filter = this.props.filter;
 		return newTasks.filter((task)=>{
+			let currentPermissions = null;
+			if(task.project){
+				currentPermissions = task.project.permissions.find((permission)=>permission.user === this.props.currentUser.id);
+			}
 			return (filter.status.length===0||(task.status && filter.status.includes(task.status.id))) &&
 			(filter.requester===null||(task.requester && task.requester.id===filter.requester)||(task.requester && filter.requester==='cur' && task.requester.id === this.props.currentUser.id)) &&
 			(filter.workType===null||(task.type===filter.workType)) &&
@@ -128,7 +132,7 @@ class TasksIndex extends Component {
 			(filter.pendingDateFrom===''||filter.pendingDateFrom===undefined||task.pendingDate >= filter.pendingDateFrom) &&
 			(filter.pendingDateTo===''||filter.pendingDateTo===undefined||task.pendingDate <= filter.pendingDateTo) &&
 			(this.props.project===null||(task.project && task.project.id===this.props.project))&&
-			(this.props.currentUser.userData.isAdmin||(task.project && task.project.permissions.some((permission)=>permission.user === this.props.currentUser.id) && task.project.permissions.find((permission)=>permission.user === this.props.currentUser.id).read))&&
+			(this.props.currentUser.userData.isAgent||(currentPermissions && currentPermissions.read)) &&
 			(this.props.milestone===null||((task.milestone)&& task.milestone === this.props.milestone))
 		})
 	}

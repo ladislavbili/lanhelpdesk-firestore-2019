@@ -46,6 +46,7 @@ class TaskEdit extends Component {
 			saving:false,
 			loading:true,
 			addItemModal:false,
+			task:null,
 
 			taskMaterials:[],
 			taskWorks:[],
@@ -100,7 +101,7 @@ class TaskEdit extends Component {
 
 			openUserAdd: false,
 			openCompanyAdd: false,
-			viewOnly:false,
+			viewOnly:true,
 			print: false,
 		};
     this.submitTask.bind(this);
@@ -219,6 +220,15 @@ class TaskEdit extends Component {
 		){
 			this.setData(props);
 		}
+		if(!sameStringForms(props.projects,this.props.projects)){
+			if(this.state.extraDataLoaded && this.storageLoaded(props)){
+				let task = props.tasks.find((task)=>task.id===props.match.params.taskID);
+				let project = props.projects.find((item)=>item.id===task.project);
+				let permission = project.permissions.find((permission)=>permission.user===props.currentUser.id);
+				let viewOnly = !permission.write && !props.currentUser.userData.isAgent;
+				this.setState({viewOnly});
+			}
+		}
   }
 
 	componentWillMount(){
@@ -283,6 +293,7 @@ class TaskEdit extends Component {
 		this.setState({
 			extraDataLoaded:true,
 			taskMaterials,
+			toggleTab:'1',
 			taskWorks,
 			repeat
 		},()=>{this.setData(this.props)});
@@ -303,7 +314,7 @@ class TaskEdit extends Component {
 		});
 	}
 
-  setData(props){
+	setData(props){
 		if(!this.state.extraDataLoaded || !this.storageLoaded(props)){
 			return;
 		}
@@ -357,6 +368,9 @@ class TaskEdit extends Component {
 		if(task.tags){
 			taskTags=tags.filter((tag)=>task.tags.includes(tag.id));
 		}
+
+		let permission = project.permissions.find((permission)=>permission.user===this.props.currentUser.id);
+		let viewOnly = !permission.write&& !this.props.currentUser.userData.isAgent;
     this.setState({
       statuses,
       projects,
@@ -369,6 +383,7 @@ class TaskEdit extends Component {
 			subtasks,
 			taskTypes,
 			allTags:tags,
+			task,
 
 			description:task.description,
       title:task.title,
@@ -376,7 +391,7 @@ class TaskEdit extends Component {
 			overtime:task.overtime?{value:true,label:'Áno'}:{value:false,label:'Nie'},
       status:status?status:null,
 			statusChange:task.statusChange?task.statusChange:null,
-			createdAt:task.createdAt?task.createdAt:null,
+			createdAt:task.createdAt?task.createdAt:(new Date()).getTime(),
 			deadline: task.deadline!==null?moment(task.deadline):null,
 			closeDate: task.closeDate!==null && task.closeDate!==undefined ?new Date(task.closeDate).toISOString().replace('Z',''):'',
 			pendingDate: task.pendingDate!==null && task.pendingDate!==undefined ?new Date(task.pendingDate).toISOString().replace('Z',''):'',
@@ -390,12 +405,12 @@ class TaskEdit extends Component {
 			milestones,
 			attachments:task.attachments?task.attachments:[],
 
+			viewOnly,
       loading:false,
 			defaultUnit,
 			tags:taskTags,
 			type:type?type:null,
-			projectChangeDate:(new Date()).getTime(),
-			toggleTab:'1'
+			projectChangeDate:(new Date()).getTime()
     });
   }
 
@@ -432,6 +447,11 @@ class TaskEdit extends Component {
 				totalPrice
 			}
 		});
+
+		let createdBy=null;
+		if(this.state.task&& this.state.task.createdBy){
+			createdBy = this.state.users.find((user)=>user.id===this.state.task.createdBy);
+		}
 
 		return (
 			<div className="flex">
@@ -516,7 +536,16 @@ class TaskEdit extends Component {
 
 							<div className="row">
 								<div className="col-lg-12 d-flex">
-									<p className=""><span className="text-muted">Created by</span> Branislav Šusta <span className="text-muted"> at {this.state.createdAt?(timestampToString(this.state.createdAt)):''}</span></p>
+									<p className="">
+										<span className="text-muted">
+											{createdBy?"Created by ":""}
+										</span>
+											{createdBy? (createdBy.name + " " +createdBy.surname) :''}
+										<span className="text-muted">
+											{createdBy?' at ':'Created at '}
+											{this.state.createdAt?(timestampToString(this.state.createdAt)):''}
+										</span>
+									</p>
 									<p className="text-muted ml-auto">{this.state.statusChange?('Status changed at ' + timestampToString(this.state.statusChange)):''}</p>
 								</div>
 
@@ -636,7 +665,7 @@ class TaskEdit extends Component {
 												<Label className="col-3 col-form-label">Milestone</Label>
 												<div className="col-9">
 													<Select
-														disabled={this.state.viewOnly}
+														isDisabled={this.state.viewOnly}
 														value={this.state.milestone}
 														onChange={(milestone)=> {
 															this.setState({milestone},this.submitTask.bind(this));
@@ -734,7 +763,13 @@ class TaskEdit extends Component {
 							</div>}
 
 							<Label className="m-t-5">Popis</Label>
-							<textarea className="form-control b-r-0 hidden-input" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value},this.submitTask.bind(this))} />
+							<textarea
+								className="form-control b-r-0 hidden-input"
+								placeholder="Enter task description"
+								value={this.state.description}
+								disabled={this.state.viewOnly}
+								onChange={(e)=>this.setState({description:e.target.value},this.submitTask.bind(this))}
+								/>
 
 							<div className="row">
 								<div className="center-hor"><Label className="center-hor">Tagy: </Label></div>
@@ -875,7 +910,7 @@ class TaskEdit extends Component {
 											Materiál
 										</NavLink>
 									</NavItem>
-									{this.state.type && this.state.type.type!=='prepaid' && <NavItem>
+									{(this.state.type===null ||(this.state.type && this.state.type.type!=='prepaid')) && <NavItem>
 										<NavLink
 											className={classnames({ active: this.state.toggleTab === '3' }, "clickable", "")}
 											onClick={() => { this.setState({toggleTab:'3'}); }}
@@ -1010,7 +1045,7 @@ class TaskEdit extends Component {
   }
 }
 
-const mapStateToProps = ({ storageCompanies, storageHelpPricelists, storageHelpPrices, storageHelpProjects, storageHelpStatuses, storageHelpTags, storageHelpTaskTypes, storageHelpTasks, storageHelpUnits, storageHelpWorkTypes, storageMetadata, storageUsers, storageHelpMilestones }) => {
+const mapStateToProps = ({ userReducer, storageCompanies, storageHelpPricelists, storageHelpPrices, storageHelpProjects, storageHelpStatuses, storageHelpTags, storageHelpTaskTypes, storageHelpTasks, storageHelpUnits, storageHelpWorkTypes, storageMetadata, storageUsers, storageHelpMilestones }) => {
 	const { companiesLoaded, companiesActive, companies } = storageCompanies;
 	const { pricelistsLoaded, pricelistsActive, pricelists } = storageHelpPricelists;
 	const { pricesLoaded, pricesActive, prices } = storageHelpPrices;
@@ -1025,7 +1060,9 @@ const mapStateToProps = ({ storageCompanies, storageHelpPricelists, storageHelpP
 	const { usersLoaded, usersActive, users } = storageUsers;
 	const { milestonesLoaded, milestonesActive, milestones } = storageHelpMilestones;
 
-	return { companiesLoaded, companiesActive, companies,
+	return {
+		currentUser:userReducer,
+		companiesLoaded, companiesActive, companies,
 		pricelistsLoaded, pricelistsActive, pricelists,
 		pricesLoaded, pricesActive, prices,
 		projectsLoaded, projectsActive, projects,

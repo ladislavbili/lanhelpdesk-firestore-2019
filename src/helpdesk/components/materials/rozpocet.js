@@ -70,6 +70,7 @@ export default class Rozpocet extends Component {
 										{false &&
 											<th>
 											<input type="checkbox"
+												disabled={this.props.disabled}
 												checked={this.props.materials.length===this.state.selectedIDs.length}
 												onChange={()=>this.setState({selectedIDs:(this.props.materials.length===this.state.selectedIDs.length?[]:this.props.materials.map((item)=>item.id))})} />
 										</th>}
@@ -90,6 +91,7 @@ export default class Rozpocet extends Component {
 											{false &&
 												<td className="table-checkbox">
 												<input
+													disabled={this.props.disabled}
 													type="checkbox"
 													checked={this.state.selectedIDs.includes(material.id)}
 													onChange={()=>{
@@ -105,6 +107,7 @@ export default class Rozpocet extends Component {
 											</td>}
 											<td>
 													<input
+														disabled={this.props.disabled}
 														className="form-control hidden-input"
 														value={
 															material.id === this.state.focusedMaterial
@@ -133,6 +136,7 @@ export default class Rozpocet extends Component {
 											</td>
 											<td>
 												<input
+													disabled={this.props.disabled}
 													type="number"
 													className="form-control hidden-input h-30"
 													value={
@@ -162,6 +166,7 @@ export default class Rozpocet extends Component {
 											</td>
 											<td>
 												<Select
+													isDisabled={this.props.disabled}
 													value={material.unit}
 													onChange={(unit)=>{
 														this.props.updateMaterial(material.id,{unit})
@@ -185,6 +190,7 @@ export default class Rozpocet extends Component {
 											</td>
 											<td className="table-highlight-background">
 												<input
+													disabled={this.props.disabled}
 													type="number"
 													className="form-control hidden-input h-30"
 													value={
@@ -214,6 +220,7 @@ export default class Rozpocet extends Component {
 											</td>
 											<td className="table-highlight-background">
 												<input
+													disabled={this.props.disabled}
 													type="number"
 													className="form-control hidden-input h-30"
 													value={
@@ -251,14 +258,15 @@ export default class Rozpocet extends Component {
 
 
 											<td className="t-a-r">
-												<button className="btn btn-link waves-effect">
+												<button className="btn btn-link waves-effect" disabled={this.props.disabled}>
 													<i className="fa fa-arrow-up"  />
 												</button>
-												<button className="btn btn-link waves-effect">
+												<button className="btn btn-link waves-effect" disabled={this.props.disabled}>
 														<i className="fa fa-arrow-down"  />
 												</button>
 
 												<button className="btn btn-link waves-effect"
+													disabled={this.props.disabled}
 													onClick={()=>{
 														if(window.confirm('Are you sure?')){
 															this.props.removeMaterial(material.id);
@@ -272,7 +280,7 @@ export default class Rozpocet extends Component {
 										)
 									}
 
-									{!this.state.showAddItem &&
+									{!this.state.showAddItem && !this.props.disabled &&
 										<tr >
 										<td>
 											<button className="btn btn-table-add-item"
@@ -292,10 +300,11 @@ export default class Rozpocet extends Component {
 									</tr>
 									}
 
-{this.state.showAddItem &&
+								{this.state.showAddItem && !this.props.disabled &&
 									<tr>
 										<td>
 											<input
+												disabled={this.props.disabled}
 												type="text"
 												className="form-control h-30"
 												id="inlineFormInput"
@@ -306,6 +315,7 @@ export default class Rozpocet extends Component {
 										</td>
 										<td >
 											<input
+												disabled={this.props.disabled}
 												type="number"
 												value={this.state.newQuantity}
 												onChange={(e)=>this.setState({newQuantity:e.target.value})}
@@ -316,6 +326,7 @@ export default class Rozpocet extends Component {
 										</td>
 										<td>
 											<Select
+												isDisabled={this.props.disabled}
 												value={this.state.newUnit}
 												onChange={(newUnit)=>{
 													this.setState({newUnit})
@@ -334,6 +345,7 @@ export default class Rozpocet extends Component {
 									</td>
 									<td className="table-highlight-background">
 										<input
+											disabled={this.props.disabled}
 											type="number"
 											value={this.state.newPrice}
 											onChange={(e)=>{
@@ -355,6 +367,7 @@ export default class Rozpocet extends Component {
 									</td>
 									<td className="table-highlight-background">
 										<input
+											disabled={this.props.disabled}
 											type="number"
 											value={this.state.newMargin}
 											onChange={(e)=>this.setState({newMargin:e.target.value,marginChanged:true})}
@@ -369,7 +382,7 @@ export default class Rozpocet extends Component {
 
 										<td className="t-a-r">
 											<button className="btn btn-link waves-effect"
-												disabled={this.state.newUnit===null}
+												disabled={this.state.newUnit===null||this.props.disabled}
 												onClick={()=>{
 													let body={
 											      margin:this.state.newMargin!==''?this.state.newMargin:0,
@@ -392,7 +405,9 @@ export default class Rozpocet extends Component {
 												>
 												<i className="fa fa-plus" />
 											</button>
-											<button className="btn btn-link waves-effect" onClick={()=>{
+											<button className="btn btn-link waves-effect"
+												disabled={this.props.disabled}
+												onClick={()=>{
 													this.setState({showAddItem: false})
 												}}>
 												<i className="fa fa-times"  />
@@ -404,7 +419,7 @@ export default class Rozpocet extends Component {
 						</div>
 						<div className="row justify-content-end">
 							<div className="col-md-6">
-								<p className="text-right" style={{marginTop: (this.state.showAddItem ? "" : "-45px")}}>
+								<p className="text-right" style={{marginTop: ((this.state.showAddItem||this.props.disabled) ? "" : "-45px")}}>
 									<b>Sub-total:</b>
 									{(this.props.materials.map((material)=>parseFloat(material.totalPrice)).reduce((acc, cur)=> acc+cur,0)).toFixed(2)}
 								</p>

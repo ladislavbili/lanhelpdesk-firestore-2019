@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import {storageHelpStatusesStart, storageHelpTagsStart, storageUsersStart, storageHelpTaskTypesStart, storageCompaniesStart, storageHelpProjectsStart, setProject, storageHelpTasksStart} from '../../../redux/actions';
 import {rebase, database} from '../../../index';
 import firebase from 'firebase';
-import {toSelArr, sameStringForms, snapshotToArray} from '../../../helperFunctions';
+import {toSelArr, sameStringForms, snapshotToArray,testing} from '../../../helperFunctions';
 import {invisibleSelectStyle} from '../../../scss/selectStyles';
 import Permissions from "./permissions";
 
@@ -213,23 +213,27 @@ class ProjectEdit extends Component{
               <Permissions
 								addUser={(user)=>{
 									this.setState({
-										permissions:[...this.state.permissions,{user,read:true,write:false,delete:false}]
+										permissions:[...this.state.permissions,{user,read:true,write:false,delete:false,isAdmin:false}]
 									})
 								}}
 								givePermission={(user,permission)=>{
 									let permissions=[...this.state.permissions];
 									let index = permissions.findIndex((permission)=>permission.user.id===user.id);
 									let item = permissions[index];
-									item[permission]=!item[permission];
-									if(!item.read && !item.write && !item.delete){
+									item.read=permission.read;
+									item.write=permission.write;
+									item.delete=permission.delete;
+									item.isAdmin=permission.isAdmin;
+									if(!item.read){
 										permissions.splice(index,1);
 									}
 									this.setState({permissions});
 								}}
 								permissions={this.state.permissions}
 								userID={this.props.currentUser.id}
-								isAdmin={this.props.currentUser.userData.isAdmin||true}
+								isAdmin={this.props.currentUser.userData.isAgent||testing}
 								/>
+							{/*TO DELETE*/}
 
               <h3 className="m-t-20"> Default values </h3>
 
@@ -405,10 +409,8 @@ class ProjectEdit extends Component{
                     },
 										permissions:this.state.permissions.map((permission)=>{
 											return {
-												read:permission.read||permission.write||permission.delete,
-												write:permission.write||permission.delete,
-												delete:permission.delete,
-												user:permission.user.id
+												...permission,
+												user:permission.user.id,
 											}
 										})
                   };

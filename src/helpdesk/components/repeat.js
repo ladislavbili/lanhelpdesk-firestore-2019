@@ -81,7 +81,7 @@ render() {
           </div>
       }
 
-      <Popover placement="bottom" isOpen={this.state.open} target={"openPopover"+this.props.taskID} toggle={this.toggleRepeat}>
+      <Popover placement="bottom" isOpen={this.state.open && !this.props.disabled} target={"openPopover"+this.props.taskID} toggle={this.toggleRepeat}>
         <PopoverHeader>Opakovanie</PopoverHeader>
         <PopoverBody>
           <div>

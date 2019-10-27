@@ -62,6 +62,7 @@ class Permissions extends Component {
 								<th className="t-a-c"> Read </th>
 								<th className="t-a-c"> Write </th>
 								<th className="t-a-c"> Delete</th>
+								<th className="t-a-c"> Admin</th>
 							</tr>
 						</thead>
 
@@ -75,7 +76,15 @@ class Permissions extends Component {
 												type="checkbox"
 												disabled={this.props.userID===permission.user.id && !this.props.isAdmin}
 												checked={permission.read}
-												onChange={()=>this.props.givePermission(permission.user,'read')}
+												onChange={()=>{
+													let permissions = null;
+													if(permission.read){
+														permissions={read:false, write:false, delete:false, isAdmin:false}
+													}else{
+														permissions={read:true, write:false, delete:false, isAdmin:false}
+													}
+													this.props.givePermission(permission.user,permissions);
+												}}
 											/>
 										</td>
 
@@ -84,7 +93,15 @@ class Permissions extends Component {
 												type="checkbox"
 												disabled={this.props.userID===permission.user.id && !this.props.isAdmin}
 												checked={permission.write}
-												onChange={()=>this.props.givePermission(permission.user,'write')}
+												onChange={()=>{
+													let permissions = null;
+													if(permission.write){
+														permissions={read:true, write:false, delete:false, isAdmin:false}
+													}else{
+														permissions={read:true, write:true, delete:false, isAdmin:false}
+													}
+													this.props.givePermission(permission.user,permissions);
+												}}
 											/>
 										</td>
 
@@ -93,7 +110,31 @@ class Permissions extends Component {
 												type="checkbox"
 												disabled={this.props.userID===permission.user.id && !this.props.isAdmin}
 												checked={permission.delete}
-												onChange={()=>this.props.givePermission(permission.user,'delete')}
+												onChange={()=>{
+													let permissions = null;
+													if(permission.delete){
+														permissions={read:true, write:true, delete:false, isAdmin:false}
+													}else{
+														permissions={read:true, write:true, delete:true, isAdmin:false}
+													}
+													this.props.givePermission(permission.user,permissions);
+												}}
+											/>
+										</td>
+										<td className="table-checkbox t-a-c">
+											<input
+												type="checkbox"
+												disabled={this.props.userID===permission.user.id && !this.props.isAdmin}
+												checked={permission.isAdmin}
+												onChange={()=>{
+													let permissions = null;
+													if(permission.isAdmin){
+														permissions={read:true, write:true, delete:true, isAdmin:false}
+													}else{
+														permissions={read:true, write:true, delete:true, isAdmin:true}
+													}
+													this.props.givePermission(permission.user,permissions);
+												}}
 											/>
 										</td>
 								</tr>

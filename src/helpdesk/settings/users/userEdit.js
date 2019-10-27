@@ -16,6 +16,7 @@ class UserEdit extends Component{
     super(props);
     this.state={
       isAdmin:false,
+      isAgent:false,
       username:'',
       name:'',
       surname:'',
@@ -79,6 +80,7 @@ class UserEdit extends Component{
       surname:user.surname,
       email:user.email,
       isAdmin:user.isAdmin ? true : false,
+      isAgent:user.isAgent ? true : false,
       loading:false
     })
   }
@@ -95,7 +97,11 @@ class UserEdit extends Component{
           }
           <FormGroup>
             <Label for="isAdmin">Admin</Label>
-            <Input type="checkbox" id="isAdmin" placeholder="Enter username" checked={this.state.isAdmin} onChange={(e)=>this.setState({isAdmin:!this.state.isAdmin})} />
+            <Input type="checkbox" id="isAdmin" checked={this.state.isAdmin} onChange={(e)=>this.setState({isAdmin:!this.state.isAdmin })} />
+          </FormGroup>
+          <FormGroup>
+            <Label for="isAgent">Agent</Label>
+            <Input type="checkbox" id="isAgent" checked={this.state.isAgent||this.state.isAdmin} onChange={(e)=>this.setState({isAgent:!this.state.isAgent})} disabled={this.state.isAdmin} />
           </FormGroup>
           <FormGroup>
             <Label for="username">Username</Label>
@@ -125,7 +131,15 @@ class UserEdit extends Component{
 
           <Button className="btn" disabled={this.state.saving|| this.state.companies.length===0||!isEmail(this.state.email)} onClick={()=>{
             this.setState({saving:true});
-            let body = {username:this.state.username,name:this.state.name,surname:this.state.surname,email:this.state.email,company:this.state.company.id, isAdmin:this.state.isAdmin}
+            let body = {
+              username:this.state.username,
+              name:this.state.name,
+              surname:this.state.surname,
+              email:this.state.email,
+              company:this.state.company.id,
+              isAdmin:this.state.isAdmin,
+              isAgent:this.state.isAdmin || this.state.isAgent,
+            }
             rebase.updateDoc('/users/'+this.props.match.params.id, body)
               .then(()=>{
                 this.props.setUserData(body);

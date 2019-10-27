@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
+import { connect } from "react-redux";
+import {testing} from '../helperFunctions';
 
 import Sidebar from './Sidebar';
 import PageHeader from '../components/PageHeader';
 import List from './list';
 import AddPassword from './list/addPassword';
 
-export default class Navigation extends Component {
+class Navigation extends Component {
 	render() {
+		if((this.props.currentUser.userData===null||!this.props.currentUser.userData.isAgent)&&!testing){
+			return null
+		}
 		return (
 			<div>
 				<div className="row">
@@ -23,3 +28,9 @@ export default class Navigation extends Component {
 		);
 	}
 }
+
+const mapStateToProps = ({ userReducer}) => {
+	return { currentUser:userReducer };
+};
+
+export default connect(mapStateToProps, {  })(Navigation);

@@ -31,6 +31,7 @@ const noDef={
 export default class TaskAdd extends Component{
 	constructor(props){
 		super(props);
+		let requester=this.props.users?this.props.users.find((user)=>user.id===this.props.currentUser.id):null;
 		this.state={
 			saving:false,
 			users:[],
@@ -48,9 +49,9 @@ export default class TaskAdd extends Component{
 			defaults:noDef,
 
 			title:'',
-			company:null,
+			company:this.props.companies && requester ? this.props.companies.find((company)=>company.id===this.props.currentUser.userData.company) : null,
 			workHours:'0',
-			requester:this.props.users?this.props.users.find((user)=>user.id===this.props.currentUser.id):null,
+			requester,
 			assignedTo:[],
 			description:'',
 			status:this.props.statuses?this.props.statuses:null,
@@ -104,12 +105,13 @@ export default class TaskAdd extends Component{
 				title: this.state.title,
 				company: this.state.company?this.state.company.id:null,
 				workHours: this.state.workHours,
-				requester: this.state.requester?this.state.requester.id:this.props.users.find((user)=>user.id===this.props.currentUser.id),
+				requester: this.state.requester?this.state.requester.id:this.props.currentUser.id,
 				assignedTo: this.state.assignedTo.map((item)=>item.id),
 				description: this.state.description,
 				status: this.state.status?this.state.status.id:null,
 				deadline: isNaN(new Date(this.state.deadline).getTime()) ? null : toCentralTime(new Date(this.state.deadline).getTime()),
 				createdAt:toCentralTime(new Date().getTime()),
+				createdBy:this.props.currentUser.id,
 				statusChange:toCentralTime(new Date().getTime()),
 				project: this.state.project?this.state.project.id:null,
 				pausal: this.state.pausal.value,
@@ -149,13 +151,14 @@ export default class TaskAdd extends Component{
 			rebase.addToCollection('/help-tasks', body,newID)
 			.then(()=>{
 				rebase.updateDoc('/metadata/0',{taskLastID:newID});
+				let requester = this.props.users.find((user)=>user.id===this.props.currentUser.id);
 				this.setState({
 					saving:false,
 					hidden:true,
 					title:'',
-					company:null,
+					company:this.props.companies.find((company)=>company.id===this.props.currentUser.userData.company),
 					workHours:'0',
-					requester:this.props.users.find((user)=>user.id===this.props.currentUser.id),
+					requester,
 					assignedTo:[],
 					tags:[],
 					type:null,
@@ -203,15 +206,17 @@ export default class TaskAdd extends Component{
 
 			let state  = this.state;
 			let permission = project.permissions.find((permission)=>permission.user===this.props.currentUser.id);
+			let requester=this.props.users?this.props.users.find((user)=>user.id===this.props.currentUser.id):null;
+
 			this.setState({
 				assignedTo: def.assignedTo&& (def.assignedTo.fixed||def.assignedTo.def)? state.users.filter((item)=> def.assignedTo.value.includes(item.id)):[],
-				company: def.company&& (def.company.fixed||def.company.def)?state.companies.find((item)=> item.id===def.company.value):null,
-				requester: def.requester&& (def.requester.fixed||def.requester.def)?state.users.find((item)=> item.id===def.requester.value):null,
+				company: def.company&& (def.company.fixed||def.company.def)?state.companies.find((item)=> item.id===def.company.value):(this.props.companies && requester ? this.props.companies.find((company)=>company.id===this.props.currentUser.userData.company) : null),
+				requester: def.requester&& (def.requester.fixed||def.requester.def)?state.users.find((item)=> item.id===def.requester.value):requester,
 				status: def.status&& (def.status.fixed||def.status.def)?state.statuses.find((item)=> item.id===def.status.value):state.statuses[0],
 				tags: def.tags&& (def.tags.fixed||def.tags.def)? state.allTags.filter((item)=> def.tags.value.includes(item.id)):[],
 				type: def.type && (def.type.fixed||def.type.def)?state.taskTypes.find((item)=> item.id===def.type.value):null,
 				project,
-				viewOnly: !this.props.currentUser.userData.isAdmin && !permission.write && !permission.delete,
+				viewOnly: !this.props.currentUser.userData.isAgent && !permission.write,
 				defaults: def
 			});
 	}
@@ -229,6 +234,7 @@ export default class TaskAdd extends Component{
 				}
 			}
 
+			let requester = this.props.task ? this.props.task.requester : this.props.users.find((user)=>user.id===this.props.currentUser.id);
 			this.setState({
 				statuses: this.props.statuses,
 				projects: this.props.projects,
@@ -253,10 +259,10 @@ export default class TaskAdd extends Component{
 				overtime: this.props.task ? this.props.task.overtime : {value:false,label:'Nie'},
 				statusChange: this.props.task ? this.props.task.statusChange : null,
 				project: this.props.task ? this.props.task.project : null,
-				viewOnly: !this.props.currentUser.userData.isAdmin && (permission===null || (!permission.delete && !permission.write)),
-				company: this.props.task ? this.props.task.company : null,
+				viewOnly: !this.props.currentUser.userData.isAgent && (permission===null || !permission.write),
+				company: this.props.task ? this.props.task.company : this.props.companies.find((company)=>company.id===this.props.currentUser.userData.company),
 				workHours: this.props.task ? this.props.task.workHours : 0,
-				requester: this.props.task ? this.props.task.requester : this.props.users.find((user)=>user.id===this.props.currentUser.id),
+				requester,
 				assignedTo: this.props.task ? this.props.task.assignedTo : [],
 				repeat: this.props.task ? this.props.task.repeat : null,
 				type: this.props.task ? this.props.task.type : null,
@@ -284,7 +290,6 @@ export default class TaskAdd extends Component{
 		}
 
 		render(){
-			console.log(this.state.viewOnly);
 			let taskWorks= this.state.taskWorks.map((work)=>{
 				let finalUnitPrice=parseFloat(work.price);
 				if(work.extraWork){
@@ -317,7 +322,7 @@ export default class TaskAdd extends Component{
 			});
 			return (
 				<div>
-					<div className="m-b-15">
+					{!this.state.viewOnly && <div className="m-b-15">
 						{
 							this.state.statuses.sort((item1,item2)=>{
 								if(item1.order &&item2.order){
@@ -349,7 +354,7 @@ export default class TaskAdd extends Component{
 							</Button>
 						)
 					}
-					</div>
+					</div>}
 				<div className="scrollable">
 					<div className="p-t-0">
 						<div className="row m-b-15">
@@ -364,7 +369,47 @@ export default class TaskAdd extends Component{
 
 						<hr className="m-t-15 m-b-10"/>
 
-							<div className="col-lg-12 row m-b-10">
+							{this.state.viewOnly && <div className="row p-r-10 m-b-10">
+								<Label className="col-3 col-form-label">Projekt</Label>
+								<div className="col-9">
+									<Select
+										value={this.state.project}
+										onChange={(project)=>{
+											let newState={project,
+												milestone:noMilestone,
+												viewOnly:!this.props.currentUser.userData.isAgent && !project.permissions.find((permission)=>permission.user===this.props.currentUser.id).write
+											}
+											if(newState.viewOnly){
+												newState={
+													...newState,
+													repeat:null,
+													taskWorks:[],
+													subtasks:[],
+													taskMaterials:[],
+													allTags:[],
+													deadline:"",
+													closeDate:"",
+													pendingDate:"",
+													reminder:null,
+												}
+											}
+											this.setState(newState,()=>this.setDefaults(project.id, true))
+										}}
+										options={this.state.projects.filter((project)=>{
+											let curr = this.props.currentUser;
+											if(curr.userData.isAgent){
+												return true;
+											}
+											let permission = project.permissions.find((permission)=>permission.user===curr.id);
+											return permission && permission.read;
+										})}
+										styles={invisibleSelectStyleNoArrow}
+										/>
+								</div>
+							</div>
+							}
+
+							{!this.state.viewOnly && <div className="col-lg-12 row m-b-10">
 								<div className="center-hor m-r-5"><Label className="center-hor">Assigned to: </Label></div>
 								<div className="f-1">
 									<Select
@@ -376,10 +421,10 @@ export default class TaskAdd extends Component{
 										styles={invisibleSelectStyleNoArrow}
 										/>
 								</div>
-							</div>
+							</div>}
 
 
-					<div className="col-lg-12">
+					{!this.state.viewOnly && <div className="col-lg-12">
 						<div className="col-lg-4">
 								<div className="row p-r-10 m-b-10">
 									<Label className="col-3 col-form-label">Typ</Label>
@@ -398,14 +443,30 @@ export default class TaskAdd extends Component{
 									<div className="col-9">
 										<Select
 											value={this.state.project}
-											onChange={(project)=>this.setState(
-												{project,
+											onChange={(project)=>{
+												let newState={project,
 													milestone:noMilestone,
-													viewOnly:!this.props.currentUser.userData.isAdmin && !project.permissions.find((permission)=>permission.user===this.props.currentUser.id).write&&!project.permissions.find((permission)=>permission.user===this.props.currentUser.id).delete
-												},()=>this.setDefaults(project.id, true))}
+													viewOnly:!this.props.currentUser.userData.isAgent && !project.permissions.find((permission)=>permission.user===this.props.currentUser.id).write
+												}
+												if(newState.viewOnly){
+													newState={
+														...newState,
+														repeat:null,
+														taskWorks:[],
+														subtasks:[],
+														taskMaterials:[],
+														allTags:[],
+														deadline:"",
+														closeDate:"",
+														pendingDate:"",
+														reminder:null,
+													}
+												}
+												this.setState(newState,()=>this.setDefaults(project.id, true))
+											}}
 											options={this.state.projects.filter((project)=>{
 												let curr = this.props.currentUser;
-												if(curr.userData.isAdmin){
+												if(curr.userData.isAgent){
 													return true;
 												}
 												let permission = project.permissions.find((permission)=>permission.user===curr.id);
@@ -451,7 +512,7 @@ export default class TaskAdd extends Component{
 									<div className="col-9">
 										<Select
 											value={this.state.company}
-											isDisabled={this.state.defaults.company.fixed}
+											isDisabled={this.state.defaults.company.fixed||this.state.viewOnly}
 											onChange={(company)=>this.setState({company})}
 											options={this.state.companies}
 											styles={invisibleSelectStyleNoArrow}
@@ -498,6 +559,9 @@ export default class TaskAdd extends Component{
 								repeat={this.state.repeat}
 								disabled={this.state.viewOnly}
 								submitRepeat={(repeat)=>{
+									if(this.state.viewOnly){
+										return;
+									}
 									this.setState({repeat:repeat})
 								}}
 								deleteRepeat={()=>{
@@ -522,89 +586,53 @@ export default class TaskAdd extends Component{
 								</div>
 						</div>
 
-					</div>
+					</div>}
 
 						<Label className="m-t-5  m-b-10">Popis</Label>
 						<textarea className="form-control b-r-0 m-b-10 hidden-input" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value})} />
-
-						<div className="row">
-							<div className="center-hor"><Label className="center-hor">Tagy: </Label></div>
-							<div className="f-1 ">
-								<Select
-									value={this.state.tags}
-									isDisabled={this.state.defaults.tags.fixed||this.state.viewOnly}
-									isMulti
-									onChange={(tags)=>this.setState({tags})}
-									options={this.state.allTags}
-									styles={invisibleSelectStyleNoArrow}
-									/>
+						{!this.state.viewOnly && <div>
+							<div className="row">
+								<div className="center-hor"><Label className="center-hor">Tagy: </Label></div>
+								<div className="f-1 ">
+									<Select
+										value={this.state.tags}
+										isDisabled={this.state.defaults.tags.fixed||this.state.viewOnly}
+										isMulti
+										onChange={(tags)=>this.setState({tags})}
+										options={this.state.allTags}
+										styles={invisibleSelectStyleNoArrow}
+										/>
+								</div>
 							</div>
-						</div>
 
-						{!this.state.hidden && false && <Subtasks
-							disabled={this.state.viewOnly}
-							taskAssigned={this.state.assignedTo}
-							submitService={(newSubtask)=>{
-								this.setState({subtasks:[...this.state.subtasks,{id:this.getNewID(),...newSubtask}]});
-							}}
-							subtasks={this.state.subtasks.map((subtask)=>{
-								let assignedTo=subtask.assignedTo?this.state.users.find((item)=>item.id===subtask.assignedTo):null
-								return {
-									...subtask,
-									assignedTo:assignedTo?assignedTo:null
-								}
-							})}
-							updateSubtask={(id,newData)=>{
-								let newSubtasks=[...this.state.subtasks];
-								newSubtasks[newSubtasks.findIndex((subtask)=>subtask.id===id)]={...newSubtasks.find((subtask)=>subtask.id===id),...newData};
-								this.setState({subtasks:newSubtasks});
-							}}
-							removeSubtask={(id)=>{
-								let newSubtasks=[...this.state.subtasks];
-								newSubtasks.splice(newSubtasks.findIndex((subtask)=>subtask.id===id),1);
-								this.setState({subtasks:newSubtasks});
-							}}
-							match={{params:{taskID:null}}}
-						/>}
-
-
-						{this.state.toggleTab==="1" && !this.state.viewOnly && <ServicesExpenditure
-							disabled={this.state.viewOnly}
-							taskAssigned={this.state.assignedTo}
-							submitService={(newService)=>{
-								this.setState({taskWorks:[...this.state.taskWorks,{id:this.getNewID(),...newService}]});
-							}}
-							updatePrices={(ids)=>{
-								let newTaskWorks=[...this.state.taskWorks];
-								taskWorks.filter((item)=>ids.includes(item.id)).map((item)=>{
-									let price=item.workType.prices.find((item)=>item.pricelist===this.state.company.pricelist.id);
-									if(price === undefined){
-										price = 0;
-									}else{
-										price = price.price;
+							{!this.state.hidden && false && <Subtasks
+								disabled={this.state.viewOnly}
+								taskAssigned={this.state.assignedTo}
+								submitService={(newSubtask)=>{
+									this.setState({subtasks:[...this.state.subtasks,{id:this.getNewID(),...newSubtask}]});
+								}}
+								subtasks={this.state.subtasks.map((subtask)=>{
+									let assignedTo=subtask.assignedTo?this.state.users.find((item)=>item.id===subtask.assignedTo):null
+									return {
+										...subtask,
+										assignedTo:assignedTo?assignedTo:null
 									}
-									newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===item.id)]={...newTaskWorks.find((taskWork)=>taskWork.id===item.id),price};
-									return null;
-								})
-								this.setState({taskWorks:newTaskWorks});
-							}}
-							subtasks={taskWorks}
-							workTypes={this.state.workTypes}
-							updateSubtask={(id,newData)=>{
-								let newTaskWorks=[...this.state.taskWorks];
-								newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
-								this.setState({taskWorks:newTaskWorks});
-							}}
-							company={this.state.company}
-							removeSubtask={(id)=>{
-								let newTaskWorks=[...this.state.taskWorks];
-								newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
-								this.setState({taskWorks:newTaskWorks});
-							}}
-							match={{params:{taskID:null}}}
+								})}
+								updateSubtask={(id,newData)=>{
+									let newSubtasks=[...this.state.subtasks];
+									newSubtasks[newSubtasks.findIndex((subtask)=>subtask.id===id)]={...newSubtasks.find((subtask)=>subtask.id===id),...newData};
+									this.setState({subtasks:newSubtasks});
+								}}
+								removeSubtask={(id)=>{
+									let newSubtasks=[...this.state.subtasks];
+									newSubtasks.splice(newSubtasks.findIndex((subtask)=>subtask.id===id),1);
+									this.setState({subtasks:newSubtasks});
+								}}
+								match={{params:{taskID:null}}}
 							/>}
 
-							{this.state.toggleTab!=='1' && <ServicesBudget
+
+							{this.state.toggleTab==="1" && !this.state.viewOnly && <ServicesExpenditure
 								disabled={this.state.viewOnly}
 								taskAssigned={this.state.assignedTo}
 								submitService={(newService)=>{
@@ -640,135 +668,171 @@ export default class TaskAdd extends Component{
 								match={{params:{taskID:null}}}
 								/>}
 
-						<hr className="m-b-15" style={{marginLeft: "-30px", marginRight: "-30px", marginTop: "-5px"}}/>
+								{this.state.toggleTab!=='1' && <ServicesBudget
+									disabled={this.state.viewOnly}
+									taskAssigned={this.state.assignedTo}
+									submitService={(newService)=>{
+										this.setState({taskWorks:[...this.state.taskWorks,{id:this.getNewID(),...newService}]});
+									}}
+									updatePrices={(ids)=>{
+										let newTaskWorks=[...this.state.taskWorks];
+										taskWorks.filter((item)=>ids.includes(item.id)).map((item)=>{
+											let price=item.workType.prices.find((item)=>item.pricelist===this.state.company.pricelist.id);
+											if(price === undefined){
+												price = 0;
+											}else{
+												price = price.price;
+											}
+											newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===item.id)]={...newTaskWorks.find((taskWork)=>taskWork.id===item.id),price};
+											return null;
+										})
+										this.setState({taskWorks:newTaskWorks});
+									}}
+									subtasks={taskWorks}
+									workTypes={this.state.workTypes}
+									updateSubtask={(id,newData)=>{
+										let newTaskWorks=[...this.state.taskWorks];
+										newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
+										this.setState({taskWorks:newTaskWorks});
+									}}
+									company={this.state.company}
+									removeSubtask={(id)=>{
+										let newTaskWorks=[...this.state.taskWorks];
+										newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
+										this.setState({taskWorks:newTaskWorks});
+									}}
+									match={{params:{taskID:null}}}
+									/>}
 
-						{!this.state.viewOnly && <Nav tabs className="b-0 m-b-22 m-l--10">
-								<NavItem>
-									<NavLink
-										className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "")}
-										onClick={() => { this.setState({toggleTab:'1'}); }}
-									>
-										Výkaz
-									</NavLink>
-								</NavItem>
-								<NavItem>
-									<NavLink
-										className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
-										onClick={() => { this.setState({toggleTab:'2'}); }}
-									>
-										Rozpočet
-									</NavLink>
-								</NavItem>
-							</Nav>}
+							<hr className="m-b-15" style={{marginLeft: "-30px", marginRight: "-30px", marginTop: "-5px"}}/>
 
-							{!this.state.viewOnly && <TabContent activeTab={this.state.toggleTab}>
-								<TabPane tabId="1">
-									<MaterialsExpenditure
-										disabled={this.state.viewOnly}
-										materials={taskMaterials}
-										submitMaterial={(newMaterial)=>{
-											this.setState({taskMaterials:[...this.state.taskMaterials,{id:this.getNewID(),...newMaterial}]});
-										}}
-										updateMaterial={(id,newData)=>{
-											let newTaskMaterials=[...this.state.taskMaterials];
-											newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
-											this.setState({taskMaterials:newTaskMaterials});
-										}}
-										removeMaterial={(id)=>{
-											let newTaskMaterials=[...this.state.taskMaterials];
-											newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
-											this.setState({taskMaterials:newTaskMaterials});
-										}}
-										units={this.state.units}
-										defaultUnit={this.state.defaultUnit}
-										company={this.state.company}
-										match={{params:{taskID:null}}}
-									/>
-								</TabPane>
-								<TabPane tabId="2">
-									<MaterialsBudget
-										disabled={this.state.viewOnly}
-										materials={taskMaterials}
-										submitMaterial={(newMaterial)=>{
-											this.setState({taskMaterials:[...this.state.taskMaterials,{id:this.getNewID(),...newMaterial}]});
-										}}
-										updateMaterial={(id,newData)=>{
-											let newTaskMaterials=[...this.state.taskMaterials];
-											newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
-											this.setState({taskMaterials:newTaskMaterials});
-										}}
-										removeMaterial={(id)=>{
-											let newTaskMaterials=[...this.state.taskMaterials];
-											newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
-											this.setState({taskMaterials:newTaskMaterials});
-										}}
-										units={this.state.units}
-										defaultUnit={this.state.defaultUnit}
-										company={this.state.company}
-										match={{params:{taskID:null}}}
-									/>
-								</TabPane>
-							</TabContent>}
+							{!this.state.viewOnly && <Nav tabs className="b-0 m-b-22 m-l--10">
+									<NavItem>
+										<NavLink
+											className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "")}
+											onClick={() => { this.setState({toggleTab:'1'}); }}
+										>
+											Výkaz
+										</NavLink>
+									</NavItem>
+									<NavItem>
+										<NavLink
+											className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
+											onClick={() => { this.setState({toggleTab:'2'}); }}
+										>
+											Rozpočet
+										</NavLink>
+									</NavItem>
+								</Nav>}
+
+								{!this.state.viewOnly && <TabContent activeTab={this.state.toggleTab}>
+									<TabPane tabId="1">
+										<MaterialsExpenditure
+											disabled={this.state.viewOnly}
+											materials={taskMaterials}
+											submitMaterial={(newMaterial)=>{
+												this.setState({taskMaterials:[...this.state.taskMaterials,{id:this.getNewID(),...newMaterial}]});
+											}}
+											updateMaterial={(id,newData)=>{
+												let newTaskMaterials=[...this.state.taskMaterials];
+												newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
+												this.setState({taskMaterials:newTaskMaterials});
+											}}
+											removeMaterial={(id)=>{
+												let newTaskMaterials=[...this.state.taskMaterials];
+												newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
+												this.setState({taskMaterials:newTaskMaterials});
+											}}
+											units={this.state.units}
+											defaultUnit={this.state.defaultUnit}
+											company={this.state.company}
+											match={{params:{taskID:null}}}
+										/>
+									</TabPane>
+									<TabPane tabId="2">
+										<MaterialsBudget
+											disabled={this.state.viewOnly}
+											materials={taskMaterials}
+											submitMaterial={(newMaterial)=>{
+												this.setState({taskMaterials:[...this.state.taskMaterials,{id:this.getNewID(),...newMaterial}]});
+											}}
+											updateMaterial={(id,newData)=>{
+												let newTaskMaterials=[...this.state.taskMaterials];
+												newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
+												this.setState({taskMaterials:newTaskMaterials});
+											}}
+											removeMaterial={(id)=>{
+												let newTaskMaterials=[...this.state.taskMaterials];
+												newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
+												this.setState({taskMaterials:newTaskMaterials});
+											}}
+											units={this.state.units}
+											defaultUnit={this.state.defaultUnit}
+											company={this.state.company}
+											match={{params:{taskID:null}}}
+										/>
+									</TabPane>
+								</TabContent>}
 
 
-						{!this.state.hidden && false && <Services
-							disabled={this.state.viewOnly}
-							taskAssigned={this.state.assignedTo}
-							submitService={(newService)=>{
-								this.setState({taskWorks:[...this.state.taskWorks,{id:this.getNewID(),...newService}]});
-							}}
-							updatePrices={(ids)=>{
-								let newTaskWorks=[...this.state.taskWorks];
-								taskWorks.filter((item)=>ids.includes(item.id)).map((item)=>{
-									let price=item.workType.prices.find((item)=>item.pricelist===this.state.company.pricelist.id);
-									if(price === undefined){
-										price = 0;
-									}else{
-										price = price.price;
-									}
-									newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===item.id)]={...newTaskWorks.find((taskWork)=>taskWork.id===item.id),price};
-									return null;
-								})
-								this.setState({taskWorks:newTaskWorks});
-							}}
-							subtasks={taskWorks}
-							workTypes={this.state.workTypes}
-							updateSubtask={(id,newData)=>{
-								let newTaskWorks=[...this.state.taskWorks];
-								newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
-								this.setState({taskWorks:newTaskWorks});
-							}}
-							company={this.state.company}
-							removeSubtask={(id)=>{
-								let newTaskWorks=[...this.state.taskWorks];
-								newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
-								this.setState({taskWorks:newTaskWorks});
-							}}
-							match={{params:{taskID:null}}}
-							/>}
-
-							{!this.state.hidden && false && <Materials
+							{!this.state.hidden && false && <Services
 								disabled={this.state.viewOnly}
-								materials={taskMaterials}
-								submitMaterial={(newMaterial)=>{
-									this.setState({taskMaterials:[...this.state.taskMaterials,{id:this.getNewID(),...newMaterial}]});
+								taskAssigned={this.state.assignedTo}
+								submitService={(newService)=>{
+									this.setState({taskWorks:[...this.state.taskWorks,{id:this.getNewID(),...newService}]});
 								}}
-								updateMaterial={(id,newData)=>{
-									let newTaskMaterials=[...this.state.taskMaterials];
-									newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
-									this.setState({taskMaterials:newTaskMaterials});
+								updatePrices={(ids)=>{
+									let newTaskWorks=[...this.state.taskWorks];
+									taskWorks.filter((item)=>ids.includes(item.id)).map((item)=>{
+										let price=item.workType.prices.find((item)=>item.pricelist===this.state.company.pricelist.id);
+										if(price === undefined){
+											price = 0;
+										}else{
+											price = price.price;
+										}
+										newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===item.id)]={...newTaskWorks.find((taskWork)=>taskWork.id===item.id),price};
+										return null;
+									})
+									this.setState({taskWorks:newTaskWorks});
 								}}
-								removeMaterial={(id)=>{
-									let newTaskMaterials=[...this.state.taskMaterials];
-									newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
-									this.setState({taskMaterials:newTaskMaterials});
+								subtasks={taskWorks}
+								workTypes={this.state.workTypes}
+								updateSubtask={(id,newData)=>{
+									let newTaskWorks=[...this.state.taskWorks];
+									newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
+									this.setState({taskWorks:newTaskWorks});
 								}}
-								units={this.state.units}
-								defaultUnit={this.state.defaultUnit}
 								company={this.state.company}
+								removeSubtask={(id)=>{
+									let newTaskWorks=[...this.state.taskWorks];
+									newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
+									this.setState({taskWorks:newTaskWorks});
+								}}
 								match={{params:{taskID:null}}}
 								/>}
 
+								{!this.state.hidden && false && <Materials
+									disabled={this.state.viewOnly}
+									materials={taskMaterials}
+									submitMaterial={(newMaterial)=>{
+										this.setState({taskMaterials:[...this.state.taskMaterials,{id:this.getNewID(),...newMaterial}]});
+									}}
+									updateMaterial={(id,newData)=>{
+										let newTaskMaterials=[...this.state.taskMaterials];
+										newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
+										this.setState({taskMaterials:newTaskMaterials});
+									}}
+									removeMaterial={(id)=>{
+										let newTaskMaterials=[...this.state.taskMaterials];
+										newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
+										this.setState({taskMaterials:newTaskMaterials});
+									}}
+									units={this.state.units}
+									defaultUnit={this.state.defaultUnit}
+									company={this.state.company}
+									match={{params:{taskID:null}}}
+									/>}
+								</div>}
 							</div>
 
 

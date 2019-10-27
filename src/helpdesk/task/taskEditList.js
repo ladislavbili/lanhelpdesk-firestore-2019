@@ -43,6 +43,7 @@ class TaskEditList extends Component {
 			saving:false,
 			loading:true,
 			addItemModal:false,
+			task:null,
 
 			taskMaterials:[],
 			taskWorks:[],
@@ -363,6 +364,7 @@ class TaskEditList extends Component {
 			subtasks,
 			taskTypes,
 			allTags:tags,
+			task,
 
 			description:task.description,
       title:task.title,
@@ -370,7 +372,7 @@ class TaskEditList extends Component {
 			overtime:task.overtime?{value:true,label:'Áno'}:{value:false,label:'Nie'},
       status:status?status:null,
 			statusChange:task.statusChange?task.statusChange:null,
-			createdAt:task.createdAt?task.createdAt:null,
+			createdAt:task.createdAt?task.createdAt:(new Date()).getTime(),
 			deadline: task.deadline!==null?moment(task.deadline):null,
 			closeDate: task.closeDate!==null && task.closeDate!==undefined ?new Date(task.closeDate).toISOString().replace('Z',''):'',
 			pendingDate: task.pendingDate!==null && task.pendingDate!==undefined ?new Date(task.pendingDate).toISOString().replace('Z',''):'',
@@ -426,6 +428,11 @@ class TaskEditList extends Component {
 				totalPrice
 			}
 		});
+
+		let createdBy=null;
+		if(this.state.task&& this.state.task.createdBy){
+			createdBy = this.state.users.find((user)=>user.id===this.state.task.createdBy);
+		}
 
 		return (
 			<div className="">
@@ -510,7 +517,17 @@ class TaskEditList extends Component {
 
 							<div className="row">
 								<div className="col-lg-12 d-flex">
-									<p className=""><span className="text-muted">Created by</span> Branislav Šusta <span className="text-muted"> at {this.state.createdAt?(timestampToString(this.state.createdAt)):''}</span></p>
+
+									<p className="">
+										<span className="text-muted">
+											{createdBy?"Created by ":""}
+										</span>
+											{createdBy? (createdBy.name + " " +createdBy.surname) :''}
+										<span className="text-muted">
+											{createdBy?' at ':'Created at '}
+											{this.state.createdAt?(timestampToString(this.state.createdAt)):''}
+										</span>
+									</p>
 									<p className="text-muted ml-auto">{this.state.statusChange?('Status changed at ' + timestampToString(this.state.statusChange)):''}</p>
 								</div>
 
@@ -673,6 +690,7 @@ class TaskEditList extends Component {
 												<Label className="col-3 col-form-label">Milestone</Label>
 												<div className="col-9">
 													<Select
+														isDisabled={this.state.viewOnly}
 														value={this.state.milestone}
 														onChange={(milestone)=> {
 															this.setState({milestone},this.submitTask.bind(this));

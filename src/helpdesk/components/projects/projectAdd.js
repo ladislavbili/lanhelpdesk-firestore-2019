@@ -107,7 +107,7 @@ class ProjectAdd extends Component{
     						<Input type="textarea" className="form-control" id="description" placeholder="Zadajte text" value={this.state.description} onChange={(e) => this.setState({description: e.target.value})}/>
     					</FormGroup>
 
-              <h3 className="m-t-20"> DEMO - Default values </h3>
+              <h3 className="m-t-20"> Default values </h3>
 
                 <table className="table">
                   <thead>
@@ -271,7 +271,7 @@ class ProjectAdd extends Component{
                   let body = {
                     title: this.state.title,
                     description: this.state.description,
-										permissions:[{user:this.props.currentUser.id,read:true,write:true,delete:true}],
+										permissions:[{user:this.props.currentUser.id,read:false,write:false,delete:false,isAdmin:true}],
                     def:{
                       status:this.state.status.value?{...this.state.status,value:this.state.status.value.id}:{def:false,fixed:false, value: null},
                       tags:this.state.tags.value?{...this.state.tags,value:this.state.tags.value.map(item=>item.id)}:{def:false,fixed:false, value: []},
@@ -307,7 +307,7 @@ const mapStateToProps = ({ storageHelpStatuses, storageHelpTags, storageUsers, s
 	const { usersActive, users } = storageUsers;
 	const { taskTypesActive, taskTypes } = storageHelpTaskTypes;
 	const { companiesActive, companies } = storageCompanies;
-	return { currentUser:userReducer, 
+	return { currentUser:userReducer,
 		statusesActive, statuses,
 		tagsActive, tags,
 		usersActive, users,
