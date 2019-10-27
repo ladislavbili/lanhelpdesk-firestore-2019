@@ -26,7 +26,7 @@ import SMTPList from './../helpdesk/settings/smtps';
 
 class Navigation extends Component {
 	render() {
-		if((this.props.currentUser.userData===null||!this.props.currentUser.userData.isAgent)&&!testing){
+		if((this.props.currentUser.userData===null||!this.props.currentUser.userData.isAdmin)&&!testing){
 			return null
 		}
 		return (
