@@ -15,14 +15,22 @@ import ItemContainer from './items/itemContainer';
 
 class Navigation extends Component {
 	render() {
-		if((this.props.currentUser.userData===null||!this.props.currentUser.userData.isAgent)&&!testing){
-			return null
+		if((this.props.currentUser.userData===null||!this.props.currentUser.userData.role.value>0)&&!testing){
+			return (
+				<div>
+				<div className="row">
+					<div className="main">
+						<PageHeader {...this.props} settings={[{link:'statuses', title:'Statuses'}]} />
+					</div>
+				</div>
+			</div>
+		)
 		}
 		return (
 			<div>
 				<div className="row">
 						<Sidebar {...this.props} />
-					<div className="flex main">
+					<div className="main">
 						<PageHeader {...this.props} settings={[{link:'statuses', title:'Statuses'}]} />
 
 						<Route exact path='/cmdb/add' component={SidebarItemAdd} />

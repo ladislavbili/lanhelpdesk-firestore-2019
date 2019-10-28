@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import ShowData from '../../components/showData';
 import EditExpenditure from './editExpenditure';
 import {timestampToString} from '../../helperFunctions';
-import {setExpendituresOrderBy, setExpendituresAscending} from '../../redux/actions';
+import {setExpendituresOrderBy, setExpendituresAscending, setLayout} from '../../redux/actions';
 import EmptyExpenditure from "./emptyExpenditure";
 
 class List extends Component {
@@ -50,6 +50,8 @@ class List extends Component {
 		}
 		return(
 			<ShowData
+				layout={this.props.layout}
+				setLayout={this.props.setLayout}
 				data={this.state.instances}
 				displayCol={(expenditure)=>
 					<li className="" >
@@ -103,10 +105,10 @@ class List extends Component {
 		}
 	}
 
-	const mapStateToProps = ({ filterReducer, expenditureReducer }) => {
+	const mapStateToProps = ({ filterReducer, expenditureReducer, appReducer }) => {
 		const { project, filter } = filterReducer;
 		const { orderBy, ascending } = expenditureReducer;
-		return { project, filter,orderBy,ascending };
+		return { project, filter,orderBy,ascending, layout:appReducer.layout };
 	};
 
-	export default connect(mapStateToProps, { setExpendituresOrderBy, setExpendituresAscending })(List);
+	export default connect(mapStateToProps, { setExpendituresOrderBy, setExpendituresAscending, setLayout })(List);

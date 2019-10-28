@@ -65,6 +65,7 @@ body{
 
 .main{
   background-color: white;
+  width: calc( 100% - #{$sidebar-width} );
 }
 
 //-------------------overflow----------------------
@@ -225,6 +226,22 @@ html{
 .row{
   display: flex;
   margin: 0px;
+}
+
+.flex-row{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+.flex-column{
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.dnd-column{
+  min-width: 400px;
 }
 
 .no-scrolling{

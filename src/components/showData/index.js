@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import TaskCol from './taskCol';
 import TaskList from './taskList';
+import TaskListDnD from './taskListDnD';
 import { connect } from "react-redux";
 import {timestampToString} from '../../helperFunctions';
-import {setSearch, setFilter, setLayout} from '../../redux/actions';
+import {setSearch, setFilter } from '../../redux/actions';
 class ShowDataContainer extends Component {
 	constructor(props) {
 		super(props);
@@ -82,9 +83,7 @@ class ShowDataContainer extends Component {
 									empty={this.props.empty}
 									match={this.props.match}
 									data={this.filterData()}
-									displayValues={this.props.displayValues}
 									itemID={this.props.itemID}
-									listID={this.props.listID}
 									link={this.props.link}
 									displayCol={this.props.displayCol}
 									edit={this.props.edit}/>
@@ -102,18 +101,30 @@ class ShowDataContainer extends Component {
 										history={this.props.history}
 										match={this.props.match}
 										data={this.filterData()}
-										itemID={this.props.itemID}
-										listID={this.props.listID}
 										displayValues={this.props.displayValues}
 										link={this.props.link}/>}
 							</div>
 						)}
 
-						{/*this.props.layout === 2 && false && (
+						{this.props.layout === 2 && (
 							<div className={'' + (this.state.filterView ? 'col-xl-9' : 'col-xl-12')}>
-								<TaskBoard history={this.props.history} match={this.props.match} data={this.filterData()} displayValues={this.props.displayValues} link={this.props.link}/>
+								{this.props.itemID && <this.props.edit match={this.props.match} columns={false} history={this.props.history} />}
+								{!this.props.itemID &&
+									<TaskListDnD
+										commandBar={this.props}
+										listName={this.props.listName}
+										history={this.props.history}
+										match={this.props.match}
+										data={this.filterData()}
+										displayValues={this.props.displayValues}
+										displayCol={this.props.displayCol}
+										link={this.props.link}
+										groupBy={this.props.dndGroupAttribute}
+										groupData={this.props.dndGroupData}
+										/>
+								}
 							</div>
-						)*/}
+						)}
 					</div>
 				</div>
 			</div>
@@ -121,8 +132,8 @@ class ShowDataContainer extends Component {
 	}
 }
 
-const mapStateToProps = ({ filterReducer, appReducer }) => {
-	return { search:filterReducer.search, layout:appReducer.layout };
+const mapStateToProps = ({ filterReducer }) => {
+	return { search:filterReducer.search };
 };
 
-export default connect(mapStateToProps, { setSearch, setFilter, setLayout })(ShowDataContainer);
+export default connect(mapStateToProps, { setSearch, setFilter })(ShowDataContainer);

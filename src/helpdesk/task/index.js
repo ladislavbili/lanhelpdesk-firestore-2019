@@ -4,7 +4,7 @@ import ShowData from '../../components/showData';
 import {timestampToString, sameStringForms} from '../../helperFunctions';
 import TaskEdit from './taskEditContainer';
 import TaskEmpty from './taskEmpty';
-import {setTasksOrderBy, setTasksAscending,storageCompaniesStart,storageHelpTagsStart,storageUsersStart,storageHelpProjectsStart,storageHelpStatusesStart,storageHelpTasksStart, storageHelpFiltersStart} from '../../redux/actions';
+import {setTasksOrderBy, setTasksAscending,storageCompaniesStart,storageHelpTagsStart,storageUsersStart,storageHelpProjectsStart,storageHelpStatusesStart,storageHelpTasksStart, storageHelpFiltersStart, setTasklistLayout} from '../../redux/actions';
 
 
 class TasksIndex extends Component {
@@ -132,7 +132,7 @@ class TasksIndex extends Component {
 			(filter.pendingDateFrom===''||filter.pendingDateFrom===undefined||task.pendingDate >= filter.pendingDateFrom) &&
 			(filter.pendingDateTo===''||filter.pendingDateTo===undefined||task.pendingDate <= filter.pendingDateTo) &&
 			(this.props.project===null||(task.project && task.project.id===this.props.project))&&
-			(this.props.currentUser.userData.isAgent||(currentPermissions && currentPermissions.read)) &&
+			(this.props.currentUser.userData.role.value>0||(currentPermissions && currentPermissions.read)) &&
 			(this.props.milestone===null||((task.milestone)&& task.milestone === this.props.milestone))
 		})
 	}
@@ -145,6 +145,8 @@ class TasksIndex extends Component {
 		}
 		return (
 			<ShowData
+				layout={this.props.tasklistLayout}
+				setLayout={this.props.setTasklistLayout}
 				data={this.filterTasks()}
 				filterBy={[
 					{value:'assignedTo',type:'list',func:((total,user)=>total+=user.email+' '+user.name+' '+user.surname+' ')},
@@ -224,6 +226,8 @@ class TasksIndex extends Component {
 			//		{value:'tags',label:'Tags',type:'list',func:((cur,item)=>cur+item.title+' ')},
 					{value:'deadline',label:'Deadline',type:'date'}
 				]}
+				dndGroupAttribute="status"
+				dndGroupData={this.props.statuses}
 				link={link}
 				history={this.props.history}
 				orderBy={this.props.orderBy}
@@ -244,7 +248,7 @@ class TasksIndex extends Component {
 
 const mapStateToProps = ({ userReducer, filterReducer, taskReducer, storageCompanies, storageHelpTags, storageUsers, storageHelpProjects, storageHelpStatuses,storageHelpTasks,storageHelpFilters }) => {
 	const { project, milestone, filter } = filterReducer;
-	const { orderBy, ascending } = taskReducer;
+	const { orderBy, ascending, tasklistLayout } = taskReducer;
 
 	const { companiesActive, companies } = storageCompanies;
 	const { tagsActive, tags } = storageHelpTags;
@@ -254,7 +258,7 @@ const mapStateToProps = ({ userReducer, filterReducer, taskReducer, storageCompa
 	const { tasksActive, tasks } = storageHelpTasks;
 	const { filtersActive, filters } = storageHelpFilters;
 
-	return { project, milestone, filter,orderBy,ascending, currentUser:userReducer,companiesActive, companies, tagsActive, tags, usersActive, users, projectsActive, projects, statusesActive, statuses, tasksActive, tasks, filtersActive, filters };
+	return { project, milestone, filter,orderBy,ascending,tasklistLayout, currentUser:userReducer,companiesActive, companies, tagsActive, tags, usersActive, users, projectsActive, projects, statusesActive, statuses, tasksActive, tasks, filtersActive, filters };
 };
 
-export default connect(mapStateToProps, { setTasksOrderBy, setTasksAscending ,storageCompaniesStart,storageHelpTagsStart,storageUsersStart,storageHelpProjectsStart,storageHelpStatusesStart,storageHelpTasksStart, storageHelpFiltersStart})(TasksIndex);
+export default connect(mapStateToProps, { setTasksOrderBy, setTasksAscending ,storageCompaniesStart,storageHelpTagsStart,storageUsersStart,storageHelpProjectsStart,storageHelpStatusesStart,storageHelpTasksStart, storageHelpFiltersStart, setTasklistLayout})(TasksIndex);

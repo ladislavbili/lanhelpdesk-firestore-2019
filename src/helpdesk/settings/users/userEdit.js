@@ -11,12 +11,17 @@ import { connect } from "react-redux";
 import {storageCompaniesStart,storageUsersStart, setUserData} from '../../../redux/actions';
 import {toSelArr} from '../../../helperFunctions';
 
+let roles=[
+  {label:'User',value:0},
+  {label:'Agent',value:1},
+  {label:'Manager',value:2},
+  {label:'Admin',value:3},
+]
+
 class UserEdit extends Component{
   constructor(props){
     super(props);
     this.state={
-      isAdmin:false,
-      isAgent:false,
       username:'',
       name:'',
       surname:'',
@@ -26,7 +31,8 @@ class UserEdit extends Component{
       saving:false,
       passReseted:false,
       passResetEnded:true,
-      companies:[]
+      companies:[],
+      role:roles[0],
     }
     this.setData.bind(this);
   }
@@ -72,6 +78,10 @@ class UserEdit extends Component{
         company=companies[0];
       }
     }
+    let role = user.role;
+    if(role===undefined){
+      role=roles[0];
+    }
     this.setState({
       company,
       companies,
@@ -79,8 +89,7 @@ class UserEdit extends Component{
       name:user.name,
       surname:user.surname,
       email:user.email,
-      isAdmin:user.isAdmin ? true : false,
-      isAgent:user.isAgent ? true : false,
+      role,
       loading:false
     })
   }
@@ -96,12 +105,13 @@ class UserEdit extends Component{
             </Alert>
           }
           <FormGroup>
-            <Label for="isAdmin">Admin</Label>
-            <Input type="checkbox" id="isAdmin" checked={this.state.isAdmin} onChange={(e)=>this.setState({isAdmin:!this.state.isAdmin })} />
-          </FormGroup>
-          <FormGroup>
-            <Label for="isAgent">Agent</Label>
-            <Input type="checkbox" id="isAgent" checked={this.state.isAgent||this.state.isAdmin} onChange={(e)=>this.setState({isAgent:!this.state.isAgent})} disabled={this.state.isAdmin} />
+            <Label for="role">Role</Label>
+            <Select
+              styles={selectStyle}
+              options={roles}
+              value={this.state.role}
+              onChange={role => this.setState({ role })}
+              />
           </FormGroup>
           <FormGroup>
             <Label for="username">Username</Label>
@@ -137,8 +147,7 @@ class UserEdit extends Component{
               surname:this.state.surname,
               email:this.state.email,
               company:this.state.company.id,
-              isAdmin:this.state.isAdmin,
-              isAgent:this.state.isAdmin || this.state.isAgent,
+              role:this.state.role
             }
             rebase.updateDoc('/users/'+this.props.match.params.id, body)
               .then(()=>{

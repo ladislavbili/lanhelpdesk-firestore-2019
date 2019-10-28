@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import ShowData from '../../components/showData';
 import EditPassword from './editPassword';
 import { Button, Input } from 'reactstrap';
-import {setPasswordsOrderBy, setPasswordsAscending} from '../../redux/actions';
+import {setPasswordsOrderBy, setPasswordsAscending, setLayout} from '../../redux/actions';
 import PassEmpty from "./passEmpty";
 
 //const attributes=[{title:'Server name',id:'title'},{title:'IP',id:'IP'},{title:'Status',id:'status'},{title:'Company',id:'company'}];
@@ -59,6 +59,8 @@ class List extends Component {
 		}
 		return (
 			<ShowData
+				layout={this.props.layout}
+				setLayout={this.props.setLayout}
 				data={this.state.passwords}
 				displayCol={(pass)=>
 					<li className="" >
@@ -156,9 +158,9 @@ class List extends Component {
 		}
 	}
 
-	const mapStateToProps = ({ passReducer }) => {
+	const mapStateToProps = ({ passReducer, appReducer }) => {
 		const { orderBy, ascending } = passReducer;
-		return { orderBy,ascending };
+		return { orderBy,ascending, layout:appReducer.layout };
 	};
 
-	export default connect(mapStateToProps, { setPasswordsOrderBy, setPasswordsAscending })(List);
+	export default connect(mapStateToProps, { setPasswordsOrderBy, setPasswordsAscending, setLayout })(List);

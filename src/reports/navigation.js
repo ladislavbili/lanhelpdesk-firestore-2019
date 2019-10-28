@@ -26,17 +26,38 @@ import SMTPList from './../helpdesk/settings/smtps';
 
 class Navigation extends Component {
 	render() {
-		if((this.props.currentUser.userData===null||!this.props.currentUser.userData.isAdmin)&&!testing){
-			return null
+		if((this.props.currentUser.userData===null||!this.props.currentUser.userData.role.value < 2 )&&!testing){
+			return (
+				<div>
+					<div className="row">
+						<div className="main">
+							<PageHeader {...this.props}
+								settings={
+								[{title:'Projects',link:'projects'},
+								{title:'Statuses',link:'statuses'},
+								{title:'Units',link:'units'},
+								{title:'Companies',link:'companies'},
+								{title:'Work Type',link:'workTypes'},
+								{title:'Users',link:'users'},
+								{title:'Prices',link:'pricelists'},
+								{title:'Supplier',link:'suppliers'},
+								{title:'Tags',link:'tags'},
+								{title:'Invoices',link:'supplierInvoices'},
+								{title:'Task types',link:'taskTypes'},
+								{title:'Imaps',link:'imaps'},
+								{title:'SMTPs',link:'smtps'},
+							]} />
+						</div>
+					</div>
+				</div>
+			)
 		}
 		return (
 			<div>
 				<div className="row">
 						<Sidebar {...this.props} />
-					<div className="flex main">
-
+					<div className="main">
 					<PageHeader {...this.props}
-						showLayoutSwitch={true}
 						settings={
 						[{title:'Projects',link:'projects'},
 						{title:'Statuses',link:'statuses'},
@@ -91,8 +112,8 @@ class Navigation extends Component {
 }
 }
 
-const mapStateToProps = ({ userReducer}) => {
+const mapStateToProps = ({ userReducer }) => {
 	return { currentUser:userReducer };
 };
 
-export default connect(mapStateToProps, {  })(Navigation);
+export default connect(mapStateToProps, { })(Navigation);

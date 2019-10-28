@@ -1,8 +1,9 @@
-import {SET_TASKS_ORDER_BY, SET_TASKS_ASCENDING} from '../types'
+import {SET_TASKS_ORDER_BY, SET_TASKS_ASCENDING,SET_TASKLIST_LAYOUT} from '../types'
 
 const initialState = {
   orderBy:'title',
-  ascending:true
+  ascending:true,
+  tasklistLayout:0,
 };
 
 export default function userReducer(state = initialState, action) {
@@ -16,6 +17,11 @@ export default function userReducer(state = initialState, action) {
       return {
         ...state,
         ascending: action.ascending,
+      };
+    case SET_TASKLIST_LAYOUT:
+      return {
+        ...state,
+        tasklistLayout: action.tasklistLayout,
       };
     default:
       return state;

@@ -231,7 +231,7 @@ class ProjectEdit extends Component{
 								}}
 								permissions={this.state.permissions}
 								userID={this.props.currentUser.id}
-								isAdmin={this.props.currentUser.userData.isAgent||testing}
+								isAdmin={this.props.currentUser.userData.role.value>0||testing}
 								/>
 							{/*TO DELETE*/}
 

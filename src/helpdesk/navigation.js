@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import { connect } from "react-redux";
 import {testing} from '../helperFunctions';
-
+import {setTasklistLayout} from '../redux/actions';
 import Sidebar from './Sidebar';
 import PageHeader from '../components/PageHeader';
 
@@ -28,10 +28,13 @@ class Navigation extends Component {
 			<div>
 				<div className="row">
 						<Sidebar {...this.props} />
-					<div className="flex main">
+					<div className="main">
 
 					<PageHeader {...this.props}
 						showLayoutSwitch={true}
+						setLayout={this.props.setTasklistLayout}
+						layout={this.props.layout}
+						dndLayout={true}
 						settings={[
 						{title:'Users',link:'users'},
 						{title:'Companies',link:'companies'},
@@ -53,7 +56,7 @@ class Navigation extends Component {
 					<Route exact path="/helpdesk/taskList/i/:listID" component={TaskList} />
 					<Route exact path="/helpdesk/taskList/i/:listID/:taskID" component={TaskList} />
 
-				{((this.props.currentUser.userData && this.props.currentUser.userData.isAdmin) || testing) && <div>
+				{((this.props.currentUser.userData && this.props.currentUser.userData.role.value===3) || testing) && <div>
 						<Route exact path='/helpdesk/settings/statuses' component={StatusList} />
 	          <Route exact path='/helpdesk/settings/statuses/:id' component={StatusList} />
 	          <Route exact path='/helpdesk/settings/projects' component={ProjectList} />
@@ -88,8 +91,8 @@ class Navigation extends Component {
 }
 }
 
-const mapStateToProps = ({ userReducer}) => {
-	return { currentUser:userReducer };
+const mapStateToProps = ({taskReducer, userReducer}) => {
+	return {layout:taskReducer.tasklistLayout, currentUser:userReducer };
 };
 
-export default connect(mapStateToProps, {  })(Navigation);
+export default connect(mapStateToProps, { setTasklistLayout })(Navigation);

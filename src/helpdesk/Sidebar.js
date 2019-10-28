@@ -49,7 +49,7 @@ class Sidebar extends Component {
 			filters:[],
 			search: '',
 			activeTab:0,
-			projects:this.props.currentUser.userData.isAgent?[dashboard,addProject]:[dashboard],
+			projects:this.props.currentUser.userData.role.value>0?[dashboard,addProject]:[dashboard],
 			project:dashboard,
 			milestones:[allMilestones],
 			milestone:allMilestones,
@@ -68,7 +68,7 @@ class Sidebar extends Component {
 		if(!sameStringForms(props.projects,this.props.projects)||!sameStringForms(this.props.currentUser,props.currentUser)){
 			let project = toSelArr([dashboard].concat(props.projects)).find((item)=>item.id===props.project);
 			this.setState({
-				projects:toSelArr([dashboard].concat(props.projects).concat(props.currentUser.userData.isAgent?[addProject]:[])),
+				projects:toSelArr([dashboard].concat(props.projects).concat(props.currentUser.userData.role.value>0?[addProject]:[])),
 				project:project?project:dashboard
 			});
 		}
@@ -86,7 +86,7 @@ class Sidebar extends Component {
 			this.props.storageHelpProjectsStart();
 		}
 		this.setState({
-			projects:toSelArr([dashboard].concat(this.props.projects).concat(this.props.currentUser.userData.isAgent?[addProject]:[])),
+			projects:toSelArr([dashboard].concat(this.props.projects).concat(this.props.currentUser.userData.role.value>0?[addProject]:[])),
 			project:toSelArr([dashboard].concat(this.props.projects)).find((item)=>item.id===this.props.project)
 		});
 
@@ -105,13 +105,13 @@ class Sidebar extends Component {
 	}
 
 	render() {
-		let showSettings= this.props.history.location.pathname.includes('settings')&&(this.props.currentUser.userData.isAdmin||testing);
+		let showSettings= this.props.history.location.pathname.includes('settings')&&(this.props.currentUser.userData.role.value===3||testing);
 		let managesProjects = this.state.project.id!==null && this.state.project.id!==-1 && (
-			this.props.currentUser.userData.isAgent || testing ||
+			this.props.currentUser.userData.role.value>0 || testing ||
 			(this.state.project.permissions.find((permission)=>permission.user===this.props.currentUser.id)!==undefined && this.state.project.permissions.find((permission)=>permission.user===this.props.currentUser.id).isAdmin)
 		);
 		let addsMilestones = this.state.project.id!==null && this.state.project.id!==-1 && (
-			this.props.currentUser.userData.isAgent || testing ||
+			this.props.currentUser.userData.role.value>0 || testing ||
 			(this.state.project.permissions.find((permission)=>permission.user===this.props.currentUser.id)!==undefined && this.state.project.permissions.find((permission)=>permission.user===this.props.currentUser.id).write)
 		);
 		return (
@@ -124,7 +124,7 @@ class Sidebar extends Component {
 							<Select
 								options={this.state.projects.filter((project)=>{
 									let curr = this.props.currentUser;
-									if((curr.userData && curr.userData.isAgent)||(project.id===-1||project.id===null)){
+									if((curr.userData && curr.userData.role.value>0)||(project.id===-1||project.id===null)){
 										return true;
 									}
 									let permission = project.permissions.find((permission)=>permission.user===curr.id);
@@ -266,7 +266,7 @@ class Sidebar extends Component {
 		const { filtersActive, filters } = storageHelpFilters;
 		const { projectsActive, projects } = storageHelpProjects;
 		const { milestonesActive, milestones } = storageHelpMilestones;
-    return { project, milestone, filtersActive,filters,projectsActive,projects, milestonesActive, milestones, currentUser:{...userReducer, userData:{...(userReducer.userData?userReducer.userData:{isAdmin:false,isAgent:false})}} };
+    return { project, milestone, filtersActive,filters,projectsActive,projects, milestonesActive, milestones, currentUser:{...userReducer, userData:{...(userReducer.userData?userReducer.userData:{role:{value:0}})}} };
   };
 
   export default connect(mapStateToProps, { setProject, setMilestone, setFilter, storageHelpFiltersStart, storageHelpProjectsStart, storageHelpMilestonesStart })(Sidebar);

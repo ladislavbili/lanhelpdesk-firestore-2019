@@ -3,7 +3,7 @@ import { rebase } from '../../index';
 import { connect } from "react-redux";
 import TimeAgo from 'react-timeago';
 import {timestampToString} from '../../helperFunctions';
-import {setWikiOrderBy, setWikiAscending} from '../../redux/actions';
+import {setWikiOrderBy, setWikiAscending, setLayout} from '../../redux/actions';
 import ShowData from '../../components/showData';
 import NoteEdit from './NoteEdit';
 import NoteEmpty from './noteEmpty';
@@ -88,6 +88,8 @@ class List extends Component {
 		}
 		return (
 			<ShowData
+				layout={this.props.layout}
+				setLayout={this.props.setLayout}
 				data={this.state.notes.map((note)=>{
 					return {
 						...note,
@@ -142,10 +144,10 @@ class List extends Component {
 	}
 
 
-		const mapStateToProps = ({ filterReducer, wikiReducer }) => {
+		const mapStateToProps = ({ filterReducer, wikiReducer, appReducer }) => {
 			const { project, filter } = filterReducer;
 			const { orderBy, ascending } = wikiReducer;
-			return { project, filter,orderBy,ascending };
+			return { project, filter,orderBy,ascending, layout:appReducer.layout };
 		};
 
-		export default connect(mapStateToProps, { setWikiOrderBy, setWikiAscending })(List);
+		export default connect(mapStateToProps, { setWikiOrderBy, setWikiAscending, setLayout })(List);

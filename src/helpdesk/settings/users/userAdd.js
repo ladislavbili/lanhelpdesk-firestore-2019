@@ -10,12 +10,17 @@ import { connect } from "react-redux";
 import {storageCompaniesStart} from '../../../redux/actions';
 import {sameStringForms, toSelArr} from '../../../helperFunctions';
 
+let roles=[
+  {label:'User',value:0},
+  {label:'Agent',value:1},
+  {label:'Manager',value:2},
+  {label:'Admin',value:3},
+]
+
 class UserAdd extends Component{
   constructor(props){
     super(props);
     this.state={
-      isAdmin:false,
-      isAgent:false,
       username:'',
       name:'',
       surname:'',
@@ -23,7 +28,8 @@ class UserAdd extends Component{
       company:null,
       saving:false,
       password:'',
-      companies:[]
+      companies:[],
+      role:roles[0],
     }
   }
 
@@ -50,12 +56,13 @@ class UserAdd extends Component{
       <div className="full-height card-box scrollable fit-with-header-and-commandbar">
         <div className="">
           <FormGroup>
-            <Label for="isAdmin">Admin</Label>
-            <Input type="checkbox" id="isAdmin" checked={this.state.isAdmin} onChange={(e)=>this.setState({isAdmin:!this.state.isAdmin })} />
-          </FormGroup>
-          <FormGroup>
-            <Label for="isAgent">Agent</Label>
-            <Input type="checkbox" id="isAgent" checked={this.state.isAgent||this.state.isAdmin} onChange={(e)=>this.setState({isAgent:!this.state.isAgent})} disabled={this.state.isAdmin} />
+            <Label for="role">Role</Label>
+            <Select
+              styles={selectStyle}
+              options={roles}
+              value={this.state.role}
+              onChange={role => this.setState({ role })}
+              />
           </FormGroup>
           <FormGroup>
             <Label for="username">Username</Label>
@@ -96,8 +103,7 @@ class UserAdd extends Component{
                   surname:this.state.surname,
                   email:this.state.email,
                   company:this.state.company.id,
-                  isAdmin:this.state.isAdmin,
-                  isAgent:this.state.isAdmin || this.state.isAgent,
+                  role:this.state.role,
                 };
                 rebase.addToCollection('/users', newUser, user.user.uid)
                 .then(()=>{
@@ -108,8 +114,7 @@ class UserAdd extends Component{
                     surname:'',
                     email:'',
                     company,
-                    isAdmin:false,
-                    isAgent:false,
+                    role:roles[0],
                     saving:false
                   }, () => {
                     if (this.props.userAdd){

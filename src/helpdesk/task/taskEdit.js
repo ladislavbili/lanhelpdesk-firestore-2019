@@ -114,7 +114,7 @@ class TaskEdit extends Component {
 	}
 
 	canSave(){
-		return this.state.title==="" || this.state.status===null || this.state.project === null||this.state.saving;
+		return this.state.title==="" || this.state.status===null || this.state.project === null||this.state.saving||this.state.viewOnly;
 	}
 
 	storageLoaded(props){
@@ -220,15 +220,6 @@ class TaskEdit extends Component {
 		){
 			this.setData(props);
 		}
-		if(!sameStringForms(props.projects,this.props.projects)){
-			if(this.state.extraDataLoaded && this.storageLoaded(props)){
-				let task = props.tasks.find((task)=>task.id===props.match.params.taskID);
-				let project = props.projects.find((item)=>item.id===task.project);
-				let permission = project.permissions.find((permission)=>permission.user===props.currentUser.id);
-				let viewOnly = !permission.write && !props.currentUser.userData.isAgent;
-				this.setState({viewOnly});
-			}
-		}
   }
 
 	componentWillMount(){
@@ -318,20 +309,20 @@ class TaskEdit extends Component {
 		if(!this.state.extraDataLoaded || !this.storageLoaded(props)){
 			return;
 		}
-		let taskID = this.props.match.params.taskID;
+		let taskID = props.match.params.taskID;
 		let task = props.tasks.find((task)=>task.id===taskID);
-		let statuses = toSelArr(this.props.statuses);
-		let projects = toSelArr(this.props.projects);
-		let users = [{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}].concat(toSelArr(this.props.users,'email'));
-		let tags = toSelArr(this.props.tags);
-		let companies = [{id:-1,title:'+ Add company',body:'add', label:'+ Add company',value:null}].concat(toSelArr(this.props.companies));
-		let workTypes = toSelArr(this.props.workTypes);
-		let units = toSelArr(this.props.units);
-		let taskTypes = toSelArr(this.props.taskTypes);
-		let prices = this.props.prices;
-		let subtasks = this.props.subtasks;
-		let pricelists = this.props.pricelists;
-		let defaultUnit = this.props.metadata.defaultUnit;
+		let statuses = toSelArr(props.statuses);
+		let projects = toSelArr(props.projects);
+		let users = [{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}].concat(toSelArr(props.users,'email'));
+		let tags = toSelArr(props.tags);
+		let companies = [{id:-1,title:'+ Add company',body:'add', label:'+ Add company',value:null}].concat(toSelArr(props.companies));
+		let workTypes = toSelArr(props.workTypes);
+		let units = toSelArr(props.units);
+		let taskTypes = toSelArr(props.taskTypes);
+		let prices = props.prices;
+		let subtasks = props.subtasks;
+		let pricelists = props.pricelists;
+		let defaultUnit = props.metadata.defaultUnit;
 		let taskMaterials = this.state.taskMaterials;
 		let taskWorks = this.state.taskWorks;
 		let milestones = [noMilestone,...toSelArr(props.milestones)];
@@ -369,8 +360,8 @@ class TaskEdit extends Component {
 			taskTags=tags.filter((tag)=>task.tags.includes(tag.id));
 		}
 
-		let permission = project.permissions.find((permission)=>permission.user===this.props.currentUser.id);
-		let viewOnly = !permission.write&& !this.props.currentUser.userData.isAgent;
+		let permission = project.permissions.find((permission)=>permission.user===props.currentUser.id);
+		let viewOnly = !permission.write&& !props.currentUser.userData.role.value>0;
     this.setState({
       statuses,
       projects,
@@ -415,6 +406,11 @@ class TaskEdit extends Component {
   }
 
 	render() {
+		let permission = null;
+		if(this.state.project){
+			permission = this.state.project.permissions.find((permission)=>permission.user===this.props.currentUser.id);
+		}
+		let canDelete = (permission && permission.delete)||this.props.currentUser.userData.role.value>0;
 		let taskID = this.props.match.params.taskID;
 		let taskWorks= this.state.taskWorks.map((work)=>{
 			let finalUnitPrice=parseFloat(work.price);
@@ -505,7 +501,7 @@ class TaskEdit extends Component {
 						</div>
 						<div className="ml-auto center-hor">
 							<TaskPrint match={this.props.match} {...this.state} isLoaded={this.state.extraDataLoaded && this.storageLoaded(this.props) && !this.state.loading} />
-							{<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.deleteTask.bind(this)}>
+							{canDelete && <button type="button" disabled={!canDelete} className="btn btn-link waves-effect" onClick={this.deleteTask.bind(this)}>
 								<i
 									className="far fa-trash-alt"
 									/> Delete

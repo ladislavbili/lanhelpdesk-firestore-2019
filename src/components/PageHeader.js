@@ -3,7 +3,7 @@ import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap
 import { Link } from 'react-router-dom';
 import { connect } from "react-redux";
 import firebase from 'firebase';
-import {deleteUserData, setLayout} from '../redux/actions';
+import {deleteUserData } from '../redux/actions';
 import {testing} from '../helperFunctions';
 
 class PageHeader extends Component {
@@ -58,35 +58,42 @@ class PageHeader extends Component {
 						<Link to={{ pathname: `/helpdesk/taskList/i/all` }} className={"header-link" + (URL.includes("helpdesk/taskList") ? " header-link-active" : "")}>
 							Úlohy
 						</Link>
-						<Link to={{ pathname: `/lanwiki/i/all` }} className={"header-link" + (URL.includes("lanwiki") ? " header-link-active" : "")}>
-							Návody
-						</Link>
-						{ ((this.props.currentUser.userData && this.props.currentUser.userData.isAgent)|| testing) &&
+						{ ((this.props.currentUser.userData && this.props.currentUser.userData.role.value>0)|| testing) &&
+							<Link to={{ pathname: `/lanwiki/i/all` }} className={"header-link" + (URL.includes("lanwiki") ? " header-link-active" : "")}>
+								Návody
+							</Link>
+						}
+						{ ((this.props.currentUser.userData && this.props.currentUser.userData.role.value>0)|| testing) &&
 							<Link to={{ pathname: `/cmdb/all` }} className={"header-link" + (URL.includes("cmdb") ? " header-link-active" : "")}>
 								CMDB
 							</Link>
 						}
-						{ ((this.props.currentUser.userData && this.props.currentUser.userData.isAgent)|| testing) &&
+						{ ((this.props.currentUser.userData && this.props.currentUser.userData.role.value>0)|| testing) &&
 							<Link to={{ pathname: `/passmanager` }} className={"header-link" + (URL.includes("passmanager") ? " header-link-active" : "")}>
 								Heslá
 							</Link>
 						}
-						<Link to={{ pathname: `/expenditures` }} className={"header-link" + (URL.includes("expenditures") ? " header-link-active" : "")}>
-							Náklady
-						</Link>
-						{ ((this.props.currentUser.userData && this.props.currentUser.userData.isAgent)|| testing) &&
+						{ ((this.props.currentUser.userData && this.props.currentUser.userData.role.value>1)|| testing) &&
+							<Link to={{ pathname: `/expenditures` }} className={"header-link" + (URL.includes("expenditures") ? " header-link-active" : "")}>
+								Náklady
+							</Link>
+						}
+
+						{ ((this.props.currentUser.userData && this.props.currentUser.userData.role.value>1)|| testing) &&
 							<Link to={{ pathname: `/reports` }} className={"header-link" + (URL.includes("reports") ? " header-link-active" : "")}>
 								Vykazy
 							</Link>
 						}
-						{ ((this.props.currentUser.userData && this.props.currentUser.userData.isAgent)|| testing) &&
+						{ ((this.props.currentUser.userData && this.props.currentUser.userData.role.value>0)|| testing) &&
 							<Link to={{ pathname: `/projects` }} className={"header-link" + (URL.includes("projects") ? " header-link-active" : "")}>
 								Projekty
 							</Link>
 						}
-						<Link to={{ pathname: `/monitoring` }} className={"header-link" + (URL.includes("monitoring") ? " header-link-active" : "")}>
-							Monitoring
-						</Link>
+						{ ((this.props.currentUser.userData && this.props.currentUser.userData.role.value>0)|| testing) &&
+							<Link to={{ pathname: `/monitoring` }} className={"header-link" + (URL.includes("monitoring") ? " header-link-active" : "")}>
+								Monitoring
+							</Link>
+						}
 					</div>
 					<div className="ml-auto center-hor row">
 						{this.props.showLayoutSwitch && <Dropdown className="center-hor" isOpen={this.state.layoutOpen} toggle={()=>this.setState({layoutOpen:!this.state.layoutOpen})}>
@@ -123,7 +130,7 @@ class PageHeader extends Component {
 										/>
 										<i className="fa fa-list" />
 									</label>
-									<label
+									{this.props.dndLayout && <label
 										className={
 											'btn btn-link btn-outline-blue waves-effect waves-light' +
 											(this.props.layout === 2 ? ' active' : '')
@@ -136,14 +143,14 @@ class PageHeader extends Component {
 											checked={this.props.layout === 2}
 										/>
 										<i className="fa fa-map" />
-									</label>
+									</label>}
 								</div>
 							</DropdownMenu>
 						</Dropdown>}
 
 						<i className="header-icon fa fa-exclamation-triangle center-hor"/>
 						<i className="header-icon fa fa-envelope center-hor" />
-						{((this.props.currentUser.userData && this.props.currentUser.userData.isAdmin)||testing) && <Dropdown className="center-hor" isOpen={this.state.settingsOpen} toggle={()=>this.setState({settingsOpen:!this.state.settingsOpen})}>
+						{((this.props.currentUser.userData && this.props.currentUser.userData.role.value===3)||testing) && <Dropdown className="center-hor" isOpen={this.state.settingsOpen} toggle={()=>this.setState({settingsOpen:!this.state.settingsOpen})}>
 			        <DropdownToggle className="header-dropdown">
 								<i className="header-icon fa fa-cog"/>
 			        </DropdownToggle>
@@ -170,8 +177,8 @@ class PageHeader extends Component {
 }
 
 
-const mapStateToProps = ({appReducer, userReducer}) => {
-	return { layout:appReducer.layout,currentUser:userReducer };
+const mapStateToProps = ({ userReducer}) => {
+	return { currentUser:userReducer };
 };
 
-export default connect(mapStateToProps, { deleteUserData, setLayout })(PageHeader);
+export default connect(mapStateToProps, { deleteUserData })(PageHeader);

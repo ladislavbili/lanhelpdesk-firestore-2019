@@ -216,7 +216,7 @@ export default class TaskAdd extends Component{
 				tags: def.tags&& (def.tags.fixed||def.tags.def)? state.allTags.filter((item)=> def.tags.value.includes(item.id)):[],
 				type: def.type && (def.type.fixed||def.type.def)?state.taskTypes.find((item)=> item.id===def.type.value):null,
 				project,
-				viewOnly: !this.props.currentUser.userData.isAgent && !permission.write,
+				viewOnly: !this.props.currentUser.userData.role.value>0 && !permission.write,
 				defaults: def
 			});
 	}
@@ -259,7 +259,7 @@ export default class TaskAdd extends Component{
 				overtime: this.props.task ? this.props.task.overtime : {value:false,label:'Nie'},
 				statusChange: this.props.task ? this.props.task.statusChange : null,
 				project: this.props.task ? this.props.task.project : null,
-				viewOnly: !this.props.currentUser.userData.isAgent && (permission===null || !permission.write),
+				viewOnly: !this.props.currentUser.userData.role.value>0 && (permission===null || !permission.write),
 				company: this.props.task ? this.props.task.company : this.props.companies.find((company)=>company.id===this.props.currentUser.userData.company),
 				workHours: this.props.task ? this.props.task.workHours : 0,
 				requester,
@@ -377,7 +377,7 @@ export default class TaskAdd extends Component{
 										onChange={(project)=>{
 											let newState={project,
 												milestone:noMilestone,
-												viewOnly:!this.props.currentUser.userData.isAgent && !project.permissions.find((permission)=>permission.user===this.props.currentUser.id).write
+												viewOnly:!this.props.currentUser.userData.role.value>0 && !project.permissions.find((permission)=>permission.user===this.props.currentUser.id).write
 											}
 											if(newState.viewOnly){
 												newState={
@@ -397,7 +397,7 @@ export default class TaskAdd extends Component{
 										}}
 										options={this.state.projects.filter((project)=>{
 											let curr = this.props.currentUser;
-											if(curr.userData.isAgent){
+											if(curr.userData.role.value>0){
 												return true;
 											}
 											let permission = project.permissions.find((permission)=>permission.user===curr.id);
@@ -446,7 +446,7 @@ export default class TaskAdd extends Component{
 											onChange={(project)=>{
 												let newState={project,
 													milestone:noMilestone,
-													viewOnly:!this.props.currentUser.userData.isAgent && !project.permissions.find((permission)=>permission.user===this.props.currentUser.id).write
+													viewOnly:!this.props.currentUser.userData.role.value>0 && !project.permissions.find((permission)=>permission.user===this.props.currentUser.id).write
 												}
 												if(newState.viewOnly){
 													newState={
@@ -466,7 +466,7 @@ export default class TaskAdd extends Component{
 											}}
 											options={this.state.projects.filter((project)=>{
 												let curr = this.props.currentUser;
-												if(curr.userData.isAgent){
+												if(curr.userData.role.value>0){
 													return true;
 												}
 												let permission = project.permissions.find((permission)=>permission.user===curr.id);

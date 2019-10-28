@@ -27,7 +27,7 @@ export default class Navigation extends Component {
 			<div>
 				<div className="row">
 						<Sidebar {...this.props} />
-					<div className="flex main">
+					<div className="main">
 
 					<PageHeader {...this.props}
 						showLayoutSwitch={true}

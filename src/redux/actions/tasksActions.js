@@ -1,4 +1,4 @@
-import {SET_TASKS_ORDER_BY, SET_TASKS_ASCENDING } from '../types';
+import {SET_TASKS_ORDER_BY, SET_TASKS_ASCENDING, SET_TASKLIST_LAYOUT } from '../types';
 
 export const setTasksOrderBy = (orderBy) => {
   return (dispatch) => {
@@ -9,5 +9,11 @@ export const setTasksOrderBy = (orderBy) => {
 export const setTasksAscending = (ascending) => {
   return (dispatch) => {
     dispatch({ type: SET_TASKS_ASCENDING,ascending });
+  };
+};
+
+export const setTasklistLayout = (tasklistLayout) => {
+  return (dispatch) => {
+    dispatch({ type: SET_TASKLIST_LAYOUT, tasklistLayout });
   };
 };
