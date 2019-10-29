@@ -3,7 +3,7 @@ import { Button, FormGroup, Modal, ModalBody, ModalFooter } from 'reactstrap';
 
 import TimeAgo from 'react-timeago'
 import Select from 'react-select';
-import {timestampToString, toSelArr} from '../../helperFunctions';
+import {timestampToString, toSelArr, changeCKEData} from '../../helperFunctions';
 import { rebase } from '../../index';
 import {invisibleSelectStyle} from '../../scss/selectStyles';
 
@@ -83,7 +83,7 @@ export default class Note extends Component{
     this.setState({saving:true});
     let body={
       name:this.state.name,
-      body:this.state.body,
+      body: this.state.body,
       tags: this.state.tags.map((item)=>item.id),
       lastUpdated:lastUpd,
       dateCreated: new Date(this.state.dateCreated).getTime()
@@ -123,8 +123,9 @@ export default class Note extends Component{
     }else{
       this.setState( {
         body: evt.editor.getData()
-      },this.submit.bind(this) );
+      }, this.submit.bind(this) );
     }
+
   }
 
   appendImage(image){
@@ -136,7 +137,7 @@ export default class Note extends Component{
 
   render(){
     return (
-      <div className="flex" onClick={() => this.state.editBodyOpen ? this.setState({editBodyOpen: false}) : null}>
+      <div className="flex" >
 				<div className="container-fluid p-2">
 					<div className={"d-flex flex-row" + (!this.props.columns ? " w-50  ml-auto mr-auto" : "p-l-18") }>
 						<div className="center-hor">
@@ -164,48 +165,54 @@ export default class Note extends Component{
 					</div>
 				</div>
 
-        <div className={"card-box scrollable fit-with-header-and-commandbar " + (!this.props.columns ? " center-ver w-50" : "")}>
-          <div className="d-flex p-2">
-              <div className="row">
-                <h1 className="center-hor text-extra-slim">#</h1>
-                <span className="center-hor">
-                  <input type="text" value={this.state.name} className="task-title-input text-extra-slim hidden-input" onChange={(e)=>this.setState({name:e.target.value},this.submit.bind(this))} placeholder="Enter task name" />
-                </span>
-              </div>
-          </div>
-
-          <hr/>
-
-          <div className="row">
-            <div className="col-lg-12 d-flex">
-              <p className="text-muted">Created at {this.state.dateCreated?(timestampToString(this.state.dateCreated)):''}</p>
-              <p className="text-muted ml-auto">{this.state.lastUpdated && <TimeAgo className="text-muted" date={new Date(this.state.lastUpdated)} />}</p>
-            </div>
-          </div>
-
-          <div className="row">
-            <strong className="center-hor text-slim">Tagy: </strong>
-            <div className="f-1">
-              <Select
-                value={this.state.tags}
-                isMulti
-                onChange={(tags)=>this.setState({tags},this.submit.bind(this))}
-                options={this.state.allTags}
-                styles={invisibleSelectStyle}
-                />
-            </div>
-          </div>
-
-              {!this.state.editBodyOpen &&
-                <div>
-                  <Button className="btn-link" onClick={()=>this.setState({editBodyOpen:true})}>Upraviť text</Button>
-                  <div className="clickable m-t-30" onClick={()=>this.setState({editBodyOpen:true})} dangerouslySetInnerHTML={{__html:this.state.body===null?'': this.state.body }}></div>
+        <div className={"card-box-lanwiki scrollable fit-with-header-and-commandbar " + (!this.props.columns ? " center-ver w-50" : "")}>
+          <div style={{padding: "20px 30px"}} onClick={() => this.state.editBodyOpen ? this.setState({editBodyOpen: false}) : null}>
+            <div className="d-flex p-2">
+                <div className="row">
+                  <h1 className="center-hor text-extra-slim">#</h1>
+                  <span className="center-hor">
+                    <input type="text" value={this.state.name} className="task-title-input text-extra-slim hidden-input" onChange={(e)=>this.setState({name:e.target.value},this.submit.bind(this))} placeholder="Enter task name" />
+                  </span>
                 </div>
-              }
+            </div>
+
+            <hr/>
+
+            <div className="row">
+              <div className="col-lg-12 d-flex">
+                <p className="text-muted">Created at {this.state.dateCreated?(timestampToString(this.state.dateCreated)):''}</p>
+                <p className="text-muted ml-auto">{this.state.lastUpdated && <TimeAgo className="text-muted" date={new Date(this.state.lastUpdated)} />}</p>
+              </div>
+            </div>
+
+            <div className="row">
+              <strong className="center-hor text-slim">Tagy: </strong>
+              <div className="f-1">
+                <Select
+                  value={this.state.tags}
+                  isMulti
+                  onChange={(tags)=>this.setState({tags},this.submit.bind(this))}
+                  options={this.state.allTags}
+                  styles={invisibleSelectStyle}
+                  />
+              </div>
+            </div>
+
+          </div>
+                {!this.state.editBodyOpen &&
+                  <div style={{padding: "0px 30px 20px 30px"}}>
+                    <Button className="btn-link-inverted" onClick={()=>this.setState({editBodyOpen:true})}>Upraviť text</Button>
+                    <div className="clickable m-t-30" onClick={()=>this.setState({editBodyOpen:true})} dangerouslySetInnerHTML={{__html:this.state.body===null?'': this.state.body }}></div>
+                  </div>
+                }
 
               { this.state.editBodyOpen &&
-              <FormGroup className="m-t-15"  >
-                  <Button className="btn-link" onClick={this.toggleModal.bind(this)}>Pridať obrázok z uložiska</Button>
+              <FormGroup style={{padding: "0px 30px 20px 30px"}}>
+                  <div className="row">
+                    <Button className="btn-link-inverted" onClick={this.toggleModal.bind(this)}>Pridať obrázok z uložiska</Button>
+                    <div className="flex" onClick={() => this.state.editBodyOpen ? this.setState({editBodyOpen: false}) : null}></div>
+                  </div>
+
                   <Modal isOpen={this.state.modalOpen} toggle={this.toggleModal.bind(this)} >
                     <ModalBody className="m-t-15">
                       <PictureUpload appendImage={this.appendImage.bind(this)}/>
@@ -222,6 +229,38 @@ export default class Note extends Component{
                         codeSnippet_languages: {
                           javascript: 'JavaScript',
                           php: 'PHP'
+                        },
+                        contentsCss: [ `` ],
+                        format_tags:  'p;h1;h2;h3;pre' ,
+                        format_h1: {
+                          element: 'h1',
+                          attributes: {
+                            'style' : 'color: #0078D4; font-size: 24px; font-family: Segoe UI;'
+                          }
+                        },
+                        format_h2: {
+                          element: 'h2',
+                          attributes: {
+                            'style' : 'color: #0078D4; font-size: 20px; font-family: Segoe UI;'
+                          }
+                        },
+                        format_h3: {
+                          element: 'h3',
+                          attributes: {
+                            'style' : 'color: #0078D4; font-size: 16px; font-family: Segoe UI;'
+                          }
+                        },
+                        format_p: {
+                          element: 'p',
+                          attributes: {
+                            'style' : 'font-family: Segoe UI;'
+                          }
+                        },
+                        format_pre: {
+                          element: 'pre',
+                          attributes: {
+                            'style' : 'color: red; font-family: Segoe UI;'
+                          }
                         }
                     } }
                     />

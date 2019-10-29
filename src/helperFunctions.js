@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const testing = false;
+export const testing = true;
 
 export const toSelArr = (arr,index = 'title')=> arr.map((item)=>{return {...item,value:item.id,label:item[index]}})
 export const isEmail = (email) => (/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@(([[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/).test(email)
@@ -134,4 +134,8 @@ export const timestampToInput = (timestamp)=>{
 
 export const inputToTimestamp = (input)=>{
   return isNaN(new Date(input).getTime())|| input === '' ? '' : (new Date(input).getTime())
+}
+
+export const changeCKEData = (input)=>{
+  return input.replace(/<p>/g, "<p style='margin-bottom: 0px; padding-bottom: 0px;'>");
 }

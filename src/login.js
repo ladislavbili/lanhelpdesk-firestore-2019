@@ -11,7 +11,8 @@ class Login extends Component {
 		this.state = {
 			email:'',
 			password:'',
-			working:false
+			working: false,
+			error: false,
 		};
 		this.login.bind(this);
 	}
@@ -31,6 +32,7 @@ class Login extends Component {
 		return (
 			<div style={{height:'100vh',display: 'flex'}}>
 			<div className="card" style={{backgroundColor:'white', borderRadius:6, padding:'10px 20px', width:'350px',margin:'auto'}}>
+
 				<FormGroup>
 					<Label for="email">E-mail</Label>
 					<Input type="email" name="email" id="email" placeholder="Enter e-mail" value={this.state.email} onChange={(e)=>this.setState({email:e.target.value})}
