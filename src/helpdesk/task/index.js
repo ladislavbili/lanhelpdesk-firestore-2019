@@ -25,7 +25,7 @@ class TasksIndex extends Component {
 
 	componentWillReceiveProps(props){
 		if(this.props.match.params.listID!==props.match.params.listID||!sameStringForms(props.filters,this.props.filters)){
-			this.getFilterName(props.match.params.listID);
+			this.getFilterName(props);
 		}
 
 		if(!sameStringForms(props.companies,this.props.companies)){
@@ -46,6 +46,10 @@ class TasksIndex extends Component {
 
 		if(!sameStringForms(props.tasks,this.props.tasks)){
 			this.setState({tasks:props.tasks})
+		}
+
+		if(!sameStringForms(props.filters,this.props.filters)){
+			this.getFilterName(props);
 		}
 	}
 
@@ -84,10 +88,11 @@ class TasksIndex extends Component {
 			this.props.storageHelpFiltersStart();
 		}
 
-		this.getFilterName(this.props.match.params.listID);
+		this.getFilterName(this.props);
 	}
 
-	getFilterName(id){
+	getFilterName(props){
+		let id = props.match.params.listID;
 		if(!id){
 			this.setState({filterName:''});
 			return;
@@ -95,7 +100,7 @@ class TasksIndex extends Component {
 			this.setState({filterName:'All'});
 			return;
 		}
-		let filter = this.props.filters.find((filter)=>filter.id===id);
+		let filter = props.filters.find((filter)=>filter.id===id);
 		if(filter){
 			this.setState({filterName:filter.title});
 		}

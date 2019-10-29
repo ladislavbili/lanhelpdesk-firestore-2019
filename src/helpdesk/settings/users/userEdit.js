@@ -155,7 +155,7 @@ class UserEdit extends Component{
                 this.setState({saving:false})});
               }}>{this.state.saving?'Saving user...':'Save user'}</Button>
 
-          <Button disabled={true} onClick={()=>{
+            <Button disabled={true} onClick={()=>{
                 if(window.confirm("Are you sure?")){
                   rebase.removeDoc('/users/'+this.props.match.params.id).then(()=>{
                     this.props.history.goBack();

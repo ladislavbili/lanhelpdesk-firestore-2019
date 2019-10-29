@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import { Modal, ModalBody, ModalFooter } from 'reactstrap';
 import { Button, FormGroup, Label, Input } from 'reactstrap';
 import {rebase} from '../../index';
+import { connect } from "react-redux";
 
-export default class FilterAdd extends Component{
+class FilterAdd extends Component{
   constructor(props){
     super(props);
     this.state={
       title:'',
+      public:false,
       saving:false,
       opened:false
     }
@@ -15,7 +17,7 @@ export default class FilterAdd extends Component{
 
   toggle(){
     if(!this.state.opened && this.props.filterID){
-      this.setState({title:this.props.filterData.title});
+      this.setState({title:this.props.filterData.title, public:this.props.filterData.public});
     }
     this.setState({opened:!this.state.opened})
   }
@@ -33,6 +35,12 @@ export default class FilterAdd extends Component{
                 <Label>Filter name</Label>
                 <Input type="text" className="from-control" placeholder="Enter filter name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
               </FormGroup>
+              { this.props.currentUser.userData.role.value > 1 &&
+                <FormGroup>
+                  <Label for="public">Public</Label>
+                  <Input type="checkbox" id="public" checked={this.state.public} onChange={(e)=>this.setState({public:!this.state.public })} />
+                </FormGroup>
+              }
 
               </ModalBody>
               <ModalFooter>
@@ -47,15 +55,15 @@ export default class FilterAdd extends Component{
                 onClick={()=>{
                   this.setState({saving:true});
                   if(this.props.filterID!==null){
-                    rebase.updateDoc('/help-filters/'+this.props.filterID, {title: this.state.title, filter:this.props.filter})
+                    rebase.updateDoc('/help-filters/'+this.props.filterID, {title: this.state.title, public:this.state.public, filter:this.props.filter})
                     .then(()=> {
-                      this.setState({title:'',saving:false});
+                      this.setState({title:'',public:false,saving:false});
                       this.toggle();
                     });
                   }else{
-                    rebase.addToCollection('/help-filters', {title: this.state.title, filter: this.props.filter})
+                    rebase.addToCollection('/help-filters', {title: this.state.title, public:this.state.public, createdBy:this.props.currentUser.id, filter: this.props.filter})
                     .then(()=> {
-                      this.setState({title:'',saving:false});
+                      this.setState({title:'',public:false,saving:false});
                       this.toggle();
                     });
                   }
@@ -66,3 +74,11 @@ export default class FilterAdd extends Component{
     );
   }
 }
+
+const mapStateToProps = ({ userReducer }) => {
+  return {
+    currentUser:userReducer
+   };
+};
+
+export default connect(mapStateToProps, {  })(FilterAdd);

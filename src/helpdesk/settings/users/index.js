@@ -70,7 +70,7 @@ class UsersList extends Component{
                   </tr>
                 </thead>
                 <tbody>
-                  {this.state.users.filter((item)=>item.email.toLowerCase().includes(this.state.userFilter.toLowerCase())).map((user)=>
+                  {this.state.users.filter((item)=>item.email.toLowerCase().includes(this.state.userFilter.toLowerCase())).sort((user1,user2)=>user1.email>user2.email?1:-1).map((user)=>
                     <tr
                       key={user.id}
                       className={"clickable" + (this.props.match.params.id === user.id ? " sidebar-item-active":"")}

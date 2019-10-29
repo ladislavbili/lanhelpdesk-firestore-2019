@@ -59,12 +59,21 @@ class Sidebar extends Component {
 			projectChangeDate:(new Date()).getTime(),
 			milestoneChangeDate:(new Date()).getTime(),
 		};
+		this.readFilterFromURL.bind(this);
 	}
 
 	componentWillReceiveProps(props){
 		if(!sameStringForms(props.filters,this.props.filters)){
-			this.setState({filters:props.filters})
+			this.setState({
+				filters:props.filters.filter((filter)=>filter.createdBy===props.currentUser.id||filter.public),
+				filterData:(this.state.filterData && props.filters.length>0) ? props.filters.find((filter)=>filter.id===this.state.filterData.id):null
+			})
 		}
+
+		if(!this.props.filtersLoaded && props.filtersLoaded){
+			this.readFilterFromURL(props);
+		}
+
 		if(!sameStringForms(props.projects,this.props.projects)||!sameStringForms(this.props.currentUser,props.currentUser)){
 			let project = toSelArr([dashboard].concat(props.projects)).find((item)=>item.id===props.project);
 			this.setState({
@@ -81,13 +90,48 @@ class Sidebar extends Component {
 		}
 	}
 
+	readFilterFromURL(props){
+		let url = props.location.pathname;
+		if(url.includes('helpdesk/settings/')){
+			return;
+		}
+		url = url.substring(url.indexOf('taskList/i/')+'taskList/i/'.length,url.length);
+		if(url.includes('/')){
+			url = url.substring(0,url.indexOf('/'));
+		}
+		let filterID=url;
+		if(filterID==='all'){
+			this.setState({filterID:null,filterData:null});
+			props.setFilter({
+				status:[],
+				requester:null,
+				company:null,
+				assigned:null,
+				workType:null,
+				statusDateFrom:'',
+				statusDateTo:'',
+				updatedAt:(new Date()).getTime()
+			});
+		}
+
+		let filter=props.filters.find((filter)=>filter.id===filterID);
+		if(filter){
+			this.setState({filterID,filterData:filter});
+			props.setFilter({
+				...filter.filter,
+				updatedAt:(new Date()).getTime()
+			});
+		}
+	}
+
 	componentWillMount(){
 		if(!this.props.projectsActive){
 			this.props.storageHelpProjectsStart();
 		}
+		let project = toSelArr([dashboard].concat(this.props.projects)).find((item)=>item.id===this.props.project);
 		this.setState({
 			projects:toSelArr([dashboard].concat(this.props.projects).concat(this.props.currentUser.userData.role.value>0?[addProject]:[])),
-			project:toSelArr([dashboard].concat(this.props.projects)).find((item)=>item.id===this.props.project)
+			project:project?project:dashboard
 		});
 
 		if(!this.props.milestonesActive){
@@ -101,7 +145,9 @@ class Sidebar extends Component {
 		if(!this.props.filtersActive){
 			this.props.storageHelpFiltersStart();
 		}
-		this.setState({filters:this.props.filters});
+		this.setState({filters:this.props.filters.filter((filter)=>filter.createdBy===this.props.currentUser.id||filter.public)});
+
+		this.readFilterFromURL(this.props);
 	}
 
 	render() {
@@ -263,10 +309,10 @@ class Sidebar extends Component {
 	}
 	const mapStateToProps = ({ filterReducer,storageHelpFilters, storageHelpProjects, storageHelpMilestones, userReducer }) => {
     const { project, milestone } = filterReducer;
-		const { filtersActive, filters } = storageHelpFilters;
+		const { filtersActive, filters, filtersLoaded } = storageHelpFilters;
 		const { projectsActive, projects } = storageHelpProjects;
 		const { milestonesActive, milestones } = storageHelpMilestones;
-    return { project, milestone, filtersActive,filters,projectsActive,projects, milestonesActive, milestones, currentUser:{...userReducer, userData:{...(userReducer.userData?userReducer.userData:{role:{value:0}})}} };
+    return { project, milestone, filtersActive,filters, filtersLoaded,projectsActive,projects, milestonesActive, milestones, currentUser:{...userReducer, userData:{...(userReducer.userData?userReducer.userData:{role:{value:0}})}} };
   };
 
   export default connect(mapStateToProps, { setProject, setMilestone, setFilter, storageHelpFiltersStart, storageHelpProjectsStart, storageHelpMilestonesStart })(Sidebar);

@@ -30,11 +30,13 @@ class Filter extends Component {
       pendingDateFrom:'',
       pendingDateTo:'',
       loading:true,
+      public:false,
 
       newFilterName: "",
       openEditName: false,
     };
     this.renameFilter.bind(this);
+    this.canSaveFilter.bind(this);
   }
 
   getItemValue(sourceKey,state,id){
@@ -50,7 +52,9 @@ class Filter extends Component {
   }
 
   componentWillReceiveProps(props){
-    if(this.props.filter.updatedAt!==props.filter.updatedAt){
+    let oldFilter = this.props.filters.find((filter)=>filter.id===props.filterID);
+    let newFilter = props.filters.find((filter)=>filter.id===props.filterID);
+    if(this.props.filter.updatedAt!==props.filter.updatedAt||!sameStringForms(oldFilter,newFilter)){
       let filter = props.filter;
       this.setState({
         status:this.state.statuses.filter((status)=>filter.status.includes(status.id)),
@@ -64,6 +68,7 @@ class Filter extends Component {
         pendingDateTo:timestampToInput(filter.pendingDateTo),
         closeDateFrom:timestampToInput(filter.closeDateFrom),
         closeDateTo:timestampToInput(filter.closeDateTo),
+        public:newFilter?newFilter.public:false,
       });
     }
     if(!sameStringForms(props.statuses,this.props.statuses)){
@@ -130,6 +135,7 @@ class Filter extends Component {
             closeDateTo:'',
             pendingDateFrom:'',
             pendingDateTo:'',
+            public:false,
           });
           this.applyFilter();
         });
@@ -150,6 +156,7 @@ class Filter extends Component {
           closeDateTo:'',
           pendingDateFrom:'',
           pendingDateTo:'',
+          public:false,
         })
       }else{
         let filter = this.props.filterData.filter;
@@ -164,7 +171,7 @@ class Filter extends Component {
           closeDateFrom:timestampToInput(filter.closeDateFrom),
           closeDateTo:timestampToInput(filter.closeDateTo),
           pendingDateFrom:timestampToInput(filter.pendingDateFrom),
-          pendingDateTo:timestampToInput(filter.pendingDateTo),
+          pendingDateTo:timestampToInput(filter.pendingDateTo)
         });
       }
     }
@@ -197,6 +204,16 @@ class Filter extends Component {
       }
     }
 
+    canSaveFilter(){
+      if(this.props.filterID===null){
+        return true;
+      }
+      let filter = this.props.filterData;
+      return this.props.currentUser.userData.role.value > 1 || (
+        filter && filter.createdBy===this.props.currentUser.id
+      )
+    }
+
 
     render() {
       return (
@@ -207,10 +224,10 @@ class Filter extends Component {
             onClick={() => this.setState({openEditName: (this.props.filterID ? true : false)})}
             >
 
-            {!this.state.openEditName &&
+            {(!this.state.openEditName || !this.canSaveFilter()) &&
               <h5 className=""><i className="fa fa-cog sidebar-icon-center"/> {this.props.filterID?' '+ (this.state.newFilterName ? this.state.newFilterName : this.props.filterData.title):' Všetky'}</h5>
             }
-            {this.state.openEditName &&
+            {this.state.openEditName && this.canSaveFilter() &&
                 <Input
                   type="text"
                   className="from-control sidebar-input"
@@ -389,7 +406,7 @@ class Filter extends Component {
           <NavItem className="center-ver">
             <div className="d-flex m-b-2">
               <button type="button" className="btn-link-reversed m-2" onClick={this.applyFilter.bind(this)}><i className="fa fa-check icon-M"/></button>
-              <AddFilter
+              {this.canSaveFilter() && <AddFilter
                 filter={{
                   requester:this.state.requester.id,
                   company:this.state.company.id,
@@ -401,13 +418,13 @@ class Filter extends Component {
                   closeDateFrom:inputToTimestamp(this.state.closeDateFrom),
                   closeDateTo:inputToTimestamp(this.state.closeDateTo),
                   pendingDateFrom:inputToTimestamp(this.state.pendingDateFrom),
-                  pendingDateTo:inputToTimestamp(this.state.pendingDateTo)
+                  pendingDateTo:inputToTimestamp(this.state.pendingDateTo),
                 }}
                 filterID={this.props.filterID}
                 filterData={this.props.filterData}
-                />
+                />}
               <button type="button" className="btn-link-reversed m-2" onClick={this.resetFilter.bind(this)}><i className="fa fa-sync icon-M"/></button>
-              <button type="button" className="btn-link-reversed m-2" onClick={this.deleteFilter.bind(this)}><i className="far fa-trash-alt icon-M"/></button>
+              {this.canSaveFilter() && <button type="button" className="btn-link-reversed m-2" onClick={this.deleteFilter.bind(this)}><i className="far fa-trash-alt icon-M"/></button>}
             </div>
           </NavItem>
         </Nav>
@@ -417,18 +434,21 @@ class Filter extends Component {
   }
 
 
-  const mapStateToProps = ({ filterReducer, storageHelpTaskTypes, storageUsers, storageCompanies, storageHelpStatuses }) => {
+  const mapStateToProps = ({ filterReducer, storageHelpFilters, storageHelpTaskTypes, storageUsers, storageCompanies, storageHelpStatuses, userReducer }) => {
     const { filter } = filterReducer;
+    const { filters,filtersLoaded } = storageHelpFilters;
     const { taskTypesActive, taskTypes } = storageHelpTaskTypes;
     const { usersActive, users } = storageUsers;
     const { companiesActive, companies } = storageCompanies;
     const { statusesActive, statuses } = storageHelpStatuses;
 
     return { filter,
+      filters,filtersLoaded,
       taskTypesActive, taskTypes,
       usersActive, users,
       companiesActive, companies,
-      statusesActive, statuses
+      statusesActive, statuses,
+      currentUser:userReducer
      };
   };
 

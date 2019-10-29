@@ -100,6 +100,7 @@ class UserAdd extends Component{
               var secondaryApp = firebase.initializeApp(config, "Secondary");
               secondaryApp.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).then((user) => {
                 secondaryApp.auth().signOut();
+                secondaryApp.delete();
                 let newUser = {
                   username:this.state.username,
                   name:this.state.name,
@@ -117,6 +118,7 @@ class UserAdd extends Component{
                     surname:'',
                     email:'',
                     company,
+                    password:'',
                     role:roles[0],
                     saving:false
                   }, () => {

@@ -59,7 +59,7 @@ class Sidebar extends Component {
 
 	componentWillReceiveProps(props){
 		if(!sameStringForms(props.filters,this.props.filters)){
-			this.setState({filters:props.filters})
+			this.setState({filters:props.filters.filter((filter)=>filter.createdBy===props.currentUser.id||filter.public)})
 		}
 		if(!sameStringForms(props.projects,this.props.projects)){
 			let project = toSelArr([dashboard].concat(props.projects)).find((item)=>item.id===props.project);
@@ -98,7 +98,7 @@ class Sidebar extends Component {
 		if(!this.props.filtersActive){
 			this.props.storageHelpFiltersStart();
 		}
-		this.setState({filters:this.props.filters});
+		this.setState({filters:this.props.filters.filter((filter)=>filter.createdBy===this.props.currentUser.id||filter.public)});
 	}
 
 /*
@@ -257,12 +257,12 @@ class Sidebar extends Component {
 			);
 		}
 	}
-	const mapStateToProps = ({ filterReducer,storageHelpFilters, storageHelpProjects, storageHelpMilestones }) => {
+	const mapStateToProps = ({ filterReducer,storageHelpFilters, storageHelpProjects, storageHelpMilestones, userReducer }) => {
     const { project } = filterReducer;
 		const { filtersActive, filters } = storageHelpFilters;
 		const { projectsActive, projects } = storageHelpProjects;
 		const { milestonesActive, milestones } = storageHelpMilestones;
-    return { project,filtersActive,filters,projectsActive,projects, milestonesActive, milestones };
+    return { project,filtersActive,filters,projectsActive,projects, milestonesActive, milestones, currentUser:userReducer };
   };
 
   export default connect(mapStateToProps, { setProject, setMilestone, setFilter, storageHelpFiltersStart, storageHelpProjectsStart, storageHelpMilestonesStart })(Sidebar);
