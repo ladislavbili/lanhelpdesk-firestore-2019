@@ -1,4 +1,4 @@
-import {STORAGE_SET_SMTPS, STORAGE_SMTPS_ACTIVE} from '../../types'
+import {STORAGE_SET_SMTPS, STORAGE_SMTPS_ACTIVE,DELETE_USER_DATA} from '../../types'
 
 const initialState = {
   smtpsActive:false,
@@ -15,6 +15,8 @@ export default function storageSmtpsReducer(state = initialState, action) {
         smtpsLoaded:true,
       };
     }
+    case DELETE_USER_DATA:
+      return initialState;
     case STORAGE_SMTPS_ACTIVE:
       return {
         ...state,

@@ -3,10 +3,12 @@ import { Route } from 'react-router-dom';
 import { connect } from "react-redux";
 import {testing} from '../helperFunctions';
 import {setTasklistLayout} from '../redux/actions';
+import {rebase} from '../index';
+
 import Sidebar from './Sidebar';
 import PageHeader from '../components/PageHeader';
 
-import TaskList from './task/';
+import TaskList from './task';
 
 import StatusList from './settings/statuses';
 import ProjectList from './settings/projects';
@@ -23,6 +25,16 @@ import ImapList from './settings/imaps';
 import SMTPList from './settings/smtps';
 
 class Navigation extends Component {
+	constructor(props){
+		super(props);
+		this.setLayout.bind(this);
+	}
+
+	setLayout(layout){
+		rebase.updateDoc('/users/'+this.props.currentUser.id, {tasklistLayout:layout})
+		this.props.setTasklistLayout(layout);
+	}
+
 	render() {
 		return (
 			<div>
@@ -32,7 +44,7 @@ class Navigation extends Component {
 
 					<PageHeader {...this.props}
 						showLayoutSwitch={true}
-						setLayout={this.props.setTasklistLayout}
+						setLayout={this.setLayout.bind(this)}
 						layout={this.props.layout}
 						dndLayout={true}
 						settings={[

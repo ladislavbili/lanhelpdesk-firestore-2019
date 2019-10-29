@@ -1,4 +1,4 @@
-import {STORAGE_SET_HELP_TASK_MATERIALS, STORAGE_SET_HELP_TASK_MATERIALS_ACTIVE} from '../../types'
+import {STORAGE_SET_HELP_TASK_MATERIALS, STORAGE_SET_HELP_TASK_MATERIALS_ACTIVE,DELETE_USER_DATA} from '../../types'
 
 const initialState = {
   materialsActive:false,
@@ -15,6 +15,8 @@ export default function storageTaskMaterialsReducer(state = initialState, action
         materialsLoaded:true,
       };
     }
+    case DELETE_USER_DATA:
+      return initialState;
     case STORAGE_SET_HELP_TASK_MATERIALS_ACTIVE:
       return {
         ...state,

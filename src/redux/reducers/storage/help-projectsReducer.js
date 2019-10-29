@@ -1,4 +1,4 @@
-import {STORAGE_SET_HELP_PROJECTS, STORAGE_HELP_PROJECTS_ACTIVE} from '../../types'
+import {STORAGE_SET_HELP_PROJECTS, STORAGE_HELP_PROJECTS_ACTIVE,DELETE_USER_DATA} from '../../types'
 
 const initialState = {
   projectsActive:false,
@@ -15,6 +15,8 @@ export default function storageProjectsReducer(state = initialState, action) {
         projectsLoaded:true,
       };
     }
+    case DELETE_USER_DATA:
+      return initialState;
     case STORAGE_HELP_PROJECTS_ACTIVE:
       return {
         ...state,

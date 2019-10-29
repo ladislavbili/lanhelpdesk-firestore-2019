@@ -1,4 +1,4 @@
-import {STORAGE_SET_HELP_WORK_TYPES, STORAGE_HELP_WORK_TYPES_ACTIVE} from '../../types'
+import {STORAGE_SET_HELP_WORK_TYPES, STORAGE_HELP_WORK_TYPES_ACTIVE,DELETE_USER_DATA} from '../../types'
 
 const initialState = {
   workTypesActive:false,
@@ -20,6 +20,8 @@ export default function storageWorkTypesReducer(state = initialState, action) {
         ...state,
         workTypesActive: true,
       };
+      case DELETE_USER_DATA:
+        return initialState;
     default:
       return state;
   }

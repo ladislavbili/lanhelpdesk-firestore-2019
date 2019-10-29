@@ -1,4 +1,4 @@
-import {STORAGE_SET_HELP_MILESTONES, STORAGE_HELP_MILESTONES_ACTIVE} from '../../types'
+import {STORAGE_SET_HELP_MILESTONES, STORAGE_HELP_MILESTONES_ACTIVE,DELETE_USER_DATA} from '../../types'
 
 const initialState = {
   milestonesActive:false,
@@ -15,6 +15,8 @@ export default function storageHelpMilestonesReducer(state = initialState, actio
         milestonesLoaded:true,
       };
     }
+    case DELETE_USER_DATA:
+      return initialState;
     case STORAGE_HELP_MILESTONES_ACTIVE:
       return {
         ...state,

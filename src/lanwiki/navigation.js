@@ -1,23 +1,37 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import { connect } from "react-redux";
-import {setLayout} from '../redux/actions';
+import {rebase} from '../index';
 
+import {setLayout} from '../redux/actions';
 import {testing} from '../helperFunctions';
+
 import Sidebar from './Sidebar';
 import PageHeader from '../components/PageHeader';
-
 import ListNotes from './Notes';
 
 class Navigation extends Component {
+	constructor(props){
+		super(props);
+		this.setLayout.bind(this);
+	}
+
+	setLayout(layout){
+		rebase.updateDoc('/users/'+this.props.currentUser.id, {generalLayout:layout})
+		this.props.setLayout(layout);
+	}
+
 	render() {
-		console.log(this.props.currentUser.userData.role.value);
 		if((this.props.currentUser.userData===null||this.props.currentUser.userData.role.value < 1 )&&!testing){
 			return (
 				<div>
 				<div className="row">
 					<div className="main">
-						<PageHeader {...this.props} setLayout={this.props.setLayout} layout={this.props.layout} showLayoutSwitch={true} />
+						<PageHeader {...this.props}
+							setLayout={this.setLayout.bind(this)}
+							layout={this.props.layout}
+							showLayoutSwitch={true}
+							/>
 					</div>
 				</div>
 			</div>
@@ -28,7 +42,11 @@ class Navigation extends Component {
 				<div className="row">
 						<Sidebar {...this.props} />
 					<div className="main">
-						<PageHeader {...this.props} setLayout={this.props.setLayout} layout={this.props.layout} showLayoutSwitch={true} />
+						<PageHeader {...this.props}
+							setLayout={this.setLayout.bind(this)}
+							layout={this.props.layout}
+							showLayoutSwitch={true}
+							/>
 						<Route exact path='/lanwiki' component={ListNotes} />
             <Route exact path='/lanwiki/i/:listID' component={ListNotes} />
 						<Route exact path='/lanwiki/i/:listID/:noteID' component={ListNotes} />

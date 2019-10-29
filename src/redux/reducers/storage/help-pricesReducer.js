@@ -1,4 +1,4 @@
-import {STORAGE_SET_HELP_PRICES, STORAGE_HELP_PRICES_ACTIVE} from '../../types'
+import {STORAGE_SET_HELP_PRICES, STORAGE_HELP_PRICES_ACTIVE,DELETE_USER_DATA} from '../../types'
 
 const initialState = {
   pricesActive:false,
@@ -15,6 +15,8 @@ export default function storagePricesReducer(state = initialState, action) {
         pricesLoaded:true,
       };
     }
+    case DELETE_USER_DATA:
+      return initialState;
     case STORAGE_HELP_PRICES_ACTIVE:
       return {
         ...state,

@@ -1,4 +1,4 @@
-import {STORAGE_SET_HELP_TASKS, STORAGE_HELP_TASKS_ACTIVE} from '../../types'
+import {STORAGE_SET_HELP_TASKS, STORAGE_HELP_TASKS_ACTIVE,DELETE_USER_DATA} from '../../types'
 
 const initialState = {
   tasksActive:false,
@@ -15,6 +15,8 @@ export default function storageTasksReducer(state = initialState, action) {
         tasksLoaded:true,
       };
     }
+    case DELETE_USER_DATA:
+      return initialState;
     case STORAGE_HELP_TASKS_ACTIVE:
       return {
         ...state,

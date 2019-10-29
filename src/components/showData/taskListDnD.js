@@ -28,12 +28,12 @@ export default class TaskListDnD extends Component {
 
 	render() {
 		return (
-				<div className="row">
+				<div>
 					<CommandBar {...this.props.commandBar} />
-					<div className="full-width scroll-visible fit-with-header-and-commandbar p-r-20 p-l-20">
+					<div className="scroll-visible overflow-x fit-with-header-and-commandbar p-r-20 p-l-20">
 						<ListHeader {...this.props.commandBar} listName={this.props.listName}/>
 						<div className="p-10">
-							<div className="flex-row" style={{overflowX: 'scroll'}}>
+							<div className="flex-row">
 								{
 									this.groupData().map((group)=>
 									<Card className="flex-column dnd-column" key={group.groupItem.id}>

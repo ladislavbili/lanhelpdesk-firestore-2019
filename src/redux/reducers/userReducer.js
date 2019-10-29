@@ -12,13 +12,13 @@ export default function appReducer(state = initialState, action) {
       return {
         ...state,
         userData: action.userData,
+        loggedIn:true
       };
     }
     case SET_USER_ID:{
       return {
         ...state,
-        id: action.id,
-        loggedIn:true
+        id: action.id
       };
     }
     case DELETE_USER_DATA:

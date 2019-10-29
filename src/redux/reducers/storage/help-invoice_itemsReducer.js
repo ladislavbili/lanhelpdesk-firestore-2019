@@ -1,4 +1,4 @@
-import {STORAGE_HELP_INVOICE_ITEMS, STORAGE_HELP_INVOICE_ITEMS_ACTIVE} from '../../types'
+import {STORAGE_HELP_INVOICE_ITEMS, STORAGE_HELP_INVOICE_ITEMS_ACTIVE,DELETE_USER_DATA} from '../../types'
 
 const initialState = {
   invoiceItemsActive:false,
@@ -15,6 +15,8 @@ export default function storageInvoiceItemsReducer(state = initialState, action)
         invoiceItemsLoaded:true,
       };
     }
+    case DELETE_USER_DATA:
+      return initialState;
     case STORAGE_HELP_INVOICE_ITEMS_ACTIVE:
       return {
         ...state,

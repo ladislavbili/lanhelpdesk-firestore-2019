@@ -1,4 +1,4 @@
-import {STORAGE_SET_HELP_PRICELISTS, STORAGE_HELP_PRICELISTS_ACTIVE} from '../../types'
+import {STORAGE_SET_HELP_PRICELISTS, STORAGE_HELP_PRICELISTS_ACTIVE,DELETE_USER_DATA} from '../../types'
 
 const initialState = {
   pricelistsActive:false,
@@ -15,6 +15,8 @@ export default function storagePricelistsReducer(state = initialState, action) {
         pricelistsLoaded:true,
       };
     }
+    case DELETE_USER_DATA:
+      return initialState;
     case STORAGE_HELP_PRICELISTS_ACTIVE:
       return {
         ...state,

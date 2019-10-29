@@ -5,6 +5,7 @@ import firebase from 'firebase';
 import {rebase} from '../../../index';
 import {isEmail} from '../../../helperFunctions';
 import {selectStyle} from "../../../scss/selectStyles";
+import config from '../../../firebase';
 
 import { connect } from "react-redux";
 import {storageCompaniesStart} from '../../../redux/actions';
@@ -96,7 +97,9 @@ class UserAdd extends Component{
 
           <Button className="btn" disabled={this.state.saving|| this.state.companies.length===0||!isEmail(this.state.email)||this.state.password.length < 6 } onClick={()=>{
               this.setState({saving:true});
-              firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).then((user)=>{
+              var secondaryApp = firebase.initializeApp(config, "Secondary");
+              secondaryApp.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).then((user) => {
+                secondaryApp.auth().signOut();
                 let newUser = {
                   username:this.state.username,
                   name:this.state.name,

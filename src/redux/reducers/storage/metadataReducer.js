@@ -1,4 +1,4 @@
-import {STORAGE_SET_METADATA, STORAGE_METADATA_ACTIVE} from '../../types'
+import {STORAGE_SET_METADATA, STORAGE_METADATA_ACTIVE,DELETE_USER_DATA} from '../../types'
 
 const initialState = {
   metadataActive:false,
@@ -15,6 +15,8 @@ export default function storageMetadataReducer(state = initialState, action) {
         metadataLoaded:true,
       };
     }
+    case DELETE_USER_DATA:
+      return initialState;
     case STORAGE_METADATA_ACTIVE:
       return {
         ...state,

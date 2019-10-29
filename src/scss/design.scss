@@ -88,6 +88,10 @@ html{
 .fit-with-header-and-commandbar{
 	height: calc(  #{$height-without-header} - 41px );
 }
+
+.overflow-x{
+  overflow-x: auto;
+}
 //-------------------END-overflow----------------------
 
 //---------------všeobecné-atribúty---------------------

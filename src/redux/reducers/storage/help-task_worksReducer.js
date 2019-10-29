@@ -1,4 +1,4 @@
-import {STORAGE_SET_HELP_TASK_WORKS, STORAGE_SET_HELP_TASK_WORKS_ACTIVE} from '../../types'
+import {STORAGE_SET_HELP_TASK_WORKS, STORAGE_SET_HELP_TASK_WORKS_ACTIVE,DELETE_USER_DATA} from '../../types'
 
 const initialState = {
   taskWorksActive:false,
@@ -15,6 +15,8 @@ export default function storageTaskWorksReducer(state = initialState, action) {
         taskWorksLoaded:true,
       };
     }
+    case DELETE_USER_DATA:
+      return initialState;
     case STORAGE_SET_HELP_TASK_WORKS_ACTIVE:
       return {
         ...state,

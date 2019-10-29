@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import { connect } from "react-redux";
+import {rebase} from '../index';
 import {setLayout} from '../redux/actions';
 import {testing} from '../helperFunctions';
 
@@ -10,13 +11,27 @@ import List from './list';
 import AddPassword from './list/addPassword';
 
 class Navigation extends Component {
+	constructor(props){
+		super(props);
+		this.setLayout.bind(this);
+	}
+
+	setLayout(layout){
+		rebase.updateDoc('/users/'+this.props.currentUser.id, {generalLayout:layout})
+		this.props.setLayout(layout);
+	}
+
 	render() {
 		if((this.props.currentUser.userData===null||this.props.currentUser.userData.role.value < 1 )&&!testing){
 			return (
 				<div>
 				<div className="row">
 					<div className="main">
-						<PageHeader {...this.props} setLayout={this.props.setLayout} layout={this.props.layout} showLayoutSwitch={true} />
+						<PageHeader {...this.props}
+							setLayout={this.setLayout.bind(this)}
+							layout={this.props.layout}
+							showLayoutSwitch={true}
+							/>
 					</div>
 				</div>
 			</div>
@@ -27,7 +42,10 @@ class Navigation extends Component {
 				<div className="row">
 						<Sidebar {...this.props} />
 					<div className="main">
-						<PageHeader {...this.props} setLayout={this.props.setLayout} layout={this.props.layout} showLayoutSwitch={true} />
+						<PageHeader {...this.props}
+							setLayout={this.setLayout.bind(this)}
+							layout={this.props.layout}
+							showLayoutSwitch={true} />
 						<Route exact path='/passmanager/i/:listID' component={List} />
 						<Route exact path='/passmanager/add' component={AddPassword} />
 						<Route exact path='/passmanager/i/:listID/:passID' component={List} />

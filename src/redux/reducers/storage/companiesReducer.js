@@ -1,4 +1,4 @@
-import {STORAGE_SET_COMPANIES, STORAGE_COMPANIES_ACTIVE} from '../../types'
+import {STORAGE_SET_COMPANIES, STORAGE_COMPANIES_ACTIVE,DELETE_USER_DATA} from '../../types'
 
 const initialState = {
   companiesActive:false,
@@ -20,6 +20,8 @@ export default function storageCompaniesReducer(state = initialState, action) {
         ...state,
         companiesActive: true,
       };
+    case DELETE_USER_DATA:
+      return initialState;
     default:
       return state;
   }

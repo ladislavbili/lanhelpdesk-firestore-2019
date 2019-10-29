@@ -361,7 +361,7 @@ class TaskEdit extends Component {
 		}
 
 		let permission = project.permissions.find((permission)=>permission.user===props.currentUser.id);
-		let viewOnly = !permission.write&& !props.currentUser.userData.role.value>0;
+		let viewOnly = (permission===undefined || !permission.write) && !props.currentUser.userData.role.value>0;
     this.setState({
       statuses,
       projects,

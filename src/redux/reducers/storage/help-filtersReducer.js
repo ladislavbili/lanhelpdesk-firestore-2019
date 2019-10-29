@@ -1,4 +1,4 @@
-import {STORAGE_SET_HELP_FILTERS, STORAGE_HELP_FILTERS_ACTIVE} from '../../types'
+import {STORAGE_SET_HELP_FILTERS, STORAGE_HELP_FILTERS_ACTIVE,DELETE_USER_DATA} from '../../types'
 
 const initialState = {
   filtersActive:false,
@@ -15,6 +15,8 @@ export default function storageFiltersReducer(state = initialState, action) {
         filtersLoaded:true,
       };
     }
+    case DELETE_USER_DATA:
+      return initialState;
     case STORAGE_HELP_FILTERS_ACTIVE:
       return {
         ...state,

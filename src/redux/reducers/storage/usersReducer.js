@@ -1,4 +1,4 @@
-import {STORAGE_USERS, STORAGE_USERS_ACTIVE} from '../../types'
+import {STORAGE_USERS, STORAGE_USERS_ACTIVE,DELETE_USER_DATA} from '../../types'
 
 const initialState = {
   usersActive:false,
@@ -15,6 +15,8 @@ export default function storageUsersReducer(state = initialState, action) {
         usersLoaded:true,
       };
     }
+    case DELETE_USER_DATA:
+      return initialState;
     case STORAGE_USERS_ACTIVE:
       return {
         ...state,

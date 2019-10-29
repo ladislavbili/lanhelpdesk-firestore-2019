@@ -1,4 +1,4 @@
-import {STORAGE_HELP_SUPPLIERS, STORAGE_HELP_SUPPLIERS_ACTIVE} from '../../types'
+import {STORAGE_HELP_SUPPLIERS, STORAGE_HELP_SUPPLIERS_ACTIVE,DELETE_USER_DATA} from '../../types'
 
 const initialState = {
   suppliersActive:false,
@@ -15,6 +15,8 @@ export default function storageSuppliersReducer(state = initialState, action) {
         suppliersLoaded:true,
       };
     }
+    case DELETE_USER_DATA:
+      return initialState;
     case STORAGE_HELP_SUPPLIERS_ACTIVE:
       return {
         ...state,

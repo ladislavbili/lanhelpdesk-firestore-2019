@@ -1,4 +1,4 @@
-import {STORAGE_HELP_SUPPLIER_INVOICES, STORAGE_HELP_SUPPLIER_INVOICES_ACTIVE} from '../../types'
+import {STORAGE_HELP_SUPPLIER_INVOICES, STORAGE_HELP_SUPPLIER_INVOICES_ACTIVE,DELETE_USER_DATA} from '../../types'
 
 const initialState = {
   supplierInvoicesActive:false,
@@ -15,6 +15,8 @@ export default function storageSupplierInvoicesReducer(state = initialState, act
         supplierInvoicesLoaded:true,
       };
     }
+    case DELETE_USER_DATA:
+      return initialState;
     case STORAGE_HELP_SUPPLIER_INVOICES_ACTIVE:
       return {
         ...state,
