@@ -15,7 +15,7 @@ import ItemContainer from './items/itemContainer';
 
 class Navigation extends Component {
 	render() {
-		if((this.props.currentUser.userData===null||!this.props.currentUser.userData.role.value>0)&&!testing){
+		if((this.props.currentUser.userData===null||this.props.currentUser.userData.role.value < 1 )&&!testing){
 			return (
 				<div>
 				<div className="row">

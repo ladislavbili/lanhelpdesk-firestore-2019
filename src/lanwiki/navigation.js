@@ -11,7 +11,8 @@ import ListNotes from './Notes';
 
 class Navigation extends Component {
 	render() {
-		if((this.props.currentUser.userData===null||!this.props.currentUser.userData.role.value < 1 )&&!testing){
+		console.log(this.props.currentUser.userData.role.value);
+		if((this.props.currentUser.userData===null||this.props.currentUser.userData.role.value < 1 )&&!testing){
 			return (
 				<div>
 				<div className="row">

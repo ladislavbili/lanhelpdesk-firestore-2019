@@ -14,7 +14,7 @@ import NotificationServersAdd from './notificationServers/add';
 
 class Navigation extends Component {
 	render() {
-		if((this.props.currentUser.userData===null||!this.props.currentUser.userData.role.value < 1 )&&!testing){
+		if((this.props.currentUser.userData===null||this.props.currentUser.userData.role.value < 1 )&&!testing){
 			return (
 				<div>
 				<div className="row">

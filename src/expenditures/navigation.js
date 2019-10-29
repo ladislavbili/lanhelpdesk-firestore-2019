@@ -12,7 +12,7 @@ import AddExpenditure from './list/addExpenditure';
 
 class Navigation extends Component {
 	render() {
-		if((this.props.currentUser.userData===null||!this.props.currentUser.userData.role.value < 2 )&&!testing){
+		if((this.props.currentUser.userData===null||this.props.currentUser.userData.role.value < 2 )&&!testing){
 			return (
 				<div>
 				<div className="row">

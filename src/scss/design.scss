@@ -65,7 +65,7 @@ body{
 
 .main{
   background-color: white;
-  width: calc( 100% - #{$sidebar-width} );
+  width: calc( 100% - #{$sidebar-width} - 2px );
 }
 
 //-------------------overflow----------------------
