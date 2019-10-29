@@ -21,6 +21,15 @@
 - input-group-append
 */
 
+.testSonka{
+  color: red;
+  font-size: 10px;
+}
+
+.testSonka_p{
+  font-family: Segoe UI;
+}
+
 @media (min-width: 576px) {
   .modal-dialog {
     max-width: none;
@@ -183,6 +192,10 @@ html{
 }
 .position-inherit{
   position: inherit;
+}
+
+.cke{
+  z-index: 1000;
 }
 
 .display-inline{
@@ -764,6 +777,10 @@ tr:last-child{
   font-size: 10px;
 }
 
+.warning-general{
+  color: red;
+}
+
 .backupList textarea{
   resize: none;
 }
@@ -1146,6 +1163,14 @@ tr:last-child{
   background: white;
   border-radius: 0px;
   padding: 20px 30px;
+}
+
+.card-box-lanwiki{
+  border: none;
+  margin-bottom: 0px;
+  background-color: #ffffff;
+  background: white;
+  border-radius: 0px;
 }
 
 .form-tab{
