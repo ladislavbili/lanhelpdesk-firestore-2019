@@ -39,7 +39,6 @@ class PriceList extends Component{
                   type="text"
                   className="form-control commandbar-search-text"
                   onChange={(e)=>this.setState({pricelistFilter:e.target.value})}
-                  className="form-control commandbar-search"
                   placeholder="Search"
                 />
               <button className="commandbar-search-btn" type="button">

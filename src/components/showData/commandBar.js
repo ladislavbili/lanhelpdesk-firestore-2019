@@ -13,7 +13,6 @@ class TaskListContainer extends Component {
 	}
 
 	render() {
-		console.log(this.props);
 		return (
 			<div className={"commandbar " + (this.props.layout === 1 ? " commandbar-list-align" : "")}>
 					<div className="commandbar-search">
