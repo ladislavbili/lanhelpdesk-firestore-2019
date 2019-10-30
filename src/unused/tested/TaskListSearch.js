@@ -22,7 +22,7 @@ export default class TaskListContainer extends Component {
 		return (
 			<div className="content-page">
 				<div className="content" style={{ paddingTop: 15 }}>
-					<div className="container-fluid">
+					<div className="commandbar">
 						<div className="row">
 							<div className="col-sm-6">
 								<h4 className="page-title" style={{ fontSize: 24 }}>

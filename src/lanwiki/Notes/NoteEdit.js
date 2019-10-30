@@ -3,7 +3,7 @@ import { Button, FormGroup, Modal, ModalBody, ModalFooter } from 'reactstrap';
 
 import TimeAgo from 'react-timeago'
 import Select from 'react-select';
-import {timestampToString, toSelArr, changeCKEData} from '../../helperFunctions';
+import {timestampToString, toSelArr} from '../../helperFunctions';
 import { rebase } from '../../index';
 import {invisibleSelectStyle} from '../../scss/selectStyles';
 
@@ -138,7 +138,7 @@ export default class Note extends Component{
   render(){
     return (
       <div className="flex" >
-				<div className="container-fluid p-2">
+				<div className="commandbar p-2">
 					<div className={"d-flex flex-row" + (!this.props.columns ? " w-50  ml-auto mr-auto" : "p-l-18") }>
 						<div className="center-hor">
 							{!this.props.columns &&
@@ -253,7 +253,7 @@ export default class Note extends Component{
                         format_p: {
                           element: 'p',
                           attributes: {
-                            'style' : 'font-family: Segoe UI;'
+                            'style' : 'font-family: Segoe UI; margin-bottom: 0px; padding-bottom: 0px; margin-top: 0px; padding-top: 0px;'
                           }
                         },
                         format_pre: {

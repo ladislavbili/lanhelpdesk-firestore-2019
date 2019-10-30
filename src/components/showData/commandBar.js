@@ -13,13 +13,13 @@ class TaskListContainer extends Component {
 	}
 
 	render() {
+		console.log(this.props);
 		return (
-			<div className="container-fluid" style={{paddingLeft:10,paddingRight:10, minWidth:450}}>
-				<div className="d-flex flex-row align-items-center p-t-5">
-					<div className="center-hor input-group commandbar-search-case">
+			<div className={"commandbar " + (this.props.layout === 1 ? " commandbar-list-align" : "")}>
+					<div className="commandbar-search">
 							<input
 								type="text"
-								className="form-control commandbar-search"
+								className="form-control commandbar-search-text"
 								value={this.state.search}
 								onKeyPress={(e)=>{
 									if(e.key==='Enter'){
@@ -29,17 +29,14 @@ class TaskListContainer extends Component {
 								onChange={(e)=>this.setState({search:e.target.value})}
 								placeholder="Search"
 							/>
-							<div className="input-group-append">
-								<button className="commandbar-btn-search" type="button" onClick={()=>this.props.setSearch(this.state.search)}>
-									<i className="fa fa-search" />
-								</button>
-							</div>
+							<button className="commandbar-search-btn" type="button" onClick={()=>this.props.setSearch(this.state.search)}>
+								<i className="fa fa-search" />
+							</button>
 					</div>
 
 					{ this.props.isTask &&
-						<div>
 							<Button
-								className="btn-link"
+								className="btn-link center-hor"
 								onClick={()=>{
 									let body={
 										requester:null,
@@ -56,12 +53,10 @@ class TaskListContainer extends Component {
 								>
 								Global
 							</Button>
-						</div>
 					}
 					{false && <div className="ml-auto p-2 align-self-center">
 						{this.props.extraCommands?this.props.extraCommands():null}
 					</div>}
-				</div>
 			</div>
 		);
 	}

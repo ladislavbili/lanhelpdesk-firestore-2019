@@ -103,33 +103,29 @@ class NotificationList extends Component {
 
 		return (
 			<div>
-				<div className="container-fluid">
-					<div className="d-flex flex-row align-items-center">
-						<div className="p-2">
-							<div className="input-group commandbar-search-case">
-								<input
-									type="text"
-									value={this.state.search}
-									className="form-control commandbar-search"
-									onChange={(e)=>this.setState({search:e.target.value})}
-									placeholder="Search" />
-								<div className="input-group-append">
-									<button className="commandbar-btn-search" type="button">
-										<i className="fa fa-search" />
-									</button>
-								</div>
-							</div>
-						</div>
-						<Button className="btn-link">Global</Button>
-						<Button className="btn" onClick={() => this.props.history.push("/monitoring/mail-notifications/add")}>
-							<i className="fa fa-plus"/> mail notification
-						</Button>
+				<div className="commandbar commandbar-list-align">
+					<div className="commandbar-search">
+						<input
+							type="text"
+							value={this.state.search}
+							className="form-control commandbar-search-text"
+							onChange={(e)=>this.setState({search:e.target.value})}
+							placeholder="Search" />
+							<button className="commandbar-search-btn" type="button">
+								<i className="fa fa-search" />
+							</button>
 					</div>
+					<Button className="btn-link center-hor">
+						Global
+					</Button>
+					<Button className="btn center-hor" onClick={() => this.props.history.push("/monitoring/mail-notifications/add")}>
+						<i className="fa fa-plus"/> mail notification
+					</Button>
 				</div>
-				<div className="fit-with-header-and-commandbar row">
-					<div className="fit-with-header-and-commandbar p-20 scrollable golden-ratio-618" style={this.props.layout===1?{flex:'auto'}:{}}>
 
-						<table className={classnames({ 'project-table-fixed': this.props.layout === 0, table:true })}>
+				<div className="fit-with-header-and-commandbar row">
+					<div className="p-20 scrollable golden-ratio-618" style={this.props.layout===1?{flex:'auto'}:{}}>
+						<table className="table">
 								<thead>
 									<tr>
 										<th>Name</th>
@@ -145,7 +141,7 @@ class NotificationList extends Component {
 											<input
 											type="text"
 											value={this.state.filterByName}
-											className="form-control commandbar-search"
+											className="form-control"
 											onChange={(e)=>this.setState({filterByName:e.target.value})}
 											placeholder="Filter by name" />
 										</td>
@@ -153,7 +149,7 @@ class NotificationList extends Component {
 											<input
 											type="text"
 											value={this.state.filterByCustomer}
-											className="form-control commandbar-search"
+											className="form-control"
 											onChange={(e)=>this.setState({filterByCustomer:e.target.value})}
 											placeholder="Filter by customer" />
 										</td>
@@ -161,7 +157,7 @@ class NotificationList extends Component {
 											<input
 											type="text"
 											value={this.state.filterByStatus}
-											className="form-control commandbar-search"
+											className="form-control"
 											onChange={(e)=>this.setState({filterByStatus:e.target.value})}
 											placeholder="Filter by status" />
 										</td>
@@ -169,7 +165,7 @@ class NotificationList extends Component {
 											<input
 											type="text"
 											value={this.state.filterByLastReport}
-											className="form-control commandbar-search"
+											className="form-control"
 											onChange={(e)=>this.setState({filterByLastReport:e.target.value})}
 											placeholder="Filter by last report" />
 										</td>

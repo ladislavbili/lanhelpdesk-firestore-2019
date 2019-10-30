@@ -21,7 +21,7 @@ export default class TaskSide extends Component {
 		return (
 			<div className="content-page">
 				<div className="content">
-					<div className="container-fluid">
+					<div className="commandbar">
 						<div className="row">
 							<div className="col-lg-8">
 								<div className="card-box">

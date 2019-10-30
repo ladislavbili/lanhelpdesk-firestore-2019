@@ -362,7 +362,7 @@ export default class TasksTwoEdit extends Component {
 
 		return (
 			<div className="flex">
-				<div className="container-fluid p-2">
+				<div className="commandbar p-2">
 					<div className="d-flex flex-row align-items-center p-l-18">
 						<div className="center-hor">
 							{

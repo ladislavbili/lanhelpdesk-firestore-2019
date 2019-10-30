@@ -26,7 +26,7 @@ class TaskListContainer extends Component {
 
 				<div className="content" >
 
-					<div className="container-fluid">
+					<div className="commandbar">
 
 						<div className="d-flex">
 							{this.state.filterView && (
@@ -54,7 +54,7 @@ class TaskListContainer extends Component {
 										placeholder="Search task name"
 										style={{ width: 200 }}
 									/>
-										<button className="commandbar-btn-search" type="button" onClick={()=>this.props.setSearch(this.state.search)}>
+										<button className="commandbar-search-btn" type="button" onClick={()=>this.props.setSearch(this.state.search)}>
 											<i className="fa fa-search" />
 										</button>
 							</div>

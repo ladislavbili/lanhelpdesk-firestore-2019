@@ -163,7 +163,7 @@ class Sidebar extends Component {
 		return (
 			<div className="sidebar">
 					<SelectPage />
-				<div className="sidebar-content scrollable fit-with-header">
+				<div className="scrollable fit-with-header">
 					{!showSettings && <div>
 						<div>
 						<li>

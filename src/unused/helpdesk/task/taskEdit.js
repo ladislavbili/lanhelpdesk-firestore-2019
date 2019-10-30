@@ -321,7 +321,7 @@ export default class TasksTwoEdit extends Component {
 
 		return (
 			<div className="flex">
-				<div className="container-fluid p-2">
+				<div className="commandbar p-2">
 					<div className={"d-flex flex-row" + (!this.props.columns ? " w-70  ml-auto mr-auto" : "p-l-18") }>
 						<div className="center-hor">
 							{!this.props.columns &&

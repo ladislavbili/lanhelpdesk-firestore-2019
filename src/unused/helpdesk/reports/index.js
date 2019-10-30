@@ -150,7 +150,7 @@ class Reports extends Component {
 	render() {
 		return (
 				<div className="scrollable fit-with-header">
-					<div className="container-fluid">
+					<div className="commandbar">
 						<div className="d-flex flex-row align-items-center p-2">
 							<button type="button" className="btn-link waves-effect">
 								<i

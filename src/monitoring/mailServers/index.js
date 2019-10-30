@@ -74,7 +74,7 @@ class MailServerList extends Component {
 							});
 						})
 
-					this.props.history.push(`/monitoring/mail-notifications`);
+					this.props.history.push(`/monitoring/mail-servers`);
 				}).catch(err => {
 				//handle error
 			});
@@ -101,37 +101,35 @@ class MailServerList extends Component {
 				);
 
 
-			return (
-			<div>
-				<div className="container-fluid">
-					<div className="d-flex flex-row align-items-center">
-						<div className="p-2">
-							<div className="input-group commandbar-search-case">
+	return (
+				<div>
+					<div className="commandbar commandbar-list-align">
+						<div className="commandbar-search">
 								<input
 									type="text"
 									value={this.state.search}
-									className="form-control commandbar-search"
+									className="form-control commandbar-search-text"
 									onChange={(e)=>this.setState({search:e.target.value})}
 									placeholder="Search" />
-								<div className="input-group-append">
-									<button className="commandbar-btn-search" type="button">
+									<button className="commandbar-search-btn" type="button">
 										<i className="fa fa-search" />
 									</button>
-								</div>
-							</div>
 						</div>
-						<Button className="btn-link">Global</Button>
 
-						<Button className="btn" onClick={() => this.props.history.push("/monitoring/mail-servers/add")}>
+						<Button className="btn-link center-hor">
+							Global
+						</Button>
+
+						<Button className="btn center-hor" onClick={() => this.props.history.push("/monitoring/mail-servers/add")}>
 							<i className="fa fa-plus"/> Mail server
 						</Button>
 
 					</div>
-				</div>
-				<div className="fit-with-header-and-commandbar row">
-					<div className="fit-with-header-and-commandbar p-20 scrollable golden-ratio-618" style={this.props.layout===1?{flex:'auto'}:{}}>
 
-						<table className={classnames({ 'project-table-fixed': this.props.layout === 0, table:true })}>
+				<div className="fit-with-header-and-commandbar row">
+					<div className="p-20 scrollable golden-ratio-618" style={this.props.layout===1?{flex:'auto'}:{}}>
+
+						<table  className="table">
 								<thead>
 									<tr>
 										<th>Title</th>
@@ -148,7 +146,7 @@ class MailServerList extends Component {
 											<input
 											type="text"
 											value={this.state.filterByTitle}
-											className="form-control commandbar-search"
+											className="form-control"
 											onChange={(e)=>this.setState({filterByTitle:e.target.value})}
 											placeholder="Filter by title" />
 										</td>
@@ -156,7 +154,7 @@ class MailServerList extends Component {
 											<input
 											type="text"
 											value={this.state.filterByCompany}
-											className="form-control commandbar-search"
+											className="form-control"
 											onChange={(e)=>this.setState({filterByCompany:e.target.value})}
 											placeholder="Filter by company" />
 										</td>
@@ -164,7 +162,7 @@ class MailServerList extends Component {
 											<input
 											type="text"
 											value={this.state.filterByTestMail}
-											className="form-control commandbar-search"
+											className="form-control"
 											onChange={(e)=>this.setState({filterByTestMail:e.target.value})}
 											placeholder="Filter by test mail" />
 										</td>
@@ -172,7 +170,7 @@ class MailServerList extends Component {
 											<input
 											type="text"
 											value={this.state.filterByStatus}
-											className="form-control commandbar-search"
+											className="form-control"
 											onChange={(e)=>this.setState({filterByStatus:e.target.value})}
 											placeholder="Filter by status" />
 										</td>
@@ -180,7 +178,7 @@ class MailServerList extends Component {
 											<input
 											type="text"
 											value={this.state.filterByLastResp}
-											className="form-control commandbar-search"
+											className="form-control"
 											onChange={(e)=>this.setState({filterByLastResp:e.target.value})}
 											placeholder="Filter by last response" />
 										</td>

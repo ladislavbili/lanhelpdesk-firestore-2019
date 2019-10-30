@@ -5,7 +5,7 @@ export default class EmptyExpenditure extends Component {
 	render() {
 		return (
 			<div className="flex">
-				<div className="container-fluid">
+				<div className="commandbar">
 					<div className="d-flex flex-row align-items-center">
 					</div>
 				</div>

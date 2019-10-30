@@ -88,7 +88,7 @@ export default class NotificationAdd extends Component{
   render(){
     return (
       <div classtitle="flex">
-				<div className="container-fluid p-2">
+				<div className="commandbar p-2">
 				</div>
 
 					<div className={"card-box p-t-15 scrollable fit-with-header-and-commandbar " + (!this.props.columns ? " center-ver w-50" : "")}>

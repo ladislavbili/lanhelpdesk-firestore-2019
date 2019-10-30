@@ -51,7 +51,7 @@ export default class List extends Component {
 													<input
 														type="text"
 														value={this.state.search[index]}
-														className="form-control commandbar-search"
+														className="form-control"
 														onChange={(e) => {
 																let newSearch = this.state.search;
 																newSearch[index] = e.target.value;

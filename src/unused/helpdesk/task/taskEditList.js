@@ -330,7 +330,7 @@ export default class TaskEdit extends Component {
 
 		return (
 			<div className="">
-				<div className="container-fluid">
+				<div className="commandbar">
 					<div className="d-flex flex-row center-hor p-2  mr-auto ">
 							<div className="display-inline center-hor">
 							{!this.props.columns &&

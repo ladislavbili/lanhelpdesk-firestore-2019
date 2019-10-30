@@ -451,7 +451,7 @@ class TaskEdit extends Component {
 
 		return (
 			<div className="flex">
-				<div className="container-fluid">
+				<div className="commandbar">
 					<div className="d-flex flex-row center-hor p-2 ">
 							<div className="display-inline center-hor">
 							{!this.props.columns &&

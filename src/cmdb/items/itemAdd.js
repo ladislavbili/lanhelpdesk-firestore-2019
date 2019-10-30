@@ -82,7 +82,7 @@ export default class ItemAdd extends Component{
     return (
       <div>
 
-          <div className="container-fluid">
+          <div className="commandbar">
             <div className="d-flex flex-row align-items-center">
             </div>
           </div>

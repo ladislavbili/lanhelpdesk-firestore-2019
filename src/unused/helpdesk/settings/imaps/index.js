@@ -27,7 +27,7 @@ export default class ImapsList extends Component{
     return (
       <div className="content-page">
 				<div className="content" style={{ paddingTop: 0 }}>
-					<div className="container-fluid">
+					<div className="commandbar">
 						<div className="row align-items-center">
               <div className="p-2">
                 <div className="input-group">
@@ -39,7 +39,7 @@ export default class ImapsList extends Component{
                     placeholder="Search"
                   />
                   <div className="input-group-append">
-                    <button className="commandbar-btn-search" type="button">
+                    <button className="commandbar-search-btn" type="button">
                       <i className="fa fa-search" />
                     </button>
                   </div>

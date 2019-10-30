@@ -15,7 +15,7 @@ export default class ItemContainer extends Component {
 	render() {
 		return (
 			<div className="form-background scrollable fit-with-header" style={{padding:0,border:'none'}}>
-				<div className="container-fluid">
+				<div className="commandbar">
 					<div className="d-flex flex-row align-items-center ml-auto mr-auto" >
 						<div className="p-2">
 							{ !this.state.edit &&

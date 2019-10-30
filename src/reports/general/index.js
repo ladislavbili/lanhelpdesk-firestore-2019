@@ -198,28 +198,28 @@ class Reports extends Component {
 	render() {
 		return (
 				<div className="scrollable fit-with-header">
-					<div className="container-fluid">
-						<div className="d-flex flex-row align-items-center p-2">
-							<button type="button" className="btn-link waves-effect">
+					<div className="commandbar">
+							<button type="button" className="btn-link waves-effect center-hor">
 								<i
 									className="fa fa-file-pdf"
 									/>
 								{"  "}Export
 								</button>
-								<button type="button" className="btn-link waves-effect">
+								<button type="button" className="btn-link waves-effect center-hor">
 									<i
 										className="fas fa-print"
 										/>
 									{"  "}Print
 									</button>
-									<button type="button" className="btn-link waves-effect">
+									<button type="button" className="btn-link waves-effect center-hor">
 										<i
 											className="fas fa-sync"
 											/>
 										{"  "}Aktualizovať ceny podla cenníka
 									</button>
-						</div>
-							<div className="p-10">
+					</div>
+
+							<div className="p-20">
 								<h1 className="m-b-15">Výkaz prác</h1>
 								<div>
 									<h3>Služby</h3>
@@ -359,7 +359,6 @@ class Reports extends Component {
 								</div>
 							</div>
 						</div>
-					</div>
 				 </div>
 			);
 		}

@@ -29,7 +29,7 @@ export default class TaskSideLeft2 extends Component {
 		return (
 			<div className="content-page">
 				<div className="content">
-					<div className="container-fluid">
+					<div className="commandbar">
 						<div className="row m-b-20">
 							<div className="col-lg-8">
 								<div className="button-list">

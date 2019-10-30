@@ -22,7 +22,7 @@ export default class TaskTop extends Component {
 		return (
 			<div className="content-page">
 				<div className="content">
-					<div className="container-fluid">
+					<div className="commandbar">
 						<div className="row">
 							<div className="col-lg-12">
 								<div className="card-box" style={{ maxWidth: 1284, margin: 'auto' }}>

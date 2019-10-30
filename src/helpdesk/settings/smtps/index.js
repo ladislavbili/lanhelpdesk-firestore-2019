@@ -31,39 +31,33 @@ class SMTPsList extends Component{
 
   render(){
     return (
-      <div className="content-page">
-				<div className="content" style={{ paddingTop: 0 }}>
-					<div className="container-fluid">
-						<div className="row align-items-center">
-              <div className="p-2">
-                <div className="input-group">
-                  <input
-                    type="text"
-                    className="form-control commandbar-search"
-                    value={this.state.smtpFilter}
-                    onChange={(e)=>this.setState({smtpFilter:e.target.value})}
-                    placeholder="Search"
-                  />
-                  <div className="input-group-append">
-                    <button className="commandbar-btn-search" type="button">
-                      <i className="fa fa-search" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-                <Button
-          				className="btn-link t-a-l"
-          				onClick={()=>this.props.history.push('/helpdesk/settings/smtps/add')}>
-          			 <i className="fa fa-plus sidebar-icon-center"/> Add SMTP
-          			</Button>
-
+      <div className="content">
+        <div className="commandbar">
+            <div className="commandbar-search">
+                <input
+                  type="text"
+                  className="form-control commandbar-search-text"
+                  value={this.state.smtpFilter}
+                  onChange={(e)=>this.setState({smtpFilter:e.target.value})}
+                  placeholder="Search"
+                />
+              <button className="commandbar-search-btn" type="button">
+                <i className="fa fa-search" />
+              </button>
             </div>
-          </div>
+            <Button
+              className="btn-link center-hor"
+              onClick={()=>this.props.history.push('/helpdesk/settings/smtps/add')}>
+             <i className="fa fa-plus p-l-5 p-r-5"/> Add SMTP
+            </Button>
+        </div>
 
           <div className="row m-0 p-0 taskList-container">
-            <div className="col-lg-4 p-0 scrollable fit-with-header-and-commandbar">
-              <table className="table table-hover p-5">
+            <div className="col-lg-4 p-t-9 p-r-10 p-l-10 scroll-visible fit-with-header-and-commandbar">
+              <h4 className="font-24 p-b-10">
+  							SMTPs
+  						</h4>
+              <table className="table table-hover">
                 <thead>
                   <tr className="clickable">
                     <th>Title</th>
@@ -104,7 +98,7 @@ class SMTPsList extends Component{
                 </tbody>
               </table>
             </div>
-            <div className="col-lg-8 p-0">
+            <div className="col-lg-8">
             {
               this.props.match.params.id && this.props.match.params.id==='add' && <SMTPAdd />
             }
@@ -114,7 +108,6 @@ class SMTPsList extends Component{
           </div>
         </div>
       </div>
-    </div>
     );
   }
 }

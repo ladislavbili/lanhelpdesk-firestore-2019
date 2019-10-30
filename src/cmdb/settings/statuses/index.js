@@ -33,7 +33,7 @@ export default class Statuses extends Component {
 	render() {
 		return (
 			<div>
-				<div className="container-fluid">
+				<div className="commandbar">
 					<div className="d-flex flex-row align-items-center">
 						<div className="p-2">
 							<div className="input-group">
@@ -44,7 +44,7 @@ export default class Statuses extends Component {
 									onChange={(e)=>this.setState({search:e.target.value})}
 									placeholder="Search" />
 									<div className="input-group-append">
-										<button className="commandbar-btn-search" type="button">
+										<button className="commandbar-search-btn" type="button">
 											<i className="fa fa-search" />
 										</button>
 									</div>

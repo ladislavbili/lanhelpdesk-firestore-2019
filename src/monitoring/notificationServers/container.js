@@ -30,7 +30,7 @@ export default class NotificationContainer extends Component{
 
   render(){
       return (
-        <div className={"flex p-t-15 scrollable " + (this.props.isModal ? "" : " card-box fit-with-header-and-commandbar ")}>
+        <div className={"flex p-t-15 scrollable " + (this.props.isModal ? "" : " card-box ")}>
 					{ this.state.showEdit
 						&&
 						<Edit id={this.state.openedID} toggleEdit={() => this.toggleEdit()} />

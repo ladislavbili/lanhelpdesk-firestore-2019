@@ -106,89 +106,79 @@ class ItemList extends Component {
 	render() {
 		return (
 			<div>
-				{/*COMMAND BAR*/}
-				<div className="container-fluid">
-					<div className="d-flex flex-row align-items-center">
-						<div className="p-2">
-							<div className="input-group commandbar-search-case">
-								<input
-									type="text"
-									className="form-control commandbar-search"
-									value={this.state.search}
-									onKeyPress={(e)=>{
-										if(e.key==='Enter'){
-											this.setState({activeSearch:this.state.search})
-										}
-									}}
-									onChange={(e)=>this.setState({search:e.target.value})}
-									placeholder="Search"
-								/>
-								<div className="input-group-append">
-									<button className="commandbar-btn-search" type="button" onClick={()=>this.setState({activeSearch:this.state.search})}>
-										<i className="fa fa-search" />
-									</button>
-								</div>
-							</div>
+				<div className="commandbar commandbar-list-align">
+						<div className="commandbar-search">
+							<input
+								type="text"
+								className="form-control commandbar-search-text"
+								value={this.state.search}
+								onKeyPress={(e)=>{
+									if(e.key==='Enter'){
+										this.setState({activeSearch:this.state.search})
+									}
+								}}
+								onChange={(e)=>this.setState({search:e.target.value})}
+								placeholder="Search"
+							/>
+							<button className="commandbar-search-btn" type="button" onClick={()=>this.setState({activeSearch:this.state.search})}>
+								<i className="fa fa-search" />
+							</button>
 						</div>
-						<div className="p-2">
+
 							<Button
-								className="btn-link"
+								className="btn-link center-hor"
 								onClick={()=>{
 									this.props.setCompany(null);
 								}}
 								>
 								Global
 							</Button>
-						</div>
-						<div className="p-2">
+
 							<Button
-								className="btn-link"
+								className="btn-link center-hor"
 								onClick={()=>{
 									this.props.history.push('/cmdb/i/'+this.props.match.params.sidebarID+'/i/add');
 								}}
-								> <i className="fa fa-plus sidebar-icon-center"/>
+								> <i className="fa fa-plus  p-l-5 p-r-5"/>
 								{(this.state.sidebarItem?this.state.sidebarItem.title:'item')}
 							</Button>
-						</div>
 
-						<div className="text-basic m-r-5 m-l-5">
-						Sort by
-					</div>
-						<select
-							value={this.props.orderBy}
-							className="invisible-select"
-							onChange={(e)=>this.props.setCMDBOrderBy(e.target.value)}>
-							{
-								[{value:'title',label:'Title'},{value:'company',label:'Company'},{value:'IP',label:'IP'},{value:'status',label:'Status'}].map((item,index)=>
-								<option value={item.value} key={index}>{item.label}</option>
-							)
+							<div className="ml-auto row">
+								<div className="center-hor p-l-5 p-r-5">
+									Sort by
+								</div>
+
+								<select
+									value={this.props.orderBy}
+									className="invisible-select text-bold"
+									onChange={(e)=>this.props.setCMDBOrderBy(e.target.value)}>
+									{
+										[{value:'title',label:'Title'},{value:'company',label:'Company'},{value:'IP',label:'IP'},{value:'status',label:'Status'}].map((item,index)=>
+										<option value={item.value} key={index}>{item.label}</option>
+									)
+									}
+								</select>
+
+								{ !this.props.ascending &&
+									<button type="button" className="btn btn-link btn-outline-blue waves-effect center-hor" onClick={()=>this.props.setCMDBAscending(true)}>
+										<i
+											className="fas fa-arrow-up"
+											/>
+									</button>
+								}
+
+								{ this.props.ascending &&
+									<button type="button" className="btn btn-link btn-outline-blue waves-effect center-hor" onClick={()=>this.props.setCMDBAscending(false)}>
+										<i
+											className="fas fa-arrow-down"
+											/>
+									</button>
 							}
-						</select>
-
-						{ !this.props.ascending &&
-							<button type="button" className="btn btn-link btn-outline-blue waves-effect" onClick={()=>this.props.setCMDBAscending(true)}>
-								<i
-									className="fas fa-arrow-up icon-M"
-									/>
-							</button>
-						}
-
-						{ this.props.ascending &&
-							<button type="button" className="btn btn-link btn-outline-blue waves-effect" onClick={()=>this.props.setCMDBAscending(false)}>
-								<i
-									className="fas fa-arrow-down icon-M"
-									/>
-							</button>
-					}
+						</div>
 					</div>
-				</div>
-					{/*COMMAND BAR*/}
 
-
-
-				<div className="fit-with-header-and-commandbar scrollable">
-					<div className="p-20 full-width">
-					<h1>{this.state.sidebarItem?this.state.sidebarItem.title:'Item'}</h1>
+				<div className="fit-with-header-and-commandbar scrollable p-30">
+					<h1 className="full-width">{this.state.sidebarItem?this.state.sidebarItem.title:'Item'}</h1>
 
 						<table className="table">
 							<thead>
@@ -212,7 +202,6 @@ class ItemList extends Component {
 								}
 							</tbody>
 						</table>
-						</div>
 				</div>
 			</div>
 			);

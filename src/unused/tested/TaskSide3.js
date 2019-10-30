@@ -53,7 +53,7 @@ export default class TaskSide3 extends Component {
 		return (
 			<div className="content-page">
 				<div className="content" style={{ padding: 0 }}>
-					<div className="container-fluid" style={{ padding: 0 }}>
+					<div className="commandbar" style={{ padding: 0 }}>
 						<div className="row">
 							<div className="col-xl-12" style={{ height: 38 }}>
 								<div

@@ -113,27 +113,24 @@ class TaskList extends Component {
 	render() {
 		return (
 			<div>
-				<div className="container-fluid">
-					<div className="d-flex flex-row align-items-center">
-						<div className="p-2">
-							<div className="input-group commandbar-search-case">
-								<input
-									type="text"
-									value={this.state.search}
-									className="form-control commandbar-search"
-									onChange={(e)=>this.setState({search:e.target.value})}
-									placeholder="Search" />
-								<div className="input-group-append">
-									<button className="commandbar-btn-search" type="button">
-										<i className="fa fa-search" />
-									</button>
-								</div>
-							</div>
-						</div>
-						<Button className="btn-link">Global</Button>
+				<div className="commandbar commandbar-list-align">
+					<div className="commandbar-search">
+						<input
+							type="text"
+							value={this.state.search}
+							className="form-control commandbar-search-text"
+							onChange={(e)=>this.setState({search:e.target.value})}
+							placeholder="Search" />
+							<button className="commandbar-search-btn" type="button">
+								<i className="fa fa-search" />
+							</button>
+					</div>
+
+						<Button className="btn-link center-hor">
+							Global
+						</Button>
 
 						<span className="center-hor m-l-10">
-							<FormGroup check>
 								<Input
 									type="checkbox"
 									id="check-new"
@@ -143,14 +140,12 @@ class TaskList extends Component {
 											statuses: this.state.statuses.includes(0)?this.state.statuses.filter((item)=>item!==0):[...this.state.statuses,0]
 										})
 									}} />{' '}
-								<Label htmlFor="check-new" check className="clickable">
+								<Label htmlFor="check-new" check className="clickable m-l-15">
 									New
 								</Label>
-							</FormGroup>
 						</span>
 
 						<span className="center-hor m-l-10">
-							<FormGroup check>
 								<Input type="checkbox"
 									id="check-open"
 									checked={this.state.statuses.includes(1)}
@@ -159,14 +154,12 @@ class TaskList extends Component {
 											statuses: this.state.statuses.includes(1)?this.state.statuses.filter((item)=>item!==1):[...this.state.statuses,1]
 										})
 									}} />{' '}
-								<Label htmlFor="check-open" check className="clickable">
+								<Label htmlFor="check-open" check className="clickable m-l-15">
 									Open
 								</Label>
-							</FormGroup>
 						</span>
 
 						<span className="center-hor m-l-10">
-							<FormGroup check>
 								<Input type="checkbox"
 									id="check-pending"
 									checked={this.state.statuses.includes(2)}
@@ -175,14 +168,12 @@ class TaskList extends Component {
 											statuses: this.state.statuses.includes(2)?this.state.statuses.filter((item)=>item!==2):[...this.state.statuses,2]
 										})
 									}} />{' '}
-								<Label htmlFor="check-pending" check className="clickable">
+								<Label htmlFor="check-pending" check className="clickable m-l-15">
 									Pending
 								</Label>
-							</FormGroup>
 						</span>
 
 						<span className="center-hor m-l-10">
-							<FormGroup check>
 								<Input type="checkbox"
 									id="check-close"
 									checked={this.state.statuses.includes(3)}
@@ -191,15 +182,14 @@ class TaskList extends Component {
 											statuses: this.state.statuses.includes(3)?this.state.statuses.filter((item)=>item!==3):[...this.state.statuses,3]
 										})
 									}} />{' '}
-								<Label htmlFor="check-close" check className="clickable">
+								<Label htmlFor="check-close" check className="clickable m-l-15">
 									Closed
 								</Label>
-							</FormGroup>
 						</span>
 					</div>
-				</div>
+
 				<div className="fit-with-header-and-commandbar row">
-					<div className="fit-with-header-and-commandbar p-20 scrollable golden-ratio-618" style={this.props.layout===1?{flex:'auto'}:{}}>
+					<div className="p-30 scrollable golden-ratio-618" style={this.props.layout===1?{flex:'auto'}:{}}>
 						<h1>Tasks</h1>
 
 							<div className="p-2 max-width-400">
