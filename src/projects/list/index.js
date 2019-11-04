@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, FormGroup, Label, Input } from 'reactstrap';
+import { Button, Label, Input } from 'reactstrap';
 import {rebase} from '../../index';
 import {timestampToString} from '../../helperFunctions';
 import TaskEditModal from './taskEditModal';

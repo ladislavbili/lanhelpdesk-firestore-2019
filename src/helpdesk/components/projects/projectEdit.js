@@ -49,15 +49,23 @@ class ProjectEdit extends Component{
 	}
 
   componentWillReceiveProps(props){
-    if (this.props.item.id !== props.item.id || (this.storageLoaded(props) && !this.storageLoaded(this.props))){
+    if (this.props.item.id !== props.item.id){
 			this.setProjectsData(props);
     }
+
+		if(this.storageLoaded(props) && !this.storageLoaded(this.props)){
+			this.setData(props);
+			this.setProjectsData(props);
+		}
+
 		if(!sameStringForms(props.statuses,this.props.statuses) &&
 			!sameStringForms(props.tags,this.props.tags) &&
 			!sameStringForms(props.users,this.props.users) &&
 			!sameStringForms(props.taskTypes,this.props.taskTypes) &&
-			!sameStringForms(props.tasks,this.props.tasks) &&
-			!sameStringForms(props.companies,this.props.companies)){
+			!sameStringForms(props.companies,this.props.companies) &&
+			!sameStringForms(props.projects,this.props.projects) &&
+			!sameStringForms(props.tasks,this.props.tasks)
+		){
 				this.setData(props);
 			}
   }
@@ -90,6 +98,7 @@ class ProjectEdit extends Component{
 		if(!this.props.projectsActive){
 			this.props.storageHelpProjectsStart();
 		}
+		this.setData(this.props);
 		this.setProjectsData(this.props);
 	}
 
@@ -97,6 +106,7 @@ class ProjectEdit extends Component{
 		if(!this.storageLoaded(props)){
 			return;
 		}
+		console.log('SET PROJECT DATA');
 
 		let project = props.projects.find((project)=>project.id===props.item.id);
 		let statuses = toSelArr(props.statuses);

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {getItemDisplayValue} from '../../helperFunctions';
+import {getItemDisplayValue, sameStringForms} from '../../helperFunctions';
 import CommandBar from './commandBar';
 import ListHeader from './listHeader';
 
@@ -7,16 +7,23 @@ export default class List extends Component {
 
 	constructor(props) {
 		super(props);
+		let search={};
+		props.displayValues.forEach((display)=>{
+			search[display.value]=''
+		})
 		this.state = {
-			search: props.displayValues.map((display, index) => ""),
+			search,
 		};
 	}
 
 	componentWillReceiveProps(props){
-		if (this.props !== props){
-			let newSearch = props.displayValues.map((display, index) => "");
+		if (!sameStringForms(this.props,props)){
+			let search={};
+			props.displayValues.forEach((display)=>{
+				search[display.value]=''
+			})
 			this.setState({
-				search: newSearch,
+				search,
 			});
 		}
 	}
@@ -32,9 +39,9 @@ export default class List extends Component {
 								<thead>
 										<tr>
 											{
-												this.props.displayValues.map((display,index)=> {
+												this.props.displayValues.map((display)=> {
 													return (
-														<th key={index} width={display.value === 'title' ? "30%" : (display.value === "id" ? "50px" : "")}>
+														<th key={display.value} width={display.value === 'title' ? "30%" : (display.value === "id" ? "50px" : "")}>
 															{display.label}
 														</th>
 													)
@@ -46,15 +53,15 @@ export default class List extends Component {
 									<tbody>
 										<tr style={{backgroundColor: "#F2F1F1"}}>
 											{
-												this.props.displayValues.map((display,index)=>
-												<th key={index}>
+												this.props.displayValues.map((display)=>
+												<th key={display.value}>
 													<input
 														type="text"
-														value={this.state.search[index]}
+														value={this.state.search[display.value]}
 														className="form-control"
 														onChange={(e) => {
 																let newSearch = this.state.search;
-																newSearch[index] = e.target.value;
+																newSearch[display.value] = e.target.value;
 																this.setState({
 																	search: newSearch,
 																});
@@ -66,13 +73,16 @@ export default class List extends Component {
 										</tr>
 										{
 											this.props.data
-											.filter((item, index) =>
+											.filter((item) =>
 											{
 												return this.props.displayValues
-															.filter((display,index)=> {
+															.every((display)=> {
 																let value = getItemDisplayValue(item,display);
 																if(display.value === "assignedTo"){
 																	value = item["assignedTo"].map(item => `${item.name} ${item.surname} (${item.email})`).toString();
+																}
+																if(display.value === "status"){
+																	value = item["status"].title.toString();
 																}
 																if(display.value === "tags"){
 																	value = item["tags"].map(item => `${item.title}`).toString();
@@ -83,19 +93,19 @@ export default class List extends Component {
 																if(display.value === "password"){
 																	value = item["password"];
 																}
-																return value.toString().toLowerCase().includes(this.state.search[index]);
-															}).length === this.props.displayValues.length;
-											}).map((item,index)=>
+																return value.toString().toLowerCase().includes(this.state.search[display.value].toLowerCase());
+															});
+											}).map((item)=>
 												<tr
-													key={index}
+													key={item.id}
 													onClick={(e)=>{
 														this.props.history.push(this.props.link+'/'+item.id);
 													}}
 													className="clickable">
 													{ this.props.displayValues
-														.map((display,index)=>
+														.map((display)=>
 														<td
-															key={index}
+															key={display.value}
 															>
 															{getItemDisplayValue(item,display)}
 														</td>

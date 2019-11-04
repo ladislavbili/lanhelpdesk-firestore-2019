@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import {Button, Label, TabContent, TabPane, Nav, NavItem, NavLink, Modal, ModalBody} from 'reactstrap';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
+import CKEditor from 'ckeditor4-react';
 
 import Attachments from '../components/attachments.js';
 import Comments from '../components/comments.js';
@@ -309,6 +310,7 @@ class TaskEdit extends Component {
 		if(!this.state.extraDataLoaded || !this.storageLoaded(props)){
 			return;
 		}
+		
 		let taskID = props.match.params.taskID;
 		let task = props.tasks.find((task)=>task.id===taskID);
 		let statuses = toSelArr(props.statuses);
@@ -362,48 +364,53 @@ class TaskEdit extends Component {
 
 		let permission = project.permissions.find((permission)=>permission.user===props.currentUser.id);
 		let viewOnly = (permission===undefined || !permission.write) && !props.currentUser.userData.role.value>0;
-    this.setState({
-      statuses,
-      projects,
-      users,
-      companies:newCompanies,
-      workTypes:newWorkTypes,
-      units,
-      taskMaterials,
-      taskWorks,
+		let newState = {
+			statuses,
+			projects,
+			users,
+			companies:newCompanies,
+			workTypes:newWorkTypes,
+			units,
+			taskMaterials,
+			taskWorks,
 			subtasks,
 			taskTypes,
 			allTags:tags,
 			task,
 
-			description:task.description,
-      title:task.title,
-      pausal:task.pausal?{value:true,label:'Pausal'}:{value:false,label:'Project'},
+			title:task.title,
+			pausal:task.pausal?{value:true,label:'Pausal'}:{value:false,label:'Project'},
 			overtime:task.overtime?{value:true,label:'Áno'}:{value:false,label:'Nie'},
-      status:status?status:null,
+			status:status?status:null,
 			statusChange:task.statusChange?task.statusChange:null,
 			createdAt:task.createdAt?task.createdAt:(new Date()).getTime(),
 			deadline: task.deadline!==null?moment(task.deadline):null,
 			closeDate: task.closeDate!==null && task.closeDate!==undefined ?new Date(task.closeDate).toISOString().replace('Z',''):'',
 			pendingDate: task.pendingDate!==null && task.pendingDate!==undefined ?new Date(task.pendingDate).toISOString().replace('Z',''):'',
 			reminder: task.reminder?new Date(task.reminder).toISOString().replace('Z',''):'',
-      project:project?project:null,
-      company:company?company:null,
-      workHours:isNaN(parseInt(task.workHours))?0:parseInt(task.workHours),
-      requester:requester?requester:null,
-      assignedTo,
+			project:project?project:null,
+			company:company?company:null,
+			workHours:isNaN(parseInt(task.workHours))?0:parseInt(task.workHours),
+			requester:requester?requester:null,
+			assignedTo,
 			milestone,
 			milestones,
 			attachments:task.attachments?task.attachments:[],
 
 			viewOnly,
-      loading:false,
+			loading:false,
 			defaultUnit,
 			tags:taskTags,
 			type:type?type:null,
 			projectChangeDate:(new Date()).getTime()
-    });
+		}
+		if(this.state.loading){
+			newState.description=task.description;
+		}
+
+    this.setState(newState);
   }
+
 
 	render() {
 		let permission = null;
@@ -759,6 +766,18 @@ class TaskEdit extends Component {
 							</div>}
 
 							<Label className="m-t-5">Popis</Label>
+								<CKEditor
+									data={this.state.description}
+									onChange={(e)=>{
+										this.setState({description:e.editor.getData()},this.submitTask.bind(this))
+								}}
+								readOnly={this.state.viewOnly}
+									config={{
+										extraPlugins: 'autogrow',
+										autoGrow_minHeight: 50,
+										autoGrow_maxHeight: 600,
+									}}
+									/>
 							<textarea
 								className="form-control b-r-0 hidden-input"
 								placeholder="Enter task description"
