@@ -153,11 +153,11 @@ class Sidebar extends Component {
 	render() {
 		let showSettings= this.props.history.location.pathname.includes('settings')&&(this.props.currentUser.userData.role.value===3||testing);
 		let managesProjects = this.state.project.id!==null && this.state.project.id!==-1 && (
-			this.props.currentUser.userData.role.value>0 || testing ||
+			this.props.currentUser.userData.role.value===3 || testing ||
 			(this.state.project.permissions.find((permission)=>permission.user===this.props.currentUser.id)!==undefined && this.state.project.permissions.find((permission)=>permission.user===this.props.currentUser.id).isAdmin)
 		);
 		let addsMilestones = this.state.project.id!==null && this.state.project.id!==-1 && (
-			this.props.currentUser.userData.role.value>0 || testing ||
+			this.props.currentUser.userData.role.value===3 || testing ||
 			(this.state.project.permissions.find((permission)=>permission.user===this.props.currentUser.id)!==undefined && this.state.project.permissions.find((permission)=>permission.user===this.props.currentUser.id).write)
 		);
 		return (
@@ -170,7 +170,7 @@ class Sidebar extends Component {
 							<Select
 								options={this.state.projects.filter((project)=>{
 									let curr = this.props.currentUser;
-									if((curr.userData && curr.userData.role.value>0)||(project.id===-1||project.id===null)){
+									if((curr.userData && curr.userData.role.value===3)||(project.id===-1||project.id===null)){
 										return true;
 									}
 									let permission = project.permissions.find((permission)=>permission.user===curr.id);

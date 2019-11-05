@@ -271,7 +271,7 @@ class ProjectAdd extends Component{
                   let body = {
                     title: this.state.title,
                     description: this.state.description,
-										permissions:[{user:this.props.currentUser.id,read:false,write:false,delete:false,isAdmin:true}],
+										permissions:[{user:this.props.currentUser.id,read:true,write:true,delete:true,isAdmin:true}],
                     def:{
                       status:this.state.status.value?{...this.state.status,value:this.state.status.value.id}:{def:false,fixed:false, value: null},
                       tags:this.state.tags.value?{...this.state.tags,value:this.state.tags.value.map(item=>item.id)}:{def:false,fixed:false, value: []},

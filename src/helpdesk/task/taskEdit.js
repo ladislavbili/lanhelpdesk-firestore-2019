@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import {Button, Label, TabContent, TabPane, Nav, NavItem, NavLink, Modal, ModalBody} from 'reactstrap';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
+import CKEditor from 'ckeditor4-react';
 
 import Attachments from '../components/attachments.js';
 import Comments from '../components/comments.js';
@@ -23,6 +24,7 @@ import TaskPrint from './taskPrint';
 import classnames from "classnames";
 import {rebase, database} from '../../index';
 import firebase from 'firebase';
+import ck4config from '../../scss/ck4config';
 import {toSelArr, snapshotToArray, timestampToString, sameStringForms} from '../../helperFunctions';
 import { storageCompaniesStart, storageHelpPricelistsStart, storageHelpPricesStart,storageHelpProjectsStart, storageHelpStatusesStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageHelpTasksStart, storageHelpUnitsStart,storageHelpWorkTypesStart, storageMetadataStart, storageUsersStart, storageHelpMilestonesStart } from '../../redux/actions';
 import {invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
@@ -53,8 +55,8 @@ class TaskEdit extends Component {
 			pricelists:[],
 			extraDataLoaded:false,
 
-			users:[{id:-1,title:'+ Add user', body:'add', label:'+ Add user',value:null}],
-			companies:[{id:-1,title:'+ Add company',body:'add', label:'+ Add company',value:null}],
+			users:[],
+			companies:[],
 			workTypes:[],
 			statuses:[],
 			projects:[],
@@ -309,13 +311,14 @@ class TaskEdit extends Component {
 		if(!this.state.extraDataLoaded || !this.storageLoaded(props)){
 			return;
 		}
+
 		let taskID = props.match.params.taskID;
 		let task = props.tasks.find((task)=>task.id===taskID);
 		let statuses = toSelArr(props.statuses);
 		let projects = toSelArr(props.projects);
-		let users = [{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}].concat(toSelArr(props.users,'email'));
+		let users = toSelArr(props.users,'email');
 		let tags = toSelArr(props.tags);
-		let companies = [{id:-1,title:'+ Add company',body:'add', label:'+ Add company',value:null}].concat(toSelArr(props.companies));
+		let companies = toSelArr(props.companies);
 		let workTypes = toSelArr(props.workTypes);
 		let units = toSelArr(props.units);
 		let taskTypes = toSelArr(props.taskTypes);
@@ -361,56 +364,62 @@ class TaskEdit extends Component {
 		}
 
 		let permission = project.permissions.find((permission)=>permission.user===props.currentUser.id);
-		let viewOnly = (permission===undefined || !permission.write) && !props.currentUser.userData.role.value>0;
-    this.setState({
-      statuses,
-      projects,
-      users,
-      companies:newCompanies,
-      workTypes:newWorkTypes,
-      units,
-      taskMaterials,
-      taskWorks,
+		let viewOnly = (permission===undefined || !permission.write) && props.currentUser.userData.role.value===0;
+		let newState = {
+			statuses,
+			projects,
+			users,
+			companies:newCompanies,
+			workTypes:newWorkTypes,
+			units,
+			taskMaterials,
+			taskWorks,
 			subtasks,
 			taskTypes,
 			allTags:tags,
 			task,
 
-			description:task.description,
-      title:task.title,
-      pausal:task.pausal?{value:true,label:'Pausal'}:{value:false,label:'Project'},
+			title:task.title,
+			pausal:task.pausal?{value:true,label:'Pausal'}:{value:false,label:'Project'},
 			overtime:task.overtime?{value:true,label:'Áno'}:{value:false,label:'Nie'},
-      status:status?status:null,
+			status:status?status:null,
 			statusChange:task.statusChange?task.statusChange:null,
 			createdAt:task.createdAt?task.createdAt:(new Date()).getTime(),
 			deadline: task.deadline!==null?moment(task.deadline):null,
 			closeDate: task.closeDate!==null && task.closeDate!==undefined ?new Date(task.closeDate).toISOString().replace('Z',''):'',
 			pendingDate: task.pendingDate!==null && task.pendingDate!==undefined ?new Date(task.pendingDate).toISOString().replace('Z',''):'',
 			reminder: task.reminder?new Date(task.reminder).toISOString().replace('Z',''):'',
-      project:project?project:null,
-      company:company?company:null,
-      workHours:isNaN(parseInt(task.workHours))?0:parseInt(task.workHours),
-      requester:requester?requester:null,
-      assignedTo,
+			project:project?project:null,
+			company:company?company:null,
+			workHours:isNaN(parseInt(task.workHours))?0:parseInt(task.workHours),
+			requester:requester?requester:null,
+			assignedTo,
 			milestone,
 			milestones,
 			attachments:task.attachments?task.attachments:[],
 
 			viewOnly,
-      loading:false,
+			loading:false,
 			defaultUnit,
 			tags:taskTags,
 			type:type?type:null,
 			projectChangeDate:(new Date()).getTime()
-    });
+		}
+		if(this.state.loading){
+			newState.description=task.description;
+		}
+
+    this.setState(newState);
   }
+
 
 	render() {
 		let permission = null;
 		if(this.state.project){
 			permission = this.state.project.permissions.find((permission)=>permission.user===this.props.currentUser.id);
 		}
-		let canDelete = (permission && permission.delete)||this.props.currentUser.userData.role.value>0;
+		let canAdd = this.props.currentUser.userData.role.value>0;
+		let canDelete = (permission && permission.delete)||this.props.currentUser.userData.role.value===3;
 		let taskID = this.props.match.params.taskID;
 		let taskWorks= this.state.taskWorks.map((work)=>{
 			let finalUnitPrice=parseFloat(work.price);
@@ -506,12 +515,6 @@ class TaskEdit extends Component {
 									className="far fa-trash-alt"
 									/> Delete
 								</button>}
-								{/*<button type="button" disabled={this.canSave()} className="btn btn-link waves-effect" onClick={this.submitTask.bind(this)}>
-								<i
-								className="fas fa-save icon-M mr-3"
-								/>
-								{this.state.saving?'Saving... ':''}
-								</button>*/}
 							</div>
 					</div>
 				</div>
@@ -557,7 +560,7 @@ class TaskEdit extends Component {
 											isMulti
 											isDisabled={this.state.defaultFields.assignedTo.fixed||this.state.viewOnly}
 											onChange={(users)=>this.setState({assignedTo:users},this.submitTask.bind(this))}
-											options={this.state.users}
+											options={(canAdd?[{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}]:[]).concat(this.state.users)}
 											styles={invisibleSelectStyleNoArrow}
 											/>
 									</div>
@@ -586,7 +589,14 @@ class TaskEdit extends Component {
 														isDisabled={this.state.viewOnly}
 														value={this.state.project}
 														onChange={(project)=>this.setState({project, projectChangeDate:(new Date()).getTime(),milestone:noMilestone},()=>{this.submitTask();this.setDefaults(project.id)})}
-														options={this.state.projects}
+														options={this.state.projects.filter((project)=>{
+															let curr = this.props.currentUser;
+															if((curr.userData && curr.userData.role.value===3)||(project.id===-1||project.id===null)){
+																return true;
+															}
+															let permission = project.permissions.find((permission)=>permission.user===curr.id);
+															return permission && permission.read;
+														})}
 														styles={invisibleSelectStyleNoArrow}
 														/>
 												</div>
@@ -630,7 +640,7 @@ class TaskEdit extends Component {
 																}
 															}
 														}
-														options={this.state.users}
+														options={(canAdd?[{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}]:[]).concat(this.state.users)}
 														styles={invisibleSelectStyleNoArrow}
 														/>
 												</div>
@@ -652,7 +662,7 @@ class TaskEdit extends Component {
 																}
 															}
 														}
-														options={this.state.companies}
+														options={(canAdd?[{id:-1,title:'+ Add company',body:'add', label:'+ Add company',value:null}]:[]).concat(this.state.companies)}
 														styles={invisibleSelectStyleNoArrow}
 														/>
 												</div>
@@ -759,13 +769,20 @@ class TaskEdit extends Component {
 							</div>}
 
 							<Label className="m-t-5">Popis</Label>
-							<textarea
-								className="form-control b-r-0 hidden-input"
-								placeholder="Enter task description"
-								value={this.state.description}
-								disabled={this.state.viewOnly}
-								onChange={(e)=>this.setState({description:e.target.value},this.submitTask.bind(this))}
-								/>
+								<CKEditor
+									data={this.state.description}
+									onInstanceReady={(instance)=>{
+									}}
+									style={{
+									}}
+									onChange={(e)=>{
+										this.setState({description:e.editor.getData()},this.submitTask.bind(this))
+								}}
+								readOnly={this.state.viewOnly}
+									config={{
+										...ck4config
+									}}
+									/>
 
 							<div className="row">
 								<div className="center-hor"><Label className="center-hor">Tagy: </Label></div>

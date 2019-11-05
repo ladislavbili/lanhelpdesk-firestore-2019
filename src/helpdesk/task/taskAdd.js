@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
+import CKEditor from 'ckeditor4-react';
 import {rebase} from '../../index';
 import {toCentralTime } from '../../helperFunctions';
 import { Button, Label, TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
@@ -14,6 +15,7 @@ import Materials from '../components/materials';
 import Subtasks from '../components/subtasks';
 import Repeat from '../components/repeat';
 import classnames from "classnames";
+import ck4config from '../../scss/ck4config';
 import {invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
 
 const oneDay = 24*60*60*1000;
@@ -216,7 +218,7 @@ export default class TaskAdd extends Component{
 				tags: def.tags&& (def.tags.fixed||def.tags.def)? state.allTags.filter((item)=> def.tags.value.includes(item.id)):[],
 				type: def.type && (def.type.fixed||def.type.def)?state.taskTypes.find((item)=> item.id===def.type.value):null,
 				project,
-				viewOnly: !this.props.currentUser.userData.role.value>0 && !permission.write,
+				viewOnly: this.props.currentUser.userData.role.value===0 && !permission.write,
 				defaults: def
 			});
 	}
@@ -259,7 +261,7 @@ export default class TaskAdd extends Component{
 				overtime: this.props.task ? this.props.task.overtime : {value:false,label:'Nie'},
 				statusChange: this.props.task ? this.props.task.statusChange : null,
 				project: this.props.task ? this.props.task.project : null,
-				viewOnly: !this.props.currentUser.userData.role.value>0 && (permission===null || !permission.write),
+				viewOnly: this.props.currentUser.userData.role.value===0 && (permission===null || !permission.write),
 				company: this.props.task ? this.props.task.company : this.props.companies.find((company)=>company.id===this.props.currentUser.userData.company),
 				workHours: this.props.task ? this.props.task.workHours : 0,
 				requester,
@@ -377,7 +379,7 @@ export default class TaskAdd extends Component{
 										onChange={(project)=>{
 											let newState={project,
 												milestone:noMilestone,
-												viewOnly:!this.props.currentUser.userData.role.value>0 && !project.permissions.find((permission)=>permission.user===this.props.currentUser.id).write
+												viewOnly:this.props.currentUser.userData.role.value===0 && !project.permissions.find((permission)=>permission.user===this.props.currentUser.id).write
 											}
 											if(newState.viewOnly){
 												newState={
@@ -397,7 +399,7 @@ export default class TaskAdd extends Component{
 										}}
 										options={this.state.projects.filter((project)=>{
 											let curr = this.props.currentUser;
-											if(curr.userData.role.value>0){
+											if(curr.userData.role.value===3){
 												return true;
 											}
 											let permission = project.permissions.find((permission)=>permission.user===curr.id);
@@ -446,7 +448,7 @@ export default class TaskAdd extends Component{
 											onChange={(project)=>{
 												let newState={project,
 													milestone:noMilestone,
-													viewOnly:!this.props.currentUser.userData.role.value>0 && !project.permissions.find((permission)=>permission.user===this.props.currentUser.id).write
+													viewOnly:this.props.currentUser.userData.role.value===0 && !project.permissions.find((permission)=>permission.user===this.props.currentUser.id).write
 												}
 												if(newState.viewOnly){
 													newState={
@@ -466,7 +468,7 @@ export default class TaskAdd extends Component{
 											}}
 											options={this.state.projects.filter((project)=>{
 												let curr = this.props.currentUser;
-												if(curr.userData.role.value>0){
+												if(curr.userData.role.value===3){
 													return true;
 												}
 												let permission = project.permissions.find((permission)=>permission.user===curr.id);
@@ -589,7 +591,17 @@ export default class TaskAdd extends Component{
 					</div>}
 
 						<Label className="m-t-5  m-b-10">Popis</Label>
-						<textarea className="form-control b-r-0 m-b-10 hidden-input" placeholder="Enter task description" value={this.state.description} onChange={(e)=>this.setState({description:e.target.value})} />
+							<CKEditor
+								data={this.state.description}
+								onChange={(e)=>{
+									this.setState({description:e.editor.getData()})
+							}}
+							readOnly={this.state.viewOnly}
+								config={{
+									...ck4config
+								}}
+							/>
+
 						{!this.state.viewOnly && <div>
 							<div className="row">
 								<div className="center-hor"><Label className="center-hor">Tagy: </Label></div>

@@ -8,6 +8,7 @@ export * from './passwordsActions';
 export * from './cmdbActions';
 export * from './wikiActions';
 export * from './reports';
+export * from './showDataActions';
 
 //storage
 export * from './storage/help-filters';

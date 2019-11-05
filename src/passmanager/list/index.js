@@ -107,6 +107,7 @@ class List extends Component {
 					{value:'URL',type:'text'},
 					{value:'login',type:'text'},
 				]}
+				filterName="pass-passwords"
 				displayValues={[
 					{value:'title',label:'Title',type:'text'},
 					{value:'URL',label:'URL',type:'url'},

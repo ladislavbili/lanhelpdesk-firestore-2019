@@ -2,26 +2,23 @@ import React, { Component } from 'react';
 import {getItemDisplayValue} from '../../helperFunctions';
 import CommandBar from './commandBar';
 import ListHeader from './listHeader';
+import { connect } from "react-redux";
+import {setShowDataFilter } from '../../redux/actions';
 
-export default class List extends Component {
+class List extends Component {
 
-	constructor(props) {
-		super(props);
-		this.state = {
-			search: props.displayValues.map((display, index) => ""),
-		};
-	}
-
-	componentWillReceiveProps(props){
-		if (this.props !== props){
-			let newSearch = props.displayValues.map((display, index) => "");
-			this.setState({
-				search: newSearch,
-			});
+	clearFilter(){
+		if(window.confirm("Are you sure you want to clear the filter?")){
+			let defaultFilter={};
+			this.props.displayValues.forEach((display)=>{
+				defaultFilter[display.value]=''
+			})
+			this.props.setShowDataFilter(this.props.filterName,defaultFilter);
 		}
 	}
 
 	render() {
+		let filter = this.props.filter[this.props.filterName];
 		return (
 				<div className="row">
 					<CommandBar {...this.props.commandBar} />
@@ -32,9 +29,9 @@ export default class List extends Component {
 								<thead>
 										<tr>
 											{
-												this.props.displayValues.map((display,index)=> {
+												this.props.displayValues.map((display)=> {
 													return (
-														<th key={index} width={display.value === 'title' ? "30%" : (display.value === "id" ? "50px" : "")}>
+														<th key={display.value} width={display.value === 'title' ? "30%" : (display.value === "id" ? "50px" : "")}>
 															{display.label}
 														</th>
 													)
@@ -46,33 +43,40 @@ export default class List extends Component {
 									<tbody>
 										<tr style={{backgroundColor: "#F2F1F1"}}>
 											{
-												this.props.displayValues.map((display,index)=>
-												<th key={index}>
+												this.props.displayValues.map((display)=>
+												<th key={display.value}>
 													<input
 														type="text"
-														value={this.state.search[index]}
+														value={filter[display.value]}
 														className="form-control"
 														onChange={(e) => {
-																let newSearch = this.state.search;
-																newSearch[index] = e.target.value;
-																this.setState({
-																	search: newSearch,
-																});
-															}
-														}
+															let newFilterData={};
+															newFilterData[display.value]=e.target.value;
+															this.props.setShowDataFilter(this.props.filterName,newFilterData);
+														}}
 														placeholder={`${display.label}`} />
 												</th>
 											)}
+											<th>
+												<button type="button" className="btn btn-link waves-effect" onClick={this.clearFilter.bind(this)}>
+													<i
+														className="fas fa-times commandbar-command-icon"
+														/>
+												</button>
+											</th>
 										</tr>
 										{
 											this.props.data
-											.filter((item, index) =>
+											.filter((item) =>
 											{
 												return this.props.displayValues
-															.filter((display,index)=> {
+															.every((display)=> {
 																let value = getItemDisplayValue(item,display);
 																if(display.value === "assignedTo"){
 																	value = item["assignedTo"].map(item => `${item.name} ${item.surname} (${item.email})`).toString();
+																}
+																if(display.value === "status"){
+																	value = item["status"].title.toString();
 																}
 																if(display.value === "tags"){
 																	value = item["tags"].map(item => `${item.title}`).toString();
@@ -83,11 +87,11 @@ export default class List extends Component {
 																if(display.value === "password"){
 																	value = item["password"];
 																}
-																return value.toString().toLowerCase().includes(this.state.search[index]);
-															}).length === this.props.displayValues.length;
-											}).map((item,index)=>
+																return value.toString().toLowerCase().includes(filter[display.value].toLowerCase());
+															});
+											}).map((item)=>
 												<tr
-													key={index}
+													key={item.id}
 													onClick={(e)=>{
 														this.props.history.push(this.props.link+'/'+item.id);
 													}}
@@ -95,7 +99,8 @@ export default class List extends Component {
 													{ this.props.displayValues
 														.map((display,index)=>
 														<td
-															key={index}
+															colSpan={(index===this.props.displayValues.length-1)?"2":"1"}
+															key={display.value}
 															>
 															{getItemDisplayValue(item,display)}
 														</td>
@@ -110,3 +115,9 @@ export default class List extends Component {
 		);
 	}
 }
+
+const mapStateToProps = ({ showDataReducer }) => {
+	return { filter:showDataReducer.filter };
+};
+
+export default connect(mapStateToProps, { setShowDataFilter })(List);

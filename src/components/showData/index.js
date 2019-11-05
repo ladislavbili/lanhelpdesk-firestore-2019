@@ -4,7 +4,7 @@ import TaskList from './taskList';
 import TaskListDnD from './taskListDnD';
 import { connect } from "react-redux";
 import {timestampToString} from '../../helperFunctions';
-import {setSearch, setFilter } from '../../redux/actions';
+import {setSearch, setFilter,addShowDataFilter } from '../../redux/actions';
 class ShowDataContainer extends Component {
 	constructor(props) {
 		super(props);
@@ -12,6 +12,19 @@ class ShowDataContainer extends Component {
 			search: this.props.search
 		};
 		this.filterData.bind(this);
+		this.addShowDataFilter.bind(this);
+		this.addShowDataFilter();
+	}
+
+	addShowDataFilter(){
+		if(this.props.filter[this.props.filterName]===undefined){
+			let defaultFilter={};
+			this.props.displayValues.forEach((display)=>{
+				defaultFilter[display.value]=''
+			})
+			this.props.addShowDataFilter(this.props.filterName,defaultFilter);
+		}
+
 	}
 
 	filterData(){
@@ -91,7 +104,7 @@ class ShowDataContainer extends Component {
 						)}
 
 
-						{this.props.layout === 1 && (
+						{this.props.layout === 1 && this.props.filter[this.props.filterName]!==undefined && (
 							<div className={'' + (this.state.filterView ? 'col-xl-9' : 'col-xl-12')}>
 								{this.props.itemID && <this.props.edit match={this.props.match} columns={false} history={this.props.history} />}
 								{!this.props.itemID &&
@@ -102,6 +115,7 @@ class ShowDataContainer extends Component {
 										match={this.props.match}
 										data={this.filterData()}
 										displayValues={this.props.displayValues}
+										filterName={this.props.filterName}
 										link={this.props.link}/>}
 							</div>
 						)}
@@ -132,8 +146,8 @@ class ShowDataContainer extends Component {
 	}
 }
 
-const mapStateToProps = ({ filterReducer }) => {
-	return { search:filterReducer.search };
+const mapStateToProps = ({ filterReducer, showDataReducer }) => {
+	return { search:filterReducer.search, filter:showDataReducer.filter };
 };
 
-export default connect(mapStateToProps, { setSearch, setFilter })(ShowDataContainer);
+export default connect(mapStateToProps, { setSearch, setFilter, addShowDataFilter })(ShowDataContainer);
