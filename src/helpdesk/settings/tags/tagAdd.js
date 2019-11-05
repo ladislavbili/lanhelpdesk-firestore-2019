@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input } from 'reactstrap';
+import { SketchPicker } from "react-color";
 import {rebase} from '../../../index';
 
 export default class TagAdd extends Component{
@@ -7,6 +8,7 @@ export default class TagAdd extends Component{
     super(props);
     this.state={
       title:'',
+      color: "FFF",
       saving:false
     }
   }
@@ -19,9 +21,14 @@ export default class TagAdd extends Component{
             <Label for="name">Tag name</Label>
             <Input type="text" name="name" id="name" placeholder="Enter tag name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
           </FormGroup>
+          <SketchPicker
+            id="color"
+            color={this.state.color}
+            onChangeComplete={value => this.setState({ color: value.hex })}
+          />
           <Button className="btn"  disabled={this.state.saving} onClick={()=>{
               this.setState({saving:true});
-              rebase.addToCollection('/help-tags', {title:this.state.title})
+              rebase.addToCollection('/help-tags', {title:this.state.title,color:this.state.color})
                 .then(()=>{this.setState({title:'',saving:false})});
             }}>{this.state.saving?'Adding...':'Add tag'}</Button>
         </div>

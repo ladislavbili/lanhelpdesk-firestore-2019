@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
+import { SketchPicker } from "react-color";
 import {rebase} from '../../../index';
 
 import { connect } from "react-redux";
@@ -10,6 +11,7 @@ class TagEdit extends Component{
     super(props);
     this.state={
       title:'',
+      color:'FFF',
       loading:true,
       saving:false
     }
@@ -39,7 +41,7 @@ class TagEdit extends Component{
 
   setData(props){
     let data = props.tags.find((item)=>item.id===props.match.params.id);
-    this.setState({title:data.title,loading:false})
+    this.setState({title:data.title,color:data.color?data.color:'#FFF',loading:false})
   }
 
   render(){
@@ -56,9 +58,14 @@ class TagEdit extends Component{
           <Label for="name">Tag name</Label>
           <Input type="text" name="name" id="name" placeholder="Enter tag name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
         </FormGroup>
+        <SketchPicker
+          id="color"
+          color={this.state.color}
+          onChangeComplete={value => this.setState({ color: value.hex })}
+        />
         <Button className="btn"  disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
-            rebase.updateDoc('/help-tags/'+this.props.match.params.id, {title:this.state.title})
+            rebase.updateDoc('/help-tags/'+this.props.match.params.id, {title:this.state.title,color:this.state.color})
               .then(()=>{this.setState({saving:false})});
           }}>{this.state.saving?'Saving tag...':'Save tag'}</Button>
         <Button className="btn-link"  disabled={this.state.saving} onClick={()=>{

@@ -120,6 +120,7 @@ class List extends Component {
 				filterBy={[
 					{value:'name',type:'text'},{value:'dateCreated',type:'date'},{value:'lastUpdated',type:'date'},
 				]}
+				filterName="lanwiki-notes"
 				displayValues={[
 					{value:'name',label:'Name',type:'text'},{value:'dateCreated',label:'Created at',type:'date'},{value:'lastUpdated',label:'Updated at',type:'date'},
 				]}

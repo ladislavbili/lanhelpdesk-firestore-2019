@@ -10,6 +10,7 @@ import passReducer from './reducers/passReducer';
 import cmdbReducer from './reducers/cmdbReducer';
 import wikiReducer from './reducers/wikiReducer';
 import reportReducer from './reducers/reportReducer';
+import showDataReducer from './reducers/showDataReducer';
 
 //storage
 import storageHelpFilters from './reducers/storage/help-filtersReducer';
@@ -48,6 +49,7 @@ const reducers = combineReducers({
     cmdbReducer,
     wikiReducer,
     reportReducer,
+    showDataReducer,
     //storage
     storageHelpFilters,
     storageHelpInvoiceItems,

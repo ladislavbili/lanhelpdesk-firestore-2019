@@ -137,7 +137,7 @@ class TasksIndex extends Component {
 			(filter.pendingDateFrom===''||filter.pendingDateFrom===undefined||task.pendingDate >= filter.pendingDateFrom) &&
 			(filter.pendingDateTo===''||filter.pendingDateTo===undefined||task.pendingDate <= filter.pendingDateTo) &&
 			(this.props.project===null||(task.project && task.project.id===this.props.project))&&
-			(this.props.currentUser.userData.role.value>0||(currentPermissions && currentPermissions.read)) &&
+			(this.props.currentUser.userData.role.value===3||(currentPermissions && currentPermissions.read)) &&
 			(this.props.milestone===null||((task.milestone)&& task.milestone === this.props.milestone))
 		})
 	}
@@ -198,6 +198,7 @@ class TasksIndex extends Component {
 						*/}
 					</li>
 				}
+				filterName="help-tasks"
 				displayValues={[
 					{value:'id',label:'ID',type:'int'},
 					{value:'title',label:'Title',type:'text'},

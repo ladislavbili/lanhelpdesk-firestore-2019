@@ -106,7 +106,6 @@ class ProjectEdit extends Component{
 		if(!this.storageLoaded(props)){
 			return;
 		}
-		console.log('SET PROJECT DATA');
 
 		let project = props.projects.find((project)=>project.id===props.item.id);
 		let statuses = toSelArr(props.statuses);
@@ -241,7 +240,7 @@ class ProjectEdit extends Component{
 								}}
 								permissions={this.state.permissions}
 								userID={this.props.currentUser.id}
-								isAdmin={this.props.currentUser.userData.role.value>0||testing}
+								isAdmin={this.props.currentUser.userData.role.value===3||testing}
 								/>
 							{/*TO DELETE*/}
 

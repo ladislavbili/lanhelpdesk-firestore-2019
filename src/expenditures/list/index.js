@@ -77,6 +77,7 @@ class List extends Component {
 					{value:'repeat',type:'text'},
 					{value:'price',type:'text'},
 				]}
+				filterName="expenditures-instances"
 				displayValues={[
 					{value:'startDate',label:'Start date',type:'date'},
 					{value:'title',label:'Title',type:'text'},
