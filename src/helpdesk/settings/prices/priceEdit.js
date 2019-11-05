@@ -87,17 +87,16 @@ class PriceEdit extends Component{
 
   render(){
     return (
-      <div className="full-height card-box scrollable fit-with-header-and-commandbar">
-        <div className="m-t-20">
+      <div className="p-20 scroll-visible fit-with-header-and-commandbar">
           {
             this.state.loading &&
             <Alert color="success">
               Loading data...
             </Alert>
           }
-          <FormGroup check style={{marginBottom: 5}}>
+          <FormGroup check className="m-b-5 p-l-0">
             <Input type="checkbox" checked={this.state.def} onChange={(e)=>this.setState({def:!this.state.def})}/>
-            <Label check>
+            <Label check className="m-l-15">
               Default
             </Label>
           </FormGroup>
@@ -136,48 +135,50 @@ class PriceEdit extends Component{
             <Input type="text" name="materMarg" id="materMarg" placeholder="Enter materials margin percentage" value={this.state.marginExtra} onChange={(e)=>this.setState({marginExtra:e.target.value})} />
           </FormGroup>
 
-          <Button className="btn"disabled={this.state.saving} onClick={()=>{
-              this.setState({saving:true});
-              if(!this.state.def && this.state.defaultPricelist===this.props.match.params.id){
-                this.setState({defaultPricelist:null});
-                rebase.updateDoc('/metadata/0',{defaultPricelist:null});
-              }else if(this.state.def){
-                this.setState({defaultPricelist:this.props.match.params.id});
-                rebase.updateDoc('/metadata/0',{defaultPricelist:this.props.match.params.id});
-              }
-
-              this.state.workTypes.filter((item)=>item.price.id!==undefined).map((workType)=>
-                rebase.updateDoc('/help-prices/'+workType.price.id, {price:parseFloat(workType.price.price === "" ? "0": workType.price.price)})
-              );
-              this.state.workTypes.filter((item)=>item.price.id===undefined).map((workType)=>
-                rebase.addToCollection('/help-prices', {pricelist:this.props.match.params.id,workType:workType.id,price:parseFloat(workType.price.price === "" ? "0": workType.price.price)}).then((response)=>{
-                  let index = this.state.workTypes.findIndex((item)=>item.id===workType.id);
-                  let newWorkTypes=[...this.state.workTypes];
-                  let newWorkType = {...newWorkTypes[index]};
-                  newWorkType.price={pricelist:this.props.match.params.id,workType:workType.id,price:parseFloat(workType.price.price === "" ? "0": workType.price.price), id:response.id};
-                  newWorkTypes[index] = newWorkType;
-                  this.setState({workTypes:newWorkTypes});
-                })
-              )
-
-              rebase.updateDoc('/help-pricelists/'+this.props.match.params.id, {title:this.state.pricelistName, afterHours:parseFloat(this.state.afterHours===''?'0':this.state.afterHours),materialMargin:parseFloat(this.state.margin===''?'0':this.state.margin),materialMarginExtra:parseFloat(this.state.marginExtra===''?'0':this.state.marginExtra)})
-                .then(()=>
-                  this.setState({saving:false})
-                );
-            }}>{this.state.saving?'Saving prices...':'Save prices'}</Button>
-            <Button className="btn btn-link" disabled={this.state.saving} onClick={()=>{
-                if(window.confirm("Are you sure?")){
-                  rebase.removeDoc('/help-pricelists/'+this.props.match.params.id);
-                  if(this.state.defaultPricelist===this.props.match.params.id){
+          <div className="row">
+              <Button className="btn" disabled={this.state.saving} onClick={()=>{
+                  this.setState({saving:true});
+                  if(!this.state.def && this.state.defaultPricelist===this.props.match.params.id){
+                    this.setState({defaultPricelist:null});
                     rebase.updateDoc('/metadata/0',{defaultPricelist:null});
+                  }else if(this.state.def){
+                    this.setState({defaultPricelist:this.props.match.params.id});
+                    rebase.updateDoc('/metadata/0',{defaultPricelist:this.props.match.params.id});
                   }
+
                   this.state.workTypes.filter((item)=>item.price.id!==undefined).map((workType)=>
-                    rebase.removeDoc('/help-prices/'+workType.price.id)
+                    rebase.updateDoc('/help-prices/'+workType.price.id, {price:parseFloat(workType.price.price === "" ? "0": workType.price.price)})
                   );
-                  this.props.history.goBack();
-                }
+                  this.state.workTypes.filter((item)=>item.price.id===undefined).map((workType)=>
+                    rebase.addToCollection('/help-prices', {pricelist:this.props.match.params.id,workType:workType.id,price:parseFloat(workType.price.price === "" ? "0": workType.price.price)}).then((response)=>{
+                      let index = this.state.workTypes.findIndex((item)=>item.id===workType.id);
+                      let newWorkTypes=[...this.state.workTypes];
+                      let newWorkType = {...newWorkTypes[index]};
+                      newWorkType.price={pricelist:this.props.match.params.id,workType:workType.id,price:parseFloat(workType.price.price === "" ? "0": workType.price.price), id:response.id};
+                      newWorkTypes[index] = newWorkType;
+                      this.setState({workTypes:newWorkTypes});
+                    })
+                  )
+
+                  rebase.updateDoc('/help-pricelists/'+this.props.match.params.id, {title:this.state.pricelistName, afterHours:parseFloat(this.state.afterHours===''?'0':this.state.afterHours),materialMargin:parseFloat(this.state.margin===''?'0':this.state.margin),materialMarginExtra:parseFloat(this.state.marginExtra===''?'0':this.state.marginExtra)})
+                    .then(()=>
+                      this.setState({saving:false})
+                    );
+                }}>{this.state.saving?'Saving prices...':'Save prices'}</Button>
+
+              <Button className="btn-red ml-auto" disabled={this.state.saving} onClick={()=>{
+                    if(window.confirm("Are you sure?")){
+                      rebase.removeDoc('/help-pricelists/'+this.props.match.params.id);
+                      if(this.state.defaultPricelist===this.props.match.params.id){
+                        rebase.updateDoc('/metadata/0',{defaultPricelist:null});
+                      }
+                      this.state.workTypes.filter((item)=>item.price.id!==undefined).map((workType)=>
+                        rebase.removeDoc('/help-prices/'+workType.price.id)
+                      );
+                      this.props.history.goBack();
+                    }
                 }}>Delete</Button>
-        </div>
+          </div>
       </div>
     );
   }

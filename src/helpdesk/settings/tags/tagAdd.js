@@ -15,8 +15,7 @@ export default class TagAdd extends Component{
 
   render(){
     return (
-      <div className="full-height card-box scrollable fit-with-header-and-commandbar">
-        <div className="m-t-20">
+      <div className="p-20 scroll-visible fit-with-header-and-commandbar">
           <FormGroup>
             <Label for="name">Tag name</Label>
             <Input type="text" name="name" id="name" placeholder="Enter tag name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
@@ -31,7 +30,6 @@ export default class TagAdd extends Component{
               rebase.addToCollection('/help-tags', {title:this.state.title,color:this.state.color})
                 .then(()=>{this.setState({title:'',saving:false})});
             }}>{this.state.saving?'Adding...':'Add tag'}</Button>
-        </div>
     </div>
     );
   }

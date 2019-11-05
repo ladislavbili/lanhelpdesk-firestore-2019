@@ -26,8 +26,7 @@ export default class StatusAdd extends Component{
 
   render(){
     return (
-      <div className="full-height card-box scrollable fit-with-header-and-commandbar">
-        <div className="m-t-20">
+      <div className="scroll-visible p-20 fit-with-header-and-commandbar">
           <FormGroup>
             <Label for="name">Status name</Label>
             <Input type="text" name="name" id="name" placeholder="Enter status name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
@@ -56,7 +55,7 @@ export default class StatusAdd extends Component{
             color={this.state.color}
             onChangeComplete={value => this.setState({ color: value.hex })}
           />
-          <Button className="btn" disabled={this.state.saving} onClick={()=>{
+        <Button className="btn m-t-5" disabled={this.state.saving} onClick={()=>{
               this.setState({saving:true});
               let order = this.state.order!==''?parseInt(this.state.order):0;
               if(isNaN(order)){
@@ -65,7 +64,6 @@ export default class StatusAdd extends Component{
               rebase.addToCollection('/help-statuses', {title:this.state.title, color:this.state.color, icon: this.state.icon, order,action:this.state.action.value})
                 .then(()=>{this.setState({title:'',saving:false})});
             }}>{this.state.saving?'Adding...':'Add status'}</Button>
-        </div>
       </div>
     );
   }

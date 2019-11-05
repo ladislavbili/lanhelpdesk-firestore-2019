@@ -70,8 +70,7 @@ class SupplierInvoiceAdd extends Component{
 
   render(){
     return (
-      <div className="full-height card-box scrollable fit-with-header-and-commandbar">
-        <div className="m-t-20">
+      <div className="p-20 scroll-visible fit-with-header-and-commandbar">
           <FormGroup>
             <Label for="name">Invoice indetifier</Label>
             <Input type="text" name="identifier" id="identifier" placeholder="Enter identifier" value={this.state.identifier} onChange={(e)=>this.setState({identifier:e.target.value})} />
@@ -127,7 +126,6 @@ class SupplierInvoiceAdd extends Component{
                 this.setState({ supplier:null,identifier:0,note:'',invoiceItems:[],saving:false});
               });
           }}>{this.state.saving?'Adding...':'Add invoice'}</Button>
-        </div>
       </div>
     );
   }

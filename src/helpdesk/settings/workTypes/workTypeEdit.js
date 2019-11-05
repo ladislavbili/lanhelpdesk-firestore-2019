@@ -49,8 +49,7 @@ class WorkTypeEdit extends Component{
 
   render(){
     return (
-      <div className="full-height card-box scrollable fit-with-header-and-commandbar">
-        <div className="m-t-20">
+      <div className="p-20 scroll-visible fit-with-header-and-commandbar">
           {
             this.state.loading &&
             <Alert color="success">
@@ -74,19 +73,21 @@ class WorkTypeEdit extends Component{
                 />
           </FormGroup>
 
-          <Button className="btn" disabled={this.state.saving} onClick={()=>{
-              this.setState({saving:true});
-              rebase.updateDoc('/help-work_types/'+this.props.match.params.id, {title:this.state.title,type:this.state.type.value})
-                .then(()=>{this.setState({saving:false})});
-            }}>{this.state.saving?'Saving work type...':'Save work type'}</Button>
-          <Button className="btn-link" disabled={this.state.saving} onClick={()=>{
-              if(window.confirm("Are you sure?")){
-                rebase.removeDoc('/help-work_types/'+this.props.match.params.id).then(()=>{
-                  this.props.history.goBack();
-                });
-              }
+          <div className="row">
+            <Button className="btn " disabled={this.state.saving} onClick={()=>{
+                this.setState({saving:true});
+                rebase.updateDoc('/help-work_types/'+this.props.match.params.id, {title:this.state.title,type:this.state.type.value})
+                  .then(()=>{this.setState({saving:false})});
+              }}>{this.state.saving?'Saving work type...':'Save work type'}</Button>
+
+            <Button className="btn-red ml-auto" disabled={this.state.saving} onClick={()=>{
+                if(window.confirm("Are you sure?")){
+                  rebase.removeDoc('/help-work_types/'+this.props.match.params.id).then(()=>{
+                    this.props.history.goBack();
+                  });
+                }
             }}>Delete</Button>
-        </div>
+         </div>
       </div>
     );
   }

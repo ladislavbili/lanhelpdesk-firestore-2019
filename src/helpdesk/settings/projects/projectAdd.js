@@ -81,7 +81,7 @@ class ProjectAdd extends Component{
 
   render(){
     return (
-      <div>
+      <div className="p-20 scroll-visible fit-with-header-and-commandbar">
               <FormGroup>
                 <Label for="name">Project name</Label>
                 <Input type="text" name="name" id="name" placeholder="Enter project name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />

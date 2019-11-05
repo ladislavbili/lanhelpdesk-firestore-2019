@@ -110,8 +110,7 @@ class SupplierInvoiceEdit extends Component{
   render(){
     return (
 
-      <div className="full-height card-box scrollable fit-with-header-and-commandbar">
-        <div className="m-t-20">
+      <div className="p-20 scroll-visible fit-with-header-and-commandbar">
           {
             this.state.loading &&
             <Alert color="success">
@@ -187,29 +186,31 @@ class SupplierInvoiceEdit extends Component{
           newItemID={this.state.newItemID}
           />
 
-        <Button className="btn" disabled={this.state.saving||this.state.loading||this.state.supplier===undefined} onClick={()=>{
-            this.setState({saving:true});
-            rebase.updateDoc('/help-supplier_invoices/'+this.props.match.params.id, {supplier:this.state.supplier.id,identifier:this.state.identifier,note:this.state.note,date:this.state.date!==null?(new Date(this.state.date)).getTime():0})
-              .then((response)=>{
-                this.setState({ saving:false});
-              });
-          }}>{this.state.saving?'Saving...':'Save supplier'}</Button>
-        <Button className="btn-link" disabled={this.state.saving} onClick={()=>{
-              if(window.confirm("Are you sure?")){
-                this.state.invoiceItems.forEach((invoiceItem)=>{
-                  rebase.removeDoc('/help-invoice_items/'+invoiceItem.id).then(()=>{
-                      let data=this.props.storedItems.find((item)=>item.invoiceItem===invoiceItem.id);
-                      if(data.length===1){
-                        rebase.removeDoc('/help-stored_items/'+data[0].id);
-                      }
+        <div className="row">
+            <Button className="btn" disabled={this.state.saving||this.state.loading||this.state.supplier===undefined} onClick={()=>{
+                this.setState({saving:true});
+                rebase.updateDoc('/help-supplier_invoices/'+this.props.match.params.id, {supplier:this.state.supplier.id,identifier:this.state.identifier,note:this.state.note,date:this.state.date!==null?(new Date(this.state.date)).getTime():0})
+                  .then((response)=>{
+                    this.setState({ saving:false});
                   });
-                });
-                rebase.removeDoc('/help-supplier_invoices/'+this.props.match.params.id).then(()=>{
-                  this.props.history.goBack();
-                });
-              }
+              }}>{this.state.saving?'Saving...':'Save supplier'}</Button>
+
+            <Button className="btn-red ml-auto" disabled={this.state.saving} onClick={()=>{
+                  if(window.confirm("Are you sure?")){
+                    this.state.invoiceItems.forEach((invoiceItem)=>{
+                      rebase.removeDoc('/help-invoice_items/'+invoiceItem.id).then(()=>{
+                          let data=this.props.storedItems.find((item)=>item.invoiceItem===invoiceItem.id);
+                          if(data.length===1){
+                            rebase.removeDoc('/help-stored_items/'+data[0].id);
+                          }
+                      });
+                    });
+                    rebase.removeDoc('/help-supplier_invoices/'+this.props.match.params.id).then(()=>{
+                      this.props.history.goBack();
+                    });
+                  }
               }}>Delete</Button>
-        </div>
+          </div>
       </div>
     );
   }

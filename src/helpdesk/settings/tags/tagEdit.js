@@ -46,8 +46,7 @@ class TagEdit extends Component{
 
   render(){
     return (
-      <div className="full-height card-box scrollable fit-with-header-and-commandbar">
-        <div className="m-t-20">
+      <div className="p-20 scroll-visible fit-with-header-and-commandbar">
         {
           this.state.loading &&
           <Alert color="success">
@@ -58,23 +57,28 @@ class TagEdit extends Component{
           <Label for="name">Tag name</Label>
           <Input type="text" name="name" id="name" placeholder="Enter tag name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
         </FormGroup>
+
         <SketchPicker
           id="color"
           color={this.state.color}
           onChangeComplete={value => this.setState({ color: value.hex })}
         />
+
+      <div className="row">
         <Button className="btn"  disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
             rebase.updateDoc('/help-tags/'+this.props.match.params.id, {title:this.state.title,color:this.state.color})
               .then(()=>{this.setState({saving:false})});
           }}>{this.state.saving?'Saving tag...':'Save tag'}</Button>
-        <Button className="btn-link"  disabled={this.state.saving} onClick={()=>{
+
+        <Button className="btn-red ml-auto"  disabled={this.state.saving} onClick={()=>{
               if(window.confirm("Are you sure?")){
                 rebase.removeDoc('/help-tags/'+this.props.match.params.id).then(()=>{
                   this.props.history.goBack();
                 });
               }
               }}>Delete</Button>
+
           </div>
         </div>
     );

@@ -792,7 +792,7 @@ class TaskEditList extends Component {
 									}}
 									/>
 
-								<Modal isOpen={this.state.openUserAdd} >
+								<Modal isOpen={this.state.openUserAdd}  toggle={() => this.setState({openUserAdd: !this.state.openUserAdd})} >
 									<ModalBody>
 										<UserAdd close={() => this.setState({openUserAdd: false,})} addUser={(user) => {
 												let newUsers = this.state.users.concat([user]);
@@ -803,7 +803,7 @@ class TaskEditList extends Component {
 									</ModalBody>
 								</Modal>
 
-								<Modal isOpen={this.state.openCompanyAdd} >
+								<Modal isOpen={this.state.openCompanyAdd}  toggle={() => this.setState({openCompanyAdd: !this.state.openCompanyAdd})} >
 									<ModalBody>
 										<CompanyAdd close={() => this.setState({openCompanyAdd: false,})} addCompany={(company) => {
 												let newCompanies = this.state.companies.concat([company]);
@@ -1058,7 +1058,7 @@ class TaskEditList extends Component {
 									</TabContent>
 								</div>
 
-								<div className="task-edit-right-half pull-right">
+								<div className="task-edit-right-half pull-right p-t-10">
 
 									<div className="center-hor"><Label className="center-hor">Tagy: </Label></div>
 									<div className="f-1 ">

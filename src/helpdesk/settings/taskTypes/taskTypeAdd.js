@@ -17,8 +17,7 @@ export default class TaskTypeAdd extends Component{
 
   render(){
     return (
-      <div className="full-height card-box scrollable fit-with-header-and-commandbar">
-        <div className="m-t-20">
+      <div className="p-20 scroll-visible fit-with-header-and-commandbar">
 
         <FormGroup>
           <Label for="name">Task type name</Label>
@@ -42,7 +41,6 @@ export default class TaskTypeAdd extends Component{
                 this.setState({title:'',type:typeOptions[0],saving:false})
               });
           }}>{this.state.saving?'Adding...':'Add task type'}</Button>
-        </div>
     </div>
     );
   }

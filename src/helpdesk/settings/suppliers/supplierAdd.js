@@ -13,8 +13,7 @@ export default class SupplierAdd extends Component{
 
   render(){
     return (
-      <div className="full-height card-box scrollable fit-with-header-and-commandbar">
-        <div className="m-t-20">
+      <div className="p-20 scroll-visible fit-with-header-and-commandbar">
           <FormGroup>
             <Label for="name">Supplier name</Label>
             <Input type="text" name="name" id="name" placeholder="Enter supplier name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
@@ -25,7 +24,6 @@ export default class SupplierAdd extends Component{
                 .then(()=>{this.setState({title:'',saving:false})});
             }}>{this.state.saving?'Adding...':'Add supplier'}
           </Button>
-        </div>
       </div>
     );
   }

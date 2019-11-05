@@ -68,8 +68,7 @@ class StatusEdit extends Component{
 
   render(){
     return (
-      <div className="full-height card-box scrollable fit-with-header-and-commandbar">
-        <div className="m-t-20">
+      <div className="p-20 scroll-visible fit-with-header-and-commandbar">
         {
           this.state.loading &&
           <Alert color="success">
@@ -104,29 +103,32 @@ class StatusEdit extends Component{
           color={this.state.color}
           onChangeComplete={value => this.setState({ color: value.hex })}
           />
-        <Button className="btn" disabled={this.state.saving} onClick={()=>{
-            this.setState({saving:true});
-            let order = this.state.order!==''?parseInt(this.state.order):0;
-            if(isNaN(order)){
-              order=0;
-            }
-            rebase.updateDoc('/help-statuses/'+this.props.match.params.id, {
-              title:this.state.title,
-            color:this.state.color,
-            icon:this.state.icon,
-            order,
-            action:this.state.action.value
-          })
-              .then(()=>{this.setState({saving:false})});
-          }}>{this.state.saving?'Saving status...':'Save status'}</Button>
-        <Button className="btn-link" disabled={this.state.saving} onClick={()=>{
+
+        <div className="row">
+          <Button className="btn m-t-5 m-r-5" disabled={this.state.saving} onClick={()=>{
+              this.setState({saving:true});
+              let order = this.state.order!==''?parseInt(this.state.order):0;
+              if(isNaN(order)){
+                order=0;
+              }
+              rebase.updateDoc('/help-statuses/'+this.props.match.params.id, {
+                title:this.state.title,
+              color:this.state.color,
+              icon:this.state.icon,
+              order,
+              action:this.state.action.value
+            })
+                .then(()=>{this.setState({saving:false})});
+            }}>{this.state.saving?'Saving status...':'Save status'}</Button>
+
+          <Button className="btn-red ml-auto" disabled={this.state.saving} onClick={()=>{
               if(window.confirm("Are you sure?")){
                 rebase.removeDoc('/help-statuses/'+this.props.match.params.id).then(()=>{
                   this.props.history.goBack();
                 });
               }
               }}>Delete</Button>
-            </div>
+          </div>
         </div>
     );
   }

@@ -32,8 +32,7 @@ class Permissions extends Component {
 	render() {
 		return (
 			<div >
-				<hr />
-				<h3 className="m-t-20" style={{color: "red"}}> Prístupové práva </h3>
+				<h3 className="m-t-20"> Prístupové práva </h3>
 				<div className="row">
 					<div className="m-r-10 center-hor">
 						<label className="">
