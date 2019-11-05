@@ -96,8 +96,7 @@ class UserEdit extends Component{
 
   render(){
     return(
-      <div className="full-height card-box scrollable fit-with-header-and-commandbar">
-        <div className="m-t-20">
+      <div className="scroll-visible p-20 fit-with-header-and-commandbar">
           {
             this.state.loading &&
             <Alert color="success">
@@ -139,38 +138,40 @@ class UserEdit extends Component{
               />
           </FormGroup>
 
-          <Button className="btn" disabled={this.state.saving|| this.state.companies.length===0||!isEmail(this.state.email)} onClick={()=>{
-            this.setState({saving:true});
-            let body = {
-              username:this.state.username,
-              name:this.state.name,
-              surname:this.state.surname,
-              email:this.state.email,
-              company:this.state.company.id,
-              role:this.state.role
-            }
-            rebase.updateDoc('/users/'+this.props.match.params.id, body)
-              .then(()=>{
-                this.props.setUserData(body);
-                this.setState({saving:false})});
-              }}>{this.state.saving?'Saving user...':'Save user'}</Button>
+          <div className="row">
+            <Button className="btn m-r-5" disabled={this.state.saving|| this.state.companies.length===0||!isEmail(this.state.email)} onClick={()=>{
+              this.setState({saving:true});
+              let body = {
+                username:this.state.username,
+                name:this.state.name,
+                surname:this.state.surname,
+                email:this.state.email,
+                company:this.state.company.id,
+                role:this.state.role
+              }
+              rebase.updateDoc('/users/'+this.props.match.params.id, body)
+                .then(()=>{
+                  this.props.setUserData(body);
+                  this.setState({saving:false})});
+                }}>{this.state.saving?'Saving user...':'Save user'}</Button>
 
-            <Button disabled={true} onClick={()=>{
-                if(window.confirm("Are you sure?")){
-                  rebase.removeDoc('/users/'+this.props.match.params.id).then(()=>{
-                    this.props.history.goBack();
-                  });
-                }
-              }}
-              >Delete</Button>
-            <Button className="btn-link"  disabled={this.state.saving||this.state.passReseted} onClick={()=>{
-                this.setState({passReseted:true,passResetEnded:false})
-                firebase.auth().sendPasswordResetEmail(this.state.email).then(()=>{
-                  this.setState({passResetEnded:true})
-                })
-              }}
-              >{this.state.passResetEnded?(this.state.passReseted?'Password reseted!':"Reset user's password"):"Resetting..."}</Button>
-        </div>
+              <Button className="btn-red ml-auto" disabled={true} onClick={()=>{
+                  if(window.confirm("Are you sure?")){
+                    rebase.removeDoc('/users/'+this.props.match.params.id).then(()=>{
+                      this.props.history.goBack();
+                    });
+                  }
+                }}
+                >Delete</Button>
+
+              <Button className="btn-link"  disabled={this.state.saving||this.state.passReseted} onClick={()=>{
+                  this.setState({passReseted:true,passResetEnded:false})
+                  firebase.auth().sendPasswordResetEmail(this.state.email).then(()=>{
+                    this.setState({passResetEnded:true})
+                  })
+                }}
+                >{this.state.passResetEnded?(this.state.passReseted?'Password reseted!':"Reset user's password"):"Resetting..."}</Button>
+          </div>
       </div>
     );
   }

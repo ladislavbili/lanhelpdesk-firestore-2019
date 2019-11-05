@@ -142,7 +142,7 @@ class ProjectEdit extends Component{
 
   render(){
     return (
-      <div className="fit-with-header-and-commandbar scroll-visible">
+      <div className="p-20 fit-with-header-and-commandbar scroll-visible">
         <FormGroup>
           <Label>Project name</Label>
           <Input type="text" className="from-control" placeholder="Enter project name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
@@ -174,7 +174,7 @@ class ProjectEdit extends Component{
 					isAdmin={this.props.currentUser.userData.role.value>0}
 					/>
 
-        <h3 className="m-t-20"> DEMO - Default values </h3>
+        <h3 className="m-t-20"> Default values </h3>
 
           <table className="table">
             <thead>

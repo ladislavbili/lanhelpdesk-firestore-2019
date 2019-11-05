@@ -75,8 +75,7 @@ class ImapEdit extends Component{
 
   render(){
     return (
-      <div className="full-height card-box scrollable fit-with-header-and-commandbar">
-        <div className="m-t-20">
+      <div className="p-20 scroll-visible fit-with-header-and-commandbar">
         {
           this.state.loading &&
           <Alert color="success">
@@ -84,9 +83,9 @@ class ImapEdit extends Component{
           </Alert>
         }
 
-        <FormGroup check className="m-b-5">
+        <FormGroup check className="m-b-5 p-l-0">
           <Input type="checkbox" id="defCheck" checked={this.state.def} onChange={(e)=>this.setState({def:!this.state.def})}/>
-          <Label htmlFor="defCheck" check>
+          <Label htmlFor="defCheck" check className="p-l-15">
             Default
           </Label>
         </FormGroup>
@@ -118,47 +117,49 @@ class ImapEdit extends Component{
             </InputGroupAddon>
           </InputGroup>
         </FormGroup>
-        <FormGroup check className="m-b-5">
+        <FormGroup check className="m-b-5 p-l-0">
           <Input type="checkbox" id="checkTls" checked={this.state.tls} onChange={(e)=>this.setState({tls:!this.state.tls})}/>
-          <Label htmlFor="checkTls" check>
+          <Label htmlFor="checkTls" check className="p-l-15">
             TLS
           </Label>
         </FormGroup>
-        <FormGroup check className="m-b-5">
+        <FormGroup check className="m-b-5 p-l-0">
           <Input type="checkbox" id="checkAuth" checked={this.state.rejectUnauthorized} onChange={(e)=>this.setState({rejectUnauthorized:!this.state.rejectUnauthorized})}/>
-          <Label htmlFor="checkAuth" check>
+          <Label htmlFor="checkAuth" check className="p-l-15">
             Reject unauthorized
           </Label>
         </FormGroup>
 
-        <Button className="btn" disabled={this.state.saving || !this.canSave()} onClick={()=>{
-          this.setState({saving:true});
-          rebase.updateDoc('/imaps/'+this.props.match.params.id, {
-            title:this.state.title ,
-            host:this.state.host ,
-            port:this.state.port ,
-            user:this.state.user ,
-            password:this.state.password ,
-            tls:this.state.tls ,
-            rejectUnauthorized:this.state.rejectUnauthorized ,
-            def:this.state.def,
-          }).then((response)=>{
-            if(this.state.def && !this.state.isDefault){
-              this.state.imaps.filter((imap)=>imap.id!==this.props.match.params.id && imap.def).forEach((item)=>{
-                rebase.updateDoc('/imaps/'+item.id,{def:false})
-              })
-            }
-            this.setState({saving:false});
-          });
-        }}>{this.state.saving?'Saving Imap...':'Save Imap'}</Button>
-        <Button className="btn-link" disabled={this.state.saving} onClick={()=>{
-              if(window.confirm("Are you sure?")){
-                rebase.removeDoc('/imaps/'+this.props.match.params.id).then(()=>{
-                  this.props.history.goBack();
-                });
-              }
+        <div className="row">
+            <Button className="btn" disabled={this.state.saving || !this.canSave()} onClick={()=>{
+              this.setState({saving:true});
+              rebase.updateDoc('/imaps/'+this.props.match.params.id, {
+                title:this.state.title ,
+                host:this.state.host ,
+                port:this.state.port ,
+                user:this.state.user ,
+                password:this.state.password ,
+                tls:this.state.tls ,
+                rejectUnauthorized:this.state.rejectUnauthorized ,
+                def:this.state.def,
+              }).then((response)=>{
+                if(this.state.def && !this.state.isDefault){
+                  this.state.imaps.filter((imap)=>imap.id!==this.props.match.params.id && imap.def).forEach((item)=>{
+                    rebase.updateDoc('/imaps/'+item.id,{def:false})
+                  })
+                }
+                this.setState({saving:false});
+              });
+            }}>{this.state.saving?'Saving Imap...':'Save Imap'}</Button>
+
+          <Button className="btn-red ml-auto" disabled={this.state.saving} onClick={()=>{
+                  if(window.confirm("Are you sure?")){
+                    rebase.removeDoc('/imaps/'+this.props.match.params.id).then(()=>{
+                      this.props.history.goBack();
+                    });
+                  }
               }}>Delete</Button>
-            </div>
+          </div>
         </div>
     );
   }

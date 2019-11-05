@@ -39,12 +39,11 @@ class SMTPAdd extends Component{
 
   render(){
     return (
-      <div className="full-height card-box scrollable fit-with-header-and-commandbar">
-        <div className="m-t-20">
+      <div className="p-20 scroll-visible fit-with-header-and-commandbar">
 
-        <FormGroup check className="m-b-5">
+        <FormGroup check className="m-b-5 p-l-0">
           <Input type="checkbox" id="defCheck" checked={this.state.def} onChange={(e)=>this.setState({def:!this.state.def})}/>
-          <Label htmlFor="defCheck" check>
+          <Label htmlFor="defCheck" check className="p-l-15">
             Default
           </Label>
         </FormGroup>
@@ -61,9 +60,9 @@ class SMTPAdd extends Component{
           <Label for="name">Port</Label>
           <Input type="number" name="name" id="port" placeholder="Enter port" value={this.state.port} onChange={(e)=>this.setState({port:e.target.value})} />
         </FormGroup>
-        <FormGroup check className="m-b-5">
+        <FormGroup check className="m-b-5 p-l-0">
           <Input type="checkbox" id="checkSec" checked={this.state.secure} onChange={(e)=>this.setState({secure:!this.state.secure})}/>
-          <Label htmlFor="checkSec" check>
+          <Label htmlFor="checkSec" check className="p-l-15">
             Secure
           </Label>
         </FormGroup>
@@ -82,9 +81,9 @@ class SMTPAdd extends Component{
             </InputGroupAddon>
           </InputGroup>
         </FormGroup>
-        <FormGroup check className="m-b-5">
+        <FormGroup check className="m-b-5 p-l-0">
           <Input type="checkbox" id="checkAuth" checked={this.state.rejectUnauthorized} onChange={(e)=>this.setState({rejectUnauthorized:!this.state.rejectUnauthorized})}/>
-          <Label htmlFor="checkAuth" check>
+          <Label htmlFor="checkAuth" check className="p-l-15">
             Reject unauthorized
           </Label>
         </FormGroup>
@@ -119,7 +118,6 @@ class SMTPAdd extends Component{
                 })
               });
           }}>{this.state.saving?'Adding...':'Add SMTP'}</Button>
-        </div>
     </div>
     );
   }

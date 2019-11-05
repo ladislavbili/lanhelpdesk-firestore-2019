@@ -14,12 +14,11 @@ export default class UnitAdd extends Component{
 
   render(){
     return (
-      <div className="full-height card-box scrollable fit-with-header-and-commandbar">
-        <div className="m-t-20">
+      <div className="p-20 scroll-visible fit-with-header-and-commandbar">
 
-        <FormGroup check className="m-b-5">
+        <FormGroup check className="m-b-5 p-l-0">
           <Input type="checkbox" checked={this.state.def} onChange={(e)=>this.setState({def:!this.state.def})}/>
-          <Label check>
+          <Label check className="m-l-15">
             Default
           </Label>
         </FormGroup>
@@ -39,7 +38,6 @@ export default class UnitAdd extends Component{
                 this.setState({title:'',saving:false})
               });
           }}>{this.state.saving?'Adding...':'Add unit'}</Button>
-        </div>
     </div>
     );
   }

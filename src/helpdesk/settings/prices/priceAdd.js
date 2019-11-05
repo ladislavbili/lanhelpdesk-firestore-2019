@@ -58,17 +58,16 @@ class PriceAdd extends Component{
 
   render(){
     return (
-      <div className="full-height card-box scrollable fit-with-header-and-commandbar">
-        <div className="m-t-20">
+      <div className="p-20 scroll-visible fit-with-header-and-commandbar">
           {
             this.state.loading &&
             <Alert color="success">
               Loading data...
             </Alert>
           }
-          <FormGroup check style={{marginBottom: 5}}>
+          <FormGroup check className="m-b-5 p-l-0">
             <Input type="checkbox" checked={this.state.def} onChange={(e)=>this.setState({def:!this.state.def})}/>
-            <Label check>
+            <Label check className="m-l-15">
               Default
             </Label>
           </FormGroup>
@@ -106,6 +105,7 @@ class PriceAdd extends Component{
             <Label for="materMarg">Materials margin percentage 50+</Label>
             <Input type="text" name="materMarg" id="materMarg" placeholder="Enter materials margin percentage" value={this.state.marginExtra} onChange={(e)=>this.setState({marginExtra:e.target.value})} />
           </FormGroup>
+
           <Button className="btn" disabled={this.state.saving} onClick={()=>{
               this.setState({saving:true});
               rebase.addToCollection('/help-pricelists',
@@ -130,7 +130,6 @@ class PriceAdd extends Component{
                   this.loadData();
                 });
             }}>{this.state.saving?'Saving prices...':'Save prices'}</Button>
-          </div>
       </div>
     );
   }

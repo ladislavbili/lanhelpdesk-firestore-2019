@@ -49,8 +49,7 @@ class TaskTypeEdit extends Component{
 
   render(){
     return (
-      <div className="full-height card-box scrollable fit-with-header-and-commandbar">
-        <div className="m-t-20">
+      <div className="p-20 scroll-visible fit-with-header-and-commandbar">
           {
             this.state.loading &&
             <Alert color="success">
@@ -74,12 +73,14 @@ class TaskTypeEdit extends Component{
                   />
             </FormGroup>
 
+          <div className="row">
             <Button className="btn" disabled={this.state.saving} onClick={()=>{
                 this.setState({saving:true});
                 rebase.updateDoc('/help-task_types/'+this.props.match.params.id, {title:this.state.title, type:this.state.type.value})
                   .then(()=>{this.setState({saving:false})});
               }}>{this.state.saving?'Saving task type...':'Save task type'}</Button>
-            <Button className="btn-link"  disabled={this.state.saving} onClick={()=>{
+
+            <Button className="btn-red ml-auto"  disabled={this.state.saving} onClick={()=>{
                   if(window.confirm("Are you sure?")){
                     rebase.removeDoc('/help-task_types/'+this.props.match.params.id).then(()=>{
                       this.props.history.goBack();

@@ -782,7 +782,7 @@ class TaskEdit extends Component {
 								</div>
 							</div>
 
-							<Modal isOpen={this.state.openUserAdd} >
+							<Modal isOpen={this.state.openUserAdd}  toggle={() => this.setState({openUserAdd: !this.state.openUserAdd})} >
 			          <ModalBody>
 									<UserAdd close={() => this.setState({openUserAdd: false,})} addUser={(user) => {
 											let newUsers = this.state.users.concat([user]);
@@ -793,7 +793,7 @@ class TaskEdit extends Component {
 			          </ModalBody>
 			        </Modal>
 
-							<Modal isOpen={this.state.openCompanyAdd} >
+							<Modal isOpen={this.state.openCompanyAdd}  toggle={() => this.setState({openCompanyAdd: !this.state.openCompanyAdd})} >
 			          <ModalBody>
 									<CompanyAdd close={() => this.setState({openCompanyAdd: false,})} addCompany={(company) => {
 											let newCompanies = this.state.companies.concat([company]);

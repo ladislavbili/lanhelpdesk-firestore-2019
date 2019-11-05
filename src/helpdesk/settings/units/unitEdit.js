@@ -55,8 +55,7 @@ class UnitEdit extends Component{
 
   render(){
     return (
-      <div className="full-height card-box scrollable fit-with-header-and-commandbar">
-        <div className="m-t-20">
+      <div className="p-20 scroll-visible fit-with-header-and-commandbar">
         {
           this.state.loading &&
           <Alert color="success">
@@ -64,9 +63,9 @@ class UnitEdit extends Component{
           </Alert>
         }
 
-        <FormGroup check className="m-b-5">
+        <FormGroup check className="m-b-5 p-l-0">
           <Input type="checkbox" checked={this.state.def} onChange={(e)=>this.setState({def:!this.state.def})}/>
-          <Label check>
+          <Label check className="m-l-15">
             Default
           </Label>
         </FormGroup>
@@ -76,26 +75,28 @@ class UnitEdit extends Component{
           <Input type="text" name="name" id="name" placeholder="Enter unit name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
         </FormGroup>
 
-        <Button className="btn" disabled={this.state.saving} onClick={()=>{
-            this.setState({saving:true});
-            if(!this.state.def && this.state.defaultUnit===this.props.match.params.id){
-              this.setState({defaultUnit:null});
-              rebase.updateDoc('/metadata/0',{defaultUnit:null});
-            }else if(this.state.def){
-              this.setState({defaultUnit:this.props.match.params.id});
-              rebase.updateDoc('/metadata/0',{defaultUnit:this.props.match.params.id});
-            }
-            rebase.updateDoc('/help-units/'+this.props.match.params.id, {title:this.state.title})
-              .then(()=>{this.setState({saving:false})});
-          }}>{this.state.saving?'Saving unit...':'Save unit'}</Button>
-        <Button className="btn-link" disabled={this.state.saving} onClick={()=>{
-              if(window.confirm("Are you sure?")){
-                rebase.removeDoc('/help-units/'+this.props.match.params.id).then(()=>{
-                  this.props.history.goBack();
-                });
-              }
+        <div className="row">
+            <Button className="btn" disabled={this.state.saving} onClick={()=>{
+                this.setState({saving:true});
+                if(!this.state.def && this.state.defaultUnit===this.props.match.params.id){
+                  this.setState({defaultUnit:null});
+                  rebase.updateDoc('/metadata/0',{defaultUnit:null});
+                }else if(this.state.def){
+                  this.setState({defaultUnit:this.props.match.params.id});
+                  rebase.updateDoc('/metadata/0',{defaultUnit:this.props.match.params.id});
+                }
+                rebase.updateDoc('/help-units/'+this.props.match.params.id, {title:this.state.title})
+                  .then(()=>{this.setState({saving:false})});
+              }}>{this.state.saving?'Saving unit...':'Save unit'}</Button>
+
+            <Button className="btn-red ml-auto" disabled={this.state.saving} onClick={()=>{
+                  if(window.confirm("Are you sure?")){
+                    rebase.removeDoc('/help-units/'+this.props.match.params.id).then(()=>{
+                      this.props.history.goBack();
+                    });
+                  }
               }}>Delete</Button>
-            </div>
+          </div>
         </div>
     );
   }

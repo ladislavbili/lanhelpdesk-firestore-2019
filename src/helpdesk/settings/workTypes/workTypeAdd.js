@@ -18,8 +18,7 @@ export default class WorkTypeAdd extends Component{
 
   render(){
     return (
-      <div className="full-height card-box scrollable fit-with-header-and-commandbar">
-        <div className="m-t-20">
+      <div className="p-20 scrollable fit-with-header-and-commandbar">
           <FormGroup>
             <Label for="name">WorkType name</Label>
             <Input type="text" name="name" id="name" placeholder="Enter work type name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
@@ -40,7 +39,6 @@ export default class WorkTypeAdd extends Component{
               rebase.addToCollection('/help-work_types', {title:this.state.title,type:this.state.type.value})
                 .then(()=>{this.setState({title:'',type:typeOptions[0],saving:false})});
             }}>{this.state.saving?'Adding...':'Add work type'}</Button>
-        </div>
       </div>
     );
   }
