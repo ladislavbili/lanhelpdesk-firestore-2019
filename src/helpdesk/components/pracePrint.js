@@ -55,7 +55,7 @@ export default class Prace extends Component {
 		return (
 			<div className="row">
 				<div className="col-md-12">
-					<h3 className="m-t-30"> Sluzby </h3>
+					<h3 className="m-t-30"> Práca </h3>
 					<div >
 						<table className="table">
 							<thead >

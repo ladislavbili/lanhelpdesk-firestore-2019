@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import {storageHelpTasksStart, storageHelpStatusesStart, storageHelpWorkTypesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart, storageHelpTaskWorksStart} from '../../redux/actions';
+import {storageHelpTasksStart, storageHelpStatusesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart, storageHelpTaskWorksStart, storageHelpTaskTypesStart} from '../../redux/actions';
 import { timestampToString, sameStringForms} from '../../helperFunctions';
 import { Link } from 'react-router-dom';
 
@@ -10,7 +10,6 @@ class Reports extends Component {
 		this.state={
 			tasks:[],
 			statuses:[],
-			workTypes:[],
 			users:[],
 			units:[],
 			taskMaterials:[],
@@ -22,7 +21,7 @@ class Reports extends Component {
 	storageLoaded(props){
 		return props.tasksLoaded &&
 		props.statusesLoaded &&
-		props.workTypesLoaded &&
+		props.taskTypesLoaded &&
 		props.unitsLoaded &&
 		props.usersLoaded &&
 		props.materialsLoaded &&
@@ -32,11 +31,14 @@ class Reports extends Component {
 	componentWillReceiveProps(props){
 		if(!sameStringForms(props.tasks,this.props.tasks)||
 			!sameStringForms(props.statuses,this.props.statuses)||
-			!sameStringForms(props.workTypes,this.props.workTypes)||
+			!sameStringForms(props.taskTypes,this.props.taskTypes)||
 			!sameStringForms(props.units,this.props.units)||
 			!sameStringForms(props.users,this.props.users)||
 			!sameStringForms(props.materials,this.props.materials)||
 			!sameStringForms(props.taskWorks,this.props.taskWorks)){
+			this.setData(props);
+		}
+		if(!this.storageLoaded(this.props)&& this.storageLoaded(props)){
 			this.setData(props);
 		}
 	}
@@ -48,8 +50,8 @@ class Reports extends Component {
 		if(!this.props.statusesActive){
 			this.props.storageHelpStatusesStart();
 		}
-		if(!this.props.workTypesActive){
-			this.props.storageHelpWorkTypesStart();
+		if(!this.props.taskTypesActive){
+			this.props.storageHelpTaskTypesStart();
 		}
 		if(!this.props.unitsActive){
 			this.props.storageHelpUnitsStart();
@@ -73,7 +75,6 @@ class Reports extends Component {
 		let tasks = props.tasks;
 		let statuses = props.statuses;
 		let users = props.users;
-		let workTypes = props.workTypes;
 		let units = props.units;
 		let taskMaterials = props.materials;
 		let taskWorks = props.taskWorks;
@@ -85,10 +86,12 @@ class Reports extends Component {
 				status:task.status===null ? null: statuses.find((status)=>status.id===task.status),
 			}
 		});
+		console.log(tasks);
+		console.log(props.tasksLoaded);
 		this.setState({
 			tasks:newTasks,
 			statuses,
-			workTypes,
+			taskTypes:props.taskTypes,
 			users,
 			units,
 			taskMaterials,
@@ -106,7 +109,7 @@ class Reports extends Component {
 			let discountPerItem = finalUnitPrice*parseFloat(work.discount)/100;
 			finalUnitPrice=(finalUnitPrice*(1-parseFloat(work.discount)/100)).toFixed(2)
 			let totalPrice=(finalUnitPrice*parseFloat(work.quantity)).toFixed(2);
-			let workType= this.state.workTypes.find((item)=>item.id===work.workType);
+			let workType= this.state.taskTypes.find((item)=>item.id===work.workType);
 			return{
 				...work,
 				task:this.state.tasks.find((task)=>work.task===task.id),
@@ -364,12 +367,12 @@ class Reports extends Component {
 		}
 	}
 
-const mapStateToProps = ({ filterReducer,userReducer, storageHelpTasks, storageHelpStatuses, storageHelpWorkTypes, storageHelpUnits, storageUsers, storageHelpTaskMaterials, storageHelpTaskWorks }) => {
+const mapStateToProps = ({ filterReducer,userReducer, storageHelpTaskTypes, storageHelpTasks, storageHelpStatuses, storageHelpUnits, storageUsers, storageHelpTaskMaterials, storageHelpTaskWorks }) => {
 	const { filter, project, milestone } = filterReducer;
 
 	const { tasksActive, tasks, tasksLoaded } = storageHelpTasks;
 	const { statusesActive, statuses, statusesLoaded } = storageHelpStatuses;
-	const { workTypesActive, workTypes, workTypesLoaded } = storageHelpWorkTypes;
+	const { taskTypesLoaded, taskTypesActive, taskTypes } = storageHelpTaskTypes;
 	const { unitsActive, units, unitsLoaded } = storageHelpUnits;
 	const { usersActive, users, usersLoaded } = storageUsers;
 	const { materialsActive, materials, materialsLoaded } = storageHelpTaskMaterials;
@@ -379,7 +382,7 @@ const mapStateToProps = ({ filterReducer,userReducer, storageHelpTasks, storageH
 		currentUser:userReducer,
 		tasksActive, tasks,tasksLoaded,
 		statusesActive, statuses,statusesLoaded,
-		workTypesActive, workTypes,workTypesLoaded,
+		taskTypesLoaded, taskTypesActive, taskTypes,
 		unitsActive, units,unitsLoaded,
 		usersActive, users,usersLoaded,
 		materialsActive, materials,materialsLoaded,
@@ -387,4 +390,4 @@ const mapStateToProps = ({ filterReducer,userReducer, storageHelpTasks, storageH
 	};
 };
 
-export default connect(mapStateToProps, { storageHelpTasksStart, storageHelpStatusesStart, storageHelpWorkTypesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart, storageHelpTaskWorksStart })(Reports);
+export default connect(mapStateToProps, { storageHelpTasksStart, storageHelpStatusesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart, storageHelpTaskWorksStart, storageHelpTaskTypesStart })(Reports);

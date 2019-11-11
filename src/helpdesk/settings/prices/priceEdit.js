@@ -3,7 +3,7 @@ import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
 import {rebase } from '../../../index';
 
 import { connect } from "react-redux";
-import {storageMetadataStart,storageHelpPricelistsStart,storageHelpPricesStart,storageHelpWorkTypesStart} from '../../../redux/actions';
+import {storageMetadataStart,storageHelpPricelistsStart,storageHelpPricesStart,storageHelpTaskTypesStart} from '../../../redux/actions';
 
 class PriceEdit extends Component{
   constructor(props){
@@ -17,14 +17,14 @@ class PriceEdit extends Component{
       def:false,
       loading:true,
       saving:false,
-      workTypes:[],
+      taskTypes:[],
 
     }
     this.setData.bind(this);
   }
 
   storageLoaded(props){
-    return props.pricesLoaded && props.workTypesLoaded && props.pricelistsLoaded && props.metadataLoaded
+    return props.pricesLoaded && props.taskTypesLoaded && props.pricelistsLoaded && props.metadataLoaded
   }
 
   componentWillReceiveProps(props){
@@ -49,8 +49,8 @@ class PriceEdit extends Component{
     if(!this.props.pricesActive){
       this.props.storageHelpPricesStart();
     }
-    if(!this.props.workTypesActive){
-      this.props.storageHelpWorkTypesStart();
+    if(!this.props.taskTypesActive){
+      this.props.storageHelpTaskTypesStart();
     }
     if(this.storageLoaded(this.props)){
       this.setData(this.props);
@@ -62,11 +62,11 @@ class PriceEdit extends Component{
     let pricelist = props.pricelists.find((pricelist)=>pricelist.id===id);
     let meta = props.metadata;
     let prices = props.prices;
-    let workTypes = props.workTypes;
+    let taskTypes = props.taskTypes;
 
-    let types= workTypes.map((type)=>{
+    let types= taskTypes.map((type)=>{
       let newType={...type};
-      newType.price= prices.find((item)=>item.pricelist===id && item.workType === newType.id);
+      newType.price= prices.find((item)=>item.pricelist===id && item.taskType === newType.id);
       if(newType.price===undefined){
           newType.price={price:0};
       }
@@ -78,7 +78,7 @@ class PriceEdit extends Component{
       afterHours:pricelist.afterHours,
       margin: pricelist.materialMargin,
       marginExtra: pricelist.materialMarginExtra,
-      workTypes:types,
+      taskTypes:types,
       loading:false,
       def:meta.defaultPricelist===id,
       defaultPricelist:meta.defaultPricelist
@@ -107,15 +107,15 @@ class PriceEdit extends Component{
           </FormGroup>
 
             {
-              this.state.workTypes.map((item,index)=>
+              this.state.taskTypes.map((item,index)=>
               <FormGroup key={index}>
                 <Label for={item.title}>{item.title}</Label>
                 <Input type="text" name={item.title} id={item.title} placeholder="Enter price" value={item.price.price} onChange={(e)=>{
-                    let newWorkTypes=[...this.state.workTypes];
-                    let newWorkType = {...newWorkTypes[index]};
-                    newWorkType.price.price=e.target.value;
-                    newWorkTypes[index] = newWorkType;
-                    this.setState({workTypes:newWorkTypes});
+                    let newTaskTypes=[...this.state.taskTypes];
+                    let newTaskType = {...newTaskTypes[index]};
+                    newTaskType.price.price=e.target.value;
+                    newTaskTypes[index] = newTaskType;
+                    this.setState({taskTypes:newTaskTypes});
                   }} />
               </FormGroup>
               )
@@ -146,17 +146,17 @@ class PriceEdit extends Component{
                     rebase.updateDoc('/metadata/0',{defaultPricelist:this.props.match.params.id});
                   }
 
-                  this.state.workTypes.filter((item)=>item.price.id!==undefined).map((workType)=>
-                    rebase.updateDoc('/help-prices/'+workType.price.id, {price:parseFloat(workType.price.price === "" ? "0": workType.price.price)})
+                  this.state.taskTypes.filter((item)=>item.price.id!==undefined).map((taskType)=>
+                    rebase.updateDoc('/help-prices/'+taskType.price.id, {price:parseFloat(taskType.price.price === "" ? "0": taskType.price.price)})
                   );
-                  this.state.workTypes.filter((item)=>item.price.id===undefined).map((workType)=>
-                    rebase.addToCollection('/help-prices', {pricelist:this.props.match.params.id,workType:workType.id,price:parseFloat(workType.price.price === "" ? "0": workType.price.price)}).then((response)=>{
-                      let index = this.state.workTypes.findIndex((item)=>item.id===workType.id);
-                      let newWorkTypes=[...this.state.workTypes];
-                      let newWorkType = {...newWorkTypes[index]};
-                      newWorkType.price={pricelist:this.props.match.params.id,workType:workType.id,price:parseFloat(workType.price.price === "" ? "0": workType.price.price), id:response.id};
-                      newWorkTypes[index] = newWorkType;
-                      this.setState({workTypes:newWorkTypes});
+                  this.state.taskTypes.filter((item)=>item.price.id===undefined).map((taskType)=>
+                    rebase.addToCollection('/help-prices', {pricelist:this.props.match.params.id,taskType:taskType.id,price:parseFloat(taskType.price.price === "" ? "0": taskType.price.price)}).then((response)=>{
+                      let index = this.state.taskTypes.findIndex((item)=>item.id===taskType.id);
+                      let newTaskTypes=[...this.state.taskTypes];
+                      let newTaskType = {...newTaskTypes[index]};
+                      newTaskType.price={pricelist:this.props.match.params.id,taskType:taskType.id,price:parseFloat(taskType.price.price === "" ? "0": taskType.price.price), id:response.id};
+                      newTaskTypes[index] = newTaskType;
+                      this.setState({taskTypes:newTaskTypes});
                     })
                   )
 
@@ -172,8 +172,8 @@ class PriceEdit extends Component{
                       if(this.state.defaultPricelist===this.props.match.params.id){
                         rebase.updateDoc('/metadata/0',{defaultPricelist:null});
                       }
-                      this.state.workTypes.filter((item)=>item.price.id!==undefined).map((workType)=>
-                        rebase.removeDoc('/help-prices/'+workType.price.id)
+                      this.state.taskTypes.filter((item)=>item.price.id!==undefined).map((taskType)=>
+                        rebase.removeDoc('/help-prices/'+taskType.price.id)
                       );
                       this.props.history.goBack();
                     }
@@ -184,16 +184,17 @@ class PriceEdit extends Component{
   }
 }
 
-const mapStateToProps = ({ storageMetadata,storageHelpPricelists,storageHelpPrices, storageHelpWorkTypes}) => {
+const mapStateToProps = ({ storageMetadata,storageHelpPricelists,storageHelpPrices, storageHelpTaskTypes}) => {
   const { metadataActive, metadata, metadataLoaded } = storageMetadata;
   const { pricelistsActive, pricelists, pricelistsLoaded } = storageHelpPricelists;
   const { pricesActive, prices, pricesLoaded } = storageHelpPrices;
-  const { workTypesActive, workTypes, workTypesLoaded } = storageHelpWorkTypes;
+	const { taskTypesLoaded, taskTypesActive, taskTypes } = storageHelpTaskTypes;
   return {
     metadataActive, metadata, metadataLoaded,
     pricelistsActive, pricelists, pricelistsLoaded,
     pricesActive, prices, pricesLoaded,
-    workTypesActive, workTypes, workTypesLoaded, };
+    taskTypesLoaded, taskTypesActive, taskTypes,
+  };
 };
 
-export default connect(mapStateToProps, { storageMetadataStart,storageHelpPricelistsStart,storageHelpPricesStart,storageHelpWorkTypesStart })(PriceEdit);
+export default connect(mapStateToProps, { storageMetadataStart,storageHelpPricelistsStart,storageHelpPricesStart,storageHelpTaskTypesStart })(PriceEdit);

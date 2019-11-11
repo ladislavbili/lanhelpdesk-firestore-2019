@@ -59,7 +59,6 @@ render() {
   const repeatInterval = this.props.repeat?(intervals.find((interval)=>interval.title===this.props.repeat.repeatInterval)):null;
   return (
     <div>
-      { this.props.columns &&
         <div className="row p-r-10 ">
           <Label className="col-3 col-form-label">Repeat</Label>
           <div className="col-9">
@@ -68,18 +67,6 @@ render() {
             </Button>
           </div>
         </div>
-      }
-
-      {!this.props.columns &&
-          <div className="">
-            <Label className=" col-form-label">Repeat</Label>
-            <div className="">
-              <Button type="button" className="repeat-btn flex" id={"openPopover"+this.props.taskID} onClick={this.toggleRepeat}>
-                {this.props.repeat?("Opakovať každý "+ parseInt(this.props.repeat.repeatEvery/repeatInterval.value) + ' ' + repeatInterval.title) :"No repeat"}
-              </Button>
-            </div>
-          </div>
-      }
 
       <Popover placement="bottom" isOpen={this.state.open && !this.props.disabled} target={"openPopover"+this.props.taskID} toggle={this.toggleRepeat}>
         <PopoverHeader>Opakovanie</PopoverHeader>

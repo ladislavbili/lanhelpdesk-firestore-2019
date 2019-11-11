@@ -55,7 +55,7 @@ export default class Prace extends Component {
 		return (
 			<div className="row">
 				<div className="col-md-12">
-					<h3 className="m-t-30"> Práce </h3>
+					<h3 className="m-t-30"> Práca </h3>
 					<div >
 						<table className="table">
 							<thead >
@@ -84,8 +84,8 @@ export default class Prace extends Component {
 													: subtask.quantity
 												}
 											</td>
-											<td>{subtask.assignedTo.email}</td>
-											<td>{subtask.workType.title}</td>
+											<td>{subtask.assignedTo ? subtask.assignedTo.email : "" }</td>
+											<td>{subtask.workType ? subtask.workType.title : ""}</td>
 										</tr>)
 								}
 						</tbody>

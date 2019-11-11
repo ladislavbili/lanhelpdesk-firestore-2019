@@ -64,7 +64,7 @@ export default class Prace extends Component {
 			<div className="row m-t-20">
 				<div className="col-md-12">
 					<div>
-						<Label>Služby</Label>
+						<Label>Práce</Label>
 						<table className="table m-t--30">
 							<thead >
 								<tr >

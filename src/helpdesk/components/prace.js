@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import {Input, Label} from 'reactstrap';
 import Select from 'react-select';
-import { selectStyle, invisibleSelectStyle} from '../../../scss/selectStyles';
+import { selectStyle, invisibleSelectStyle} from '../../scss/selectStyles';
+import { sameStringForms} from '../../helperFunctions';
 
-export default class Rozpocet extends Component {
+export default class Prace extends Component {
 	constructor(props){
 		super(props);
 		this.state={
@@ -17,7 +18,7 @@ export default class Rozpocet extends Component {
 
 			newTitle:'',
 			newPrice:0,
-			newWorkType:null,
+			newWorkType:this.props.defaultType,
 			newQuantity:0,
 			newExtraWork:false,
 			newDiscount:0,
@@ -30,16 +31,20 @@ export default class Rozpocet extends Component {
 		if(this.props.match.params.taskID!==props.match.params.taskID){
 			this.setState({
 				newTitle:'',
-				newWorkType:null,
+				newWorkType:props.defaultType,
 				newQuantity:0,
 				newExtraWork:false,
 				newDiscount:0,
 				newPrice:0,
 				newAssigned:null,
 			})
-		}
+		}else if(!sameStringForms(this.props.defaultType,props.defaultType)){
+			this.setState({
+				newWorkType:props.defaultType,
+			})
+	}
 
-		if(this.props.taskAssigned.length!==props.taskAssigned.length){
+		if(!sameStringForms(this.props.taskAssigned,props.taskAssigned)){
 			if(!props.taskAssigned.some((item)=>item.id===(this.state.newAssigned?this.state.newAssigned.id:null))){
 				if(props.taskAssigned.length>0){
 					this.setState({newAssigned:props.taskAssigned[0]});
@@ -69,18 +74,18 @@ export default class Rozpocet extends Component {
 				<div className="row m-b-30 m-t-20">
 					<div className="col-md-12">
 						<div>
-							<Label>Služby</Label>
+							<Label>Práce</Label>
 							<table className="table m-t--30">
 								<thead>
 									<tr>
 										<th width="25">
 										</th>
 										<th style={{fontSize: "14px", fontFamily: "Segoe UI Bold", color: "#333"}}></th>
-										<th style={{fontSize: "12px", fontFamily: "Segoe UI", fontWeight: "500", color: "#333"}} width="170">Rieši</th>
+										{this.props.showAll &&  <th style={{fontSize: "12px", fontFamily: "Segoe UI", fontWeight: "500", color: "#333"}} width="170">Rieši</th>}
 										<th width="100">Mn.</th>
-										<th width="100">Typ</th>
-										<th width="100" className="table-highlight-background">Cena/Mn.</th>
-										<th width="60" className="table-highlight-background">Zlava</th>
+										{this.props.showAll &&  <th width="100">Typ</th>}
+										{this.props.showAll && <th width="100" className="table-highlight-background">Cena/Mn.</th>}
+										{this.props.showAll && <th width="60" className="table-highlight-background">Zlava</th>}
 										{false && <th width="130">Spolu</th>}
 										<th className="t-a-c" width="100"></th>
 									</tr>
@@ -131,7 +136,7 @@ export default class Rozpocet extends Component {
 														/>
 												</div>
 											</td>
-											<td>
+											{ this.props.showAll && <td>
 												<Select
 													isDisabled={this.props.disabled}
 													value={subtask.assignedTo}
@@ -142,6 +147,8 @@ export default class Rozpocet extends Component {
 													styles={invisibleSelectStyle}
 													/>
 											</td>
+											}
+
 											<td>
 												<input
 													disabled={this.props.disabled}
@@ -172,7 +179,7 @@ export default class Rozpocet extends Component {
 													}
 													/>
 											</td>
-											<td >
+											{ this.props.showAll && <td >
 												<Select
 													isDisabled={this.props.disabled}
 													value={subtask.workType}
@@ -188,9 +195,9 @@ export default class Rozpocet extends Component {
 													options={this.props.workTypes}
 													styles={invisibleSelectStyle}
 													/>
-											</td>
+											</td>}
 
-											<td className="table-highlight-background">
+											{ this.props.showAll && <td className="table-highlight-background">
 											<input
 												disabled={this.props.disabled}
 												type="number"
@@ -219,8 +226,8 @@ export default class Rozpocet extends Component {
 													this.setState({ editedSubtaskPrice: e.target.value })}
 												}
 												/>
-											</td>
-											<td className="table-highlight-background">
+											</td>}
+											{ this.props.showAll && <td className="table-highlight-background">
 												<input
 													disabled={this.props.disabled}
 													type="number"
@@ -248,7 +255,7 @@ export default class Rozpocet extends Component {
 															this.setState({ editedSubtaskDiscount: e.target.value })}
 														}
 														/>
-												</td>
+												</td>}
 												{false &&
 													<td className="table-highlight-background">
 													{
@@ -288,7 +295,7 @@ export default class Rozpocet extends Component {
 									<tr >
 
 										<td></td>
-										<td>
+										<td colSpan={this.props.showAll?"7":"3"}>
 											<button className="btn btn-table-add-item"
 												disabled={this.props.disabled}
 												onClick={()=>{
@@ -296,13 +303,6 @@ export default class Rozpocet extends Component {
 												}}>
 												+ Add New Item
 											</button>
-										</td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td>
 										</td>
 									</tr>
 									}
@@ -321,7 +321,7 @@ export default class Rozpocet extends Component {
 												onChange={(e)=>this.setState({newTitle:e.target.value})}
 												/>
 										</td>
-										<td>
+										{ this.props.showAll && <td>
 											<Select
 												isDisabled={this.props.disabled}
 												value={this.state.newAssigned}
@@ -332,10 +332,10 @@ export default class Rozpocet extends Component {
 												options={this.props.taskAssigned}
 												styles={selectStyle}
 												/>
-										</td>
+										</td>}
 										<td>
 											<input
-												isDisabled={this.props.disabled}
+												disabled={this.props.disabled}
 												type="number"
 												value={this.state.newQuantity}
 												onChange={(e)=>this.setState({newQuantity:e.target.value})}
@@ -344,10 +344,11 @@ export default class Rozpocet extends Component {
 												placeholder=""
 												/>
 										</td>
-										<td>
+										{ this.props.showAll && <td>
 											<Select
 												isDisabled={this.props.disabled}
-												value={this.state.workType}
+												value={this.state.newWorkType}
+												options={this.props.workTypes}
 												onChange={(workType)=>{
 													let price=0;
 													price = workType.prices.find((item)=>this.props.company!==null && item.pricelist===this.props.company.pricelist.id);
@@ -359,23 +360,22 @@ export default class Rozpocet extends Component {
 													this.setState({newWorkType:workType,newPrice:price})
 													}
 												}
-												options={this.props.workTypes}
 												styles={selectStyle}
 												/>
-										</td>
+										</td>}
 
-										<td className="table-highlight-background">
-										<input
-											disabled={this.props.disabled}
-											type="number"
-											value={this.state.newPrice}
-											onChange={(e)=>this.setState({newPrice:e.target.value})}
-											className="form-control h-30"
-											id="inlineFormInput"
-											placeholder=""
+										{ this.props.showAll && <td className="table-highlight-background">
+											<input
+												disabled={this.props.disabled}
+												type="number"
+												value={this.state.newPrice}
+												onChange={(e)=>this.setState({newPrice:e.target.value})}
+												className="form-control h-30"
+												id="inlineFormInput"
+												placeholder=""
 											/>
-										</td>
-										<td className="table-highlight-background">
+										</td>}
+										{ this.props.showAll && <td className="table-highlight-background">
 											<input
 												disabled={this.props.disabled}
 												type="number"
@@ -385,7 +385,7 @@ export default class Rozpocet extends Component {
 												id="inlineFormInput"
 												placeholder=""
 												/>
-										</td>
+										</td>}
 										{false &&
 											<td className="table-highlight-background">
 											{

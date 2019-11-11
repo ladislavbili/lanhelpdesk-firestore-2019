@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactToPrint from 'react-to-print';
 import Materials from '../components/materials/materialsPrint';
-import Services from '../components/services/pracePrint';
+import Services from '../components/pracePrint';
 
 import {timestampToString} from '../../helperFunctions';
 

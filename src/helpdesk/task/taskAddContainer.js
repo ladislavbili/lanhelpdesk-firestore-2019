@@ -118,7 +118,6 @@ class TaskAddContainer extends Component{
       let projects = toSelArr(props.projects);
       let users = toSelArr(props.users,'email');
       let companies = toSelArr(props.companies);
-      let workTypes = toSelArr(props.workTypes);
       let units = toSelArr(props.units);
       let prices = props.prices;
       let pricelists = props.pricelists;
@@ -133,9 +132,9 @@ class TaskAddContainer extends Component{
         return newCompany;
       });
 
-      let newWorkTypes=workTypes.map((workType)=>{
-        let newWorkType = {...workType, prices:prices.filter((price)=>price.workType===workType.id)}
-        return newWorkType;
+      let newTaskTypes=taskTypes.map((taskType)=>{
+        let newTaskType = {...taskType, prices:prices.filter((price)=>price.workType===taskType.id)}
+        return newTaskType;
       });
 
       this.setState({
@@ -143,8 +142,7 @@ class TaskAddContainer extends Component{
         projects,
         users,
         companies:newCompanies,
-        workTypes:newWorkTypes,
-        taskTypes,
+        taskTypes:newTaskTypes,
         allTags:tags,
         milestones,
         units,

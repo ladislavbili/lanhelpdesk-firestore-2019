@@ -65,7 +65,7 @@ class Sidebar extends Component {
 	componentWillReceiveProps(props){
 		if(!sameStringForms(props.filters,this.props.filters)){
 			this.setState({
-				filters:props.filters.filter((filter)=>filter.createdBy===props.currentUser.id||filter.public),
+				filters:props.filters.filter((filter)=>filter.createdBy===props.currentUser.id||filter.public).sort((item1,item2)=>item1.title> item2.title?1:-1),
 				filterData:(this.state.filterData && props.filters.length>0) ? props.filters.find((filter)=>filter.id===this.state.filterData.id):null
 			})
 		}
@@ -145,7 +145,7 @@ class Sidebar extends Component {
 		if(!this.props.filtersActive){
 			this.props.storageHelpFiltersStart();
 		}
-		this.setState({filters:this.props.filters.filter((filter)=>filter.createdBy===this.props.currentUser.id||filter.public)});
+		this.setState({filters:this.props.filters.filter((filter)=>filter.createdBy===this.props.currentUser.id||filter.public).sort((item1,item2)=>item1.title> item2.title?1:-1)});
 
 		this.readFilterFromURL(this.props);
 	}
@@ -160,6 +160,12 @@ class Sidebar extends Component {
 			this.props.currentUser.userData.role.value===3 || testing ||
 			(this.state.project.permissions.find((permission)=>permission.user===this.props.currentUser.id)!==undefined && this.state.project.permissions.find((permission)=>permission.user===this.props.currentUser.id).write)
 		);
+		let filters = [...this.state.filters];
+		if(this.state.project.id===null){
+			filters = filters.filter((filter)=>filter.dashboard);
+		}else{
+			filters = filters.filter((filter)=>filter.global || (filter.project!==null && filter.project===this.state.project.id))
+		}
 		return (
 			<div className="sidebar">
 					<SelectPage />
@@ -178,12 +184,35 @@ class Sidebar extends Component {
 								})}
 								value={this.state.project}
 								styles={sidebarSelectStyle}
-								onChange={e => {
-									if (e.id === -1) {
+								onChange={project => {
+									if (project.id === -1) {
 										this.setState({openProjectAdd: true})
 									} else {
-										this.setState({project:e,milestone:allMilestones});
-										this.props.setProject(e.value);
+										if(this.state.filterID!== null && !this.state.filterData.global && this.state.filterData.project!==project.id){
+											this.setState({
+												project,
+												milestone:allMilestones,
+												filterID:null,
+												filterData:null,
+											});
+											this.props.setFilter({
+												status:[],
+												requester:null,
+												company:null,
+												assigned:null,
+												workType:null,
+												statusDateFrom:'',
+												statusDateTo:'',
+												updatedAt:(new Date()).getTime()
+											});
+											this.props.history.push('/helpdesk/taskList/i/all');
+										}else{
+											this.setState({
+												project,
+												milestone:allMilestones
+											});
+										}
+										this.props.setProject(project.value);
 										this.props.setMilestone(null);
 									}
 								}}
@@ -268,7 +297,7 @@ class Sidebar extends Component {
 												}}>Všetky</Link>
 										</NavItem>
 										{
-											this.state.filters.map((item)=>
+											filters.map((item)=>
 											<NavItem key={item.id}>
 												<Link
 													className = "text-basic sidebar-align sidebar-menu-item"

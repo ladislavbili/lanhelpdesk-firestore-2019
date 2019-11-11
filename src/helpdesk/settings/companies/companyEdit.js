@@ -9,8 +9,6 @@ import { connect } from "react-redux";
 import {storageHelpPricelistsStart,storageMetadataStart, storageCompaniesStart} from '../../../redux/actions';
 import {sameStringForms, isEmail} from '../../../helperFunctions';
 
-import classnames from "classnames";
-
 class CompanyEdit extends Component{
   constructor(props){
     super(props);

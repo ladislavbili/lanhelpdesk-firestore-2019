@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
 import {rebase } from '../../../index';
 import { connect } from "react-redux";
-import {storageHelpPricesStart,storageHelpWorkTypesStart} from '../../../redux/actions';
+import {storageHelpPricesStart,storageHelpTaskTypesStart} from '../../../redux/actions';
 
 class PriceAdd extends Component{
   constructor(props){
@@ -15,13 +15,13 @@ class PriceAdd extends Component{
       loading:true,
       saving:false,
       def:false,
-      workTypes:[],
+      taskTypes:[],
     }
     this.setData.bind(this);
   }
 
   storageLoaded(props){
-    return props.pricesLoaded && props.workTypesLoaded
+    return props.pricesLoaded && props.taskTypesLoaded
   }
 
   componentWillReceiveProps(props){
@@ -34,8 +34,8 @@ class PriceAdd extends Component{
     if(!this.props.pricesActive){
       this.props.storageHelpPricesStart();
     }
-    if(!this.props.workTypesActive){
-      this.props.storageHelpWorkTypesStart();
+    if(!this.props.taskTypesActive){
+      this.props.storageHelpTaskTypesStart();
     }
     if(this.storageLoaded(this.props)){
       this.setData(this.props);
@@ -43,15 +43,15 @@ class PriceAdd extends Component{
   }
 
   setData(props){
-    let workTypes = props.workTypes;
-    let types= workTypes.map((type)=>{
+    let taskTypes = props.taskTypes;
+    let types= taskTypes.map((type)=>{
       let newType={...type};
       newType.price={price:0};
       return newType;
     });
 
     this.setState({
-      workTypes:types,
+      taskTypes:types,
       loading:false
     });
   }
@@ -78,15 +78,15 @@ class PriceAdd extends Component{
           </FormGroup>
 
           {
-            this.state.workTypes.map((item,index)=>
+            this.state.taskTypes.map((item,index)=>
             <FormGroup key={index}>
               <Label for={index}>{item.title}</Label>
               <Input type="text" name={index} id={index} placeholder="Enter price" value={item.price.price} onChange={(e)=>{
-                  let newWorkTypes=[...this.state.workTypes];
-                  let newWorkType = {...newWorkTypes[index]};
-                  newWorkType.price.price=e.target.value;
-                  newWorkTypes[index] = newWorkType;
-                  this.setState({workTypes:newWorkTypes});
+                  let newTaskTypes=[...this.state.taskTypes];
+                  let newTaskType = {...newTaskTypes[index]};
+                  newTaskType.price.price=e.target.value;
+                  newTaskTypes[index] = newTaskType;
+                  this.setState({taskTypes:newTaskTypes});
                 }} />
             </FormGroup>
             )
@@ -119,15 +119,14 @@ class PriceAdd extends Component{
                   if(this.state.def){
                     rebase.updateDoc('/metadata/0',{defaultPricelist:listResponse.id})
                   }
-                  this.state.workTypes.map((workType,index)=>
-                    rebase.addToCollection('/help-prices', {pricelist:listResponse.id,workType:workType.id,price:parseFloat(workType.price.price === "" ? "0": workType.price.price)})
+                  this.state.taskTypes.map((taskType,index)=>
+                    rebase.addToCollection('/help-prices', {pricelist:listResponse.id,taskType:taskType.id,price:parseFloat(taskType.price.price === "" ? "0": taskType.price.price)})
                   );
                   this.setState({saving:false,
                     pricelistName:'',
                     afterHours:0,
                     margin:0,
                   });
-                  this.loadData();
                 });
             }}>{this.state.saving?'Saving prices...':'Save prices'}</Button>
       </div>
@@ -135,11 +134,13 @@ class PriceAdd extends Component{
   }
 }
 
-const mapStateToProps = ({ storageHelpPrices, storageHelpWorkTypes}) => {
+const mapStateToProps = ({ storageHelpPrices, storageHelpTaskTypes}) => {
   const { pricesActive, prices, pricesLoaded } = storageHelpPrices;
-  const { workTypesActive, workTypes, workTypesLoaded } = storageHelpWorkTypes;
-  return { pricesActive, prices, pricesLoaded,
-    workTypesActive, workTypes, workTypesLoaded, };
+	const { taskTypesLoaded, taskTypesActive, taskTypes } = storageHelpTaskTypes;
+  return {
+    pricesActive, prices, pricesLoaded,
+    taskTypesLoaded, taskTypesActive, taskTypes,
+  };
 };
 
-export default connect(mapStateToProps, { storageHelpPricesStart,storageHelpWorkTypesStart })(PriceAdd);
+export default connect(mapStateToProps, { storageHelpPricesStart,storageHelpTaskTypesStart })(PriceAdd);

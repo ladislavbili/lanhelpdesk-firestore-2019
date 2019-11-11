@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import {storageCompaniesStart,storageHelpTasksStart, storageHelpStatusesStart, storageHelpWorkTypesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart, storageHelpTaskWorksStart} from '../../redux/actions';
+import {storageCompaniesStart,storageHelpTasksStart, storageHelpStatusesStart, storageHelpTaskTypesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart, storageHelpTaskWorksStart} from '../../redux/actions';
 import { timestampToString, sameStringForms} from '../../helperFunctions';
 import { Link } from 'react-router-dom';
 import MonthSelector from '../components/monthSelector';
@@ -19,7 +19,7 @@ class MothlyReportsAssigned extends Component {
 		return props.companiesLoaded &&
 		props.tasksLoaded &&
 		props.statusesLoaded &&
-		props.workTypesLoaded &&
+		props.taskTypesLoaded &&
 		props.unitsLoaded &&
 		props.usersLoaded &&
 		props.materialsLoaded &&
@@ -34,7 +34,7 @@ class MothlyReportsAssigned extends Component {
 			!sameStringForms(props.companies,this.props.companies)||
 			!sameStringForms(props.tasks,this.props.tasks)||
 			!sameStringForms(props.statuses,this.props.statuses)||
-			!sameStringForms(props.workTypes,this.props.workTypes)||
+			!sameStringForms(props.taskTypes,this.props.taskTypes)||
 			!sameStringForms(props.units,this.props.units)||
 			!sameStringForms(props.users,this.props.users)||
 			!sameStringForms(props.materials,this.props.materials)||
@@ -59,8 +59,8 @@ class MothlyReportsAssigned extends Component {
 		if(!this.props.statusesActive){
 			this.props.storageHelpStatusesStart();
 		}
-		if(!this.props.workTypesActive){
-			this.props.storageHelpWorkTypesStart();
+		if(!this.props.taskTypesActive){
+			this.props.storageHelpTaskTypesStart();
 		}
 		if(!this.props.unitsActive){
 			this.props.storageHelpUnitsStart();
@@ -91,7 +91,7 @@ class MothlyReportsAssigned extends Component {
 			}
 		});
 		let taskMaterials = this.processMaterials(props.materials,tasks,props.units,props);
-		let taskWorks = this.filterWorks(props.taskWorks,props.workTypes,tasks,props);
+		let taskWorks = this.filterWorks(props.taskWorks,props.taskTypes,tasks,props);
 		let users = this.processUsers(taskWorks, taskMaterials);
 		this.setState({
 			users,
@@ -137,7 +137,7 @@ class MothlyReportsAssigned extends Component {
 		return users.filter((user)=>user.hours>0 || user.numOfMaterials>0);
 	}
 
-	filterWorks(works,workTypes,tasks,props){
+	filterWorks(works,taskTypes,tasks,props){
 		let newWorks = works.map((work)=>{
 			let finalUnitPrice=parseFloat(work.price);
 			if(work.extraWork){
@@ -146,7 +146,7 @@ class MothlyReportsAssigned extends Component {
 			let discountPerItem = finalUnitPrice*parseFloat(work.discount)/100;
 			finalUnitPrice=(finalUnitPrice*(1-parseFloat(work.discount)/100)).toFixed(2)
 			let totalPrice=(finalUnitPrice*parseFloat(work.quantity)).toFixed(2);
-			let workType= workTypes.find((item)=>item.id===work.workType);
+			let workType= taskTypes.find((item)=>item.id===work.workType);
 			return{
 				...work,
 				assignedTo:props.users.find((user)=>user.id===work.assignedTo),
@@ -422,14 +422,14 @@ class MothlyReportsAssigned extends Component {
 		}
 	}
 
-const mapStateToProps = ({ filterReducer,reportReducer,userReducer, storageCompanies, storageHelpTasks, storageHelpStatuses, storageHelpWorkTypes, storageHelpUnits, storageUsers, storageHelpTaskMaterials, storageHelpTaskWorks }) => {
+const mapStateToProps = ({ filterReducer,reportReducer,userReducer, storageCompanies, storageHelpTasks, storageHelpStatuses, storageHelpTaskTypes, storageHelpUnits, storageUsers, storageHelpTaskMaterials, storageHelpTaskWorks }) => {
 	const { filter, project, milestone } = filterReducer;
 	const { month, year } = reportReducer;
 
 	const { companiesActive, companies, companiesLoaded } = storageCompanies;
 	const { tasksActive, tasks, tasksLoaded } = storageHelpTasks;
 	const { statusesActive, statuses, statusesLoaded } = storageHelpStatuses;
-	const { workTypesActive, workTypes, workTypesLoaded } = storageHelpWorkTypes;
+	const { taskTypesActive, taskTypes, taskTypesLoaded } = storageHelpTaskTypes;
 	const { unitsActive, units, unitsLoaded } = storageHelpUnits;
 	const { usersActive, users, usersLoaded } = storageUsers;
 	const { materialsActive, materials, materialsLoaded } = storageHelpTaskMaterials;
@@ -442,7 +442,7 @@ const mapStateToProps = ({ filterReducer,reportReducer,userReducer, storageCompa
 		companiesActive, companies, companiesLoaded,
 		tasksActive, tasks,tasksLoaded,
 		statusesActive, statuses,statusesLoaded,
-		workTypesActive, workTypes,workTypesLoaded,
+		taskTypesActive, taskTypes,taskTypesLoaded,
 		unitsActive, units,unitsLoaded,
 		usersActive, users,usersLoaded,
 		materialsActive, materials,materialsLoaded,
@@ -450,4 +450,4 @@ const mapStateToProps = ({ filterReducer,reportReducer,userReducer, storageCompa
 	};
 };
 
-export default connect(mapStateToProps, { storageCompaniesStart, storageHelpTasksStart, storageHelpStatusesStart, storageHelpWorkTypesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart, storageHelpTaskWorksStart })(MothlyReportsAssigned);
+export default connect(mapStateToProps, { storageCompaniesStart, storageHelpTasksStart, storageHelpStatusesStart, storageHelpTaskTypesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart, storageHelpTaskWorksStart })(MothlyReportsAssigned);

@@ -62,6 +62,7 @@ class Permissions extends Component {
 								<th className="t-a-c"> Write </th>
 								<th className="t-a-c"> Delete</th>
 								<th className="t-a-c"> Admin</th>
+								<th className="t-a-c"></th>
 							</tr>
 						</thead>
 
@@ -135,6 +136,15 @@ class Permissions extends Component {
 													this.props.givePermission(permission.user,permissions);
 												}}
 											/>
+										</td>
+										<td className="table-checkbox t-a-c">
+											<button className="btn btn-link waves-effect" disabled={this.props.disabled} onClick={()=>{
+													if(window.confirm('Are you sure?')){
+														this.props.givePermission(permission.user,{read:false, write:false, delete:false, isAdmin:false});
+													}
+												}}>
+												<i className="fa fa-times"  />
+												</button>
 										</td>
 								</tr>
 							)

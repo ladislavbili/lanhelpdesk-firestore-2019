@@ -1,7 +1,7 @@
 import {SET_TASKS_ORDER_BY, SET_TASKS_ASCENDING,SET_TASKLIST_LAYOUT, SET_USER_DATA} from '../types'
 
 const initialState = {
-  orderBy:'title',
+  orderBy:'createdAt',
   ascending:true,
   tasklistLayout:0,
 };

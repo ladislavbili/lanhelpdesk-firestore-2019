@@ -37,7 +37,7 @@ export default class Subtasks extends Component {
 									className={classnames({ active: this.state.activeTab === '1'}, "clickable", "form-tab-end")}
 									onClick={() => { this.toggle('1'); }}
 								>
-									Sluzby
+									Práce
             		</NavLink>
 							</NavItem>
 							<NavItem>
