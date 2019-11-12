@@ -16,22 +16,6 @@ import {setProject, setMilestone, setFilter, storageHelpFiltersStart, storageHel
 
 import {sidebarSelectStyle} from '../scss/selectStyles';
 
-let settings=[
-{title:'Users',link:'users'},
-{title:'Companies',link:'companies'},
-{title:'Projects',link:'projects'},
-{title:'Statuses',link:'statuses'},
-{title:'Units',link:'units'},
-{title:'Work Type',link:'workTypes'},
-{title:'Prices',link:'pricelists'},
-{title:'Supplier',link:'suppliers'},
-{title:'Tags',link:'tags'},
-{title:'Invoices',link:'supplierInvoices'},
-{title:'Task types',link:'taskTypes'},
-{title:'Imaps',link:'imaps'},
-{title:'SMTPs',link:'smtps'},
-]
-
 const dashboard = {id:null,title:'Dashboard', label:'Dashboard',value:null};
 const addProject = {id:-1,title:'+ Add project', label:'+ Add project',value:-1};
 const allMilestones = {id:null,title:'Any', label:'Any',value:null};
@@ -323,7 +307,7 @@ class Sidebar extends Component {
 					</div>}
 					{showSettings &&
 						<Nav vertical>
-							{settings.map((setting)=>
+							{this.props.settings.map((setting)=>
 								<NavItem key={setting.link}>
 									<Link className="text-basic sidebar-align sidebar-menu-item"
 										to={{ pathname:'/helpdesk/settings/'+setting.link }}>{setting.title}</Link>

@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import {toSelArr, sameStringForms } from '../../helperFunctions';
 import { Modal, ModalBody, Button } from 'reactstrap';
 import TaskAdd from './taskAdd';
-import {storageHelpStatusesStart, storageHelpProjectsStart, storageUsersStart, storageCompaniesStart, storageHelpWorkTypesStart, storageHelpUnitsStart, storageHelpPricesStart, storageHelpPricelistsStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageMetadataStart, storageHelpMilestonesStart} from '../../redux/actions';
+import {storageHelpStatusesStart, storageHelpProjectsStart, storageUsersStart, storageCompaniesStart, storageHelpWorkTypesStart, storageHelpUnitsStart, storageHelpPricesStart, storageHelpPricelistsStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageMetadataStart, storageHelpMilestonesStart, storageHelpTripTypesStart} from '../../redux/actions';
 
 const noMilestone = {id:null,value:null,title:'None',label:'None'};
 
@@ -22,6 +22,7 @@ class TaskAddContainer extends Component{
       taskTypes: [],
       allTags: [],
       units: [],
+      tripTypes:[],
       newID: null,
       defaultUnit: null,
     }
@@ -40,7 +41,9 @@ class TaskAddContainer extends Component{
     props.tagsLoaded &&
     props.taskTypesLoaded &&
     props.metadataLoaded &&
-    props.milestonesLoaded
+    props.milestonesLoaded &&
+    props.tripTypesLoaded
+
   }
 
   componentWillReceiveProps(props){
@@ -55,11 +58,16 @@ class TaskAddContainer extends Component{
       !sameStringForms(props.tags,this.props.tags)||
       !sameStringForms(props.taskTypes,this.props.taskTypes)||
       !sameStringForms(props.metadata,this.props.metadata)||
-			!sameStringForms(props.milestones,this.props.milestones))&&
+			!sameStringForms(props.milestones,this.props.milestones)||
+      !sameStringForms(props.tripTypes,this.props.tripTypes)
+      )&&
       this.storageLoaded(props)
     ){
       this.setData(props);
 		}
+    if(!this.storageLoaded(this.props) && this.storageLoaded(props)){
+      this.setData(props);
+    }
 	}
 
   componentWillMount(){
@@ -69,6 +77,10 @@ class TaskAddContainer extends Component{
 
     if(!this.props.projectsActive){
       this.props.storageHelpProjectsStart();
+    }
+
+    if(!this.props.tripTypesActive){
+      this.props.storageHelpTripTypesStart();
     }
 
     if(!this.props.usersActive){
@@ -116,6 +128,7 @@ class TaskAddContainer extends Component{
     setData(props){
       let statuses = toSelArr(props.statuses);
       let projects = toSelArr(props.projects);
+      let tripTypes = toSelArr(props.tripTypes);
       let users = toSelArr(props.users,'email');
       let companies = toSelArr(props.companies);
       let units = toSelArr(props.units);
@@ -142,6 +155,7 @@ class TaskAddContainer extends Component{
         projects,
         users,
         companies:newCompanies,
+        tripTypes,
         taskTypes:newTaskTypes,
         allTags:tags,
         milestones,
@@ -192,6 +206,7 @@ class TaskAddContainer extends Component{
                  taskTypes={this.state.taskTypes}
                  allTags={this.state.allTags}
                  units={this.state.units}
+                 tripTypes={this.state.tripTypes}
                  milestones={this.state.milestones}
                  defaultUnit={this.state.defaultUnit}
                  newID = {this.state.newID}
@@ -205,7 +220,7 @@ class TaskAddContainer extends Component{
   }
 }
 
-const mapStateToProps = ({userReducer, filterReducer, taskReducer, storageHelpStatuses, storageHelpProjects,storageUsers,storageCompanies,storageHelpWorkTypes,storageHelpUnits,storageHelpPrices,storageHelpPricelists,storageHelpTags,storageHelpTaskTypes, storageMetadata, storageHelpMilestones }) => {
+const mapStateToProps = ({userReducer, filterReducer, taskReducer, storageHelpStatuses, storageHelpProjects,storageUsers,storageCompanies,storageHelpWorkTypes,storageHelpUnits,storageHelpPrices,storageHelpPricelists,storageHelpTags,storageHelpTaskTypes, storageMetadata, storageHelpMilestones, storageHelpTripTypes }) => {
 	const { project, filter } = filterReducer;
 	const { orderBy, ascending } = taskReducer;
 
@@ -221,6 +236,7 @@ const mapStateToProps = ({userReducer, filterReducer, taskReducer, storageHelpSt
   const { taskTypesLoaded ,taskTypesActive, taskTypes } = storageHelpTaskTypes;
   const { metadataLoaded ,metadataActive, metadata } = storageMetadata;
   const { milestonesLoaded, milestonesActive, milestones } = storageHelpMilestones;
+  const { tripTypesActive, tripTypes, tripTypesLoaded } = storageHelpTripTypes;
 
 	return { project, filter,orderBy,ascending,currentUser:userReducer,
     statusesLoaded ,statusesActive, statuses,
@@ -234,7 +250,9 @@ const mapStateToProps = ({userReducer, filterReducer, taskReducer, storageHelpSt
     tagsLoaded ,tagsActive, tags,
     taskTypesLoaded ,taskTypesActive, taskTypes,
     metadataLoaded ,metadataActive, metadata,
-    milestonesLoaded, milestonesActive, milestones };
+    milestonesLoaded, milestonesActive, milestones,
+		tripTypesActive, tripTypes, tripTypesLoaded,
+  };
 };
 
-export default connect(mapStateToProps, { storageHelpStatusesStart, storageHelpProjectsStart, storageUsersStart, storageCompaniesStart, storageHelpWorkTypesStart, storageHelpUnitsStart, storageHelpPricesStart, storageHelpPricelistsStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageMetadataStart, storageHelpMilestonesStart})(TaskAddContainer);
+export default connect(mapStateToProps, { storageHelpStatusesStart, storageHelpProjectsStart, storageUsersStart, storageCompaniesStart, storageHelpWorkTypesStart, storageHelpUnitsStart, storageHelpPricesStart, storageHelpPricelistsStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageMetadataStart, storageHelpMilestonesStart, storageHelpTripTypesStart})(TaskAddContainer);

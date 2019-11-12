@@ -23,7 +23,7 @@ export default class TaskTypeAdd extends Component{
           <Label for="name">Task type name</Label>
           <Input type="text" name="name" id="name" placeholder="Enter task type name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
         </FormGroup>
-        <FormGroup>
+        {false && <FormGroup>
           <Label for="actionIfSelected">Type of task</Label>
           <Select
             id="actionIfSelected"
@@ -33,7 +33,7 @@ export default class TaskTypeAdd extends Component{
             value={this.state.type}
             onChange={e =>{ this.setState({ type: e }); }}
               />
-        </FormGroup>
+          </FormGroup>}
         <Button className="btn" disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
             rebase.addToCollection('/help-task_types', {title:this.state.title,type:this.state.type.value})

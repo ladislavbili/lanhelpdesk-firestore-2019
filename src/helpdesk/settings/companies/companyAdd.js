@@ -8,6 +8,7 @@ import {selectStyle} from "../../../scss/selectStyles";
 import { connect } from "react-redux";
 import {storageHelpPricelistsStart,storageMetadataStart} from '../../../redux/actions';
 import {sameStringForms, isEmail} from '../../../helperFunctions';
+import CompanyRents from './companyRents';
 
 import classnames from "classnames";
 
@@ -40,16 +41,30 @@ class CompanyAdd extends Component{
       oldPhone: "",
       description: "",
       oldDescription: "",
+      workPausal:0,
+      oldWorkPausal:0,
+      drivePausal:0,
+      oldDrivePausal:0,
       pausal:0,
       oldPausal: 0,
-
+      rented:[],
+      oldRented:[],
+      fakeID:0,
       newData: false,
       loading:true,
-      saving:false
+      saving:false,
+      clearCompanyRents:false,
     }
+    this.getFakeID.bind(this);
     this.setData.bind(this);
     this.submit.bind(this);
     this.cancel.bind(this);
+  }
+
+  getFakeID(){
+    let fakeID = this.state.fakeID;
+    this.setState({fakeID:fakeID+1})
+    return fakeID;
   }
 
   storageLoaded(props){
@@ -96,6 +111,18 @@ class CompanyAdd extends Component{
       let newCompany = {
         title:this.state.title,
         pausal:this.state.pausal,
+        rented:this.state.rented.map((rent)=>{
+          return{
+            id:rent.id,
+            title:rent.title,
+            quantity:isNaN(parseInt(rent.quantity))?0:rent.quantity,
+            unitCost:isNaN(parseFloat(rent.unitCost))?0:rent.unitCost,
+            unitPrice:isNaN(parseFloat(rent.unitPrice))?0:rent.unitPrice,
+            totalPrice:isNaN(parseFloat(rent.totalPrice))?0:rent.totalPrice,
+          }
+        }),
+        workPausal:this.state.workPausal,
+        drivePausal:this.state.drivePausal,
         pricelist:this.state.pricelist.id,
         ICO: this.state.ICO,
         DIC: this.state.DIC,
@@ -112,7 +139,6 @@ class CompanyAdd extends Component{
         .then((comp)=>{
           this.setState({
             title:'',
-            pausal:this.state.pausal,
             pricelist:this.state.pricelists.length>0?this.state.pricelists[0]:null,
             ICO: "",
             DIC: "",
@@ -124,6 +150,7 @@ class CompanyAdd extends Component{
             mail: "",
             phone: "",
             description: "",
+            rented:[],
             saving:false}, () => {
               if (this.props.addCompany){
                 this.props.addCompany({...newCompany, id: comp.id, label: newCompany.title, value: comp.id});
@@ -152,7 +179,11 @@ class CompanyAdd extends Component{
       phone: this.state.oldPhone,
       description: this.state.oldDescription,
       pausal: this.state.oldPausal,
+      workPausal: this.state.oldWorkPausal,
+      drivePausal: this.state.oldDrivePausal,
+      rented:this.state.oldRented,
 
+      clearCompanyRents:true,
       newData: false,
     })
   }
@@ -184,19 +215,6 @@ class CompanyAdd extends Component{
                 value={this.state.title}
                 onChange={(e)=>this.setState({title: e.target.value, newData: true, })}
                 />
-            </FormGroup>
-
-            <FormGroup>
-              <Label for="pausal">Paušál</Label>
-              <Input
-                name="pausal"
-                id="pausal"
-                type="number"
-                placeholder="Enter pausal"
-                value={this.state.pausal}
-                onChange={(e)=>this.setState({pausal:e.target.value, newData: true,})}
-                />
-
             </FormGroup>
 
             <FormGroup>
@@ -331,6 +349,51 @@ class CompanyAdd extends Component{
                 onChange={(e)=>this.setState({description: e.target.value, newData: true})}
                 />
             </FormGroup>
+            <h3>Paušál</h3>
+            <FormGroup>
+              <Label for="pausal">Paušál práce</Label>
+              <Input
+                name="pausal"
+                id="pausal"
+                type="number"
+                placeholder="Enter work pausal"
+                value={this.state.workPausal}
+                onChange={(e)=>this.setState({workPausal:e.target.value, newData: true,})}
+                />
+            </FormGroup>
+            <FormGroup>
+              <Label for="pausal">Paušál výjazdy</Label>
+              <Input
+                name="pausal"
+                id="pausal"
+                type="number"
+                placeholder="Enter drive pausal"
+                value={this.state.drivePausal}
+                onChange={(e)=>this.setState({drivePausal:e.target.value, newData: true,})}
+                />
+            </FormGroup>
+            {!this.props.addCompany &&
+              <CompanyRents
+                clearForm={this.state.clearCompanyRents}
+                setClearForm={()=>this.setState({clearCompanyRents:false})}
+                data={this.state.rented}
+                updateRent={(rent)=>{
+                  let newRents=[...this.state.rented];
+                  newRents[newRents.findIndex((item)=>item.id===rent.id)]={...newRents.find((item)=>item.id===rent.id),...rent};
+                  this.setState({rented:newRents, newData:true });
+                }}
+                addRent={(rent)=>{
+                  let newRents=[...this.state.rented];
+                  newRents.push({...rent,id:this.getFakeID()})
+                  this.setState({rented:newRents, newData:true });
+                }}
+                removeRent={(rent)=>{
+                  let newRents=[...this.state.rented];
+                  newRents.splice(newRents.findIndex((item)=>item.id===rent.id),1);
+                  this.setState({rented:newRents, newData:true });
+                }}
+                />
+            }
           </div>
 
          <div

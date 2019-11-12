@@ -144,7 +144,6 @@ submitEmail(){
           }
           {!this.state.isEmail &&
             <FormGroup>
-              <Label className="">Add comment</Label>
               <Input type="textarea" placeholder="Enter comment" value={this.state.newComment} onChange={(e)=>this.setState({newComment:e.target.value})}/>
             </FormGroup>
           }

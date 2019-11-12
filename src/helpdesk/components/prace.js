@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Input, Label} from 'reactstrap';
+import {Input } from 'reactstrap';
 import Select from 'react-select';
 import { selectStyle, invisibleSelectStyle} from '../../scss/selectStyles';
 import { sameStringForms} from '../../helperFunctions';
@@ -74,16 +74,16 @@ export default class Prace extends Component {
 				<div className="row m-b-30 m-t-20">
 					<div className="col-md-12">
 						<div>
-							<Label>Práce</Label>
 							<table className="table m-t--30">
 								<thead>
 									<tr>
 										<th width="25">
+											Práce
 										</th>
 										<th style={{fontSize: "14px", fontFamily: "Segoe UI Bold", color: "#333"}}></th>
-										{this.props.showAll &&  <th style={{fontSize: "12px", fontFamily: "Segoe UI", fontWeight: "500", color: "#333"}} width="170">Rieši</th>}
+										{this.props.extended &&  <th style={{fontSize: "12px", fontFamily: "Segoe UI", fontWeight: "500", color: "#333"}} width="170">Rieši</th>}
+										{this.props.extended &&  <th width="100">Typ</th>}
 										<th width="100">Mn.</th>
-										{this.props.showAll &&  <th width="100">Typ</th>}
 										{this.props.showAll && <th width="100" className="table-highlight-background">Cena/Mn.</th>}
 										{this.props.showAll && <th width="60" className="table-highlight-background">Zlava</th>}
 										{false && <th width="130">Spolu</th>}
@@ -136,7 +136,7 @@ export default class Prace extends Component {
 														/>
 												</div>
 											</td>
-											{ this.props.showAll && <td>
+											{ this.props.extended && <td>
 												<Select
 													isDisabled={this.props.disabled}
 													value={subtask.assignedTo}
@@ -148,6 +148,24 @@ export default class Prace extends Component {
 													/>
 											</td>
 											}
+
+											{ this.props.extended && <td >
+												<Select
+													isDisabled={this.props.disabled}
+													value={subtask.workType}
+													onChange={(workType)=>{
+														let price = workType.prices.find((item)=>this.props.company && item.pricelist===this.props.company.pricelist.id);
+														if(price === undefined){
+															price = 0;
+														}else{
+															price = price.price;
+														}
+														this.props.updateSubtask(subtask.id,{workType:workType.id,price})
+													}}
+													options={this.props.workTypes}
+													styles={invisibleSelectStyle}
+													/>
+											</td>}
 
 											<td>
 												<input
@@ -179,23 +197,6 @@ export default class Prace extends Component {
 													}
 													/>
 											</td>
-											{ this.props.showAll && <td >
-												<Select
-													isDisabled={this.props.disabled}
-													value={subtask.workType}
-													onChange={(workType)=>{
-														let price = workType.prices.find((item)=>this.props.company && item.pricelist===this.props.company.pricelist.id);
-														if(price === undefined){
-																price = 0;
-														}else{
-															price = price.price;
-														}
-														this.props.updateSubtask(subtask.id,{workType:workType.id,price})
-													}}
-													options={this.props.workTypes}
-													styles={invisibleSelectStyle}
-													/>
-											</td>}
 
 											{ this.props.showAll && <td className="table-highlight-background">
 											<input
@@ -321,7 +322,7 @@ export default class Prace extends Component {
 												onChange={(e)=>this.setState({newTitle:e.target.value})}
 												/>
 										</td>
-										{ this.props.showAll && <td>
+										{ this.props.extended && <td>
 											<Select
 												isDisabled={this.props.disabled}
 												value={this.state.newAssigned}
@@ -333,18 +334,7 @@ export default class Prace extends Component {
 												styles={selectStyle}
 												/>
 										</td>}
-										<td>
-											<input
-												disabled={this.props.disabled}
-												type="number"
-												value={this.state.newQuantity}
-												onChange={(e)=>this.setState({newQuantity:e.target.value})}
-												className="form-control h-30"
-												id="inlineFormInput"
-												placeholder=""
-												/>
-										</td>
-										{ this.props.showAll && <td>
+										{ this.props.extended && <td>
 											<Select
 												isDisabled={this.props.disabled}
 												value={this.state.newWorkType}
@@ -363,7 +353,17 @@ export default class Prace extends Component {
 												styles={selectStyle}
 												/>
 										</td>}
-
+										<td>
+											<input
+												disabled={this.props.disabled}
+												type="number"
+												value={this.state.newQuantity}
+												onChange={(e)=>this.setState({newQuantity:e.target.value})}
+												className="form-control h-30"
+												id="inlineFormInput"
+												placeholder=""
+												/>
+										</td>
 										{ this.props.showAll && <td className="table-highlight-background">
 											<input
 												disabled={this.props.disabled}

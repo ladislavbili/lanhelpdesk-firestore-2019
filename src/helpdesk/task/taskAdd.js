@@ -5,6 +5,7 @@ import {rebase} from '../../index';
 import {toCentralTime } from '../../helperFunctions';
 import { Button, Label, TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
 
+import WorkTrips from '../components/workTrips';
 import Prace from '../components/prace';
 import Materials from '../components/materials';
 import MaterialsBudget from '../components/materials/rozpocet';
@@ -41,9 +42,11 @@ export default class TaskAdd extends Component{
 			taskWorks:[],
 			subtasks:[],
 			taskMaterials:[],
+			workTrips:[],
 			milestones:[noMilestone],
 			allTags:[],
 			taskTypes:[],
+			tripTypes:[],
 			hidden:true,
 			defaults:noDef,
 
@@ -132,6 +135,10 @@ export default class TaskAdd extends Component{
 				delete item['id'];
 				rebase.addToCollection('help-task_materials',{task:newID,...item});
 			})
+			this.state.workTrips.forEach((item)=>{
+				delete item['id'];
+				rebase.addToCollection('help-task_work_trips',{task:newID,...item});
+			})
 			/*
 			this.state.subtasks.forEach((item)=>{
 				delete item['id'];
@@ -174,6 +181,7 @@ export default class TaskAdd extends Component{
 					overtime:{value:false,label:'Nie'},
 					taskWorks:[],
 					taskMaterials:[],
+					workTrips:[],
 					subtasks:[],
 					repeat:null
 				})
@@ -240,6 +248,7 @@ export default class TaskAdd extends Component{
 				users: this.props.users,
 				companies: this.props.companies,
 				taskTypes: this.props.taskTypes,
+				tripTypes: this.props.tripTypes,
 				milestones:this.props.milestones,
 				allTags: this.props.allTags,
 				units: this.props.units,
@@ -280,7 +289,11 @@ export default class TaskAdd extends Component{
 						delete m['task'];
 						return {...m, id:this.getNewID()};})
 					: [],
-
+				workTrips: this.props.task ? this.props.task.workTrips.map(m => {
+						delete m['fake'];
+						delete m['task'];
+						return {...m, id:this.getNewID()};})
+					: [],
 				defaults:noDef,
 
 				hidden: false,
@@ -288,6 +301,18 @@ export default class TaskAdd extends Component{
 		}
 
 		render(){
+
+			let workTrips= this.state.workTrips.map((trip)=>{
+				let type= this.state.tripTypes.find((item)=>item.id===trip.type);
+				let assignedTo=trip.assignedTo?this.state.users.find((item)=>item.id===trip.assignedTo):null
+
+				return {
+					...trip,
+					type,
+					assignedTo:assignedTo?assignedTo:null
+				}
+			});
+
 			let taskWorks= this.state.taskWorks.map((work)=>{
 				let finalUnitPrice=parseFloat(work.price);
 				if(work.extraWork){
@@ -384,6 +409,7 @@ export default class TaskAdd extends Component{
 													taskWorks:[],
 													subtasks:[],
 													taskMaterials:[],
+													workTrips:[],
 													allTags:[],
 													deadline:"",
 													closeDate:"",
@@ -452,6 +478,7 @@ export default class TaskAdd extends Component{
 														repeat:null,
 														taskWorks:[],
 														subtasks:[],
+														workTrips:[],
 														taskMaterials:[],
 														allTags:[],
 														deadline:"",
@@ -700,6 +727,28 @@ export default class TaskAdd extends Component{
 
 								{!this.state.viewOnly && <TabContent activeTab={this.state.toggleTab}>
 									<TabPane tabId="1">
+										<WorkTrips
+											extended={false}
+											showAll={false}
+											disabled={this.state.viewOnly}
+											taskAssigned={this.state.assignedTo}
+											workTrips={workTrips}
+											tripTypes={this.props.tripTypes}
+											taskID={null}
+											submitTrip={(newTrip)=>{
+												this.setState({workTrips:[...this.state.workTrips,{id:this.getNewID(),...newTrip}]});
+											}}
+											updateTrip={(id,newData)=>{
+												let newTrips=[...this.state.workTrips];
+												newTrips[newTrips.findIndex((trip)=>trip.id===id)]={...newTrips.find((trip)=>trip.id===id),...newData};
+												this.setState({workTrips:newTrips});
+											}}
+											removeTrip={(id)=>{
+												let newTrips=[...this.state.workTrips];
+												newTrips.splice(newTrips.findIndex((trip)=>trip.id===id),1);
+												this.setState({workTrips:newTrips});
+											}}
+										/>
 										<MaterialsExpenditure
 											disabled={this.state.viewOnly}
 											materials={taskMaterials}
@@ -723,6 +772,28 @@ export default class TaskAdd extends Component{
 										/>
 									</TabPane>
 									<TabPane tabId="2">
+										<WorkTrips
+											extended={false}
+											showAll={true}
+											disabled={this.state.viewOnly}
+											taskAssigned={this.state.assignedTo}
+											workTrips={workTrips}
+											tripTypes={this.props.tripTypes}
+											taskID={null}
+											submitTrip={(newTrip)=>{
+												this.setState({workTrips:[...this.state.workTrips,{id:this.getNewID(),...newTrip}]});
+											}}
+											updateTrip={(id,newData)=>{
+												let newTrips=[...this.state.workTrips];
+												newTrips[newTrips.findIndex((trip)=>trip.id===id)]={...newTrips.find((trip)=>trip.id===id),...newData};
+												this.setState({workTrips:newTrips});
+											}}
+											removeTrip={(id)=>{
+												let newTrips=[...this.state.workTrips];
+												newTrips.splice(newTrips.findIndex((trip)=>trip.id===id),1);
+												this.setState({workTrips:newTrips});
+											}}
+										/>
 										<MaterialsBudget
 											disabled={this.state.viewOnly}
 											materials={taskMaterials}

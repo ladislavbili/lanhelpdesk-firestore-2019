@@ -61,7 +61,7 @@ class TaskTypeEdit extends Component{
               <Input type="text" name="name" id="name" placeholder="Enter task type name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
             </FormGroup>
 
-            <FormGroup>
+            {false && <FormGroup>
               <Label for="actionIfSelected">Type of task</Label>
               <Select
                 id="actionIfSelected"
@@ -71,7 +71,7 @@ class TaskTypeEdit extends Component{
                 value={this.state.type}
                 onChange={e =>{ this.setState({ type: e }); }}
                   />
-            </FormGroup>
+            </FormGroup>}
 
           <div className="row">
             <Button className="btn" disabled={this.state.saving} onClick={()=>{

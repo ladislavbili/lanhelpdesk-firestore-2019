@@ -26,9 +26,11 @@ import storageHelpSuppliers from './reducers/storage/help-suppliersReducer';
 import storageHelpTags from './reducers/storage/help-tagsReducer';
 import storageHelpTaskMaterials from './reducers/storage/help-task_materialsReducer';
 import storageHelpTaskTypes from './reducers/storage/help-task_typesReducer';
+import storageHelpTaskWorkTrips from './reducers/storage/help-task_work_tripsReducer';
 import storageHelpTaskWorks from './reducers/storage/help-task_worksReducer';
 import storageHelpTasks from './reducers/storage/help-tasksReducer';
 import storageHelpUnits from './reducers/storage/help-unitsReducer';
+import storageHelpTripTypes from './reducers/storage/help-trip_typesReducer';
 import storageHelpWorkTypes from './reducers/storage/help-work_typesReducer';
 
 import storageCompanies from './reducers/storage/companiesReducer';
@@ -63,9 +65,11 @@ const reducers = combineReducers({
     storageHelpSuppliers,
     storageHelpTags,
     storageHelpTaskMaterials,
+    storageHelpTaskWorkTrips,
     storageHelpTaskTypes,
     storageHelpTaskWorks,
     storageHelpTasks,
+    storageHelpTripTypes,
     storageHelpUnits,
     storageHelpWorkTypes,
 

@@ -11,6 +11,7 @@ import Comments from '../components/comments.js';
 //import Subtasks from '../components/subtasks';
 import Repeat from '../components/repeat';
 
+import WorkTrips from '../components/workTrips';
 import Prace from '../components/prace';
 import MaterialsExpenditure from '../components/materials/materials';
 import MaterialsBudget from '../components/materials/rozpocet';
@@ -25,7 +26,7 @@ import {rebase, database} from '../../index';
 import firebase from 'firebase';
 import ck4config from '../../scss/ck4config';
 import {toSelArr, snapshotToArray, timestampToString, sameStringForms} from '../../helperFunctions';
-import { storageCompaniesStart, storageHelpPricelistsStart, storageHelpPricesStart,storageHelpProjectsStart, storageHelpStatusesStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageHelpTasksStart, storageHelpUnitsStart,storageHelpWorkTypesStart, storageMetadataStart, storageUsersStart, storageHelpMilestonesStart } from '../../redux/actions';
+import { storageCompaniesStart, storageHelpPricelistsStart, storageHelpPricesStart,storageHelpProjectsStart, storageHelpStatusesStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageHelpTasksStart, storageHelpUnitsStart,storageHelpWorkTypesStart, storageMetadataStart, storageUsersStart, storageHelpMilestonesStart, storageHelpTripTypesStart } from '../../redux/actions';
 import {invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
 
 const oneDay = 24*60*60*1000;
@@ -52,6 +53,7 @@ class TaskEdit extends Component {
 
 			taskMaterials:[],
 			taskWorks:[],
+			workTrips:[],
 			pricelists:[],
 			extraDataLoaded:false,
 
@@ -64,11 +66,8 @@ class TaskEdit extends Component {
 			units:[],
 			allTags:[],
 			taskTypes:[],
+			tripTypes:[],
 			defaultUnit:null,
-			openEditServiceModal:false,
-			openService:null,
-			openEditMaterialModal:false,
-			openMaterial:null,
 			defaultFields:noDef,
 
 			title:'',
@@ -108,6 +107,7 @@ class TaskEdit extends Component {
 		};
     this.submitTask.bind(this);
     this.submitMaterial.bind(this);
+    this.submitWorkTrip.bind(this);
     this.submitService.bind(this);
 		this.canSave.bind(this);
 		this.deleteTask.bind(this);
@@ -129,9 +129,9 @@ class TaskEdit extends Component {
 			props.taskTypesLoaded &&
 			props.tasksLoaded &&
 			props.unitsLoaded &&
-			props.workTypesLoaded &&
 			props.metadataLoaded &&
 			props.usersLoaded &&
+			props.tripTypesLoaded &&
 			props.milestonesLoaded
 	}
 
@@ -144,6 +144,7 @@ class TaskEdit extends Component {
 			rebase.removeDoc('/help-tasks/'+taskID);
 			this.state.taskMaterials.forEach((material)=>rebase.removeDoc('/help-task_materials/'+material.id))
 			this.state.taskWorks.forEach((work)=>rebase.removeDoc('/help-task_works/'+work.id))
+			this.state.workTrips.forEach((workTrip)=>rebase.removeDoc('/help-task_work_trips/'+workTrip.id))
 			if(this.state.repeat!==null){
 				rebase.removeDoc('/help-repeats/'+taskID);
 			}
@@ -151,6 +152,8 @@ class TaskEdit extends Component {
 			.then((data)=>{
 				snapshotToArray(data).forEach((item)=>rebase.removeDoc('/help-comments/'+item.id));
 			});
+			this.props.history.goBack();
+			this.props.history.push(this.props.match.url.substring(0,this.props.match.url.length-this.props.match.params.taskID.length));
 		}
 	}
 
@@ -214,10 +217,11 @@ class TaskEdit extends Component {
 			!sameStringForms(props.taskTypes,this.props.taskTypes)||
 			!sameStringForms(props.tasks,this.props.tasks)||
 			!sameStringForms(props.units,this.props.units)||
-			!sameStringForms(props.workTypes,this.props.workTypes)||
 			!sameStringForms(props.metadata,this.props.metadata)||
+			!sameStringForms(props.tripTypes,this.props.tripTypes)||
 			!sameStringForms(props.users,this.props.users)||
-			!sameStringForms(props.milestones,this.props.milestones)
+			!sameStringForms(props.milestones,this.props.milestones)||
+			(!this.storageLoaded(this.props) && this.storageLoaded(props))
 		){
 			this.setData(props);
 		}
@@ -251,9 +255,6 @@ class TaskEdit extends Component {
 		if(!this.props.unitsActive){
 			this.props.storageHelpUnitsStart();
 		}
-		if(!this.props.workTypesActive){
-			this.props.storageHelpWorkTypesStart();
-		}
 		if(!this.props.metadataActive){
 			this.props.storageMetadataStart();
 		}
@@ -263,17 +264,22 @@ class TaskEdit extends Component {
 		if(!this.props.milestonesActive){
 			this.props.storageHelpMilestonesStart();
 		}
+		if(!this.props.tripTypesActive){
+			this.props.storageHelpTripTypesStart();
+		}
 		this.setData(this.props);
   }
 
   fetchData(taskID){
     Promise.all(
       [
+				database.collection('help-task_work_trips').where("task", "==", taskID).get(),
         database.collection('help-task_materials').where("task", "==", taskID).get(),
         database.collection('help-task_works').where("task", "==", taskID).get(),
         database.collection('help-repeats').doc(taskID).get()
-    ]).then(([taskMaterials, taskWorks,repeat])=>{
+    ]).then(([workTrips,taskMaterials, taskWorks,repeat])=>{
       this.saveData(
+				snapshotToArray(workTrips),
 				snapshotToArray(taskMaterials),
 				snapshotToArray(taskWorks),
 				repeat.exists ? {id:repeat.id,...repeat.data()} : null,
@@ -281,8 +287,9 @@ class TaskEdit extends Component {
     });
   }
 
-	saveData(taskMaterials,taskWorks,repeat){
+	saveData(workTrips,taskMaterials,taskWorks,repeat){
 		this.setState({
+			workTrips,
 			extraDataLoaded:true,
 			taskMaterials,
 			toggleTab:'1',
@@ -325,8 +332,10 @@ class TaskEdit extends Component {
 		let pricelists = props.pricelists;
 		let defaultUnit = props.metadata.defaultUnit;
 		let taskMaterials = this.state.taskMaterials;
+		let workTrips = this.state.workTrips;
 		let taskWorks = this.state.taskWorks;
 		let milestones = [noMilestone,...toSelArr(props.milestones)];
+		let tripTypes = toSelArr(props.tripTypes);
 
 		this.setDefaults(task.project);
 
@@ -346,7 +355,6 @@ class TaskEdit extends Component {
     company = {...company,pricelist:pricelists.find((item)=>item.id===company.pricelist)};
     let requester = users.find((item)=>item.id===task.requester);
     let assignedTo = users.filter((user)=>task.assignedTo.includes(user.id));
-    let type = taskTypes.find((item)=>item.id===task.type);
 
     let newCompanies=companies.map((company)=>{
       let newCompany={...company,pricelist:pricelists.find((item)=>item.id===company.pricelist)};
@@ -356,6 +364,7 @@ class TaskEdit extends Component {
       let newTaskType = {...taskType, prices:prices.filter((price)=>price.taskType===taskType.id)}
       return newTaskType;
     });
+		let type = newTaskTypes.find((item)=>item.id===task.type);
 		let taskTags=[];
 		if(task.tags){
 			taskTags=tags.filter((tag)=>task.tags.includes(tag.id));
@@ -369,7 +378,9 @@ class TaskEdit extends Component {
 			users,
 			companies:newCompanies,
 			units,
+			tripTypes,
 			taskMaterials,
+			workTrips,
 			taskWorks,
 			subtasks,
 			taskTypes:newTaskTypes,
@@ -418,6 +429,18 @@ class TaskEdit extends Component {
 		let canAdd = this.props.currentUser.userData.role.value>0;
 		let canDelete = (permission && permission.delete)||this.props.currentUser.userData.role.value===3;
 		let taskID = this.props.match.params.taskID;
+
+		let workTrips= this.state.workTrips.map((trip)=>{
+			let type= this.state.tripTypes.find((item)=>item.id===trip.type);
+			let assignedTo=trip.assignedTo?this.state.users.find((item)=>item.id===trip.assignedTo):null
+
+			return {
+				...trip,
+				type,
+				assignedTo:assignedTo?assignedTo:null
+			}
+		});
+
 		let taskWorks= this.state.taskWorks.map((work)=>{
 			let finalUnitPrice=parseFloat(work.price);
 			if(work.extraWork){
@@ -548,7 +571,7 @@ class TaskEdit extends Component {
 								</div>
 
 								<hr className="m-t-5 m-b-5"/>
-									<div className="col-lg-12 row ">
+								<div className="col-lg-12 row ">
 										<div className="center-hor m-r-5"><Label className="center-hor">Assigned to: </Label></div>
 										<div className="f-1">
 											<Select
@@ -668,7 +691,7 @@ class TaskEdit extends Component {
 																			openCompanyAdd: true,
 																		})
 																	} else {
-																		this.setState({company},this.submitTask.bind(this));
+																		this.setState({company, pausal:parseInt(company.workPausal)>0?this.state.pausal:booleanSelects[0]},this.submitTask.bind(this));
 																	}
 																}
 															}
@@ -697,7 +720,7 @@ class TaskEdit extends Component {
 													<div className="col-9">
 														<Select
 															value={this.state.pausal}
-															disabled={this.state.viewOnly}
+															isDisabled={this.state.viewOnly||!this.state.company || parseInt(this.state.company.workPausal)===0}
 															styles={invisibleSelectStyleNoArrow}
 															onChange={(pausal)=>this.setState({pausal},this.submitTask.bind(this))}
 															options={booleanSelects}
@@ -761,7 +784,7 @@ class TaskEdit extends Component {
 										</div>
 									</div>
 
- 								{false && <div className="row">
+ 								{ false && <div className="row">
 									<label className="col-5 col-form-label text-slim">Pripomienka</label>
 									<div className="col-7">
 										{/*className='form-control hidden-input'*/}
@@ -831,6 +854,7 @@ class TaskEdit extends Component {
 
 
 								<Prace
+									extended={this.state.toggleTab==="3"||this.state.toggleTab==="2"}
 									showAll={this.state.toggleTab==="3"}
 									disabled={this.state.viewOnly}
 									taskAssigned={this.state.assignedTo}
@@ -876,47 +900,69 @@ class TaskEdit extends Component {
 								<hr className="m-b-15" style={{marginLeft: "-30px", marginRight: "-30px", marginTop: "-5px"}}/>
 
 								<Nav tabs className="b-0 m-b-22 m-l--10">
-										<NavItem>
-											<NavLink
-												className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "")}
-												onClick={() => { this.setState({toggleTab:'1'}); }}
-											>
-												Komentáre
-			            		</NavLink>
-										</NavItem>
-										<NavItem>
-											<NavLink
-												className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
-												onClick={() => { this.setState({toggleTab:'2'}); }}
-											>
-												Materiál
-											</NavLink>
-										</NavItem>
-										{(this.state.type===null ||(this.state.type && this.state.type.type!=='prepaid')) && <NavItem>
-											<NavLink
-												className={classnames({ active: this.state.toggleTab === '3' }, "clickable", "")}
-												onClick={() => { this.setState({toggleTab:'3'}); }}
-											>
-												Rozpočet
-											</NavLink>
-										</NavItem>}
-										<NavItem>
-											<NavLink
-												className={classnames({ active: this.state.toggleTab === '4' }, "clickable", "")}
-												onClick={() => { this.setState({toggleTab:'4'}); }}
-											>
-												Prílohy
-											</NavLink>
-										</NavItem>
-									</Nav>
+									<NavItem>
+										<NavLink
+											className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "")}
+											onClick={() => { this.setState({toggleTab:'1'}); }}
+										>
+											Komentáre
+		            		</NavLink>
+									</NavItem>
+									<NavItem>
+										<NavLink
+											className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
+											onClick={() => { this.setState({toggleTab:'2'}); }}
+										>
+											Výkazy
+										</NavLink>
+									</NavItem>
+									<NavItem>
+										<NavLink
+											className={classnames({ active: this.state.toggleTab === '3' }, "clickable", "")}
+											onClick={() => { this.setState({toggleTab:'3'}); }}
+										>
+											Rozpočet
+										</NavLink>
+									</NavItem>
+									<NavItem>
+										<NavLink
+											className={classnames({ active: this.state.toggleTab === '4' }, "clickable", "")}
+											onClick={() => { this.setState({toggleTab:'4'}); }}
+										>
+											Prílohy
+										</NavLink>
+									</NavItem>
+								</Nav>
 
 									<TabContent activeTab={this.state.toggleTab}>
 										<TabPane tabId="1">
 											<Comments id={taskID?taskID:null} users={this.state.users} />
 										</TabPane>
 										<TabPane tabId="2">
-
-
+											<WorkTrips
+												extended={false}
+												showAll={false}
+												disabled={this.state.viewOnly}
+												taskAssigned={this.state.assignedTo}
+												workTrips={workTrips}
+												tripTypes={this.state.tripTypes}
+												taskID={this.props.match.params.taskID}
+												submitTrip={this.submitWorkTrip.bind(this)}
+												updateTrip={(id,newData)=>{
+													rebase.updateDoc('help-task_work_trips/'+id,newData);
+													let newTrips=[...this.state.workTrips];
+													newTrips[newTrips.findIndex((trip)=>trip.id===id)]={...newTrips.find((trip)=>trip.id===id),...newData};
+													this.setState({workTrips:newTrips});
+												}}
+												removeTrip={(id)=>{
+													rebase.removeDoc('help-task_work_trips/'+id).then(()=>{
+														let newTrips=[...this.state.workTrips];
+														newTrips.splice(newTrips.findIndex((trip)=>trip.id===id),1);
+														this.setState({workTrips:newTrips});
+													});
+												}
+											}
+											/>
 											<MaterialsExpenditure
 												disabled={this.state.viewOnly}
 												materials={taskMaterials}
@@ -941,7 +987,30 @@ class TaskEdit extends Component {
 											/>
 										</TabPane>
 										<TabPane tabId="3">
-
+											<WorkTrips
+												extended={false}
+												showAll={true}
+												disabled={this.state.viewOnly}
+												taskAssigned={this.state.assignedTo}
+												workTrips={workTrips}
+												tripTypes={this.state.tripTypes}
+												taskID={this.props.match.params.taskID}
+												submitTrip={this.submitWorkTrip.bind(this)}
+												updateTrip={(id,newData)=>{
+													rebase.updateDoc('help-task_work_trips/'+id,newData);
+													let newTrips=[...this.state.workTrips];
+													newTrips[newTrips.findIndex((trip)=>trip.id===id)]={...newTrips.find((trip)=>trip.id===id),...newData};
+													this.setState({workTrips:newTrips});
+												}}
+												removeTrip={(id)=>{
+													rebase.removeDoc('help-task_work_trips/'+id).then(()=>{
+														let newTrips=[...this.state.workTrips];
+														newTrips.splice(newTrips.findIndex((trip)=>trip.id===id),1);
+														this.setState({workTrips:newTrips});
+													});
+												}
+											}
+											/>
 											<MaterialsBudget
 												disabled={this.state.viewOnly}
 												materials={taskMaterials}
@@ -1023,7 +1092,7 @@ class TaskEdit extends Component {
 								<div className="center-hor"><Label className="center-hor">Mimo pracovných hodín: </Label></div>
 								<Select
 									value={this.state.overtime}
-									disabled={this.state.viewOnly}
+									isDisabled={this.state.viewOnly}
 									styles={invisibleSelectStyleNoArrow}
 									onChange={(overtime)=>this.setState({overtime},this.submitTask.bind(this))}
 									options={booleanSelects}
@@ -1032,7 +1101,7 @@ class TaskEdit extends Component {
 								<div className="center-hor"><Label className="center-hor">Paušál: </Label></div>
 								<Select
 									value={this.state.pausal}
-									disabled={this.state.viewOnly}
+									isDisabled={this.state.viewOnly||!this.state.company || parseInt(this.state.company.workPausal)===0}
 									styles={invisibleSelectStyleNoArrow}
 									onChange={(pausal)=>this.setState({pausal},this.submitTask.bind(this))}
 									options={booleanSelects}
@@ -1049,6 +1118,12 @@ class TaskEdit extends Component {
 		});
 	}
 
+	submitWorkTrip(body){
+    rebase.addToCollection('help-task_work_trips',{task:this.props.match.params.taskID,...body}).then((result)=>{
+      this.setState({workTrips:[...this.state.workTrips, {task:this.props.match.params.taskID,...body,id:result.id}]})
+    });
+  }
+
   submitMaterial(body){
     rebase.addToCollection('help-task_materials',{task:this.props.match.params.taskID,...body}).then((result)=>{
       this.setState({taskMaterials:[...this.state.taskMaterials, {task:this.props.match.params.taskID,...body,id:result.id}]})
@@ -1062,7 +1137,7 @@ class TaskEdit extends Component {
   }
 }
 
-const mapStateToProps = ({ userReducer, storageCompanies, storageHelpPricelists, storageHelpPrices, storageHelpProjects, storageHelpStatuses, storageHelpTags, storageHelpTaskTypes, storageHelpTasks, storageHelpUnits, storageHelpWorkTypes, storageMetadata, storageUsers, storageHelpMilestones }) => {
+const mapStateToProps = ({ userReducer, storageCompanies, storageHelpPricelists, storageHelpPrices, storageHelpProjects, storageHelpStatuses, storageHelpTags, storageHelpTaskTypes, storageHelpTasks, storageHelpUnits, storageHelpWorkTypes, storageMetadata, storageUsers, storageHelpMilestones, storageHelpTripTypes }) => {
 	const { companiesLoaded, companiesActive, companies } = storageCompanies;
 	const { pricelistsLoaded, pricelistsActive, pricelists } = storageHelpPricelists;
 	const { pricesLoaded, pricesActive, prices } = storageHelpPrices;
@@ -1076,6 +1151,7 @@ const mapStateToProps = ({ userReducer, storageCompanies, storageHelpPricelists,
 	const { metadataLoaded, metadataActive, metadata } = storageMetadata;
 	const { usersLoaded, usersActive, users } = storageUsers;
 	const { milestonesLoaded, milestonesActive, milestones } = storageHelpMilestones;
+  const { tripTypesActive, tripTypes, tripTypesLoaded } = storageHelpTripTypes;
 
 	return {
 		currentUser:userReducer,
@@ -1091,8 +1167,9 @@ const mapStateToProps = ({ userReducer, storageCompanies, storageHelpPricelists,
 		workTypesLoaded, workTypesActive, workTypes,
 		metadataLoaded, metadataActive, metadata,
 		usersLoaded, usersActive, users,
-		milestonesLoaded, milestonesActive, milestones
+		milestonesLoaded, milestonesActive, milestones,
+		tripTypesActive, tripTypes, tripTypesLoaded,
 	 };
 };
 
-export default connect(mapStateToProps, { storageCompaniesStart, storageHelpPricelistsStart, storageHelpPricesStart,storageHelpProjectsStart, storageHelpStatusesStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageHelpTasksStart, storageHelpUnitsStart,storageHelpWorkTypesStart, storageMetadataStart, storageUsersStart, storageHelpMilestonesStart })(TaskEdit);
+export default connect(mapStateToProps, { storageCompaniesStart, storageHelpPricelistsStart, storageHelpPricesStart,storageHelpProjectsStart, storageHelpStatusesStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageHelpTasksStart, storageHelpUnitsStart,storageHelpWorkTypesStart, storageMetadataStart, storageUsersStart, storageHelpMilestonesStart, storageHelpTripTypesStart })(TaskEdit);

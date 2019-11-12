@@ -2,7 +2,7 @@ import {SET_TASKS_ORDER_BY, SET_TASKS_ASCENDING,SET_TASKLIST_LAYOUT, SET_USER_DA
 
 const initialState = {
   orderBy:'createdAt',
-  ascending:true,
+  ascending:false,
   tasklistLayout:0,
 };
 

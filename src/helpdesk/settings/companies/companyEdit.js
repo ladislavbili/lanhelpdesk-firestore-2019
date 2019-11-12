@@ -8,6 +8,7 @@ import {selectStyle} from "../../../scss/selectStyles";
 import { connect } from "react-redux";
 import {storageHelpPricelistsStart,storageMetadataStart, storageCompaniesStart} from '../../../redux/actions';
 import {sameStringForms, isEmail} from '../../../helperFunctions';
+import CompanyRents from './companyRents';
 
 class CompanyEdit extends Component{
   constructor(props){
@@ -38,15 +39,31 @@ class CompanyEdit extends Component{
       oldPhone: "",
       description: "",
       oldDescription: "",
+      workPausal:0,
+      oldWorkPausal:0,
+      drivePausal:0,
+      oldDrivePausal:0,
       pausal:0,
       oldPausal: 0,
+      rented:[],
+      oldRented:[],
+      fakeID:0,
+      oldFakeID:0,
       newData: false,
       loading:true,
-      saving:false
+      saving:false,
+      clearCompanyRents:false,
     }
+    this.getFakeID.bind(this);
     this.setData.bind(this);
     this.submit.bind(this);
     this.cancel.bind(this);
+  }
+
+  getFakeID(){
+    let fakeID = this.state.fakeID;
+    this.setState({fakeID:fakeID+1})
+    return fakeID;
   }
 
   storageLoaded(props){
@@ -94,10 +111,19 @@ class CompanyEdit extends Component{
         pricelist=pricelists[0];
       }
     }
+    let rented = company.rented||[];
+    let fakeID = 0;
+    if(rented.length!==0){
+      fakeID = rented.sort((item1,item2)=>item1.id < item2.id?1:-1)[0].id+1;
+    }
 
     this.setState({
       title: company.title,
       pausal: company.pausal || 0,
+      workPausal: company.workPausal || 0,
+      drivePausal: company.drivePausal || 0,
+      rented,
+      fakeID,
       ICO: company.ICO || "",
       DIC: company.DIC || "",
       IC_DPH: company.IC_DPH || "",
@@ -111,6 +137,11 @@ class CompanyEdit extends Component{
       pricelists,
       pricelist,
 
+      oldPausal: company.pausal || 0,
+      oldWorkPausal: company.workPausal || 0,
+      oldDrivePausal: company.drivePausal || 0,
+      oldRented:rented,
+      oldFakeID:fakeID,
       oldPricelist: pricelist,
       oldTitle: company.title,
       oldICO: company.ICO || "",
@@ -123,16 +154,28 @@ class CompanyEdit extends Component{
       oldMail: company.mail || "",
       oldPhone: company.phone || "",
       oldDescription: company.description || "",
-      oldPausal: company.pausal || 0,
 
       loading:false,
-      newData: false})
+      newData: false,
+    })
   }
 
   submit(){
       this.setState({saving:true});
       rebase.updateDoc('/companies/'+this.props.match.params.id,
       { title:this.state.title,
+        workPausal:this.state.workPausal,
+        drivePausal:this.state.drivePausal,
+        rented:this.state.rented.map((rent)=>{
+          return{
+            id:rent.id,
+            title:rent.title,
+            quantity:isNaN(parseInt(rent.quantity))?0:rent.quantity,
+            unitCost:isNaN(parseFloat(rent.unitCost))?0:rent.unitCost,
+            unitPrice:isNaN(parseFloat(rent.unitPrice))?0:rent.unitPrice,
+            totalPrice:isNaN(parseFloat(rent.totalPrice))?0:rent.totalPrice,
+          }
+        }),
         pausal:this.state.pausal,
         pricelist:this.state.pricelist.id,
         ICO: this.state.ICO,
@@ -149,7 +192,21 @@ class CompanyEdit extends Component{
         .then(()=>{this.setState({
           saving:false,
           newData: false,
+          rented:this.state.rented.map((rent)=>{
+            return{
+              id:rent.id,
+              title:rent.title,
+              quantity:isNaN(parseInt(rent.quantity))?0:rent.quantity,
+              unitCost:isNaN(parseFloat(rent.unitCost))?0:rent.unitCost,
+              unitPrice:isNaN(parseFloat(rent.unitPrice))?0:rent.unitPrice,
+              totalPrice:isNaN(parseFloat(rent.totalPrice))?0:rent.totalPrice,
+            }
+          }),
 
+          oldWorkPausal:this.state.workPausal,
+          oldDrivePausal:this.state.drivePausal,
+          oldRented:this.state.rented,
+          oldFakeID:this.state.fakeID,
           oldPricelist: this.state.pricelist,
           oldTitle: this.state.title,
           oldICO: this.state.ICO,
@@ -181,7 +238,10 @@ class CompanyEdit extends Component{
       phone: this.state.oldPhone,
       description: this.state.oldDescription,
       pausal: this.state.oldPausal,
-
+      workPausal: this.state.oldWorkPausal,
+      drivePausal: this.state.oldDrivePausal,
+      rented:this.state.oldRented,
+      clearCompanyRents:true,
       newData: false,
     })
   }
@@ -214,19 +274,6 @@ class CompanyEdit extends Component{
               value={this.state.title}
               onChange={(e)=>this.setState({title: e.target.value, newData: true, })}
               />
-          </FormGroup>
-
-          <FormGroup>
-            <Label for="pausal">Paušál</Label>
-            <Input
-              name="pausal"
-              id="pausal"
-              type="number"
-              placeholder="Enter pausal"
-              value={this.state.pausal}
-              onChange={(e)=>this.setState({pausal:e.target.value, newData: true,})}
-              />
-
           </FormGroup>
 
           <FormGroup>
@@ -361,7 +408,52 @@ class CompanyEdit extends Component{
               onChange={(e)=>this.setState({description: e.target.value, newData: true})}
               />
           </FormGroup>
-        </div>
+
+        <h3>Paušál</h3>
+        <FormGroup>
+          <Label for="pausal">Paušál práce</Label>
+          <Input
+            name="pausal"
+            id="pausal"
+            type="number"
+            placeholder="Enter work pausal"
+            value={this.state.workPausal}
+            onChange={(e)=>this.setState({workPausal:e.target.value, newData: true,})}
+            />
+        </FormGroup>
+        <FormGroup>
+          <Label for="pausal">Paušál výjazdy</Label>
+          <Input
+            name="pausal"
+            id="pausal"
+            type="number"
+            placeholder="Enter drive pausal"
+            value={this.state.drivePausal}
+            onChange={(e)=>this.setState({drivePausal:e.target.value, newData: true,})}
+            />
+        </FormGroup>
+
+        <CompanyRents
+          clearForm={this.state.clearCompanyRents}
+          setClearForm={()=>this.setState({clearCompanyRents:false})}
+          data={this.state.rented}
+          updateRent={(rent)=>{
+            let newRents=[...this.state.rented];
+            newRents[newRents.findIndex((item)=>item.id===rent.id)]={...newRents.find((item)=>item.id===rent.id),...rent};
+            this.setState({rented:newRents, newData:true });
+          }}
+          addRent={(rent)=>{
+            let newRents=[...this.state.rented];
+            newRents.push({...rent,id:this.getFakeID()})
+            this.setState({rented:newRents, newData:true });
+          }}
+          removeRent={(rent)=>{
+            let newRents=[...this.state.rented];
+            newRents.splice(newRents.findIndex((item)=>item.id===rent.id),1);
+            this.setState({rented:newRents, newData:true });
+          }}
+        />
+      </div>
 
         <div
           className="form-footer row"

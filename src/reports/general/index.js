@@ -86,8 +86,6 @@ class Reports extends Component {
 				status:task.status===null ? null: statuses.find((status)=>status.id===task.status),
 			}
 		});
-		console.log(tasks);
-		console.log(props.tasksLoaded);
 		this.setState({
 			tasks:newTasks,
 			statuses,

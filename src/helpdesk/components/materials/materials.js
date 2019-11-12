@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Input, Label} from 'reactstrap';
+import {Input } from 'reactstrap';
 import Select from 'react-select';
 import { selectStyle, invisibleSelectStyle} from '../../../scss/selectStyles';
 
@@ -65,7 +65,6 @@ export default class Rozpocet extends Component {
 				<div className="row">
 					<div className="col-md-12">
 						<div>
-							<Label>Material</Label>
 							<table className="table m-t--30">
 								<thead>
 									<tr >
@@ -78,7 +77,7 @@ export default class Rozpocet extends Component {
 												<span className="checkmark" style={{ marginTop: "-8px"}}> </span>
 		                  </label>
 										</th>}
-										<th className="t-a-l p-l-15"></th>
+										<th className="t-a-l p-l-15">Material</th>
 										<th style={{fontSize: "12px", fontFamily: "Segoe UI", fontWeight: "500", color: "#333"}}  width="100">Mn.</th>
 										<th width="190">Jednotka</th>
 										<th width="100">Cena</th>
