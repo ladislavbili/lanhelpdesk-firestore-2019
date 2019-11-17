@@ -10,29 +10,13 @@ export default class Attachments extends Component {
 
 	render() {
 		return (
-			<div className="m-t-10">
-				<div className="row">
-					<div className="full-width">
-							<table className="table">
-								<thead >
-									<tr  className="tr-no-lines">
-										<th style={{fontSize: "14px", fontFamily: "Segoe UI Bold", color: "#333"}}></th>
-										<th className="t-a-r" width="124">
-										</th>
-									</tr>
-								</thead>
-								<tbody>
+					<div className="full-width m-t-10">
 									{
 										this.props.attachments.map((attachment,index)=>
-										<tr key={index}  className="tr-no-lines">
-
-												<td>
-													<a target="_blank" href={attachment.url} style={{cursor:'pointer'}} rel="noopener noreferrer">
+										<div key={index}  className="attachment">
+													<a target="_blank" href={attachment.url} style={{cursor:'pointer', color: "white"}} rel="noopener noreferrer">
 														{`${attachment.title} (${Math.round(parseInt(attachment.size)/1024)}kB)`}
 													</a>
-												</td>
-
-												<td className="t-a-r">
 													{!this.props.disabled && <button className="btn btn-link-reversed waves-effect"
 														disabled={this.props.disabled}
 														onClick={()=>{
@@ -42,14 +26,11 @@ export default class Attachments extends Component {
 														}}>
 														<i className="fa fa-times"  />
 													</button>}
-												</td>
-											</tr>
+										</div>
 										)
 									}
-
-								</tbody>
-							</table>
-							{!this.props.disabled && <div>
+							{!this.props.disabled &&
+								<div>
 								<label htmlFor="uploadInput" className="btn waves-effect">
 									+ Add New Attachment
 								</label>
@@ -59,12 +40,10 @@ export default class Attachments extends Component {
 											let files = [...e.target.files];
 											this.props.addAttachments(files);
 										}
-									}} />
-							</div>}
-
+									}}/>
+								</div>
+							}
 					</div>
-				</div>
-			</div>
 
 		);
 	}

@@ -50,7 +50,7 @@ export default class TagList extends Component{
                 <Button
                   className="btn-link t-a-l"
                   onClick={()=>this.props.history.push('/helpdesk/settings/tags/add')}>
-                 <i className="fa fa-plus sidebar-icon-center"/> Add tag
+                 <i className="fa fa-plus m-r-5 m-l-5 "/> Add tag
                 </Button>
 
             </div>

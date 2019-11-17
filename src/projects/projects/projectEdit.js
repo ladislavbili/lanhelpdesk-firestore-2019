@@ -27,19 +27,18 @@ export default class ProjectEdit extends Component{
     query: (ref) => ref.where('project', '==', this.props.project.id),
     withIds: true,
     }).then(data => {
-
       data.forEach(datum => {
         rebase.removeDoc(`/proj-tasks/${datum.id}`);
-      }
-      );
-      rebase.removeDoc(`/proj-projects/${this.props.project.id}`).then(() => {
-        this.props.close();
-        this.props.history.push("/projects/all");
       }
       );
     }).catch(err => {
       //handle error
     })
+    rebase.removeDoc(`/proj-projects/${this.props.project.id}`).then(() => {
+      this.props.close();
+      this.props.history.push("/projects/all");
+    }
+    );
   }
 
   render(){
@@ -71,7 +70,7 @@ export default class ProjectEdit extends Component{
 
               <Button className="btn-red" disabled={this.state.saving} onClick={() => {
                   if (window.confirm('Are you sure you want to delete this project? WARNING: all asociated tasks will be deleted too')) {
-                    this.remove()
+                    this.remove();
                   }
                 }}>
                 Delete
@@ -80,7 +79,7 @@ export default class ProjectEdit extends Component{
               <Button className="btn" disabled={this.state.saving||this.state.title===""} onClick={()=>{
                   this.setState({saving:true});
                   rebase.updateDoc(`/proj-projects/${this.props.project.id}`, {title:this.state.title,description:this.state.description})
-                    .then(()=>{this.setState({title:'aaaaaaaaaaaaaaaa',description:'ssssssssssssssssss',saving:false}, () => this.props.close())});
+                    .then(()=>{this.setState({title:'',description:'',saving:false}, () => this.props.close())});
                 }}>{this.state.saving?'Saving...':'Save changes'}</Button>
             </ModalFooter>
 

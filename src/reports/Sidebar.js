@@ -180,7 +180,7 @@ class Sidebar extends Component {
 								onClick={() => this.setState({activeTab: (this.state.activeTab === 0 ? 1 : 0)})}>
 								<i className="fa fa-plus pull-right m-r-5 m-t-5 clickable" />
 							</div>
-						 	<div><i className="fas fa-filter sidebar-icon-center" ></i>Filters</div>
+						 	<div><i className="fas fa-filter m-r-5 m-l-5 " ></i>Filters</div>
 						</div>
 
 							<TabContent activeTab={this.state.activeTab}>

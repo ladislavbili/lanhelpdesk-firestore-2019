@@ -1,3 +1,5 @@
+import React from 'react';
+
 export const invisibleSelectStyleNoArrow = {
 	control: (base,state) => ({
 		...base,
@@ -15,11 +17,26 @@ export const invisibleSelectStyleNoArrow = {
 		...base,
 		padding: 4,
 	}),
-	multiValue: base => ({
-		...base,
-		backgroundColor: "#F2F1F1",
-		borderRadius: 0
-	}),
+	multiValue: (base, {data}) => {
+    return {
+      ...base,
+      backgroundColor: data.color ? data.color : "#F2F1F1",
+			borderRadius: 0,
+    };
+	},
+	multiValueLabel: (base, { data }) => ({
+    ...base,
+    color: data.color ? "white" : "black",
+  }),
+	multiValueRemove: (styles, { data }) => ({
+    ...styles,
+    color: data.color ? "white" : "black",
+		backgroundColor: data.color ? data.color : "#F2F1F1",
+    ':hover': {
+			backgroundColor: "rgba(0,0,0,0.5)",
+      color: 'white',
+    },
+  }),
 	valueContainer: base => ({
 		...base,
 		padding: '0px 6px',

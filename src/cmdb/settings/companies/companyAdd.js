@@ -54,10 +54,10 @@ export default class CompanyAdd extends Component{
       <div>
           <Button
             block
-            className='btn-link t-a-l sidebar-menu-item'
+            className='btn-link t-a-l sidebar-btn-link'
             onClick={() => this.setState({opened:true})}
             >
-           <i className="fa fa-plus sidebar-icon-center"/> Add company
+           <i className="fa fa-plus m-r-5 m-l-5 m-t-5"/> Add company
           </Button>
 
         <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >

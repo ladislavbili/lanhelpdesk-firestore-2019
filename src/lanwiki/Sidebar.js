@@ -9,6 +9,8 @@ import TagEdit from './Tags/TagEdit';
 import {rebase} from '../index';
 import {setProject, setFilter} from '../redux/actions';
 
+import classnames from "classnames";
+
 class Sidebar extends Component {
 	constructor(props) {
 		super(props);
@@ -70,43 +72,39 @@ class Sidebar extends Component {
 				<div className="scrollable fit-with-header">
 					<Button
 						block
-						className="btn-link t-a-l sidebar-menu-item"
+						className="btn-link t-a-l sidebar-btn-link"
 						onClick={()=>{this.setState({openedAdd:true})}}
 						>
-						<i className="fa fa-plus sidebar-icon-center"/> Add tag
+						<i className="fa fa-plus m-r-5 m-l-5 m-t-5"/> Add tag
 					</Button>
 
 					<Button
 						block
-					  className="btn-link t-a-l sidebar-menu-item"
+					  className="btn-link t-a-l sidebar-btn-link"
             onClick={(e) => {
               e.preventDefault();
               this.createNew();
             }}>
-						<i className="fa fa-plus sidebar-icon-center"/> New Note
+						<i className="fa fa-plus m-r-5 m-l-5 m-t-5"/> New Note
 					</Button>
 
 
 					<Nav vertical>
 						<NavItem>
-							<Link  className = "text-basic sidebar-align sidebar-menu-item" to={{ pathname: `/lanwiki/i/all` }}>All</Link>
+							<Link  className="sidebar-align sidebar-menu-item" to={{ pathname: `/lanwiki/i/all` }}>All</Link>
 						</NavItem>
 
 						{
 							this.state.tags
 							.sort((item1,item2)=>item1.title.toLowerCase()>item2.title.toLowerCase()?1:-1)
 							.map((item)=>
-								<NavItem key={item.id}  className="sidebar-link">
-									<Link className= "text-basic sidebar-align sidebar-menu-item" to={{ pathname:`/lanwiki/i/`+item.id}}>{item.title}</Link>
-									<div className='sidebar-menu-item-btn  sidebar-menu-item'>
-										<Button
-											key={item.id}
-											className='hidden-button full-width full-height'
-											onClick={() => {this.setState({tagEdit: item, openedEdit: true})}}
-											>
-											<i className="fa fa-cog"/>
-										</Button>
+								<NavItem key={item.id}  className="row">
+									<div  className={classnames("sidebar-icon", {"active" : this.props.location.pathname.includes(item.id)})}
+										onClick={() => {this.setState({tagEdit: item, openedEdit: true})}}
+										>
+										<i className="fa fa-cog"/>
 									</div>
+									<Link className= "sidebar-menu-item" to={{ pathname:`/lanwiki/i/`+item.id}}>{item.title}</Link>
 								</NavItem>
 							)
 						}

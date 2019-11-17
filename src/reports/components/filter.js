@@ -208,12 +208,12 @@ class Filter extends Component {
             >
 
             {!this.state.openEditName &&
-              <h5 className=""><i className="fa fa-cog sidebar-icon-center"/> {this.props.filterID?' '+ (this.state.newFilterName ? this.state.newFilterName : this.props.filterData.title):' Všetky'}</h5>
+              <h5 className=""><i className="fa fa-cog m-r-5 m-l-5 "/> {this.props.filterID?' '+ (this.state.newFilterName ? this.state.newFilterName : this.props.filterData.title):' Všetky'}</h5>
             }
             {this.state.openEditName &&
                 <Input
                   type="text"
-                  className="from-control sidebar-input"
+                  className="from-control sidebar-filter-input"
                   placeholder="Enter filter name"
                   autoFocus
                   value={this.state.newFilterName ? this.state.newFilterName : this.props.filterData.title}

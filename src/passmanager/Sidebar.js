@@ -7,6 +7,8 @@ import {rebase} from '../index';
 import FolderAdd from './folders/folderAdd';
 import FolderEdit from './folders/folderEdit';
 
+import classnames from "classnames";
+
 export default class Sidebar extends Component {
 	constructor(props) {
 		super(props);
@@ -44,24 +46,19 @@ export default class Sidebar extends Component {
 				<div className="scrollable fit-with-header">
 					<FolderAdd />
 					<Button
-						className="btn-link t-a-l sidebar-menu-item"
+						className="btn-link t-a-l sidebar-btn-link"
 						onClick={()=>{this.props.history.push('/passmanager/add')}}
 						>
-						<i className="fa fa-plus sidebar-icon-center"  /> Heslo
+						<i className="fa fa-plus m-r-5 m-l-5 m-t-5"  /> Heslo
 					</Button>
 						<Nav vertical>
 							{	this.state.folders.map((item)=>
-							<NavItem key={item.id}  className="sidebar-link">
-								<Link className="text-basic sidebar-align sidebar-menu-item" to={{ pathname: `/passmanager/i/`+item.id }}>{item.title}</Link>
-								<div className='sidebar-menu-item-btn  sidebar-menu-item'>
-									<Button
-										key={item.id}
-										className='hidden-button full-width full-height'
-										onClick={() => {this.setState({folderEdit: item, openedEdit: true})}}
-										>
+							<NavItem key={item.id}  className="row">
+								<div className={classnames("sidebar-icon", {"active" : this.props.location.pathname.includes(item.id)})}
+												onClick={() => {this.setState({folderEdit: item, openedEdit: true})}}>
 										<i className="fa fa-cog"/>
-									</Button>
 								</div>
+								<Link className="sidebar-menu-item" to={{ pathname: `/passmanager/i/`+item.id }}>{item.title}</Link>
 							</NavItem>
 							)}
 						</Nav>

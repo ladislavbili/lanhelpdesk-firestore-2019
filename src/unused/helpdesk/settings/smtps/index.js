@@ -49,7 +49,7 @@ export default class SMTPsList extends Component{
                 <Button
           				className="btn-link t-a-l"
           				onClick={()=>this.props.history.push('/helpdesk/settings/smtps/add')}>
-          			 <i className="fa fa-plus sidebar-icon-center"/> Add SMTP
+          			 <i className="fa fa-plus m-r-5 m-l-5 "/> Add SMTP
           			</Button>
 
             </div>

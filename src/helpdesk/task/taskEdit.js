@@ -830,6 +830,43 @@ class TaskEdit extends Component {
 									</div>
 								</div>}
 
+								<Attachments
+									disabled={this.state.viewOnly}
+									attachments={this.state.attachments}
+									addAttachments={(newAttachments)=>{
+										let time = (new Date()).getTime();
+										let storageRef = firebase.storage().ref();
+										Promise.all([
+											...newAttachments.map((attachment)=>{
+												return storageRef.child(`help-tasks/${taskID}/${time}-${attachment.size}-${attachment.name}`).put(attachment)
+											})
+										]).then((resp)=>{
+												Promise.all([
+													...newAttachments.map((attachment)=>{
+														return storageRef.child(`help-tasks/${taskID}/${time}-${attachment.size}-${attachment.name}`).getDownloadURL()
+													})
+												]).then((urls)=>{
+														newAttachments=newAttachments.map((attachment,index)=>{
+															return {
+																title:attachment.name,
+																size:attachment.size,
+																path:`help-tasks/${taskID}/${time}-${attachment.size}-${attachment.name}`,
+																url:urls[index]
+															}
+														});
+														this.setState({attachments:[...this.state.attachments,...newAttachments]},this.submitTask.bind(this));
+													})
+											})
+									}}
+									removeAttachment={(attachment)=>{
+										let storageRef = firebase.storage().ref();
+										let newAttachments = [...this.state.attachments];
+										newAttachments.splice(newAttachments.findIndex((item)=>item.path===attachment.path),1);
+										storageRef.child(attachment.path).delete();
+										this.setState({attachments:newAttachments},this.submitTask.bind(this));
+									}}
+									/>
+
 								<Modal isOpen={this.state.openUserAdd}  toggle={() => this.setState({openUserAdd: !this.state.openUserAdd})} >
 				          <ModalBody>
 										<UserAdd close={() => this.setState({openUserAdd: false,})} addUser={(user) => {
@@ -922,14 +959,6 @@ class TaskEdit extends Component {
 											onClick={() => { this.setState({toggleTab:'3'}); }}
 										>
 											Rozpočet
-										</NavLink>
-									</NavItem>
-									<NavItem>
-										<NavLink
-											className={classnames({ active: this.state.toggleTab === '4' }, "clickable", "")}
-											onClick={() => { this.setState({toggleTab:'4'}); }}
-										>
-											Prílohy
 										</NavLink>
 									</NavItem>
 								</Nav>
@@ -1033,44 +1062,6 @@ class TaskEdit extends Component {
 												company={this.state.company}
 												match={this.props.match}
 											/>
-										</TabPane>
-										<TabPane tabId="4">
-											<Attachments
-												disabled={this.state.viewOnly}
-												attachments={this.state.attachments}
-												addAttachments={(newAttachments)=>{
-													let time = (new Date()).getTime();
-													let storageRef = firebase.storage().ref();
-													Promise.all([
-														...newAttachments.map((attachment)=>{
-															return storageRef.child(`help-tasks/${taskID}/${time}-${attachment.size}-${attachment.name}`).put(attachment)
-														})
-													]).then((resp)=>{
-															Promise.all([
-																...newAttachments.map((attachment)=>{
-																	return storageRef.child(`help-tasks/${taskID}/${time}-${attachment.size}-${attachment.name}`).getDownloadURL()
-																})
-															]).then((urls)=>{
-																	newAttachments=newAttachments.map((attachment,index)=>{
-																		return {
-																			title:attachment.name,
-																			size:attachment.size,
-																			path:`help-tasks/${taskID}/${time}-${attachment.size}-${attachment.name}`,
-																			url:urls[index]
-																		}
-																	});
-																	this.setState({attachments:[...this.state.attachments,...newAttachments]},this.submitTask.bind(this));
-																})
-														})
-												}}
-												removeAttachment={(attachment)=>{
-													let storageRef = firebase.storage().ref();
-													let newAttachments = [...this.state.attachments];
-													newAttachments.splice(newAttachments.findIndex((item)=>item.path===attachment.path),1);
-													storageRef.child(attachment.path).delete();
-													this.setState({attachments:newAttachments},this.submitTask.bind(this));
-												}}
-												/>
 										</TabPane>
 									</TabContent>
 						</div>

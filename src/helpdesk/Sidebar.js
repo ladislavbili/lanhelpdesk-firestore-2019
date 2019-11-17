@@ -16,6 +16,8 @@ import {setProject, setMilestone, setFilter, storageHelpFiltersStart, storageHel
 
 import {sidebarSelectStyle} from '../scss/selectStyles';
 
+import classnames from "classnames";
+
 const dashboard = {id:null,title:'Dashboard', label:'Dashboard',value:null};
 const addProject = {id:-1,title:'+ Add project', label:'+ Add project',value:-1};
 const allMilestones = {id:null,title:'Any', label:'Any',value:null};
@@ -254,10 +256,24 @@ class Sidebar extends Component {
 							className="sidebar-btn"
 							>
 							<div
-								onClick={() => this.setState({activeTab: (this.state.activeTab === 0 ? 1 : 0)})}>
+								onClick={() => {
+									this.props.history.push(`/helpdesk/taskList/i/all`);
+									this.setState({filterID:null, filterData:null, activeTab: (this.state.activeTab === 0 ? 1 : 0)})
+									this.props.setFilter({
+										status:[],
+										requester:null,
+										company:null,
+										assigned:null,
+										workType:null,
+										statusDateFrom:'',
+										statusDateTo:'',
+										updatedAt:(new Date()).getTime()
+									});
+								}}
+									>
 								<i className="fa fa-plus pull-right m-r-5 m-t-5 clickable" />
 							</div>
-						 	<div><i className="fas fa-filter sidebar-icon-center" ></i>Filters</div>
+						 	<div><i className="fas fa-filter m-r-5 m-l-5" ></i>Filters</div>
 						</div>
 
 							<TabContent activeTab={this.state.activeTab}>
@@ -265,7 +281,7 @@ class Sidebar extends Component {
 									<Nav vertical>
 										<NavItem>
 											<Link
-												className="text-basic sidebar-align sidebar-menu-item"
+												className="sidebar-align sidebar-menu-item"
 												to={{ pathname: `/helpdesk/taskList/i/all` }} onClick={()=>{
 													this.setState({filterID:null,filterData:null});
 													this.props.setFilter({
@@ -282,9 +298,23 @@ class Sidebar extends Component {
 										</NavItem>
 										{
 											filters.map((item)=>
-											<NavItem key={item.id}>
+											<NavItem key={item.id} className="row">
+												<div className={classnames("sidebar-icon", {"active" : this.props.location.pathname.includes(item.id)})}
+													onClick={() => {
+														if (this.props.location.pathname.includes(item.id)){
+															this.props.history.push(`/helpdesk/taskList/i/`+item.id);
+															this.setState({filterID: item.id, filterData:item, activeTab: 1});
+															this.props.setFilter({
+																...item.filter,
+																updatedAt:(new Date()).getTime()
+															});
+														}
+													}}>
+														<i className="fa fa-cog"/>
+												</div>
+
 												<Link
-													className = "text-basic sidebar-align sidebar-menu-item"
+													className="sidebar-menu-item"
 													to={{ pathname: `/helpdesk/taskList/i/`+item.id }} onClick={()=>{
 														this.setState({filterID:item.id,filterData:item});
 														this.props.setFilter({
@@ -292,6 +322,7 @@ class Sidebar extends Component {
 															updatedAt:(new Date()).getTime()
 														});
 													}}>{item.title}</Link>
+
 											</NavItem>
 
 										)}
@@ -309,7 +340,7 @@ class Sidebar extends Component {
 						<Nav vertical>
 							{this.props.settings.map((setting)=>
 								<NavItem key={setting.link}>
-									<Link className="text-basic sidebar-align sidebar-menu-item"
+									<Link className="sidebar-align sidebar-menu-item"
 										to={{ pathname:'/helpdesk/settings/'+setting.link }}>{setting.title}</Link>
 								</NavItem>
 							)}

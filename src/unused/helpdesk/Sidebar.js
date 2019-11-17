@@ -130,7 +130,7 @@ class Sidebar extends Component {
 										className={"sidebar-filter-navlink " + classnames({ active: this.state.activeTab === 0, clickable:true })}
 										onClick={() => this.setState({activeTab:0})}
 										>
-										<i className="fas fa-filter sidebar-icon-center" ></i> Filters
+										<i className="fas fa-filter m-r-5 m-l-5 " ></i> Filters
 									</NavLink>
 								</NavItem>
 								<NavItem>

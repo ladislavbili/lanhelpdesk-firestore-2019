@@ -12,6 +12,8 @@ import CompanyAdd from './settings/companies/companyAdd';
 import CompanyEdit from './settings/companies/companyEdit';
 import {sidebarSelectStyle} from '../scss/selectStyles';
 
+import classnames from "classnames";
+
 class Sidebar extends Component {
 	constructor(props) {
 		super(props);
@@ -75,9 +77,10 @@ class Sidebar extends Component {
 					</li>
 					<hr />
 					<Button
-						className="btn-link t-a-l sidebar-menu-item"
+						block
+						className="btn-link t-a-l sidebar-btn-link"
 						onClick={()=>{this.props.history.push('/cmdb/add')}}
-						> <i className="fa fa-plus sidebar-icon-center"/> Item
+						> <i className="fa fa-plus m-r-5 m-l-5 m-t-5"/> Item
 					</Button>
 
 					<CompanyAdd />
@@ -85,29 +88,27 @@ class Sidebar extends Component {
 						&&
 						<CompanyEdit item={this.state.company}/>
 					}
-						<Row>
-							<Col xs={10}>
-								<Nav vertical>
-									{	this.state.sidebar.map((item)=>
-										<NavItem key={item.id}>
-											<Link className="text-basic sidebar-align sidebar-menu-item" to={{ pathname: `/cmdb/i/`+item.url }}>{item.title}</Link>
-										</NavItem>
-									)}
-								</Nav>
-							</Col>
-							<Col xs={2}>
-								{	this.state.sidebar.map((item)=>
-									<Button
-										key={item.id}
-										className='btn-link sidebar-menu-item'
+
+					<Nav vertical>
+						<NavItem>
+							<Link  className="sidebar-align sidebar-menu-item" to={{ pathname: `/cmdb/all` }}>All</Link>
+						</NavItem>
+
+						{
+							this.state.sidebar
+							.map((item)=>
+								<NavItem key={item.id}  className="row">
+									<div className={classnames("sidebar-icon", {"active" : this.props.location.pathname.includes(item.url)})}
 										onClick={() => this.props.history.push('/cmdb/edit/'+item.id)}
 										>
 										<i className="fa fa-cog"/>
-									</Button>
-								)}
-							</Col>
-						</Row>
+									</div>
+									<Link className= "sidebar-menu-item" to={{ pathname: `/cmdb/i/`+item.url }}>{item.title}</Link>
+								</NavItem>
+							)
+						}
 
+				</Nav>
 
 				</div>
 			</div>

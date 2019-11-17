@@ -234,7 +234,7 @@ html{
 }
 
 .row{
-  display: flex;
+  display: flex !important;
   margin: 0px;
 }
 
@@ -675,6 +675,16 @@ tr:last-child{
 //  display: inline;
 }
 
+.attachment{
+  background-color: #6AC3FF;
+    display: inline-block;
+    margin-right: 5px;
+    height: 30px;
+    padding-left: 5px;
+    margin-bottom: 5px;
+    color: white;
+}
+
 //----------------END-všeobecné-elementy----------------
 
 
@@ -749,38 +759,50 @@ tr:last-child{
   z-index: 999;
 }
 
-.sidebar-icon-center{
-  margin-right: 5px;
-  margin-left: 5px
-}
-
-.sidebar-menu-item{
-  width: 100%;
-  height: $sidebar-item-height;
-  border: none !important;
-}
-
-.sidebar-menu-item-link{
-  width: 80%;
-  height: $sidebar-item-height;
-  display: inline-block !important;
-}
-
-.sidebar-menu-item-btn{
-  width: 20%;
-  height: $sidebar-item-height;
-}
-
 .sidebar-btn{
   width: calc(#{$sidebar-width} - 20px);
   margin: 10px 10px 0px 10px;
   height: $button-height;
 }
 
-.sidebar-link{
-  display: flex !important;
+.sidebar-btn-link{
+  display: flex;
   margin: 0px;
+  padding-left: 12px;
+  height:  $sidebar-item-height;
 }
+
+.sidebar-btn-link:hover{
+  color: #0078D4 !important;
+  background-color: rgb(238,238,238);
+}
+
+.sidebar-menu-item{
+  color: $main-font-color;
+  display: flex;
+  flex: auto;
+  height: $sidebar-item-height;
+  border: none !important;
+  padding-left: 5px !important;
+}
+
+.sidebar-icon{
+  color: transparent;
+  padding-top: 10px;
+  padding-left: 15px;
+}
+
+.sidebar-icon.active{
+  font-weight: 900;
+  color: #0078D4 !important;
+  background-color: rgb(238,238,238);
+}
+
+.sidebar-align{
+  padding-left: 33px !important;
+}
+
+
 
 
 .sidebar-filter{
@@ -803,26 +825,17 @@ tr:last-child{
   }
 }
 
-.sidebar-filter-navlink{
-  padding-left: 0px !important;
-}
-
-.sidebar-align{
-  padding-left: 33px !important;
-}
-
-.sidebar-subset{
-  padding-left: 66px !important;
-}
-
-
-.sidebar-input{
+.sidebar-filter-input{
   margin-top: -10px;
 }
 
-.sidebar-input:focus{
+.sidebar-filter-input:focus{
   background-color: inherit;
   border: none;
+}
+
+.sidebar-filter-navlink{
+  padding-left: 0px !important;
 }
 
 
@@ -923,6 +936,11 @@ tr:last-child{
   background-color: rgb(238,238,238);
   color: #0078D4 !important;
   text-decoration: none !important;
+}
+
+.nav-item:hover{
+  background-color: rgb(238,238,238);
+  color: $basic-button-color;
 }
 
 .nav:not(.nav-tabs) a.active + .sidebar-menu-item-btn {

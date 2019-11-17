@@ -6,6 +6,8 @@ import SelectPage from '../components/SelectPage';
 import MailServersEdit from './mailServers/settings';
 import NotificationServersEdit from './notificationServers/settings';
 
+import classnames from "classnames";
+
 export default class Sidebar extends Component {
 	constructor(props) {
 		super(props);
@@ -37,40 +39,32 @@ export default class Sidebar extends Component {
 				<SelectPage />
 				<div className="scrollable fit-with-header">
 					<Nav vertical>
-						<NavItem key={0}  className="sidebar-link">
+						<NavItem key={0}  className="row">
+							<div className={classnames("sidebar-icon", {"active" : this.props.location.pathname.includes("mail-notifications")})}
+								onClick={() => {this.setState({openedEditNotifications: true})}}
+								>
+									<i className="fa fa-cog"/>
+							</div>
 							<Link
-								className="text-basic sidebar-align sidebar-menu-item"
+								className="sidebar-menu-item"
 								key={0}
 								to={{ pathname: `/monitoring/mail-notifications`  }}>
 								Mail notifications
 							</Link>
-							<div className='sidebar-menu-item-btn sidebar-menu-item'>
-								<Button
-									key={0}
-									className='hidden-button full-width full-height'
-									onClick={() => {this.setState({openedEditNotifications: true})}}
-									>
-									<i className="fa fa-cog"/>
-								</Button>
-							</div>
 						</NavItem>
 
-						<NavItem key={1}  className="sidebar-link">
+						<NavItem key={1}  className="row">
+						<div className={classnames("sidebar-icon", {"active" : this.props.location.pathname.includes("mail-servers")})}
+							onClick={() => {this.setState({openedEditServers: true})}}
+							>
+									<i className="fa fa-cog"/>
+							</div>
 							<Link
-								className="text-basic sidebar-align sidebar-menu-item"
+								className=" sidebar-menu-item"
 								key={1}
 								to={{ pathname: `/monitoring/mail-servers`}}>
 								Mail servers
 							</Link>
-						<div className='sidebar-menu-item-btn  sidebar-menu-item'>
-								<Button
-									key={1}
-									className='hidden-button full-width full-height'
-									onClick={() => {this.setState({openedEditServers: true})}}
-									>
-									<i className="fa fa-cog"/>
-								</Button>
-							</div>
 						</NavItem>
 					</Nav>
 

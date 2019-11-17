@@ -189,13 +189,13 @@ class TasksIndex extends Component {
 								<span style={{textOverflow: 'ellipsis'}}><span className="text-muted">Assigned to: </span>{task.assignedTo?task.assignedTo.reduce((total,user)=>total+=user.name+' '+user.surname+', ','').slice(0,-2):'Neznámy používateľ'}</span>
 							</p>
 						</div>
-						{/*
+
 							<div className="taskList-tags">
 								{task.tags.map((tag)=>
-									<span key={tag.id} className="label label-info m-r-5">{tag.title}</span>
+									<span key={tag.id} className="label label-info m-r-5" style={{backgroundColor: tag.color, color: "white"}}>{tag.title}</span>
 								)}
 							</div>
-						*/}
+
 					</li>
 				}
 				filterName="help-tasks"

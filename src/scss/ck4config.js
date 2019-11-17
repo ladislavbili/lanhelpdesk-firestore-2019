@@ -1,6 +1,7 @@
 const ckconfig = {
   extraPlugins: 'autogrow',
   removePlugins: 'elementspath',
+  height: 60,
   autoGrow_minHeight: 50,
   autoGrow_maxHeight: 600,
   toolbarGroups: [

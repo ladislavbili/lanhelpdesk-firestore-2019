@@ -50,7 +50,7 @@ export default class TaskTypesList extends Component{
                 <Button
           				className="btn-link t-a-l"
           				onClick={()=>this.props.history.push('/helpdesk/settings/taskTypes/add')}>
-          			 <i className="fa fa-plus sidebar-icon-center"/> Add task type
+          			 <i className="fa fa-plus m-r-5 m-l-5 "/> Add task type
           			</Button>
 
             </div>
