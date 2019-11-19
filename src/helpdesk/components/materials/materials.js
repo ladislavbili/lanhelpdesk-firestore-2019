@@ -77,7 +77,7 @@ export default class Rozpocet extends Component {
 												<span className="checkmark" style={{ marginTop: "-8px"}}> </span>
 		                  </label>
 										</th>}
-										<th className="t-a-l p-l-15">Material</th>
+										<th className="t-a-l p-l-15" style={{fontSize: "14px", fontFamily: "Segoe UI Bold", color: "#333"}}>Material</th>
 										<th style={{fontSize: "12px", fontFamily: "Segoe UI", fontWeight: "500", color: "#333"}}  width="100">Mn.</th>
 										<th width="190">Jednotka</th>
 										<th width="100">Cena</th>

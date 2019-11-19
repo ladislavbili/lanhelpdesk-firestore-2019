@@ -193,7 +193,7 @@ class TaskAddContainer extends Component{
 			}
 
 
-			<Modal size="width-1000"  isOpen={this.state.openAddTaskModal} toggle={()=>{this.setState({openAddTaskModal:!this.state.openAddTaskModal})}} >
+			<Modal size="width-1250"  isOpen={this.state.openAddTaskModal} toggle={()=>{this.setState({openAddTaskModal:!this.state.openAddTaskModal})}} >
 					<ModalBody>
             {  this.state.openAddTaskModal &&
 						   <TaskAdd {...this.props}

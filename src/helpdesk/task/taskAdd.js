@@ -392,7 +392,12 @@ export default class TaskAdd extends Component{
 
 						<hr className="m-t-15 m-b-10"/>
 
-							{this.state.viewOnly && <div className="row p-r-10 m-b-10">
+					<div className="row">
+
+						<div className="task-add-left-half">
+
+							{this.state.viewOnly &&
+								<div className="row p-r-10 m-b-10">
 								<Label className="col-3 col-form-label">Projekt</Label>
 								<div className="col-9">
 									<Select
@@ -563,23 +568,12 @@ export default class TaskAdd extends Component{
 						</div>
 
 						<div className="col-lg-4">
-							<div className="row p-r-10 m-b-10">
-								<Label className="col-3 col-form-label">Deadline</Label>
-								<div className="col-9">
-									{/*className='form-control hidden-input'*/}
-									<input
-										className='form-control hidden-input'
-										placeholder="Status change date"
-										type="datetime-local"
-										disabled={this.state.viewOnly}
-										value={this.state.deadline || ""}
-										onChange={(e)=>{
-											this.setState({deadline:e.target.value})}
-										}
-										/>
-								</div>
-							</div>
-							<Repeat
+
+
+
+
+
+						<Repeat
 								taskID={null}
 								repeat={this.state.repeat}
 								disabled={this.state.viewOnly}
@@ -604,7 +598,7 @@ export default class TaskAdd extends Component{
 												this.setState({milestone});
 												}
 											}
-											options={this.state.milestones.filter((milestone)=>milestone.id===null || (this.state.project!== null && milestone.project===this.state.project.id))}
+											options={this.state.milestones ? this.state.milestones.filter((milestone)=>milestone.id===null || (this.state.project!== null && milestone.project===this.state.project.id)) : null}
 											styles={invisibleSelectStyleNoArrow}
 											/>
 									</div>
@@ -625,22 +619,9 @@ export default class TaskAdd extends Component{
 								}}
 							/>
 
-						{!this.state.viewOnly && <div>
-							<div className="row">
-								<div className="center-hor"><Label className="center-hor">Tagy: </Label></div>
-								<div className="f-1 ">
-									<Select
-										value={this.state.tags}
-										isDisabled={this.state.defaults.tags.fixed||this.state.viewOnly}
-										isMulti
-										onChange={(tags)=>this.setState({tags})}
-										options={this.state.allTags}
-										styles={invisibleSelectStyleNoArrow}
-										/>
-								</div>
-							</div>
 
-							{!this.state.hidden && false && <Subtasks
+						<div>
+							{!this.state.viewOnly && !this.state.hidden && false && <Subtasks
 								disabled={this.state.viewOnly}
 								taskAssigned={this.state.assignedTo}
 								submitService={(newSubtask)=>{
@@ -666,6 +647,26 @@ export default class TaskAdd extends Component{
 								match={{params:{taskID:null}}}
 							/>}
 
+							{!this.state.viewOnly && <Nav tabs className="b-0 m-t-20 m-b-22 m-l--10">
+									<NavItem>
+										<NavLink
+											className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "")}
+											onClick={() => { this.setState({toggleTab:'1'}); }}
+										>
+											Výkaz
+										</NavLink>
+									</NavItem>
+									<NavItem>
+										<NavLink
+											className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
+											onClick={() => { this.setState({toggleTab:'2'}); }}
+										>
+											Rozpočet
+										</NavLink>
+									</NavItem>
+								</Nav>}
+
+								{!this.state.viewOnly &&
 								<Prace
 									extended={this.state.toggleTab==='2'}
 									showAll={this.state.toggleTab==='2'}
@@ -704,29 +705,11 @@ export default class TaskAdd extends Component{
 										this.setState({taskWorks:newTaskWorks});
 									}}
 									/>
+								}
 
-							<hr className="m-b-15" style={{marginLeft: "-30px", marginRight: "-30px", marginTop: "-5px"}}/>
 
-							{!this.state.viewOnly && <Nav tabs className="b-0 m-b-22 m-l--10">
-									<NavItem>
-										<NavLink
-											className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "")}
-											onClick={() => { this.setState({toggleTab:'1'}); }}
-										>
-											Výkaz
-										</NavLink>
-									</NavItem>
-									<NavItem>
-										<NavLink
-											className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
-											onClick={() => { this.setState({toggleTab:'2'}); }}
-										>
-											Rozpočet
-										</NavLink>
-									</NavItem>
-								</Nav>}
-
-								{!this.state.viewOnly && <TabContent activeTab={this.state.toggleTab}>
+								{!this.state.viewOnly &&
+									<TabContent activeTab={this.state.toggleTab}>
 									<TabPane tabId="1">
 										<WorkTrips
 											extended={false}
@@ -822,7 +805,7 @@ export default class TaskAdd extends Component{
 
 
 
-								{!this.state.hidden && false && <Materials
+								{!this.state.viewOnly && !this.state.hidden && false && <Materials
 									disabled={this.state.viewOnly}
 									materials={taskMaterials}
 									submitMaterial={(newMaterial)=>{
@@ -843,9 +826,44 @@ export default class TaskAdd extends Component{
 									company={this.state.company}
 									match={{params:{taskID:null}}}
 									/>}
-								</div>}
 							</div>
+						</div>
 
+						<div className="task-add-right-half pull-right">
+									{!this.state.viewOnly &&
+										<div>
+											<Label className="center-hor">Tagy: </Label>
+											<div className="w-95 m-b-10">
+												<Select
+													value={this.state.tags}
+													isDisabled={this.state.defaults.tags.fixed||this.state.viewOnly}
+													isMulti
+													onChange={(tags)=>this.setState({tags})}
+													options={this.state.allTags}
+													styles={invisibleSelectStyleNoArrow}
+													/>
+											</div>
+
+										<Label className="form-label">Deadline</Label>
+										<div className="">
+											<input
+												className='form-control hidden-input'
+												placeholder="Status change date"
+												type="datetime-local"
+												disabled={this.state.viewOnly}
+												value={this.state.deadline || ""}
+												onChange={(e)=>{
+													this.setState({deadline:e.target.value})}
+												}
+												/>
+										</div>
+									</div>
+								}
+						</div>
+
+					</div>
+
+				</div>
 
 							<button
 								className="btn pull-right"

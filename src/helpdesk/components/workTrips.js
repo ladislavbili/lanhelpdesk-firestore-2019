@@ -56,7 +56,7 @@ export default class Prace extends Component {
 							<table className="table m-t--30">
 								<thead>
 									<tr>
-										<th>
+										<th style={{fontSize: "14px", fontFamily: "Segoe UI Bold", color: "#333"}}>
 											Výjazd
 										</th>
 										<th>Rieši</th>

@@ -3,7 +3,7 @@ import Select from 'react-select';
 import { Button, FormGroup, Label, Input,Modal, ModalBody, ModalFooter } from 'reactstrap';
 import { storageHelpProjectsStart } from '../../redux/actions';
 import {toSelArr} from '../../helperFunctions';
-import {invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
+import {selectStyle} from '../../scss/selectStyles';
 import {rebase} from '../../index';
 import { connect } from "react-redux";
 
@@ -58,25 +58,25 @@ class FilterAdd extends Component{
 
         <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
             <ModalBody>
-              <FormGroup>
+              <FormGroup className="m-t-15">
                 <Label>Filter name</Label>
                 <Input type="text" className="from-control" placeholder="Enter filter name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
               </FormGroup>
+
               { this.props.currentUser.userData.role.value > 1 &&
                 <FormGroup>
-                  <Label for="public">Public (everyone see this filter)</Label>
                   <Input type="checkbox" id="public" checked={this.state.public} onChange={(e)=>this.setState({public:!this.state.public })} />
+                  <Label for="public" className="p-l-15">Public (everyone see this filter)</Label>
                 </FormGroup>
               }
 
               <FormGroup>
-                <Label for="global">Global (shown in all projects)</Label>
                 <Input type="checkbox" id="global" checked={this.state.global} onChange={(e)=>this.setState({global:!this.state.global })} />
+                <Label for="global" className="p-l-15">Global (shown in all projects)</Label>
               </FormGroup>
 
-              <div className="row p-r-10">
-                <Label className="col-3 col-form-label">Projekt</Label>
-                <div className="col-9">
+              <div className="m-b-10">
+                <Label className="form-label">Projekt</Label>
                   <Select
                     placeholder="Vyberte projekt"
                     value={this.state.project}
@@ -92,14 +92,13 @@ class FilterAdd extends Component{
                       let permission = project.permissions.find((permission)=>permission.user===curr.id);
                       return permission && permission.read;
                     })}
-                    styles={invisibleSelectStyleNoArrow}
+                    styles={selectStyle}
                     />
-                </div>
               </div>
 
               <FormGroup>
-                <Label for="dashboard">Dashboard (shown in dashboard)</Label>
                 <Input type="checkbox" id="dashboard" checked={this.state.dashboard} onChange={(e)=>this.setState({dashboard:!this.state.dashboard })} />
+                <Label for="dashboard" className="p-l-15">Dashboard (shown in dashboard)</Label>
               </FormGroup>
 
 

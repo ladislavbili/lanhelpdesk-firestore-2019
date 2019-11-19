@@ -77,17 +77,17 @@ export default class Sidebar extends Component {
 								this.state.projects.map((project)=>
 								<Nav vertical key={project.id}>
 									<NavItem key={project.id}  className="row">
-									<div className={classnames("sidebar-icon", {"active" : this.props.location.pathname.includes(`${project.id}/all`)})}
-										onClick={() => {this.setState({projectEdit: project, openedEdit: true})}}
-										>
-												<i className="fa fa-cog"/>
-										</div>
 										<Link
 											className="sidebar-menu-item"
 											key={project.id}
 											to={{ pathname: `/projects/${project.id}/all` }}>
 											{project.title}
 										</Link>
+									<div className={classnames("sidebar-icon", {"active" : this.props.location.pathname.includes(`${project.id}/all`)})}
+										onClick={() => {this.setState({projectEdit: project, openedEdit: true})}}
+										>
+												<i className="fa fa-cog"/>
+										</div>
 									</NavItem>
 									{
 										this.props.location.pathname.split("/")[2] === project.id &&
@@ -95,18 +95,18 @@ export default class Sidebar extends Component {
 												if (mil.project === project.id){
 													return (
 														<NavItem key={mil.id}  className="row " >
-															<div
-																className={classnames("sidebar-align sidebar-icon", {"active" : this.props.location.pathname.includes(project.id) && this.props.location.pathname.includes(mil.id)})}
-																onClick={() => {this.setState({milestoneEdit: mil, openMilestoneEdit: true})}}
-																>
-																	<i className="fa fa-cog"/>
-															</div>
 															<Link
 																className="sidebar-menu-item"
 																key={mil.id}
 																to={{ pathname: `/projects/${project.id}/${mil.id}` }}>
 																{mil.title}
 															</Link>
+															<div
+																className={classnames("sidebar-align sidebar-icon", {"active" : this.props.location.pathname.includes(project.id) && this.props.location.pathname.includes(mil.id)})}
+																onClick={() => {this.setState({milestoneEdit: mil, openMilestoneEdit: true})}}
+																>
+																	<i className="fa fa-cog"/>
+															</div>
 														</NavItem>
 												)
 												}

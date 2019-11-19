@@ -299,6 +299,16 @@ class Sidebar extends Component {
 										{
 											filters.map((item)=>
 											<NavItem key={item.id} className="row">
+												<Link
+													className="sidebar-menu-item"
+													to={{ pathname: `/helpdesk/taskList/i/`+item.id }} onClick={()=>{
+														this.setState({filterID:item.id,filterData:item});
+														this.props.setFilter({
+															...item.filter,
+															updatedAt:(new Date()).getTime()
+														});
+													}}>{item.title}</Link>
+
 												<div className={classnames("sidebar-icon", {"active" : this.props.location.pathname.includes(item.id)})}
 													onClick={() => {
 														if (this.props.location.pathname.includes(item.id)){
@@ -313,15 +323,6 @@ class Sidebar extends Component {
 														<i className="fa fa-cog"/>
 												</div>
 
-												<Link
-													className="sidebar-menu-item"
-													to={{ pathname: `/helpdesk/taskList/i/`+item.id }} onClick={()=>{
-														this.setState({filterID:item.id,filterData:item});
-														this.props.setFilter({
-															...item.filter,
-															updatedAt:(new Date()).getTime()
-														});
-													}}>{item.title}</Link>
 
 											</NavItem>
 

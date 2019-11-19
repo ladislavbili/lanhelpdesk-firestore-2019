@@ -40,31 +40,31 @@ export default class Sidebar extends Component {
 				<div className="scrollable fit-with-header">
 					<Nav vertical>
 						<NavItem key={0}  className="row">
-							<div className={classnames("sidebar-icon", {"active" : this.props.location.pathname.includes("mail-notifications")})}
-								onClick={() => {this.setState({openedEditNotifications: true})}}
-								>
-									<i className="fa fa-cog"/>
-							</div>
 							<Link
 								className="sidebar-menu-item"
 								key={0}
 								to={{ pathname: `/monitoring/mail-notifications`  }}>
 								Mail notifications
 							</Link>
+							<div className={classnames("sidebar-icon", {"active" : this.props.location.pathname.includes("mail-notifications")})}
+								onClick={() => {this.setState({openedEditNotifications: true})}}
+								>
+									<i className="fa fa-cog"/>
+							</div>
 						</NavItem>
 
 						<NavItem key={1}  className="row">
-						<div className={classnames("sidebar-icon", {"active" : this.props.location.pathname.includes("mail-servers")})}
-							onClick={() => {this.setState({openedEditServers: true})}}
-							>
-									<i className="fa fa-cog"/>
-							</div>
 							<Link
 								className=" sidebar-menu-item"
 								key={1}
 								to={{ pathname: `/monitoring/mail-servers`}}>
 								Mail servers
 							</Link>
+						<div className={classnames("sidebar-icon", {"active" : this.props.location.pathname.includes("mail-servers")})}
+							onClick={() => {this.setState({openedEditServers: true})}}
+							>
+									<i className="fa fa-cog"/>
+							</div>
 						</NavItem>
 					</Nav>
 

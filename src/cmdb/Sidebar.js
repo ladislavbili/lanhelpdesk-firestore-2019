@@ -98,12 +98,12 @@ class Sidebar extends Component {
 							this.state.sidebar
 							.map((item)=>
 								<NavItem key={item.id}  className="row">
+									<Link className= "sidebar-menu-item" to={{ pathname: `/cmdb/i/`+item.url }}>{item.title}</Link>
 									<div className={classnames("sidebar-icon", {"active" : this.props.location.pathname.includes(item.url)})}
 										onClick={() => this.props.history.push('/cmdb/edit/'+item.id)}
 										>
 										<i className="fa fa-cog"/>
 									</div>
-									<Link className= "sidebar-menu-item" to={{ pathname: `/cmdb/i/`+item.url }}>{item.title}</Link>
 								</NavItem>
 							)
 						}
