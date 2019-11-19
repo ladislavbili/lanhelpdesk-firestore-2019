@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {NavItem, Nav, Modal, Button} from 'reactstrap';
+import {NavItem, Nav, Modal } from 'reactstrap';
 import { NavLink as Link } from 'react-router-dom';
 
 import SelectPage from '../components/SelectPage';

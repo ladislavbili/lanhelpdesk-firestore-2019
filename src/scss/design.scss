@@ -595,7 +595,9 @@ tr:last-child{
 
 .hidden-input{
 	background-color: inherit;
-	border-width: 0;
+  border-width: 1px;
+  border-color: transparent;
+  border-radius: 0px;
 	box-shadow: none;
   width: 100%;
 }
@@ -603,8 +605,6 @@ tr:last-child{
 .hidden-input:focus{
   background-color: white;
   color: inherit;
-  border-radius: 0px;
-  border-width: 1px;
   border-color: $basic-button-color;
 	box-shadow: none !important;
 }

@@ -347,7 +347,7 @@ export default class TaskAdd extends Component{
 				<div>
 					{!this.state.viewOnly && <div className="m-b-15">
 						{
-							this.state.statuses.sort((item1,item2)=>{
+							this.state.statuses.filter((status)=>status.action!=='invoiced').sort((item1,item2)=>{
 								if(item1.order &&item2.order){
 									return item1.order > item2.order? 1 :-1;
 								}

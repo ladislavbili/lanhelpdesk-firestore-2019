@@ -121,8 +121,10 @@ class Filter extends Component {
 
     deleteFilter(){
       if(window.confirm("Are you sure?")&& this.props.filterID!==null){
+        this.props.resetFilter();
+        this.props.close();
+        this.props.history.push('/helpdesk/taskList/i/all');
         rebase.removeDoc('/help-filters/'+this.props.filterID).then(()=>{
-          this.props.resetFilter();
           this.setState({
             status:[],
             requester:{id:null,label:'Žiadny',value:null},
@@ -136,8 +138,7 @@ class Filter extends Component {
             pendingDateFrom:'',
             pendingDateTo:'',
             public:false,
-          });
-          this.applyFilter();
+          },this.applyFilter.bind(this));
         });
       }
     }

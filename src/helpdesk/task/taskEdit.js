@@ -25,14 +25,14 @@ import classnames from "classnames";
 import {rebase, database} from '../../index';
 import firebase from 'firebase';
 import ck4config from '../../scss/ck4config';
+import datePickerConfig from '../../scss/datePickerConfig';
+import PendingPicker from '../components/pendingPicker';
 import {toSelArr, snapshotToArray, timestampToString, sameStringForms} from '../../helperFunctions';
 import { storageCompaniesStart, storageHelpPricelistsStart, storageHelpPricesStart,storageHelpProjectsStart, storageHelpStatusesStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageHelpTasksStart, storageHelpUnitsStart,storageHelpWorkTypesStart, storageMetadataStart, storageUsersStart, storageHelpMilestonesStart, storageHelpTripTypesStart } from '../../redux/actions';
 import {invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
 
-const oneDay = 24*60*60*1000;
-const noMilestone = {id:null,value:null,title:'None',label:'None'};
+const noMilestone = {id:null,value:null,title:'None',label:'None',startsAt:null};
 const booleanSelects = [{value:false,label:'No'},{value:true,label:'Yes'}];
-
 const noDef={
 	status:{def:false,fixed:false, value: null},
 	tags:{def:false,fixed:false, value: []},
@@ -79,8 +79,10 @@ class TaskEdit extends Component {
 			status:null,
 			statusChange:null,
 			deadline:null,
-			closeDate:"",
-			pendingDate:"",
+			closeDate:null,
+			pendingDate:null,
+			pendingChangable:false,
+			invoicedDate:'',
 			reminder:null,
 			project:null,
 			tags:[],
@@ -99,6 +101,8 @@ class TaskEdit extends Component {
 			search: '',
 			openCopyModal: false,
 			toggleTab:"1",
+			pendingOpen:false,
+			pendingStatus:null,
 
 			openUserAdd: false,
 			openCompanyAdd: false,
@@ -164,15 +168,12 @@ class TaskEdit extends Component {
 		let taskID = this.props.match.params.taskID;
     this.setState({saving:true});
 
-		let pendingDate = null;
-		if(this.state.status.action==='pending'){
-			pendingDate = isNaN(new Date(this.state.pendingDate).getTime()) ? ((new Date()).getTime()+oneDay) : new Date(this.state.pendingDate).getTime()
+		let statusAction = this.state.status.action;
+		let invoicedDate = null;
+		if(statusAction==='invoiced'){
+			invoicedDate = isNaN(new Date(this.state.invoicedDate).getTime()) ? (new Date()).getTime() : new Date(this.state.invoicedDate).getTime()
 		}
 
-		let closeDate = null;
-		if(this.state.status.action==='close'){
-			closeDate = isNaN(new Date(this.state.closeDate).getTime()) ? (new Date()).getTime() : new Date(this.state.closeDate).getTime()
-		}
 
     let body = {
       title: this.state.title,
@@ -182,8 +183,6 @@ class TaskEdit extends Component {
 			assignedTo: this.state.assignedTo.map((item)=>item.id),
       description: this.state.description,
       status: this.state.status?this.state.status.id:null,
-			deadline: this.state.deadline!==null?this.state.deadline.unix()*1000:null,
-			//reminder: isNaN(new Date(this.state.reminder).getTime()) ? null : (new Date(this.state.reminder).getTime()),
       statusChange: this.state.statusChange,
       project: this.state.project?this.state.project.id:null,
       pausal: this.state.pausal.value,
@@ -193,8 +192,11 @@ class TaskEdit extends Component {
 			repeat: this.state.repeat!==null?taskID:null,
 			milestone:this.state.milestone.id,
 			attachments:this.state.attachments,
-			closeDate,
-			pendingDate,
+			deadline: this.state.deadline!==null?this.state.deadline.unix()*1000:null,
+			closeDate: (this.state.closeDate!==null && (statusAction==='close'||statusAction==='invoiced'))?this.state.closeDate.unix()*1000:null,
+			pendingDate: (this.state.pendingDate!==null && statusAction==='pending')?this.state.pendingDate.unix()*1000:null,
+			pendingChangable: this.state.pendingChangable,
+			invoicedDate,
     }
 
     rebase.updateDoc('/help-tasks/'+taskID, body)
@@ -371,7 +373,7 @@ class TaskEdit extends Component {
 		}
 
 		let permission = project.permissions.find((permission)=>permission.user===props.currentUser.id);
-		let viewOnly = (permission===undefined || !permission.write) && props.currentUser.userData.role.value===0;
+		let viewOnly = (status && status.action==='invoiced' && props.currentUser.userData.role.value!==3 && !permission.isAdmin )||((permission===undefined || !permission.write) && props.currentUser.userData.role.value===0);
 		let newState = {
 			statuses,
 			projects,
@@ -394,8 +396,9 @@ class TaskEdit extends Component {
 			statusChange:task.statusChange?task.statusChange:null,
 			createdAt:task.createdAt?task.createdAt:(new Date()).getTime(),
 			deadline: task.deadline!==null?moment(task.deadline):null,
-			closeDate: task.closeDate!==null && task.closeDate!==undefined ?new Date(task.closeDate).toISOString().replace('Z',''):'',
-			pendingDate: task.pendingDate!==null && task.pendingDate!==undefined ?new Date(task.pendingDate).toISOString().replace('Z',''):'',
+			closeDate: task.closeDate!==null?moment(task.closeDate):null,
+			pendingDate: task.pendingDate!==null?moment(task.pendingDate):null,
+			invoicedDate: task.invoicedDate!==null && task.invoicedDate!==undefined ?new Date(task.invoicedDate).toISOString().replace('Z',''):'',
 			reminder: task.reminder?new Date(task.reminder).toISOString().replace('Z',''):'',
 			project:project?project:null,
 			company:company?company:null,
@@ -405,6 +408,7 @@ class TaskEdit extends Component {
 			milestone,
 			milestones,
 			attachments:task.attachments?task.attachments:[],
+			pendingChangable:task.pendingChangable===false? false : true,
 
 			viewOnly,
 			loading:false,
@@ -428,6 +432,7 @@ class TaskEdit extends Component {
 		}
 		let canAdd = this.props.currentUser.userData.role.value>0;
 		let canDelete = (permission && permission.delete)||this.props.currentUser.userData.role.value===3;
+		let canCopy = ((!permission || !permission.write) && this.props.currentUser.userData.role.value===0)||this.state.title==="" || this.state.status===null || this.state.project === null||this.state.saving;
 		let taskID = this.props.match.params.taskID;
 
 		let workTrips= this.state.workTrips.map((trip)=>{
@@ -491,7 +496,7 @@ class TaskEdit extends Component {
 								</button>
 							}
 							{
-								this.state.statuses.sort((item1,item2)=>{
+								this.state.statuses.filter((status)=>status.action!=='invoiced').sort((item1,item2)=>{
 					        if(item1.order &&item2.order){
 					          return item1.order > item2.order? 1 :-1;
 					        }
@@ -504,15 +509,14 @@ class TaskEdit extends Component {
 									onClick={()=>{
 										if(status.action==='pending'){
 											this.setState({
-												status,
-												statusChange:(new Date().getTime()),
-												pendingDate:new Date((new Date()).getTime()+oneDay).toISOString().replace('Z',''),
-											},this.submitTask.bind(this))
+												pendingStatus:status,
+												pendingOpen:true
+											})
 										}else if(status.action==='close'){
 											this.setState({
 												status,
 												statusChange:(new Date().getTime()),
-												closeDate: new Date().toISOString().replace('Z',''),
+												closeDate: moment(),
 											},this.submitTask.bind(this))
 										}
 										else{
@@ -525,7 +529,13 @@ class TaskEdit extends Component {
 							}
 							{this.state.project
 								&&
-								<TaskAdd history={this.props.history} project={this.state.project.id} triggerDate={this.state.projectChangeDate} task={this.state} disabled={this.canSave()}/>
+								<TaskAdd
+									history={this.props.history}
+									project={this.state.project.id}
+									triggerDate={this.state.projectChangeDate}
+									task={this.state}
+									disabled={canCopy}
+									/>
 							}
 						</div>
 						<div className="ml-auto center-hor">
@@ -547,7 +557,10 @@ class TaskEdit extends Component {
 							    	<input type="text" disabled={this.state.viewOnly} value={this.state.title} className="task-title-input text-extra-slim hidden-input" onChange={(e)=>this.setState({title:e.target.value},this.submitTask.bind(this))} placeholder="Enter task name" />
 									</span>
 									<div className="ml-auto center-hor">
-									<span className="label label-info" style={{backgroundColor:this.state.status && this.state.status.color?this.state.status.color:'white'}}>{this.state.status?this.state.status.title:'Neznámy status'}</span>
+									<span className="label label-info"
+										style={{backgroundColor:this.state.status && this.state.status.color?this.state.status.color:'white'}}>
+										{this.state.status?(this.state.status.action==='invoiced'?(this.state.status.title+' at '+timestampToString(this.state.invoicedDate)):this.state.status.title):'Neznámy status'}
+									</span>
 									</div>
 								</div>
 							</div>
@@ -565,7 +578,43 @@ class TaskEdit extends Component {
 												{this.state.createdAt?(timestampToString(this.state.createdAt)):''}
 											</span>
 										</p>
-										<p className="text-muted ml-auto">{this.state.statusChange?('Status changed at ' + timestampToString(this.state.statusChange)):''}</p>
+										<p className="text-muted ml-auto">
+											{(()=>{
+												if(this.state.status && this.state.status.action==='pending'){
+													return (<span className="flex-row">
+														<span className="center-hor" style={{width:'8em'}}>
+															Pending date:
+														</span>
+														<DatePicker
+															selected={this.state.pendingDate}
+															disabled={!this.state.status || this.state.status.action!=='pending'||this.state.viewOnly||!this.state.pendingChangable}
+															onChange={date => {
+																this.setState({ pendingDate: date },this.submitTask.bind(this));
+															}}
+															placeholderText="No pending date"
+															{...datePickerConfig}
+															/>
+													</span>)
+												}else if(this.state.status && (this.state.status.action==='close'||this.state.status.action==='invoiced')){
+													return (<span className="flex-row">
+														<span className="center-hor" style={{width:'8em'}}>
+															Closed at:
+														</span>
+														<DatePicker
+															selected={this.state.closeDate}
+															disabled={!this.state.status || this.state.status.action!=='close'||this.state.viewOnly}
+															onChange={date => {
+																this.setState({ closeDate: date },this.submitTask.bind(this));
+															}}
+															placeholderText="No pending date"
+															{...datePickerConfig}
+															/>
+													</span>)
+												}else{
+														return this.state.statusChange?('Status changed at ' + timestampToString(this.state.statusChange)):''
+												}
+											})()}
+										</p>
 									</div>
 
 								</div>
@@ -640,7 +689,7 @@ class TaskEdit extends Component {
 													columns={this.props.columns}
 													/>
 													{(this.props.listView===undefined ||!this.props.listView) && <div className="form-group row">
-														<label className="col-3 col-form-label">Mimo pracovných hodín</label>
+														<label className="col-3 col-form-label">Mimo PH</label>
 														<div className="col-9">
 															<Select
 																value={this.state.overtime}
@@ -707,9 +756,16 @@ class TaskEdit extends Component {
 															isDisabled={this.state.viewOnly}
 															value={this.state.milestone}
 															onChange={(milestone)=> {
-																this.setState({milestone},this.submitTask.bind(this));
+																if(this.state.status.action==='pending'){
+																	if(milestone.startsAt!==null){
+																		this.setState({milestone,pendingDate:moment(milestone.startsAt),pendingChangable:false},this.submitTask.bind(this));
+																	}else{
+																		this.setState({milestone, pendingChangable:true }, this.submitTask.bind(this));
+																	}
+																}else{
+																	this.setState({milestone},this.submitTask.bind(this));
 																}
-															}
+															}}
 															options={this.state.milestones.filter((milestone)=>milestone.id===null || (this.state.project!== null && milestone.project===this.state.project.id))}
 															styles={invisibleSelectStyleNoArrow}
 															/>
@@ -731,22 +787,6 @@ class TaskEdit extends Component {
 
 										<div className="col-lg-4">
 											<div className="row p-r-10">
-												<Label className="col-3 col-form-label">Pending</Label>
-												<div className="col-9">
-													{/*className='form-control hidden-input'*/}
-													<input
-														className='form-control hidden-input'
-														placeholder="Pending date"
-														type="datetime-local"
-														disabled={!this.state.status || this.state.status.action!=='pending'||this.state.viewOnly}
-														value={this.state.pendingDate}
-														onChange={(e)=>{
-															this.setState({pendingDate:e.target.value},this.submitTask.bind(this))}
-														}
-														/>
-												</div>
-											</div>
-											<div className="row p-r-10">
 												<Label className="col-3 col-form-label">Deadline</Label>
 												<div className="col-9">
 													<DatePicker
@@ -755,54 +795,17 @@ class TaskEdit extends Component {
 														onChange={date => {
 															this.setState({ deadline: date },this.submitTask.bind(this));
 														}}
-														locale="en-gb"
 														placeholderText="No deadline"
-														showTimeSelect
-														className="form-control hidden-input"
-											      todayButton="Today"
-														timeFormat="HH:mm"
-														timeIntervals={15}
-														dateFormat="HH:mm DD.MM.YYYY"
-														/>
-												</div>
-											</div>
-											<div className="row p-r-10">
-												<Label className="col-3 col-form-label">Close date</Label>
-												<div className="col-9">
-													<input
-														className='form-control hidden-input'
-														placeholder="Close date"
-														type="datetime-local"
-														disabled={!this.state.status || this.state.status.action!=='close'||this.state.viewOnly}
-														value={this.state.closeDate}
-														onChange={(e)=>{
-															this.setState({closeDate:e.target.value},this.submitTask.bind(this))}
-														}
+														{...datePickerConfig}
 														/>
 												</div>
 											</div>
 										</div>
 									</div>
 
- 								{ false && <div className="row">
-									<label className="col-5 col-form-label text-slim">Pripomienka</label>
-									<div className="col-7">
-										{/*className='form-control hidden-input'*/}
-										<input
-											className='form-control'
-											placeholder="Status change date"
-											type="datetime-local"
-											disabled={this.state.viewOnly}
-											value={this.state.reminder}
-											onChange={(e)=>{
-												this.setState({reminder:e.target.value},this.submitTask.bind(this))}
-											}
-											/>
-									</div>
-								</div>}
-
 								<Label className="m-t-5">Popis</Label>
-									<CKEditor
+									{this.state.viewOnly?(<div dangerouslySetInnerHTML={{__html:this.state.description }} />):
+										(<CKEditor
 										data={this.state.description}
 										onInstanceReady={(instance)=>{
 										}}
@@ -813,7 +816,7 @@ class TaskEdit extends Component {
 										config={{
 											...ck4config
 										}}
-										/>
+										/>)}
 
 									{(this.props.listView === undefined || this.props.listView===false) && <div className="row">
 									<div className="center-hor"><Label className="center-hor">Tagy: </Label></div>
@@ -888,6 +891,23 @@ class TaskEdit extends Component {
 											}}/>
 				          </ModalBody>
 				        </Modal>
+								<PendingPicker
+									open={this.state.pendingOpen}
+									prefferedMilestone={this.state.milestone}
+									milestones={this.state.milestones.filter((milestone)=>this.state.project!== null && milestone.project===this.state.project.id && milestone.startsAt!==null)}
+									closeModal={()=>this.setState({pendingOpen:false})}
+									savePending={(pending)=>{
+										this.setState({
+											pendingOpen:false,
+											pendingStatus:null,
+											status:this.state.pendingStatus,
+											pendingDate:pending.milestoneActive?moment(pending.milestone.startsAt):pending.pendingDate,
+											milestone:pending.milestoneActive?pending.milestone:this.state.milestone,
+											pendingChangable:!pending.milestoneActive,
+											statusChange:(new Date().getTime()),
+										},this.submitTask.bind(this))
+									}}
+								/>
 
 
 								<Prace

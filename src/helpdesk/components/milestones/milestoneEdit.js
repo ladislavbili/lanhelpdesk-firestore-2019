@@ -3,7 +3,7 @@ import { Modal, ModalBody, ModalFooter, Button, FormGroup, Label, Input } from '
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import { connect } from "react-redux";
-import { storageHelpMilestonesStart} from '../../../redux/actions';
+import { storageHelpMilestonesStart, storageHelpTasksStart, storageHelpStatusesStart} from '../../../redux/actions';
 import {rebase} from '../../../index';
 
 class MilestoneEdit extends Component{
@@ -21,7 +21,9 @@ class MilestoneEdit extends Component{
   }
 
 	storageLoaded(props){
-		return props.milestonesLoaded
+		return props.milestonesLoaded &&
+    props.tasksLoaded &&
+    props.statusesLoaded
 	}
 
   componentWillReceiveProps(props){
@@ -35,14 +37,19 @@ class MilestoneEdit extends Component{
 		if(!this.props.milestonesActive){
 			this.props.storageHelpMilestonesStart();
 		}
-		this.setData(this.props);
+    if(!this.props.tasksActive){
+			this.props.storageHelpTasksStart();
+		}
+    if(!this.props.statusesActive){
+      this.props.storageHelpStatusesStart();
+    }
+    this.setData(this.props);
 	}
 
 	setData(props){
 		if(!this.storageLoaded(props)){
 			return;
 		}
-
 		let milestone = props.milestones.find((milestone)=>milestone.id===props.item.id);
 		this.setState({
 			title: milestone.title,
@@ -140,6 +147,10 @@ class MilestoneEdit extends Component{
                   };
                   rebase.updateDoc(`/help-milestones/${this.props.item.id}`, body)
 									.then(()=>{
+                    if(body.startsAt){
+                      let milestoneTasks = this.props.tasks.map((task)=>{return {...task,status:this.props.statuses.find((status)=>status.id===task.status)}}).filter((task)=>task.milestone === this.props.item.id && task.status.action==='pending');
+                      milestoneTasks.map((task)=>rebase.updateDoc(`/help-tasks/${task.id}`, {pendingDate:body.startsAt}))
+                    }
 										this.setState({saving:false, opened: false})
 										this.props.triggerChange();
 										});
@@ -153,10 +164,12 @@ class MilestoneEdit extends Component{
   }
 }
 
-const mapStateToProps = ({ storageHelpMilestones, filterReducer }) => {
+const mapStateToProps = ({ storageHelpMilestones,storageHelpTasks, storageHelpStatuses, filterReducer }) => {
 	const { milestonesActive, milestones, milestonesLoaded } = storageHelpMilestones;
+	const { tasksActive, tasks, tasksLoaded } = storageHelpTasks;
+  const { statusesActive, statuses, statusesLoaded } = storageHelpStatuses;
 	const { project } = filterReducer;
-	return { milestonesActive, milestones, milestonesLoaded, project};
+	return { milestonesActive, milestones, milestonesLoaded, tasksActive, tasks, tasksLoaded, statusesActive, statuses, statusesLoaded ,project };
 };
 
-export default connect(mapStateToProps, { storageHelpMilestonesStart })(MilestoneEdit);
+export default connect(mapStateToProps, { storageHelpMilestonesStart, storageHelpTasksStart, storageHelpStatusesStart })(MilestoneEdit);

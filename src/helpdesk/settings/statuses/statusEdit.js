@@ -52,7 +52,7 @@ class StatusEdit extends Component{
 
   setData(props){
     let data = props.statuses.find((status)=>status.id===props.match.params.id);
-    let action = actions.find((action)=>action.value===data.action);
+    let action = actions.concat([{label:'Invoiced (only one needed, but necessary)',value:'invoiced'}]).find((action)=>action.value===data.action);
     if(!action){
       action = actions[0];
     }
@@ -93,7 +93,8 @@ class StatusEdit extends Component{
             id="actionIfSelected"
             name="Action"
             styles={selectStyle}
-            options={actions}
+            isDisabled={this.state.action.value==='invoiced'}
+            options={this.state.action.value==='invoiced'?actions.concat([{label:'Invoiced (only one needed, but necessary)',value:'invoiced'}]):actions}
             value={this.state.action}
             onChange={e =>{ this.setState({ action: e }); }}
               />
@@ -121,13 +122,13 @@ class StatusEdit extends Component{
                 .then(()=>{this.setState({saving:false})});
             }}>{this.state.saving?'Saving status...':'Save status'}</Button>
 
-          <Button className="btn-red ml-auto" disabled={this.state.saving} onClick={()=>{
+          {this.state.action.value!=='invoiced' && <Button className="btn-red ml-auto" disabled={this.state.saving} onClick={()=>{
               if(window.confirm("Are you sure?")){
                 rebase.removeDoc('/help-statuses/'+this.props.match.params.id).then(()=>{
                   this.props.history.goBack();
                 });
               }
-              }}>Delete</Button>
+              }}>Delete</Button>}
           </div>
         </div>
     );

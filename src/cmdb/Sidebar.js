@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Row, Col,NavItem, Nav, Button} from 'reactstrap';
+import { NavItem, Nav, Button} from 'reactstrap';
 import { NavLink as Link } from 'react-router-dom';
 import Select from "react-select";
 import { connect } from "react-redux";
