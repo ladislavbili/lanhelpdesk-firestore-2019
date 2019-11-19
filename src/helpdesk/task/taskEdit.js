@@ -586,6 +586,7 @@ class TaskEdit extends Component {
 															Pending date:
 														</span>
 														<DatePicker
+															className="form-control hidden-input"
 															selected={this.state.pendingDate}
 															disabled={!this.state.status || this.state.status.action!=='pending'||this.state.viewOnly||!this.state.pendingChangable}
 															onChange={date => {
@@ -601,6 +602,7 @@ class TaskEdit extends Component {
 															Closed at:
 														</span>
 														<DatePicker
+															className="form-control hidden-input"
 															selected={this.state.closeDate}
 															disabled={!this.state.status || this.state.status.action!=='close'||this.state.viewOnly}
 															onChange={date => {
@@ -790,6 +792,7 @@ class TaskEdit extends Component {
 												<Label className="col-3 col-form-label">Deadline</Label>
 												<div className="col-9">
 													<DatePicker
+														className="form-control hidden-input"
 														selected={this.state.deadline}
 														disabled={this.state.viewOnly}
 														onChange={date => {

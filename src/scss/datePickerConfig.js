@@ -1,7 +1,6 @@
 const config = {
   locale:"en-gb",
   showTimeSelect:true,
-  className:"form-control hidden-input",
   todayButton:"Today",
   timeFormat:"HH:mm",
   timeIntervals:15,

@@ -667,6 +667,7 @@ export default class TaskAdd extends Component{
 							/>}
 
 								<Prace
+									extended={this.state.toggleTab==='2'}
 									showAll={this.state.toggleTab==='2'}
 									disabled={this.state.viewOnly}
 									taskAssigned={this.state.assignedTo}

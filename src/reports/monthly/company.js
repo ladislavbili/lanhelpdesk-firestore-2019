@@ -38,9 +38,8 @@ class MothlyReportsCompany extends Component {
 			!sameStringForms(props.users,this.props.users)||
 			!sameStringForms(props.materials,this.props.materials)||
 			!sameStringForms(props.taskWorks,this.props.taskWorks)||
-			(props.year!==null && this.props.year===null)||
-			(props.year && this.props.year && props.year.value!==this.props.year.value)||
-			(props.month && this.props.month && props.month.value!==this.props.month.value)||
+			props.from!==this.props.from||
+			props.to!==this.props.to||
 			(props.project!==this.props.project)||
 			(props.milestone!==this.props.milestone)
 		){
@@ -152,8 +151,8 @@ class MothlyReportsCompany extends Component {
 				(work.task.assignedTo && filter.requester==='cur' && work.task.assignedTo.map((item)=>item.id).includes(props.currentUser.id))) &&
 			(filter.workType===null||(work.workType.id===filter.workType)) &&
 			(props.project===null || (work.task.project && work.task.project===props.project)) &&
-			(props.year && props.year.value === (new Date(work.task.closeDate)).getFullYear()) &&
-			(props.month && props.month.value === (new Date(work.task.closeDate)).getMonth()+1) &&
+			(props.from && props.from <= work.task.closeDate) &&
+			(props.to && props.to >= work.task.closeDate) &&
 			(filter.statusDateFrom===''||work.task.statusChange >= filter.statusDateFrom) &&
 			(filter.statusDateTo===''||work.task.statusChange <= filter.statusDateTo) &&
 			(filter.closeDateFrom===undefined || filter.closeDateFrom===''||(work.task.closeDate && work.task.closeDate >= filter.closeDateFrom)) &&
@@ -192,7 +191,7 @@ class MothlyReportsCompany extends Component {
 			}
 		})
 		let filter = props.filter;
-		newMaterials = newMaterials.filter((material)=>
+		let xnewMaterials = newMaterials.filter((material)=>
 			(filter.status.length===0||(material.task.status && filter.status.includes(material.task.status.id))) &&
 			(filter.requester===null||(material.task.requester && material.task.requester.id===filter.requester)
 				||(material.task.requester && filter.requester==='cur' && material.task.requester.id === props.currentUser.id)) &&
@@ -201,8 +200,8 @@ class MothlyReportsCompany extends Component {
 			(filter.assigned===null||(material.task.assignedTo && material.task.assignedTo.map((item)=>item.id).includes(filter.assigned))
 				||(material.task.assignedTo && filter.requester==='cur' && material.task.assignedTo.map((item)=>item.id).includes(props.currentUser.id))) &&
 			(props.project===null || (material.task.project && material.task.project===props.project)) &&
-			(props.year!==null && props.year.value === (new Date(material.task.closeDate)).getFullYear()) &&
-			(props.month!==null && props.month.value === (new Date(material.task.closeDate)).getMonth()+1) &&
+			(props.from && props.from <= material.task.closeDate) &&
+			(props.to && props.to >= material.task.closeDate) &&
 			(filter.statusDateFrom===''||material.task.statusChange >= filter.statusDateFrom) &&
 			(filter.statusDateTo===''||material.task.statusChange <= filter.statusDateTo) &&
 			(filter.closeDateFrom===undefined || filter.closeDateFrom===''||(material.task.closeDate && material.task.closeDate >= filter.closeDateFrom)) &&
@@ -235,7 +234,7 @@ class MothlyReportsCompany extends Component {
 					<div style={{maxWidth:500}}>
 						<MonthSelector />
 					</div>
-					{ this.props.month!==null && this.props.year!==null &&
+
 						<div className="p-20">
 						<table className="table m-b-10">
 							<thead>
@@ -257,10 +256,9 @@ class MothlyReportsCompany extends Component {
 							</tbody>
 							</table>
 					</div>
-				}
-					{this.props.month!==null && this.props.year!==null && this.state.showCompany!==null &&
+					{this.state.showCompany!==null &&
 						<div className="p-20">
-							<h2>Mesačný výkaz - {this.state.showCompany.title} {this.props.month.label} {this.props.year.value}</h2>
+							<h2>Výkaz - {this.state.showCompany.title} {timestampToString(this.props.from)} - {timestampToString(this.props.to)}</h2>
 							<h3>Služby</h3>
 							<hr />
 							<div className="m-b-30">
@@ -404,7 +402,7 @@ class MothlyReportsCompany extends Component {
 
 const mapStateToProps = ({ filterReducer,reportReducer,userReducer, storageCompanies, storageHelpTasks, storageHelpStatuses, storageHelpTaskTypes, storageHelpUnits, storageUsers, storageHelpTaskMaterials, storageHelpTaskWorks }) => {
 	const { filter, project, milestone } = filterReducer;
-	const { month, year } = reportReducer;
+	const { from, to } = reportReducer;
 
 	const { companiesActive, companies, companiesLoaded } = storageCompanies;
 	const { tasksActive, tasks, tasksLoaded } = storageHelpTasks;
@@ -416,7 +414,7 @@ const mapStateToProps = ({ filterReducer,reportReducer,userReducer, storageCompa
 	const { taskWorksActive, taskWorks, taskWorksLoaded } = storageHelpTaskWorks;
 
 	return {
-		month, year,
+		from, to,
 		filter, project, milestone,
 		currentUser:userReducer,
 		companiesActive, companies, companiesLoaded,

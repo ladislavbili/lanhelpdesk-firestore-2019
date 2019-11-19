@@ -68,6 +68,18 @@ export default class Prace extends Component {
 		}
 	}
 
+	getCreationError(){
+		if(this.props.extended || (this.state.newWorkType!==null && this.state.newAssigned!==null)){
+			return ''
+		}else if(this.state.newWorkType===null && this.state.newAssigned===null){
+			return 'You must first assign the task to someone and pick task type!'
+		}else if(this.state.newWorkType===null){
+			return 'You must first pick task type!'
+		}else{
+			return 'You must first assign the task to someone!'
+		}
+	}
+
 	render() {
 		//const afterHours= this.props.company && this.state.newExtraWork ? this.props.company.pricelist.afterHours : 0;
 		return (
@@ -80,7 +92,9 @@ export default class Prace extends Component {
 										<th width="25">
 											Práce
 										</th>
-										<th style={{fontSize: "14px", fontFamily: "Segoe UI Bold", color: "#333"}}></th>
+										<th style={{color: "#ffc966"}}>
+											{this.getCreationError()}
+										</th>
 										{this.props.extended &&  <th style={{fontSize: "12px", fontFamily: "Segoe UI", fontWeight: "500", color: "#333"}} width="170">Rieši</th>}
 										{this.props.extended &&  <th width="100">Typ</th>}
 										<th width="100">Mn.</th>
