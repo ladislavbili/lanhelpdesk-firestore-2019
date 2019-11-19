@@ -19,6 +19,7 @@ import {invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
 
 const oneDay = 24*60*60*1000;
 const noMilestone = {id:null,value:null,title:'None',label:'None'};
+const booleanSelects = [{value:false,label:'No'},{value:true,label:'Yes'}];
 
 const noDef={
 	status:{def:false,fixed:false, value: null},
@@ -439,7 +440,7 @@ export default class TaskAdd extends Component{
 							}
 
 							{!this.state.viewOnly && <div className="col-lg-12 row m-b-10">
-								<div className="center-hor m-r-5"><Label className="center-hor">Assigned to: </Label></div>
+								<div className="center-hor m-r-5"><Label className="center-hor col-form-label">Assigned to: </Label></div>
 								<div className="f-1">
 									<Select
 										value={this.state.assignedTo}
@@ -568,11 +569,6 @@ export default class TaskAdd extends Component{
 						</div>
 
 						<div className="col-lg-4">
-
-
-
-
-
 						<Repeat
 								taskID={null}
 								repeat={this.state.repeat}
@@ -588,8 +584,9 @@ export default class TaskAdd extends Component{
 								}}
 								columns={true}
 								/>
-								<div className="row p-r-10">
-									<Label className="col-3 col-form-label">Milestone</Label>
+
+							<div className="row p-r-10 m-t-10">
+									<Label className="col-3 col-form-label m-t-3">Milestone</Label>
 									<div className="col-9">
 										<Select
 											isDisabled={this.state.viewOnly}
@@ -607,7 +604,7 @@ export default class TaskAdd extends Component{
 
 					</div>}
 
-						<Label className="m-t-5  m-b-10">Popis</Label>
+						<Label className="m-t-5 m-b-10 col-form-label">Popis</Label>
 							<CKEditor
 								data={this.state.description}
 								onChange={(e)=>{
@@ -647,8 +644,9 @@ export default class TaskAdd extends Component{
 								match={{params:{taskID:null}}}
 							/>}
 
-							{!this.state.viewOnly && <Nav tabs className="b-0 m-t-20 m-b-22 m-l--10">
-									<NavItem>
+							{!this.state.viewOnly &&
+								<Nav tabs className="b-0 m-t-20 m-b-22 m-l--10 flex p-t-1 p-b-1" style={{backgroundColor: "#faf9f8"}}>
+									<NavItem  className="p-t-5 p-b-5">
 										<NavLink
 											className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "")}
 											onClick={() => { this.setState({toggleTab:'1'}); }}
@@ -656,7 +654,8 @@ export default class TaskAdd extends Component{
 											Výkaz
 										</NavLink>
 									</NavItem>
-									<NavItem>
+									<div style={{borderRight:"2px solid #BDBDBD"}} className="m-t-5 m-b-5"></div>
+									<NavItem  className="p-t-5 p-b-5">
 										<NavLink
 											className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
 											onClick={() => { this.setState({toggleTab:'2'}); }}
@@ -832,7 +831,7 @@ export default class TaskAdd extends Component{
 						<div className="task-add-right-half pull-right">
 									{!this.state.viewOnly &&
 										<div>
-											<Label className="center-hor">Tagy: </Label>
+											<Label className="col-form-label">Tagy </Label>
 											<div className="w-95 m-b-10">
 												<Select
 													value={this.state.tags}
@@ -844,8 +843,8 @@ export default class TaskAdd extends Component{
 													/>
 											</div>
 
-										<Label className="form-label">Deadline</Label>
-										<div className="">
+										<Label className="col-form-label">Deadline</Label>
+										<div className="m-b-10">
 											<input
 												className='form-control hidden-input'
 												placeholder="Status change date"
@@ -855,6 +854,28 @@ export default class TaskAdd extends Component{
 												onChange={(e)=>{
 													this.setState({deadline:e.target.value})}
 												}
+												/>
+										</div>
+
+										<label className="col-form-label">Paušál</label>
+										<div className="w-95 m-b-10">
+											<Select
+												value={null}
+												isDisabled={false}
+												styles={invisibleSelectStyleNoArrow}
+												onChange={() => {}}
+												options={booleanSelects}
+												/>
+										</div>
+
+										<label className="col-form-label">Mimo PH</label>
+										<div className="w-95 m-b-10">
+											<Select
+												value={null}
+												disabled={false}
+												styles={invisibleSelectStyleNoArrow}
+												onChange={() => {}}
+												options={booleanSelects}
 												/>
 										</div>
 									</div>

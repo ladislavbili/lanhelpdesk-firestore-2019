@@ -56,10 +56,10 @@ export default class Prace extends Component {
 							<table className="table m-t--30">
 								<thead>
 									<tr>
-										<th style={{fontSize: "14px", fontFamily: "Segoe UI Bold", color: "#333"}}>
+										<th className="col-form-label">
 											Výjazd
 										</th>
-										<th>Rieši</th>
+										<th width="170">Rieši</th>
 										<th width="100">Mn.</th>
 										{this.props.showAll && <th width="100">Zľava %</th>}
 										<th className="t-a-c" width="100"></th>

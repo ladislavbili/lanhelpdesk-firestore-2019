@@ -623,7 +623,7 @@ class TaskEdit extends Component {
 
 								<hr className="m-t-5 m-b-5"/>
 								<div className="col-lg-12 row ">
-										<div className="center-hor m-r-5"><Label className="center-hor">Assigned to: </Label></div>
+										<div className="center-hor m-r-5"><Label className="center-hor col-form-label">Assigned to: </Label></div>
 										<div className="f-1">
 											<Select
 												value={this.state.assignedTo}
@@ -806,7 +806,7 @@ class TaskEdit extends Component {
 										</div>
 									</div>
 
-								<Label className="m-t-5">Popis</Label>
+								<Label className="m-t-5 col-form-label">Popis</Label>
 									{this.state.viewOnly?(<div dangerouslySetInnerHTML={{__html:this.state.description }} />):
 										(<CKEditor
 										data={this.state.description}

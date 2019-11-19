@@ -74,10 +74,10 @@ export default class Rozpocet extends Component {
 												checked={this.props.materials.length===this.state.selectedIDs.length}
 												onChange={()=>this.setState({selectedIDs:(this.props.materials.length===this.state.selectedIDs.length?[]:this.props.materials.map((item)=>item.id))})} />
 										</th>}
-										<th style={{fontSize: "14px", fontFamily: "Segoe UI Bold", color: "#333"}}>Materiál</th>
-										<th style={{fontSize: "12px", fontFamily: "Segoe UI", fontWeight: "500", color: "#333"}} width="60">Mn.</th>
-										<th width="120">Jednotka</th>
-										<th width="110">Cena</th>
+										<th className="col-form-label">Materiál</th>
+										<th style={{fontSize: "12px", fontFamily: "Segoe UI", fontWeight: "500", color: "#333"}} width="100">Mn.</th>
+										<th width="100">Jednotka</th>
+										<th width="100">Cena</th>
 										<th width="100" className="table-highlight-background">Nákup</th>
 										<th width="100" className="table-highlight-background">Marža</th>
 										{false && <th width="124">Predajná cena</th>}

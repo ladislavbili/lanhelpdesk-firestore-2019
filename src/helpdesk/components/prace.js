@@ -89,7 +89,7 @@ export default class Prace extends Component {
 							<table className="table m-t--30">
 								<thead>
 									<tr>
-										<th width="25" style={{fontSize: "14px", fontFamily: "Segoe UI Bold", color: "#333"}}>
+										<th width="25" className="col-form-label">
 											Práce
 										</th>
 										<th style={{color: "#ffc966"}}>
@@ -99,7 +99,7 @@ export default class Prace extends Component {
 										{this.props.extended &&  <th width="100">Typ</th>}
 										<th width="100">Mn.</th>
 										{this.props.showAll && <th width="100" className="table-highlight-background">Cena/Mn.</th>}
-										{this.props.showAll && <th width="60" className="table-highlight-background">Zlava</th>}
+										{this.props.showAll && <th width="100" className="table-highlight-background">Zlava</th>}
 										{false && <th width="130">Spolu</th>}
 										<th className="t-a-c" width="100"></th>
 									</tr>

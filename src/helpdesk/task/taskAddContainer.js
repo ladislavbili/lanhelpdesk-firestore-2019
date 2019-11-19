@@ -193,8 +193,8 @@ class TaskAddContainer extends Component{
 			}
 
 
-			<Modal size="width-1250"  isOpen={this.state.openAddTaskModal} toggle={()=>{this.setState({openAddTaskModal:!this.state.openAddTaskModal})}} >
-					<ModalBody>
+			<Modal size="width-1250" isOpen={this.state.openAddTaskModal} toggle={()=>{this.setState({openAddTaskModal:!this.state.openAddTaskModal})}} >
+					<ModalBody style={{backgroundColor: "white", marginLeft: "-20px", marginRight: "-20px", padding: "20px", paddingLeft: "40px", paddingRight: "40px"}}>
             {  this.state.openAddTaskModal &&
 						   <TaskAdd {...this.props}
                  loading={this.state.loading}

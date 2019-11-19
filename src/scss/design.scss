@@ -486,6 +486,14 @@ h4{
   background-color: $basic-button-color;
 }
 
+.col-form-label{
+  font-family: Segoe UI;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 16px;
+}
+
 Label{
   font-size: 14px;
   font-family: Segoe UI Bold;
@@ -502,6 +510,8 @@ Label{
   border-radius: 0px;
   padding: 0px;
 }
+
+
 
 .modal-content{
   background-color: $form-background-color;
@@ -902,8 +912,9 @@ tr:last-child{
 
 //TABY
 .nav-link:not(.sidebar-menu-item){
+  font-family: Segoe UI;
   height: 28px;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
 }
 .nav-link:not(.sidebar-menu-item).active{
