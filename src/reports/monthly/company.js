@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import {storageCompaniesStart,storageHelpTasksStart, storageHelpStatusesStart, storageHelpTaskTypesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart, storageHelpTaskWorksStart} from '../../redux/actions';
+import {storageCompaniesStart,storageHelpTasksStart, storageHelpStatusesStart, storageHelpTaskTypesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart, storageHelpTaskWorksStart, storageHelpTaskWorkTripsStart, storageHelpTripTypesStart, storageHelpPricelistsStart, storageHelpPricesStart } from '../../redux/actions';
 import { timestampToString, sameStringForms} from '../../helperFunctions';
 import { Link } from 'react-router-dom';
 import MonthSelector from '../components/monthSelector';
@@ -11,6 +11,9 @@ class MothlyReportsCompany extends Component {
 		this.state={
 			taskMaterials:[],
 			taskWorks:[],
+
+			monthsTasks:[],
+			tasks:[],
 			companies:[],
 			showCompany:null,
 			loading:false
@@ -25,7 +28,11 @@ class MothlyReportsCompany extends Component {
 		props.unitsLoaded &&
 		props.usersLoaded &&
 		props.materialsLoaded &&
-		props.taskWorksLoaded
+		props.taskWorksLoaded &&
+		props.tripTypesLoaded &&
+		props.workTripsLoaded &&
+		props.pricelistsLoaded &&
+		props.pricesLoaded
 	}
 
 	componentWillReceiveProps(props){
@@ -38,10 +45,13 @@ class MothlyReportsCompany extends Component {
 			!sameStringForms(props.users,this.props.users)||
 			!sameStringForms(props.materials,this.props.materials)||
 			!sameStringForms(props.taskWorks,this.props.taskWorks)||
+			!sameStringForms(props.tripTypes,this.props.tripTypes)||
+			!sameStringForms(props.workTrips,this.props.workTrips)||
+			!sameStringForms(props.pricelists,this.props.pricelists)||
+			!sameStringForms(props.prices,this.props.prices)||
+			(this.storageLoaded(props) && this.storageLoaded(this.props))||
 			props.from!==this.props.from||
-			props.to!==this.props.to||
-			(props.project!==this.props.project)||
-			(props.milestone!==this.props.milestone)
+			props.to!==this.props.to
 		){
 			this.setData(props);
 		}
@@ -72,6 +82,18 @@ class MothlyReportsCompany extends Component {
 		if(!this.props.taskWorksActive){
 			this.props.storageHelpTaskWorksStart();
 		}
+		if(!this.props.workTripsActive){
+			this.props.storageHelpTaskWorkTripsStart();
+		}
+		if(!this.props.tripTypesActive){
+			this.props.storageHelpTripTypesStart();
+		}
+		if(!this.props.pricelistsActive){
+			this.props.storageHelpPricelistsStart();
+		}
+		if(!this.props.pricesActive){
+			this.props.storageHelpPricesStart();
+		}
 		this.setData(this.props);
 	}
 
@@ -79,49 +101,26 @@ class MothlyReportsCompany extends Component {
 		if(!this.storageLoaded(props)){
 			return;
 		}
-		let tasks=props.tasks.map((task)=>{
-			return {
-				...task,
-				company:task.company===null?null: props.companies.find((company)=>company.id===task.company),
-				requester:task.requester===null ? null:props.users.find((user)=>user.id===task.requester),
-				assigned:task.assigned===null ? null:props.users.find((user)=>user.id===task.assigned),
-				status:task.status===null ? null: props.statuses.find((status)=>status.id===task.status),
-			}
-		});
-		let taskMaterials = this.processMaterials(props.materials,tasks,props.units,props);
-		let taskWorks = this.processWorks(props.taskWorks,props.taskTypes,tasks,props);
-		let companies = this.processCompanies(taskWorks, taskMaterials);
+		let works = this.processWorks(props);
+		let materials = this.processMaterials(props);
+		let trips = this.processTrips(props);
+		let tasks = this.processTasks(props, materials, works, trips).sort((task1,task2)=> task1.closeDate > task2.closeDate ? 1 : -1 );
+		let monthsTasks = this.processThisMonthTasks(props, materials, works, trips).sort((task1,task2)=> task1.closeDate > task2.closeDate ? 1 : -1 );
+		let separatedTasks = this.separateTasks(tasks, monthsTasks);
+		let companies = this.processCompanies(tasks,props.pricelists);
+
+
 		this.setState({
-			taskMaterials,
-			taskWorks,
+			tasks:separatedTasks,
+			allTasks:tasks,
+
 			companies,
 			loading:false
 		});
 	}
 
-	processCompanies(works,materials){
-		let companies = [];
-		works.forEach((work)=>{
-			let company = work.task.company;
-			if(companies.map((company)=>company.id).includes(company.id)){
-				companies.find((item)=>item.id===company.id).hours+=work.quantity.reduce((total,num)=>total+=parseInt(num),0);
-			}else{
-				companies.push({...company,materials:0,hours:work.quantity.reduce((total,num)=>total+=parseInt(num),0)});
-			}
-		})
-		materials.forEach((material)=>{
-			let company = material.task.company;
-			if(companies.map((company)=>company.id).includes(company.id)){
-				companies.find((item)=>item.id===company.id).materials+=material.quantity.reduce((total,num)=>total+=parseInt(num),0);
-			}else{
-				companies.push({...company,hours:0,materials:material.quantity.reduce((total,num)=>total+=parseInt(num),0)});
-			}
-		})
-		return companies.filter((company)=>company.hours>0||company.materials>0);
-	}
-
-	processWorks(works,taskTypes,tasks,props){
-		let newWorks = works.map((work)=>{
+	processWorks(props){
+		return props.taskWorks.map((work)=>{
 			let finalUnitPrice=parseFloat(work.price);
 			if(work.extraWork){
 				finalUnitPrice+=finalUnitPrice*parseFloat(work.extraPrice)/100;
@@ -129,10 +128,9 @@ class MothlyReportsCompany extends Component {
 			let discountPerItem = finalUnitPrice*parseFloat(work.discount)/100;
 			finalUnitPrice=(finalUnitPrice*(1-parseFloat(work.discount)/100)).toFixed(2)
 			let totalPrice=(finalUnitPrice*parseFloat(work.quantity)).toFixed(2);
-			let workType= taskTypes.find((item)=>item.id===work.workType);
+			let workType = props.taskTypes.find((item)=>item.id===work.workType);
 			return{
 				...work,
-				task:tasks.find((task)=>work.task===task.id),
 				workType:workType?workType:{title:'Unknown',id:Math.random()},
 				finalUnitPrice,
 				totalPrice,
@@ -140,95 +138,130 @@ class MothlyReportsCompany extends Component {
 
 			}
 		});
-		let filter = props.filter;
-		newWorks = newWorks.filter((work)=>
-			(filter.status.length===0||(work.task.status && filter.status.includes(work.task.status.id))) &&
-			(filter.requester===null||(work.task.requester && work.task.requester.id===filter.requester)
-				||(work.task.requester && filter.requester==='cur' && work.task.requester.id === props.currentUser.id)) &&
-			(filter.company===null||(work.task.company && work.task.company.id===filter.company)
-				||(work.task.company && filter.company==='cur' && work.task.company.id===props.currentUser.userData.company)) &&
-			(filter.assigned===null||(work.task.assignedTo && work.task.assignedTo.map((item)=>item.id).includes(filter.assigned))||
-				(work.task.assignedTo && filter.requester==='cur' && work.task.assignedTo.map((item)=>item.id).includes(props.currentUser.id))) &&
-			(filter.workType===null||(work.workType.id===filter.workType)) &&
-			(props.project===null || (work.task.project && work.task.project===props.project)) &&
-			(props.from && props.from <= work.task.closeDate) &&
-			(props.to && props.to >= work.task.closeDate) &&
-			(filter.statusDateFrom===''||work.task.statusChange >= filter.statusDateFrom) &&
-			(filter.statusDateTo===''||work.task.statusChange <= filter.statusDateTo) &&
-			(filter.closeDateFrom===undefined || filter.closeDateFrom===''||(work.task.closeDate && work.task.closeDate >= filter.closeDateFrom)) &&
-			(filter.closeDateTo===undefined || filter.closeDateTo===''||(work.task.closeDate && work.task.closeDate <= filter.closeDateTo)) &&
-			(filter.pendingDateFrom===undefined || filter.pendingDateFrom===''||(work.task.pendingDate && work.task.pendingDate >= filter.pendingDateFrom)) &&
-			(filter.pendingDateTo===undefined || filter.pendingDateTo===''||(work.task.pendingDate && work.task.pendingDate <= filter.pendingDateTo))&&
-			(props.milestone===null||(work.task.milestone&& work.task.milestone === props.milestone))
-			);
-
-		let groupedWorks = newWorks.filter((item, index)=>{
-			return newWorks.findIndex((item2)=>item2.task.id===item.task.id)===index
-			});
-		return groupedWorks.map((item)=>{
-			let works = newWorks.filter((item2)=>item.task.id===item2.task.id);
-			return{
-				...item,
-				title: works.map((item)=>item.title),
-				workType: works.map((item)=>item.workType),
-				quantity: works.map((item)=>item.quantity),
-				finalUnitPrice: works.map((item)=>item.finalUnitPrice),
-				totalPrice: works.map((item)=>item.totalPrice),
-				totalDiscount: works.map((item)=>item.totalDiscount)
-			}
-		});
 	}
 
-	processMaterials(materials,tasks,units,props){
-		let newMaterials = materials.map((material)=>{
+	processMaterials(props){
+		return props.materials.map((material)=>{
 			let finalUnitPrice=(parseFloat(material.price)*(1+parseFloat(material.margin)/100)).toFixed(2);
 			let totalPrice=(finalUnitPrice*parseFloat(material.quantity)).toFixed(2);
 			return{...material,
-				task:tasks.find((task)=>material.task===task.id),
-				unit:units.find((unit)=>unit.id===material.unit),
+				unit:props.units.find((unit)=>unit.id===material.unit),
 				finalUnitPrice,
 				totalPrice
 			}
 		})
-		let filter = props.filter;
-		let xnewMaterials = newMaterials.filter((material)=>
-			(filter.status.length===0||(material.task.status && filter.status.includes(material.task.status.id))) &&
-			(filter.requester===null||(material.task.requester && material.task.requester.id===filter.requester)
-				||(material.task.requester && filter.requester==='cur' && material.task.requester.id === props.currentUser.id)) &&
-			(filter.company===null||(material.task.company && material.task.company.id===filter.company)
-				||(material.task.company && filter.company==='cur' && material.task.company.id===props.currentUser.userData.company)) &&
-			(filter.assigned===null||(material.task.assignedTo && material.task.assignedTo.map((item)=>item.id).includes(filter.assigned))
-				||(material.task.assignedTo && filter.requester==='cur' && material.task.assignedTo.map((item)=>item.id).includes(props.currentUser.id))) &&
-			(props.project===null || (material.task.project && material.task.project===props.project)) &&
-			(props.from && props.from <= material.task.closeDate) &&
-			(props.to && props.to >= material.task.closeDate) &&
-			(filter.statusDateFrom===''||material.task.statusChange >= filter.statusDateFrom) &&
-			(filter.statusDateTo===''||material.task.statusChange <= filter.statusDateTo) &&
-			(filter.closeDateFrom===undefined || filter.closeDateFrom===''||(material.task.closeDate && material.task.closeDate >= filter.closeDateFrom)) &&
-			(filter.closeDateTo===undefined || filter.closeDateTo===''||(material.task.closeDate && material.task.closeDate <= filter.closeDateTo)) &&
-			(filter.pendingDateFrom===undefined || filter.pendingDateFrom===''||(material.task.pendingDate && material.task.pendingDate >= filter.pendingDateFrom)) &&
-			(filter.pendingDateTo===undefined || filter.pendingDateTo===''||(material.task.pendingDate && material.task.pendingDate <= filter.pendingDateTo))&&
-			(props.milestone===null||(material.task.milestone&& material.task.milestone === props.milestone))
-		);
+	}
 
-		let groupedMaterials = newMaterials.filter((item, index)=>{
-			return newMaterials.findIndex((item2)=>item2.task.id===item.task.id)===index
-		});
+	processTrips(props){
+		return props.workTrips.map((trip)=>{
+			let type = props.tripTypes.find((item)=>item.id===trip.type);
+			let assignedTo=trip.assignedTo?props.users.find((item)=>item.id===trip.assignedTo):null
 
-		return groupedMaterials.map((item)=>{
-			let materials = newMaterials.filter((item2)=>item.task.id===item2.task.id);
-			return{
-				...item,
-				title:materials.map((item)=>item.title),
-				unit:materials.map((item)=>item.unit),
-				quantity:materials.map((item)=>item.quantity),
-				finalUnitPrice:materials.map((item)=>item.finalUnitPrice),
-				totalPrice:materials.map((item)=>item.totalPrice),
+			return {
+				...trip,
+				type,
+				assignedTo:assignedTo?assignedTo:null,
+				quantity:isNaN(parseInt(trip.quantity))?0:parseInt(trip.quantity),
 			}
 		});
 	}
 
+	processTasks(props, materials, works, trips){
+		let tasks=props.tasks.map((task)=>{
+			let company = task.company === null ? null : props.companies.find((company)=>company.id===task.company);
+			return {
+				...task,
+				company,
+				requester: task.requester===null ? null:props.users.find((user)=>user.id===task.requester),
+				assignedTo: task.assignedTo===null ? null:props.users.filter((user)=>task.assignedTo.includes(user.id)),
+				status: task.status===null ? null: props.statuses.find((status)=>status.id===task.status),
+				works: works.filter((work)=>work.task===task.id).map((work)=>{
+					return {
+						...work,
+						pricelistPrice:company!==null?props.prices.find((item)=>item.pricelist===company.pricelist && item.workType === work.workType.id ):props.prices.find((item)=>item.workType === work.workType.id),
+					}
+				}),
+				materials: materials.filter((material)=>material.task===task.id),
+				trips: trips.filter((trip)=>trip.task===task.id),
+			}
+		}).filter((task)=> (task.works.length > 0 || task.materials.length > 0 || task.trips.length > 0) && task.status && ['close','invoiced'].includes(task.status.action) && task.closeDate && task.closeDate >= props.from && task.closeDate <= props.to);
+		return tasks;
+	}
+
+	processThisMonthTasks(props, materials, works, trips){
+		let tasks=props.tasks.map((task)=>{
+			let company = task.company === null ? null : props.companies.find((company)=>company.id===task.company);
+			if(company===undefined){
+				company=null;
+			}
+			return {
+				...task,
+				company,
+				requester: task.requester===null ? null:props.users.find((user)=>user.id===task.requester),
+				assignedTo: task.assignedTo===null ? null:props.users.filter((user)=>task.assignedTo.includes(user.id)),
+				status: task.status===null ? null: props.statuses.find((status)=>status.id===task.status),
+				works: works.filter((work)=>work.task===task.id).map((work)=>{
+					return {
+						...work,
+						pricelistPrice:company!==null?props.prices.find((item)=>item.pricelist===company.pricelist && item.workType === work.workType.id ):props.prices.find((item)=>item.workType === work.workType.id),
+					}
+				}),
+				materials: materials.filter((material)=>material.task===task.id),
+				trips: trips.filter((trip)=>trip.task===task.id),
+			}
+		}).filter((task)=>
+		(task.works.length > 0 || task.materials.length > 0 || task.trips.length > 0) &&
+		task.status &&
+		['close','invoiced'].includes(task.status.action) &&
+		task.closeDate &&
+		(new Date(task.closeDate)).getFullYear() >= (new Date(props.from)).getFullYear()  &&
+		(new Date(task.closeDate)).getFullYear() <= (new Date(props.to)).getFullYear()  &&
+		(new Date(task.closeDate)).getMonth() >= (new Date(props.from)).getMonth()  &&
+		(new Date(task.closeDate)).getMonth() <= (new Date(props.to)).getMonth()
+		);
+		return tasks;
+	}
+
+	processCompanies(tasks,pricelists){
+		let companies = [];
+		tasks.forEach((task)=>{
+			let company = companies.find((company)=>company.id===task.company.id);
+			if(company===undefined){
+				companies.push({...task.company,materials:0,works:0,trips:0});
+				company = companies.find((company)=>company.id===task.company.id);
+			}
+			task.works.forEach((work)=>{
+				company.works+=isNaN(parseInt(work.quantity))?0:parseInt(work.quantity);
+			})
+			task.materials.forEach((material)=>{
+				company.materials+=isNaN(parseInt(material.quantity))?0:parseInt(material.quantity);
+			})
+			task.trips.forEach((trip)=>{
+				company.trips+=isNaN(parseInt(trip.quantity))?0:parseInt(trip.quantity);
+			})
+		})
+		companies = companies.map((company)=>{
+			return {
+				...company,
+				rentedCount:company.rented===undefined?0:company.rented.reduce((acc,rentedItem)=>{
+				return acc+(isNaN(parseInt(rentedItem.quantity))?0:parseInt(rentedItem.quantity))
+			},0),
+			pricelist:pricelists.find((pricelist)=>company.pricelist===pricelist.id)
+			}
+		})
+		return companies.filter((company)=>company.works > 0 || company.materials > 0 || company.trips > 0 || company.rentedCount);
+	}
+/*
+	getWorkPrice(work){
+		if(isNaN(parseFloat(work.)))
+	}*/
+
 	render() {
+		if(this.state.tasks.length!==0){
+			console.log(this.state.tasks);
+			console.log(this.state.showCompany);
+		}
+
 		return (
 				<div className="scrollable fit-with-header">
 					<div style={{maxWidth:500}}>
@@ -242,6 +275,8 @@ class MothlyReportsCompany extends Component {
 									<th>Company name</th>
 									<th>Work hours</th>
 									<th>Materials</th>
+									<th>Trips</th>
+									<th>Rented items</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -249,8 +284,10 @@ class MothlyReportsCompany extends Component {
 									this.state.companies.map((company)=>
 									<tr key={company.id} className="clickable" onClick={()=>this.setState({showCompany:company})}>
 										<td>{company.title}</td>
-										<td>{company.hours}</td>
+										<td>{company.works}</td>
 										<td>{company.materials}</td>
+										<td>{company.trips}</td>
+										<td>{company.rentedCount}</td>
 									</tr>
 								)}
 							</tbody>
@@ -258,81 +295,418 @@ class MothlyReportsCompany extends Component {
 					</div>
 					{this.state.showCompany!==null &&
 						<div className="p-20">
-							<h2>Výkaz - {this.state.showCompany.title} {timestampToString(this.props.from)} - {timestampToString(this.props.to)}</h2>
-							<h3>Služby</h3>
-							<hr />
+							<h2>Fakturačný výkaz firmy</h2>
+							<div className="flex-row m-b-30">
+								<div>
+									Firma {this.state.showCompany.title} <br/>
+									Obdobie od: {timestampToString(this.props.from)} do: {timestampToString(this.props.to)}
+								</div>
+								<div className="m-l-10">
+									Počet prác vrámci paušálu: {
+										this.state.tasks.pausalPaidTasks.filter((task)=>task.company.id===this.state.showCompany.id).reduce((acc,item)=>{
+										return acc+item.pausalWorks.reduce((acc,item)=>{
+											if(!isNaN(parseInt(item.quantity))){
+												return acc+parseInt(item.quantity);
+											}
+											return acc;
+										},0);
+									},0)}
+									<br/>
+								Počet výjazdov vrámci paušálu: {
+									this.state.tasks.pausalPaidTasks.filter((task)=>task.company.id===this.state.showCompany.id).reduce((acc,item)=>{
+									return acc+item.pausalTrips.reduce((acc,item)=>{
+										if(!isNaN(parseInt(item.quantity))){
+											return acc+parseInt(item.quantity);
+										}
+										return acc;
+									},0);
+								},0)}
+
+								</div>
+							</div>
 							<div className="m-b-30">
+								<h3 className="m-b-10">Práce a výjazdy vrámci paušálu</h3>
+								<h4>Práce</h4>
+								<hr />
 								<table className="table m-b-10">
 									<thead>
 										<tr>
 											<th>ID</th>
-											<th style={{ width: '20%' }}>	Name</th>
+											<th>Názov úlohy</th>
 											<th>Zadal</th>
-											<th>Riesi</th>
+											<th>Rieši</th>
 											<th>Status</th>
-											<th>Status date</th>
-											<th>Služby</th>
-											<th>Typ práce</th>
-											<th>Hodiny</th>
-											<th>Cena/ks </th>
-											<th>Cena spolu</th>
+											<th>Close date</th>
+											<th>Popis práce</th>
+											<th style={{width:'150px'}}>Typ práce</th>
+											<th style={{width:'50px'}}>Hodiny</th>
 										</tr>
 									</thead>
 									<tbody>
 										{
-											this.state.taskWorks.filter((work)=>work.task.company.id===this.state.showCompany.id).map((item,index)=>
-											<tr key={index}>
-												<td>{item.task.id}</td>
-												<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/`+item.task.id }} style={{ color: "#1976d2" }}>{item.task.title}</Link></td>
-												<td>{item.task.requester?item.task.requester.email:'Nikto'}</td>
-												<td>{item.task.assigned?item.task.assigned.email:'Nikto'}</td>
-												<td>{item.task.status.title}</td>
-												<td>{timestampToString(item.task.statusChange)}</td>
+											this.state.tasks.pausalPaidTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.pausalWorks.length!==0 ).map((task)=>
+											<tr key={task.id}>
+												<td>{task.id}</td>
+												<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/` + task.id }} style={{ color: "#1976d2" }}>{task.title}</Link></td>
+												<td>{task.requester?task.requester.email:'Nikto'}</td>
 												<td>
-													{item.title.map((item2,index)=>
-														<p key={index}>{item2}</p>
+													{task.assignedTo.map((assignedTo)=>
+														<p key={assignedTo.id}>{assignedTo.email}</p>
 													)}
 												</td>
 												<td>
-													{item.workType.map((item2,index)=>
-														<p key={index}>{item2.title}</p>
-													)}
+													<span className="label label-info"
+														style={{backgroundColor:task.status && task.status.color?task.status.color:'white'}}>
+														{task.status?task.status.title:'Neznámy status'}
+													</span>
 												</td>
-												<td>
-													{item.quantity.map((item2,index)=>
-														<p key={index}>{item2}</p>
-													)}
-												</td>
-												<td>
-													{item.finalUnitPrice.map((item2,index)=>
-														<p key={index}>{item2}</p>
-													)}
-												</td>
-												<td>
-													{item.totalPrice.map((item2,index)=>
-														<p key={index}>{item2}</p>
-													)}
+												<td>{timestampToString(task.closeDate)}</td>
+												<td colSpan="3">
+													<table className="table-borderless full-width">
+														<tbody>
+															{task.pausalWorks.map((work)=>
+																<tr key={work.id}>
+																	<td key={work.id+ '-title'} style={{paddingLeft:0}}>{work.title}</td>
+																	<td key={work.id+ '-type'} style={{width:'150px', paddingLeft:0}}>{work.workType.title}</td>
+																	<td key={work.id+ '-time'} style={{width:'50px', paddingLeft:0}}>{work.quantity}</td>
+																</tr>
+															)}
+														</tbody>
+													</table>
 												</td>
 											</tr>
 										)
 									}
 								 </tbody>
-							</table>
-							<p className="m-0">Spolu zlava bez DPH: {(this.state.taskWorks.filter((work)=>work.task.company.id===this.state.showCompany.id).reduce((acc,item)=>{
-									return acc+item.totalDiscount.reduce((acc,item)=>acc+=isNaN(parseFloat(item))?0:parseFloat(item),0)
-								},0)).toFixed(2)} EUR</p>
-							<p className="m-0">Spolu cena bez DPH: {(this.state.taskWorks.filter((work)=>work.task.company.id===this.state.showCompany.id).reduce((acc,item)=>{
-										return acc+item.totalPrice.reduce((acc,item)=>acc+=isNaN(parseFloat(item))?0:parseFloat(item),0)
-									},0)).toFixed(2)} EUR</p>
-								<p className="m-0">Spolu cena s DPH: {(this.state.taskWorks.filter((work)=>work.task.company.id===this.state.showCompany.id).reduce((acc,item)=>{
-										return acc+item.totalPrice.reduce((acc,item)=>acc+=isNaN(parseFloat(item))?0:parseFloat(item),0)
-									},0)*1.2).toFixed(2)} EUR</p>
-						</div>
+								</table>
 
-						<div>
-							<h3>Material</h3>
+								<p className="m-0">Spolu počet hodín: {
+									this.state.tasks.pausalPaidTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.pausalWorks.length!==0).reduce((acc,item)=>{
+										return acc+item.pausalWorks.reduce((acc,item)=>{
+											if(!isNaN(parseInt(item.quantity))){
+												return acc+parseInt(item.quantity);
+											}
+											return acc;
+										},0);
+									},0)}
+								</p>
+								<p className="m-0">Spolu počet hodín mimo pracovný čas: {
+									this.state.tasks.pausalPaidTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.pausalWorks.length!==0 && task.overtime).reduce((acc,item)=>{
+										return acc+item.pausalWorks.reduce((acc,item)=>{
+											if(!isNaN(parseInt(item.quantity))){
+												return acc+parseInt(item.quantity);
+											}
+											return acc;
+										},0);
+									},0)} ( Čísla úloh:
+										{this.state.tasks.pausalPaidTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.pausalWorks.length!==0 && task.overtime)
+										.reduce((acc,task)=>{
+											return acc+=task.id + ','
+										}," ").slice(0,-1)+" )"}
+								</p>
+								<p className="m-0 m-b-10">Spolu prirážka za práce mimo pracovných hodín: {
+									this.state.tasks.pausalPaidTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.pausalWorks.length!==0 && task.overtime).reduce((acc,item)=>{
+										return acc+item.pausalWorks.reduce((acc,work)=>{
+											if(!isNaN(parseFloat(work.totalPrice)) && this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
+												return acc+(parseFloat(work.totalPrice)/100*parseInt(this.state.showCompany.pricelist.afterHours));
+											}
+											return acc;
+										},0);
+									},0)} eur
+								</p>
+
+								<h4>Výjazdy</h4>
+								<hr />
+								<table className="table m-b-10">
+									<thead>
+										<tr>
+											<th>ID</th>
+											<th>Názov úlohy</th>
+											<th>Zadal</th>
+											<th>Rieši</th>
+											<th>Status</th>
+											<th>Close date</th>
+											<th style={{width:'150px'}}>Výjazd</th>
+											<th style={{width:'50px'}}>Mn.</th>
+										</tr>
+									</thead>
+									<tbody>
+										{
+											this.state.tasks.pausalPaidTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.pausalTrips.length!==0).map((task)=>
+											<tr key={task.id}>
+												<td>{task.id}</td>
+												<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/` + task.id }} style={{ color: "#1976d2" }}>{task.title}</Link></td>
+												<td>{task.requester?task.requester.email:'Nikto'}</td>
+												<td>
+													{task.assignedTo.map((assignedTo)=>
+														<p key={assignedTo.id}>{assignedTo.email}</p>
+													)}
+												</td>
+												<td>
+													<span className="label label-info"
+														style={{backgroundColor:task.status && task.status.color?task.status.color:'white'}}>
+														{task.status?task.status.title:'Neznámy status'}
+													</span>
+												</td>
+												<td>{timestampToString(task.closeDate)}</td>
+												<td colSpan="3">
+													<table className="table-borderless full-width">
+														<tbody>
+															{task.pausalTrips.map((trip)=>
+																<tr key={trip.id}>
+																	<td key={trip.id+ '-title'} style={{width:'150px',paddingLeft:0}}>{trip.type?trip.type.title:"Undefined"}</td>
+																	<td key={trip.id+ '-time'} style={{width:'50px',paddingLeft:0}}>{trip.quantity}</td>
+																</tr>
+															)}
+														</tbody>
+													</table>
+												</td>
+											</tr>
+										)
+									}
+								 </tbody>
+								</table>
+
+								<p className="m-0">Spolu počet výjazdov: {
+									this.state.tasks.pausalPaidTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.pausalTrips.length!==0).reduce((acc,item)=>{
+										return acc+item.pausalTrips.reduce((acc,item)=>{
+											if(!isNaN(parseInt(item.quantity))){
+												return acc+parseInt(item.quantity);
+											}
+											return acc;
+										},0);
+									},0)}
+								</p>
+								<p className="m-0">Spolu počet výjazdov mimo pracovný čas: {
+									this.state.tasks.pausalPaidTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.pausalTrips.length!==0 && task.overtime).reduce((acc,item)=>{
+										return acc+item.pausalTrips.reduce((acc,item)=>{
+											if(!isNaN(parseInt(item.quantity))){
+												return acc+parseInt(item.quantity);
+											}
+											return acc;
+										},0);
+									},0)} ( Čísla úloh:
+										{this.state.tasks.pausalPaidTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.pausalTrips.length!==0 && task.overtime)
+										.reduce((acc,task)=>{
+											return acc+=task.id + ','
+										}," ").slice(0,-1)+" )"}
+								</p>
+							</div>
+
+							{/* OUTSIDE OF PAUSAL*/}
+
+							<div className="m-b-30">
+								<h3 className="m-b-10">Práce a výjazdy nad rámec paušálu</h3>
+								<h4>Práce</h4>
+								<hr />
+								<table className="table m-b-10">
+									<thead>
+										<tr>
+											<th>ID</th>
+											<th>Názov úlohy</th>
+											<th>Zadal</th>
+											<th>Rieši</th>
+											<th>Status</th>
+											<th>Close date</th>
+											<th>Popis práce</th>
+											<th style={{width:'150px'}}>Typ práce</th>
+											<th style={{width:'50px'}}>Hodiny</th>
+											<th style={{width:'70px'}}>Cena/hodna</th>
+											<th style={{width:'70px'}}>Cena spolu</th>
+										</tr>
+									</thead>
+									<tbody>
+										{
+											this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraWorks.length!==0 ).map((task)=>
+											<tr key={task.id}>
+												<td>{task.id}</td>
+												<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/` + task.id }} style={{ color: "#1976d2" }}>{task.title}</Link></td>
+												<td>{task.requester?task.requester.email:'Nikto'}</td>
+												<td>
+													{task.assignedTo.map((assignedTo)=>
+														<p key={assignedTo.id}>{assignedTo.email}</p>
+													)}
+												</td>
+												<td>
+													<span className="label label-info"
+														style={{backgroundColor:task.status && task.status.color?task.status.color:'white'}}>
+														{task.status?task.status.title:'Neznámy status'}
+													</span>
+												</td>
+												<td>{timestampToString(task.closeDate)}</td>
+												<td colSpan="5">
+													<table className="table-borderless full-width">
+														<tbody>
+															{task.extraWorks.map((work)=>
+																<tr key={work.id}>
+																	<td key={work.id+ '-title'} style={{paddingLeft:0}}>{work.title}</td>
+																	<td key={work.id+ '-type'} style={{width:'150px', paddingLeft:0}}>{work.workType.title}</td>
+																	<td key={work.id+ '-time'} style={{width:'50px', paddingLeft:0}}>{work.quantity}</td>
+																	<td key={work.id+ '-pricePerUnit'} style={{width:'70px', paddingLeft:0}}>{work.finalUnitPrice}</td>
+																	<td key={work.id+ '-totalPrice'} style={{width:'70px', paddingLeft:0}}>0</td>{/*FIX IT, treba pocitat celkovu cenu prace vsade!!!*/}
+																</tr>
+															)}
+														</tbody>
+													</table>
+												</td>
+											</tr>
+										)
+									}
+								 </tbody>
+								</table>
+
+								<p className="m-0">Spolu počet hodín: {
+									this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraWorks.length!==0).reduce((acc,item)=>{
+										return acc+item.extraWorks.reduce((acc,item)=>{
+											if(!isNaN(parseInt(item.quantity))){
+												return acc+parseInt(item.quantity);
+											}
+											return acc;
+										},0);
+									},0)}
+								</p>
+								<p className="m-0">Spolu počet hodín mimo pracovný čas: {
+									this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraWorks.length!==0 && task.overtime).reduce((acc,item)=>{
+										return acc+item.extraWorks.reduce((acc,item)=>{
+											if(!isNaN(parseInt(item.quantity))){
+												return acc+parseInt(item.quantity);
+											}
+											return acc;
+										},0);
+									},0)} ( Čísla úloh:
+										{this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraWorks.length!==0 && task.overtime)
+										.reduce((acc,task)=>{
+											return acc+=task.id + ','
+										}," ").slice(0,-1)+" )"}
+								</p>
+								<p className="m-0">Spolu prirážka za práce mimo pracovných hodín: {
+									this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraWorks.length!==0 && task.overtime).reduce((acc,item)=>{
+										return acc+item.extraWorks.reduce((acc,work)=>{
+											if(!isNaN(parseFloat(work.totalPrice)) && this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
+												return acc+(parseFloat(work.totalPrice)/100*parseInt(this.state.showCompany.pricelist.afterHours));
+											}
+											return acc;
+										},0);
+									},0)} eur
+								</p>
+								<p className="m-0">Spolu cena bez DPH: {
+									(this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraWorks.length!==0).reduce((acc,task)=>{
+										return acc+task.extraWorks.reduce((acc,work)=>{
+											if(task.overtime){
+												if(!isNaN(parseFloat(work.totalPrice)) && this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
+													return acc+parseFloat(work.totalPrice)+(parseFloat(work.totalPrice)/100*parseInt(this.state.showCompany.pricelist.afterHours));
+												}
+												return acc;
+											}else{
+												if(!isNaN(parseFloat(work.totalPrice))){
+													return acc+parseFloat(work.totalPrice);
+												}
+												return acc;
+											}
+										},0);
+									},0)*0.8).toFixed(2)} eur
+								</p>
+								<p className="m-0 m-b-10">Spolu cena s DPH: {
+									(this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraWorks.length!==0).reduce((acc,task)=>{
+										return acc+task.extraWorks.reduce((acc,work)=>{
+											if(task.overtime){
+												if(!isNaN(parseFloat(work.totalPrice)) && this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
+													return acc+parseFloat(work.totalPrice)+(parseFloat(work.totalPrice)/100*parseInt(this.state.showCompany.pricelist.afterHours));
+												}
+												return acc;
+											}else{
+												if(!isNaN(parseFloat(work.totalPrice))){
+													return acc+parseFloat(work.totalPrice);
+												}
+												return acc;
+											}
+										},0);
+									},0)).toFixed(2)} eur
+								</p>
+
+								<h4>Výjazdy</h4>
+								<hr />
+								<table className="table m-b-10">
+									<thead>
+										<tr>
+											<th>ID</th>
+											<th>Názov úlohy</th>
+											<th>Zadal</th>
+											<th>Rieši</th>
+											<th>Status</th>
+											<th>Close date</th>
+											<th style={{width:'150px'}}>Výjazd</th>
+											<th style={{width:'50px'}}>Mn.</th>
+										</tr>
+									</thead>
+									<tbody>
+										{
+											this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraTrips.length!==0).map((task)=>
+											<tr key={task.id}>
+												<td>{task.id}</td>
+												<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/` + task.id }} style={{ color: "#1976d2" }}>{task.title}</Link></td>
+												<td>{task.requester?task.requester.email:'Nikto'}</td>
+												<td>
+													{task.assignedTo.map((assignedTo)=>
+														<p key={assignedTo.id}>{assignedTo.email}</p>
+													)}
+												</td>
+												<td>
+													<span className="label label-info"
+														style={{backgroundColor:task.status && task.status.color?task.status.color:'white'}}>
+														{task.status?task.status.title:'Neznámy status'}
+													</span>
+												</td>
+												<td>{timestampToString(task.closeDate)}</td>
+												<td colSpan="3">
+													<table className="table-borderless full-width">
+														<tbody>
+															{task.extraTrips.map((trip)=>
+																<tr key={trip.id}>
+																	<td key={trip.id+ '-title'} style={{width:'150px',paddingLeft:0}}>{trip.type?trip.type.title:"Undefined"}</td>
+																	<td key={trip.id+ '-time'} style={{width:'50px',paddingLeft:0}}>{trip.quantity}</td>
+																</tr>
+															)}
+														</tbody>
+													</table>
+												</td>
+											</tr>
+										)
+									}
+								 </tbody>
+								</table>
+
+								<p className="m-0">Spolu počet výjazdov: {
+									this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraTrips.length!==0).reduce((acc,item)=>{
+										return acc+item.extraTrips.reduce((acc,item)=>{
+											if(!isNaN(parseInt(item.quantity))){
+												return acc+parseInt(item.quantity);
+											}
+											return acc;
+										},0);
+									},0)}
+								</p>
+								<p className="m-0">Spolu počet výjazdov mimo pracovný čas: {
+									this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraTrips.length!==0 && task.overtime).reduce((acc,item)=>{
+										return acc+item.extraTrips.reduce((acc,item)=>{
+											if(!isNaN(parseInt(item.quantity))){
+												return acc+parseInt(item.quantity);
+											}
+											return acc;
+										},0);
+									},0)} ( Čísla úloh:
+										{this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraTrips.length!==0 && task.overtime)
+										.reduce((acc,task)=>{
+											return acc+=task.id + ','
+										}," ").slice(0,-1)+" )"}
+								</p>
+							</div>
+
+
+						<div className="m-b-30">
+							<h3>Materiále</h3>
 							<hr />
-							<table className="table p-10">
+							<table className="table m-b-10">
 								<thead>
 									<tr>
 										<th>ID</th>
@@ -350,57 +724,200 @@ class MothlyReportsCompany extends Component {
 								</thead>
 								<tbody>
 									{
-										this.state.taskMaterials.filter((material)=>material.task.company.id===this.state.showCompany.id).map((material, index)=>
+										this.state.allTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.materials.length > 0 ).map((task, index)=>
 										<tr key={index}>
-											<td>{material.task.id}</td>
-											<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/`+material.task.id }} style={{ color: "#1976d2" }}>{material.task.title}</Link></td>
-											<td>{material.task.requester?material.task.requester.email:'Nikto'}</td>
-											<td>{material.task.assigned?material.task.assigned.email:'Nikto'}</td>
-											<td>{material.task.status.title}</td>
-											<td>{timestampToString(material.task.statusChange)}</td>
+											<td>{task.id}</td>
+											<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/`+task.id }} style={{ color: "#1976d2" }}>{task.title}</Link></td>
+											<td>{task.requester?task.requester.email:'Nikto'}</td>
+											<td>{task.assigned?task.assigned.email:'Nikto'}</td>
+											<td>{task.status.title}</td>
+											<td>{timestampToString(task.statusChange)}</td>
 												<td>
-													{material.title.map((item2,index)=>
-														<p key={index}>{item2}</p>
+													{task.materials.map((material)=>
+														<p key={material.id}>{material.title}</p>
 													)}
 												</td>
 												<td>
-													{material.quantity.map((item2,index)=>
-														<p key={index}>{item2}</p>
+													{task.materials.map((material)=>
+														<p key={material.id}>{material.quantity}</p>
 													)}
 												</td>
 												<td>
-													{material.unit.map((item2,index)=>
-														<p key={index}>{item2.title}</p>
+													{task.materials.map((material)=>
+														<p key={material.id}>{material.unit.title}</p>
 													)}
 												</td>
 												<td>
-													{material.finalUnitPrice.map((item2,index)=>
-														<p key={index}>{item2}</p>
+													{task.materials.map((material)=>
+														<p key={material.id}>{material.finalUnitPrice}</p>
 													)}
 												</td>
 												<td>
-													{material.totalPrice.map((item2,index)=>
-														<p key={index}>{item2}</p>
+													{task.materials.map((material)=>
+														<p key={material.id}>{material.totalPrice}</p>
 													)}
 												</td>
 										</tr>
 									)}
 								</tbody>
 							</table>
-							<p className="m-0">Spolu cena bez DPH: {(this.state.taskMaterials.filter((material)=>material.task.company.id===this.state.showCompany.id).reduce((acc,item)=>{
-									return acc+item.totalPrice.reduce((acc,item)=>acc+=isNaN(parseFloat(item))?0:parseFloat(item),0)
+							<p className="m-0">Spolu cena bez DPH: {
+									(this.state.allTasks.filter((task)=>task.company.id===this.state.showCompany.id).reduce((acc,task)=>{
+									return acc+task.materials.reduce((acc,material)=>acc+=isNaN(parseFloat(material.totalPrice))?0:parseFloat(material.totalPrice),0)
+								},0)*0.8).toFixed(2)} EUR</p>
+							<p className="m-0">Spolu cena s DPH: {
+									(this.state.allTasks.filter((task)=>task.company.id===this.state.showCompany.id).reduce((acc,task)=>{
+									return acc+task.materials.reduce((acc,material)=>acc+=isNaN(parseFloat(material.totalPrice))?0:parseFloat(material.totalPrice),0)
 								},0)).toFixed(2)} EUR</p>
-							<p className="m-0">Spolu cena s DPH: {(this.state.taskMaterials.filter((material)=>material.task.company.id===this.state.showCompany.id).reduce((acc,item)=>{
-									return acc+item.totalPrice.reduce((acc,item)=>acc+=isNaN(parseFloat(item))?0:parseFloat(item),0)
-								},0)*1.2).toFixed(2)} EUR</p>
+						</div>
+						<div className="m-b-30">
+							<h3>Mesačný prenájom služieb a harware</h3>
+							<hr />
+							<table className="table m-b-10">
+								<thead>
+									<tr>
+										<th>ID</th>
+										<th>Názov</th>
+										<th>Mn.</th>
+										<th>Cena/ks/mesiac</th>
+										<th>Cena spolu/mesiac</th>
+									</tr>
+								</thead>
+								<tbody>
+									{
+										(this.state.showCompany.rented===undefined ? [] : this.state.showCompany.rented).map((rentedItem)=>
+										<tr key={rentedItem.id}>
+											<td>{rentedItem.id}</td>
+											<td>{rentedItem.title}</td>
+											<td>{rentedItem.quantity}</td>
+											<td>{rentedItem.unitPrice}</td>
+											<td>{rentedItem.totalPrice}</td>
+										</tr>
+									)}
+								</tbody>
+							</table>
+							<p className="m-0">Spolu cena bez DPH: {
+									((this.state.showCompany.rented===undefined ? [] : this.state.showCompany.rented).reduce((acc,rentedItem)=>{
+									return acc+(isNaN(parseFloat(rentedItem.totalPrice))?0:parseFloat(rentedItem.totalPrice))
+								},0)*0.8).toFixed(2)} EUR</p>
+							<p className="m-0">Spolu cena s DPH: {
+									((this.state.showCompany.rented===undefined ? [] : this.state.showCompany.rented).reduce((acc,rentedItem)=>{
+									return acc+(isNaN(parseFloat(rentedItem.totalPrice))?0:parseFloat(rentedItem.totalPrice))
+								},0)).toFixed(2)} EUR</p>
 						</div>
 					</div>}
 				 </div>
 			);
 		}
+
+	separateTasks(tasks,allTasks){
+		let projectTasks = tasks.filter((task)=>!task.pausal);
+		let pausalTasks = allTasks.filter((task)=>task.pausal);
+
+		let groupedPausalTasks = this.groupTasksByCompany(this.groupTasksByMonth(pausalTasks));
+		let calculatedPausalTasks = this.calculatePausalOfTasks(groupedPausalTasks);
+		const { pausalPaidTasks , extraTasks } = this.getTasksFromPeriods(calculatedPausalTasks,tasks.filter((task)=>task.pausal).map((task)=>task.id));
+		return{projectTasks,pausalPaidTasks, extraTasks};
 	}
 
-const mapStateToProps = ({ filterReducer,reportReducer,userReducer, storageCompanies, storageHelpTasks, storageHelpStatuses, storageHelpTaskTypes, storageHelpUnits, storageUsers, storageHelpTaskMaterials, storageHelpTaskWorks }) => {
+	groupTasksByMonth(tasks){
+		let groupedTasks=[];
+		tasks.forEach((task)=>{
+			let closeDate = new Date(task.closeDate);
+			let key = closeDate.getFullYear() + '-' + closeDate.getMonth();
+			let group = groupedTasks.find((group)=>group.id===key);
+			if(group!==undefined){
+				group.tasks = [...group.tasks,task]
+			}else{
+				groupedTasks.push({id:key,tasks:[task]})
+			}
+		})
+		return groupedTasks;
+	}
+
+	groupTasksByCompany(tasks){
+		return tasks.map((group)=>{
+			let companies = [];
+			group.tasks.forEach((task)=>{
+				let group = companies.find((group)=>group.company.id===task.company.id);
+				if(group===undefined){
+					companies.push({company:task.company,tasks:[task]})
+				}else{
+					group.tasks=[...group.tasks,task];
+				}
+			})
+
+			return {id:group.id, companies}
+		})
+	}
+
+	calculatePausalOfTasks(companies){
+		return companies.map((period)=>{
+			let newCompanies = period.companies.map((group)=>{
+				//iba ponechat tasky a pridat im pausalWorks a extraWorks
+				let newCompany = {company:group.company,tasks:[]};
+				let pausal = parseInt(group.company.workPausal);
+				let tripPausal = parseInt(group.company.drivePausal);
+				group.tasks.forEach((task)=>{
+					let pausalWorks = [];
+					let extraWorks = [];
+					let pausalTrips = [];
+					let extraTrips = [];
+					task.works.forEach((work)=>{
+						if(work.quantity < pausal){
+							pausal -= work.quantity;
+							pausalWorks.push(work);
+						}else if(pausal===0){
+							extraWorks.push(work);
+						}else{
+							pausalWorks.push({...work, quantity: pausal});
+							extraWorks.push({...work, quantity: work.quantity - pausal});
+							pausal = 0;
+						}
+					})
+					task.trips.forEach((trip)=>{
+						if(trip.quantity < tripPausal){
+							tripPausal -= trip.quantity;
+							pausalTrips.push(trip);
+						}else if(tripPausal===0){
+							extraTrips.push(trip);
+						}else{
+							pausalTrips.push({...trip, quantity: tripPausal});
+							extraTrips.push({...trip, quantity: trip.quantity - tripPausal});
+							tripPausal = 0;
+						}
+					})
+					newCompany.tasks.push({...task,pausalWorks,extraWorks,pausalTrips,extraTrips});
+				})
+				return newCompany;
+			})
+			return {id:period.id,companies:newCompanies};
+		})
+	}
+
+	getTasksFromPeriods(periods,validIDs){
+		let pausalPaidTasks = [];
+		let extraTasks = [];
+		periods.forEach((period)=>{
+			period.companies.forEach((company)=>{
+				company.tasks.forEach((task)=>{
+					if(validIDs.includes(task.id)){
+						if(task.extraWorks.length>0||task.extraTrips.length>0){
+							extraTasks.push(task);
+						}
+						if(task.pausalWorks.length>0||task.pausalTrips.length>0){
+							pausalPaidTasks.push(task);
+						}
+					}
+				})
+			})
+		})
+		return { pausalPaidTasks , extraTasks };
+	}
+
+}
+
+const mapStateToProps = ({ filterReducer,reportReducer,userReducer, storageCompanies, storageHelpTasks, storageHelpStatuses, storageHelpTaskTypes, storageHelpUnits, storageUsers, storageHelpTaskMaterials, storageHelpTaskWorks, storageHelpTaskWorkTrips, storageHelpTripTypes, storageHelpPricelists, storageHelpPrices }) => {
 	const { filter, project, milestone } = filterReducer;
 	const { from, to } = reportReducer;
 
@@ -412,6 +929,10 @@ const mapStateToProps = ({ filterReducer,reportReducer,userReducer, storageCompa
 	const { usersActive, users, usersLoaded } = storageUsers;
 	const { materialsActive, materials, materialsLoaded } = storageHelpTaskMaterials;
 	const { taskWorksActive, taskWorks, taskWorksLoaded } = storageHelpTaskWorks;
+	const { workTripsActive, workTrips, workTripsLoaded } = storageHelpTaskWorkTrips;
+	const { tripTypesActive, tripTypes, tripTypesLoaded } = storageHelpTripTypes;
+	const { pricelistsLoaded, pricelistsActive, pricelists } = storageHelpPricelists;
+	const { pricesLoaded, pricesActive, prices } = storageHelpPrices;
 
 	return {
 		from, to,
@@ -424,8 +945,12 @@ const mapStateToProps = ({ filterReducer,reportReducer,userReducer, storageCompa
 		unitsActive, units,unitsLoaded,
 		usersActive, users,usersLoaded,
 		materialsActive, materials,materialsLoaded,
-		taskWorksActive, taskWorks,taskWorksLoaded
+		taskWorksActive, taskWorks,taskWorksLoaded,
+		workTripsActive, workTrips, workTripsLoaded,
+		tripTypesActive, tripTypes, tripTypesLoaded,
+		pricelistsLoaded, pricelistsActive, pricelists,
+		pricesLoaded, pricesActive, prices,
 	};
 };
 
-export default connect(mapStateToProps, { storageCompaniesStart, storageHelpTasksStart, storageHelpStatusesStart, storageHelpTaskTypesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart, storageHelpTaskWorksStart })(MothlyReportsCompany);
+export default connect(mapStateToProps, { storageCompaniesStart, storageHelpTasksStart, storageHelpStatusesStart, storageHelpTaskTypesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart, storageHelpTaskWorksStart, storageHelpTaskWorkTripsStart, storageHelpTripTypesStart, storageHelpPricelistsStart, storageHelpPricesStart })(MothlyReportsCompany);
