@@ -198,7 +198,6 @@ class MothlyReportsAssigned extends Component {
 				totalDiscount: newWorks.map((item)=>item.totalDiscount)
 			}
 		});
-
 	}
 
 	processMaterials(materials,tasks,units,props){

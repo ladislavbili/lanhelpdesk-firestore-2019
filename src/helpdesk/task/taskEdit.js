@@ -742,7 +742,7 @@ class TaskEdit extends Component {
 																			openCompanyAdd: true,
 																		})
 																	} else {
-																		this.setState({company, pausal:parseInt(company.workPausal)>0?this.state.pausal:booleanSelects[0]},this.submitTask.bind(this));
+																		this.setState({company, pausal:parseInt(company.workPausal)>0?booleanSelects[1]:booleanSelects[0]},this.submitTask.bind(this));
 																	}
 																}
 															}
