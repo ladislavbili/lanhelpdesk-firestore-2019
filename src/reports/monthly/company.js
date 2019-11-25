@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
+import { Button } from 'reactstrap';
 import {storageCompaniesStart,storageHelpTasksStart, storageHelpStatusesStart, storageHelpTaskTypesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart, storageHelpTaskWorksStart, storageHelpTaskWorkTripsStart, storageHelpTripTypesStart, storageHelpPricelistsStart, storageHelpPricesStart } from '../../redux/actions';
 import { timestampToString, sameStringForms} from '../../helperFunctions';
 import { Link } from 'react-router-dom';
+import {rebase} from '../../index';
 import MonthSelector from '../components/monthSelector';
+
+let emptyPrice={id:null,pricelist:null,type:null,price:0}
 
 class MothlyReportsCompany extends Component {
 	constructor(props){
@@ -175,14 +179,18 @@ class MothlyReportsCompany extends Component {
 				requester: task.requester===null ? null:props.users.find((user)=>user.id===task.requester),
 				assignedTo: task.assignedTo===null ? null:props.users.filter((user)=>task.assignedTo.includes(user.id)),
 				status: task.status===null ? null: props.statuses.find((status)=>status.id===task.status),
-				works: works.filter((work)=>work.task===task.id).map((work)=>{
-					return {
-						...work,
-						pricelistPrice:company!==null?props.prices.find((item)=>item.pricelist===company.pricelist && item.workType === work.workType.id ):props.prices.find((item)=>item.workType === work.workType.id),
-					}
-				}),
+				works: works.filter((work)=>work.task===task.id),
 				materials: materials.filter((material)=>material.task===task.id),
-				trips: trips.filter((trip)=>trip.task===task.id),
+				trips: trips.filter((trip)=>trip.task===task.id).map((trip)=>{
+					if(company===null){
+						return {...trip,price:emptyPrice}
+					}
+					let price = props.prices.find((price)=>price.pricelist===company.pricelist && trip.type.id===price.type);
+					if(price===undefined){
+						return {...trip,price:emptyPrice}
+					}
+					return {...trip,price}
+				}),
 			}
 		}).filter((task)=> (task.works.length > 0 || task.materials.length > 0 || task.trips.length > 0) && task.status && ['close','invoiced'].includes(task.status.action) && task.closeDate && task.closeDate >= props.from && task.closeDate <= props.to);
 		return tasks;
@@ -200,14 +208,18 @@ class MothlyReportsCompany extends Component {
 				requester: task.requester===null ? null:props.users.find((user)=>user.id===task.requester),
 				assignedTo: task.assignedTo===null ? null:props.users.filter((user)=>task.assignedTo.includes(user.id)),
 				status: task.status===null ? null: props.statuses.find((status)=>status.id===task.status),
-				works: works.filter((work)=>work.task===task.id).map((work)=>{
-					return {
-						...work,
-						pricelistPrice:company!==null?props.prices.find((item)=>item.pricelist===company.pricelist && item.workType === work.workType.id ):props.prices.find((item)=>item.workType === work.workType.id),
-					}
-				}),
+				works: works.filter((work)=>work.task===task.id),
 				materials: materials.filter((material)=>material.task===task.id),
-				trips: trips.filter((trip)=>trip.task===task.id),
+				trips: trips.filter((trip)=>trip.task===task.id).map((trip)=>{
+					if(company===null){
+						return {...trip,price:emptyPrice}
+					}
+					let price = props.prices.find((price)=>price.pricelist===company.pricelist && trip.type.id===price.type);
+					if(price===undefined){
+						return {...trip,price:emptyPrice}
+					}
+					return {...trip,price}
+				}),
 			}
 		}).filter((task)=>
 		(task.works.length > 0 || task.materials.length > 0 || task.trips.length > 0) &&
@@ -251,10 +263,40 @@ class MothlyReportsCompany extends Component {
 		})
 		return companies.filter((company)=>company.works > 0 || company.materials > 0 || company.trips > 0 || company.rentedCount);
 	}
-/*
+
 	getWorkPrice(work){
-		if(isNaN(parseFloat(work.)))
-	}*/
+		let finalUnitPrice = parseFloat(work.finalUnitPrice);
+		let quantity = parseInt(work.quantity);
+		if(isNaN(finalUnitPrice)||isNaN(quantity)){
+			return 0;
+		}
+		return finalUnitPrice*quantity;
+	}
+
+	getTripPrice(trip){
+		let price = parseFloat(trip.price.price);
+		let quantity = parseInt(trip.quantity);
+		if(isNaN(price)||isNaN(quantity)){
+			return 0;
+		}
+		return price*quantity;
+	}
+
+	getMonthDiff(props){
+		let from = (new Date(props.from));
+		let to = (new Date(props.to));
+		let yearDiff = to.getFullYear()-from.getFullYear();
+		let monthDiff = to.getMonth()-from.getMonth();
+		let numberOfMonths=0;
+		if(monthDiff < 0){
+			numberOfMonths += (yearDiff-1)*12
+			numberOfMonths += 12+monthDiff
+		}else{
+			numberOfMonths += yearDiff*12;
+			numberOfMonths += monthDiff
+		}
+		return numberOfMonths;
+	}
 
 	render() {
 		if(this.state.tasks.length!==0){
@@ -293,6 +335,23 @@ class MothlyReportsCompany extends Component {
 							</tbody>
 							</table>
 					</div>
+					{this.state.showCompany!==null &&
+						<div className="commandbar">
+							<Button
+								className="btn-danger center-hor"
+								onClick={()=>{
+									let allTasks = this.state.allTasks.filter((task)=>task.company && task.company.id===this.state.showCompany.id);
+									let invoiced = this.props.statuses.find((status)=>status.action==='invoiced')
+									if(invoiced!==undefined && window.confirm("Chcete naozaj vykázať úlohy: "+ allTasks.reduce((acc,task)=>acc+task.id+',','').slice(0,-1))+" ?"){
+										allTasks.forEach((task)=>rebase.updateDoc('/help-tasks/'+task.id, {status:invoiced.id}))
+									}
+
+								}}
+								>
+								Faktúrovať
+							</Button>
+						</div>
+					}
 					{this.state.showCompany!==null &&
 						<div className="p-20">
 							<h2>Fakturačný výkaz firmy</h2>
@@ -407,8 +466,8 @@ class MothlyReportsCompany extends Component {
 								<p className="m-0 m-b-10">Spolu prirážka za práce mimo pracovných hodín: {
 									this.state.tasks.pausalPaidTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.pausalWorks.length!==0 && task.overtime).reduce((acc,item)=>{
 										return acc+item.pausalWorks.reduce((acc,work)=>{
-											if(!isNaN(parseFloat(work.totalPrice)) && this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
-												return acc+(parseFloat(work.totalPrice)/100*parseInt(this.state.showCompany.pricelist.afterHours));
+											if(this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
+												return acc+(this.getWorkPrice(work)/100*parseInt(this.state.showCompany.pricelist.afterHours));
 											}
 											return acc;
 										},0);
@@ -540,10 +599,10 @@ class MothlyReportsCompany extends Component {
 															{task.extraWorks.map((work)=>
 																<tr key={work.id}>
 																	<td key={work.id+ '-title'} style={{paddingLeft:0}}>{work.title}</td>
-																	<td key={work.id+ '-type'} style={{width:'150px', paddingLeft:0}}>{work.workType.title}</td>
-																	<td key={work.id+ '-time'} style={{width:'50px', paddingLeft:0}}>{work.quantity}</td>
-																	<td key={work.id+ '-pricePerUnit'} style={{width:'70px', paddingLeft:0}}>{work.finalUnitPrice}</td>
-																	<td key={work.id+ '-totalPrice'} style={{width:'70px', paddingLeft:0}}>0</td>{/*FIX IT, treba pocitat celkovu cenu prace vsade!!!*/}
+																	<td key={work.id+ '-type'} style={{width:'150px'}}>{work.workType.title}</td>
+																	<td key={work.id+ '-time'} style={{width:'50px'}}>{work.quantity}</td>
+																	<td key={work.id+ '-pricePerUnit'} style={{width:'70px'}}>{work.finalUnitPrice}</td>
+																	<td key={work.id+ '-totalPrice'} style={{width:'70px'}}>{this.getWorkPrice(work)}</td>
 																</tr>
 															)}
 														</tbody>
@@ -582,8 +641,8 @@ class MothlyReportsCompany extends Component {
 								<p className="m-0">Spolu prirážka za práce mimo pracovných hodín: {
 									this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraWorks.length!==0 && task.overtime).reduce((acc,item)=>{
 										return acc+item.extraWorks.reduce((acc,work)=>{
-											if(!isNaN(parseFloat(work.totalPrice)) && this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
-												return acc+(parseFloat(work.totalPrice)/100*parseInt(this.state.showCompany.pricelist.afterHours));
+											if( this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
+												return acc+(this.getWorkPrice(work)/100*parseInt(this.state.showCompany.pricelist.afterHours));
 											}
 											return acc;
 										},0);
@@ -593,32 +652,26 @@ class MothlyReportsCompany extends Component {
 									(this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraWorks.length!==0).reduce((acc,task)=>{
 										return acc+task.extraWorks.reduce((acc,work)=>{
 											if(task.overtime){
-												if(!isNaN(parseFloat(work.totalPrice)) && this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
-													return acc+parseFloat(work.totalPrice)+(parseFloat(work.totalPrice)/100*parseInt(this.state.showCompany.pricelist.afterHours));
+												if( this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
+													return acc+this.getWorkPrice(work)+(this.getWorkPrice(work)/100*parseInt(this.state.showCompany.pricelist.afterHours));
 												}
 												return acc;
 											}else{
-												if(!isNaN(parseFloat(work.totalPrice))){
-													return acc+parseFloat(work.totalPrice);
-												}
-												return acc;
+												return acc+this.getWorkPrice(work);
 											}
 										},0);
 									},0)*0.8).toFixed(2)} eur
 								</p>
-								<p className="m-0 m-b-10">Spolu cena s DPH: {
+								<p className="m-0">Spolu cena s DPH: {
 									(this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraWorks.length!==0).reduce((acc,task)=>{
 										return acc+task.extraWorks.reduce((acc,work)=>{
 											if(task.overtime){
-												if(!isNaN(parseFloat(work.totalPrice)) && this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
-													return acc+parseFloat(work.totalPrice)+(parseFloat(work.totalPrice)/100*parseInt(this.state.showCompany.pricelist.afterHours));
+												if( this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
+													return acc+this.getWorkPrice(work)+(this.getWorkPrice(work)/100*parseInt(this.state.showCompany.pricelist.afterHours));
 												}
 												return acc;
 											}else{
-												if(!isNaN(parseFloat(work.totalPrice))){
-													return acc+parseFloat(work.totalPrice);
-												}
-												return acc;
+												return acc+this.getWorkPrice(work);
 											}
 										},0);
 									},0)).toFixed(2)} eur
@@ -637,6 +690,8 @@ class MothlyReportsCompany extends Component {
 											<th>Close date</th>
 											<th style={{width:'150px'}}>Výjazd</th>
 											<th style={{width:'50px'}}>Mn.</th>
+											<th style={{width:'50px'}}>Cena/ks</th>
+											<th style={{width:'50px'}}>Cena spolu</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -658,13 +713,15 @@ class MothlyReportsCompany extends Component {
 													</span>
 												</td>
 												<td>{timestampToString(task.closeDate)}</td>
-												<td colSpan="3">
+												<td colSpan="5">
 													<table className="table-borderless full-width">
 														<tbody>
 															{task.extraTrips.map((trip)=>
 																<tr key={trip.id}>
 																	<td key={trip.id+ '-title'} style={{width:'150px',paddingLeft:0}}>{trip.type?trip.type.title:"Undefined"}</td>
-																	<td key={trip.id+ '-time'} style={{width:'50px',paddingLeft:0}}>{trip.quantity}</td>
+																	<td key={trip.id+ '-time'} style={{width:'50px'}}>{trip.quantity}</td>
+																	<td key={trip.id+ '-unitPrice'} style={{width:'50px'}}>{trip.price.price}</td>
+																	<td key={trip.id+ '-totalPrice'} style={{width:'50px'}}>{this.getTripPrice(trip)}</td>
 																</tr>
 															)}
 														</tbody>
@@ -699,6 +756,287 @@ class MothlyReportsCompany extends Component {
 										.reduce((acc,task)=>{
 											return acc+=task.id + ','
 										}," ").slice(0,-1)+" )"}
+								</p>
+								<p className="m-0">Spolu prirážka za výjazdov mimo pracovných hodín: {
+									this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraTrips.length!==0 && task.overtime).reduce((acc,item)=>{
+										return acc+item.extraTrips.reduce((acc,trip)=>{
+											if( this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
+												return acc+(this.getTripPrice(trip)/100*parseInt(this.state.showCompany.pricelist.afterHours));
+											}
+											return acc;
+										},0);
+									},0)} eur
+								</p>
+								<p className="m-0">Spolu cena bez DPH: {
+									(this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraTrips.length!==0).reduce((acc,task)=>{
+										return acc+task.extraTrips.reduce((acc,trip)=>{
+											if(task.overtime){
+												if( this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
+													return acc+this.getTripPrice(trip)+(this.getTripPrice(trip)/100*parseInt(this.state.showCompany.pricelist.afterHours));
+												}
+												return acc;
+											}else{
+												return acc+this.getTripPrice(trip);
+											}
+										},0);
+									},0)*0.8).toFixed(2)} eur
+								</p>
+								<p className="m-0">Spolu cena s DPH: {
+									(this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraTrips.length!==0).reduce((acc,task)=>{
+										return acc+task.extraTrips.reduce((acc,trip)=>{
+											if(task.overtime){
+												if( this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
+													return acc+this.getTripPrice(trip)+(this.getTripPrice(trip)/100*parseInt(this.state.showCompany.pricelist.afterHours));
+												}
+												return acc;
+											}else{
+												return acc+this.getTripPrice(trip);
+											}
+										},0);
+									},0)).toFixed(2)} eur
+								</p>
+							</div>
+
+							<div className="m-b-30">
+								<h3 className="m-b-10">Projektové práce a výjazdy</h3>
+								<h4>Práce</h4>
+								<hr />
+								<table className="table m-b-10">
+									<thead>
+										<tr>
+											<th>ID</th>
+											<th>Názov úlohy</th>
+											<th>Zadal</th>
+											<th>Rieši</th>
+											<th>Status</th>
+											<th>Close date</th>
+											<th>Popis práce</th>
+											<th style={{width:'150px'}}>Typ práce</th>
+											<th style={{width:'50px'}}>Hodiny</th>
+											<th style={{width:'70px'}}>Cena/hodna</th>
+											<th style={{width:'70px'}}>Cena spolu</th>
+										</tr>
+									</thead>
+									<tbody>
+										{
+											this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.works.length!==0 ).map((task)=>
+											<tr key={task.id}>
+												<td>{task.id}</td>
+												<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/` + task.id }} style={{ color: "#1976d2" }}>{task.title}</Link></td>
+												<td>{task.requester?task.requester.email:'Nikto'}</td>
+												<td>
+													{task.assignedTo.map((assignedTo)=>
+														<p key={assignedTo.id}>{assignedTo.email}</p>
+													)}
+												</td>
+												<td>
+													<span className="label label-info"
+														style={{backgroundColor:task.status && task.status.color?task.status.color:'white'}}>
+														{task.status?task.status.title:'Neznámy status'}
+													</span>
+												</td>
+												<td>{timestampToString(task.closeDate)}</td>
+												<td colSpan="5">
+													<table className="table-borderless full-width">
+														<tbody>
+															{task.works.map((work)=>
+																<tr key={work.id}>
+																	<td key={work.id+ '-title'} style={{paddingLeft:0}}>{work.title}</td>
+																	<td key={work.id+ '-type'} style={{width:'150px'}}>{work.workType.title}</td>
+																	<td key={work.id+ '-time'} style={{width:'50px'}}>{work.quantity}</td>
+																	<td key={work.id+ '-pricePerUnit'} style={{width:'70px'}}>{work.finalUnitPrice}</td>
+																	<td key={work.id+ '-totalPrice'} style={{width:'70px'}}>{this.getWorkPrice(work)}</td>
+																</tr>
+															)}
+														</tbody>
+													</table>
+												</td>
+											</tr>
+										)
+									}
+								 </tbody>
+								</table>
+
+								<p className="m-0">Spolu počet hodín: {
+									this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.works.length!==0).reduce((acc,item)=>{
+										return acc+item.works.reduce((acc,item)=>{
+											if(!isNaN(parseInt(item.quantity))){
+												return acc+parseInt(item.quantity);
+											}
+											return acc;
+										},0);
+									},0)}
+								</p>
+								<p className="m-0">Spolu počet hodín mimo pracovný čas: {
+									this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.works.length!==0 && task.overtime).reduce((acc,item)=>{
+										return acc+item.works.reduce((acc,item)=>{
+											if(!isNaN(parseInt(item.quantity))){
+												return acc+parseInt(item.quantity);
+											}
+											return acc;
+										},0);
+									},0)} ( Čísla úloh:
+										{this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.works.length!==0 && task.overtime)
+										.reduce((acc,task)=>{
+											return acc+=task.id + ','
+										}," ").slice(0,-1)+" )"}
+								</p>
+								<p className="m-0">Spolu prirážka za práce mimo pracovných hodín: {
+									this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.works.length!==0 && task.overtime).reduce((acc,item)=>{
+										return acc+item.works.reduce((acc,work)=>{
+											if( this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
+												return acc+(this.getWorkPrice(work)/100*parseInt(this.state.showCompany.pricelist.afterHours));
+											}
+											return acc;
+										},0);
+									},0)} eur
+								</p>
+								<p className="m-0">Spolu cena bez DPH: {
+									(this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.works.length!==0).reduce((acc,task)=>{
+										return acc+task.works.reduce((acc,work)=>{
+											if(task.overtime){
+												if( this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
+													return acc+this.getWorkPrice(work)+(this.getWorkPrice(work)/100*parseInt(this.state.showCompany.pricelist.afterHours));
+												}
+												return acc;
+											}else{
+												return acc+this.getWorkPrice(work);
+											}
+										},0);
+									},0)*0.8).toFixed(2)} eur
+								</p>
+								<p className="m-0">Spolu cena s DPH: {
+									(this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.works.length!==0).reduce((acc,task)=>{
+										return acc+task.works.reduce((acc,work)=>{
+											if(task.overtime){
+												if( this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
+													return acc+this.getWorkPrice(work)+(this.getWorkPrice(work)/100*parseInt(this.state.showCompany.pricelist.afterHours));
+												}
+												return acc;
+											}else{
+												return acc+this.getWorkPrice(work);
+											}
+										},0);
+									},0)).toFixed(2)} eur
+								</p>
+
+								<h4>Výjazdy</h4>
+								<hr />
+								<table className="table m-b-10">
+									<thead>
+										<tr>
+											<th>ID</th>
+											<th>Názov úlohy</th>
+											<th>Zadal</th>
+											<th>Rieši</th>
+											<th>Status</th>
+											<th>Close date</th>
+											<th style={{width:'150px'}}>Výjazd</th>
+											<th style={{width:'50px'}}>Mn.</th>
+											<th style={{width:'50px'}}>Cena/ks</th>
+											<th style={{width:'50px'}}>Cena spolu</th>
+										</tr>
+									</thead>
+									<tbody>
+										{
+											this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.trips.length!==0).map((task)=>
+											<tr key={task.id}>
+												<td>{task.id}</td>
+												<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/` + task.id }} style={{ color: "#1976d2" }}>{task.title}</Link></td>
+												<td>{task.requester?task.requester.email:'Nikto'}</td>
+												<td>
+													{task.assignedTo.map((assignedTo)=>
+														<p key={assignedTo.id}>{assignedTo.email}</p>
+													)}
+												</td>
+												<td>
+													<span className="label label-info"
+														style={{backgroundColor:task.status && task.status.color?task.status.color:'white'}}>
+														{task.status?task.status.title:'Neznámy status'}
+													</span>
+												</td>
+												<td>{timestampToString(task.closeDate)}</td>
+												<td colSpan="5">
+													<table className="table-borderless full-width">
+														<tbody>
+															{task.trips.map((trip)=>
+																<tr key={trip.id}>
+																	<td key={trip.id+ '-title'} style={{width:'150px',paddingLeft:0}}>{trip.type?trip.type.title:"Undefined"}</td>
+																	<td key={trip.id+ '-time'} style={{width:'50px'}}>{trip.quantity}</td>
+																	<td key={trip.id+ '-unitPrice'} style={{width:'50px'}}>{trip.price.price}</td>
+																	<td key={trip.id+ '-totalPrice'} style={{width:'50px'}}>{this.getTripPrice(trip)}</td>
+																</tr>
+															)}
+														</tbody>
+													</table>
+												</td>
+											</tr>
+										)
+									}
+								 </tbody>
+								</table>
+
+								<p className="m-0">Spolu počet výjazdov: {
+									this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.trips.length!==0).reduce((acc,item)=>{
+										return acc+item.trips.reduce((acc,item)=>{
+											if(!isNaN(parseInt(item.quantity))){
+												return acc+parseInt(item.quantity);
+											}
+											return acc;
+										},0);
+									},0)}
+								</p>
+								<p className="m-0">Spolu počet výjazdov mimo pracovný čas: {
+									this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.trips.length!==0 && task.overtime).reduce((acc,item)=>{
+										return acc+item.trips.reduce((acc,item)=>{
+											if(!isNaN(parseInt(item.quantity))){
+												return acc+parseInt(item.quantity);
+											}
+											return acc;
+										},0);
+									},0)} ( Čísla úloh:
+										{this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.trips.length!==0 && task.overtime)
+										.reduce((acc,task)=>{
+											return acc+=task.id + ','
+										}," ").slice(0,-1)+" )"}
+								</p>
+								<p className="m-0">Spolu prirážka za výjazdov mimo pracovných hodín: {
+									this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.trips.length!==0 && task.overtime).reduce((acc,item)=>{
+										return acc+item.trips.reduce((acc,trip)=>{
+											if( this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
+												return acc+(this.getTripPrice(trip)/100*parseInt(this.state.showCompany.pricelist.afterHours));
+											}
+											return acc;
+										},0);
+									},0)} eur
+								</p>
+								<p className="m-0">Spolu cena bez DPH: {
+									(this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.trips.length!==0).reduce((acc,task)=>{
+										return acc+task.trips.reduce((acc,trip)=>{
+											if(task.overtime){
+												if( this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
+													return acc+this.getTripPrice(trip)+(this.getTripPrice(trip)/100*parseInt(this.state.showCompany.pricelist.afterHours));
+												}
+												return acc;
+											}else{
+												return acc+this.getTripPrice(trip);
+											}
+										},0);
+									},0)*0.8).toFixed(2)} eur
+								</p>
+								<p className="m-0">Spolu cena s DPH: {
+									(this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.trips.length!==0).reduce((acc,task)=>{
+										return acc+task.trips.reduce((acc,trip)=>{
+											if(task.overtime){
+												if( this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
+													return acc+this.getTripPrice(trip)+(this.getTripPrice(trip)/100*parseInt(this.state.showCompany.pricelist.afterHours));
+												}
+												return acc;
+											}else{
+												return acc+this.getTripPrice(trip);
+											}
+										},0);
+									},0)).toFixed(2)} eur
 								</p>
 							</div>
 
@@ -799,11 +1137,11 @@ class MothlyReportsCompany extends Component {
 							<p className="m-0">Spolu cena bez DPH: {
 									((this.state.showCompany.rented===undefined ? [] : this.state.showCompany.rented).reduce((acc,rentedItem)=>{
 									return acc+(isNaN(parseFloat(rentedItem.totalPrice))?0:parseFloat(rentedItem.totalPrice))
-								},0)*0.8).toFixed(2)} EUR</p>
+								},0)*0.8*this.getMonthDiff(this.props)).toFixed(2)} EUR</p>
 							<p className="m-0">Spolu cena s DPH: {
 									((this.state.showCompany.rented===undefined ? [] : this.state.showCompany.rented).reduce((acc,rentedItem)=>{
 									return acc+(isNaN(parseFloat(rentedItem.totalPrice))?0:parseFloat(rentedItem.totalPrice))
-								},0)).toFixed(2)} EUR</p>
+								},0)*this.getMonthDiff(this.props)).toFixed(2)} EUR</p>
 						</div>
 					</div>}
 				 </div>

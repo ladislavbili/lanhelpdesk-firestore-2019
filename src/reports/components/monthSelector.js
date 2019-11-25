@@ -92,7 +92,7 @@ class MonthSelector extends Component {
                     dateFormat="DD.MM.YYYY"
                   />
                 </div>
-                <Button type="button" disabled={this.state.year===null || this.state.month===null} className="btn-primary flex" onClick={()=>{
+                <Button type="button" disabled={this.state.from.unix() > this.state.to.unix()} className="btn-primary flex" onClick={()=>{
                     this.props.setReportFrom(this.state.from.unix()*1000);
                     this.props.setReportTo(this.state.to.unix()*1000);
                   }}>
