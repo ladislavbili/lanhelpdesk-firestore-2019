@@ -300,8 +300,6 @@ class MothlyReportsCompany extends Component {
 
 	render() {
 		if(this.state.tasks.length!==0){
-			console.log(this.state.tasks);
-			console.log(this.state.showCompany);
 		}
 
 		return (
