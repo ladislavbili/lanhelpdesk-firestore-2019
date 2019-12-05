@@ -1,0 +1,14 @@
+.cke_top {
+    border-bottom: none !important;
+    background: white !important;
+}
+
+.cke_bottom {
+    border-top: none !important;
+    background: white !important;
+    display: none;
+}
+
+.cke_chrome {
+    border: 1px solid rgba(0,0,0,.1) !important;
+}

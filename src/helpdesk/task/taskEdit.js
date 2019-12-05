@@ -564,9 +564,8 @@ class TaskEdit extends Component {
 									</div>
 								</div>
 							</div>
-							<div className={classnames({row:this.props.listView!==undefined && this.props.listView })}>
-							<div className={classnames({'task-edit-left-half':this.props.listView!==undefined && this.props.listView })}>
-								<div className="row">
+
+							<div className="row">
 									<div className="col-lg-12 d-flex">
 										<p className="">
 											<span className="text-muted">
@@ -618,10 +617,14 @@ class TaskEdit extends Component {
 											})()}
 										</p>
 									</div>
-
 								</div>
-
 								<hr className="m-t-5 m-b-5"/>
+
+							<div className={classnames({row:this.props.listView!==undefined && this.props.listView })}>
+							<div className={classnames({'task-edit-left-half':this.props.listView!==undefined && this.props.listView })}>
+
+
+							
 								<div className="col-lg-12 row ">
 										<div className="center-hor m-r-5"><Label className="center-hor col-form-label">Assigned to: </Label></div>
 										<div className="f-1">
@@ -957,7 +960,7 @@ class TaskEdit extends Component {
 									}
 								/>
 
-								<hr className="m-b-15" style={{marginLeft: "-30px", marginRight: "-30px", marginTop: "-5px"}}/>
+								<hr className="m-b-15" style={{marginLeft: "-30px", marginRight: "-20px", marginTop: "-5px"}}/>
 
 								<Nav tabs className="b-0 m-b-22 m-l--10">
 									<NavItem>
@@ -1088,9 +1091,9 @@ class TaskEdit extends Component {
 										</TabPane>
 									</TabContent>
 						</div>
-						{this.props.listView!==undefined && this.props.listView && <div className="task-edit-right-half pull-right p-t-10">
+						{this.props.listView!==undefined && this.props.listView && <div className="task-edit-right-half pull-right">
 
-								<div className="center-hor"><Label className="center-hor">Tagy: </Label></div>
+								<div className="center-hor"><Label className="col-form-label">Tagy: </Label></div>
 								<div className="f-1 ">
 									<Select
 										placeholder="Zvoľte tagy"
@@ -1103,7 +1106,7 @@ class TaskEdit extends Component {
 										/>
 								</div>
 
-								<div className="center-hor"><Label className="center-hor">Mimo pracovných hodín: </Label></div>
+								<div className="center-hor"><Label className="col-form-label">Mimo PH: </Label></div>
 								<Select
 									value={this.state.overtime}
 									isDisabled={this.state.viewOnly}
@@ -1112,7 +1115,7 @@ class TaskEdit extends Component {
 									options={booleanSelects}
 								/>
 
-								<div className="center-hor"><Label className="center-hor">Paušál: </Label></div>
+								<div className="center-hor"><Label className="ccol-form-label">Paušál: </Label></div>
 								<Select
 									value={this.state.pausal}
 									isDisabled={this.state.viewOnly||!this.state.company || parseInt(this.state.company.workPausal)===0}

@@ -270,7 +270,7 @@ class Sidebar extends Component {
 									<Nav vertical>
 										<NavItem>
 											<Link
-												className="sidebar-menu-item"
+												className="sidebar-menu-item p-l-20"
 												to={{ pathname: `/helpdesk/taskList/i/all` }} onClick={()=>{
 													this.setState({filterID:null,filterData:null});
 													this.props.setFilter({

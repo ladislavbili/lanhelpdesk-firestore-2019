@@ -10,14 +10,29 @@ export default class Attachments extends Component {
 
 	render() {
 		return (
-					<div className="full-width m-t-10">
+					<div className="full-width m-t-10 row">
+
+							{!this.props.disabled &&
+								<div>
+								<label htmlFor="uploadInput" className="btn-link-add">
+									+ Attachment
+								</label>
+								<input type="file" id="uploadInput" multiple={true} style={{display:'none'}}
+									onChange={(e)=>{
+										if(e.target.files.length>0){
+											let files = [...e.target.files];
+											this.props.addAttachments(files);
+										}
+									}}/>
+								</div>
+							}
 									{
 										this.props.attachments.map((attachment,index)=>
 										<div key={index}  className="attachment">
-													<a target="_blank" href={attachment.url} style={{cursor:'pointer', color: "white"}} rel="noopener noreferrer">
+													<a target="_blank" href={attachment.url} style={{cursor:'pointer', color: "black"}} rel="noopener noreferrer">
 														{`${attachment.title} (${Math.round(parseInt(attachment.size)/1024)}kB)`}
 													</a>
-													{!this.props.disabled && <button className="btn btn-link-reversed waves-effect"
+													{!this.props.disabled && <button className="btn-link-remove"
 														disabled={this.props.disabled}
 														onClick={()=>{
 															if(window.confirm('Are you sure?')){
@@ -29,20 +44,7 @@ export default class Attachments extends Component {
 										</div>
 										)
 									}
-							{!this.props.disabled &&
-								<div>
-								<label htmlFor="uploadInput" className="btn waves-effect">
-									+ Add New Attachment
-								</label>
-								<input type="file" id="uploadInput" multiple={true} style={{display:'none'}}
-									onChange={(e)=>{
-										if(e.target.files.length>0){
-											let files = [...e.target.files];
-											this.props.addAttachments(files);
-										}
-									}}/>
-								</div>
-							}
+						
 					</div>
 
 		);

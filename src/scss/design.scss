@@ -379,6 +379,29 @@ h4{
   font-size: $main-font-size;
 }
 
+.btn-link-add{
+  background-color: inherit;
+  border: 0px;
+  border-radius: 0px;
+  color: #0078D4;;
+  height: $button-height;
+  font-weight: 400;
+  font-size: $main-font-size;
+  font-family: Segoe UI;
+}
+
+.btn-link-remove{
+  background-color: inherit;
+  border: 0px;
+  border-radius: 0px;
+  color: black;
+  height: 14;
+  font-weight: 400;
+  font-size: 12px;
+  font-family: Segoe UI;
+}
+
+
 .btn-link:hover{
   background-color: inherit;
   color: $basic-button-color;
@@ -492,6 +515,9 @@ h4{
   font-weight: 600;
   font-size: 14px;
   line-height: 16px;
+  padding-top: 8px;
+  padding-bottom: none;
+
 }
 
 Label{
@@ -705,13 +731,13 @@ tr:last-child{
 }
 
 .attachment{
-  background-color: #6AC3FF;
+  background-color: #F2F1F1;
     display: inline-block;
-    margin-right: 5px;
-    height: 30px;
-    padding-left: 5px;
-    margin-bottom: 5px;
-    color: white;
+    height: 21px;
+    color: black;
+    font-size:12px;
+    padding-left:3px;
+    margin-left:5px;
 }
 
 //----------------END-všeobecné-elementy----------------
