@@ -229,27 +229,16 @@ class Sidebar extends Component {
 									components={{
 										DropdownIndicator: ({ innerProps, isDisabled }) =>
 										<div style={{marginTop: "-15px"}}>
-											<i className="fa fa-folder-open" style={{position:'absolute', left:15, color: "#212121"}}/>
+											<i className="fa fa-map-signs" style={{position:'absolute', left:15, color: "#212121"}}/>
 											<i className="fa fa-chevron-down" style={{position:'absolute', right:15, color: "#212121"}}/>
 										</div>,
 									}}
 									/>
+											<hr/>
 							</li>}
-
+					
 						<TaskAdd history={this.props.history} project={this.state.projects.map((item)=>item.id).includes(this.state.project.id)?this.state.project.id:null} triggerDate={this.state.projectChangeDate} />
-							{ this.state.openProjectAdd &&
-								<ProjectAdd close={() => this.setState({openProjectAdd: false})}/>
-							}
-							{ managesProjects &&
-								<ProjectEdit item={this.state.project} triggerChange={()=>{this.setState({projectChangeDate:(new Date()).getTime()})}}/>
-							}
-							{ this.state.openMilestoneAdd &&
-								<MilestoneAdd close={() => this.setState({openMilestoneAdd: false})}/>
-							}
-							{ this.state.milestone.id &&
-								this.state.milestones.map((item)=>item.id).includes(this.state.milestone.id) &&
-								<MilestoneEdit item={this.state.milestone} triggerChange={()=>{this.setState({milestoneChangeDate:(new Date()).getTime()})}}/>
-							}
+						
 
 
 						<div
@@ -281,7 +270,7 @@ class Sidebar extends Component {
 									<Nav vertical>
 										<NavItem>
 											<Link
-												className="sidebar-align sidebar-menu-item"
+												className="sidebar-menu-item"
 												to={{ pathname: `/helpdesk/taskList/i/all` }} onClick={()=>{
 													this.setState({filterID:null,filterData:null});
 													this.props.setFilter({
@@ -340,7 +329,19 @@ class Sidebar extends Component {
 									/>
 								</TabPane>
 							</TabContent>
-
+							{ this.state.openProjectAdd &&
+								<ProjectAdd close={() => this.setState({openProjectAdd: false})}/>
+							}
+							{ managesProjects &&
+								<ProjectEdit item={this.state.project} triggerChange={()=>{this.setState({projectChangeDate:(new Date()).getTime()})}}/>
+							}
+							{ this.state.openMilestoneAdd &&
+								<MilestoneAdd close={() => this.setState({openMilestoneAdd: false})}/>
+							}
+							{ this.state.milestone.id &&
+								this.state.milestones.map((item)=>item.id).includes(this.state.milestone.id) &&
+								<MilestoneEdit item={this.state.milestone} triggerChange={()=>{this.setState({milestoneChangeDate:(new Date()).getTime()})}}/>
+							}
 						</div>
 					</div>}
 					{showSettings &&

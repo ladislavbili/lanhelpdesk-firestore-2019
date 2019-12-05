@@ -201,10 +201,10 @@ class ProjectEdit extends Component{
     return (
       <div className='sidebar-menu-item'>
         <Button
-          className='btn-link sidebar-menu-item t-a-l'
+          className='btn-link m-t-10'
           onClick={this.toggle.bind(this)}
           >
-          <i className="fa fa-cog m-r-5 m-l-5 "/> Project settings
+          <i className="fa fa-cog m-r-5 m-l-5 m-t-5 "/> Project settings
         </Button>
 
         <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
