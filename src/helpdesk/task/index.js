@@ -4,8 +4,13 @@ import ShowData from '../../components/showData';
 import {timestampToString, sameStringForms} from '../../helperFunctions';
 import TaskEdit from './taskEditContainer';
 import TaskEmpty from './taskEmpty';
-import {setTasksOrderBy, setTasksAscending,storageCompaniesStart,storageHelpTagsStart,storageUsersStart,storageHelpProjectsStart,storageHelpStatusesStart,storageHelpTasksStart, storageHelpFiltersStart, setTasklistLayout} from '../../redux/actions';
-
+import {setTasksOrderBy, setTasksAscending,storageCompaniesStart,storageHelpTagsStart,storageUsersStart,
+	storageHelpProjectsStart,storageHelpStatusesStart,storageHelpTasksStart, storageHelpFiltersStart,
+	setTasklistLayout, storageHelpMilestonesStart,
+	setHelpSidebarProject, setHelpSidebarMilestone, setHelpSidebarFilter, setFilter, setMilestone,setProject,
+} from '../../redux/actions';
+const allMilestones = {id:null,title:'Any', label:'Any',value:null};
+const dashboard = {id:null,title:'Dashboard', label:'Dashboard',value:null};
 
 class TasksIndex extends Component {
 
@@ -21,6 +26,7 @@ class TasksIndex extends Component {
 			filterName:''
 		}
 		this.filterTasks.bind(this);
+		this.getBreadcrumsData.bind(this);
 	}
 
 	componentWillReceiveProps(props){
@@ -87,6 +93,9 @@ class TasksIndex extends Component {
 		if(!this.props.filtersActive){
 			this.props.storageHelpFiltersStart();
 		}
+		if(!this.props.milestonesActive){
+			this.props.storageHelpMilestonesStart();
+		}
 
 		this.getFilterName(this.props);
 	}
@@ -104,6 +113,81 @@ class TasksIndex extends Component {
 		if(filter){
 			this.setState({filterName:filter.title});
 		}
+	}
+
+	getBreadcrumsData(){
+		let project = this.props.projectState;
+		let milestone = this.props.milestoneState;
+		let filter = this.props.filterState;
+
+		return [
+			{
+				type:'project',
+				show:project!==null,
+				data:project,
+				label:project?project.title:'Invalid project',
+				onClick:()=>{
+					this.props.setHelpSidebarProject(dashboard);
+					this.props.setProject(null);
+					this.props.setHelpSidebarMilestone(allMilestones);
+					this.props.setMilestone(null);
+					this.props.setHelpSidebarFilter(null);
+					this.props.setFilter({
+						status:[],
+						requester:null,
+						company:null,
+						assigned:null,
+						workType:null,
+						statusDateFrom:'',
+						statusDateTo:'',
+						updatedAt:(new Date()).getTime()
+					});
+					this.props.history.push('/helpdesk/taskList/i/all');
+				}
+			},
+			{
+				type:'milestone',
+				show:project!==null && (filter!==null||milestone.id!==null),
+				data:milestone,
+				label:milestone?milestone.title:'Invalid milestone',
+				onClick:()=>{
+					this.props.setHelpSidebarMilestone(allMilestones);
+					this.props.setMilestone(null);
+					this.props.setHelpSidebarFilter(null);
+					this.props.setFilter({
+						status:[],
+						requester:null,
+						company:null,
+						assigned:null,
+						workType:null,
+						statusDateFrom:'',
+						statusDateTo:'',
+						updatedAt:(new Date()).getTime()
+					});
+					this.props.history.push('/helpdesk/taskList/i/all');
+				}
+			},
+			{
+				type:'filter',
+				show: filter!==null,
+				data:filter,
+				label:filter?filter.title:'Invalid filter',
+				onClick:()=>{
+					this.props.setHelpSidebarFilter(null);
+					this.props.setFilter({
+						status:[],
+						requester:null,
+						company:null,
+						assigned:null,
+						workType:null,
+						statusDateFrom:'',
+						statusDateTo:'',
+						updatedAt:(new Date()).getTime()
+					});
+					this.props.history.push('/helpdesk/taskList/i/all');
+				}
+			}
+		]
 	}
 
 	filterTasks(){
@@ -213,13 +297,13 @@ class TasksIndex extends Component {
 						</div>)
 					},
 					{value:'createdAt',label:'Created at',type:'date'},
-			/*		{value:'tags',label:'Tags',type:'list',func:(items)=>
-						(<div>
-						{items.map((item)=>
-							<span key={item.id} className="label label-info m-r-5">{item.title}</span>)
-						}
-						</div>)
-					},*/
+					/*		{value:'tags',label:'Tags',type:'list',func:(items)=>
+								(<div>
+								{items.map((item)=>
+									<span key={item.id} className="label label-info m-r-5">{item.title}</span>)
+								}
+								</div>)
+							},*/
 					{value:'deadline',label:'Deadline',type:'date'}
 				]}
 				orderByValues={[
@@ -229,7 +313,7 @@ class TasksIndex extends Component {
 					{value:'requester',label:'Requester',type:'user'},
 					{value:'assignedTo',label:'Assigned to',type:'list',func:((total,user)=>total+=user.email+' '+user.name+' '+user.surname+' ')},
 					{value:'createdAt',label:'Created at',type:'date'},
-			//		{value:'tags',label:'Tags',type:'list',func:((cur,item)=>cur+item.title+' ')},
+					//		{value:'tags',label:'Tags',type:'list',func:((cur,item)=>cur+item.title+' ')},
 					{value:'deadline',label:'Deadline',type:'date'}
 				]}
 				dndGroupAttribute="status"
@@ -247,12 +331,14 @@ class TasksIndex extends Component {
 				listName={this.state.filterName}
 				edit={TaskEdit}
 				empty={TaskEmpty}
+				useBreadcrums={true}
+				breadcrumsData={this.getBreadcrumsData()}
 				 />
 		);
 	}
 }
 
-const mapStateToProps = ({ userReducer, filterReducer, taskReducer, storageCompanies, storageHelpTags, storageUsers, storageHelpProjects, storageHelpStatuses,storageHelpTasks,storageHelpFilters }) => {
+const mapStateToProps = ({ userReducer, filterReducer, taskReducer, storageCompanies, storageHelpTags, storageUsers, storageHelpProjects, storageHelpStatuses,storageHelpTasks,storageHelpFilters, storageHelpMilestones, helpSidebarStateReducer }) => {
 	const { project, milestone, filter } = filterReducer;
 	const { orderBy, ascending, tasklistLayout } = taskReducer;
 
@@ -263,8 +349,26 @@ const mapStateToProps = ({ userReducer, filterReducer, taskReducer, storageCompa
 	const { statusesActive, statuses } = storageHelpStatuses;
 	const { tasksActive, tasks } = storageHelpTasks;
 	const { filtersActive, filters } = storageHelpFilters;
+	const { milestonesActive, milestones } = storageHelpMilestones;
 
-	return { project, milestone, filter,orderBy,ascending,tasklistLayout, currentUser:userReducer,companiesActive, companies, tagsActive, tags, usersActive, users, projectsActive, projects, statusesActive, statuses, tasksActive, tasks, filtersActive, filters };
+	return {
+		project, milestone, filter,
+		orderBy,ascending,tasklistLayout, currentUser:userReducer,
+		companiesActive, companies,
+		tagsActive, tags,
+		usersActive, users,
+		projectsActive, projects,
+		statusesActive, statuses,
+		tasksActive, tasks,
+		filtersActive, filters,
+		milestonesActive, milestones,
+		projectState:helpSidebarStateReducer.project,
+		milestoneState:helpSidebarStateReducer.milestone,
+		filterState:helpSidebarStateReducer.filter,
+	 };
 };
 
-export default connect(mapStateToProps, { setTasksOrderBy, setTasksAscending ,storageCompaniesStart,storageHelpTagsStart,storageUsersStart,storageHelpProjectsStart,storageHelpStatusesStart,storageHelpTasksStart, storageHelpFiltersStart, setTasklistLayout})(TasksIndex);
+export default connect(mapStateToProps, { setTasksOrderBy, setTasksAscending ,
+	storageCompaniesStart,storageHelpTagsStart,storageUsersStart,storageHelpProjectsStart,storageHelpStatusesStart,storageHelpTasksStart, storageHelpFiltersStart, setTasklistLayout, storageHelpMilestonesStart,
+	setHelpSidebarProject, setHelpSidebarMilestone, setHelpSidebarFilter, setFilter, setMilestone, setProject,
+})(TasksIndex);

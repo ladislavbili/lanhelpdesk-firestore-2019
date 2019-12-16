@@ -12,7 +12,7 @@ export default class ColumnDisplay extends Component {
 					<CommandBar {...this.props.commandBar} />
 
 					<div className="scroll-visible fit-with-header-and-commandbar">
-						<ListHeader {...this.props.commandBar} listName={this.props.listName}/>
+						<ListHeader {...this.props.commandBar} listName={this.props.listName} useBreadcrums={this.props.useBreadcrums} breadcrumsData={this.props.breadcrumsData}/>
 						{
 							this.props.data.map((item, index)=>
 							<ul

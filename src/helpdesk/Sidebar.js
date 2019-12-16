@@ -12,7 +12,10 @@ import ProjectAdd from './components/projects/projectAdd';
 import MilestoneEdit from './components/milestones/milestoneEdit';
 import MilestoneAdd from './components/milestones/milestoneAdd';
 import {toSelArr, sameStringForms,testing} from '../helperFunctions';
-import {setProject, setMilestone, setFilter, storageHelpFiltersStart, storageHelpProjectsStart, storageHelpMilestonesStart} from '../redux/actions';
+import {
+	setProject, setMilestone, setFilter,
+	storageHelpFiltersStart, storageHelpProjectsStart, storageHelpMilestonesStart,
+	setHelpSidebarProject, setHelpSidebarMilestone, setHelpSidebarFilter} from '../redux/actions';
 
 import {sidebarSelectStyle} from '../scss/selectStyles';
 
@@ -36,14 +39,9 @@ class Sidebar extends Component {
 			search: '',
 			activeTab:0,
 			projects:this.props.currentUser.userData.role.value>0?[dashboard,addProject]:[dashboard],
-			project:dashboard,
 			milestones:[allMilestones],
-			milestone:allMilestones,
-			filterID:null,
-			filterData:null,
 
 			projectChangeDate:(new Date()).getTime(),
-			milestoneChangeDate:(new Date()).getTime(),
 		};
 		this.readFilterFromURL.bind(this);
 	}
@@ -52,8 +50,8 @@ class Sidebar extends Component {
 		if(!sameStringForms(props.filters,this.props.filters)){
 			this.setState({
 				filters:props.filters.filter((filter)=>filter.createdBy===props.currentUser.id||filter.public).sort((item1,item2)=>item1.title> item2.title?1:-1),
-				filterData:(this.state.filterData && props.filters.length>0) ? props.filters.find((filter)=>filter.id===this.state.filterData.id):null
 			})
+			this.props.setHelpSidebarFilter((this.props.filterState && props.filters.length>0) ? props.filters.find((filter)=>filter.id===this.props.filterState.id):null);
 		}
 
 		if(!this.props.filtersLoaded && props.filtersLoaded){
@@ -63,15 +61,15 @@ class Sidebar extends Component {
 		if(!sameStringForms(props.projects,this.props.projects)||!sameStringForms(this.props.currentUser,props.currentUser)){
 			let project = toSelArr([dashboard].concat(props.projects)).find((item)=>item.id===props.project);
 			this.setState({
-				projects:toSelArr([dashboard].concat(props.projects).concat(props.currentUser.userData.role.value>0?[addProject]:[])),
-				project:project?project:dashboard
+				projects:toSelArr([dashboard].concat(props.projects).concat(props.currentUser.userData.role.value>0?[addProject]:[]))
 			});
+			this.props.setHelpSidebarProject(project?project:dashboard);
 		}
 		if(!sameStringForms(props.milestones,this.props.milestones)||!sameStringForms(this.props.currentUser,props.currentUser)){
 			let milestone = toSelArr([allMilestones].concat(props.milestones)).find((item)=>item.id===props.milestone);
+			this.props.setHelpSidebarMilestone(milestone?milestone:dashboard);
 			this.setState({
 				milestones:toSelArr([allMilestones].concat(props.milestones)),
-				milestone:milestone?milestone:dashboard
 			});
 		}
 	}
@@ -87,7 +85,7 @@ class Sidebar extends Component {
 		}
 		let filterID=url;
 		if(filterID==='all'){
-			this.setState({filterID:null,filterData:null});
+			this.props.setHelpSidebarFilter(null);
 			props.setFilter({
 				status:[],
 				requester:null,
@@ -102,7 +100,7 @@ class Sidebar extends Component {
 
 		let filter=props.filters.find((filter)=>filter.id===filterID);
 		if(filter){
-			this.setState({filterID,filterData:filter});
+			props.setHelpSidebarFilter(filter);
 			props.setFilter({
 				...filter.filter,
 				updatedAt:(new Date()).getTime()
@@ -117,15 +115,15 @@ class Sidebar extends Component {
 		let project = toSelArr([dashboard].concat(this.props.projects)).find((item)=>item.id===this.props.project);
 		this.setState({
 			projects:toSelArr([dashboard].concat(this.props.projects).concat(this.props.currentUser.userData.role.value>0?[addProject]:[])),
-			project:project?project:dashboard
 		});
+		this.props.setHelpSidebarProject(project?project:dashboard);
 
 		if(!this.props.milestonesActive){
 			this.props.storageHelpMilestonesStart();
 		}
+		this.props.setHelpSidebarMilestone(toSelArr([allMilestones].concat(this.props.milestones)).find((item)=>item.id===this.props.milestone));
 		this.setState({
 			milestones:toSelArr([allMilestones].concat(this.props.milestones)),
-			milestone:toSelArr([allMilestones].concat(this.props.milestones)).find((item)=>item.id===this.props.milestone)
 		});
 
 		if(!this.props.filtersActive){
@@ -138,19 +136,19 @@ class Sidebar extends Component {
 
 	render() {
 		let showSettings= this.props.history.location.pathname.includes('settings')&&(this.props.currentUser.userData.role.value===3||testing);
-		let managesProjects = this.state.project.id!==null && this.state.project.id!==-1 && (
+		let managesProjects = this.props.projectState.id!==null && this.props.projectState.id!==-1 && (
 			this.props.currentUser.userData.role.value===3 || testing ||
-			(this.state.project.permissions.find((permission)=>permission.user===this.props.currentUser.id)!==undefined && this.state.project.permissions.find((permission)=>permission.user===this.props.currentUser.id).isAdmin)
+			(this.props.projectState.permissions.find((permission)=>permission.user===this.props.currentUser.id)!==undefined && this.props.projectState.permissions.find((permission)=>permission.user===this.props.currentUser.id).isAdmin)
 		);
-		let addsMilestones = this.state.project.id!==null && this.state.project.id!==-1 && (
+		let addsMilestones = this.props.projectState.id!==null && this.props.projectState.id!==-1 && (
 			this.props.currentUser.userData.role.value===3 || testing ||
-			(this.state.project.permissions.find((permission)=>permission.user===this.props.currentUser.id)!==undefined && this.state.project.permissions.find((permission)=>permission.user===this.props.currentUser.id).write)
+			(this.props.projectState.permissions.find((permission)=>permission.user===this.props.currentUser.id)!==undefined && this.props.projectState.permissions.find((permission)=>permission.user===this.props.currentUser.id).write)
 		);
 		let filters = [...this.state.filters];
-		if(this.state.project.id===null){
+		if(this.props.projectState.id===null){
 			filters = filters.filter((filter)=>filter.dashboard);
 		}else{
-			filters = filters.filter((filter)=>filter.global || (filter.project!==null && filter.project===this.state.project.id))
+			filters = filters.filter((filter)=>filter.global || (filter.project!==null && filter.project===this.props.projectState.id))
 		}
 		return (
 			<div className="sidebar">
@@ -168,19 +166,15 @@ class Sidebar extends Component {
 									let permission = project.permissions.find((permission)=>permission.user===curr.id);
 									return permission && permission.read;
 								})}
-								value={this.state.project}
+								value={this.props.projectState}
 								styles={sidebarSelectStyle}
 								onChange={project => {
 									if (project.id === -1) {
 										this.setState({openProjectAdd: true})
 									} else {
-										if(this.state.filterID!== null && !this.state.filterData.global && this.state.filterData.project!==project.id){
-											this.setState({
-												project,
-												milestone:allMilestones,
-												filterID:null,
-												filterData:null,
-											});
+										if(this.props.filterState!== null && !this.props.filterState.global && this.props.filterState.project!==project.id){
+											this.props.setHelpSidebarMilestone(allMilestones);
+											this.props.setHelpSidebarFilter(null);
 											this.props.setFilter({
 												status:[],
 												requester:null,
@@ -192,13 +186,10 @@ class Sidebar extends Component {
 												updatedAt:(new Date()).getTime()
 											});
 											this.props.history.push('/helpdesk/taskList/i/all');
-										}else{
-											this.setState({
-												project,
-												milestone:allMilestones
-											});
 										}
+										this.props.setHelpSidebarProject(project);
 										this.props.setProject(project.value);
+										this.props.setHelpSidebarMilestone(allMilestones);
 										this.props.setMilestone(null);
 									}
 								}}
@@ -216,14 +207,14 @@ class Sidebar extends Component {
 								<Select
 									options={this.state.milestones.concat(addsMilestones?[addMilestone]:[])
 										.filter((milestone)=> milestone.id===-1|| milestone.id===null|| milestone.project===this.props.project)}
-									value={this.state.milestone}
+									value={this.props.milestoneState}
 									styles={sidebarSelectStyle}
-									onChange={e => {
-										if (e.id === -1) {
+									onChange={milestone => {
+										if (milestone.id === -1) {
 											this.setState({openMilestoneAdd: true})
 										} else {
-											this.setState({milestone:e});
-											this.props.setMilestone(e.value);
+											this.props.setHelpSidebarMilestone(milestone);
+											this.props.setMilestone(milestone.value);
 										}
 									}}
 									components={{
@@ -236,9 +227,9 @@ class Sidebar extends Component {
 									/>
 											<hr/>
 							</li>}
-					
-						<TaskAdd history={this.props.history} project={this.state.projects.map((item)=>item.id).includes(this.state.project.id)?this.state.project.id:null} triggerDate={this.state.projectChangeDate} />
-						
+
+						<TaskAdd history={this.props.history} project={this.state.projects.map((item)=>item.id).includes(this.props.projectState.id)?this.props.projectState.id:null} triggerDate={this.state.projectChangeDate} />
+
 
 
 						<div
@@ -247,7 +238,8 @@ class Sidebar extends Component {
 							<div
 								onClick={() => {
 									this.props.history.push(`/helpdesk/taskList/i/all`);
-									this.setState({filterID:null, filterData:null, activeTab: (this.state.activeTab === 0 ? 1 : 0)})
+									this.setState({ activeTab: (this.state.activeTab === 0 ? 1 : 0)})
+									this.props.setHelpSidebarFilter(null);
 									this.props.setFilter({
 										status:[],
 										requester:null,
@@ -272,7 +264,7 @@ class Sidebar extends Component {
 											<Link
 												className="sidebar-menu-item p-l-20"
 												to={{ pathname: `/helpdesk/taskList/i/all` }} onClick={()=>{
-													this.setState({filterID:null,filterData:null});
+													this.props.setHelpSidebarFilter(null);
 													this.props.setFilter({
 														status:[],
 														requester:null,
@@ -291,7 +283,7 @@ class Sidebar extends Component {
 												<Link
 													className="sidebar-menu-item"
 													to={{ pathname: `/helpdesk/taskList/i/`+item.id }} onClick={()=>{
-														this.setState({filterID:item.id,filterData:item});
+														this.props.setHelpSidebarFilter(item);
 														this.props.setFilter({
 															...item.filter,
 															updatedAt:(new Date()).getTime()
@@ -302,7 +294,8 @@ class Sidebar extends Component {
 													onClick={() => {
 														if (this.props.location.pathname.includes(item.id)){
 															this.props.history.push(`/helpdesk/taskList/i/`+item.id);
-															this.setState({filterID: item.id, filterData:item, activeTab: 1});
+															this.props.setHelpSidebarFilter(item);
+															this.setState({activeTab: 1});
 															this.props.setFilter({
 																...item.filter,
 																updatedAt:(new Date()).getTime()
@@ -311,8 +304,6 @@ class Sidebar extends Component {
 													}}>
 														<i className="fa fa-cog"/>
 												</div>
-
-
 											</NavItem>
 
 										)}
@@ -321,10 +312,10 @@ class Sidebar extends Component {
 								</TabPane>
 								<TabPane tabId={1}>
 									<Filter
-										filterID={this.state.filterID}
+										filterID={this.props.filterState?this.props.filterState.id:null}
 										history={this.props.history}
-										filterData={this.state.filterData}
-										resetFilter={()=>this.setState({filterID:null,filterData:null})}
+										filterData={this.props.filterState}
+										resetFilter={()=>this.props.setHelpSidebarFilter(null)}
 										close={ () => this.setState({activeTab: 0})}
 									/>
 								</TabPane>
@@ -333,14 +324,14 @@ class Sidebar extends Component {
 								<ProjectAdd close={() => this.setState({openProjectAdd: false})}/>
 							}
 							{ managesProjects &&
-								<ProjectEdit item={this.state.project} triggerChange={()=>{this.setState({projectChangeDate:(new Date()).getTime()})}}/>
+								<ProjectEdit item={this.props.projectState} triggerChange={()=>{this.setState({projectChangeDate:(new Date()).getTime()})}}/>
 							}
 							{ this.state.openMilestoneAdd &&
 								<MilestoneAdd close={() => this.setState({openMilestoneAdd: false})}/>
 							}
-							{ this.state.milestone.id &&
-								this.state.milestones.map((item)=>item.id).includes(this.state.milestone.id) &&
-								<MilestoneEdit item={this.state.milestone} triggerChange={()=>{this.setState({milestoneChangeDate:(new Date()).getTime()})}}/>
+							{ this.props.milestoneState.id &&
+								this.state.milestones.map((item)=>item.id).includes(this.props.milestoneState.id) &&
+								<MilestoneEdit item={this.props.milestoneState}/>
 							}
 						</div>
 					</div>}
@@ -359,12 +350,23 @@ class Sidebar extends Component {
 			);
 		}
 	}
-	const mapStateToProps = ({ filterReducer,storageHelpFilters, storageHelpProjects, storageHelpMilestones, userReducer }) => {
+	const mapStateToProps = ({ filterReducer,storageHelpFilters, storageHelpProjects, storageHelpMilestones, userReducer, helpSidebarStateReducer }) => {
     const { project, milestone } = filterReducer;
 		const { filtersActive, filters, filtersLoaded } = storageHelpFilters;
 		const { projectsActive, projects } = storageHelpProjects;
 		const { milestonesActive, milestones } = storageHelpMilestones;
-    return { project, milestone, filtersActive,filters, filtersLoaded,projectsActive,projects, milestonesActive, milestones, currentUser:{...userReducer, userData:{...(userReducer.userData?userReducer.userData:{role:{value:0}})}} };
+    return { project, milestone,
+			filtersActive,filters, filtersLoaded,
+			projectsActive,projects,
+			milestonesActive, milestones,
+			currentUser:{...userReducer, userData:{...(userReducer.userData?userReducer.userData:{role:{value:0}})}},
+			projectState:helpSidebarStateReducer.project,
+			milestoneState:helpSidebarStateReducer.milestone,
+			filterState:helpSidebarStateReducer.filter,
+		};
   };
 
-  export default connect(mapStateToProps, { setProject, setMilestone, setFilter, storageHelpFiltersStart, storageHelpProjectsStart, storageHelpMilestonesStart })(Sidebar);
+  export default connect(mapStateToProps, { setProject, setMilestone, setFilter,
+		storageHelpFiltersStart, storageHelpProjectsStart, storageHelpMilestonesStart,
+		setHelpSidebarProject, setHelpSidebarMilestone, setHelpSidebarFilter,
+	})(Sidebar);

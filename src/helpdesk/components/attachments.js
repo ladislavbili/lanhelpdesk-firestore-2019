@@ -29,10 +29,10 @@ export default class Attachments extends Component {
 									{
 										this.props.attachments.map((attachment,index)=>
 										<div key={index}  className="attachment">
-													<a target="_blank" href={attachment.url} style={{cursor:'pointer', color: "black"}} rel="noopener noreferrer">
+													{attachment.url && <a target="_blank" href={attachment.url} style={{cursor:'pointer', color: "black"}} rel="noopener noreferrer">
 														{`${attachment.title} (${Math.round(parseInt(attachment.size)/1024)}kB)`}
-													</a>
-													{!this.props.disabled && <button className="btn-link-remove"
+													</a>}
+													{attachment.url && !this.props.disabled && <button className="btn-link-remove"
 														disabled={this.props.disabled}
 														onClick={()=>{
 															if(window.confirm('Are you sure?')){
@@ -41,10 +41,22 @@ export default class Attachments extends Component {
 														}}>
 														<i className="fa fa-times"  />
 													</button>}
+													{!attachment.url && <div>
+														<span style={{cursor:'pointer', color: "black"}}>{`${attachment.title} (${Math.round(parseInt(attachment.size)/1024)}kB)`}</span>
+														{!this.props.disabled && <button className="btn-link-remove"
+															disabled={this.props.disabled}
+															onClick={()=>{
+																if(window.confirm('Are you sure?')){
+																	this.props.removeAttachment(attachment);
+																}
+															}}>
+															<i className="fa fa-times"  />
+														</button>}
+													</div>}
 										</div>
 										)
 									}
-						
+
 					</div>
 
 		);

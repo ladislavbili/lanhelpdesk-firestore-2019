@@ -27,10 +27,10 @@ export default class Rozpocet extends Component {
 
 	componentWillReceiveProps(props){
 		if((this.props.company===null && props.company!==null) ||
-		(props.company!==null && props.company!==null && props.company.id!==this.props.company.id)){
+		(this.props.company && props.company && props.company.id!==this.props.company.id)){
 			this.setState({newMargin:props.company.pricelist.materialMargin});
 		}
-		if((this.props.units.length!==props.units.length)){
+		if(this.props.units && props.units && this.props.units.length!==props.units.length){
 			let newUnit= props.units[0];
 			if(props.defaultUnit!==null){
 				newUnit=props.units.find((item)=>item.id===props.defaultUnit)

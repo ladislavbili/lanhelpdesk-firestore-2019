@@ -322,6 +322,17 @@ html{
 .t-a-l{
     text-align: left;
 }
+
+.col-1-5{
+  flex: 0 0 12.5%;
+  max-width: 12.5%;
+}
+
+.col-10-5{
+  flex: 0 0 87.5%;
+  max-width: 87.5%;
+}
+
 .modal.fade.show{
   opacity: 1;
 }

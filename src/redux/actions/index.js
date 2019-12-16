@@ -10,29 +10,5 @@ export * from './wikiActions';
 export * from './reports';
 export * from './showDataActions';
 
-//storage
-export * from './storage/help-filters';
-export * from './storage/help-invoice_items';
-export * from './storage/help-milestones';
-export * from './storage/help-pricelists';
-export * from './storage/help-prices';
-export * from './storage/help-projects';
-export * from './storage/help-statuses';
-export * from './storage/help-stored_items';
-export * from './storage/help-supplier_invoices';
-export * from './storage/help-suppliers';
-export * from './storage/help-tags';
-export * from './storage/help-task_types';
-export * from './storage/help-task_work_trips';
-export * from './storage/help-tasks';
-export * from './storage/help-trip_types';
-export * from './storage/help-units';
-export * from './storage/help-work_types';
-export * from './storage/help-task_works';
-export * from './storage/help-task_materials';
-
-export * from './storage/companies';
-export * from './storage/imaps';
-export * from './storage/metadata';
-export * from './storage/smtps';
-export * from './storage/users';
+export * from './helpdesk';
+export * from './storage';

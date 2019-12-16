@@ -31,7 +31,7 @@ export default class TaskListDnD extends Component {
 				<div>
 					<CommandBar {...this.props.commandBar} />
 					<div className="scroll-visible overflow-x fit-with-header-and-commandbar p-r-20 p-l-20">
-						<ListHeader {...this.props.commandBar} listName={this.props.listName}/>
+						<ListHeader {...this.props.commandBar} listName={this.props.listName}  useBreadcrums={this.props.useBreadcrums} breadcrumsData={this.props.breadcrumsData}/>
 						<div className="p-10">
 							<div className="flex-row">
 								{

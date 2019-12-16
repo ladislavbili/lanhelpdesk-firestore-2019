@@ -1,3 +1,5 @@
+import chroma from 'chroma-js';
+
 export const invisibleSelectStyleNoArrow = {
 	control: (base,state) => ({
 		...base,
@@ -52,6 +54,91 @@ export const invisibleSelectStyleNoArrow = {
 		width: 0,
 	}),
 
+};
+
+export const invisibleSelectStyleNoArrowColored = {
+	control: (base,state) => ({
+		...base,
+		minHeight: 30,
+		backgroundColor: state.isFocused?'white':'inherit',
+		borderWidth:0,
+		borderRadius: 0
+	}),
+	option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+    const color = chroma(data.color);
+    return {
+      ...styles,
+      backgroundColor: isDisabled
+        ? null
+        : isSelected
+        ? data.color
+        : isFocused
+        ? color.alpha(0.1).css()
+        : null,
+      color: isDisabled
+        ? '#ccc'
+        : isSelected
+        ? chroma.contrast(color, 'white') > 2
+          ? 'white'
+          : 'black'
+        : data.color,
+      cursor: isDisabled ? 'not-allowed' : 'default',
+
+      ':active': {
+        ...styles[':active'],
+        backgroundColor: !isDisabled && (isSelected ? data.color : color.alpha(0.3).css()),
+      },
+    };
+  },
+	dropdownIndicator: base => ({
+		...base,
+		color: "transparent",
+		padding: 4,
+	}),
+	clearIndicator: base => ({
+		...base,
+		padding: 4,
+	}),
+	multiValue: (base, {data}) => {
+		const color = chroma(data.color);
+    return {
+      ...base,
+			backgroundColor: color.alpha(0.1).css(),
+			borderRadius: 0,
+    };
+	},
+	multiValueLabel: (base, { data }) => ({
+    ...base,
+    color: data.color,
+  }),
+	multiValueRemove: (styles, { data }) => ({
+    ...styles,
+    color: data.color,
+    ':hover': {
+      backgroundColor: data.color,
+      color: 'white',
+    },
+  }),
+	valueContainer: base => ({
+		...base,
+		padding: '0px 6px',
+		borderRadius: 0
+	}),
+	input: base => ({
+		...base,
+		margin: 0,
+		padding: 0,
+		backgroundColor: "inherit",
+		borderRadius: 0
+	}),
+	indicatorSeparator: base => ({
+		...base,
+		width: 0,
+	}),
+	singleValue: (styles, { data }) =>{
+		const color = chroma(data.color);
+		return ({ ...styles, color:data.color, backgroundColor: color.alpha(0.1).css() });
+	}
 };
 
 export const sidebarSelectStyle = {

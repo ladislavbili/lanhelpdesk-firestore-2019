@@ -23,8 +23,8 @@ class List extends Component {
 				<div className="row">
 					<CommandBar {...this.props.commandBar} />
 					<div className="full-width scroll-visible fit-with-header-and-commandbar p-r-20 p-l-20">
-						<ListHeader {...this.props.commandBar} listName={this.props.listName}/>
-						<div className="p-10">
+						<ListHeader {...this.props.commandBar} listName={this.props.listName}  useBreadcrums={this.props.useBreadcrums} breadcrumsData={this.props.breadcrumsData}/>
+						<div className="p-b-10 p-r-10 p-l-10">
 							<table className="table">
 								<thead>
 										<tr>
@@ -117,7 +117,7 @@ class List extends Component {
 }
 
 const mapStateToProps = ({ showDataReducer }) => {
-	return { filter:showDataReducer.filter };
+	return { filter:showDataReducer.filter  };
 };
 
 export default connect(mapStateToProps, { setShowDataFilter })(List);

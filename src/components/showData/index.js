@@ -91,6 +91,8 @@ class ShowDataContainer extends Component {
 							<div className={'' + (this.state.filterView ? 'col-xl-9' : 'col-xl-12')}>
 								<TaskCol
 									commandBar={this.props}
+									useBreadcrums={this.props.useBreadcrums}
+									breadcrumsData={this.props.breadcrumsData}
 									listName={this.props.listName}
 									history={this.props.history}
 									empty={this.props.empty}
@@ -110,6 +112,8 @@ class ShowDataContainer extends Component {
 								{!this.props.itemID &&
 									<TaskList
 										commandBar={this.props}
+										useBreadcrums={this.props.useBreadcrums}
+										breadcrumsData={this.props.breadcrumsData}
 										listName={this.props.listName}
 										history={this.props.history}
 										match={this.props.match}
@@ -126,6 +130,8 @@ class ShowDataContainer extends Component {
 								{!this.props.itemID &&
 									<TaskListDnD
 										commandBar={this.props}
+										useBreadcrums={this.props.useBreadcrums}
+										breadcrumsData={this.props.breadcrumsData}
 										listName={this.props.listName}
 										history={this.props.history}
 										match={this.props.match}
