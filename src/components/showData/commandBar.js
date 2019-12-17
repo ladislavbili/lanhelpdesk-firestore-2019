@@ -18,9 +18,7 @@ export default class CommandBar extends Component {
 						<div className="flex-row">
 							{
 								this.props.breadcrumsData.filter((breadcrum)=>breadcrum.show).map((breadcrum)=>
-								<h4 className="clickable" key={breadcrum.label} onClick={breadcrum.onClick}>
-									{breadcrum.label + ' / '}
-								</h4>
+									<h4 className="clickable" style={{marginRight:'0.3em'}} key={breadcrum.label} onClick={breadcrum.onClick}>{breadcrum.label + ` \\`}</h4>
 								)
 							}
 						</div>
