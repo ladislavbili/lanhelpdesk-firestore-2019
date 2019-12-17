@@ -250,11 +250,11 @@ class TasksIndex extends Component {
 				]}
 				displayCol={(task)=>
 					<li className="p-20" >
-						<div className="m-b-0 font-15">
+						<div className="m-b-5 font-15">
 							<label><span className="text-muted font-15">#{task.id} | </span> {task.title}</label>
 						</div>
 						<div className="m-t-0 font-12">
-							<p className="pull-right m-0 font-15">
+							<p className="pull-right m-0 ">
 								<span className="label label-info" style={{backgroundColor:task.status && task.status.color?task.status.color:'white'}}>{task.status?task.status.title:'Neznámy status'}</span>
 							</p>
 							<p className="m-b-0">
@@ -263,9 +263,16 @@ class TasksIndex extends Component {
 											{task.requester?(" " + task.requester.name+' '+task.requester.surname):' Neznámy používateľ '}
 								</span>
 							</p>
+							<p className="m-b-0 pull-right">
+								<span>
+									<span className="text-muted">	<i className="fa fa-star-of-life" /> </span>
+									{task.createdAt?timestampToString(task.createdAt):'None'}
+								</span>
+							</p>
 							<p className="m-b-0">
 									<span className="text-muted">{task.company ? ` From ${task.company.title}` : " from Unknown"}</span>
 							</p>
+
 							<p className="pull-right m-b-0">
 								<span>
 									<img
@@ -276,13 +283,6 @@ class TasksIndex extends Component {
 									{task.deadline?timestampToString(task.deadline):'None'}
 								</span>
 							</p>
-							<p className="m-b-0">
-								<span>
-									<span className="text-muted">	<i className="fa fa-star-of-life" /> </span>
-										{task.createdAt?timestampToString(task.createdAt):'None'}
-								</span>
-							</p>
-
 							<p className="m-b-0">
 								<span style={{textOverflow: 'ellipsis'}}><span className="text-muted">Assigned to: </span>{task.assignedTo?task.assignedTo.reduce((total,user)=>total+=user.name+' '+user.surname+', ','').slice(0,-2):'Neznámy používateľ'}</span>
 							</p>

@@ -910,9 +910,6 @@ tr:last-child{
   padding-left: 33px !important;
 }
 
-
-
-
 .sidebar-filter{
   background-color: white;
   border: none;
@@ -966,8 +963,9 @@ tr:last-child{
 }
 
 .search-text{
-  border-width: 0px;
+//  border-width: 0px;
   border-radius: 0px;
+  border-left: 0px;
   height: $button-height;
 }
 
@@ -980,7 +978,10 @@ tr:last-child{
 
 .search-btn{
 	background-color: white;
-	border-width: 0px;
+  border-width: 0px;
+	border-left: 1px solid #ced4da;
+  border-bottom: 1px solid #ced4da;
+  border-top: 1px solid #ced4da;
 	border-radius: 0px;
   margin: 0;
   height: $button-height;
@@ -1104,18 +1105,22 @@ tr:last-child{
 
 .task-container>.table>thead>tr>th{
   border-color: #FCFCFC !important;
+//  border-bottom: 1px solid #f4f4f4 !important;
 }
 
 .task-container>.table>tbody>tr>th{
-  padding-left: 0px !important;
+  padding: 4px 10px 1px 0px !important;
+  background-color: #FCFCFC;
   font-family: $main-font;
   font-style: normal;
   font-weight: normal;
   font-size: 12px;
   line-height: 19px;
   color: #989898;
-  border-bottom: 1px solid #bdbdbd !important;
+  border-bottom: 1px solid #f4f4f4 !important;
+//  border-bottom: 1px solid #bdbdbd !important;
 }
+
 
 .task-container>.table>tbody>tr>th:focus-within{
   margin-left: 10px !important;

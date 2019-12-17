@@ -48,13 +48,13 @@ class List extends Component {
 												<input
 													type="text"
 													value={filter[display.value]}
-													className="form-control hidden-input"
+													className="form-control"
+													style={{fontSize: "12px", marginRight: "10px"}}
 													onChange={(e) => {
 														let newFilterData={};
 														newFilterData[display.value]=e.target.value;
 														this.props.setShowDataFilter(this.props.filterName,newFilterData);
-													}}
-													placeholder={`${display.label}`} />
+													}}/>
 											</th>
 										)}
 										<th>
