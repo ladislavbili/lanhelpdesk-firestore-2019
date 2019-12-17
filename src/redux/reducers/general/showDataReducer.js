@@ -1,4 +1,4 @@
-import {ADD_SHOW_DATA_FILTER, SET_SHOW_DATA_FILTER} from '../types'
+import {ADD_SHOW_DATA_FILTER, SET_SHOW_DATA_FILTER} from '../../types'
 
 const initialState = {
   filter:{

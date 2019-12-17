@@ -39,6 +39,7 @@ export default class Prace extends Component {
 			newTripDiscount:0,
 		}
 		this.onFocusWorkTrip.bind(this);
+		this.onFocusSubtask.bind(this);
 	}
 
 
@@ -121,6 +122,17 @@ export default class Prace extends Component {
 		})
 	}
 
+	onFocusSubtask(subtask){
+		this.setState({
+			editedSubtaskTitle: subtask.title,
+			editedSubtaskQuantity: subtask.quantity?subtask.quantity:'',
+			editedSubtaskWorkType: subtask.workType,
+			editedSubtaskDiscount: subtask.discount,
+			editedSubtaskPrice: subtask.price,
+			focusedSubtask: subtask.id
+		});
+	}
+
 	render() {
 		//const afterHours= this.props.company && this.state.newExtraWork ? this.props.company.pricelist.afterHours : 0;
 		return (
@@ -176,14 +188,7 @@ export default class Prace extends Component {
 															this.setState({ focusedSubtask: null });
 														}}
 														onFocus={() => {
-															this.setState({
-																editedSubtaskTitle: subtask.title,
-																editedSubtaskQuantity: subtask.quantity?subtask.quantity:'',
-																editedSubtaskWorkType: subtask.workType,
-																editedSubtaskDiscount: subtask.discount,
-																editedSubtaskPrice: subtask.price,
-																focusedSubtask: subtask.id
-															});
+															this.onFocusSubtask(subtask);
 														}}
 														onChange={e =>{
 															this.setState({ editedSubtaskTitle: e.target.value })}
@@ -238,14 +243,7 @@ export default class Prace extends Component {
 														this.setState({ focusedSubtask: null });
 													}}
 													onFocus={() => {
-														this.setState({
-															editedSubtaskTitle: subtask.title,
-															editedSubtaskQuantity: subtask.quantity?subtask.quantity:'',
-															editedSubtaskWorkType: subtask.workType,
-															editedSubtaskDiscount: subtask.discount,
-															editedSubtaskPrice: subtask.price,
-															focusedSubtask: subtask.id
-														});
+														this.onFocusSubtask(subtask);
 													}}
 													onChange={e =>{
 														this.setState({ editedSubtaskQuantity: e.target.value })}
@@ -269,14 +267,7 @@ export default class Prace extends Component {
 													this.setState({ focusedSubtask: null });
 												}}
 												onFocus={() => {
-													this.setState({
-														editedSubtaskTitle: subtask.title,
-														editedSubtaskQuantity: subtask.quantity?subtask.quantity:'',
-														editedSubtaskWorkType: subtask.workType,
-														editedSubtaskDiscount: subtask.discount,
-														editedSubtaskPrice: subtask.price,
-														focusedSubtask: subtask.id
-													});
+													this.onFocusSubtask(subtask);
 												}}
 												onChange={e =>{
 													this.setState({ editedSubtaskPrice: e.target.value })}
@@ -298,14 +289,7 @@ export default class Prace extends Component {
 															this.setState({ focusedSubtask: null });
 														}}
 														onFocus={() => {
-															this.setState({
-																editedSubtaskTitle: subtask.title,
-																editedSubtaskQuantity: subtask.quantity?subtask.quantity:'',
-																editedSubtaskWorkType: subtask.workType,
-																editedSubtaskDiscount: subtask.discount,
-																editedSubtaskPrice: subtask.price,
-																focusedSubtask: subtask.id
-															});
+															this.onFocusSubtask(subtask);
 														}}
 														onChange={e =>{
 															this.setState({ editedSubtaskDiscount: e.target.value })}

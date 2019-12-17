@@ -1,4 +1,4 @@
-import {SET_USER_DATA, SET_USER_ID, DELETE_USER_DATA} from '../types'
+import {SET_USER_DATA, SET_USER_ID, DELETE_USER_DATA} from '../../types'
 
 const initialState = {
   id:null,

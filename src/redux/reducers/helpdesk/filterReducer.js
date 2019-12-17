@@ -1,4 +1,4 @@
-import {SET_FILTER, SET_SEARCH, SET_PROJECT,SET_COMPANY, SET_MILESTONE} from '../types'
+import {SET_FILTER, SET_SEARCH, SET_PROJECT,SET_COMPANY, SET_MILESTONE} from '../../types'
 
 const initialState = {
   filter: {
