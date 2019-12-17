@@ -40,11 +40,11 @@ export default class Statuses extends Component {
 								<input
 									type="text"
 									value={this.state.search}
-									className="form-control commandbar-search"
+									className="form-control search"
 									onChange={(e)=>this.setState({search:e.target.value})}
 									placeholder="Search" />
 									<div className="input-group-append">
-										<button className="commandbar-search-btn" type="button">
+										<button className="search-btn" type="button">
 											<i className="fa fa-search" />
 										</button>
 									</div>

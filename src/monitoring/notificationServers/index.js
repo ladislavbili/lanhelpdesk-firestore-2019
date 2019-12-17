@@ -104,20 +104,22 @@ class NotificationList extends Component {
 		return (
 			<div>
 				<div className="commandbar commandbar-list-align">
-					<div className="commandbar-search">
-						<input
-							type="text"
-							value={this.state.search}
-							className="form-control commandbar-search-text"
-							onChange={(e)=>this.setState({search:e.target.value})}
-							placeholder="Search" />
-							<button className="commandbar-search-btn" type="button">
-								<i className="fa fa-search" />
-							</button>
+					<div className="search-row">
+						<div className="search">
+							<input
+								type="text"
+								value={this.state.search}
+								className="form-control search-text"
+								onChange={(e)=>this.setState({search:e.target.value})}
+								placeholder="Search" />
+								<button className="search-btn" type="button">
+									<i className="fa fa-search" />
+								</button>
+						</div>
+						<Button className="btn-link center-hor">
+							Global
+						</Button>
 					</div>
-					<Button className="btn-link center-hor">
-						Global
-					</Button>
 					<Button className="btn center-hor" onClick={() => this.props.history.push("/monitoring/mail-notifications/add")}>
 						<i className="fa fa-plus"/> mail notification
 					</Button>

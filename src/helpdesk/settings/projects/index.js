@@ -24,15 +24,15 @@ class ProjectList extends Component{
     return (
       <div className="content">
         <div className="commandbar">
-            <div className="commandbar-search">
+            <div className="search">
                 <input
                   type="text"
-                  className="form-control commandbar-search-text"
+                  className="form-control search-text"
                   value={this.state.projectFilter}
                   onChange={(e)=>this.setState({projectFilter:e.target.value})}
                   placeholder="Search"
                 />
-              <button className="commandbar-search-btn" type="button">
+              <button className="search-btn" type="button">
                 <i className="fa fa-search" />
               </button>
             </div>

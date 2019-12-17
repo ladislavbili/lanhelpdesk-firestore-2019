@@ -107,10 +107,11 @@ class ItemList extends Component {
 		return (
 			<div>
 				<div className="commandbar commandbar-list-align">
-						<div className="commandbar-search">
+					<div className="search-row">
+						<div className="search">
 							<input
 								type="text"
-								className="form-control commandbar-search-text"
+								className="form-control search-text"
 								value={this.state.search}
 								onKeyPress={(e)=>{
 									if(e.key==='Enter'){
@@ -120,7 +121,7 @@ class ItemList extends Component {
 								onChange={(e)=>this.setState({search:e.target.value})}
 								placeholder="Search"
 							/>
-							<button className="commandbar-search-btn" type="button" onClick={()=>this.setState({activeSearch:this.state.search})}>
+							<button className="search-btn" type="button" onClick={()=>this.setState({activeSearch:this.state.search})}>
 								<i className="fa fa-search" />
 							</button>
 						</div>
@@ -133,7 +134,8 @@ class ItemList extends Component {
 								>
 								Global
 							</Button>
-
+						</div>
+						
 							<Button
 								className="btn-link center-hor"
 								onClick={()=>{

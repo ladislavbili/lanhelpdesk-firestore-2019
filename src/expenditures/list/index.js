@@ -13,8 +13,10 @@ class List extends Component {
 		this.state = {
 			search:'',
 			instances:[],
+			listName: "",
 		};
 		this.ref=null;
+		this.getListName.bind(this);
 		this.fetchData.bind(this);
 		this.fetchData(this.props.match.params.listID);
 	}
@@ -35,6 +37,25 @@ class List extends Component {
 			query: (ref) => ref.where('folder', '==', id),
 			then:instances=>{this.setState({instances})},
 		});
+
+		this.getListName(id);
+
+	}
+
+	getListName(id){
+		if(!id){
+			this.setState({listName:''});
+			return;
+		} else{
+			rebase.get('expenditures-folders/'+id, {
+				context: this,
+			}).then((result)=>{
+				this.setState({listName: result.title});
+			}).catch(()=>{
+				this.setState({listName: 'Untitled'});
+			})
+
+		}
 	}
 
 	componentWillUnmount(){
@@ -98,6 +119,7 @@ class List extends Component {
 				setAscending={this.props.setExpendituresAscending}
 				itemID={this.props.match.params.expID}
 				listID={this.props.match.params.listID}
+				listName={this.state.listName}
 				match={this.props.match}
 				edit={EditExpenditure}
 				empty={EmptyExpenditure}

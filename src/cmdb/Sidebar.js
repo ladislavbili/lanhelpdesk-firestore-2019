@@ -90,9 +90,10 @@ class Sidebar extends Component {
 					}
 
 					<Nav vertical>
-						<NavItem>
-							<Link  className="sidebar-align sidebar-menu-item" to={{ pathname: `/cmdb/all` }}>All</Link>
-						</NavItem>
+						{false &&
+							<NavItem>
+								<Link  className="sidebar-align sidebar-menu-item" to={{ pathname: `/cmdb/all` }}>All</Link>
+							</NavItem>}
 
 						{
 							this.state.sidebar

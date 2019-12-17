@@ -1,4 +1,4 @@
-// od grafika
+
 
 //-----classNames, ktore tu nie su definovane ale su z react-strapu
 /*
@@ -27,7 +27,7 @@
 }
 
 .testSonka_p{
-  font-family: Segoe UI;
+  font-family: $main-font;
 }
 
 @media (min-width: 576px) {
@@ -240,6 +240,10 @@ html{
 	cursor:pointer;
 }
 
+h4.clickable:hover{
+	color: $basic-button-color;
+}
+
 .row{
   display: flex !important;
   margin: 0px;
@@ -258,7 +262,46 @@ html{
 }
 
 .dnd-column{
+  background-color: #FCFCFC;
   min-width: 400px;
+  border-radius: 0px;
+  border: none;
+}
+
+
+.dnd-column:first-child>.dnd-header{
+    margin-left: 20px;
+}
+
+.dnd-header{
+  background-color: #FCFCFC;
+  border-bottom: 1px solid #EAEAEA;
+
+  font-family: $main-font;
+  font-style: normal;
+  font-weight: 350;
+  font-size: 21px;
+  line-height: 37px;
+  text-align: center;
+
+  color: #333333;
+}
+
+.dnd-body{
+  background-color: #FCFCFC;
+  border-right: 1px solid #EAEAEA;
+}
+
+.dnd-item{
+  background: #FFFFFF;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+  margin: 10px 10px 20px 10px;
+}
+
+.dnd-item-icon{
+  height: 12px;
+  margin-top: -3px;
+  margin-right: 3px;
 }
 
 .no-scrolling{
@@ -398,7 +441,7 @@ h4{
   height: $button-height;
   font-weight: 400;
   font-size: $main-font-size;
-  font-family: Segoe UI;
+  font-family: $main-font;
 }
 
 .btn-link-remove{
@@ -409,7 +452,7 @@ h4{
   height: 14;
   font-weight: 400;
   font-size: 12px;
-  font-family: Segoe UI;
+  font-family: $main-font;
 }
 
 
@@ -521,7 +564,7 @@ h4{
 }
 
 .col-form-label{
-  font-family: Segoe UI;
+  font-family: $main-font;
   font-style: normal;
   font-weight: 600;
   font-size: 14px;
@@ -911,44 +954,51 @@ tr:last-child{
   display: flex;
   width: -webkit-fill-available;
   background-color: $main-background-color;
-  padding: 0px 35px 0px 10px;
+  padding: 2px 35px 0px 20px;
   height: 41px;
 }
 
-.commandbar-search-text{
+.search-row{
+    display: flex !important;
+    margin: 0px;
+    width: 60%;
+    max-width: 500px;
+}
+
+.search-text{
   border-width: 0px;
   border-radius: 0px;
   height: $button-height;
 }
 
-.commandbar-search{
+.search{
+  width: 100%;
   display: flex;
-  width: 375px;
   margin-top: auto;
   margin-bottom: auto;
 }
 
-.commandbar-search-btn{
+.search-btn{
 	background-color: white;
 	border-width: 0px;
 	border-radius: 0px;
   margin: 0;
   height: $button-height;
-	color: $basic-button-color;
 	font-size: 14px;
 }
 
-.commandbar-list-align{
-  padding-left: 30px;
+.flip{
+  transform: scaleX(-1);
+    -moz-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    -ms-transform: scaleX(-1);
 }
-
-
 //------------------END-commandbar----------------------
 
 
 //TABY
 .nav-link:not(.sidebar-menu-item){
-  font-family: Segoe UI;
+  font-family: $main-font;
   height: 28px;
   font-size: 16px;
   font-weight: 600;
@@ -1031,17 +1081,71 @@ tr:last-child{
 
 
 //---------------------TaskList----------------------
-.taskList-container{
+.task-container{
   background-color: #FCFCFC;
 }
 
-.taskList {
+.task-container>.table{
+  background-color: white;
+  width: auto;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.task-container>.table>thead{
+  background-color: #FCFCFC;
+  font-family: $main-font;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 16px;
+  color: #333;
+}
+
+.task-container>.table>thead>tr>th{
+  border-color: #FCFCFC !important;
+}
+
+.task-container>.table>tbody>tr>th{
+  padding-left: 0px !important;
+  font-family: $main-font;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 19px;
+  color: #989898;
+  border-bottom: 1px solid #bdbdbd !important;
+}
+
+.task-container>.table>tbody>tr>th:focus-within{
+  margin-left: 10px !important;
+  width: calc(100%-20px);
+}
+
+.task-container>.table>tbody>tr>td{
+  background-color: white;
+  font-family: $main-font;
+  font-size: 12px;
+  color: #767676 !important;
+  border-bottom: 1px solid #f4f4f4;
+}
+
+.task-container>.table>tbody>tr>td.title{
+  background-color: white;
+  font-family: $main-font;
+  font-size: 14px;
+  text-transform: capitalize;
+  color: #333 !important;
+}
+
+
+.taskCol {
   min-height: 40px;
   margin-bottom: 0;
   border-top: 0px;
 }
 
-.taskList li {
+.taskCol li {
   background-color: inherit;
   border: 0px;
   border-bottom: 1px solid #dee2e6;
@@ -1050,25 +1154,26 @@ tr:last-child{
   border-radius: 0px;
 }
 
-.taskList li:hover{
+.taskCol li:hover{
   background-color: #f4f8fb;
 }
 
-.taskList li:last-of-type {
+.taskCol li:last-of-type {
   margin-bottom: 0px;
 }
 
-.taskList li .btn-sm {
+.taskCol li .btn-sm {
   padding: 2px 8px;
   font-size: 12px;
 }
 
-.taskList .checkbox {
+.taskCol .checkbox {
   margin-left: 20px;
   margin-top: 5px;
 }
 
-.taskList-tags{
+.taskCol-tags{
+  margin-top: 5px;
   min-height: 21px;
 }
 

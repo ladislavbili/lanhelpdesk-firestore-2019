@@ -7,33 +7,33 @@ export default class ColumnDisplay extends Component {
 	render() {
 		return (
 			<div>
-				<div className="row p-0 taskList-container">
+				<div className="row p-0 task-container">
 					<div className="p-0 golden-ratio-382">
-					<CommandBar {...this.props.commandBar} />
+						<CommandBar {...this.props.commandBar} />
 
-					<div className="scroll-visible fit-with-header-and-commandbar">
-						<ListHeader {...this.props.commandBar} listName={this.props.listName} useBreadcrums={this.props.useBreadcrums} breadcrumsData={this.props.breadcrumsData}/>
+						<div className="scroll-visible fit-with-header-and-commandbar">
+							<ListHeader {...this.props.commandBar} listName={this.props.listName}/>
+							{
+								this.props.data.map((item, index)=>
+								<ul
+									className={classnames("taskCol", "clickable", "list-unstyled", {'selected-item': this.props.itemID === item.id.toString(),'first-task':index===0})}
+									id="upcoming"
+									onClick={()=>{
+										this.props.history.push(this.props.link+'/'+item.id);
+									}}
+									key={item.id}>
+									{this.props.displayCol(item)}
+								</ul>
+							)
+						}
 						{
-							this.props.data.map((item, index)=>
-							<ul
-								className={classnames("taskList", "clickable", "list-unstyled", {'selected-item': this.props.itemID === item.id.toString(),'first-task':index===0})}
-								id="upcoming"
-								onClick={()=>{
-									this.props.history.push(this.props.link+'/'+item.id);
-								}}
-								key={item.id}>
-								{this.props.displayCol(item)}
-							</ul>
-						)
-					}
-					{
-						this.props.data.length===0 &&
-						<div className="center-ver" style={{textAlign:'center'}}>
-							Neboli nájdené žiadne výsledky pre tento filter
+							this.props.data.length===0 &&
+							<div className="center-ver" style={{textAlign:'center'}}>
+								Neboli nájdené žiadne výsledky pre tento filter
+							</div>
+						}
 						</div>
-					}
 					</div>
-				</div>
 
 						{
 							this.props.itemID && this.props.itemID!=='add' && this.props.data.some((item)=>item.id+""===this.props.itemID) &&

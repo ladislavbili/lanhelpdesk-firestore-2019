@@ -30,19 +30,19 @@ export default class TaskListDnD extends Component {
 		return (
 				<div>
 					<CommandBar {...this.props.commandBar} />
-					<div className="scroll-visible overflow-x fit-with-header-and-commandbar p-r-20 p-l-20">
-						<ListHeader {...this.props.commandBar} listName={this.props.listName}  useBreadcrums={this.props.useBreadcrums} breadcrumsData={this.props.breadcrumsData}/>
-						<div className="p-10">
-							<div className="flex-row">
+				<div className="scroll-visible overflow-x fit-with-header-and-commandbar task-container">
+					<ListHeader {...this.props.commandBar} listName={this.props.listName}  useBreadcrums={this.props.useBreadcrums} breadcrumsData={this.props.breadcrumsData}/>
+						<div className="flex-row">
 								{
 									this.groupData().map((group)=>
 									<Card className="flex-column dnd-column" key={group.groupItem.id}>
-										<CardHeader style={{backgroundColor:group.groupItem.color}}>{group.groupItem.title}</CardHeader>
-										<CardBody>
+										<CardHeader className="dnd-header">{group.groupItem.title}</CardHeader>
+										<CardBody className="dnd-body">
 											{
 												group.data.map((item)=>
 												<ul
-													className={classnames("taskList", "clickable", "list-unstyled")}
+													className={classnames("taskList", "clickable", "list-unstyled", "dnd-item")}
+													style={{borderLeft: "3px solid " + group.groupItem.color}}
 													onClick={(e)=>{
 														this.props.history.push(this.props.link+'/'+item.id);
 													}}
@@ -78,7 +78,6 @@ export default class TaskListDnD extends Component {
 										</CardBody>
 									</Card>
 								}
-							</div>
 						</div>
 					</div>
 				</div>

@@ -34,12 +34,12 @@ export default class PriceList extends Component{
                   <input
                     type="text"
                     onChange={(e)=>this.setState({pricelistFilter:e.target.value})}
-                    className="form-control commandbar-search"
+                    className="form-control search"
                     placeholder="Search task name"
                     style={{ width: 200 }}
                   />
                   <div className="input-group-append">
-                    <button className="commandbar-search-btn" type="button">
+                    <button className="search-btn" type="button">
                       <i className="fa fa-search" />
                     </button>
                   </div>

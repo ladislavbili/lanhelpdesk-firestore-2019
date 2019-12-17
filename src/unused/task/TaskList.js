@@ -45,16 +45,16 @@ class TaskListContainer extends Component {
 								</div>
 							)}
 
-							<div className="center-hor input-group commandbar-search-case">
+							<div className="center-hor input-group search-case">
 									<input
 										type="text"
-										className="commandbar-search"
+										className="search"
 										value={this.state.search}
 										onChange={(e)=>this.setState({search:e.target.value})}
 										placeholder="Search task name"
 										style={{ width: 200 }}
 									/>
-										<button className="commandbar-search-btn" type="button" onClick={()=>this.props.setSearch(this.state.search)}>
+										<button className="search-btn" type="button" onClick={()=>this.props.setSearch(this.state.search)}>
 											<i className="fa fa-search" />
 										</button>
 							</div>

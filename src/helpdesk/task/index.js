@@ -49,7 +49,6 @@ class TasksIndex extends Component {
 		if(!sameStringForms(props.tags,this.props.tags)){
 			this.setState({tags:props.tags})
 		}
-
 		if(!sameStringForms(props.tasks,this.props.tasks)){
 			this.setState({tasks:props.tasks})
 		}
@@ -253,28 +252,43 @@ class TasksIndex extends Component {
 					<li className="p-20" >
 						<div className="m-b-0 font-15">
 							<label><span className="text-muted font-15">#{task.id} | </span> {task.title}</label>
-							<p className="pull-right m-0">
-								<span className="label label-info" style={{backgroundColor:task.status && task.status.color?task.status.color:'white'}}>{task.status?task.status.title:'Neznámy status'}</span>
-							</p>
 						</div>
 						<div className="m-t-0 font-12">
-							<p className="pull-right m-b-0">
-									<i className="fa fa-clock-o" /> <span> <span className="text-muted">Dealine:</span> {task.deadline?timestampToString(task.deadline):'None'}</span>
+							<p className="pull-right m-0 font-15">
+								<span className="label label-info" style={{backgroundColor:task.status && task.status.color?task.status.color:'white'}}>{task.status?task.status.title:'Neznámy status'}</span>
 							</p>
 							<p className="m-b-0">
 								<span>
 									<span className="text-muted">Requested by: </span>
 											{task.requester?(" " + task.requester.name+' '+task.requester.surname):' Neznámy používateľ '}
-									<span className="text-muted">{task.company ? ` from ${task.company.title} on ` : " from Unknown on "}</span>
-											{task.createdAt?timestampToString(task.createdAt):'None'}
-									</span>
+								</span>
 							</p>
+							<p className="m-b-0">
+									<span className="text-muted">{task.company ? ` From ${task.company.title}` : " from Unknown"}</span>
+							</p>
+							<p className="pull-right m-b-0">
+								<span>
+									<img
+										className="dnd-item-icon"
+										src={require('../../scss/icons/excl-triangle.svg')}
+										alt="Generic placeholder XX"
+										/>
+									{task.deadline?timestampToString(task.deadline):'None'}
+								</span>
+							</p>
+							<p className="m-b-0">
+								<span>
+									<span className="text-muted">	<i className="fa fa-star-of-life" /> </span>
+										{task.createdAt?timestampToString(task.createdAt):'None'}
+								</span>
+							</p>
+
 							<p className="m-b-0">
 								<span style={{textOverflow: 'ellipsis'}}><span className="text-muted">Assigned to: </span>{task.assignedTo?task.assignedTo.reduce((total,user)=>total+=user.name+' '+user.surname+', ','').slice(0,-2):'Neznámy používateľ'}</span>
 							</p>
 						</div>
 
-							<div className="taskList-tags">
+							<div className="taskCol-tags">
 								{task.tags.map((tag)=>
 									<span key={tag.id} className="label label-info m-r-5" style={{backgroundColor: tag.color, color: "white"}}>{tag.title}</span>
 								)}
@@ -284,8 +298,8 @@ class TasksIndex extends Component {
 				}
 				filterName="help-tasks"
 				displayValues={[
-					{value:'id',label:'ID',type:'int'},
 					{value:'title',label:'Title',type:'text'},
+					{value:'id',label:'ID',type:'int'},
 					{value:'status',label:'Status',type:'object'},
 					{value:'requester',label:'Requester',type:'user'},
 					{value:'company',label:'Company',type:'object'},

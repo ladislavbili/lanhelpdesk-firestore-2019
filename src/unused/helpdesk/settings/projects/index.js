@@ -33,13 +33,13 @@ export default class ProjectList extends Component{
                 <div className="input-group">
                   <input
                     type="text"
-                    className="form-control commandbar-search"
+                    className="form-control search"
                     value={this.state.projectFilter}
                     onChange={(e)=>this.setState({projectFilter:e.target.value})}
                     placeholder="Search"
                   />
                   <div className="input-group-append">
-                    <button className="commandbar-search-btn" type="button">
+                    <button className="search-btn" type="button">
                       <i className="fa fa-search" />
                     </button>
                   </div>
