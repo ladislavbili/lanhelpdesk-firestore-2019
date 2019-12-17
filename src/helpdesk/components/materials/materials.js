@@ -257,7 +257,7 @@ export default class Rozpocet extends Component {
 													onClick={()=>{
 													 this.setState({showAddItem: true});
 													}}>
-													+ Add New Item
+													+ Materiál
 												</button>
 											</td>
 											<td></td>
