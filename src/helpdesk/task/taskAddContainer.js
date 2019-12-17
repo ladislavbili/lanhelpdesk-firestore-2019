@@ -145,10 +145,14 @@ class TaskAddContainer extends Component{
         let newCompany={...company,pricelist:pricelists.find((item)=>item.id===company.pricelist)};
         return newCompany;
       });
-
       let newTaskTypes=taskTypes.map((taskType)=>{
-        let newTaskType = {...taskType, prices:prices.filter((price)=>price.workType===taskType.id)}
+        let newTaskType = {...taskType, prices:prices.filter((price)=>price.type===taskType.id)}
         return newTaskType;
+      });
+
+      let newTripTypes=tripTypes.map((tripType)=>{
+        let newTripType = {...tripType, prices:prices.filter((price)=>price.type===tripType.id)}
+        return newTripType;
       });
 
       this.setState({
@@ -156,7 +160,7 @@ class TaskAddContainer extends Component{
         projects,
         users,
         companies:newCompanies,
-        tripTypes,
+        tripTypes:newTripTypes,
         taskTypes:newTaskTypes,
         allTags:tags,
         milestones,
@@ -194,7 +198,7 @@ class TaskAddContainer extends Component{
 			}
 
 
-			<Modal size="width-1250" isOpen={this.state.openAddTaskModal} toggle={()=>{this.setState({openAddTaskModal:!this.state.openAddTaskModal})}} >
+			<Modal size="width-1250" isOpen={this.state.openAddTaskModal} toggle={()=>{}} >
 					<ModalBody style={{backgroundColor: "white", marginLeft: "-20px", marginRight: "-20px", padding: "20px", paddingLeft: "40px", paddingRight: "40px"}}>
             {  this.state.openAddTaskModal && this.storageLoaded(this.props) &&
 						   <TaskAdd {...this.props}

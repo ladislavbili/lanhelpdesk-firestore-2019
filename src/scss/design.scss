@@ -1199,6 +1199,9 @@ tr:last-child{
 //-------------------END-tasklist-------------------------
 
 //----------------------taskEdit--------------------------
+.task-title-input::placeholder{
+  color:#FF4500
+}
 .task-title-input{
   font-size: 2.5rem;
   line-height: 1.5;

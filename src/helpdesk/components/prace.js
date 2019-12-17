@@ -92,7 +92,7 @@ export default class Prace extends Component {
 										<th width="25" className="col-form-label">
 											Práce
 										</th>
-										<th style={{color: "#ffc966"}}>
+										<th style={{color: "#FF4500"}}>
 											{this.getCreationError()}
 										</th>
 										{this.props.extended &&  <th style={{fontSize: "12px", fontFamily: "Segoe UI", fontWeight: "500", color: "#333"}} width="170">Rieši</th>}

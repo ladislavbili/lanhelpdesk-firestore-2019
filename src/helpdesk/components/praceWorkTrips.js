@@ -7,6 +7,11 @@ import { sameStringForms} from '../../helperFunctions';
 export default class Prace extends Component {
 	constructor(props){
 		super(props);
+		let newSubtaskPrice = 0;
+
+		if(props.company && props.defaultType){
+			newSubtaskPrice = this.props.defaultType.prices.find((item)=>item.pricelist===props.company.pricelist.id).price;
+		}
 		this.state={
 			showAddSubtask:false,
 
@@ -19,7 +24,7 @@ export default class Prace extends Component {
 			selectedIDs:[],
 
 			newSubtaskTitle:'',
-			newSubtaskPrice:0,
+			newSubtaskPrice,
 			newSubtaskWorkType:this.props.defaultType,
 			newSubtaskQuantity:0,
 			newSubtaskExtraWork:false,
@@ -32,19 +37,29 @@ export default class Prace extends Component {
 			focusedTrip:null,
 			editedTripQuantity:0,
 			editedTripDiscount:0,
+			editedTripPrice:0,
 
 			newTripType:this.props.tripTypes.length>0?this.props.tripTypes[0]:null,
 			newTripAssignedTo:this.props.taskAssigned.length>0?this.props.taskAssigned[0]:null,
 			newTripQuantity:1,
+			newTripPrice:this.props.tripTypes.length>0 && props.company?this.props.tripTypes[0].prices.find((price)=>price.pricelist===props.company.pricelist.id).price:0,
 			newTripDiscount:0,
 		}
 		this.onFocusWorkTrip.bind(this);
 		this.onFocusSubtask.bind(this);
 	}
 
-
 	componentWillReceiveProps(props){
 		if(this.props.taskID!==props.taskID){
+			let newSubtaskPrice = this.state.newSubtaskPrice;
+			if(props.defaultType){
+				newSubtaskPrice = props.defaultType.prices.find((item)=>props.company && item.pricelist===props.company.pricelist.id);
+				if(newSubtaskPrice === undefined){
+					newSubtaskPrice = 0;
+				}else{
+					newSubtaskPrice = newSubtaskPrice.price;
+				}
+			}
 			this.setState({
 				showAddSubtask:false,
 				newSubtaskTitle:'',
@@ -52,53 +67,71 @@ export default class Prace extends Component {
 				newSubtaskQuantity:0,
 				newSubtaskExtraWork:false,
 				newSubtaskDiscount:0,
-				newSubtaskPrice:0,
+				newSubtaskPrice,
 				newSubtaskAssigned:null,
 
 				focusedTrip:null,
 				editedTripQuantity:0,
 				editedTripDiscount:0,
+				newTripPrice:props.tripTypes.length>0 && props.company?props.tripTypes[0].prices.find((price)=>price.pricelist===props.company.pricelist.id).price:0,
 				newTripType:props.tripTypes.length>0?props.tripTypes[0]:null,
 				newTripAssignedTo:props.taskAssigned.length>0?props.taskAssigned[0]:null,
 				newTripQuantity:1,
 				newTripDiscount:0,
-
 				showAddTrip:false,
 			})
 		}else if(!sameStringForms(this.props.defaultType,props.defaultType)){
-			this.setState({
-				newSubtaskWorkType:props.defaultType,
-			})
+			if(props.defaultType){
+				let price = props.defaultType.prices.find((item)=>props.company && item.pricelist===props.company.pricelist.id);
+				if(price === undefined){
+					price = 0;
+				}else{
+					price = price.price;
+				}
+				this.setState({
+					newSubtaskWorkType:props.defaultType,
+					newSubtaskPrice:price,
+				})
+			}else{
+				this.setState({
+					newSubtaskWorkType:props.defaultType,
+				})
+			}
 	}
 
 		if(!sameStringForms(this.props.taskAssigned,props.taskAssigned)){
 			if(!props.taskAssigned.some((item)=>item.id===(this.state.newSubtaskAssigned?this.state.newSubtaskAssigned.id:null))){
 				if(props.taskAssigned.length>0){
-					this.setState({newSubtaskAssigned:props.taskAssigned[0]});
+					this.setState({newSubtaskAssigned:props.taskAssigned[0],newTripAssignedTo:props.taskAssigned[0] });
 				}else{
-					this.setState({newSubtaskAssigned:null});
-				}
-			}
-			if(!props.taskAssigned.some((item)=>item.id===(this.state.newTripAssignedTo?this.state.newTripAssignedTo.id:null))){
-				if(props.taskAssigned.length>0){
-					this.setState({newTripAssignedTo:props.taskAssigned[0]});
-				}else{
-					this.setState({newTripAssignedTo:null});
+					this.setState({newSubtaskAssigned:null, newTripAssignedTo:null });
 				}
 			}
 		}
 
 		if(this.state.newSubtaskWorkType &&
-			((this.props.company===null && props.company!==null)||
-			(props.company===null && this.props.company!==null)||
-			(this.props.company!==null && props.company!==null && this.props.company.id!==props.company.id))){
-			let price = this.state.newSubtaskWorkType.prices.find((item)=>props.company!==null && item.pricelist===props.company.pricelist.id);
+			!sameStringForms(this.props.company,props.company) &&
+			props.company
+			){
+			let price = this.state.newSubtaskWorkType.prices.find((item)=>item.pricelist===props.company.pricelist.id);
 			if(price === undefined){
 				price = 0;
 			}else{
 				price = price.price;
 			}
-			this.setState({newSubtasksPrice:price})
+			this.setState({newSubtaskPrice:price})
+		}
+		if(this.state.newTripType &&
+			!sameStringForms(this.props.company,props.company) &&
+			props.company
+			){
+			let price = this.state.newTripType.prices.find((item)=>item.pricelist===props.company.pricelist.id);
+			if(price === undefined){
+				price = 0;
+			}else{
+				price = price.price;
+			}
+			this.setState({newTripPrice:price})
 		}
 	}
 
@@ -118,6 +151,7 @@ export default class Prace extends Component {
 		this.setState({
 			editedTripQuantity:trip.quantity,
 			editedTripDiscount:trip.discount,
+			editedTripPrice:trip.price,
 			focusedTrip:trip.id
 		})
 	}
@@ -145,7 +179,7 @@ export default class Prace extends Component {
 										<th width="25" className="col-form-label">
 											Práce
 										</th>
-										<th style={{color: "#ffc966"}}>
+										<th style={{color: "#FF4500"}}>
 											{this.getCreationError()}
 										</th>
 										{this.props.extended &&  <th style={{fontSize: "12px", fontFamily: "Segoe UI", fontWeight: "500", color: "#333"}} width="170">Rieši</th>}
@@ -333,7 +367,18 @@ export default class Prace extends Component {
 									{
 										this.props.workTrips.map((trip)=>
 										<tr key={trip.id}>
-											<td colSpan="2">
+											<td className="table-checkbox">
+												<label className="custom-container">
+													<Input type="checkbox"
+														checked={trip.done}
+														disabled={this.props.disabled}
+														onChange={()=>{
+															this.props.updateTrip(trip.id,{done:!trip.done})
+															}} />
+														<span className="checkmark" style={{ marginTop: "-3px", marginLeft:"-8px"}}> </span>
+												</label>
+											</td>
+											<td>
 												<Select
 													isDisabled={this.props.disabled}
 													value={trip.type}
@@ -379,7 +424,28 @@ export default class Prace extends Component {
 													}
 													/>
 											</td>
-											{this.props.showAll && <td className="table-highlight-background"></td>}
+											{this.props.showAll && <td className="table-highlight-background">
+												<input
+													disabled={this.props.disabled}
+													type="number"
+													className="form-control hidden-input h-30"
+													value={
+														trip.id === this.state.focusedTrip
+														? this.state.editedTripPrice
+														: trip.price
+													}
+													onBlur={() => {
+														this.props.updateTrip(trip.id,{price:isNaN(parseFloat(this.state.editedTripPrice))?0:this.state.editedTripPrice})
+														this.setState({ focusedTrip: null });
+													}}
+													onFocus={() => {
+														this.onFocusWorkTrip(trip);
+													}}
+													onChange={e =>{
+														this.setState({ editedTripPrice: e.target.value })}
+													}
+													/>
+											</td>}
 											{this.props.showAll && <td className="table-highlight-background">
 												<input
 													disabled={this.props.disabled}
@@ -548,7 +614,17 @@ export default class Prace extends Component {
 												isDisabled={this.props.disabled}
 												value={this.state.newTripType}
 												onChange={(newTripType)=>{
-													this.setState({newTripType})
+													if(this.props.company){
+														let newTripPrice = newTripType.prices.find((price)=>price.pricelist===this.props.company.pricelist.id);
+														if(newTripPrice === undefined){
+															newTripPrice = 0;
+														}else{
+															newTripPrice = newTripPrice.price;
+														}
+														this.setState({newTripType, newTripPrice})
+													}else{
+														this.setState({newTripType})
+													}
 													}
 												}
 												options={this.props.tripTypes}
@@ -580,7 +656,17 @@ export default class Prace extends Component {
 												placeholder="Quantity"
 												/>
 										</td>
-										{this.props.showAll && <td className="table-highlight-background"></td>}
+										{this.props.showAll && <td className="table-highlight-background">
+											<input
+												disabled={this.props.disabled}
+												type="number"
+												value={this.state.newTripPrice}
+												onChange={(e)=>this.setState({newTripPrice:e.target.value})}
+												className="form-control h-30"
+												id="inlineFormInput"
+												placeholder="Discount"
+												/>
+										</td>}
 										{this.props.showAll && <td className="table-highlight-background">
 											<input
 												disabled={this.props.disabled}
@@ -601,11 +687,26 @@ export default class Prace extends Component {
 														assignedTo: this.state.newTripAssignedTo?this.state.newTripAssignedTo.id:null,
 														quantity: this.state.newTripQuantity!==''?this.state.newTripQuantity:0,
 														discount: this.state.newTripDiscount!==''?this.state.newTripDiscount:0,
+														price:this.state.newTripPrice!==''?this.state.newTripPrice:0,
+														done: false,
+														extraPrice:this.props.company?parseFloat(this.props.company.pricelist.afterHours) : 0,
 													}
+													let newTripType = this.props.tripTypes.length>0?this.props.tripTypes[0]:null;
+													let price = 0;
+													if(newTripType){
+														price = newTripType.prices.find((item)=>item.pricelist===this.props.company.pricelist.id);
+														if(price === undefined){
+															price = 0;
+														}else{
+															price = price.price;
+														}
+													}
+
 													this.setState({
-														newTripType:this.props.tripTypes.length>0?this.props.tripTypes[0]:null,
+														newTripType,
 														newTripAssignedTo:this.props.taskAssigned.length>0?this.props.taskAssigned[0]:null,
 														newTripQuantity:1,
+														newTripPrice:price,
 														newTripDiscount:0,
 														showAddTrip:false
 													});
@@ -644,15 +745,20 @@ export default class Prace extends Component {
 												</button>}
 											</td>
 										</tr>
-
 									}
 								</tbody>
 							</table>
 						</div>
 						<div>
-							<p className="text-right" style={{marginTop: (((this.state.showAddSubtask||this.state.showAddTrip) || this.props.disabled) ? "" : "-45px")}}>
+							<p className="text-right" style={{marginTop: (((this.state.showAddSubtask||this.state.showAddTrip) || this.props.disabled) ? "" : "")}}>
 								<b>Work sub-total:</b>
-								{(this.props.subtasks.map((subtask)=>parseFloat(subtask.totalPrice)).reduce((acc, cur)=> acc+cur,0)).toFixed(2)}
+								{(this.props.subtasks.reduce((acc, cur)=> acc+parseFloat(cur.totalPrice),0)).toFixed(2)}
+							</p>
+						</div>
+						<div>
+							<p className="text-right" style={{marginTop: (((this.state.showAddSubtask||this.state.showAddTrip) || this.props.disabled) ? "" : "")}}>
+								<b>Trips sub-total:</b>
+								{(this.props.workTrips.reduce((acc, cur)=> acc+parseFloat(cur.totalPrice),0)).toFixed(2)}
 							</p>
 						</div>
 

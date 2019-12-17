@@ -10,7 +10,6 @@ import {setTasksOrderBy, setTasksAscending,storageCompaniesStart,storageHelpTags
 	setHelpSidebarProject, setHelpSidebarMilestone, setHelpSidebarFilter, setFilter, setMilestone,setProject,
 } from '../../redux/actions';
 const allMilestones = {id:null,title:'Any', label:'Any',value:null};
-const dashboard = {id:null,title:'Dashboard', label:'Dashboard',value:null};
 
 class TasksIndex extends Component {
 
@@ -126,8 +125,6 @@ class TasksIndex extends Component {
 				data:project,
 				label:project?project.title:'Invalid project',
 				onClick:()=>{
-					this.props.setHelpSidebarProject(dashboard);
-					this.props.setProject(null);
 					this.props.setHelpSidebarMilestone(allMilestones);
 					this.props.setMilestone(null);
 					this.props.setHelpSidebarFilter(null);
@@ -150,8 +147,6 @@ class TasksIndex extends Component {
 				data:milestone,
 				label:milestone?milestone.title:'Invalid milestone',
 				onClick:()=>{
-					this.props.setHelpSidebarMilestone(allMilestones);
-					this.props.setMilestone(null);
 					this.props.setHelpSidebarFilter(null);
 					this.props.setFilter({
 						status:[],
@@ -172,18 +167,6 @@ class TasksIndex extends Component {
 				data:filter,
 				label:filter?filter.title:'Invalid filter',
 				onClick:()=>{
-					this.props.setHelpSidebarFilter(null);
-					this.props.setFilter({
-						status:[],
-						requester:null,
-						company:null,
-						assigned:null,
-						workType:null,
-						statusDateFrom:'',
-						statusDateTo:'',
-						updatedAt:(new Date()).getTime()
-					});
-					this.props.history.push('/helpdesk/taskList/i/all');
 				}
 			}
 		]

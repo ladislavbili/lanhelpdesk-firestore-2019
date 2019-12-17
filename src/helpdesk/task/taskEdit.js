@@ -624,7 +624,7 @@ class TaskEdit extends Component {
 							<div className={classnames({'task-edit-left-half':this.props.listView!==undefined && this.props.listView })}>
 
 
-							
+
 								<div className="col-lg-12 row ">
 										<div className="center-hor m-r-5"><Label className="center-hor col-form-label">Assigned to: </Label></div>
 										<div className="f-1">

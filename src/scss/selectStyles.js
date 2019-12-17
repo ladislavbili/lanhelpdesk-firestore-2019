@@ -141,6 +141,155 @@ export const invisibleSelectStyleNoArrowColored = {
 	}
 };
 
+export const invisibleSelectStyleNoArrowRequired = {
+	control: (base,state) => ({
+		...base,
+		minHeight: 30,
+		backgroundColor: state.isFocused?'white':'inherit',
+		borderWidth:0,
+		borderRadius: 0
+	}),
+	dropdownIndicator: base => ({
+		...base,
+		color: "transparent",
+		padding: 4,
+	}),
+	clearIndicator: base => ({
+		...base,
+		padding: 4,
+	}),
+	multiValue: (base, {data}) => {
+    return {
+      ...base,
+      backgroundColor: data.color ? data.color : "#F2F1F1",
+			borderRadius: 0,
+    };
+	},
+	multiValueLabel: (base, { data }) => ({
+    ...base,
+    color: data.color ? "white" : "black",
+  }),
+	multiValueRemove: (styles, { data }) => ({
+    ...styles,
+    color: data.color ? "white" : "black",
+		backgroundColor: data.color ? data.color : "#F2F1F1",
+    ':hover': {
+			backgroundColor: "rgba(0,0,0,0.5)",
+      color: 'white',
+    },
+  }),
+	valueContainer: base => ({
+		...base,
+		padding: '0px 6px',
+		borderRadius: 0
+	}),
+	input: base => ({
+		...base,
+		margin: 0,
+		padding: 0,
+		backgroundColor: "inherit",
+		borderRadius: 0
+	}),
+	indicatorSeparator: base => ({
+		...base,
+		width: 0,
+	}),
+	placeholder: base=>({
+		...base,
+		color:'#FF4500'
+	})
+
+};
+
+export const invisibleSelectStyleNoArrowColoredRequired = {
+	control: (base,state) => ({
+		...base,
+		minHeight: 30,
+		backgroundColor: state.isFocused?'white':'inherit',
+		borderWidth:0,
+		borderRadius: 0
+	}),
+	option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+    const color = chroma(data.color);
+    return {
+      ...styles,
+      backgroundColor: isDisabled
+        ? null
+        : isSelected
+        ? data.color
+        : isFocused
+        ? color.alpha(0.1).css()
+        : null,
+      color: isDisabled
+        ? '#ccc'
+        : isSelected
+        ? chroma.contrast(color, 'white') > 2
+          ? 'white'
+          : 'black'
+        : data.color,
+      cursor: isDisabled ? 'not-allowed' : 'default',
+
+      ':active': {
+        ...styles[':active'],
+        backgroundColor: !isDisabled && (isSelected ? data.color : color.alpha(0.3).css()),
+      },
+    };
+  },
+	dropdownIndicator: base => ({
+		...base,
+		color: "transparent",
+		padding: 4,
+	}),
+	clearIndicator: base => ({
+		...base,
+		padding: 4,
+	}),
+	multiValue: (base, {data}) => {
+		const color = chroma(data.color);
+    return {
+      ...base,
+			backgroundColor: color.alpha(0.1).css(),
+			borderRadius: 0,
+    };
+	},
+	multiValueLabel: (base, { data }) => ({
+    ...base,
+    color: data.color,
+  }),
+	multiValueRemove: (styles, { data }) => ({
+    ...styles,
+    color: data.color,
+    ':hover': {
+      backgroundColor: data.color,
+      color: 'white',
+    },
+  }),
+	valueContainer: base => ({
+		...base,
+		padding: '0px 6px',
+		borderRadius: 0
+	}),
+	input: base => ({
+		...base,
+		margin: 0,
+		padding: 0,
+		backgroundColor: "inherit",
+		borderRadius: 0
+	}),
+	indicatorSeparator: base => ({
+		...base,
+		width: 0,
+	}),
+	singleValue: (styles, { data }) =>{
+		const color = chroma(data.color);
+		return ({ ...styles, color:data.color, backgroundColor: color.alpha(0.1).css() });
+	},
+	placeholder: base=>({
+		...base,
+		color:'#FF4500'
+	}),
+};
+
 export const sidebarSelectStyle = {
 	singleValue: (provided, state) => {
 		return { ...provided, marginLeft:30, color: "#212121" };

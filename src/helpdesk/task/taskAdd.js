@@ -3,12 +3,10 @@ import Select from 'react-select';
 import CKEditor from 'ckeditor4-react';
 import {rebase} from '../../index';
 import firebase from 'firebase';
-import {toCentralTime } from '../../helperFunctions';
-import { Label, TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
+import { Label, TabContent, TabPane, Nav, NavItem, NavLink, Button } from 'reactstrap';
+import DatePicker from 'react-datepicker';
+import moment from 'moment';
 
-import WorkTrips from '../components/workTrips';
-import Prace from '../components/prace';
-import Materials from '../components/materials';
 import MaterialsBudget from '../components/materials/rozpocet';
 import MaterialsExpenditure from '../components/materials/materials';
 
@@ -18,9 +16,9 @@ import Attachments from '../components/attachments';
 import PraceWorkTrips from '../components/praceWorkTrips';
 import classnames from "classnames";
 import ck4config from '../../scss/ck4config';
-import {invisibleSelectStyleNoArrow, invisibleSelectStyleNoArrowColored} from '../../scss/selectStyles';
+import datePickerConfig from '../../scss/datePickerConfig';
+import {invisibleSelectStyleNoArrow, invisibleSelectStyleNoArrowColored,invisibleSelectStyleNoArrowColoredRequired, invisibleSelectStyleNoArrowRequired} from '../../scss/selectStyles';
 
-const oneDay = 24*60*60*1000;
 const noMilestone = {id:null,value:null,title:'None',label:'None'};
 const booleanSelects = [{value:false,label:'No'},{value:true,label:'Yes'}];
 
@@ -62,21 +60,22 @@ export default class TaskAdd extends Component{
 			description:'',
 			status:this.props.statuses?this.props.statuses:null,
 			statusChange:null,
-			deadline:"",
-			closeDate:"",
-			pendingDate:"",
+			deadline:null,
+			closeDate:null,
+			pendingDate:null,
 			reminder:null,
 			project:null,
 			milestone:noMilestone,
 			tags:[],
-			pausal:{value:true,label:'Pausal'},
-			overtime:{value:false,label:'Nie'},
+			pausal:booleanSelects[0],
+			overtime:booleanSelects[0],
 			type:null,
 			repeat:null,
 			toggleTab: "1",
 			viewOnly:true,
 			descriptionVisible:false,
-			attachments:[]
+			attachments:[],
+			pendingChangable:false,
 		}
 		this.counter = 0;
 	}
@@ -97,40 +96,33 @@ export default class TaskAdd extends Component{
 
 	submitTask(){
 		this.setState({saving:true});
+		let statusAction = this.state.status.action;
+		let newID = (parseInt(this.props.newID)+1)+"";
+		let body = {
+			title: this.state.title,
+			company: this.state.company?this.state.company.id:null,
+			workHours: this.state.workHours,
+			requester: this.state.requester?this.state.requester.id:this.props.currentUser.id,
+			assignedTo: this.state.assignedTo.map((item)=>item.id),
+			description: this.state.description,
+			status: this.state.status?this.state.status.id:null,
 
-		let pendingDate = null;
-		if(this.state.status.action==='pending'){
-			pendingDate = isNaN(new Date(this.state.pendingDate).getTime()) ? ((new Date()).getTime()+oneDay) : new Date(this.state.pendingDate).getTime()
+			deadline: this.state.deadline!==null?this.state.deadline.unix()*1000:null,
+			closeDate: (this.state.closeDate!==null && (statusAction==='close'||statusAction==='invoiced'))?this.state.closeDate.unix()*1000:null,
+			pendingDate: (this.state.pendingDate!==null && statusAction==='pending')?this.state.pendingDate.unix()*1000:null,
+
+			createdAt:moment().unix()*1000,
+			createdBy:this.props.currentUser.id,
+			statusChange:moment().unix()*1000,
+			project: this.state.project?this.state.project.id:null,
+			pausal: this.state.pausal.value,
+			overtime: this.state.overtime.value,
+			milestone: this.state.milestone.value,
+			tags: this.state.tags.map((item)=>item.id),
+			type: this.state.type?this.state.type.id:null,
+			repeat: this.state.repeat!==null?newID:null,
+			pendingChangable: this.state.pendingChangable,
 		}
-
-		let closeDate = null;
-		if(this.state.status.action==='close'){
-			closeDate = isNaN(new Date(this.state.closeDate).getTime()) ? (new Date()).getTime() : new Date(this.state.closeDate).getTime()
-		}
-
-			let newID = (parseInt(this.props.newID)+1)+"";
-			let body = {
-				title: this.state.title,
-				company: this.state.company?this.state.company.id:null,
-				workHours: this.state.workHours,
-				requester: this.state.requester?this.state.requester.id:this.props.currentUser.id,
-				assignedTo: this.state.assignedTo.map((item)=>item.id),
-				description: this.state.description,
-				status: this.state.status?this.state.status.id:null,
-				deadline: isNaN(new Date(this.state.deadline).getTime()) ? null : toCentralTime(new Date(this.state.deadline).getTime()),
-				createdAt:toCentralTime(new Date().getTime()),
-				createdBy:this.props.currentUser.id,
-				statusChange:toCentralTime(new Date().getTime()),
-				project: this.state.project?this.state.project.id:null,
-				pausal: this.state.pausal.value,
-				milestone: this.state.milestone.value,
-				overtime: this.state.overtime.value,
-				tags: this.state.tags.map((item)=>item.id),
-				type: this.state.type?this.state.type.id:null,
-				repeat: this.state.repeat!==null?newID:null,
-				closeDate,
-				pendingDate,
-			}
 
 			this.state.taskWorks.forEach((item)=>{
 				delete item['id'];
@@ -198,19 +190,20 @@ export default class TaskAdd extends Component{
 								description:'',
 								status:this.props.statuses[0],
 								statusChange:null,
-								deadline:'',
-								closeDate:'',
-								pendingDate:'',
+								deadline:null,
+								closeDate:null,
+								pendingDate:null,
 								project:null,
 								viewOnly:true,
 								milestone:noMilestone,
-								pausal:{value:true,label:'Pausal'},
-								overtime:{value:false,label:'Nie'},
+								pausal:booleanSelects[0],
+								overtime:booleanSelects[0],
 								taskWorks:[],
 								taskMaterials:[],
 								workTrips:[],
 								subtasks:[],
-								repeat:null
+								repeat:null,
+								pendingChangable:false,
 							})
 							this.props.closeModal();
 							this.props.history.push('/helpdesk/taskList/i/all/'+newID);
@@ -286,12 +279,13 @@ export default class TaskAdd extends Component{
 
 				title: this.props.task ? this.props.task.title : '',
 				description: this.props.task ? this.props.task.description : '',
-				deadline: this.props.task ? this.props.task.deadline : '',
-				pendingDate: this.props.task ? this.props.task.pendingDate : '',
-				closeDate: this.props.task ? this.props.task.closeDate : '',
+				deadline: this.props.task ? this.props.task.deadline : null,
+				pendingDate: this.props.task ? this.props.task.pendingDate : null,
+				closeDate: this.props.task ? this.props.task.closeDate : null,
 				milestone: this.props.task? this.props.task.milestone : noMilestone,
-				pausal: this.props.task ? this.props.task.pausal : {value:true,label:'Pausal'},
-				overtime: this.props.task ? this.props.task.overtime : {value:false,label:'Nie'},
+				pendingChangable: this.props.task ? this.props.task.pendingChangable : false,
+				pausal: this.props.task ? this.props.task.pausal : booleanSelects[0],
+				overtime: this.props.task ? this.props.task.overtime : booleanSelects[0],
 				statusChange: this.props.task ? this.props.task.statusChange : null,
 				project: this.props.task ? this.props.task.project : null,
 				viewOnly: this.props.currentUser.userData.role.value===0 && (permission===null || !permission.write),
@@ -333,10 +327,18 @@ export default class TaskAdd extends Component{
 		let workTrips= this.state.workTrips.map((trip)=>{
 			let type= this.state.tripTypes.find((item)=>item.id===trip.type);
 			let assignedTo=trip.assignedTo?this.state.users.find((item)=>item.id===trip.assignedTo):null
+			let finalUnitPrice=parseFloat(trip.price);
+			if(trip.extraWork){
+				finalUnitPrice+=finalUnitPrice*parseFloat(trip.extraPrice)/100;
+			}
+			let totalPrice=(finalUnitPrice*parseFloat(trip.quantity)*(1-parseFloat(trip.discount)/100)).toFixed(2);
+			finalUnitPrice=finalUnitPrice.toFixed(2);
 
 			return {
 				...trip,
 				type,
+				finalUnitPrice,
+				totalPrice,
 				assignedTo:assignedTo?assignedTo:null
 			}
 		});
@@ -391,9 +393,11 @@ export default class TaskAdd extends Component{
 							<div className="col-9">
 								<Select
 									value={this.state.project}
+									placeholder="None"
 									onChange={(project)=>{
 										let newState={project,
 											milestone:noMilestone,
+											pausal:booleanSelects[0],
 											viewOnly:this.props.currentUser.userData.role.value===0 && !project.permissions.find((permission)=>permission.user===this.props.currentUser.id).write
 										}
 										if(newState.viewOnly){
@@ -405,9 +409,9 @@ export default class TaskAdd extends Component{
 												taskMaterials:[],
 												workTrips:[],
 												allTags:[],
-												deadline:"",
-												closeDate:"",
-												pendingDate:"",
+												deadline:null,
+												closeDate:null,
+												pendingDate:null,
 												reminder:null,
 											}
 										}
@@ -433,6 +437,7 @@ export default class TaskAdd extends Component{
 							<Label className="col-3 col-form-label">Projekt</Label>
 							<div className="col-9">
 								<Select
+									placeholder="Field required"
 									value={this.state.project}
 									onChange={(project)=>{
 										let newState={project,
@@ -448,9 +453,9 @@ export default class TaskAdd extends Component{
 												workTrips:[],
 												taskMaterials:[],
 												allTags:[],
-												deadline:"",
-												closeDate:"",
-												pendingDate:"",
+												deadline:null,
+												closeDate:null,
+												pendingDate:null,
 												reminder:null,
 											}
 										}
@@ -464,7 +469,7 @@ export default class TaskAdd extends Component{
 										let permission = project.permissions.find((permission)=>permission.user===curr.id);
 										return permission && permission.read;
 									})}
-									styles={invisibleSelectStyleNoArrow}
+									styles={invisibleSelectStyleNoArrowRequired}
 									/>
 							</div>
 						</div>
@@ -474,12 +479,13 @@ export default class TaskAdd extends Component{
 							<Label className="col-1-5 col-form-label">Assigned to</Label>
 							<div className="col-10-5">
 								<Select
+									placeholder="Field required"
 									value={this.state.assignedTo}
 									isDisabled={this.state.defaults.assignedTo.fixed||this.state.viewOnly}
 									isMulti
 									onChange={(users)=>this.setState({assignedTo:users})}
 									options={this.state.users}
-									styles={invisibleSelectStyleNoArrow}
+									styles={invisibleSelectStyleNoArrowRequired}
 									/>
 								</div>
 						</div>
@@ -489,19 +495,20 @@ export default class TaskAdd extends Component{
 							<Label className="col-3 col-form-label">Status</Label>
 							<div className="col-9">
 								<Select
+									placeholder="Field required"
 									value={this.state.status}
 									isDisabled={this.state.defaults.status.fixed||this.state.viewOnly}
-									styles={invisibleSelectStyleNoArrowColored}
+									styles={invisibleSelectStyleNoArrowColoredRequired}
 									onChange={(status)=>{
 										if(status.action==='pending'){
 											this.setState({
 												status,
-												pendingDate:new Date((new Date()).getTime()+oneDay).toISOString().replace('Z',''),
+												pendingDate:  moment().add(1,'d'),
 											})
 										}else if(status.action==='close'){
 											this.setState({
 												status,
-												closeDate: (new Date()).toISOString().replace('Z',''),
+												closeDate: moment(),
 											})
 										}
 										else{
@@ -521,55 +528,51 @@ export default class TaskAdd extends Component{
 								<Label className="col-3 col-form-label">Typ</Label>
 								<div className="col-9">
 									<Select
+										placeholder="Field required"
 										value={this.state.type}
 										isDisabled={this.state.defaults.type.fixed||this.state.viewOnly}
-										styles={invisibleSelectStyleNoArrow}
+										styles={invisibleSelectStyleNoArrowRequired}
 										onChange={(type)=>this.setState({type})}
 										options={this.state.taskTypes}
 										/>
 								</div>
 							</div>
-							<div className="row p-r-10 m-t-10">
+							<div className="row p-r-10 m-b-10">
 								<Label className="col-3 col-form-label m-t-3">Milestone</Label>
 								<div className="col-9">
 									<Select
 										isDisabled={this.state.viewOnly}
+										placeholder="None"
 										value={this.state.milestone}
 										onChange={(milestone)=> {
-											this.setState({milestone});
+											if(this.state.status.action==='pending'){
+												if(milestone.startsAt!==null){
+													this.setState({milestone,pendingDate:moment(milestone.startsAt),pendingChangable:false});
+												}else{
+													this.setState({milestone, pendingChangable:true });
+												}
+											}else{
+												this.setState({milestone});
 											}
-										}
-										options={this.state.milestones ? this.state.milestones.filter((milestone)=>milestone.id===null || (this.state.project!== null && milestone.project===this.state.project.id)) : null}
+										}}
+										options={this.state.milestones.filter((milestone)=>milestone.id===null || (this.state.project!== null && milestone.project===this.state.project.id))}
 										styles={invisibleSelectStyleNoArrow}
-										/>
-								</div>
-							</div>
-							<div className="row p-r-10 m-t-10">
-								<Label className="col-3 col-form-label m-t-3">Tags</Label>
-								<div className="col-9">
-									<Select
-										value={this.state.tags}
-										isDisabled={this.state.defaults.tags.fixed||this.state.viewOnly}
-										isMulti
-										onChange={(tags)=>this.setState({tags})}
-										options={this.state.allTags}
-										styles={invisibleSelectStyleNoArrowColored}
-										/>
+								/>
 								</div>
 							</div>
 							{false && <div className="row p-r-10 m-b-10">
 								<Label className="col-3 col-form-label">Close date</Label>
 								<div className="col-9">
 									{/*className='form-control hidden-input'*/}
-									<input
-										className='form-control hidden-input'
-										placeholder="Close date"
-										type="datetime-local"
-										disabled={!this.state.status||this.state.status.action!=='close'||this.state.viewOnly}
-										value={this.state.closeDate}
-										onChange={(e)=>{
-											this.setState({closeDate:e.target.value})
+									<DatePicker
+										className="form-control hidden-input"
+										selected={this.state.closeDate}
+										disabled={!this.state.status || this.state.status.action!=='close'||this.state.viewOnly}
+										onChange={date => {
+											this.setState({ closeDate: date });
 										}}
+										placeholderText="No pending date"
+										{...datePickerConfig}
 										/>
 								</div>
 							</div>}
@@ -581,10 +584,11 @@ export default class TaskAdd extends Component{
 								<div className="col-9">
 									<Select
 										value={this.state.requester}
+										placeholder="Field required"
 										isDisabled={this.state.defaults.requester.fixed||this.state.viewOnly}
 										onChange={(requester)=>this.setState({requester})}
 										options={this.state.users}
-										styles={invisibleSelectStyleNoArrow}
+										styles={invisibleSelectStyleNoArrowRequired}
 										/>
 								</div>
 							</div>
@@ -593,10 +597,11 @@ export default class TaskAdd extends Component{
 								<div className="col-9">
 									<Select
 										value={this.state.company}
+										placeholder="Field required"
 										isDisabled={this.state.defaults.company.fixed||this.state.viewOnly}
-										onChange={(company)=>this.setState({company})}
+										onChange={(company)=>this.setState({company, pausal:parseInt(company.workPausal)>0?booleanSelects[1]:booleanSelects[0]})}
 										options={this.state.companies}
-										styles={invisibleSelectStyleNoArrow}
+										styles={invisibleSelectStyleNoArrowRequired}
 										/>
 								</div>
 							</div>
@@ -604,10 +609,11 @@ export default class TaskAdd extends Component{
 								<Label className="col-3 col-form-label">Paušál</Label>
 								<div className="col-9">
 									<Select
-										value={null}
-										isDisabled={false}
-										styles={invisibleSelectStyleNoArrow}
-										onChange={() => {}}
+										value={this.state.pausal}
+										placeholder="Field required"
+										isDisabled={this.state.viewOnly||!this.state.company || parseInt(this.state.company.workPausal)===0}
+										styles={invisibleSelectStyleNoArrowRequired}
+										onChange={(pausal)=>this.setState({pausal})}
 										options={booleanSelects}
 										/>
 								</div>
@@ -617,15 +623,15 @@ export default class TaskAdd extends Component{
 								<Label className="col-3 col-form-label">Pending</Label>
 								<div className="col-9">
 									{/*className='form-control hidden-input'*/}
-									<input
-										className='form-control hidden-input'
-										placeholder="Pending"
-										disabled={!this.state.status||this.state.status.action!=='pending'||this.state.viewOnly}
-										type="datetime-local"
-										value={this.state.pendingDate}
-										onChange={(e)=>{
-											this.setState({pendingDate:e.target.value})
+									<DatePicker
+										className="form-control hidden-input"
+										selected={this.state.pendingDate}
+										disabled={!this.state.status || this.state.status.action!=='pending'||this.state.viewOnly||!this.state.pendingChangable}
+										onChange={date => {
+											this.setState({ pendingDate: date });
 										}}
+										placeholderText="No pending date"
+										{...datePickerConfig}
 										/>
 								</div>
 							</div>}
@@ -634,18 +640,18 @@ export default class TaskAdd extends Component{
 					<div className="col-lg-4">
 						<div className="row p-r-10 m-b-10">
 							<Label className="col-3 col-form-label">Deadline</Label>
-							<div className="col-9">
-								<input
-									className='form-control hidden-input'
-									placeholder="Status change date"
-									type="datetime-local"
-									disabled={this.state.viewOnly}
-									value={this.state.deadline || ""}
-									onChange={(e)=>{
-										this.setState({deadline:e.target.value})}
-									}
-									/>
-							</div>
+								<div className="col-9">
+									<DatePicker
+										className="form-control hidden-input"
+										selected={this.state.deadline}
+										disabled={this.state.viewOnly}
+										onChange={date => {
+											this.setState({ deadline: date });
+										}}
+										placeholderText="No deadline"
+										{...datePickerConfig}
+										/>
+								</div>
 						</div>
 					<Repeat
 							taskID={null}
@@ -666,18 +672,35 @@ export default class TaskAdd extends Component{
 								<Label className="col-3 col-form-label">Mimo PH</Label>
 								<div className="col-9">
 									<Select
-										value={null}
-										disabled={false}
-										styles={invisibleSelectStyleNoArrow}
-										onChange={() => {}}
+										placeholder="Field required"
+										value={this.state.overtime}
+										disabled={this.state.viewOnly}
+										styles={invisibleSelectStyleNoArrowRequired}
+										onChange={(overtime)=>this.setState({overtime})}
 										options={booleanSelects}
 										/>
 								</div>
 							</div>
 					</div>
 				</div>}
+				<div className='col-lg-12'>
+					<div className="row p-r-10 m-b-10">
+						<Label className="col-1 col-form-label m-b-3">Tags</Label>
+						<div className="col-11">
+							<Select
+								value={this.state.tags}
+								placeholder="None"
+								isDisabled={this.state.defaults.tags.fixed||this.state.viewOnly}
+								isMulti
+								onChange={(tags)=>this.setState({tags})}
+								options={this.state.allTags}
+								styles={invisibleSelectStyleNoArrowColored}
+								/>
+						</div>
+					</div>
 				</div>
-					<Label className="m-t-5 m-b-10 form-label">Popis úlohy</Label><br/>
+			</div>
+				<Label className="m-b-10 col-form-label">Popis úlohy</Label>
 					{!this.state.descriptionVisible && <span className="p-20 text-muted" onClick={()=>this.setState({descriptionVisible:true})}>Napíšte krátky popis úlohy</span>}
 					{this.state.descriptionVisible && <CKEditor
 						data={this.state.description}
@@ -927,7 +950,7 @@ export default class TaskAdd extends Component{
 							</TabContent>}
 					</div>
 			</div>
-
+			{this.props.closeModal &&  <Button outline color="danger" onClick={this.props.closeModal}>Cancel</Button>}
 						<button
 							className="btn pull-right"
 							disabled={this.state.title==="" || this.state.status===null || this.state.project === null || this.state.company === null || this.state.saving || this.props.loading||this.props.newID===null}
