@@ -97,55 +97,62 @@ export default class ItemView extends Component{
     return (
         <div className="card-box fit-with-header-and-commandbar scrollable p-t-15">
           <div >
-            <FormGroup className="row  m-b-10">
-              <div className="m-r-5 w-10">
-                <Label>Name:</Label>
-              </div>
-              <div className="flex">
+            <div className="row m-b-10">
+              <h4 className="center-hor cmdb-title">
                 {this.state.item===null?'':this.state.item.title}
+              </h4>
+              <div className="ml-auto cmdb-info">
+                <div> <span style={{color: "#7FFFD4"}}>*</span> Created by <span className="cmdb-info-name">Natalia Tyulina</span> at 22:00 16.6.2019 <span style={{color: "#7FFFD4"}}>*</span></div>
+                <div><span style={{color: "#7FFFD4"}}>*</span> Edit by <span className="cmdb-info-name">Natalia Tyulina</span> at 22:00 16.6.2019 <span style={{color: "#7FFFD4"}}>*</span></div>
+                <div><span style={{color: "#7FFFD4"}}>*</span> Status changed by <span className="cmdb-info-name">Natalia Tyulina</span> at 22:00 16.6.2019 <span style={{color: "#7FFFD4"}}>*</span></div>
               </div>
-            </FormGroup>
-            <FormGroup className="row m-b-10">
-              <div className="m-r-5 w-10">
-                <Label>Company:</Label>
-              </div>
-              <div className="flex">
-                {this.state.item===null?'':this.state.companies.find((item)=>item.id===this.state.item.company).title}
-              </div>
-            </FormGroup>
-            <FormGroup className="row m-b-10">
-              <div className="m-r-5 w-10">
-                <Label>Status:</Label>
-              </div>
-              <div className="flex">
-                {this.state.item===null?'':this.state.statuses.find((item)=>item.id===this.state.item.status).title}
-              </div>
-            </FormGroup>
+            </div>
 
-              <FormGroup className="row m-b-10">
-                <div className="m-r-5 w-10">
-                  <Label>Description</Label>
+            <hr />
+            <div className="cmdb-selects">
+                <div className="row m-b-10 cmdb-selects-info">
+                  <div className="w-50">
+                    <Label>Status:</Label>
+                  </div>
+                  <div className="">
+                    {this.state.item===null?'':this.state.statuses.find((item)=>item.id===this.state.item.status).title}
+                  </div>
                 </div>
-                <div className="flex" dangerouslySetInnerHTML={{__html:this.state.item===null?'': this.state.item.description.replace(/(?:\r\n|\r|\n)/g, '<br>') }}></div>
-              </FormGroup>
+                <div className="row m-b-10 cmdb-selects-info">
+                  <div className="w-50">
+                    <Label>Company:</Label>
+                  </div>
+                  <div className="">
+                    {this.state.item===null?'':this.state.companies.find((item)=>item.id===this.state.item.company).title}
+                  </div>
+                </div>
+
+              { (this.state.sidebarItem ? this.state.sidebarItem.attributes : []).map((item)=>
+                <div key={item.id} className="row m-b-10 cmdb-selects-info">
+                  <div className="w50">
+                    <Label>{item.title}</Label>
+                  </div>
+                  { item.type.id==='select' &&
+                    <div className="">{this.state.attributes[item.id].label}</div>
+                  }
+                  { item.type.id==='input' &&
+                    <div className="">{this.state.attributes[item.id]}</div>
+                  }
+                  { item.type.id==='textarea' &&
+                    <div className="" dangerouslySetInnerHTML ={{__html:htmlFixNewLines(this.state.attributes[item.id])}}></div>
+                  }
+                </div>
+              )}
+
+            </div>
 
 
-                { (this.state.sidebarItem ? this.state.sidebarItem.attributes : []).map((item)=>
-                  <FormGroup key={item.id} className="row m-b-10">
-                    <div className="m-r-5 w-10">
-                      <Label>{item.title}</Label>
-                    </div>
-                    { item.type.id==='select' &&
-                      <div className="flex">{this.state.attributes[item.id].label}</div>
-                    }
-                    { item.type.id==='input' &&
-                      <div className="flex">{this.state.attributes[item.id]}</div>
-                    }
-                    { item.type.id==='textarea' &&
-                      <div className="flex" dangerouslySetInnerHTML ={{__html:htmlFixNewLines(this.state.attributes[item.id])}}></div>
-                    }
-                  </FormGroup>
-                )}
+                <FormGroup className="row m-b-10">
+                  <div className="m-r-5 w-10">
+                    <Label>Description</Label>
+                  </div>
+                  <div className="flex" dangerouslySetInnerHTML={{__html:this.state.item===null?'': this.state.item.description.replace(/(?:\r\n|\r|\n)/g, '<br>') }}></div>
+                </FormGroup>
 
               <div className="m-t-10">
                 <Label className="font-16">IP list</Label>

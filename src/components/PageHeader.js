@@ -64,7 +64,7 @@ class PageHeader extends Component {
 							</Link>
 						}
 						{ ((this.props.currentUser.userData && this.props.currentUser.userData.role.value>0)|| testing) &&
-							<Link to={{ pathname: `/cmdb/all` }} className={"header-link" + (URL.includes("cmdb") ? " header-link-active" : "")}>
+							<Link to={{ pathname: `/cmdb/i/all` }} className={"header-link" + (URL.includes("cmdb") ? " header-link-active" : "")}>
 								CMDB
 							</Link>
 						}

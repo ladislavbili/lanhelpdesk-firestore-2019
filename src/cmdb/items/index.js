@@ -109,6 +109,9 @@ class ItemList extends Component {
 				<div className="commandbar commandbar-list-align">
 					<div className="search-row">
 						<div className="search">
+							<button className="search-btn" type="button" onClick={()=>this.setState({activeSearch:this.state.search})}>
+								<i className="fa fa-search" />
+							</button>
 							<input
 								type="text"
 								className="form-control search-text"
@@ -121,9 +124,6 @@ class ItemList extends Component {
 								onChange={(e)=>this.setState({search:e.target.value})}
 								placeholder="Search"
 							/>
-							<button className="search-btn" type="button" onClick={()=>this.setState({activeSearch:this.state.search})}>
-								<i className="fa fa-search" />
-							</button>
 						</div>
 
 							<Button
@@ -135,13 +135,13 @@ class ItemList extends Component {
 								Global
 							</Button>
 						</div>
-						
+
 							<Button
 								className="btn-link center-hor"
 								onClick={()=>{
 									this.props.history.push('/cmdb/i/'+this.props.match.params.sidebarID+'/i/add');
 								}}
-								> <i className="fa fa-plus  p-l-5 p-r-5"/>
+								> <i className="fa fa-plus text-highlight p-l-5 p-r-5"/>
 								{(this.state.sidebarItem?this.state.sidebarItem.title:'item')}
 							</Button>
 

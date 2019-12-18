@@ -232,13 +232,15 @@ class TasksIndex extends Component {
 					{value:'company',type:'object'},
 				]}
 				displayCol={(task)=>
-					<li className="p-20" >
-						<div className="m-b-5 font-15">
-							<label><span className="text-muted font-15">#{task.id} | </span> {task.title}</label>
+					<li className="p-10" >
+						<div className="font-15 font-bold">
+							<span className="text-muted font-15">#{task.id} | </span> {task.title}
 						</div>
 						<div className="m-t-0 font-12">
 							<p className="pull-right m-0 ">
-								<span className="label label-info" style={{backgroundColor:task.status && task.status.color?task.status.color:'white'}}>{task.status?task.status.title:'Neznámy status'}</span>
+								<span className="label label-info" style={{backgroundColor:task.status && task.status.color?task.status.color:'white'}}>
+									{task.status?task.status.title:'Neznámy status'}
+								</span>
 							</p>
 							<p className="m-b-0">
 								<span>

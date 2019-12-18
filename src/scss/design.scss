@@ -172,6 +172,9 @@ html{
 .w-100px{
   width: 100px;
 }
+.w-200px{
+  width: 200px;
+}
 .w-300px{
   width: 300px;
 }
@@ -329,6 +332,9 @@ h4.clickable:hover{
 }
 .text-bold{
   font-weight: 700;
+}
+.font-bold{
+  font-family: $main-font-bold;
 }
 .h-30{
   height: 30px;
@@ -796,6 +802,48 @@ tr:last-child{
 
 //----------------END-všeobecné-elementy----------------
 
+//--------------------CMDB-------------------------
+
+.cmdb-title {
+  font-family: Segoe UI;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 28px;
+  line-height: 37px;
+  color: #333333;
+}
+
+.cmdb-info{
+  font-family: Segoe UI;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  align-items: center;
+  text-align: right;
+  color: #919191;
+  border-radius: 1.72185px;
+}
+
+.cmdb-info-name{
+  font-family: Segoe UI Bold;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  align-items: center;
+  text-align: right;
+  color: #5c5c5c;
+  border-radius: 1.72185px;
+}
+
+.cmdb-selects{
+  margin-top: 20px;
+  max-width: 800px;
+}
+
+.cmdb-selects-info{
+  width: 50%;
+}
+//----------------------END-CMDB---------------------
 
 //---------------------header---------------------
 .page-header{
@@ -901,6 +949,18 @@ tr:last-child{
 }
 
 .sidebar-icon.active{
+  font-weight: 900;
+  color: #0078D4 !important;
+  background-color: rgb(238,238,238);
+}
+
+.sidebar-icon-cmdb{
+  color: transparent;
+  padding-top: 10px;
+  padding-left: 15px;
+}
+
+.sidebar-icon-cmdb.active{
   font-weight: 900;
   color: #0078D4 !important;
   background-color: rgb(238,238,238);
@@ -1154,7 +1214,7 @@ tr:last-child{
   background-color: inherit;
   border: 0px;
   border-bottom: 1px solid #dee2e6;
-  padding: 20px;
+  padding: 10px;
   margin-bottom: 15px;
   border-radius: 0px;
 }
@@ -1178,7 +1238,6 @@ tr:last-child{
 }
 
 .taskCol-tags{
-  margin-top: 5px;
   min-height: 21px;
 }
 
