@@ -47,6 +47,8 @@ class CompanyEdit extends Component{
       oldPausal: 0,
       rented:[],
       oldRented:[],
+      dph:20,
+      oldDph:20,
       fakeID:0,
       oldFakeID:0,
       newData: false,
@@ -134,6 +136,7 @@ class CompanyEdit extends Component{
       mail: company.mail || "",
       phone: company.phone || "",
       description: company.description || "",
+      dph:company.dph || 0,
       pricelists,
       pricelist,
 
@@ -154,6 +157,7 @@ class CompanyEdit extends Component{
       oldMail: company.mail || "",
       oldPhone: company.phone || "",
       oldDescription: company.description || "",
+      oldDph:company.dph || 0,
 
       loading:false,
       newData: false,
@@ -188,6 +192,7 @@ class CompanyEdit extends Component{
         mail: this.state.mail,
         phone: this.state.phone,
         description: this.state.description,
+        dph:isNaN(parseInt(this.state.dph))?0:parseInt(this.state.dph),
       })
         .then(()=>{this.setState({
           saving:false,
@@ -220,6 +225,7 @@ class CompanyEdit extends Component{
           oldPhone: this.state.phone,
           oldDescription: this.state.description,
           oldPausal: this.state.pausal,
+          oldDph: this.state.dph,
         })});
   }
 
@@ -241,6 +247,8 @@ class CompanyEdit extends Component{
       workPausal: this.state.oldWorkPausal,
       drivePausal: this.state.oldDrivePausal,
       rented:this.state.oldRented,
+      dph:this.state.oldDph,
+
       clearCompanyRents:true,
       newData: false,
     })
@@ -285,6 +293,18 @@ class CompanyEdit extends Component{
               options={this.state.pricelists}
               value={this.state.pricelist}
               onChange={e =>{ this.setState({pricelist: e, newData: true }) }}
+              />
+          </FormGroup>
+
+          <FormGroup>
+            <Label for="dph">DPH</Label>
+            <Input
+              name="dph"
+              id="dph"
+              type="number"
+              placeholder="Enter DPH"
+              value={this.state.dph}
+              onChange={(e)=>this.setState({dph: e.target.value, newData: true })  }
               />
           </FormGroup>
 

@@ -4,32 +4,24 @@ import Select from 'react-select';
 import { selectStyle, invisibleSelectStyle} from '../../scss/selectStyles';
 import { sameStringForms} from '../../helperFunctions';
 
-export default class Prace extends Component {
+export default class PraceWorkTrips extends Component {
 	constructor(props){
 		super(props);
-		let newSubtaskPrice = 0;
-
-		if(props.company && props.defaultType){
-			newSubtaskPrice = this.props.defaultType.prices.find((item)=>item.pricelist===props.company.pricelist.id).price;
-		}
 		this.state={
 			showAddSubtask:false,
 
 			editedSubtaskTitle: "",
-			editedSubtaskQuantity: "0",
+			editedSubtaskType:null,
+			editedSubtaskQuantity: 0,
 			editedSubtaskDiscount:0,
-			editedSubtaskWorkType:null,
 			focusedSubtask: null,
-			editedSubtaskPrice: 0,
 			selectedIDs:[],
 
 			newSubtaskTitle:'',
-			newSubtaskPrice,
-			newSubtaskWorkType:this.props.defaultType,
-			newSubtaskQuantity:0,
-			newSubtaskExtraWork:false,
-			newSubtaskDiscount:0,
+			newSubtaskType:this.props.defaultType,
 			newSubtaskAssigned:this.props.taskAssigned.length>0?this.props.taskAssigned[0]:null,
+			newSubtaskQuantity:0,
+			newSubtaskDiscount:0,
 
 			//trips
 			showAddTrip:false,
@@ -37,67 +29,42 @@ export default class Prace extends Component {
 			focusedTrip:null,
 			editedTripQuantity:0,
 			editedTripDiscount:0,
-			editedTripPrice:0,
 
 			newTripType:this.props.tripTypes.length>0?this.props.tripTypes[0]:null,
 			newTripAssignedTo:this.props.taskAssigned.length>0?this.props.taskAssigned[0]:null,
 			newTripQuantity:1,
-			newTripPrice:this.props.tripTypes.length>0 && props.company?this.props.tripTypes[0].prices.find((price)=>price.pricelist===props.company.pricelist.id).price:0,
 			newTripDiscount:0,
 		}
 		this.onFocusWorkTrip.bind(this);
 		this.onFocusSubtask.bind(this);
+		this.getTotalPrice.bind(this);
+		this.getTotalDiscountedPrice.bind(this);
+		this.getDPH.bind(this);
 	}
 
 	componentWillReceiveProps(props){
 		if(this.props.taskID!==props.taskID){
-			let newSubtaskPrice = this.state.newSubtaskPrice;
-			if(props.defaultType){
-				newSubtaskPrice = props.defaultType.prices.find((item)=>props.company && item.pricelist===props.company.pricelist.id);
-				if(newSubtaskPrice === undefined){
-					newSubtaskPrice = 0;
-				}else{
-					newSubtaskPrice = newSubtaskPrice.price;
-				}
-			}
 			this.setState({
+				focusedSubtask:null,
 				showAddSubtask:false,
 				newSubtaskTitle:'',
-				newSubtaskWorkType:props.defaultType,
+				newSubtaskType:props.defaultType,
 				newSubtaskQuantity:0,
-				newSubtaskExtraWork:false,
 				newSubtaskDiscount:0,
-				newSubtaskPrice,
-				newSubtaskAssigned:null,
+				newSubtaskAssigned:props.taskAssigned.length>0?props.taskAssigned[0]:null,
 
 				focusedTrip:null,
-				editedTripQuantity:0,
-				editedTripDiscount:0,
-				newTripPrice:props.tripTypes.length>0 && props.company?props.tripTypes[0].prices.find((price)=>price.pricelist===props.company.pricelist.id).price:0,
+				showAddTrip:false,
 				newTripType:props.tripTypes.length>0?props.tripTypes[0]:null,
 				newTripAssignedTo:props.taskAssigned.length>0?props.taskAssigned[0]:null,
 				newTripQuantity:1,
 				newTripDiscount:0,
-				showAddTrip:false,
 			})
 		}else if(!sameStringForms(this.props.defaultType,props.defaultType)){
-			if(props.defaultType){
-				let price = props.defaultType.prices.find((item)=>props.company && item.pricelist===props.company.pricelist.id);
-				if(price === undefined){
-					price = 0;
-				}else{
-					price = price.price;
-				}
-				this.setState({
-					newSubtaskWorkType:props.defaultType,
-					newSubtaskPrice:price,
-				})
-			}else{
-				this.setState({
-					newSubtaskWorkType:props.defaultType,
-				})
-			}
-	}
+			this.setState({
+				newSubtaskType:props.defaultType,
+			})
+		}
 
 		if(!sameStringForms(this.props.taskAssigned,props.taskAssigned)){
 			if(!props.taskAssigned.some((item)=>item.id===(this.state.newSubtaskAssigned?this.state.newSubtaskAssigned.id:null))){
@@ -108,42 +75,35 @@ export default class Prace extends Component {
 				}
 			}
 		}
-
-		if(this.state.newSubtaskWorkType &&
-			!sameStringForms(this.props.company,props.company) &&
-			props.company
-			){
-			let price = this.state.newSubtaskWorkType.prices.find((item)=>item.pricelist===props.company.pricelist.id);
-			if(price === undefined){
-				price = 0;
-			}else{
-				price = price.price;
-			}
-			this.setState({newSubtaskPrice:price})
-		}
-		if(this.state.newTripType &&
-			!sameStringForms(this.props.company,props.company) &&
-			props.company
-			){
-			let price = this.state.newTripType.prices.find((item)=>item.pricelist===props.company.pricelist.id);
-			if(price === undefined){
-				price = 0;
-			}else{
-				price = price.price;
-			}
-			this.setState({newTripPrice:price})
-		}
 	}
 
 	getCreationError(){
-		if(this.props.extended || (this.state.newSubtaskWorkType!==null && this.state.newSubtaskAssigned!==null)){
+		let noType = this.state.newSubtaskType===null;
+		let noAssigned = this.state.newSubtaskAssigned===null;
+		let noCompany = this.props.company===null;
+		if(!noType && !noAssigned && !noCompany){
 			return ''
-		}else if(this.state.newSubtaskWorkType===null && this.state.newSubtaskAssigned===null){
-			return 'You must first assign the task to someone and pick task type!'
-		}else if(this.state.newSubtaskWorkType===null){
-			return 'You must first pick task type!'
-		}else{
-			return 'You must first assign the task to someone!'
+		}
+		if(noType && noAssigned && noCompany){
+			return 'You must first assign the task to someone, pick task type and company!';
+		}
+		if(!noType && noAssigned && noCompany){
+			return 'You must first assign the task to someone and pick company!';
+		}
+		if(!noType && !noAssigned && noCompany){
+			return 'You must first pick company!';
+		}
+		if(!noType && noAssigned && !noCompany){
+			return 'You must first assign the task to someone!';
+		}
+		if(noType && !noAssigned && noCompany){
+			return 'You must first pick task type and company!';
+		}
+		if(noType && !noAssigned && !noCompany){
+			return 'You must first pick task type!';
+		}
+		if(noType && noAssigned && !noCompany){
+			return 'You must first assign the task to someone and pick task type!';
 		}
 	}
 
@@ -151,7 +111,6 @@ export default class Prace extends Component {
 		this.setState({
 			editedTripQuantity:trip.quantity,
 			editedTripDiscount:trip.discount,
-			editedTripPrice:trip.price,
 			focusedTrip:trip.id
 		})
 	}
@@ -160,11 +119,39 @@ export default class Prace extends Component {
 		this.setState({
 			editedSubtaskTitle: subtask.title,
 			editedSubtaskQuantity: subtask.quantity?subtask.quantity:'',
-			editedSubtaskWorkType: subtask.workType,
+			editedSubtaskType: subtask.type,
 			editedSubtaskDiscount: subtask.discount,
-			editedSubtaskPrice: subtask.price,
 			focusedSubtask: subtask.id
 		});
+	}
+
+	getPrice(type){
+		if(type===null){
+			return NaN;
+		}
+		let price = type.prices.find((price)=>price.pricelist===this.props.company.pricelist.id);
+		if(price === undefined){
+			price = NaN;
+		}else{
+			price = price.price;
+		}
+		return parseFloat(parseFloat(price).toFixed(2));
+	}
+
+	getTotalPrice(item){
+		return parseFloat(this.getPrice(item.type)*parseInt(item.quantity).toFixed(2))
+	}
+
+	getTotalDiscountedPrice(item){
+		return parseFloat(parseFloat(this.getTotalPrice(item)*(100-parseInt(item.discount))/100).toFixed(2))
+	}
+
+	getDPH(){
+		let dph = 20;
+		if(this.props.company && this.props.company.dph < 0){
+			dph = this.props.company.dph;
+		}
+		return (100+dph)/100;
 	}
 
 	render() {
@@ -187,7 +174,7 @@ export default class Prace extends Component {
 										<th width="100">Mn.</th>
 										{this.props.showAll && <th width="100" className="table-highlight-background">Cena/Mn.</th>}
 										{this.props.showAll && <th width="100" className="table-highlight-background">Zlava</th>}
-										{false && <th width="130">Spolu</th>}
+										{this.props.showAll && <th width="130" className="table-highlight-background">Spolu</th>}
 										<th className="t-a-c" width="100"></th>
 									</tr>
 								</thead>
@@ -203,7 +190,7 @@ export default class Prace extends Component {
 														onChange={()=>{
 															this.props.updateSubtask(subtask.id,{done:!subtask.done})
 															}} />
-														<span className="checkmark" style={{ marginTop: "-3px", marginLeft:"-8px"}}> </span>
+														<span className="checkmark" style={{ marginTop: "-3px"}}> </span>
 												</label>
 											</td>
 											<td>
@@ -217,7 +204,6 @@ export default class Prace extends Component {
 															: subtask.title
 														}
 														onBlur={() => {
-															//submit
 															this.props.updateSubtask(subtask.id,{title:this.state.editedSubtaskTitle})
 															this.setState({ focusedSubtask: null });
 														}}
@@ -246,15 +232,9 @@ export default class Prace extends Component {
 											{ this.props.extended && <td >
 												<Select
 													isDisabled={this.props.disabled}
-													value={subtask.workType}
-													onChange={(workType)=>{
-														let price = workType.prices.find((item)=>this.props.company && item.pricelist===this.props.company.pricelist.id);
-														if(price === undefined){
-															price = 0;
-														}else{
-															price = price.price;
-														}
-														this.props.updateSubtask(subtask.id,{workType:workType.id,price})
+													value={subtask.type}
+													onChange={(type)=>{
+														this.props.updateSubtask(subtask.id,{type:type.id})
 													}}
 													options={this.props.workTypes}
 													styles={invisibleSelectStyle}
@@ -272,8 +252,7 @@ export default class Prace extends Component {
 														: subtask.quantity
 													}
 													onBlur={() => {
-														//submit
-														this.props.updateSubtask(subtask.id,{quantity:this.state.editedSubtaskQuantity})
+														this.props.updateSubtask(subtask.id,{quantity:isNaN(parseInt(this.state.editedSubtaskQuantity))?0:parseInt(this.state.editedSubtaskQuantity)})
 														this.setState({ focusedSubtask: null });
 													}}
 													onFocus={() => {
@@ -286,27 +265,11 @@ export default class Prace extends Component {
 											</td>
 
 											{ this.props.showAll && <td className="table-highlight-background">
-											<input
-												disabled={this.props.disabled}
-												type="number"
-												className="form-control hidden-input h-30"
-												value={
-													subtask.id === this.state.focusedSubtask
-													? this.state.editedSubtaskPrice
-													: subtask.price
-												}
-												onBlur={() => {
-													//submit
-													this.props.updateSubtask(subtask.id,{price:this.state.editedSubtaskPrice})
-													this.setState({ focusedSubtask: null });
-												}}
-												onFocus={() => {
-													this.onFocusSubtask(subtask);
-												}}
-												onChange={e =>{
-													this.setState({ editedSubtaskPrice: e.target.value })}
-												}
-												/>
+												{isNaN(this.getPrice(subtask.type))?
+												'No price'
+												:
+												this.getPrice(subtask.type)
+											}
 											</td>}
 											{ this.props.showAll && <td className="table-highlight-background">
 												<input
@@ -319,7 +282,7 @@ export default class Prace extends Component {
 															: subtask.discount)
 														}
 														onBlur={() => {
-															this.props.updateSubtask(subtask.id,{discount:this.state.editedSubtaskDiscount})
+															this.props.updateSubtask(subtask.id,{discount:isNaN(parseInt(this.state.editedSubtaskDiscount))?0:parseInt(this.state.editedSubtaskDiscount)})
 															this.setState({ focusedSubtask: null });
 														}}
 														onFocus={() => {
@@ -330,19 +293,11 @@ export default class Prace extends Component {
 														}
 														/>
 												</td>}
-												{false &&
-													<td className="table-highlight-background">
-													{
-														(
-														(parseFloat(subtask.id === this.state.focusedSubtask?(this.state.editedSubtaskPrice===''?0:this.state.editedSubtaskPrice):subtask.finalUnitPrice)
-														-
-														parseFloat(subtask.id === this.state.focusedSubtask?(this.state.editedSubtaskPrice===''?0:this.state.editedSubtaskPrice):subtask.finalUnitPrice)*
-														parseInt(subtask.id === this.state.focusedSubtask?(this.state.editedSubtaskDiscount===''?0:this.state.editedSubtaskDiscount):subtask.discount)
-														/100)*
-														parseInt(subtask.id === this.state.focusedSubtask?(this.state.editedSubtaskQuantity===''?0:this.state.editedSubtaskQuantity):subtask.quantity)
-														)
-														.toFixed(2)
-													}
+												{this.props.showAll && <td className="table-highlight-background">
+													{isNaN(this.getTotalDiscountedPrice(subtask))?
+														'No price'
+														:
+														this.getTotalDiscountedPrice(subtask)}
 												</td>}
 												<td className="t-a-r">
 													<button className="btn btn-link waves-effect" disabled={this.props.disabled}>
@@ -375,7 +330,7 @@ export default class Prace extends Component {
 														onChange={()=>{
 															this.props.updateTrip(trip.id,{done:!trip.done})
 															}} />
-														<span className="checkmark" style={{ marginTop: "-3px", marginLeft:"-8px"}}> </span>
+														<span className="checkmark" style={{ marginTop: "-3px"}}> </span>
 												</label>
 											</td>
 											<td>
@@ -413,7 +368,7 @@ export default class Prace extends Component {
 														: trip.quantity
 													}
 													onBlur={() => {
-														this.props.updateTrip(trip.id,{quantity:isNaN(parseFloat(this.state.editedTripQuantity))?0:this.state.editedTripQuantity})
+														this.props.updateTrip(trip.id,{quantity:isNaN(parseInt(this.state.editedTripQuantity))?0:parseInt(this.state.editedTripQuantity)})
 														this.setState({ focusedTrip: null });
 													}}
 													onFocus={() => {
@@ -425,26 +380,10 @@ export default class Prace extends Component {
 													/>
 											</td>
 											{this.props.showAll && <td className="table-highlight-background">
-												<input
-													disabled={this.props.disabled}
-													type="number"
-													className="form-control hidden-input h-30"
-													value={
-														trip.id === this.state.focusedTrip
-														? this.state.editedTripPrice
-														: trip.price
-													}
-													onBlur={() => {
-														this.props.updateTrip(trip.id,{price:isNaN(parseFloat(this.state.editedTripPrice))?0:this.state.editedTripPrice})
-														this.setState({ focusedTrip: null });
-													}}
-													onFocus={() => {
-														this.onFocusWorkTrip(trip);
-													}}
-													onChange={e =>{
-														this.setState({ editedTripPrice: e.target.value })}
-													}
-													/>
+												{isNaN(this.getPrice(trip.type))?
+													'No price'
+													:
+													this.getPrice(trip.type)}
 											</td>}
 											{this.props.showAll && <td className="table-highlight-background">
 												<input
@@ -457,7 +396,7 @@ export default class Prace extends Component {
 														: trip.discount
 													}
 													onBlur={() => {
-														this.props.updateTrip(trip.id,{discount:isNaN(parseFloat(this.state.editedTripDiscount))?0:this.state.editedTripDiscount})
+														this.props.updateTrip(trip.id,{discount:isNaN(parseInt(this.state.editedTripDiscount))?0:parseInt(this.state.editedTripDiscount)})
 														this.setState({ focusedTrip: null });
 													}}
 													onFocus={() => {
@@ -467,6 +406,12 @@ export default class Prace extends Component {
 														this.setState({ editedTripDiscount: e.target.value })}
 													}
 													/>
+											</td>}
+											{this.props.showAll && <td className="table-highlight-background">
+												{isNaN(this.getTotalDiscountedPrice(trip))?
+													'No price'
+													:
+													this.getTotalDiscountedPrice(trip)}
 											</td>}
 											<td className="t-a-r">
 												<button className="btn btn-link waves-effect" disabled={this.props.disabled}>
@@ -515,17 +460,10 @@ export default class Prace extends Component {
 										{ this.props.extended && <td>
 											<Select
 												isDisabled={this.props.disabled}
-												value={this.state.newSubtaskWorkType}
+												value={this.state.newSubtaskType}
 												options={this.props.workTypes}
-												onChange={(workType)=>{
-													let price=0;
-													price = workType.prices.find((item)=>this.props.company!==null && item.pricelist===this.props.company.pricelist.id);
-													if(price === undefined){
-														price = 0;
-													}else{
-														price = price.price;
-													}
-													this.setState({newSubtaskWorkType:workType,newSubtaskPrice:price})
+												onChange={(type)=>{
+													this.setState({newSubtaskType:type})
 													}
 												}
 												styles={selectStyle}
@@ -542,16 +480,12 @@ export default class Prace extends Component {
 												placeholder=""
 												/>
 										</td>
-										{ this.props.showAll && <td className="table-highlight-background">
-											<input
-												disabled={this.props.disabled}
-												type="number"
-												value={this.state.newSubtaskPrice}
-												onChange={(e)=>this.setState({newSubtaskPrice:e.target.value})}
-												className="form-control h-30"
-												id="inlineFormInput"
-												placeholder=""
-											/>
+										{this.props.showAll && <td className="table-highlight-background">
+											{isNaN(this.getPrice(this.state.newSubtaskType))?
+												'No price'
+												:
+												this.getPrice(this.state.newSubtaskType)
+											}
 										</td>}
 										{ this.props.showAll && <td className="table-highlight-background">
 											<input
@@ -564,33 +498,32 @@ export default class Prace extends Component {
 												placeholder=""
 												/>
 										</td>}
-										{false &&
-											<td className="table-highlight-background">
-											{
-												((this.state.newSubtaskPrice-this.state.newSubtaskPrice*0.01*this.state.newSubtaskDiscount)*this.state.newSubtaskQuantity).toFixed(2)
+
+										{this.props.showAll && <td className="table-highlight-background">
+											{isNaN(this.getTotalDiscountedPrice({discount:this.state.newSubtaskDiscount,quantity:this.state.newSubtaskQuantity}))?
+												'No price'
+												:
+												this.getTotalDiscountedPrice({discount:this.state.newSubtaskDiscount,quantity:this.state.newSubtaskQuantity})
 											}
-										</td>}
+											</td>
+										}
 										<td className="t-a-r">
 											<button className="btn btn-link waves-effect"
-												disabled={this.state.newSubtaskWorkType===null||this.props.disabled|| this.state.newSubtaskAssigned===null}
+												disabled={this.state.newSubtaskType===null||this.props.disabled|| this.state.newSubtaskAssigned===null}
 												onClick={()=>{
 													let body={
-														discount:this.state.newSubtaskDiscount!==''?this.state.newSubtaskDiscount:0,
-														extraPrice:this.props.company?parseFloat(this.props.company.pricelist.afterHours) : 0,
-														extraWork:this.state.newSubtaskExtraWork,
-														price:this.state.newSubtaskPrice!==''?this.state.newSubtaskPrice:0,
-														quantity:this.state.newSubtaskQuantity!==''?this.state.newSubtaskQuantity:0,
 														title:this.state.newSubtaskTitle,
-														workType: this.state.newSubtaskWorkType.id,
+														type: this.state.newSubtaskType.id,
+														quantity:this.state.newSubtaskQuantity!==''?parseInt(this.state.newSubtaskQuantity):0,
+														discount:this.state.newSubtaskDiscount!==''?parseInt(this.state.newSubtaskDiscount):0,
 														assignedTo:this.state.newSubtaskAssigned?this.state.newSubtaskAssigned.id:null
 													}
 													this.setState({
-														showAddSubtask: false,
-														newSubtaskDiscount:0,
-														newSubtaskExtraWork:false,
-														newSubtaskQuantity:0,
 														newSubtaskTitle:'',
-														assignedTo:this.props.taskAssigned.length>0?this.props.taskAssigned[0]:null
+														newSubtaskQuantity:0,
+														newSubtaskDiscount:0,
+														assignedTo:this.props.taskAssigned.length>0?this.props.taskAssigned[0]:null,
+														showAddSubtask: false,
 													});
 													this.props.submitService(body);
 													}
@@ -614,17 +547,7 @@ export default class Prace extends Component {
 												isDisabled={this.props.disabled}
 												value={this.state.newTripType}
 												onChange={(newTripType)=>{
-													if(this.props.company){
-														let newTripPrice = newTripType.prices.find((price)=>price.pricelist===this.props.company.pricelist.id);
-														if(newTripPrice === undefined){
-															newTripPrice = 0;
-														}else{
-															newTripPrice = newTripPrice.price;
-														}
-														this.setState({newTripType, newTripPrice})
-													}else{
 														this.setState({newTripType})
-													}
 													}
 												}
 												options={this.props.tripTypes}
@@ -657,15 +580,11 @@ export default class Prace extends Component {
 												/>
 										</td>
 										{this.props.showAll && <td className="table-highlight-background">
-											<input
-												disabled={this.props.disabled}
-												type="number"
-												value={this.state.newTripPrice}
-												onChange={(e)=>this.setState({newTripPrice:e.target.value})}
-												className="form-control h-30"
-												id="inlineFormInput"
-												placeholder="Discount"
-												/>
+											{isNaN(this.getPrice(this.state.newTripType))?
+												'No price'
+												:
+												this.getPrice(this.state.newTripType)
+											}
 										</td>}
 										{this.props.showAll && <td className="table-highlight-background">
 											<input
@@ -678,6 +597,13 @@ export default class Prace extends Component {
 												placeholder="Discount"
 												/>
 										</td>}
+									{this.props.showAll && <td className="table-highlight-background">
+										{isNaN(this.getTotalDiscountedPrice({discount:this.state.newTripDiscount,quantity:this.state.newTripQuantity}))?
+											'No price'
+											:
+											this.getTotalDiscountedPrice({discount:this.state.newTripDiscount,quantity:this.state.newTripQuantity})
+										}
+									</td>}
 										<td className="t-a-r">
 											<button className="btn btn-link waves-effect"
 												disabled={this.state.newTripType===null||isNaN(parseInt(this.state.newTripQuantity))||this.props.disabled|| this.state.newTripAssignedTo===null}
@@ -687,26 +613,12 @@ export default class Prace extends Component {
 														assignedTo: this.state.newTripAssignedTo?this.state.newTripAssignedTo.id:null,
 														quantity: this.state.newTripQuantity!==''?this.state.newTripQuantity:0,
 														discount: this.state.newTripDiscount!==''?this.state.newTripDiscount:0,
-														price:this.state.newTripPrice!==''?this.state.newTripPrice:0,
 														done: false,
-														extraPrice:this.props.company?parseFloat(this.props.company.pricelist.afterHours) : 0,
-													}
-													let newTripType = this.props.tripTypes.length>0?this.props.tripTypes[0]:null;
-													let price = 0;
-													if(newTripType){
-														price = newTripType.prices.find((item)=>item.pricelist===this.props.company.pricelist.id);
-														if(price === undefined){
-															price = 0;
-														}else{
-															price = price.price;
-														}
 													}
 
 													this.setState({
-														newTripType,
 														newTripAssignedTo:this.props.taskAssigned.length>0?this.props.taskAssigned[0]:null,
 														newTripQuantity:1,
-														newTripPrice:price,
 														newTripDiscount:0,
 														showAddTrip:false
 													});
@@ -749,41 +661,34 @@ export default class Prace extends Component {
 								</tbody>
 							</table>
 						</div>
-						<div>
+						{this.props.showAll && <div>
 							<p className="text-right" style={{marginTop: (((this.state.showAddSubtask||this.state.showAddTrip) || this.props.disabled) ? "" : "")}}>
-								<b>Work sub-total:</b>
-								{(this.props.subtasks.reduce((acc, cur)=> acc+parseFloat(cur.totalPrice),0)).toFixed(2)}
+								<b>Cena bez DPH: </b>
+								{this.props.subtasks.concat(this.props.workTrips).reduce((acc, cur)=> acc+(isNaN(this.getTotalPrice(cur))?0:this.getTotalPrice(cur)),0).toFixed(2)}
 							</p>
-						</div>
-						<div>
+						</div>}
+						{this.props.showAll && <div>
 							<p className="text-right" style={{marginTop: (((this.state.showAddSubtask||this.state.showAddTrip) || this.props.disabled) ? "" : "")}}>
-								<b>Trips sub-total:</b>
-								{(this.props.workTrips.reduce((acc, cur)=> acc+parseFloat(cur.totalPrice),0)).toFixed(2)}
+								<b>Zľava: </b>
+								{this.props.subtasks.concat(this.props.workTrips).reduce((acc, cur)=> acc+(isNaN(this.getTotalPrice(cur)*(cur.discount))?0:this.getTotalPrice(cur)*(cur.discount)/100),0).toFixed(2)}
 							</p>
-						</div>
+						</div>}
+						{this.props.showAll && <div>
+							<p className="text-right" style={{marginTop: (((this.state.showAddSubtask||this.state.showAddTrip) || this.props.disabled) ? "" : "")}}>
+								<b>Cena bez DPH po zlave: </b>
+								{this.props.subtasks.concat(this.props.workTrips).reduce((acc, cur)=> acc+(isNaN(this.getTotalDiscountedPrice(cur))?0:this.getTotalDiscountedPrice(cur)),0).toFixed(2)}
+							</p>
+						</div>}
+
+						{this.props.showAll && <div>
+							<p className="text-right" style={{marginTop: (((this.state.showAddSubtask||this.state.showAddTrip) || this.props.disabled) ? "" : "")}}>
+								<b>Cena s DPH po zlave: </b>
+								{this.props.subtasks.concat(this.props.workTrips).reduce((acc, cur)=> acc+(isNaN(this.getTotalDiscountedPrice(cur))?0:this.getTotalDiscountedPrice(cur)*this.getDPH()),0).toFixed(2)}
+							</p>
+						</div>}
 
 						<div className="row justify-content-end">
 							<div className="col-md-6">
-							{false &&
-									<button
-										disabled={this.props.disabled}
-										type="button"
-										className="btn btn-link waves-effect"
-										onClick={()=>this.props.updatePrices(this.state.selectedIDs)}
-										>
-									<i
-										className="fas fa-sync"
-										style={{
-											color: '#4a81d4',
-											fontSize: '1em',
-										}}
-										/>
-									<span style={{
-											color: '#4a81d4',
-											fontSize: '1em',
-										}}
-										> Aktualizovať ceny podla cenníka</span>
-								</button>}
 							</div>
 						</div>
 					</div>

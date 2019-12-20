@@ -325,39 +325,19 @@ export default class TaskAdd extends Component{
 	render(){
 
 		let workTrips= this.state.workTrips.map((trip)=>{
-			let type= this.state.tripTypes.find((item)=>item.id===trip.type);
-			let assignedTo=trip.assignedTo?this.state.users.find((item)=>item.id===trip.assignedTo):null
-			let finalUnitPrice=parseFloat(trip.price);
-			if(trip.extraWork){
-				finalUnitPrice+=finalUnitPrice*parseFloat(trip.extraPrice)/100;
-			}
-			let totalPrice=(finalUnitPrice*parseFloat(trip.quantity)*(1-parseFloat(trip.discount)/100)).toFixed(2);
-			finalUnitPrice=finalUnitPrice.toFixed(2);
-
+			let assignedTo=trip.assignedTo?this.state.users.find((item)=>item.id===trip.assignedTo):null;
 			return {
 				...trip,
-				type,
-				finalUnitPrice,
-				totalPrice,
+				type:this.state.tripTypes.find((item)=>item.id===trip.type),
 				assignedTo:assignedTo?assignedTo:null
 			}
 		});
 
 		let taskWorks= this.state.taskWorks.map((work)=>{
-			let finalUnitPrice=parseFloat(work.price);
-			if(work.extraWork){
-				finalUnitPrice+=finalUnitPrice*parseFloat(work.extraPrice)/100;
-			}
-			let totalPrice=(finalUnitPrice*parseFloat(work.quantity)*(1-parseFloat(work.discount)/100)).toFixed(2);
-			finalUnitPrice=finalUnitPrice.toFixed(2);
-			let workType= this.state.taskTypes.find((item)=>item.id===work.workType);
 			let assignedTo=work.assignedTo?this.state.users.find((item)=>item.id===work.assignedTo):null
 			return {
 				...work,
-				workType,
-				unit:this.state.units.find((unit)=>unit.id===work.unit),
-				finalUnitPrice,
-				totalPrice,
+				type:this.state.taskTypes.find((item)=>item.id===work.type),
 				assignedTo:assignedTo?assignedTo:null
 			}
 		});
@@ -382,6 +362,40 @@ export default class TaskAdd extends Component{
 						<span className="center-hor flex m-r-15">
 							<input type="text" value={this.state.title} className="task-title-input text-extra-slim hidden-input" onChange={(e)=>this.setState({title:e.target.value})} placeholder="Enter task name" />
 						</span>
+						{ this.state.status && (['close','pending']).includes(this.state.status.action) && <div className="ml-auto center-hor">
+							<span>
+								{ this.state.status.action==='close' &&
+									<span className="text-muted">
+										Close date:
+										<DatePicker
+											className="form-control hidden-input"
+											selected={this.state.closeDate}
+											disabled={this.state.viewOnly}
+											onChange={date => {
+												this.setState({ closeDate: date });
+											}}
+											placeholderText="No close date"
+											{...datePickerConfig}
+											/>
+									</span>
+								}
+								{ this.state.status.action==='pending' &&
+									<span className="text-muted">
+										Pending date:
+										<DatePicker
+											className="form-control hidden-input"
+											selected={this.state.pendingDate}
+											disabled={this.state.viewOnly}
+											onChange={date => {
+												this.setState({ pendingDate: date });
+											}}
+											placeholderText="No pending date"
+											{...datePickerConfig}
+										/>
+									</span>
+								}
+							</span>
+						</div>}
 					</div>
 
 					<hr className="m-t-15 m-b-10"/>
@@ -437,7 +451,7 @@ export default class TaskAdd extends Component{
 							<Label className="col-3 col-form-label">Projekt</Label>
 							<div className="col-9">
 								<Select
-									placeholder="Field required"
+									placeholder="Select required"
 									value={this.state.project}
 									onChange={(project)=>{
 										let newState={project,
@@ -479,7 +493,7 @@ export default class TaskAdd extends Component{
 							<Label className="col-1-5 col-form-label">Assigned to</Label>
 							<div className="col-10-5">
 								<Select
-									placeholder="Field required"
+									placeholder="Select required"
 									value={this.state.assignedTo}
 									isDisabled={this.state.defaults.assignedTo.fixed||this.state.viewOnly}
 									isMulti
@@ -495,7 +509,7 @@ export default class TaskAdd extends Component{
 							<Label className="col-3 col-form-label">Status</Label>
 							<div className="col-9">
 								<Select
-									placeholder="Field required"
+									placeholder="Select required"
 									value={this.state.status}
 									isDisabled={this.state.defaults.status.fixed||this.state.viewOnly}
 									styles={invisibleSelectStyleNoArrowColoredRequired}
@@ -528,7 +542,7 @@ export default class TaskAdd extends Component{
 								<Label className="col-3 col-form-label">Typ</Label>
 								<div className="col-9">
 									<Select
-										placeholder="Field required"
+										placeholder="Select required"
 										value={this.state.type}
 										isDisabled={this.state.defaults.type.fixed||this.state.viewOnly}
 										styles={invisibleSelectStyleNoArrowRequired}
@@ -584,7 +598,7 @@ export default class TaskAdd extends Component{
 								<div className="col-9">
 									<Select
 										value={this.state.requester}
-										placeholder="Field required"
+										placeholder="Select required"
 										isDisabled={this.state.defaults.requester.fixed||this.state.viewOnly}
 										onChange={(requester)=>this.setState({requester})}
 										options={this.state.users}
@@ -597,7 +611,7 @@ export default class TaskAdd extends Component{
 								<div className="col-9">
 									<Select
 										value={this.state.company}
-										placeholder="Field required"
+										placeholder="Select required"
 										isDisabled={this.state.defaults.company.fixed||this.state.viewOnly}
 										onChange={(company)=>this.setState({company, pausal:parseInt(company.workPausal)>0?booleanSelects[1]:booleanSelects[0]})}
 										options={this.state.companies}
@@ -610,7 +624,7 @@ export default class TaskAdd extends Component{
 								<div className="col-9">
 									<Select
 										value={this.state.pausal}
-										placeholder="Field required"
+										placeholder="Select required"
 										isDisabled={this.state.viewOnly||!this.state.company || parseInt(this.state.company.workPausal)===0}
 										styles={invisibleSelectStyleNoArrowRequired}
 										onChange={(pausal)=>this.setState({pausal})}
@@ -672,7 +686,7 @@ export default class TaskAdd extends Component{
 								<Label className="col-3 col-form-label">Mimo PH</Label>
 								<div className="col-9">
 									<Select
-										placeholder="Field required"
+										placeholder="Select required"
 										value={this.state.overtime}
 										disabled={this.state.viewOnly}
 										styles={invisibleSelectStyleNoArrowRequired}
@@ -786,20 +800,6 @@ export default class TaskAdd extends Component{
 										submitService={(newService)=>{
 											this.setState({taskWorks:[...this.state.taskWorks,{id:this.getNewID(),...newService}]});
 										}}
-										updatePrices={(ids)=>{
-											let newTaskWorks=[...this.state.taskWorks];
-											taskWorks.filter((item)=>ids.includes(item.id)).map((item)=>{
-												let price=item.workType.prices.find((item)=>item.pricelist===this.state.company.pricelist.id);
-												if(price === undefined){
-													price = 0;
-												}else{
-													price = price.price;
-												}
-												newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===item.id)]={...newTaskWorks.find((taskWork)=>taskWork.id===item.id),price};
-												return null;
-											})
-											this.setState({taskWorks:newTaskWorks});
-										}}
 										updateSubtask={(id,newData)=>{
 											let newTaskWorks=[...this.state.taskWorks];
 											newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
@@ -861,20 +861,6 @@ export default class TaskAdd extends Component{
 										taskID={null}
 										submitService={(newService)=>{
 											this.setState({taskWorks:[...this.state.taskWorks,{id:this.getNewID(),...newService}]});
-										}}
-										updatePrices={(ids)=>{
-											let newTaskWorks=[...this.state.taskWorks];
-											taskWorks.filter((item)=>ids.includes(item.id)).map((item)=>{
-												let price=item.workType.prices.find((item)=>item.pricelist===this.state.company.pricelist.id);
-												if(price === undefined){
-													price = 0;
-												}else{
-													price = price.price;
-												}
-												newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===item.id)]={...newTaskWorks.find((taskWork)=>taskWork.id===item.id),price};
-												return null;
-											})
-											this.setState({taskWorks:newTaskWorks});
 										}}
 										updateSubtask={(id,newData)=>{
 											let newTaskWorks=[...this.state.taskWorks];
@@ -955,7 +941,7 @@ export default class TaskAdd extends Component{
 							className="btn pull-right"
 							disabled={this.state.title==="" || this.state.status===null || this.state.project === null || this.state.company === null || this.state.saving || this.props.loading||this.props.newID===null}
 							onClick={this.submitTask.bind(this)}
-							> Add
+							> Create task
 						</button>
 					</div>
 				</div>
