@@ -7,17 +7,12 @@ import { Link } from 'react-router-dom';
 import {rebase} from '../../index';
 import MonthSelector from '../components/monthSelector';
 
-let emptyPrice={id:null,pricelist:null,type:null,price:0}
-
 class MothlyReportsCompany extends Component {
 	constructor(props){
 		super(props);
 		this.state={
-			taskMaterials:[],
-			taskWorks:[],
-
-			monthsTasks:[],
 			tasks:[],
+			allTasks:[],
 			companies:[],
 			showCompany:null,
 			loading:false
@@ -105,14 +100,13 @@ class MothlyReportsCompany extends Component {
 		if(!this.storageLoaded(props)){
 			return;
 		}
-		let works = this.processWorks(props);
+		let works = this.newProcessWorks(props);
+		let trips = this.newProcessTrips(props);
 		let materials = this.processMaterials(props);
-		let trips = this.processTrips(props);
 		let tasks = this.processTasks(props, materials, works, trips).sort((task1,task2)=> task1.closeDate > task2.closeDate ? 1 : -1 );
 		let monthsTasks = this.processThisMonthTasks(props, materials, works, trips).sort((task1,task2)=> task1.closeDate > task2.closeDate ? 1 : -1 );
 		let separatedTasks = this.separateTasks(tasks, monthsTasks);
 		let companies = this.processCompanies(tasks,props.pricelists);
-
 
 		this.setState({
 			tasks:separatedTasks,
@@ -121,6 +115,95 @@ class MothlyReportsCompany extends Component {
 			companies,
 			loading:false
 		});
+	}
+
+
+	processWorkTypes(props){
+		return props.taskTypes.map((workType)=>{
+			return {...workType,
+			prices:props.prices.filter((price)=>price.type===workType.id)}
+		})
+	}
+
+	processTripTypes(props){
+		return props.tripTypes.map((tripType)=>{
+			return {...tripType,
+			prices:props.prices.filter((price)=>price.type===tripType.id)}
+		})
+	}
+
+	getCompany(item,props){
+		let task = props.tasks.find((task)=>item.task);
+		let company = undefined;
+		if(task){
+			company = props.companies.find((company)=>company.id===task.company);
+			if(company){
+				company = {...company,pricelist:this.props.pricelists.find((pricelist)=>pricelist.id===company.pricelist)}
+			}
+		}
+		return company;
+	}
+
+	getPrice(type,company){
+		if(type===undefined||company===undefined){
+			return NaN;
+		}
+		let price = type.prices.find((price)=>price.pricelist===company.pricelist);
+		if(price === undefined){
+			price = NaN;
+		}else{
+			price = price.price;
+		}
+		return parseFloat(parseFloat(price).toFixed(2));
+	}
+
+	newProcessWorks(props){
+		let workTypes = this.processWorkTypes(props);
+		return props.taskWorks.map((work)=>{
+			let company = this.getCompany(work,props);
+			let type = workTypes.find((item)=>item.id===work.type||item.id===work.workType);
+			let price = this.getPrice(type,company);
+
+			if(type===undefined){
+				type={title:'Unknown',id:Math.random(),prices:[]}
+			}
+
+			return {
+				id:work.id,
+				title:work.title,
+				quantity:work.quantity,
+				discount:work.discount,
+				assignedTo:work.assignedTo,
+				task:work.task,
+				price,
+				dph: company && company.dph && isNaN(parseInt(company.dph)) && parseInt(company.dph) > 0 ? parseInt(company.dph) : 20,
+				afterHours: company && company.pricelist ? parseInt(company.pricelist.afterHours) : 0,
+				type
+			}
+		})
+	}
+
+	newProcessTrips(props){
+		let tripTypes = this.processTripTypes(props);
+		return props.workTrips.map((trip)=>{
+			let company = this.getCompany(trip,props);
+			let type = tripTypes.find((item)=>item.id===trip.type);
+			let price = this.getPrice(type,company);
+
+			if(type===undefined){
+				type={title:'Unknown',id:Math.random(),prices:[]}
+			}
+
+			return {
+				id:trip.id,
+				quantity:trip.quantity,
+				discount:trip.discount,
+				task:trip.task,
+				price,
+				dph:company && company.dph && isNaN(parseInt(company.dph)) && parseInt(company.dph) > 0 ? parseInt(company.dph) : 20,
+				type
+			}
+		})
 	}
 
 	processWorks(props){
@@ -143,19 +226,6 @@ class MothlyReportsCompany extends Component {
 			}
 		});
 	}
-
-	processMaterials(props){
-		return props.materials.map((material)=>{
-			let finalUnitPrice=(parseFloat(material.price)*(1+parseFloat(material.margin)/100)).toFixed(2);
-			let totalPrice=(finalUnitPrice*parseFloat(material.quantity)).toFixed(2);
-			return{...material,
-				unit:props.units.find((unit)=>unit.id===material.unit),
-				finalUnitPrice,
-				totalPrice
-			}
-		})
-	}
-
 	processTrips(props){
 		return props.workTrips.map((trip)=>{
 			let type = props.tripTypes.find((item)=>item.id===trip.type);
@@ -170,6 +240,19 @@ class MothlyReportsCompany extends Component {
 		});
 	}
 
+	processMaterials(props){
+		return props.materials.map((material)=>{
+			let finalUnitPrice=(parseFloat(material.price)*(1+parseFloat(material.margin)/100)).toFixed(2);
+			let totalPrice=(finalUnitPrice*parseFloat(material.quantity)).toFixed(2);
+			return{...material,
+				unit:props.units.find((unit)=>unit.id===material.unit),
+				finalUnitPrice,
+				totalPrice
+			}
+		})
+	}
+
+
 	processTasks(props, materials, works, trips){
 		let tasks=props.tasks.map((task)=>{
 			let company = task.company === null ? null : props.companies.find((company)=>company.id===task.company);
@@ -180,17 +263,8 @@ class MothlyReportsCompany extends Component {
 				assignedTo: task.assignedTo===null ? null:props.users.filter((user)=>task.assignedTo.includes(user.id)),
 				status: task.status===null ? null: props.statuses.find((status)=>status.id===task.status),
 				works: works.filter((work)=>work.task===task.id),
+				trips: trips.filter((trip)=>trip.task===task.id),
 				materials: materials.filter((material)=>material.task===task.id),
-				trips: trips.filter((trip)=>trip.task===task.id).map((trip)=>{
-					if(company===null){
-						return {...trip,price:emptyPrice}
-					}
-					let price = props.prices.find((price)=>price.pricelist===company.pricelist && trip.type.id===price.type);
-					if(price===undefined){
-						return {...trip,price:emptyPrice}
-					}
-					return {...trip,price}
-				}),
 			}
 		}).filter((task)=> (task.works.length > 0 || task.materials.length > 0 || task.trips.length > 0) && task.status && ['close','invoiced'].includes(task.status.action) && task.closeDate && task.closeDate >= props.from && task.closeDate <= props.to);
 		return tasks;
@@ -209,17 +283,8 @@ class MothlyReportsCompany extends Component {
 				assignedTo: task.assignedTo===null ? null:props.users.filter((user)=>task.assignedTo.includes(user.id)),
 				status: task.status===null ? null: props.statuses.find((status)=>status.id===task.status),
 				works: works.filter((work)=>work.task===task.id),
+				trips: trips.filter((trip)=>trip.task===task.id),
 				materials: materials.filter((material)=>material.task===task.id),
-				trips: trips.filter((trip)=>trip.task===task.id).map((trip)=>{
-					if(company===null){
-						return {...trip,price:emptyPrice}
-					}
-					let price = props.prices.find((price)=>price.pricelist===company.pricelist && trip.type.id===price.type);
-					if(price===undefined){
-						return {...trip,price:emptyPrice}
-					}
-					return {...trip,price}
-				}),
 			}
 		}).filter((task)=>
 		(task.works.length > 0 || task.materials.length > 0 || task.trips.length > 0) &&
@@ -245,11 +310,11 @@ class MothlyReportsCompany extends Component {
 			task.works.forEach((work)=>{
 				company.works+=isNaN(parseInt(work.quantity))?0:parseInt(work.quantity);
 			})
-			task.materials.forEach((material)=>{
-				company.materials+=isNaN(parseInt(material.quantity))?0:parseInt(material.quantity);
-			})
 			task.trips.forEach((trip)=>{
 				company.trips+=isNaN(parseInt(trip.quantity))?0:parseInt(trip.quantity);
+			})
+			task.materials.forEach((material)=>{
+				company.materials+=isNaN(parseInt(material.quantity))?0:parseInt(material.quantity);
 			})
 		})
 		companies = companies.map((company)=>{
@@ -264,22 +329,20 @@ class MothlyReportsCompany extends Component {
 		return companies.filter((company)=>company.works > 0 || company.materials > 0 || company.trips > 0 || company.rentedCount);
 	}
 
-	getWorkPrice(work){
-		let finalUnitPrice = parseFloat(work.finalUnitPrice);
-		let quantity = parseInt(work.quantity);
-		if(isNaN(finalUnitPrice)||isNaN(quantity)){
-			return 0;
-		}
-		return finalUnitPrice*quantity;
+	getTotalPrice(item){
+		return parseFloat(parseFloat(item.price)*parseInt(item.quantity).toFixed(2))
 	}
 
-	getTripPrice(trip){
-		let price = parseFloat(trip.price.price);
-		let quantity = parseInt(trip.quantity);
-		if(isNaN(price)||isNaN(quantity)){
-			return 0;
-		}
-		return price*quantity;
+	getTotalDiscountedPrice(item){
+		return parseFloat((this.getTotalPrice(item)*(100-parseInt(item.discount))/100).toFixed(2))
+	}
+
+	getAfterHoursPrice(item){
+		return parseFloat((this.getTotalDiscountedPrice(item)*(parseFloat(item.afterHours)/100)).toFixed(2));
+	}
+
+	getTotalAfterHoursPrice(item){
+		return parseFloat((this.getTotalDiscountedPrice(item)+this.getAfterHoursPrice(item)).toFixed(2));
 	}
 
 	getMonthDiff(props){
@@ -298,17 +361,25 @@ class MothlyReportsCompany extends Component {
 		return numberOfMonths;
 	}
 
+	invoiceTasks(){
+		let allTasks = this.state.allTasks.filter((task)=>task.company && task.company.id===this.state.showCompany.id);
+		let invoiced = this.props.statuses.find((status)=>status.action==='invoiced')
+		if(invoiced!==undefined && window.confirm("Chcete naozaj vykázať úlohy: "+ allTasks.reduce((acc,task)=>acc+task.id+',','').slice(0,-1))+" ?"){
+			allTasks.forEach((task)=>rebase.updateDoc('/help-tasks/'+task.id, {status:invoiced.id}))
+		}
+	}
+
 	render() {
 		if(this.state.tasks.length!==0){
 		}
-
+		/*
 		return (
 				<div className="scrollable fit-with-header">
 					<div style={{maxWidth:500}}>
 						<MonthSelector />
 					</div>
 
-						<div className="p-20">
+					<div className="p-20">
 						<table className="table m-b-10">
 							<thead>
 								<tr>
@@ -331,20 +402,13 @@ class MothlyReportsCompany extends Component {
 									</tr>
 								)}
 							</tbody>
-							</table>
+						</table>
 					</div>
 					{this.state.showCompany!==null &&
 						<div className="commandbar">
 							<Button
 								className="btn-danger center-hor"
-								onClick={()=>{
-									let allTasks = this.state.allTasks.filter((task)=>task.company && task.company.id===this.state.showCompany.id);
-									let invoiced = this.props.statuses.find((status)=>status.action==='invoiced')
-									if(invoiced!==undefined && window.confirm("Chcete naozaj vykázať úlohy: "+ allTasks.reduce((acc,task)=>acc+task.id+',','').slice(0,-1))+" ?"){
-										allTasks.forEach((task)=>rebase.updateDoc('/help-tasks/'+task.id, {status:invoiced.id}))
-									}
-
-								}}
+								onClick={this.invoiceTasks.bind(this)}
 								>
 								Faktúrovať
 							</Button>
@@ -464,10 +528,7 @@ class MothlyReportsCompany extends Component {
 								<p className="m-0 m-b-10">Spolu prirážka za práce mimo pracovných hodín: {
 									this.state.tasks.pausalPaidTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.pausalWorks.length!==0 && task.overtime).reduce((acc,item)=>{
 										return acc+item.pausalWorks.reduce((acc,work)=>{
-											if(this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
-												return acc+(this.getWorkPrice(work)/100*parseInt(this.state.showCompany.pricelist.afterHours));
-											}
-											return acc;
+											return acc+=isNaN(this.getAfterHoursPrice(work))?0:isNaN(this.getAfterHoursPrice(work))
 										},0);
 									},0)} eur
 								</p>
@@ -550,7 +611,6 @@ class MothlyReportsCompany extends Component {
 								</p>
 							</div>
 
-							{/* OUTSIDE OF PAUSAL*/}
 
 							<div className="m-b-30">
 								<h3 className="m-b-10">Práce a výjazdy nad rámec paušálu</h3>
@@ -1143,7 +1203,8 @@ class MothlyReportsCompany extends Component {
 						</div>
 					</div>}
 				 </div>
-			);
+			);*/
+			return null
 		}
 
 	separateTasks(tasks,allTasks){

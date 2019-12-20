@@ -103,6 +103,8 @@ export const invisibleSelectStyleNoArrowColored = {
 		const color = chroma(data.color);
     return {
       ...base,
+			color:'#FFF',
+			padding:'0px 5px',
 			backgroundColor: color.alpha(0.1).css(),
 			borderRadius: 0,
     };
@@ -121,13 +123,13 @@ export const invisibleSelectStyleNoArrowColored = {
   }),
 	valueContainer: base => ({
 		...base,
-		padding: '0px 6px',
+		padding:'0px 5px',
 		borderRadius: 0
 	}),
 	input: base => ({
 		...base,
 		margin: 0,
-		padding: 0,
+		padding:'0px 5px',
 		backgroundColor: "inherit",
 		borderRadius: 0
 	}),
@@ -136,8 +138,7 @@ export const invisibleSelectStyleNoArrowColored = {
 		width: 0,
 	}),
 	singleValue: (styles, { data }) =>{
-		const color = chroma(data.color);
-		return ({ ...styles, color:data.color, backgroundColor: color.alpha(0.1).css() });
+		return ({ ...styles, color:'#FFF',padding:'0px 5px', backgroundColor: data.color });
 	}
 };
 
@@ -248,6 +249,8 @@ export const invisibleSelectStyleNoArrowColoredRequired = {
 		const color = chroma(data.color);
     return {
       ...base,
+			color:'#FFF',
+			padding:'0px 5px',
 			backgroundColor: color.alpha(0.1).css(),
 			borderRadius: 0,
     };
@@ -266,13 +269,13 @@ export const invisibleSelectStyleNoArrowColoredRequired = {
   }),
 	valueContainer: base => ({
 		...base,
-		padding: '0px 6px',
+		padding:'0px 5px',
 		borderRadius: 0
 	}),
 	input: base => ({
 		...base,
 		margin: 0,
-		padding: 0,
+		padding:'0px 5px',
 		backgroundColor: "inherit",
 		borderRadius: 0
 	}),
@@ -281,8 +284,7 @@ export const invisibleSelectStyleNoArrowColoredRequired = {
 		width: 0,
 	}),
 	singleValue: (styles, { data }) =>{
-		const color = chroma(data.color);
-		return ({ ...styles, color:data.color, backgroundColor: color.alpha(0.1).css() });
+		return ({ ...styles, color:'#FFF',padding:'0px 5px', backgroundColor: data.color });
 	},
 	placeholder: base=>({
 		...base,
@@ -425,7 +427,6 @@ export const disabledSelectStyle = {
 	}),
 
 };
-
 
 export const CRMMertelSelectStyle = {
 	control: base => ({

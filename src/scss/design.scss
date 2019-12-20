@@ -455,6 +455,17 @@ h4{
   font-family: $main-font;
 }
 
+.btn-outline-danger {
+    color: #dc3545;
+    border-color: #dc3545;
+    background-color: white;
+    border: 1px solid;
+    border-radius: .25rem;
+}
+.btn-outline-danger:hover{
+  background-color: #dc3545;
+}
+
 
 .btn-link:hover{
   background-color: inherit;
@@ -662,6 +673,7 @@ tr:last-child{
 
 .table-checkbox{
   padding-top: 15px !important;
+  padding-right: 0px;
 }
 
 .form-control{

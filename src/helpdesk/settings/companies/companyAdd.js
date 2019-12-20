@@ -49,6 +49,8 @@ class CompanyAdd extends Component{
       oldPausal: 0,
       rented:[],
       oldRented:[],
+      dph:20,
+      oldDph:20,
       fakeID:0,
       newData: false,
       loading:true,
@@ -134,6 +136,7 @@ class CompanyAdd extends Component{
         mail: this.state.mail,
         phone: this.state.phone,
         description: this.state.description,
+        dph:isNaN(parseInt(this.state.dph))?0:parseInt(this.state.dph),
       };
       rebase.addToCollection('/companies', newCompany)
         .then((comp)=>{
@@ -151,6 +154,7 @@ class CompanyAdd extends Component{
             phone: "",
             description: "",
             rented:[],
+            dph:20,
             saving:false}, () => {
               if (this.props.addCompany){
                 this.props.addCompany({...newCompany, id: comp.id, label: newCompany.title, value: comp.id});
@@ -182,6 +186,7 @@ class CompanyAdd extends Component{
       workPausal: this.state.oldWorkPausal,
       drivePausal: this.state.oldDrivePausal,
       rented:this.state.oldRented,
+      dph:this.state.oldDph,
 
       clearCompanyRents:true,
       newData: false,
@@ -226,6 +231,18 @@ class CompanyAdd extends Component{
                 options={this.state.pricelists}
                 value={this.state.pricelist}
                 onChange={e =>{ this.setState({pricelist: e, newData: true }) }}
+                />
+            </FormGroup>
+
+            <FormGroup>
+              <Label for="dph">DPH</Label>
+              <Input
+                name="dph"
+                id="dph"
+                type="number"
+                placeholder="Enter DPH"
+                value={this.state.dph}
+                onChange={(e)=>this.setState({dph: e.target.value, newData: true })  }
                 />
             </FormGroup>
 

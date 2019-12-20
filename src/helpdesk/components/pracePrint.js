@@ -68,8 +68,8 @@ export default class Prace extends Component {
 							</thead>
 							<tbody>
 								{
-									this.props.subtasks.map((subtask)=>
-									<tr key={subtask.id}>
+									this.props.subtasks.map((subtask,index)=>
+									<tr key={index}>
 											<td>
 												{
 													subtask.id === this.props.focusedSubtask

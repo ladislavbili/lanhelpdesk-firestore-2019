@@ -11,10 +11,9 @@ import Comments from '../components/comments.js';
 //import Subtasks from '../components/subtasks';
 import Repeat from '../components/repeat';
 
-import WorkTrips from '../components/workTrips';
-import Prace from '../components/prace';
 import MaterialsExpenditure from '../components/materials/materials';
 import MaterialsBudget from '../components/materials/rozpocet';
+import PraceWorkTrips from '../components/praceWorkTrips';
 
 import UserAdd from '../settings/users/userAdd';
 import CompanyAdd from '../settings/companies/companyAdd';
@@ -55,6 +54,7 @@ class TaskEdit extends Component {
 			taskWorks:[],
 			workTrips:[],
 			pricelists:[],
+			extraData:null,
 			extraDataLoaded:false,
 
 			users:[],
@@ -115,7 +115,6 @@ class TaskEdit extends Component {
     this.submitService.bind(this);
 		this.canSave.bind(this);
 		this.deleteTask.bind(this);
-		this.saveData.bind(this);
     this.fetchData(this.props.match.params.taskID);
 	}
 
@@ -280,25 +279,18 @@ class TaskEdit extends Component {
         database.collection('help-task_works').where("task", "==", taskID).get(),
         database.collection('help-repeats').doc(taskID).get()
     ]).then(([workTrips,taskMaterials, taskWorks,repeat])=>{
-      this.saveData(
-				snapshotToArray(workTrips),
-				snapshotToArray(taskMaterials),
-				snapshotToArray(taskWorks),
-				repeat.exists ? {id:repeat.id,...repeat.data()} : null,
-				);
+				this.setState({
+					extraData:{
+						workTrips:snapshotToArray(workTrips),
+						taskMaterials:snapshotToArray(taskMaterials),
+						taskWorks:snapshotToArray(taskWorks),
+						repeat:repeat.exists ? {id:repeat.id,...repeat.data()} : null,
+					},
+					extraDataLoaded:true
+				},()=>this.setData(this.props));
     });
   }
 
-	saveData(workTrips,taskMaterials,taskWorks,repeat){
-		this.setState({
-			workTrips,
-			extraDataLoaded:true,
-			taskMaterials,
-			toggleTab:'1',
-			taskWorks,
-			repeat
-		},()=>{this.setData(this.props)});
-	}
 
 	setDefaults(projectID){
 		if(projectID===null){
@@ -320,27 +312,47 @@ class TaskEdit extends Component {
 			return;
 		}
 
+		let workTrips = this.state.extraData.workTrips;
+		let taskMaterials = this.state.extraData.taskMaterials;
+		let taskWorks = this.state.extraData.taskWorks.map((work)=>{
+			return {
+				id:work.id,
+				title:work.title,
+				type:work.type?work.type:work.workType,
+				quantity:work.quantity,
+				discount:work.discount,
+				assignedTo:work.assignedTo,
+			}
+		});
+		let repeat = this.state.extraData.repeat;
+
 		let taskID = props.match.params.taskID;
 		let task = props.tasks.find((task)=>task.id===taskID);
 		let statuses = toSelArr(props.statuses);
 		let projects = toSelArr(props.projects);
 		let users = toSelArr(props.users,'email');
 		let tags = toSelArr(props.tags);
-		let companies = toSelArr(props.companies);
 		let units = toSelArr(props.units);
-		let taskTypes = toSelArr(props.taskTypes);
-		let prices = props.prices;
 		let subtasks = props.subtasks;
-		let pricelists = props.pricelists;
 		let defaultUnit = props.metadata.defaultUnit;
-		let taskMaterials = this.state.taskMaterials;
-		let workTrips = this.state.workTrips;
-		let taskWorks = this.state.taskWorks;
-		let milestones = [noMilestone,...toSelArr(props.milestones)];
-		let tripTypes = toSelArr(props.tripTypes);
+		let prices = props.prices;
+		let taskTypes = toSelArr(props.taskTypes).map((taskType)=>{
+			let newTaskType = {...taskType, prices:prices.filter((price)=>price.type===taskType.id)}
+			return newTaskType;
+		});
+		let tripTypes = toSelArr(props.tripTypes).map((tripType)=>{
+			let newTripType = {...tripType, prices:prices.filter((price)=>price.type===tripType.id)}
+			return newTripType;
+		});
+		let pricelists = props.pricelists;
+		let companies = toSelArr(props.companies).map((company)=>{
+			let newCompany={...company,pricelist:pricelists.find((item)=>item.id===company.pricelist)};
+			return newCompany;
+		});;
 
 		this.setDefaults(task.project);
 
+		let milestones = [noMilestone,...toSelArr(props.milestones)];
 		let milestone = noMilestone;
 		if(task.milestone!==undefined){
 			milestone = milestones.find((item)=>item.id===task.milestone);
@@ -354,19 +366,10 @@ class TaskEdit extends Component {
 		if(company===undefined){
 			company=companies[0];
 		}
-    company = {...company,pricelist:pricelists.find((item)=>item.id===company.pricelist)};
     let requester = users.find((item)=>item.id===task.requester);
     let assignedTo = users.filter((user)=>task.assignedTo.includes(user.id));
 
-    let newCompanies=companies.map((company)=>{
-      let newCompany={...company,pricelist:pricelists.find((item)=>item.id===company.pricelist)};
-      return newCompany;
-    });
-    let newTaskTypes=taskTypes.map((taskType)=>{
-      let newTaskType = {...taskType, prices:prices.filter((price)=>price.taskType===taskType.id)}
-      return newTaskType;
-    });
-		let type = newTaskTypes.find((item)=>item.id===task.type);
+		let type = taskTypes.find((item)=>item.id===task.type);
 		let taskTags=[];
 		if(task.tags){
 			taskTags=tags.filter((tag)=>task.tags.includes(tag.id));
@@ -375,17 +378,20 @@ class TaskEdit extends Component {
 		let permission = project.permissions.find((permission)=>permission.user===props.currentUser.id);
 		let viewOnly = (status && status.action==='invoiced' && props.currentUser.userData.role.value!==3 && !permission.isAdmin )||((permission===undefined || !permission.write) && props.currentUser.userData.role.value===0);
 		let newState = {
+			workTrips,
+			taskMaterials,
+			toggleTab:'1',
+			taskWorks,
+			repeat,
+
 			statuses,
 			projects,
 			users,
-			companies:newCompanies,
+			companies,
 			units,
 			tripTypes,
-			taskMaterials,
-			workTrips,
-			taskWorks,
 			subtasks,
-			taskTypes:newTaskTypes,
+			taskTypes,
 			allTags:tags,
 			task,
 
@@ -447,25 +453,13 @@ class TaskEdit extends Component {
 		});
 
 		let taskWorks= this.state.taskWorks.map((work)=>{
-			let finalUnitPrice=parseFloat(work.price);
-			if(work.extraWork){
-				finalUnitPrice+=finalUnitPrice*parseFloat(work.extraPrice)/100;
-			}
-			let totalPrice=(finalUnitPrice*parseFloat(work.quantity)*(1-parseFloat(work.discount)/100)).toFixed(3);
-			finalUnitPrice=finalUnitPrice.toFixed(3);
-			let workType= this.state.taskTypes.find((item)=>item.id===work.workType);
 			let assignedTo=work.assignedTo?this.state.users.find((item)=>item.id===work.assignedTo):null
-
 			return {
 				...work,
-				workType,
-				unit:this.state.units.find((unit)=>unit.id===work.unit),
-				finalUnitPrice,
-				totalPrice,
+				type:this.state.taskTypes.find((item)=>item.id===work.type),
 				assignedTo:assignedTo?assignedTo:null
 			}
 		});
-
 		let taskMaterials= this.state.taskMaterials.map((material)=>{
 			let finalUnitPrice=(parseFloat(material.price)*(1+parseFloat(material.margin)/100));
 			let totalPrice=(finalUnitPrice*parseFloat(material.quantity)).toFixed(3);
@@ -915,51 +909,6 @@ class TaskEdit extends Component {
 									}}
 								/>
 
-
-								<Prace
-									extended={this.state.toggleTab==="3"||this.state.toggleTab==="2"}
-									showAll={this.state.toggleTab==="3"}
-									disabled={this.state.viewOnly}
-									taskAssigned={this.state.assignedTo}
-									submitService={this.submitService.bind(this)}
-									subtasks={taskWorks}
-									defaultType={this.state.type}
-									workTypes={this.state.taskTypes}
-									company={this.state.company}
-									match={this.props.match}
-									updatePrices={(ids)=>{
-										taskWorks.filter((item)=>ids.includes(item.id)).map((item)=>{
-											let price=item.workType.prices.find((item)=>item.pricelist===this.state.company.pricelist.id);
-											if(price === undefined){
-												price = 0;
-											}else{
-												price = price.price;
-											}
-											rebase.updateDoc('help-task_works/'+item.id, {price})
-											.then(()=>{
-												let newTaskWorks=[...this.state.taskWorks];
-												newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===item.id)]={...newTaskWorks.find((taskWork)=>taskWork.id===item.id),price};
-												this.setState({taskWorks:newTaskWorks});
-											});
-											return null;
-										})
-									}}
-									updateSubtask={(id,newData)=>{
-										rebase.updateDoc('help-task_works/'+id,newData);
-										let newTaskWorks=[...this.state.taskWorks];
-										newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
-										this.setState({taskWorks:newTaskWorks});
-									}}
-									removeSubtask={(id)=>{
-										rebase.removeDoc('help-task_works/'+id).then(()=>{
-											let newTaskWorks=[...this.state.taskWorks];
-											newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
-											this.setState({taskWorks:newTaskWorks});
-										});
-										}
-									}
-								/>
-
 								<hr className="m-b-15" style={{marginLeft: "-30px", marginRight: "-20px", marginTop: "-5px"}}/>
 
 								<Nav tabs className="b-0 m-b-22 m-l--10">
@@ -994,14 +943,32 @@ class TaskEdit extends Component {
 											<Comments id={taskID?taskID:null} users={this.state.users} />
 										</TabPane>
 										<TabPane tabId="2">
-											<WorkTrips
+											<PraceWorkTrips
 												extended={false}
 												showAll={false}
 												disabled={this.state.viewOnly}
 												taskAssigned={this.state.assignedTo}
+												submitService={this.submitService.bind(this)}
+												subtasks={taskWorks}
+												defaultType={this.state.type}
+												workTypes={this.state.taskTypes}
+												company={this.state.company}
+												taskID={this.props.match.params.taskID}
+												updateSubtask={(id,newData)=>{
+													rebase.updateDoc('help-task_works/'+id,newData);
+													let newTaskWorks=[...this.state.taskWorks];
+													newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
+													this.setState({taskWorks:newTaskWorks});
+												}}
+												removeSubtask={(id)=>{
+													rebase.removeDoc('help-task_works/'+id).then(()=>{
+														let newTaskWorks=[...this.state.taskWorks];
+														newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
+														this.setState({taskWorks:newTaskWorks});
+													});
+												}}
 												workTrips={workTrips}
 												tripTypes={this.state.tripTypes}
-												taskID={this.props.match.params.taskID}
 												submitTrip={this.submitWorkTrip.bind(this)}
 												updateTrip={(id,newData)=>{
 													rebase.updateDoc('help-task_work_trips/'+id,newData);
@@ -1015,9 +982,9 @@ class TaskEdit extends Component {
 														newTrips.splice(newTrips.findIndex((trip)=>trip.id===id),1);
 														this.setState({workTrips:newTrips});
 													});
-												}
-											}
+												}}
 											/>
+
 											<MaterialsExpenditure
 												disabled={this.state.viewOnly}
 												materials={taskMaterials}
@@ -1042,14 +1009,32 @@ class TaskEdit extends Component {
 											/>
 										</TabPane>
 										<TabPane tabId="3">
-											<WorkTrips
-												extended={false}
+											<PraceWorkTrips
+												extended={true}
 												showAll={true}
 												disabled={this.state.viewOnly}
 												taskAssigned={this.state.assignedTo}
+												submitService={this.submitService.bind(this)}
+												subtasks={taskWorks}
+												defaultType={this.state.type}
+												workTypes={this.state.taskTypes}
+												company={this.state.company}
+												taskID={this.props.match.params.taskID}
+												updateSubtask={(id,newData)=>{
+													rebase.updateDoc('help-task_works/'+id,newData);
+													let newTaskWorks=[...this.state.taskWorks];
+													newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
+													this.setState({taskWorks:newTaskWorks});
+												}}
+												removeSubtask={(id)=>{
+													rebase.removeDoc('help-task_works/'+id).then(()=>{
+														let newTaskWorks=[...this.state.taskWorks];
+														newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
+														this.setState({taskWorks:newTaskWorks});
+													});
+												}}
 												workTrips={workTrips}
 												tripTypes={this.state.tripTypes}
-												taskID={this.props.match.params.taskID}
 												submitTrip={this.submitWorkTrip.bind(this)}
 												updateTrip={(id,newData)=>{
 													rebase.updateDoc('help-task_work_trips/'+id,newData);
@@ -1063,9 +1048,9 @@ class TaskEdit extends Component {
 														newTrips.splice(newTrips.findIndex((trip)=>trip.id===id),1);
 														this.setState({workTrips:newTrips});
 													});
-												}
-											}
+												}}
 											/>
+
 											<MaterialsBudget
 												disabled={this.state.viewOnly}
 												materials={taskMaterials}
