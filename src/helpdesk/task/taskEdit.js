@@ -318,7 +318,7 @@ class TaskEdit extends Component {
 			return {
 				id:work.id,
 				title:work.title,
-				type:work.type?work.type:work.workType,
+				type:work.type||work.workType,
 				quantity:work.quantity,
 				discount:work.discount,
 				assignedTo:work.assignedTo,

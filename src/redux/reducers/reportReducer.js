@@ -12,8 +12,6 @@ const initialState = {
   month:months.find((month)=>month.value===(new Date()).getMonth()+1),
   from:firstDay,
   to:lastDay,
-  month:months.find((month)=>month.value===11),
-  from: new Date(date.getFullYear(), 11, 1).getTime(),
 };
 
 export default function reportReducer(state = initialState, action) {

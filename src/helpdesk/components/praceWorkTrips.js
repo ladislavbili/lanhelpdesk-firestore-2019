@@ -126,7 +126,7 @@ export default class PraceWorkTrips extends Component {
 	}
 
 	getPrice(type){
-		if(type===null){
+		if(!type){
 			return NaN;
 		}
 		let price = type.prices.find((price)=>price.pricelist===this.props.company.pricelist.id);
@@ -500,10 +500,10 @@ export default class PraceWorkTrips extends Component {
 										</td>}
 
 										{this.props.showAll && <td className="table-highlight-background">
-											{isNaN(this.getTotalDiscountedPrice({discount:this.state.newSubtaskDiscount,quantity:this.state.newSubtaskQuantity}))?
+											{isNaN(this.getTotalDiscountedPrice({discount:this.state.newSubtaskDiscount,quantity:this.state.newSubtaskQuantity,type:this.state.newSubtaskType}))?
 												'No price'
 												:
-												this.getTotalDiscountedPrice({discount:this.state.newSubtaskDiscount,quantity:this.state.newSubtaskQuantity})
+												this.getTotalDiscountedPrice({discount:this.state.newSubtaskDiscount,quantity:this.state.newSubtaskQuantity,type:this.state.newSubtaskType})
 											}
 											</td>
 										}
@@ -598,10 +598,10 @@ export default class PraceWorkTrips extends Component {
 												/>
 										</td>}
 									{this.props.showAll && <td className="table-highlight-background">
-										{isNaN(this.getTotalDiscountedPrice({discount:this.state.newTripDiscount,quantity:this.state.newTripQuantity}))?
+										{isNaN(this.getTotalDiscountedPrice({discount:this.state.newTripDiscount,quantity:this.state.newTripQuantity,type:this.state.newTripType}))?
 											'No price'
 											:
-											this.getTotalDiscountedPrice({discount:this.state.newTripDiscount,quantity:this.state.newTripQuantity})
+											this.getTotalDiscountedPrice({discount:this.state.newTripDiscount,quantity:this.state.newTripQuantity,type:this.state.newTripType})
 										}
 									</td>}
 										<td className="t-a-r">

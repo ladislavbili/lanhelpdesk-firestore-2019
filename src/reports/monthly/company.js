@@ -117,7 +117,6 @@ class MothlyReportsCompany extends Component {
 		});
 	}
 
-
 	processWorkTypes(props){
 		return props.taskTypes.map((workType)=>{
 			return {...workType,
@@ -148,7 +147,7 @@ class MothlyReportsCompany extends Component {
 		if(type===undefined||company===undefined){
 			return NaN;
 		}
-		let price = type.prices.find((price)=>price.pricelist===company.pricelist);
+		let price = type.prices.find((price)=>price.pricelist===company.pricelist.id);
 		if(price === undefined){
 			price = NaN;
 		}else{
@@ -167,17 +166,19 @@ class MothlyReportsCompany extends Component {
 			if(type===undefined){
 				type={title:'Unknown',id:Math.random(),prices:[]}
 			}
-
+			let dph = company && company.dph && isNaN(parseInt(company.dph)) && parseInt(company.dph) > 0 ? parseInt(company.dph) : 20;
+			let afterHours = company && company.pricelist ? parseInt(company.pricelist.afterHours) : 0;
 			return {
+				finished:work.finished===true,
 				id:work.id,
 				title:work.title,
 				quantity:work.quantity,
 				discount:work.discount,
 				assignedTo:work.assignedTo,
 				task:work.task,
-				price,
-				dph: company && company.dph && isNaN(parseInt(company.dph)) && parseInt(company.dph) > 0 ? parseInt(company.dph) : 20,
-				afterHours: company && company.pricelist ? parseInt(company.pricelist.afterHours) : 0,
+				price:work.finished?work.price:price,
+				dph: work.finished?work.dph:dph,
+				afterHours: work.finished?work.afterHours:afterHours,
 				type
 			}
 		})
@@ -194,50 +195,22 @@ class MothlyReportsCompany extends Component {
 				type={title:'Unknown',id:Math.random(),prices:[]}
 			}
 
+			let dph = company && company.dph && isNaN(parseInt(company.dph)) && parseInt(company.dph) > 0 ? parseInt(company.dph) : 20;
+			let afterHours = company && company.pricelist ? parseInt(company.pricelist.afterHours) : 0;
+
+
 			return {
+				finished:trip.finished===true,
 				id:trip.id,
 				quantity:trip.quantity,
 				discount:trip.discount,
 				task:trip.task,
-				price,
-				dph:company && company.dph && isNaN(parseInt(company.dph)) && parseInt(company.dph) > 0 ? parseInt(company.dph) : 20,
+				price:trip.finished?trip.price:price,
+				dph: trip.finished?trip.dph:dph,
+				afterHours: trip.finished?trip.afterHours:afterHours,
 				type
 			}
 		})
-	}
-
-	processWorks(props){
-		return props.taskWorks.map((work)=>{
-			let finalUnitPrice=parseFloat(work.price);
-			if(work.extraWork){
-				finalUnitPrice+=finalUnitPrice*parseFloat(work.extraPrice)/100;
-			}
-			let discountPerItem = finalUnitPrice*parseFloat(work.discount)/100;
-			finalUnitPrice=(finalUnitPrice*(1-parseFloat(work.discount)/100)).toFixed(2)
-			let totalPrice=(finalUnitPrice*parseFloat(work.quantity)).toFixed(2);
-			let workType = props.taskTypes.find((item)=>item.id===work.workType);
-			return{
-				...work,
-				workType:workType?workType:{title:'Unknown',id:Math.random()},
-				finalUnitPrice,
-				totalPrice,
-				totalDiscount:(parseFloat(work.quantity)*discountPerItem).toFixed(2)
-
-			}
-		});
-	}
-	processTrips(props){
-		return props.workTrips.map((trip)=>{
-			let type = props.tripTypes.find((item)=>item.id===trip.type);
-			let assignedTo=trip.assignedTo?props.users.find((item)=>item.id===trip.assignedTo):null
-
-			return {
-				...trip,
-				type,
-				assignedTo:assignedTo?assignedTo:null,
-				quantity:isNaN(parseInt(trip.quantity))?0:parseInt(trip.quantity),
-			}
-		});
 	}
 
 	processMaterials(props){
@@ -251,7 +224,6 @@ class MothlyReportsCompany extends Component {
 			}
 		})
 	}
-
 
 	processTasks(props, materials, works, trips){
 		let tasks=props.tasks.map((task)=>{
@@ -329,6 +301,20 @@ class MothlyReportsCompany extends Component {
 		return companies.filter((company)=>company.works > 0 || company.materials > 0 || company.trips > 0 || company.rentedCount);
 	}
 
+	//Unit prices
+	getUnitDiscountedPrice(item){
+		return parseFloat((parseFloat(item.price)*(100-parseInt(item.discount))/100).toFixed(2))
+	}
+
+	getUnitAHExtraPrice(item){
+		return parseFloat((this.getUnitDiscountedPrice(item)*(parseFloat(item.afterHours)/100)).toFixed(2));
+	}
+
+	getUnitAHPrice(item){
+		return parseFloat((this.getUnitDiscountedPrice(item)+this.getUnitAHExtraPrice(item)).toFixed(2));
+	}
+
+	//Total prices
 	getTotalPrice(item){
 		return parseFloat(parseFloat(item.price)*parseInt(item.quantity).toFixed(2))
 	}
@@ -337,12 +323,19 @@ class MothlyReportsCompany extends Component {
 		return parseFloat((this.getTotalPrice(item)*(100-parseInt(item.discount))/100).toFixed(2))
 	}
 
-	getAfterHoursPrice(item){
+	getTotalAHExtraPrice(item){
 		return parseFloat((this.getTotalDiscountedPrice(item)*(parseFloat(item.afterHours)/100)).toFixed(2));
 	}
 
-	getTotalAfterHoursPrice(item){
-		return parseFloat((this.getTotalDiscountedPrice(item)+this.getAfterHoursPrice(item)).toFixed(2));
+	getTotalAHPrice(item){
+		return parseFloat((this.getTotalDiscountedPrice(item)+this.getTotalAHExtraPrice(item)).toFixed(2));
+	}
+
+	getTotalWithDPH(item,ah){
+		if(ah){
+			return parseFloat(this.getTotalAHPrice(item)*(1+parseInt(item.dph)/100).toFixed(2));
+		}
+		return parseFloat(this.getTotalDiscountedPrice(item)*(1+parseInt(item.dph)/100).toFixed(2));
 	}
 
 	getMonthDiff(props){
@@ -365,14 +358,15 @@ class MothlyReportsCompany extends Component {
 		let allTasks = this.state.allTasks.filter((task)=>task.company && task.company.id===this.state.showCompany.id);
 		let invoiced = this.props.statuses.find((status)=>status.action==='invoiced')
 		if(invoiced!==undefined && window.confirm("Chcete naozaj vykázať úlohy: "+ allTasks.reduce((acc,task)=>acc+task.id+',','').slice(0,-1))+" ?"){
-			allTasks.forEach((task)=>rebase.updateDoc('/help-tasks/'+task.id, {status:invoiced.id}))
+			allTasks.forEach((task)=>{
+				task.works.filter((work)=>work.finished!==true).map((work)=>rebase.updateDoc('/help-task_works/'+work.id, {price:work.price, dph:work.dph, afterHours:work.afterHours,finished:true}))
+				task.trips.filter((trip)=>trip.finished!==true).map((trip)=>rebase.updateDoc('/help-task_work_trips/'+trip.id, {price:trip.price, dph:trip.dph, afterHours:trip.afterHours,finished:true}))
+				rebase.updateDoc('/help-tasks/'+task.id, {status:invoiced.id})
+			});
 		}
 	}
 
 	render() {
-		if(this.state.tasks.length!==0){
-		}
-		/*
 		return (
 				<div className="scrollable fit-with-header">
 					<div style={{maxWidth:500}}>
@@ -488,7 +482,7 @@ class MothlyReportsCompany extends Component {
 															{task.pausalWorks.map((work)=>
 																<tr key={work.id}>
 																	<td key={work.id+ '-title'} style={{paddingLeft:0}}>{work.title}</td>
-																	<td key={work.id+ '-type'} style={{width:'150px', paddingLeft:0}}>{work.workType.title}</td>
+																	<td key={work.id+ '-type'} style={{width:'150px', paddingLeft:0}}>{work.type.title}</td>
 																	<td key={work.id+ '-time'} style={{width:'50px', paddingLeft:0}}>{work.quantity}</td>
 																</tr>
 															)}
@@ -528,7 +522,7 @@ class MothlyReportsCompany extends Component {
 								<p className="m-0 m-b-10">Spolu prirážka za práce mimo pracovných hodín: {
 									this.state.tasks.pausalPaidTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.pausalWorks.length!==0 && task.overtime).reduce((acc,item)=>{
 										return acc+item.pausalWorks.reduce((acc,work)=>{
-											return acc+=isNaN(this.getAfterHoursPrice(work))?0:isNaN(this.getAfterHoursPrice(work))
+											return acc+=isNaN(this.getTotalAHExtraPrice(work))?0:this.getTotalAHExtraPrice(work)
 										},0);
 									},0)} eur
 								</p>
@@ -611,7 +605,6 @@ class MothlyReportsCompany extends Component {
 								</p>
 							</div>
 
-
 							<div className="m-b-30">
 								<h3 className="m-b-10">Práce a výjazdy nad rámec paušálu</h3>
 								<h4>Práce</h4>
@@ -657,10 +650,10 @@ class MothlyReportsCompany extends Component {
 															{task.extraWorks.map((work)=>
 																<tr key={work.id}>
 																	<td key={work.id+ '-title'} style={{paddingLeft:0}}>{work.title}</td>
-																	<td key={work.id+ '-type'} style={{width:'150px'}}>{work.workType.title}</td>
+																	<td key={work.id+ '-type'} style={{width:'150px'}}>{work.type.title}</td>
 																	<td key={work.id+ '-time'} style={{width:'50px'}}>{work.quantity}</td>
-																	<td key={work.id+ '-pricePerUnit'} style={{width:'70px'}}>{work.finalUnitPrice}</td>
-																	<td key={work.id+ '-totalPrice'} style={{width:'70px'}}>{this.getWorkPrice(work)}</td>
+																	<td key={work.id+ '-pricePerUnit'} style={{width:'70px'}}>{task.overtime?this.getUnitAHPrice(work):this.getUnitDiscountedPrice(work)}</td>
+																	<td key={work.id+ '-totalPrice'} style={{width:'70px'}}>{task.overtime?this.getTotalAHPrice(work):this.getTotalDiscountedPrice(work)}</td>
 																</tr>
 															)}
 														</tbody>
@@ -699,10 +692,7 @@ class MothlyReportsCompany extends Component {
 								<p className="m-0">Spolu prirážka za práce mimo pracovných hodín: {
 									this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraWorks.length!==0 && task.overtime).reduce((acc,item)=>{
 										return acc+item.extraWorks.reduce((acc,work)=>{
-											if( this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
-												return acc+(this.getWorkPrice(work)/100*parseInt(this.state.showCompany.pricelist.afterHours));
-											}
-											return acc;
+											return acc+=isNaN(this.getTotalAHExtraPrice(work))?0:this.getTotalAHExtraPrice(work)
 										},0);
 									},0)} eur
 								</p>
@@ -710,27 +700,16 @@ class MothlyReportsCompany extends Component {
 									(this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraWorks.length!==0).reduce((acc,task)=>{
 										return acc+task.extraWorks.reduce((acc,work)=>{
 											if(task.overtime){
-												if( this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
-													return acc+this.getWorkPrice(work)+(this.getWorkPrice(work)/100*parseInt(this.state.showCompany.pricelist.afterHours));
-												}
-												return acc;
-											}else{
-												return acc+this.getWorkPrice(work);
+												return acc+(isNaN(this.getTotalAHPrice(work))?0:this.getTotalAHPrice(work));
 											}
+											return acc+(isNaN(this.getTotalDiscountedPrice(work))?0:this.getTotalDiscountedPrice(work));
 										},0);
-									},0)*0.8).toFixed(2)} eur
+									},0)).toFixed(2)} eur
 								</p>
 								<p className="m-0">Spolu cena s DPH: {
 									(this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraWorks.length!==0).reduce((acc,task)=>{
 										return acc+task.extraWorks.reduce((acc,work)=>{
-											if(task.overtime){
-												if( this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
-													return acc+this.getWorkPrice(work)+(this.getWorkPrice(work)/100*parseInt(this.state.showCompany.pricelist.afterHours));
-												}
-												return acc;
-											}else{
-												return acc+this.getWorkPrice(work);
-											}
+											return acc+(isNaN(this.getTotalWithDPH(work,task.overtime))?0:this.getTotalWithDPH(work,task.overtime));
 										},0);
 									},0)).toFixed(2)} eur
 								</p>
@@ -778,8 +757,8 @@ class MothlyReportsCompany extends Component {
 																<tr key={trip.id}>
 																	<td key={trip.id+ '-title'} style={{width:'150px',paddingLeft:0}}>{trip.type?trip.type.title:"Undefined"}</td>
 																	<td key={trip.id+ '-time'} style={{width:'50px'}}>{trip.quantity}</td>
-																	<td key={trip.id+ '-unitPrice'} style={{width:'50px'}}>{trip.price.price}</td>
-																	<td key={trip.id+ '-totalPrice'} style={{width:'50px'}}>{this.getTripPrice(trip)}</td>
+																	<td key={trip.id+ '-unitPrice'} style={{width:'50px'}}>{task.overtime?this.getUnitAHPrice(trip):this.getUnitDiscountedPrice(trip)}</td>
+																	<td key={trip.id+ '-totalPrice'} style={{width:'50px'}}>{task.overtime?this.getTotalAHPrice(trip):this.getTotalDiscountedPrice(trip)}</td>
 																</tr>
 															)}
 														</tbody>
@@ -818,10 +797,7 @@ class MothlyReportsCompany extends Component {
 								<p className="m-0">Spolu prirážka za výjazdov mimo pracovných hodín: {
 									this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraTrips.length!==0 && task.overtime).reduce((acc,item)=>{
 										return acc+item.extraTrips.reduce((acc,trip)=>{
-											if( this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
-												return acc+(this.getTripPrice(trip)/100*parseInt(this.state.showCompany.pricelist.afterHours));
-											}
-											return acc;
+											return acc+(isNaN(this.getTotalAHExtraPrice(trip))?0:this.getTotalAHExtraPrice(trip))
 										},0);
 									},0)} eur
 								</p>
@@ -829,27 +805,16 @@ class MothlyReportsCompany extends Component {
 									(this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraTrips.length!==0).reduce((acc,task)=>{
 										return acc+task.extraTrips.reduce((acc,trip)=>{
 											if(task.overtime){
-												if( this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
-													return acc+this.getTripPrice(trip)+(this.getTripPrice(trip)/100*parseInt(this.state.showCompany.pricelist.afterHours));
-												}
-												return acc;
-											}else{
-												return acc+this.getTripPrice(trip);
+												return acc+(isNaN(this.getTotalAHPrice(trip))?0:this.getTotalAHPrice(trip));
 											}
+											return acc+(isNaN(this.getTotalDiscountedPrice(trip))?0:this.getTotalDiscountedPrice(trip));
 										},0);
-									},0)*0.8).toFixed(2)} eur
+									},0)).toFixed(2)} eur
 								</p>
 								<p className="m-0">Spolu cena s DPH: {
 									(this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraTrips.length!==0).reduce((acc,task)=>{
 										return acc+task.extraTrips.reduce((acc,trip)=>{
-											if(task.overtime){
-												if( this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
-													return acc+this.getTripPrice(trip)+(this.getTripPrice(trip)/100*parseInt(this.state.showCompany.pricelist.afterHours));
-												}
-												return acc;
-											}else{
-												return acc+this.getTripPrice(trip);
-											}
+											return acc+(isNaN(this.getTotalWithDPH(trip,task.overtime))?0:this.getTotalWithDPH(trip,task.overtime));
 										},0);
 									},0)).toFixed(2)} eur
 								</p>
@@ -900,10 +865,10 @@ class MothlyReportsCompany extends Component {
 															{task.works.map((work)=>
 																<tr key={work.id}>
 																	<td key={work.id+ '-title'} style={{paddingLeft:0}}>{work.title}</td>
-																	<td key={work.id+ '-type'} style={{width:'150px'}}>{work.workType.title}</td>
+																	<td key={work.id+ '-type'} style={{width:'150px'}}>{work.type.title}</td>
 																	<td key={work.id+ '-time'} style={{width:'50px'}}>{work.quantity}</td>
-																	<td key={work.id+ '-pricePerUnit'} style={{width:'70px'}}>{work.finalUnitPrice}</td>
-																	<td key={work.id+ '-totalPrice'} style={{width:'70px'}}>{this.getWorkPrice(work)}</td>
+																	<td key={work.id+ '-pricePerUnit'} style={{width:'70px'}}>{task.overtime?this.getUnitAHPrice(work):this.getUnitDiscountedPrice(work)}</td>
+																	<td key={work.id+ '-totalPrice'} style={{width:'70px'}}>{task.overtime?this.getTotalAHPrice(work):this.getTotalDiscountedPrice(work)}</td>
 																</tr>
 															)}
 														</tbody>
@@ -942,10 +907,7 @@ class MothlyReportsCompany extends Component {
 								<p className="m-0">Spolu prirážka za práce mimo pracovných hodín: {
 									this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.works.length!==0 && task.overtime).reduce((acc,item)=>{
 										return acc+item.works.reduce((acc,work)=>{
-											if( this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
-												return acc+(this.getWorkPrice(work)/100*parseInt(this.state.showCompany.pricelist.afterHours));
-											}
-											return acc;
+											return acc+=isNaN(this.getTotalAHExtraPrice(work))?0:this.getTotalAHExtraPrice(work)
 										},0);
 									},0)} eur
 								</p>
@@ -953,27 +915,16 @@ class MothlyReportsCompany extends Component {
 									(this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.works.length!==0).reduce((acc,task)=>{
 										return acc+task.works.reduce((acc,work)=>{
 											if(task.overtime){
-												if( this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
-													return acc+this.getWorkPrice(work)+(this.getWorkPrice(work)/100*parseInt(this.state.showCompany.pricelist.afterHours));
-												}
-												return acc;
-											}else{
-												return acc+this.getWorkPrice(work);
+												return acc+(isNaN(this.getTotalAHPrice(work))?0:this.getTotalAHPrice(work));
 											}
+											return acc+(isNaN(this.getTotalDiscountedPrice(work))?0:this.getTotalDiscountedPrice(work));
 										},0);
-									},0)*0.8).toFixed(2)} eur
+									},0)).toFixed(2)} eur
 								</p>
 								<p className="m-0">Spolu cena s DPH: {
 									(this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.works.length!==0).reduce((acc,task)=>{
 										return acc+task.works.reduce((acc,work)=>{
-											if(task.overtime){
-												if( this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
-													return acc+this.getWorkPrice(work)+(this.getWorkPrice(work)/100*parseInt(this.state.showCompany.pricelist.afterHours));
-												}
-												return acc;
-											}else{
-												return acc+this.getWorkPrice(work);
-											}
+											return acc+(isNaN(this.getTotalWithDPH(work,task.overtime))?0:this.getTotalWithDPH(work,task.overtime));
 										},0);
 									},0)).toFixed(2)} eur
 								</p>
@@ -1021,8 +972,8 @@ class MothlyReportsCompany extends Component {
 																<tr key={trip.id}>
 																	<td key={trip.id+ '-title'} style={{width:'150px',paddingLeft:0}}>{trip.type?trip.type.title:"Undefined"}</td>
 																	<td key={trip.id+ '-time'} style={{width:'50px'}}>{trip.quantity}</td>
-																	<td key={trip.id+ '-unitPrice'} style={{width:'50px'}}>{trip.price.price}</td>
-																	<td key={trip.id+ '-totalPrice'} style={{width:'50px'}}>{this.getTripPrice(trip)}</td>
+																	<td key={trip.id+ '-unitPrice'} style={{width:'50px'}}>{task.overtime?this.getUnitAHPrice(trip):this.getUnitDiscountedPrice(trip)}</td>
+																	<td key={trip.id+ '-totalPrice'} style={{width:'50px'}}>{task.overtime?this.getTotalAHPrice(trip):this.getTotalDiscountedPrice(trip)}</td>
 																</tr>
 															)}
 														</tbody>
@@ -1061,10 +1012,7 @@ class MothlyReportsCompany extends Component {
 								<p className="m-0">Spolu prirážka za výjazdov mimo pracovných hodín: {
 									this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.trips.length!==0 && task.overtime).reduce((acc,item)=>{
 										return acc+item.trips.reduce((acc,trip)=>{
-											if( this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
-												return acc+(this.getTripPrice(trip)/100*parseInt(this.state.showCompany.pricelist.afterHours));
-											}
-											return acc;
+											return acc+(isNaN(this.getTotalAHExtraPrice(trip))?0:this.getTotalAHExtraPrice(trip))
 										},0);
 									},0)} eur
 								</p>
@@ -1072,32 +1020,20 @@ class MothlyReportsCompany extends Component {
 									(this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.trips.length!==0).reduce((acc,task)=>{
 										return acc+task.trips.reduce((acc,trip)=>{
 											if(task.overtime){
-												if( this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
-													return acc+this.getTripPrice(trip)+(this.getTripPrice(trip)/100*parseInt(this.state.showCompany.pricelist.afterHours));
-												}
-												return acc;
-											}else{
-												return acc+this.getTripPrice(trip);
+												return acc+(isNaN(this.getTotalAHPrice(trip))?0:this.getTotalAHPrice(trip));
 											}
+											return acc+(isNaN(this.getTotalDiscountedPrice(trip))?0:this.getTotalDiscountedPrice(trip));
 										},0);
-									},0)*0.8).toFixed(2)} eur
+									},0)).toFixed(2)} eur
 								</p>
 								<p className="m-0">Spolu cena s DPH: {
 									(this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.trips.length!==0).reduce((acc,task)=>{
 										return acc+task.trips.reduce((acc,trip)=>{
-											if(task.overtime){
-												if( this.state.showCompany.pricelist && !isNaN(parseInt(this.state.showCompany.pricelist.afterHours)) ){
-													return acc+this.getTripPrice(trip)+(this.getTripPrice(trip)/100*parseInt(this.state.showCompany.pricelist.afterHours));
-												}
-												return acc;
-											}else{
-												return acc+this.getTripPrice(trip);
-											}
+											return acc+(isNaN(this.getTotalWithDPH(trip,task.overtime))?0:this.getTotalWithDPH(trip,task.overtime));
 										},0);
 									},0)).toFixed(2)} eur
 								</p>
 							</div>
-
 
 						<div className="m-b-30">
 							<h3>Materiále</h3>
@@ -1160,11 +1096,11 @@ class MothlyReportsCompany extends Component {
 							<p className="m-0">Spolu cena bez DPH: {
 									(this.state.allTasks.filter((task)=>task.company.id===this.state.showCompany.id).reduce((acc,task)=>{
 									return acc+task.materials.reduce((acc,material)=>acc+=isNaN(parseFloat(material.totalPrice))?0:parseFloat(material.totalPrice),0)
-								},0)*0.8).toFixed(2)} EUR</p>
+								},0)).toFixed(2)} EUR</p>
 							<p className="m-0">Spolu cena s DPH: {
 									(this.state.allTasks.filter((task)=>task.company.id===this.state.showCompany.id).reduce((acc,task)=>{
 									return acc+task.materials.reduce((acc,material)=>acc+=isNaN(parseFloat(material.totalPrice))?0:parseFloat(material.totalPrice),0)
-								},0)).toFixed(2)} EUR</p>
+								},0)*(1+(isNaN(parseInt(this.state.showCompany.dph))?0:parseInt(this.state.showCompany.dph))/100)).toFixed(2)} EUR</p>
 						</div>
 						<div className="m-b-30">
 							<h3>Mesačný prenájom služieb a harware</h3>
@@ -1195,16 +1131,15 @@ class MothlyReportsCompany extends Component {
 							<p className="m-0">Spolu cena bez DPH: {
 									((this.state.showCompany.rented===undefined ? [] : this.state.showCompany.rented).reduce((acc,rentedItem)=>{
 									return acc+(isNaN(parseFloat(rentedItem.totalPrice))?0:parseFloat(rentedItem.totalPrice))
-								},0)*0.8*this.getMonthDiff(this.props)).toFixed(2)} EUR</p>
+								},0)*this.getMonthDiff(this.props)).toFixed(2)} EUR</p>
 							<p className="m-0">Spolu cena s DPH: {
 									((this.state.showCompany.rented===undefined ? [] : this.state.showCompany.rented).reduce((acc,rentedItem)=>{
 									return acc+(isNaN(parseFloat(rentedItem.totalPrice))?0:parseFloat(rentedItem.totalPrice))
-								},0)*this.getMonthDiff(this.props)).toFixed(2)} EUR</p>
+								},0)*this.getMonthDiff(this.props)*(1+(isNaN(parseInt(this.state.showCompany.dph))?0:parseInt(this.state.showCompany.dph))/100)).toFixed(2)} EUR</p>
 						</div>
 					</div>}
 				 </div>
-			);*/
-			return null
+			);
 		}
 
 	separateTasks(tasks,allTasks){
