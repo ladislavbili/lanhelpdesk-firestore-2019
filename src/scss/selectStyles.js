@@ -310,6 +310,86 @@ export const sidebarSelectStyle = {
 	},
 };
 
+export const selectStyleColored = {
+	control: base => ({
+		...base,
+		minHeight: 30,
+		backgroundColor: 'white',
+	}),
+	dropdownIndicator: base => ({
+		...base,
+		width:0,
+		color: "transparent",
+		padding: 0,
+	}),
+	clearIndicator: base => ({
+		...base,
+		padding: 4,
+	}),
+	multiValue: (base, {data}) => {
+		const color = chroma(data.color);
+		return {
+			...base,
+			color:'#FFF',
+			padding:'0px 5px',
+			backgroundColor: color.alpha(0.1).css(),
+			borderRadius: 0,
+		};
+	},
+	multiValueLabel: (base, { data }) => ({
+		...base,
+		color: data.color,
+	}),
+	multiValueRemove: (styles, { data }) => ({
+		...styles,
+		color: data.color,
+		':hover': {
+			backgroundColor: data.color,
+			color: 'white',
+		},
+	}),
+	valueContainer: base => ({
+		...base,
+		padding: '0px 6px',
+		borderRadius: 0
+	}),
+	input: base => ({
+		...base,
+		margin: 0,
+		padding: 0,
+		backgroundColor: 'inherit',
+		borderRadius: 0
+	}),
+	indicatorSeparator: base => ({
+		...base,
+		width: 0,
+	}),
+	option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+    const color = chroma(data.color);
+    return {
+      ...styles,
+      backgroundColor: isSelected
+        ? data.color
+        : isFocused
+        ? color.alpha(0.1).css()
+        : null,
+      color: isSelected
+        ? chroma.contrast(color, 'white') > 2
+          ? 'white'
+          : 'black'
+        : data.color,
+
+      ':active': {
+        ...styles[':active'],
+        backgroundColor: !isDisabled && (isSelected ? data.color : color.alpha(0.3).css()),
+      },
+    };
+  },
+	singleValue: (styles, { data }) =>{
+		return ({ ...styles, color:'#FFF',padding:'0px 5px', backgroundColor: data.color });
+	},
+};
+
 export const selectStyle = {
 	control: base => ({
 		...base,

@@ -163,18 +163,14 @@ class PriceEdit extends Component{
               <Label for="afterPer">After hours percentage</Label>
               <Input type="text" name="afterPer" id="afterPer" placeholder="Enter after hours percentage" value={this.state.afterHours} onChange={(e)=>this.setState({afterHours:e.target.value})} />
             </FormGroup>
-            { false &&
-              <FormGroup>
-                <Label for="materMarg">Materials margin percentage 50-</Label>
-                <Input type="text" name="materMarg" id="materMarg" placeholder="Enter materials margin percentage" value={this.state.margin} onChange={(e)=>this.setState({margin:e.target.value})} />
-              </FormGroup>
-            }
-            { false &&
-              <FormGroup>
-                <Label for="materMarg">Materials margin percentage 50+</Label>
-                <Input type="text" name="materMarg" id="materMarg" placeholder="Enter materials margin percentage" value={this.state.marginExtra} onChange={(e)=>this.setState({marginExtra:e.target.value})} />
-              </FormGroup>
-            }
+            <FormGroup>
+              <Label for="materMarg">Materials margin percentage 50-</Label>
+              <Input type="text" name="materMarg" id="materMarg" placeholder="Enter materials margin percentage" value={this.state.margin} onChange={(e)=>this.setState({margin:e.target.value})} />
+            </FormGroup>
+            <FormGroup>
+              <Label for="materMarg">Materials margin percentage 50+</Label>
+              <Input type="text" name="materMarg" id="materMarg" placeholder="Enter materials margin percentage" value={this.state.marginExtra} onChange={(e)=>this.setState({marginExtra:e.target.value})} />
+            </FormGroup>
           </div>
           <div className="row">
               <Button className="btn" disabled={this.state.saving} onClick={()=>{

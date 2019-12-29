@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import { Button } from 'reactstrap';
+import { Button, Input } from 'reactstrap';
+import Select from 'react-select';
 import {storageCompaniesStart,storageHelpTasksStart, storageHelpStatusesStart, storageHelpTaskTypesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart, storageHelpTaskWorksStart, storageHelpTaskWorkTripsStart, storageHelpTripTypesStart, storageHelpPricelistsStart, storageHelpPricesStart } from '../../redux/actions';
-import { timestampToString, sameStringForms} from '../../helperFunctions';
+import { timestampToString, sameStringForms, toSelArr} from '../../helperFunctions';
 import { Link } from 'react-router-dom';
 import {rebase} from '../../index';
+import TaskEdit from '../../helpdesk/task/taskEditContainer';
 import MonthSelector from '../components/monthSelector';
+import {selectStyleColored} from '../../scss/selectStyles';
 
 class MothlyReportsCompany extends Component {
 	constructor(props){
@@ -14,9 +17,12 @@ class MothlyReportsCompany extends Component {
 			tasks:[],
 			allTasks:[],
 			companies:[],
+			status:[],
 			showCompany:null,
-			loading:false
+			loading:false,
+			pickedTasks:[]
 		}
+		this.filterTask.bind(this);
 	}
 
 	storageLoaded(props){
@@ -48,11 +54,15 @@ class MothlyReportsCompany extends Component {
 			!sameStringForms(props.workTrips,this.props.workTrips)||
 			!sameStringForms(props.pricelists,this.props.pricelists)||
 			!sameStringForms(props.prices,this.props.prices)||
-			(this.storageLoaded(props) && this.storageLoaded(this.props))||
+			(this.storageLoaded(props) && this.storageLoaded(this.props))
+		){
+			this.setData(props);
+		}
+		if(
 			props.from!==this.props.from||
 			props.to!==this.props.to
 		){
-			this.setData(props);
+			this.setState({pickedTasks:[],showCompany:null},()=>{this.setData(props)})
 		}
 	}
 
@@ -108,11 +118,15 @@ class MothlyReportsCompany extends Component {
 		let separatedTasks = this.separateTasks(tasks, monthsTasks);
 		let companies = this.processCompanies(tasks,props.pricelists);
 
+		//podla firmy, datumu
+		let statusIDs= toSelArr(props.statuses.filter((status)=>status.action==='close')).map((status)=>status.id);
+		let taskIDs= this.state.showCompany!==null?tasks.filter((task)=>task.company.id===this.state.showCompany.id && statusIDs.includes(task.status.id)).map((task)=>task.id):[];
 		this.setState({
 			tasks:separatedTasks,
 			allTasks:tasks,
-
+			pickedTasks:this.state.pickedTasks.length===0?taskIDs:this.state.pickedTasks.filter((id)=>taskIDs.includes(id)),
 			companies,
+			status:toSelArr(props.statuses.filter((status)=>status.action==='close')),
 			loading:false
 		});
 	}
@@ -355,7 +369,7 @@ class MothlyReportsCompany extends Component {
 	}
 
 	invoiceTasks(){
-		let allTasks = this.state.allTasks.filter((task)=>task.company && task.company.id===this.state.showCompany.id);
+		let allTasks = this.state.allTasks.filter((task)=>task.company && task.company.id===this.state.showCompany.id && this.state.pickedTasks.includes(task.id));
 		let invoiced = this.props.statuses.find((status)=>status.action==='invoiced')
 		if(invoiced!==undefined && window.confirm("Chcete naozaj vykázať úlohy: "+ allTasks.reduce((acc,task)=>acc+task.id+',','').slice(0,-1))+" ?"){
 			allTasks.forEach((task)=>{
@@ -366,11 +380,31 @@ class MothlyReportsCompany extends Component {
 		}
 	}
 
+	filterTask(task, statusIDs){
+		return task.company.id===this.state.showCompany.id && statusIDs.includes(task.status.id);
+	}
+
 	render() {
+		let statusIDs= this.state.status.map((status)=>status.id);
 		return (
 				<div className="scrollable fit-with-header">
 					<div style={{maxWidth:500}}>
 						<MonthSelector />
+						<div className="p-20">
+							<Select
+								value={this.state.status}
+								placeholder="Vyberte statusy"
+								isMulti
+								onChange={(status)=>{
+									let statusIDs = status.map((status)=>status.id);
+									let taskIDs= this.state.allTasks.filter((task)=>this.state.showCompany && task.company.id===this.state.showCompany.id && statusIDs.includes(task.status.id)).map((task)=>task.id);
+									let pickedTasks = this.state.pickedTasks.filter((id)=>taskIDs.includes(id));
+									this.setState({status, pickedTasks: pickedTasks.length > 0 ? pickedTasks : taskIDs });
+								}}
+								options={toSelArr(this.props.statuses)}
+								styles={selectStyleColored}
+								/>
+						</div>
 					</div>
 
 					<div className="p-20">
@@ -387,7 +421,11 @@ class MothlyReportsCompany extends Component {
 							<tbody>
 								{
 									this.state.companies.map((company)=>
-									<tr key={company.id} className="clickable" onClick={()=>this.setState({showCompany:company})}>
+									<tr key={company.id} className="clickable" onClick={()=>{
+											let taskIDs= this.state.allTasks.filter((task)=>task.company.id===company.id && statusIDs.includes(task.status.id)).map((task)=>task.id);
+											let pickedTasks = this.state.pickedTasks.filter((id)=>taskIDs.includes(id));
+											this.setState({showCompany:company, pickedTasks: pickedTasks.length > 0 ? pickedTasks : taskIDs });
+										}}>
 										<td>{company.title}</td>
 										<td>{company.works}</td>
 										<td>{company.materials}</td>
@@ -400,6 +438,19 @@ class MothlyReportsCompany extends Component {
 					</div>
 					{this.state.showCompany!==null &&
 						<div className="commandbar">
+							<Button
+								className="btn-primary center-hor"
+								onClick={()=>{
+									let taskIDs= this.state.allTasks.filter((task)=>this.state.showCompany && task.company.id===this.state.showCompany.id && statusIDs.includes(task.status.id)).map((task)=>task.id);
+									if(this.state.pickedTasks.length===taskIDs.length){
+										this.setState({pickedTasks:[]})
+									}else{
+										this.setState({pickedTasks:taskIDs})
+									}
+								}}
+								>
+								{this.state.pickedTasks.length===this.state.allTasks.filter((task)=>this.state.showCompany && task.company.id===this.state.showCompany.id && statusIDs.includes(task.status.id)).length ? "Odznačiť všetky" : "Označiť všetky"}
+							</Button>
 							<Button
 								className="btn-danger center-hor"
 								onClick={this.invoiceTasks.bind(this)}
@@ -418,7 +469,7 @@ class MothlyReportsCompany extends Component {
 								</div>
 								<div className="m-l-10">
 									Počet prác vrámci paušálu: {
-										this.state.tasks.pausalPaidTasks.filter((task)=>task.company.id===this.state.showCompany.id).reduce((acc,item)=>{
+										this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id)).reduce((acc,item)=>{
 										return acc+item.pausalWorks.reduce((acc,item)=>{
 											if(!isNaN(parseInt(item.quantity))){
 												return acc+parseInt(item.quantity);
@@ -427,15 +478,15 @@ class MothlyReportsCompany extends Component {
 										},0);
 									},0)}
 									<br/>
-								Počet výjazdov vrámci paušálu: {
-									this.state.tasks.pausalPaidTasks.filter((task)=>task.company.id===this.state.showCompany.id).reduce((acc,item)=>{
-									return acc+item.pausalTrips.reduce((acc,item)=>{
-										if(!isNaN(parseInt(item.quantity))){
-											return acc+parseInt(item.quantity);
-										}
-										return acc;
-									},0);
-								},0)}
+									Počet výjazdov vrámci paušálu: {
+										this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id)).reduce((acc,item)=>{
+										return acc+item.pausalTrips.reduce((acc,item)=>{
+											if(!isNaN(parseInt(item.quantity))){
+												return acc+parseInt(item.quantity);
+											}
+											return acc;
+										},0);
+									},0)}
 
 								</div>
 							</div>
@@ -446,6 +497,7 @@ class MothlyReportsCompany extends Component {
 								<table className="table m-b-10">
 									<thead>
 										<tr>
+											<th width="25"></th>
 											<th>ID</th>
 											<th>Názov úlohy</th>
 											<th>Zadal</th>
@@ -459,8 +511,22 @@ class MothlyReportsCompany extends Component {
 									</thead>
 									<tbody>
 										{
-											this.state.tasks.pausalPaidTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.pausalWorks.length!==0 ).map((task)=>
+											this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && task.pausalWorks.length!==0 ).map((task)=>
 											<tr key={task.id}>
+												<td className="table-checkbox">
+													<label className="custom-container">
+														<Input type="checkbox"
+															checked={this.state.pickedTasks.includes(task.id)}
+															onChange={()=>{
+																if(this.state.pickedTasks.includes(task.id)){
+																	this.setState({pickedTasks:this.state.pickedTasks.filter((taskID)=>taskID!==task.id)});
+																}else{
+																	this.setState({pickedTasks:[...this.state.pickedTasks,task.id]});
+																}
+																}} />
+															<span className="checkmark" style={{ marginTop: "-3px"}}> </span>
+													</label>
+												</td>
 												<td>{task.id}</td>
 												<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/` + task.id }} style={{ color: "#1976d2" }}>{task.title}</Link></td>
 												<td>{task.requester?task.requester.email:'Nikto'}</td>
@@ -496,7 +562,7 @@ class MothlyReportsCompany extends Component {
 								</table>
 
 								<p className="m-0">Spolu počet hodín: {
-									this.state.tasks.pausalPaidTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.pausalWorks.length!==0).reduce((acc,item)=>{
+									this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalWorks.length!==0).reduce((acc,item)=>{
 										return acc+item.pausalWorks.reduce((acc,item)=>{
 											if(!isNaN(parseInt(item.quantity))){
 												return acc+parseInt(item.quantity);
@@ -506,7 +572,7 @@ class MothlyReportsCompany extends Component {
 									},0)}
 								</p>
 								<p className="m-0">Spolu počet hodín mimo pracovný čas: {
-									this.state.tasks.pausalPaidTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.pausalWorks.length!==0 && task.overtime).reduce((acc,item)=>{
+									this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalWorks.length!==0 && task.overtime).reduce((acc,item)=>{
 										return acc+item.pausalWorks.reduce((acc,item)=>{
 											if(!isNaN(parseInt(item.quantity))){
 												return acc+parseInt(item.quantity);
@@ -514,13 +580,13 @@ class MothlyReportsCompany extends Component {
 											return acc;
 										},0);
 									},0)} ( Čísla úloh:
-										{this.state.tasks.pausalPaidTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.pausalWorks.length!==0 && task.overtime)
+										{this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalWorks.length!==0 && task.overtime)
 										.reduce((acc,task)=>{
 											return acc+=task.id + ','
 										}," ").slice(0,-1)+" )"}
 								</p>
 								<p className="m-0 m-b-10">Spolu prirážka za práce mimo pracovných hodín: {
-									this.state.tasks.pausalPaidTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.pausalWorks.length!==0 && task.overtime).reduce((acc,item)=>{
+									this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalWorks.length!==0 && task.overtime).reduce((acc,item)=>{
 										return acc+item.pausalWorks.reduce((acc,work)=>{
 											return acc+=isNaN(this.getTotalAHExtraPrice(work))?0:this.getTotalAHExtraPrice(work)
 										},0);
@@ -532,6 +598,7 @@ class MothlyReportsCompany extends Component {
 								<table className="table m-b-10">
 									<thead>
 										<tr>
+											<th width="25"></th>
 											<th>ID</th>
 											<th>Názov úlohy</th>
 											<th>Zadal</th>
@@ -544,8 +611,23 @@ class MothlyReportsCompany extends Component {
 									</thead>
 									<tbody>
 										{
-											this.state.tasks.pausalPaidTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.pausalTrips.length!==0).map((task)=>
+											this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && task.pausalTrips.length!==0).map((task)=>
 											<tr key={task.id}>
+												<td className="table-checkbox">
+													<label className="custom-container">
+														<Input type="checkbox"
+															checked={this.state.pickedTasks.includes(task.id)}
+															onChange={()=>{
+																if(this.state.pickedTasks.includes(task.id)){
+																	this.setState({pickedTasks:this.state.pickedTasks.filter((taskID)=>taskID!==task.id)});
+																}else{
+																	this.setState({pickedTasks:[...this.state.pickedTasks,task.id]});
+																}
+																}} />
+															<span className="checkmark" style={{ marginTop: "-3px"}}> </span>
+													</label>
+												</td>
+
 												<td>{task.id}</td>
 												<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/` + task.id }} style={{ color: "#1976d2" }}>{task.title}</Link></td>
 												<td>{task.requester?task.requester.email:'Nikto'}</td>
@@ -580,7 +662,7 @@ class MothlyReportsCompany extends Component {
 								</table>
 
 								<p className="m-0">Spolu počet výjazdov: {
-									this.state.tasks.pausalPaidTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.pausalTrips.length!==0).reduce((acc,item)=>{
+									this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalTrips.length!==0).reduce((acc,item)=>{
 										return acc+item.pausalTrips.reduce((acc,item)=>{
 											if(!isNaN(parseInt(item.quantity))){
 												return acc+parseInt(item.quantity);
@@ -590,7 +672,7 @@ class MothlyReportsCompany extends Component {
 									},0)}
 								</p>
 								<p className="m-0">Spolu počet výjazdov mimo pracovný čas: {
-									this.state.tasks.pausalPaidTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.pausalTrips.length!==0 && task.overtime).reduce((acc,item)=>{
+									this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalTrips.length!==0 && task.overtime).reduce((acc,item)=>{
 										return acc+item.pausalTrips.reduce((acc,item)=>{
 											if(!isNaN(parseInt(item.quantity))){
 												return acc+parseInt(item.quantity);
@@ -598,10 +680,17 @@ class MothlyReportsCompany extends Component {
 											return acc;
 										},0);
 									},0)} ( Čísla úloh:
-										{this.state.tasks.pausalPaidTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.pausalTrips.length!==0 && task.overtime)
+										{this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalTrips.length!==0 && task.overtime)
 										.reduce((acc,task)=>{
 											return acc+=task.id + ','
 										}," ").slice(0,-1)+" )"}
+								</p>
+								<p className="m-0 m-b-10">Spolu prirážka za výjazdov mimo pracovných hodín: {
+									this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalTrips.length!==0 && task.overtime).reduce((acc,item)=>{
+										return acc+item.pausalTrips.reduce((acc,trip)=>{
+											return acc+=isNaN(this.getTotalAHExtraPrice(trip))?0:this.getTotalAHExtraPrice(trip)
+										},0);
+									},0)} eur
 								</p>
 							</div>
 
@@ -612,6 +701,7 @@ class MothlyReportsCompany extends Component {
 								<table className="table m-b-10">
 									<thead>
 										<tr>
+											<th width="25"></th>
 											<th>ID</th>
 											<th>Názov úlohy</th>
 											<th>Zadal</th>
@@ -627,8 +717,23 @@ class MothlyReportsCompany extends Component {
 									</thead>
 									<tbody>
 										{
-											this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraWorks.length!==0 ).map((task)=>
+											this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && task.extraWorks.length!==0 ).map((task)=>
 											<tr key={task.id}>
+												<td className="table-checkbox">
+													<label className="custom-container">
+														<Input type="checkbox"
+															checked={this.state.pickedTasks.includes(task.id)}
+															onChange={()=>{
+																if(this.state.pickedTasks.includes(task.id)){
+																	this.setState({pickedTasks:this.state.pickedTasks.filter((taskID)=>taskID!==task.id)});
+																}else{
+																	this.setState({pickedTasks:[...this.state.pickedTasks,task.id]});
+																}
+															}}
+														/>
+														<span className="checkmark" style={{ marginTop: "-3px"}}> </span>
+													</label>
+											</td>
 												<td>{task.id}</td>
 												<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/` + task.id }} style={{ color: "#1976d2" }}>{task.title}</Link></td>
 												<td>{task.requester?task.requester.email:'Nikto'}</td>
@@ -666,7 +771,7 @@ class MothlyReportsCompany extends Component {
 								</table>
 
 								<p className="m-0">Spolu počet hodín: {
-									this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraWorks.length!==0).reduce((acc,item)=>{
+									this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraWorks.length!==0).reduce((acc,item)=>{
 										return acc+item.extraWorks.reduce((acc,item)=>{
 											if(!isNaN(parseInt(item.quantity))){
 												return acc+parseInt(item.quantity);
@@ -676,7 +781,7 @@ class MothlyReportsCompany extends Component {
 									},0)}
 								</p>
 								<p className="m-0">Spolu počet hodín mimo pracovný čas: {
-									this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraWorks.length!==0 && task.overtime).reduce((acc,item)=>{
+									this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraWorks.length!==0 && task.overtime).reduce((acc,item)=>{
 										return acc+item.extraWorks.reduce((acc,item)=>{
 											if(!isNaN(parseInt(item.quantity))){
 												return acc+parseInt(item.quantity);
@@ -684,20 +789,20 @@ class MothlyReportsCompany extends Component {
 											return acc;
 										},0);
 									},0)} ( Čísla úloh:
-										{this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraWorks.length!==0 && task.overtime)
+										{this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraWorks.length!==0 && task.overtime)
 										.reduce((acc,task)=>{
 											return acc+=task.id + ','
 										}," ").slice(0,-1)+" )"}
 								</p>
 								<p className="m-0">Spolu prirážka za práce mimo pracovných hodín: {
-									this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraWorks.length!==0 && task.overtime).reduce((acc,item)=>{
+									this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraWorks.length!==0 && task.overtime).reduce((acc,item)=>{
 										return acc+item.extraWorks.reduce((acc,work)=>{
 											return acc+=isNaN(this.getTotalAHExtraPrice(work))?0:this.getTotalAHExtraPrice(work)
 										},0);
 									},0)} eur
 								</p>
 								<p className="m-0">Spolu cena bez DPH: {
-									(this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraWorks.length!==0).reduce((acc,task)=>{
+									(this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraWorks.length!==0).reduce((acc,task)=>{
 										return acc+task.extraWorks.reduce((acc,work)=>{
 											if(task.overtime){
 												return acc+(isNaN(this.getTotalAHPrice(work))?0:this.getTotalAHPrice(work));
@@ -707,7 +812,7 @@ class MothlyReportsCompany extends Component {
 									},0)).toFixed(2)} eur
 								</p>
 								<p className="m-0">Spolu cena s DPH: {
-									(this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraWorks.length!==0).reduce((acc,task)=>{
+									(this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraWorks.length!==0).reduce((acc,task)=>{
 										return acc+task.extraWorks.reduce((acc,work)=>{
 											return acc+(isNaN(this.getTotalWithDPH(work,task.overtime))?0:this.getTotalWithDPH(work,task.overtime));
 										},0);
@@ -719,6 +824,7 @@ class MothlyReportsCompany extends Component {
 								<table className="table m-b-10">
 									<thead>
 										<tr>
+											<th width="25"></th>
 											<th>ID</th>
 											<th>Názov úlohy</th>
 											<th>Zadal</th>
@@ -733,8 +839,23 @@ class MothlyReportsCompany extends Component {
 									</thead>
 									<tbody>
 										{
-											this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraTrips.length!==0).map((task)=>
+											this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && task.extraTrips.length!==0).map((task)=>
 											<tr key={task.id}>
+												<td className="table-checkbox">
+													<label className="custom-container">
+														<Input type="checkbox"
+															checked={this.state.pickedTasks.includes(task.id)}
+															onChange={()=>{
+																if(this.state.pickedTasks.includes(task.id)){
+																	this.setState({pickedTasks:this.state.pickedTasks.filter((taskID)=>taskID!==task.id)});
+																}else{
+																	this.setState({pickedTasks:[...this.state.pickedTasks,task.id]});
+																}
+																}} />
+															<span className="checkmark" style={{ marginTop: "-3px"}}> </span>
+													</label>
+												</td>
+
 												<td>{task.id}</td>
 												<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/` + task.id }} style={{ color: "#1976d2" }}>{task.title}</Link></td>
 												<td>{task.requester?task.requester.email:'Nikto'}</td>
@@ -771,7 +892,7 @@ class MothlyReportsCompany extends Component {
 								</table>
 
 								<p className="m-0">Spolu počet výjazdov: {
-									this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraTrips.length!==0).reduce((acc,item)=>{
+									this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraTrips.length!==0).reduce((acc,item)=>{
 										return acc+item.extraTrips.reduce((acc,item)=>{
 											if(!isNaN(parseInt(item.quantity))){
 												return acc+parseInt(item.quantity);
@@ -781,7 +902,7 @@ class MothlyReportsCompany extends Component {
 									},0)}
 								</p>
 								<p className="m-0">Spolu počet výjazdov mimo pracovný čas: {
-									this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraTrips.length!==0 && task.overtime).reduce((acc,item)=>{
+									this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraTrips.length!==0 && task.overtime).reduce((acc,item)=>{
 										return acc+item.extraTrips.reduce((acc,item)=>{
 											if(!isNaN(parseInt(item.quantity))){
 												return acc+parseInt(item.quantity);
@@ -789,20 +910,20 @@ class MothlyReportsCompany extends Component {
 											return acc;
 										},0);
 									},0)} ( Čísla úloh:
-										{this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraTrips.length!==0 && task.overtime)
+										{this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraTrips.length!==0 && task.overtime)
 										.reduce((acc,task)=>{
 											return acc+=task.id + ','
 										}," ").slice(0,-1)+" )"}
 								</p>
 								<p className="m-0">Spolu prirážka za výjazdov mimo pracovných hodín: {
-									this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraTrips.length!==0 && task.overtime).reduce((acc,item)=>{
+									this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraTrips.length!==0 && task.overtime).reduce((acc,item)=>{
 										return acc+item.extraTrips.reduce((acc,trip)=>{
 											return acc+(isNaN(this.getTotalAHExtraPrice(trip))?0:this.getTotalAHExtraPrice(trip))
 										},0);
 									},0)} eur
 								</p>
 								<p className="m-0">Spolu cena bez DPH: {
-									(this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraTrips.length!==0).reduce((acc,task)=>{
+									(this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraTrips.length!==0).reduce((acc,task)=>{
 										return acc+task.extraTrips.reduce((acc,trip)=>{
 											if(task.overtime){
 												return acc+(isNaN(this.getTotalAHPrice(trip))?0:this.getTotalAHPrice(trip));
@@ -812,7 +933,7 @@ class MothlyReportsCompany extends Component {
 									},0)).toFixed(2)} eur
 								</p>
 								<p className="m-0">Spolu cena s DPH: {
-									(this.state.tasks.extraTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.extraTrips.length!==0).reduce((acc,task)=>{
+									(this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraTrips.length!==0).reduce((acc,task)=>{
 										return acc+task.extraTrips.reduce((acc,trip)=>{
 											return acc+(isNaN(this.getTotalWithDPH(trip,task.overtime))?0:this.getTotalWithDPH(trip,task.overtime));
 										},0);
@@ -827,6 +948,7 @@ class MothlyReportsCompany extends Component {
 								<table className="table m-b-10">
 									<thead>
 										<tr>
+											<th width="25"></th>
 											<th>ID</th>
 											<th>Názov úlohy</th>
 											<th>Zadal</th>
@@ -842,8 +964,23 @@ class MothlyReportsCompany extends Component {
 									</thead>
 									<tbody>
 										{
-											this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.works.length!==0 ).map((task)=>
+											this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && task.works.length!==0 ).map((task)=>
 											<tr key={task.id}>
+												<td className="table-checkbox">
+													<label className="custom-container">
+														<Input type="checkbox"
+															checked={this.state.pickedTasks.includes(task.id)}
+															onChange={()=>{
+																if(this.state.pickedTasks.includes(task.id)){
+																	this.setState({pickedTasks:this.state.pickedTasks.filter((taskID)=>taskID!==task.id)});
+																}else{
+																	this.setState({pickedTasks:[...this.state.pickedTasks,task.id]});
+																}
+																}} />
+															<span className="checkmark" style={{ marginTop: "-3px"}}> </span>
+													</label>
+												</td>
+
 												<td>{task.id}</td>
 												<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/` + task.id }} style={{ color: "#1976d2" }}>{task.title}</Link></td>
 												<td>{task.requester?task.requester.email:'Nikto'}</td>
@@ -881,7 +1018,7 @@ class MothlyReportsCompany extends Component {
 								</table>
 
 								<p className="m-0">Spolu počet hodín: {
-									this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.works.length!==0).reduce((acc,item)=>{
+									this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.works.length!==0).reduce((acc,item)=>{
 										return acc+item.works.reduce((acc,item)=>{
 											if(!isNaN(parseInt(item.quantity))){
 												return acc+parseInt(item.quantity);
@@ -891,7 +1028,7 @@ class MothlyReportsCompany extends Component {
 									},0)}
 								</p>
 								<p className="m-0">Spolu počet hodín mimo pracovný čas: {
-									this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.works.length!==0 && task.overtime).reduce((acc,item)=>{
+									this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.works.length!==0 && task.overtime).reduce((acc,item)=>{
 										return acc+item.works.reduce((acc,item)=>{
 											if(!isNaN(parseInt(item.quantity))){
 												return acc+parseInt(item.quantity);
@@ -899,20 +1036,20 @@ class MothlyReportsCompany extends Component {
 											return acc;
 										},0);
 									},0)} ( Čísla úloh:
-										{this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.works.length!==0 && task.overtime)
+										{this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.works.length!==0 && task.overtime)
 										.reduce((acc,task)=>{
 											return acc+=task.id + ','
 										}," ").slice(0,-1)+" )"}
 								</p>
 								<p className="m-0">Spolu prirážka za práce mimo pracovných hodín: {
-									this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.works.length!==0 && task.overtime).reduce((acc,item)=>{
+									this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.works.length!==0 && task.overtime).reduce((acc,item)=>{
 										return acc+item.works.reduce((acc,work)=>{
 											return acc+=isNaN(this.getTotalAHExtraPrice(work))?0:this.getTotalAHExtraPrice(work)
 										},0);
 									},0)} eur
 								</p>
 								<p className="m-0">Spolu cena bez DPH: {
-									(this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.works.length!==0).reduce((acc,task)=>{
+									(this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.works.length!==0).reduce((acc,task)=>{
 										return acc+task.works.reduce((acc,work)=>{
 											if(task.overtime){
 												return acc+(isNaN(this.getTotalAHPrice(work))?0:this.getTotalAHPrice(work));
@@ -922,7 +1059,7 @@ class MothlyReportsCompany extends Component {
 									},0)).toFixed(2)} eur
 								</p>
 								<p className="m-0">Spolu cena s DPH: {
-									(this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.works.length!==0).reduce((acc,task)=>{
+									(this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.works.length!==0).reduce((acc,task)=>{
 										return acc+task.works.reduce((acc,work)=>{
 											return acc+(isNaN(this.getTotalWithDPH(work,task.overtime))?0:this.getTotalWithDPH(work,task.overtime));
 										},0);
@@ -934,6 +1071,7 @@ class MothlyReportsCompany extends Component {
 								<table className="table m-b-10">
 									<thead>
 										<tr>
+											<th width="25"></th>
 											<th>ID</th>
 											<th>Názov úlohy</th>
 											<th>Zadal</th>
@@ -948,8 +1086,23 @@ class MothlyReportsCompany extends Component {
 									</thead>
 									<tbody>
 										{
-											this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.trips.length!==0).map((task)=>
+											this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && task.trips.length!==0).map((task)=>
 											<tr key={task.id}>
+												<td className="table-checkbox">
+													<label className="custom-container">
+														<Input type="checkbox"
+															checked={this.state.pickedTasks.includes(task.id)}
+															onChange={()=>{
+																if(this.state.pickedTasks.includes(task.id)){
+																	this.setState({pickedTasks:this.state.pickedTasks.filter((taskID)=>taskID!==task.id)});
+																}else{
+																	this.setState({pickedTasks:[...this.state.pickedTasks,task.id]});
+																}
+																}} />
+															<span className="checkmark" style={{ marginTop: "-3px"}}> </span>
+													</label>
+												</td>
+
 												<td>{task.id}</td>
 												<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/` + task.id }} style={{ color: "#1976d2" }}>{task.title}</Link></td>
 												<td>{task.requester?task.requester.email:'Nikto'}</td>
@@ -986,7 +1139,7 @@ class MothlyReportsCompany extends Component {
 								</table>
 
 								<p className="m-0">Spolu počet výjazdov: {
-									this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.trips.length!==0).reduce((acc,item)=>{
+									this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.trips.length!==0).reduce((acc,item)=>{
 										return acc+item.trips.reduce((acc,item)=>{
 											if(!isNaN(parseInt(item.quantity))){
 												return acc+parseInt(item.quantity);
@@ -996,7 +1149,7 @@ class MothlyReportsCompany extends Component {
 									},0)}
 								</p>
 								<p className="m-0">Spolu počet výjazdov mimo pracovný čas: {
-									this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.trips.length!==0 && task.overtime).reduce((acc,item)=>{
+									this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.trips.length!==0 && task.overtime).reduce((acc,item)=>{
 										return acc+item.trips.reduce((acc,item)=>{
 											if(!isNaN(parseInt(item.quantity))){
 												return acc+parseInt(item.quantity);
@@ -1004,20 +1157,20 @@ class MothlyReportsCompany extends Component {
 											return acc;
 										},0);
 									},0)} ( Čísla úloh:
-										{this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.trips.length!==0 && task.overtime)
+										{this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.trips.length!==0 && task.overtime)
 										.reduce((acc,task)=>{
 											return acc+=task.id + ','
 										}," ").slice(0,-1)+" )"}
 								</p>
 								<p className="m-0">Spolu prirážka za výjazdov mimo pracovných hodín: {
-									this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.trips.length!==0 && task.overtime).reduce((acc,item)=>{
+									this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.trips.length!==0 && task.overtime).reduce((acc,item)=>{
 										return acc+item.trips.reduce((acc,trip)=>{
 											return acc+(isNaN(this.getTotalAHExtraPrice(trip))?0:this.getTotalAHExtraPrice(trip))
 										},0);
 									},0)} eur
 								</p>
 								<p className="m-0">Spolu cena bez DPH: {
-									(this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.trips.length!==0).reduce((acc,task)=>{
+									(this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.trips.length!==0).reduce((acc,task)=>{
 										return acc+task.trips.reduce((acc,trip)=>{
 											if(task.overtime){
 												return acc+(isNaN(this.getTotalAHPrice(trip))?0:this.getTotalAHPrice(trip));
@@ -1027,7 +1180,7 @@ class MothlyReportsCompany extends Component {
 									},0)).toFixed(2)} eur
 								</p>
 								<p className="m-0">Spolu cena s DPH: {
-									(this.state.tasks.projectTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.trips.length!==0).reduce((acc,task)=>{
+									(this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.trips.length!==0).reduce((acc,task)=>{
 										return acc+task.trips.reduce((acc,trip)=>{
 											return acc+(isNaN(this.getTotalWithDPH(trip,task.overtime))?0:this.getTotalWithDPH(trip,task.overtime));
 										},0);
@@ -1041,6 +1194,7 @@ class MothlyReportsCompany extends Component {
 							<table className="table m-b-10">
 								<thead>
 									<tr>
+										<th width="25"></th>
 										<th>ID</th>
 										<th style={{ width: '20%' }}>Name</th>
 										<th>Zadal</th>
@@ -1056,8 +1210,23 @@ class MothlyReportsCompany extends Component {
 								</thead>
 								<tbody>
 									{
-										this.state.allTasks.filter((task)=>task.company.id===this.state.showCompany.id && task.materials.length > 0 ).map((task, index)=>
+										this.state.allTasks.filter((task)=>this.filterTask(task,statusIDs) && task.materials.length > 0 ).map((task, index)=>
 										<tr key={index}>
+											<td className="table-checkbox">
+												<label className="custom-container">
+													<Input type="checkbox"
+														checked={this.state.pickedTasks.includes(task.id)}
+														onChange={()=>{
+															if(this.state.pickedTasks.includes(task.id)){
+																this.setState({pickedTasks:this.state.pickedTasks.filter((taskID)=>taskID!==task.id)});
+															}else{
+																this.setState({pickedTasks:[...this.state.pickedTasks,task.id]});
+															}
+															}} />
+														<span className="checkmark" style={{ marginTop: "-3px"}}> </span>
+												</label>
+											</td>
+
 											<td>{task.id}</td>
 											<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/`+task.id }} style={{ color: "#1976d2" }}>{task.title}</Link></td>
 											<td>{task.requester?task.requester.email:'Nikto'}</td>
@@ -1094,11 +1263,11 @@ class MothlyReportsCompany extends Component {
 								</tbody>
 							</table>
 							<p className="m-0">Spolu cena bez DPH: {
-									(this.state.allTasks.filter((task)=>task.company.id===this.state.showCompany.id).reduce((acc,task)=>{
+									(this.state.allTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id)).reduce((acc,task)=>{
 									return acc+task.materials.reduce((acc,material)=>acc+=isNaN(parseFloat(material.totalPrice))?0:parseFloat(material.totalPrice),0)
 								},0)).toFixed(2)} EUR</p>
 							<p className="m-0">Spolu cena s DPH: {
-									(this.state.allTasks.filter((task)=>task.company.id===this.state.showCompany.id).reduce((acc,task)=>{
+									(this.state.allTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id)).reduce((acc,task)=>{
 									return acc+task.materials.reduce((acc,material)=>acc+=isNaN(parseFloat(material.totalPrice))?0:parseFloat(material.totalPrice),0)
 								},0)*(1+(isNaN(parseInt(this.state.showCompany.dph))?0:parseInt(this.state.showCompany.dph))/100)).toFixed(2)} EUR</p>
 						</div>
@@ -1246,7 +1415,6 @@ class MothlyReportsCompany extends Component {
 		})
 		return { pausalPaidTasks , extraTasks };
 	}
-
 }
 
 const mapStateToProps = ({ filterReducer,reportReducer,userReducer, storageCompanies, storageHelpTasks, storageHelpStatuses, storageHelpTaskTypes, storageHelpUnits, storageUsers, storageHelpTaskMaterials, storageHelpTaskWorks, storageHelpTaskWorkTrips, storageHelpTripTypes, storageHelpPricelists, storageHelpPrices }) => {

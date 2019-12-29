@@ -81,7 +81,7 @@ export default class Rozpocet extends Component {
 										<th width="100" className="table-highlight-background">Nákup</th>
 										<th width="100" className="table-highlight-background">Marža</th>
 										{false && <th width="124">Predajná cena</th>}
-										<th className="t-a-c" width="100"></th>
+										<th className="t-a-c" width="130"></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -258,6 +258,17 @@ export default class Rozpocet extends Component {
 
 
 											<td className="t-a-r">
+												<button className="btn btn-link waves-effect" disabled={this.props.disabled}>
+														<i className="fa fa-sync-alt" onClick={()=>{
+																console.log(this.props.company);
+																if(parseInt(material.price) <= 50){
+																	this.props.updateMaterial(material.id,{margin:(this.props.company && this.props.company.pricelist)?parseInt(this.props.company.pricelist.materialMargin):material.margin})
+																}else{
+																	this.props.updateMaterial(material.id,{margin:(this.props.company && this.props.company.pricelist)?parseInt(this.props.company.pricelist.materialMarginExtra):material.margin})
+																}
+																let margin
+															}} />
+												</button>
 												<button className="btn btn-link waves-effect" disabled={this.props.disabled}>
 													<i className="fa fa-arrow-up"  />
 												</button>
