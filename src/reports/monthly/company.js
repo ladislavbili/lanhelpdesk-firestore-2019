@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import { Button, Input } from 'reactstrap';
+import { Button, Input, Modal, ModalBody, ModalHeader } from 'reactstrap';
 import Select from 'react-select';
 import {storageCompaniesStart,storageHelpTasksStart, storageHelpStatusesStart, storageHelpTaskTypesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart, storageHelpTaskWorksStart, storageHelpTaskWorkTripsStart, storageHelpTripTypesStart, storageHelpPricelistsStart, storageHelpPricesStart } from '../../redux/actions';
 import { timestampToString, sameStringForms, toSelArr} from '../../helperFunctions';
@@ -20,7 +20,8 @@ class MothlyReportsCompany extends Component {
 			status:[],
 			showCompany:null,
 			loading:false,
-			pickedTasks:[]
+			pickedTasks:[],
+			taskOpened:null,
 		}
 		this.filterTask.bind(this);
 	}
@@ -528,7 +529,7 @@ class MothlyReportsCompany extends Component {
 													</label>
 												</td>
 												<td>{task.id}</td>
-												<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/` + task.id }} style={{ color: "#1976d2" }}>{task.title}</Link></td>
+												<td className="clickable" style={{ color: "#1976d2" }} onClick={()=>this.setState({taskOpened:task})}>{task.title}</td>
 												<td>{task.requester?task.requester.email:'Nikto'}</td>
 												<td>
 													{task.assignedTo.map((assignedTo)=>
@@ -629,7 +630,7 @@ class MothlyReportsCompany extends Component {
 												</td>
 
 												<td>{task.id}</td>
-												<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/` + task.id }} style={{ color: "#1976d2" }}>{task.title}</Link></td>
+												<td className="clickable" style={{ color: "#1976d2" }} onClick={()=>this.setState({taskOpened:task})}>{task.title}</td>
 												<td>{task.requester?task.requester.email:'Nikto'}</td>
 												<td>
 													{task.assignedTo.map((assignedTo)=>
@@ -735,7 +736,7 @@ class MothlyReportsCompany extends Component {
 													</label>
 											</td>
 												<td>{task.id}</td>
-												<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/` + task.id }} style={{ color: "#1976d2" }}>{task.title}</Link></td>
+												<td className="clickable" style={{ color: "#1976d2" }} onClick={()=>this.setState({taskOpened:task})}>{task.title}</td>
 												<td>{task.requester?task.requester.email:'Nikto'}</td>
 												<td>
 													{task.assignedTo.map((assignedTo)=>
@@ -857,7 +858,7 @@ class MothlyReportsCompany extends Component {
 												</td>
 
 												<td>{task.id}</td>
-												<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/` + task.id }} style={{ color: "#1976d2" }}>{task.title}</Link></td>
+												<td className="clickable" style={{ color: "#1976d2" }} onClick={()=>this.setState({taskOpened:task})}>{task.title}</td>
 												<td>{task.requester?task.requester.email:'Nikto'}</td>
 												<td>
 													{task.assignedTo.map((assignedTo)=>
@@ -982,7 +983,7 @@ class MothlyReportsCompany extends Component {
 												</td>
 
 												<td>{task.id}</td>
-												<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/` + task.id }} style={{ color: "#1976d2" }}>{task.title}</Link></td>
+												<td className="clickable" style={{ color: "#1976d2" }} onClick={()=>this.setState({taskOpened:task})}>{task.title}</td>
 												<td>{task.requester?task.requester.email:'Nikto'}</td>
 												<td>
 													{task.assignedTo.map((assignedTo)=>
@@ -1104,7 +1105,7 @@ class MothlyReportsCompany extends Component {
 												</td>
 
 												<td>{task.id}</td>
-												<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/` + task.id }} style={{ color: "#1976d2" }}>{task.title}</Link></td>
+												<td className="clickable" style={{ color: "#1976d2" }} onClick={()=>this.setState({taskOpened:task})}>{task.title}</td>
 												<td>{task.requester?task.requester.email:'Nikto'}</td>
 												<td>
 													{task.assignedTo.map((assignedTo)=>
@@ -1228,7 +1229,7 @@ class MothlyReportsCompany extends Component {
 											</td>
 
 											<td>{task.id}</td>
-											<td><Link className="" to={{ pathname: `/helpdesk/taskList/i/all/`+task.id }} style={{ color: "#1976d2" }}>{task.title}</Link></td>
+											<td className="clickable" style={{ color: "#1976d2" }} onClick={()=>this.setState({taskOpened:task})}>{task.title}</td>
 											<td>{task.requester?task.requester.email:'Nikto'}</td>
 											<td>{task.assigned?task.assigned.email:'Nikto'}</td>
 											<td>{task.status.title}</td>
@@ -1307,6 +1308,14 @@ class MothlyReportsCompany extends Component {
 								},0)*this.getMonthDiff(this.props)*(1+(isNaN(parseInt(this.state.showCompany.dph))?0:parseInt(this.state.showCompany.dph))/100)).toFixed(2)} EUR</p>
 						</div>
 					</div>}
+					<Modal isOpen={this.state.taskOpened!==null} className="modal-width-1000 modal-without-borders" toggle={()=>this.setState({taskOpened:null})} >
+						<ModalHeader toggle={()=>this.setState({taskOpened:null})}>{this.state.taskOpened!==null?('Editing: '+this.state.taskOpened.title):''}</ModalHeader>
+						<ModalBody>
+							{ this.state.taskOpened!==null &&
+								<TaskEdit inModal={true} columns={true} match={{params:{taskID:this.state.taskOpened.id}}} closeModal={()=>this.setState({taskOpened:null})}/>
+							}
+						</ModalBody>
+					</Modal>
 				 </div>
 			);
 		}

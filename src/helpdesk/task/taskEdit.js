@@ -100,7 +100,7 @@ class TaskEdit extends Component {
 			isColumn: false,
 			search: '',
 			openCopyModal: false,
-			toggleTab:"1",
+			toggleTab:"3",
 			pendingOpen:false,
 			pendingStatus:null,
 
@@ -155,8 +155,12 @@ class TaskEdit extends Component {
 			.then((data)=>{
 				snapshotToArray(data).forEach((item)=>rebase.removeDoc('/help-comments/'+item.id));
 			});
-			this.props.history.goBack();
-			this.props.history.push(this.props.match.url.substring(0,this.props.match.url.length-this.props.match.params.taskID.length));
+			if(this.props.inModal){
+				this.props.closeModal();
+			}else{
+				this.props.history.goBack();
+				this.props.history.push(this.props.match.url.substring(0,this.props.match.url.length-this.props.match.params.taskID.length));
+			}
 		}
 	}
 
@@ -380,7 +384,7 @@ class TaskEdit extends Component {
 		let newState = {
 			workTrips,
 			taskMaterials,
-			toggleTab:'1',
+			toggleTab:viewOnly?"1":"3",
 			taskWorks,
 			repeat,
 

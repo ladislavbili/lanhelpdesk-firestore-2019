@@ -1,5 +1,4 @@
 
-
 //-----classNames, ktore tu nie su definovane ale su z react-strapu
 /*
 - d-flex
@@ -30,16 +29,25 @@
   font-family: $main-font;
 }
 
-@media (min-width: 576px) {
+@media (min-width: 769px) {
   .modal-dialog {
     max-width: none;
   }
 }
 
-@media (min-width: 768px){
+@media (max-width: 768px){
 .modal-dialog {
     width: 600px;
     margin: 30px auto;
+  }
+}
+
+.modal-without-borders{
+  .modal-content{
+    padding: 0px;
+    .modal-body{
+      padding:0px;
+    }
   }
 }
 
