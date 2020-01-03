@@ -260,13 +260,11 @@ export default class Rozpocet extends Component {
 											<td className="t-a-r">
 												<button className="btn btn-link waves-effect" disabled={this.props.disabled}>
 														<i className="fa fa-sync-alt" onClick={()=>{
-																console.log(this.props.company);
 																if(parseInt(material.price) <= 50){
 																	this.props.updateMaterial(material.id,{margin:(this.props.company && this.props.company.pricelist)?parseInt(this.props.company.pricelist.materialMargin):material.margin})
 																}else{
 																	this.props.updateMaterial(material.id,{margin:(this.props.company && this.props.company.pricelist)?parseInt(this.props.company.pricelist.materialMarginExtra):material.margin})
 																}
-																let margin
 															}} />
 												</button>
 												<button className="btn btn-link waves-effect" disabled={this.props.disabled}>

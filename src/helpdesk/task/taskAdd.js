@@ -727,6 +727,28 @@ export default class TaskAdd extends Component{
 						}}
 						/>
 				}
+				<Attachments
+					disabled={this.state.viewOnly}
+					taskID={null}
+					attachments={this.state.attachments}
+					addAttachments={(newAttachments)=>{
+						let time = (new Date()).getTime();
+						newAttachments=newAttachments.map((attachment)=>{
+							return {
+								title:attachment.name,
+								size:attachment.size,
+								time,
+								data:attachment
+							}
+						});
+						this.setState({attachments:[...this.state.attachments,...newAttachments]});
+					}}
+					removeAttachment={(attachment)=>{
+						let newAttachments = [...this.state.attachments];
+						newAttachments.splice(newAttachments.findIndex((item)=>item.title===attachment.title && item.size===attachment.size && item.time===attachment.time),1);
+						this.setState({attachments:newAttachments});
+					}}
+					/>
 
 				<div>
 						{!this.state.viewOnly && !this.state.hidden && false && <Subtasks
@@ -772,15 +794,6 @@ export default class TaskAdd extends Component{
 										onClick={() => { this.setState({toggleTab:'2'}); }}
 									>
 										Rozpočet
-									</NavLink>
-								</NavItem>
-								<div style={{borderRight:"2px solid #BDBDBD"}} className="m-t-5 m-b-5"></div>
-								<NavItem  className="p-t-5 p-b-5">
-									<NavLink
-										className={classnames({ active: this.state.toggleTab === '3' }, "clickable", "")}
-										onClick={() => { this.setState({toggleTab:'3'}); }}
-									>
-										Prílohy
 									</NavLink>
 								</NavItem>
 							</Nav>}
@@ -910,29 +923,6 @@ export default class TaskAdd extends Component{
 										match={{params:{taskID:null}}}
 									/>
 								</TabPane>
-								<TabPane tabId="3">
-								<Attachments
-									disabled={this.state.viewOnly}
-									attachments={this.state.attachments}
-									addAttachments={(newAttachments)=>{
-										let time = (new Date()).getTime();
-										newAttachments=newAttachments.map((attachment)=>{
-											return {
-												title:attachment.name,
-												size:attachment.size,
-												time,
-												data:attachment
-											}
-										});
-										this.setState({attachments:[...this.state.attachments,...newAttachments]});
-									}}
-									removeAttachment={(attachment)=>{
-										let newAttachments = [...this.state.attachments];
-										newAttachments.splice(newAttachments.findIndex((item)=>item.title===attachment.title && item.size===attachment.size && item.time===attachment.time),1);
-										this.setState({attachments:newAttachments});
-									}}
-									/>
-							</TabPane>
 							</TabContent>}
 					</div>
 			</div>

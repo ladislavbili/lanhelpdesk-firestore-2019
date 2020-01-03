@@ -380,7 +380,13 @@ class TaskEdit extends Component {
 		}
 
 		let permission = project.permissions.find((permission)=>permission.user===props.currentUser.id);
-		let viewOnly = (status && status.action==='invoiced' && props.currentUser.userData.role.value!==3 && !permission.isAdmin )||((permission===undefined || !permission.write) && props.currentUser.userData.role.value===0);
+		let viewOnly = false;
+		if(status && status.action==='invoiced' && props.inModal && (props.currentUser.userData.role.value===3 || permission.isAdmin)){
+			viewOnly = false;
+		}else{
+			viewOnly = ((permission===undefined || !permission.write) && props.currentUser.userData.role.value===0)||(status && status.action==='invoiced');
+		}
+
 		let newState = {
 			workTrips,
 			taskMaterials,
@@ -839,6 +845,7 @@ class TaskEdit extends Component {
 
 								<Attachments
 									disabled={this.state.viewOnly}
+									taskID={this.props.match.params.taskID}
 									attachments={this.state.attachments}
 									addAttachments={(newAttachments)=>{
 										let time = (new Date()).getTime();

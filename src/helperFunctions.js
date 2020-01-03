@@ -18,6 +18,13 @@ export const timestampToString = (timestamp) => {
   return date.getHours()+":"+(date.getMinutes() < 10 ? '0' : '') + date.getMinutes()+" "+date.getDate()+"."+(date.getMonth()+1)+"."+date.getFullYear();
 }
 
+export const toFloat = (number) => parseFloat(parseFloat(number).toFixed(2))
+
+export const timestampToDate = (timestamp) => {
+  let date = (new Date(timestamp));
+  return date.getDate()+"."+(date.getMonth()+1)+"."+date.getFullYear();
+}
+
 export const hightlightText = (message,text, color)=>{
   let index = message.toLowerCase().indexOf(text.toLowerCase());
   if (index===-1){
