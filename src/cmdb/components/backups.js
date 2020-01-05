@@ -23,15 +23,15 @@ export default class Backups extends Component{
 
         {
           this.props.items.map((item,index)=>
-          <div key={item.id} className="row">
-              <Label style={{width: (this.props.width ? this.props.width : 150)}}>
+          <div key={item.id} >
+              <Label>
                 <div dangerouslySetInnerHTML ={{__html:this.props.label}}/>
               </Label>
 
             <div className="flex">
               <Input
                 className="no-scrolling"
-                style={{height:item.id===this.state.editID?this.state.editTextHeight:item.textHeight, /*width: this.props.width ? 958-this.props.width-20 : 150*/}}
+                style={{height: item.id === this.state.editID ? this.state.editTextHeight : item.textHeight, /*width: this.props.width ? 958-this.props.width-20 : 150*/}}
                 type="textarea"
                 value={
                   item.id === this.state.editID
@@ -48,7 +48,7 @@ export default class Backups extends Component{
                     let newData = [...this.props.items];
                     newData[index]=body;
                     this.props.onChange(newData);
-                    this.setState({ editID: null });
+                    this.setState({ editID: null, });
                   }}
                   onFocus={() => {
                     this.setState({
@@ -63,18 +63,20 @@ export default class Backups extends Component{
                   }
                   />
             </div>
-            <BackupList id={item.id} items={item.backupList?item.backupList:[]}
-              onChange={(items)=>{
-                let newData = [...this.props.items];
-                newData[index].backupList=items;
-                this.props.onChange(newData);
-              }}
-            />
+
+            {false &&
+                <BackupList id={item.id} items={item.backupList?item.backupList:[]}
+                  onChange={(items)=>{
+                    let newData = [...this.props.items];
+                    newData[index].backupList=items;
+                    this.props.onChange(newData);
+                  }}
+                />
+            }
           {
             !item.def &&
            <Button className="btn-link" onClick={()=>{this.props.removeItem(item.id);}}>Remove</Button>
           }
-          <hr className="m-b-10"/>
           </div>
         )}
         <Button className="btn pull-right" onClick={()=>{this.props.onChange([{id:this.state.newID,text:"",textHeight:29,fake:true,backupList:[]},...this.props.items]);this.setState({newID:this.state.newID+1})}}>{this.props.addLabel}</Button>

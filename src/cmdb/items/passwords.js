@@ -21,6 +21,8 @@ export default class Passwords extends Component{
       newLogin:'',
       newPassword:'',
       newNote:'',
+
+      addingItem: false,
     }
     this.onBlur.bind(this);
     this.onFocus.bind(this);
@@ -61,7 +63,6 @@ onFocus(item) {
       <table className="table">
         <thead>
           <tr>
-
             <th>Title</th>
             <th>IP/URL</th>
             <th>Login</th>
@@ -170,92 +171,98 @@ onFocus(item) {
             </tr>
             )
           }
-          <tr>
-            <td>
-              <Input
-                type="text"
-                value={this.state.newTitle}
-                onChange={(e)=>this.setState({newTitle:e.target.value})}
-                className="form-control"
-                id="inlineFormInput"
-                placeholder="Enter title"
-                />
-            </td>
-            <td>
-              <Input
-                type="text"
-                value={this.state.newIP}
-                onChange={(e)=>this.setState({newIP:e.target.value})}
-                className="form-control"
-                id="inlineFormInput"
-                placeholder="Enter IP"
-                />
-            </td>
-            <td>
-              <Input
-                type="text"
-                value={this.state.newLogin}
-                onChange={(e)=>this.setState({newLogin:e.target.value})}
-                className="form-control"
-                id="inlineFormInput"
-                placeholder="Enter login"
-                />
-            </td>
-            <td>
-              <Input
-                type="text"
-                value={this.state.newPassword}
-                onChange={(e)=>this.setState({newPassword:e.target.value})}
-                className="form-control"
-                id="inlineFormInput"
-                placeholder="Enter password"
-                />
-            </td>
-            <td>
-              <Input
-                type="text"
-                value={this.state.newNote}
-                onChange={(e)=>this.setState({newNote:e.target.value})}
-                className="form-control"
-                id="inlineFormInput"
-                placeholder="Enter note"
-                />
-            </td>
+          {this.state.addingItem &&
+              <tr>
+                <td>
+                  <Input
+                    type="text"
+                    value={this.state.newTitle}
+                    onChange={(e)=>this.setState({newTitle:e.target.value})}
+                    className="form-control"
+                    id="inlineFormInput"
+                    placeholder="Enter title"
+                    />
+                </td>
+                <td>
+                  <Input
+                    type="text"
+                    value={this.state.newIP}
+                    onChange={(e)=>this.setState({newIP:e.target.value})}
+                    className="form-control"
+                    id="inlineFormInput"
+                    placeholder="Enter IP"
+                    />
+                </td>
+                <td>
+                  <Input
+                    type="text"
+                    value={this.state.newLogin}
+                    onChange={(e)=>this.setState({newLogin:e.target.value})}
+                    className="form-control"
+                    id="inlineFormInput"
+                    placeholder="Enter login"
+                    />
+                </td>
+                <td>
+                  <Input
+                    type="text"
+                    value={this.state.newPassword}
+                    onChange={(e)=>this.setState({newPassword:e.target.value})}
+                    className="form-control"
+                    id="inlineFormInput"
+                    placeholder="Enter password"
+                    />
+                </td>
+                <td>
+                  <Input
+                    type="text"
+                    value={this.state.newNote}
+                    onChange={(e)=>this.setState({newNote:e.target.value})}
+                    className="form-control"
+                    id="inlineFormInput"
+                    placeholder="Enter note"
+                    />
+                </td>
+                <td>
+                  <button className="btn-link waves-effect"
+                    disabled={this.state.newIP===''}
+                    onClick={()=>{
+                      let body={
+                        title:this.state.newTitle,
+                        IP:this.state.newIP,
+                        login:this.state.newLogin,
+                        password:this.state.newPassword,
+                        note:this.state.newNote,
+                        id:this.state.newItemID,
+                        fake:true,
+                      }
 
+                      this.setState({
+                        newTitle:'',
+                        newIP:'',
+                        newLogin:'',
+                        newPassword:'',
+                        newNote:'',
+                        newItemID:this.state.newItemID+1,
+                        addingItem: false,
+                      });
 
-
-            <td>
-              <button className="btn-link waves-effect"
-                disabled={this.state.newIP===''}
-                onClick={()=>{
-                  let body={
-                    title:this.state.newTitle,
-                    IP:this.state.newIP,
-                    login:this.state.newLogin,
-                    password:this.state.newPassword,
-                    note:this.state.newNote,
-                    id:this.state.newItemID,
-                    fake:true,
-                  }
-
-                  this.setState({
-                    newTitle:'',
-                    newIP:'',
-                    newLogin:'',
-                    newPassword:'',
-                    newNote:'',
-                    newItemID:this.state.newItemID+1
-                  });
-
-                  this.props.onChange([...this.props.items,body]);
-                  }
-                }
-                >
-                <i className="fa fa-plus" />
-              </button>
-            </td>
-
-          </tr>
+                      this.props.onChange([...this.props.items,body]);
+                      }
+                    }
+                    >
+                    <i className="fa fa-plus" />
+                  </button>
+                </td>
+              </tr>
+            }
+            {!this.state.addingItem &&
+              <tr className="add-item" onClick={() => this.setState({addingItem: true,})}>
+                <td>
+                  + Add item
+                </td>
+              </tr>
+            }
         </tbody>
 
       </table>

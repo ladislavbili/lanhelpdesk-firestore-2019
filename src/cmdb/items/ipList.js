@@ -20,7 +20,9 @@ export default class IPList extends Component{
       newGateway:'',
       newDNS:'',
       newDNS2:'',
-      newItemID:0
+      newItemID:0,
+
+      addingItem: false,
     }
     this.onFocus.bind(this);
   }
@@ -199,6 +201,7 @@ export default class IPList extends Component{
             </tr>
           )
         }
+        {this.state.addingItem &&
         <tr>
           <td>
             <Input
@@ -282,7 +285,8 @@ export default class IPList extends Component{
                   newGateway:'',
                   newDNS:'',
                   newDNS2:'',
-                  newItemID:this.state.newItemID+1
+                  newItemID:this.state.newItemID+1,
+                  addingItem: false,
                 });
 
                 this.props.onChange([...this.props.items,body]);
@@ -292,8 +296,15 @@ export default class IPList extends Component{
             <i className="fa fa-plus" />
           </button>
         </td>
-
       </tr>
+      }
+      {!this.state.addingItem &&
+        <tr className="add-item" onClick={() => this.setState({addingItem: true,})}>
+          <td>
+            + Add item
+          </td>
+        </tr>
+      }
     </tbody>
 
   </table>

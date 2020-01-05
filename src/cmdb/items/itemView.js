@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {rebase,database} from '../../index';
-import { FormGroup, Label, Table } from 'reactstrap';
+import { FormGroup, Label, Table, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 import {snapshotToArray, getAttributeDefaultValue, htmlFixNewLines} from '../../helperFunctions';
+import classnames from "classnames";
 
 export default class ItemView extends Component{
   constructor(props){
@@ -16,8 +17,10 @@ export default class ItemView extends Component{
       IPs:[],
       passwords:[],
       backups:[],
+      backupTasksDescription: "",
       items:[],
-      links:[]
+      links:[],
+      toggleTab: "1",
     }
     this.setData.bind(this);
     this.getData.bind(this);
@@ -70,6 +73,7 @@ export default class ItemView extends Component{
       IPs,
       passwords,
       backups,
+      backupTasksDescription: item.backupsDescription,
       attributes,
       items,
       links: links.map((item)=>{
@@ -96,7 +100,7 @@ export default class ItemView extends Component{
   render(){
     return (
         <div className="card-box fit-with-header-and-commandbar scrollable p-t-15">
-          <div >
+
             <div className="row m-b-10">
               <h4 className="center-hor cmdb-title">
                 {this.state.item===null?'':this.state.item.title}
@@ -109,17 +113,17 @@ export default class ItemView extends Component{
             </div>
 
             <hr />
-            <div className="cmdb-selects">
-                <div className="row m-b-10 cmdb-selects-info">
-                  <div className="w-50">
+            <div className="cmdb-selects col-lg-12">
+                <div className="row m-b-10 col-lg-6 cmdb-selects-info">
+                  <div className="w-30">
                     <Label>Status:</Label>
                   </div>
                   <div className="">
                     {this.state.item===null?'':this.state.statuses.find((item)=>item.id===this.state.item.status).title}
                   </div>
                 </div>
-                <div className="row m-b-10 cmdb-selects-info">
-                  <div className="w-50">
+                <div className="row m-b-10 col-lg-6 cmdb-selects-info">
+                  <div className="w-30">
                     <Label>Company:</Label>
                   </div>
                   <div className="">
@@ -128,8 +132,8 @@ export default class ItemView extends Component{
                 </div>
 
               { (this.state.sidebarItem ? this.state.sidebarItem.attributes : []).map((item)=>
-                <div key={item.id} className="row m-b-10 cmdb-selects-info">
-                  <div className="w50">
+                <div key={item.id} className="row m-b-10 col-lg-6 cmdb-selects-info">
+                  <div className="w-30">
                     <Label>{item.title}</Label>
                   </div>
                   { item.type.id==='select' &&
@@ -147,16 +151,20 @@ export default class ItemView extends Component{
             </div>
 
 
-                <FormGroup className="row m-b-10">
-                  <div className="m-r-5 w-10">
+                <FormGroup className="m-b-10">
+                  <div className="m-r-5 w-10 m-b-15">
                     <Label>Description</Label>
                   </div>
-                  <div className="flex" dangerouslySetInnerHTML={{__html:this.state.item===null?'': this.state.item.description.replace(/(?:\r\n|\r|\n)/g, '<br>') }}></div>
+                  <div className="row">
+                    <div className="flex p-r-15" dangerouslySetInnerHTML={{__html:this.state.item===null ? '': ( this.state.item.description.length === 0 ? "No description" : this.state.item.description.replace(/(?:\r\n|\r|\n)/g, '<br>') )}}></div>
+                    <div className="cmdb-yellow">
+                      Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean et est a dui semper facilisis. Pellentesque placerat elit a nunc. Nullam tortor odio, rutrum quis, egestas ut, posuere sed, felis. Vestibulum placerat feugiat nisl. Suspendisse lacinia, odio non feugiat vestibulum, sem erat blandit metus, ac nonummy magna odio pharetra felis.
+                    </div>
+                  </div>
                 </FormGroup>
 
-              <div className="m-t-10">
-                <Label className="font-16">IP list</Label>
-                <Table striped>
+              <div className="m-t-30 cmdb-item-table">
+                <Table className="table">
                   <thead>
                     <tr>
                       <th>NIC</th>
@@ -181,27 +189,15 @@ export default class ItemView extends Component{
                   </tbody>
                 </Table>
               </div>
-              <div className="m-t-10">
-                <Label className="font-16">Backup tasks</Label>
-                { this.state.backups.map((item,index)=>
-                  <div className="row" key={item.id}>
-                    <Label>
-                      <div style={{width:300, fontWeight: 50}} dangerouslySetInnerHTML ={{__html:htmlFixNewLines(this.state.sidebarItem?this.state.sidebarItem.bacupTasksLabel:'')}}/>
-                    </Label>
-                    <div style={{width:700}} dangerouslySetInnerHTML ={{__html:htmlFixNewLines(item.text)}}>
-                    </div>
-                  </div>
-                )}
-              </div>
-              <div className="m-t-10">
-                <Label className="font-16">Passwords</Label>
-                <Table striped>
+
+              <div className="m-t-30 cmdb-item-table">
+                <Table className="table">
                   <thead>
                     <tr>
-                      <th>Title</th>
-                      <th>IP/URL</th>
+                      <th>Passwords</th>
                       <th>Login</th>
                       <th>Password</th>
+                      <th>IP/URL</th>
                       <th>Note</th>
                     </tr>
                   </thead>
@@ -209,35 +205,93 @@ export default class ItemView extends Component{
                     { this.state.passwords.map((item,index)=>
                       <tr key={item.id}>
                         <td>{item.title}</td>
-                        <td> <a href={item.IP} target="_blank" without rel="noopener noreferrer">{item.IP}</a></td>
                         <td>{item.login}</td>
                         <td>{item.password}</td>
+                        {false && <td> <a href={item.IP} target="_blank" without rel="noopener noreferrer">{item.IP}</a></td> }
+                        <td>{item.IP}</td>
                         <td>{item.note}</td>
                       </tr>
                     )}
                   </tbody>
                 </Table>
               </div>
-              <div className="m-t-10">
-                <Label className="font-16">Links</Label>
-                <Table striped>
-                  <thead>
-                    <tr>
-                      <th>Connection</th>
-                      <th>Note</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    { this.state.links.map((item,index)=>
-                      <tr key={item.id}>
-                        <td><a href={'/cmdb/i/'+item.link.sidebarID+'/'+item.link.id} target="_blank" without rel="noopener noreferrer">{item.link.title}</a></td>
-                        <td><div dangerouslySetInnerHTML ={{__html:htmlFixNewLines(item.note)}}></div></td>
-                      </tr>
+
+              <div className="m-t-30">
+                <Label>Backup tasks description</Label>
+                <div className="row">
+                  <div className="flex">
+                    { false && this.state.backups.map((item,index)=>
+                      <div className="" key={item.id}>
+                        <Label>
+                          <div dangerouslySetInnerHTML ={{__html:htmlFixNewLines(this.state.sidebarItem?this.state.sidebarItem.bacupTasksLabel:'')}}/>
+                        </Label>
+                        <div  dangerouslySetInnerHTML ={{__html:htmlFixNewLines(item.text)}}>
+                        </div>
+                      </div>
                     )}
-                  </tbody>
-                </Table>
+                    {this.backupTasksDescription ? this.state.backupTasksDescription.text : ""}
+                  </div>
+                  <div className="cmdb-yellow">
+                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean et est a dui semper facilisis. Pellentesque placerat elit a nunc. Nullam tortor odio, rutrum quis, egestas ut, posuere sed, felis. Vestibulum placerat feugiat nisl. Suspendisse lacinia, odio non feugiat vestibulum, sem erat blandit metus, ac nonummy magna odio pharetra felis.
+                  </div>
+                </div>
               </div>
-        </div>
+
+
+              <Nav tabs className="b-0 m-b-22 m-t-30 m-l--10">
+                <NavItem className="cmdb-tab">
+                  <NavLink
+                    className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "")}
+                    onClick={() => { this.setState({toggleTab:'1'}); }}
+                  >
+                    Comments
+                  </NavLink>
+                </NavItem>
+                <NavItem className="cmdb-tab">
+                  <NavLink
+                    className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
+                    onClick={() => { this.setState({toggleTab:'2'}); }}
+                  >
+                    Links
+                  </NavLink>
+                </NavItem>
+                <NavItem className="cmdb-tab">
+                  <NavLink
+                    className={classnames({ active: this.state.toggleTab === '3' }, "clickable", "")}
+                    onClick={() => { this.setState({toggleTab:'3'}); }}
+                  >
+                    Attachments
+                  </NavLink>
+                </NavItem>
+              </Nav>
+
+                <TabContent activeTab={this.state.toggleTab}>
+                  <TabPane tabId="1">
+
+                  </TabPane>
+                  <TabPane tabId="2" className="cmdb-item-table">
+                    <Table className="table">
+                      <thead>
+                        <tr>
+                          <th>Connection</th>
+                          <th>Note</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        { this.state.links.map((item,index)=>
+                          <tr key={item.id}>
+                            <td><a href={'/cmdb/i/'+item.link.sidebarID+'/'+item.link.id} target="_blank" without="true" rel="noopener noreferrer">{item.link.title}</a></td>
+                            <td><div dangerouslySetInnerHTML ={{__html:htmlFixNewLines(item.note)}}></div></td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </Table>
+                  </TabPane>
+                  <TabPane tabId="3">
+
+                  </TabPane>
+                </TabContent>
+
       </div>
     );
   }

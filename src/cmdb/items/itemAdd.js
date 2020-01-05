@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {rebase,database} from '../../index';
-import { Button,  FormGroup, Label, Input } from 'reactstrap';
+import { Button,  FormGroup, Label, Input, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 import {toSelArr, snapshotToArray, getAttributeDefaultValue, htmlFixNewLines} from '../../helperFunctions';
 import Select from 'react-select';
 import {selectStyle} from "../../scss/selectStyles";
@@ -9,7 +9,9 @@ import Links from './links';
 import Passwords from './passwords';
 import AttributesHandler from './attributesHandler';
 import TextareaList from '../components/backups';
+import BackupTasksDescription from '../components/backupsDescription';
 import CKEditor from 'ckeditor4-react';
+import classnames from "classnames";
 
 export default class ItemAdd extends Component{
   constructor(props){
@@ -29,9 +31,11 @@ export default class ItemAdd extends Component{
       status:null,
       IPlist:[],
       backupTasks:[{id:-1, def: true}],
+      backupTasksDescription: {},
       passwords:[],
       attributes:{},
-      links:[]
+      links:[],
+      toggleTab: "1",
     }
     this.setData.bind(this);
     this.getData.bind(this);
@@ -81,65 +85,50 @@ export default class ItemAdd extends Component{
   render(){
     return (
       <div>
+        <div className="commandbar">
+          <div className="d-flex flex-row align-items-center">
+          </div>
+        </div>
 
-          <div className="commandbar">
-            <div className="d-flex flex-row align-items-center">
+        <div className="card-box fit-with-header-and-commandbar p-t-15 scrollable" >
+          <div className="row m-b-10">
+            <h4 className="center-hor flex cmdb-title-edit m-r-10">
+              <Input type="text" placeholder="Enter name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
+            </h4>
+            <div className="ml-auto cmdb-info">
+              <div> <span style={{color: "#7FFFD4"}}>*</span> Created by <span className="cmdb-info-name">Natalia Tyulina</span> at 22:00 16.6.2019 <span style={{color: "#7FFFD4"}}>*</span></div>
+              <div><span style={{color: "#7FFFD4"}}>*</span> Edit by <span className="cmdb-info-name">Natalia Tyulina</span> at 22:00 16.6.2019 <span style={{color: "#7FFFD4"}}>*</span></div>
+              <div><span style={{color: "#7FFFD4"}}>*</span> Status changed by <span className="cmdb-info-name">Natalia Tyulina</span> at 22:00 16.6.2019 <span style={{color: "#7FFFD4"}}>*</span></div>
             </div>
           </div>
 
-      <div className="ml-auto mr-auto card-box fit-with-header-and-commandbar p-t-15 scrollable" >
-          <FormGroup className="row m-b-10">
-            <div className="w-10">
-              <Label>Name</Label>
-            </div>
-            <div className="flex">
-              <Input type="text" placeholder="Enter name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
-            </div>
-          </FormGroup>
-          <FormGroup className="row m-b-10">
-            <div className="w-10">
-              <Label>Company</Label>
-            </div>
-            <div className="flex">
-              <Select
-                styles={selectStyle}
-                options={this.state.companies}
-                value={this.state.company}
-                onChange={e =>{ this.setState({ company: e }); }}
-                />
-            </div>
-          </FormGroup>
-          <FormGroup className="row m-b-10">
-            <div className="w-10">
-              <Label>Status</Label>
-            </div>
-            <div className="flex">
-              <Select
-                styles={selectStyle}
-                options={this.state.statuses}
-                value={this.state.status}
-                onChange={e =>{ this.setState({ status: e }); }}
-                />
-            </div>
-          </FormGroup>
-          <FormGroup className="row m-b-10">
-            <div  className="w-10">
-              <Label>Description</Label>
-            </div>
-            <div className="flex">
-              <CKEditor
-                data={this.state.description}
-                onChange={(e)=>this.setState({description:e.editor.getData()})}
-                config={ {
-                  //height: [ '60vh' ],
-                  codeSnippet_languages: {
-                    javascript: 'JavaScript',
-                    php: 'PHP'
-                  }
-                } }
-                />
-            </div>
-            </FormGroup>
+          <div className="cmdb-selects col-lg-12">
+              <div className="row m-b-10 col-lg-6 cmdb-selects-info">
+                <div className="w-30">
+                  <Label>Status:</Label>
+                </div>
+                <div className="flex">
+                  <Select
+                    styles={selectStyle}
+                    options={this.state.statuses}
+                    value={this.state.status}
+                    onChange={e =>{ this.setState({ status: e }); }}
+                    />
+                </div>
+              </div>
+              <div className="row m-b-10 col-lg-6 cmdb-selects-info">
+                <div className="w-30">
+                  <Label>Company:</Label>
+                </div>
+                <div className="flex">
+                  <Select
+                    styles={selectStyle}
+                    options={this.state.companies}
+                    value={this.state.company}
+                    onChange={e =>{ this.setState({ company: e }); }}
+                    />
+                </div>
+              </div>
 
             <AttributesHandler attributes={this.state.sidebarItem ? this.state.sidebarItem.attributes : []} values={this.state.attributes}
               setValue={(id, val)=>{
@@ -147,32 +136,103 @@ export default class ItemAdd extends Component{
                 newAttributes[id] = val;
                 this.setState({attributes:newAttributes})
               }} />
+          </div>
 
-            <div className="m-t-10">
-              <Label className="font-16">IP list</Label>
+          <FormGroup className="m-b-10">
+            <div className="m-r-5 w-10 m-b-15">
+              <Label>Description</Label>
+            </div>
+            <div className="row">
+              <div className="flex p-r-15">
+                <CKEditor
+                  data={this.state.description}
+                  onChange={(e)=>this.setState({description:e.editor.getData()})}
+                  config={ {
+                    codeSnippet_languages: {
+                      javascript: 'JavaScript',
+                      php: 'PHP'
+                    }
+                  } }
+                  />
+              </div>
+              <div className="cmdb-yellow">
+                Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean et est a dui semper facilisis. Pellentesque placerat elit a nunc. Nullam tortor odio, rutrum quis, egestas ut, posuere sed, felis. Vestibulum placerat feugiat nisl. Suspendisse lacinia, odio non feugiat vestibulum, sem erat blandit metus, ac nonummy magna odio pharetra felis.
+              </div>
+            </div>
+          </FormGroup>
+
+            <div className="m-t-30 cmdb-item-table">
               <IPList items={this.state.IPlist} onChange={(items)=>this.setState({IPlist:items})} />
             </div>
-            <div className="m-t-10">
-              <Label className="font-16">Backup tasks</Label>
-              <TextareaList
-                items={this.state.backupTasks}
-                onChange={(items)=>this.setState({backupTasks:items})}
-                removeItem={this.removeBackupTask.bind(this)}
-                width={300}
-                rows={6}
-                label={htmlFixNewLines(this.state.sidebarItem?this.state.sidebarItem.bacupTasksLabel:'')}
-                addLabel="Add backup task"
-                />
+
+            <div className="m-t-30 cmdb-item-table">
+              <Passwords items={this.state.passwords} onChange={(items)=>this.setState({passwords:items})} />
             </div>
 
-              <div className="m-t-10">
-                <Label className="font-16">Passwords</Label>
-                <Passwords items={this.state.passwords} onChange={(items)=>this.setState({passwords:items})} />
+            <div className="m-t-30">
+              <Label>Backup tasks description</Label>
+              <div className="row">
+                <div className="flex p-r-15">
+                {false &&  <TextareaList
+                    items={this.state.backupTasks}
+                    onChange={(items)=>this.setState({backupTasks:items})}
+                    removeItem={this.removeBackupTask.bind(this)}
+                    width={300}
+                    rows={6}
+                    label={htmlFixNewLines(this.state.sidebarItem?this.state.sidebarItem.bacupTasksLabel:'')}
+                    addLabel="Add backup task"
+                    />
+                }
+                  <BackupTasksDescription
+                    item={this.state.backupTasksDescription}
+                    onChange={(item)=>this.setState({backupTasksDescription: item})}
+                    width={300}
+                  />
+                </div>
+                <div className="cmdb-yellow">
+                  Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean et est a dui semper facilisis. Pellentesque placerat elit a nunc. Nullam tortor odio, rutrum quis, egestas ut, posuere sed, felis. Vestibulum placerat feugiat nisl. Suspendisse lacinia, odio non feugiat vestibulum, sem erat blandit metus, ac nonummy magna odio pharetra felis.
+                </div>
               </div>
-              <div className="m-t-10">
-                <Label className="font-16">Links</Label>
-                <Links items={this.state.links} links={this.state.allLinks} onChange={(links)=>this.setState({links})} />
-              </div>
+            </div>
+
+              <Nav tabs className="b-0 m-b-22 m-t-30 m-l--10">
+                <NavItem className="cmdb-tab">
+                  <NavLink
+                    className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "")}
+                    onClick={() => { this.setState({toggleTab:'1'}); }}
+                  >
+                    Comments
+                  </NavLink>
+                </NavItem>
+                <NavItem className="cmdb-tab">
+                  <NavLink
+                    className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
+                    onClick={() => { this.setState({toggleTab:'2'}); }}
+                  >
+                    Links
+                  </NavLink>
+                </NavItem>
+                <NavItem className="cmdb-tab">
+                  <NavLink
+                    className={classnames({ active: this.state.toggleTab === '3' }, "clickable", "")}
+                    onClick={() => { this.setState({toggleTab:'3'}); }}
+                  >
+                    Attachments
+                  </NavLink>
+                </NavItem>
+              </Nav>
+
+                <TabContent activeTab={this.state.toggleTab}>
+                  <TabPane tabId="1">
+
+                  </TabPane>
+                  <TabPane tabId="2" className="cmdb-item-table">
+                    <Links items={this.state.links} links={this.state.allLinks} onChange={(links)=>this.setState({links})} />
+                  </TabPane>
+                  <TabPane tabId="3">
+
+                  </TabPane>
+                </TabContent>
 
             <Button className="btn m-t-10  m-b-30 " disabled={this.state.company===null || this.state.status===null} onClick={()=>{
                 this.setState({saving:true});

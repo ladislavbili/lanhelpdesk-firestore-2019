@@ -35,14 +35,14 @@ export default class AttributesHandler extends Component{
       <div className="m-t-10">
         {
           this.props.attributes.sort((item1,item2)=>item1.order-item2.order).map((item)=>
-          <FormGroup key={item.id} className="row m-b-10">
-            <div className="w-10">
+          <div key={item.id} className="row m-b-10 col-lg-6 cmdb-selects-info">
+            <div className="w-30">
               <Label>{item.title}</Label>
             </div>
             <div className="flex">
               {this.drawAttribute(item)}
             </div>
-          </FormGroup>
+          </div>
         )}
       </div>
     );

@@ -179,7 +179,7 @@ class ItemList extends Component {
 						</div>
 					</div>
 
-				<div className="fit-with-header-and-commandbar scrollable p-30">
+				<div className="fit-with-header-and-commandbar scrollable p-30 cmdb-table">
 					<h1 className="full-width">{this.state.sidebarItem?this.state.sidebarItem.title:'Item'}</h1>
 
 						<table className="table">
