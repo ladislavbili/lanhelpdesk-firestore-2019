@@ -48,7 +48,7 @@ class List extends Component {
 												<input
 													type="text"
 													value={filter[display.value]}
-													className="form-control"
+													className="form-control hidden-input"
 													style={{fontSize: "12px", marginRight: "10px"}}
 													onChange={(e) => {
 														let newFilterData={};
@@ -60,7 +60,7 @@ class List extends Component {
 										<th>
 											<button type="button" className="btn btn-link waves-effect" onClick={this.clearFilter.bind(this)}>
 												<i
-													className="fas fa-times commandbar-command-icon"
+													className="fas fa-times commandbar-command-icon m-l-8 text-highlight"
 													/>
 											</button>
 										</th>

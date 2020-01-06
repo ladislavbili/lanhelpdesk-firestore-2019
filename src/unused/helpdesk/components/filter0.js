@@ -4,15 +4,11 @@ import Select from 'react-select';
 import { connect } from "react-redux";
 
 import {database, rebase} from '../../index';
-import DatePicker from 'react-datepicker';
-import moment from 'moment';
 import {setFilter, storageHelpTaskTypesStart,storageUsersStart, storageCompaniesStart, storageHelpStatusesStart} from '../../redux/actions';
 import {toSelArr, snapshotToArray, sameStringForms, timestampToInput, inputToTimestamp} from '../../helperFunctions';
 import AddFilter from './filterAdd';
 
-import datePickerConfig from '../../scss/datePickerConfig';
-
-import {invisibleSelectStyleOtherFont} from '../../scss/selectStyles';
+import {invisibleSelectStyle} from '../../scss/selectStyles';
 
 class Filter extends Component {
   constructor(props) {
@@ -66,21 +62,12 @@ class Filter extends Component {
         company:this.getItemValue('companies',this.state,filter.company),
         assigned:this.getItemValue('users',this.state,filter.assigned),
         workType:this.getItemValue('workTypes',this.state,filter.workType),
-
-      /*  statusDateFrom: filter.statusDateFrom !== null ? moment(filter.statusDateFrom) : null,
-        statusDateTo: filter.statusDateTo !== null ? moment(filter.statusDateTo) : null,
-        pendingDateFrom: filter.pendingDateFrom !== null ? moment(filter.pendingDateFrom) : null,
-        pendingDateTo: filter.pendingDateTo !== null ? moment(filter.pendingDateTo) : null,
-        closeDateFrom: filter.closeDateFrom !== null ? moment(filter.closeDateFrom) : null,
-        closeDateTo: filter.closeDateTo !== null ? moment(filter.closeDateTo) : null,*/
-
-      /*  statusDateFrom:timestampToInput(filter.statusDateFrom),
+        statusDateFrom:timestampToInput(filter.statusDateFrom),
         statusDateTo:timestampToInput(filter.statusDateTo),
         pendingDateFrom:timestampToInput(filter.pendingDateFrom),
         pendingDateTo:timestampToInput(filter.pendingDateTo),
         closeDateFrom:timestampToInput(filter.closeDateFrom),
-        closeDateTo:timestampToInput(filter.closeDateTo),*/
-
+        closeDateTo:timestampToInput(filter.closeDateTo),
         public:newFilter?newFilter.public:false,
       });
     }
@@ -180,20 +167,12 @@ class Filter extends Component {
           company:this.getItemValue('companies',this.state,filter.company),
           assigned:this.getItemValue('users',this.state,filter.assigned),
           workType:this.getItemValue('workTypes',this.state,filter.workType),
-
-  /*        statusDateFrom: filter.statusDateFrom !== null ? moment(filter.statusDateFrom) : null,
-          statusDateTo: filter.statusDateTo !== null ? moment(filter.statusDateTo) : null,
-          pendingDateFrom: filter.pendingDateFrom !== null ? moment(filter.pendingDateFrom) : null,
-          pendingDateTo: filter.pendingDateTo !== null ? moment(filter.pendingDateTo) : null,
-          closeDateFrom: filter.closeDateFrom !== null ? moment(filter.closeDateFrom) : null,
-          closeDateTo: filter.closeDateTo !== null ? moment(filter.closeDateTo) : null,*/
-
-      /*    statusDateFrom:timestampToInput(filter.statusDateFrom),
+          statusDateFrom:timestampToInput(filter.statusDateFrom),
           statusDateTo:timestampToInput(filter.statusDateTo),
           closeDateFrom:timestampToInput(filter.closeDateFrom),
           closeDateTo:timestampToInput(filter.closeDateTo),
           pendingDateFrom:timestampToInput(filter.pendingDateFrom),
-          pendingDateTo:timestampToInput(filter.pendingDateTo)*/
+          pendingDateTo:timestampToInput(filter.pendingDateTo)
         });
       }
     }
@@ -205,24 +184,16 @@ class Filter extends Component {
         assigned:this.state.assigned.id,
         workType:this.state.workType.id,
         status:this.state.status.map((item)=>item.id),
-
-    /*    statusDateFrom: this.state.statusDateFrom !== null ? this.state.statusDateFrom.unix()*1000 : null,
-        statusDateTo: this.state.statusDateTo !== null ? this.state.statusDateTo.unix()*1000 : null,
-        closeDateFrom: this.state.closeDateFrom !== null ? this.state.closeDateFrom.unix()*1000 : null,
-        closeDateTo: this.state.closeDateTo !== null ? this.state.closeDateTo.unix()*1000 : null,
-        pendingDateFrom: this.state.pendingDateFrom !== null ? this.state.pendingDateFrom.unix()*1000 : null,
-        pendingDateTo: this.state.pendingDateTo !== null ? this.state.pendingDateTo.unix()*1000 : null,*/
-
-      /*  statusDateFrom:isNaN(new Date(this.state.statusDateFrom).getTime())||this.state.statusDateFrom === '' ? '' : (new Date(this.state.statusDateFrom).getTime()),
+        statusDateFrom:isNaN(new Date(this.state.statusDateFrom).getTime())||this.state.statusDateFrom === '' ? '' : (new Date(this.state.statusDateFrom).getTime()),
         statusDateTo:isNaN(new Date(this.state.statusDateTo).getTime())|| this.state.statusDateTo === '' ? '' : (new Date(this.state.statusDateTo).getTime()),
         closeDateFrom:isNaN(new Date(this.state.closeDateFrom).getTime())||this.state.closeDateFrom === '' ? '' : (new Date(this.state.closeDateFrom).getTime()),
         closeDateTo:isNaN(new Date(this.state.closeDateTo).getTime())|| this.state.closeDateTo === '' ? '' : (new Date(this.state.closeDateTo).getTime()),
         pendingDateFrom:isNaN(new Date(this.state.pendingDateFrom).getTime())||this.state.pendingDateFrom === '' ? '' : (new Date(this.state.pendingDateFrom).getTime()),
-        pendingDateTo:isNaN(new Date(this.state.pendingDateTo).getTime())|| this.state.pendingDateTo === '' ? '' : (new Date(this.state.pendingDateTo).getTime()),*/
+        pendingDateTo:isNaN(new Date(this.state.pendingDateTo).getTime())|| this.state.pendingDateTo === '' ? '' : (new Date(this.state.pendingDateTo).getTime()),
         updatedAt:(new Date()).getTime()
       }
       this.props.setFilter(body);
-//      this.props.close();
+      this.props.close();
     }
 
     renameFilter(){
@@ -248,29 +219,28 @@ class Filter extends Component {
     render() {
       return (
         <div>
+
             <div className="d-flex m-l-15 m-t-5">
               <button type="button" className="btn-link-reversed" onClick={this.applyFilter.bind(this)}><i className="fa fa-check icon-M"/></button>
-              {this.canSaveFilter() &&
-                <AddFilter
-                  filter={{
-                    requester:this.state.requester.id,
-                    company:this.state.company.id,
-                    assigned:this.state.assigned.id,
-                    workType:this.state.workType.id,
-                    status:this.state.status.map((item)=>item.id),
-                    statusDateFrom:inputToTimestamp(this.state.statusDateFrom),
-                    statusDateTo:inputToTimestamp(this.state.statusDateTo),
-                    closeDateFrom:inputToTimestamp(this.state.closeDateFrom),
-                    closeDateTo:inputToTimestamp(this.state.closeDateTo),
-                    pendingDateFrom:inputToTimestamp(this.state.pendingDateFrom),
-                    pendingDateTo:inputToTimestamp(this.state.pendingDateTo),
-                  }}
-                  filterID={this.props.filterID}
-                  filterData={this.props.filterData}
-                  />}
+              {this.canSaveFilter() && <AddFilter
+                filter={{
+                  requester:this.state.requester.id,
+                  company:this.state.company.id,
+                  assigned:this.state.assigned.id,
+                  workType:this.state.workType.id,
+                  status:this.state.status.map((item)=>item.id),
+                  statusDateFrom:inputToTimestamp(this.state.statusDateFrom),
+                  statusDateTo:inputToTimestamp(this.state.statusDateTo),
+                  closeDateFrom:inputToTimestamp(this.state.closeDateFrom),
+                  closeDateTo:inputToTimestamp(this.state.closeDateTo),
+                  pendingDateFrom:inputToTimestamp(this.state.pendingDateFrom),
+                  pendingDateTo:inputToTimestamp(this.state.pendingDateTo),
+                }}
+                filterID={this.props.filterID}
+                filterData={this.props.filterData}
+                />}
               <button type="button" className="btn-link-reversed m-2" onClick={this.resetFilter.bind(this)}><i className="fa fa-sync icon-M"/></button>
               {this.canSaveFilter() && <button type="button" className="btn-link-reversed m-2" onClick={this.deleteFilter.bind(this)}><i className="far fa-trash-alt icon-M"/></button>}
-              <button type="button" className="btn-link-reversed m-2" onClick={() => this.props.close()}><i className="fa fa-times icon-M"/></button>
             </div>
 
          <div className="sidebar-filter-label">
@@ -296,99 +266,80 @@ class Filter extends Component {
             }
           </div>
 
-          <div className=" p-r-15 p-l-15 sidebar-filter">
+          <Nav vertical className=" p-r-15 p-l-15 sidebar-filter">
 
-              <div className="sidebar-filter-row">
-                <label htmlFor="example-input-small">Status</label>
-                {
-                  this.state.statuses.map(status =>
-                    <div className="row  m-b-5" key={status.id}>
-                      <label className="custom-container">
-                        <input
-                          type="checkbox"
-                          checked={this.state.status.find(s => s.id === status.id)}
-                          onChange={(e) => {
-                            let checked = this.state.status.find(s => s.id === status.id);
-                            let newStatus = [];
-                            if (checked){
-                              newStatus = this.state.status.filter(s => s.id != status.id);
-                            } else {
-                              newStatus = [...this.state.status, status];
-                            }
-                            this.setState({
-                              status: newStatus,
-                            })
-                          }
-                        } />
-                      <span className="checkmark" > </span>
-                    </label>
-                    <span className="m-l-30 sidebar-filter-name">{status.title}</span>
-                    </div>
-                  )
-                }
+            <NavItem>
+              <div className="row sidebar-filter-row">
+                <label htmlFor="example-input-small">Status:</label>
+                <div className="flex">
+                  <Select
+                    options={this.state.statuses}
+                    isMulti={true}
+                    onChange={(newValue)=>this.setState({status:newValue})}
+                    value={this.state.status}
+                    styles={invisibleSelectStyle} />
+                </div>
               </div>
-
-              <div className="sidebar-filter-row">
-                <label htmlFor="example-input-small">Zadal</label>
+            </NavItem>
+            <NavItem>
+              <div className="row sidebar-filter-row">
+                <label htmlFor="example-input-small">Zadal:</label>
                 <div className="flex">
                   <Select
                     options={[{label:'Žiadny',value:null,id:null},{label:'Current',value:'cur',id:'cur'}].concat(this.state.users)}
                     onChange={(newValue)=>this.setState({requester:newValue})}
                     value={this.state.requester}
-                    styles={invisibleSelectStyleOtherFont} />
+                    styles={invisibleSelectStyle} />
                 </div>
               </div>
-              <div className="sidebar-filter-row">
-                <label htmlFor="example-input-small">Firma</label>
+            </NavItem>
+            <NavItem>
+              <div className="row sidebar-filter-row">
+                <label htmlFor="example-input-small">Firma:</label>
                 <div className="flex">
                   <Select
                     options={[{label:'Žiadny',value:null,id:null},{label:'Current',value:'cur',id:'cur'}].concat(this.state.companies)}
                     onChange={(newValue)=>this.setState({company:newValue})}
                     value={this.state.company}
-                    styles={invisibleSelectStyleOtherFont} />
+                    styles={invisibleSelectStyle} />
                 </div>
               </div>
-
-              <div className="sidebar-filter-row">
-                <label htmlFor="example-input-small">Riesi</label>
+            </NavItem>
+            <NavItem>
+              <div className="row sidebar-filter-row">
+                <label htmlFor="example-input-small">Riesi:</label>
                 <div className="flex">
                   <Select
                     options={[{label:'Žiadny',value:null,id:null},{label:'Current',value:'cur',id:'cur'}].concat(this.state.users)}
                     onChange={(newValue)=>this.setState({assigned:newValue})}
                     value={this.state.assigned}
-                    styles={invisibleSelectStyleOtherFont} />
+                    styles={invisibleSelectStyle} />
                 </div>
               </div>
-            <div className="sidebar-filter-row">
-              <label>Status change</label>
-              <div className="row">
-                  <DatePicker
-                    className="form-control hidden-input"
-                    selected={this.state.statusDateFrom}
-                    onChange={(e)=>{
-                      this.setState({statusDateFrom:e})}
-                    }
-                    placeholderText="No deadline"
-                    {...datePickerConfig}
-                    />
-                  <DatePicker
-                    className="form-control hidden-input"
-                    selected={this.state.statusDateTo}
-                    onChange={(e)=>{
-                      this.setState({statusDateTo:e})}
-                    }
-                    placeholderText="No deadline"
-                    {...datePickerConfig}
-                    />
-                  <input
+            </NavItem>
+            <NavItem>
+              <label>Status change:</label>
+              <div className="row sidebar-filter-row">
+                <label>From:</label>
+                <div className="flex">
+                  <Input
                     type="datetime-local"
                     value={this.state.statusDateFrom}
                     onChange={(e)=>{
                       this.setState({statusDateFrom:e.target.value})}
                     }
-                    className="form-control hidden-input"
+                    className="form-control invisible-input"
                     placeholder="Od" />
-                  <input
+                </div>
+              </div>
+            </NavItem>
+            <NavItem>
+              <div className="row sidebar-filter-row">
+                <div>
+                  <label>To:</label>
+                </div>
+                <div className="flex">
+                  <Input
                     type="datetime-local"
                     value={this.state.statusDateTo}
                     onChange={(e)=>{
@@ -396,100 +347,88 @@ class Filter extends Component {
                     }
                     className="form-control hidden-input"
                     placeholder="Od" />
+                </div>
               </div>
-            </div>
-
-            <div className="sidebar-filter-row">
-              <label>Pending date</label>
-              <div className="row">
-                <DatePicker
-                  className="form-control hidden-input"
-                  selected={this.state.pendingDateFrom}
-                  onChange={(e)=>{
-                    this.setState({pendingDateFrom:e})}
-                  }
-                  placeholderText="No deadline"
-                  {...datePickerConfig}
-                  />
-                <DatePicker
-                  className="form-control hidden-input"
-                  selected={this.state.pendingDateTo}
-                  onChange={(e)=>{
-                    this.setState({pendingDateTo:e})}
-                  }
-                  placeholderText="No deadline"
-                  {...datePickerConfig}
-                  />
+            </NavItem>
+            <NavItem>
+              <label>Pending date:</label>
+              <div className="row sidebar-filter-row">
+                <label>From:</label>
+                <div className="flex">
                   <Input
                     type="datetime-local"
                     value={this.state.pendingDateFrom}
                     onChange={(e)=>{
                       this.setState({pendingDateFrom:e.target.value})}
                     }
-                    className="form-control hidden-input"
+                    className="form-control invisible-input"
                     placeholder="Od" />
+                </div>
+              </div>
+            </NavItem>
+            <NavItem>
+              <div className="row sidebar-filter-row">
+                <div>
+                  <label>To:</label>
+                </div>
+                <div className="flex">
                   <Input
                     type="datetime-local"
                     value={this.state.pendingDateTo}
                     onChange={(e)=>{
                       this.setState({pendingDateTo:e.target.value})}
                     }
-                    className="form-control hidden-input"
+                    className="form-control invisible-input"
                     placeholder="Od" />
+                </div>
               </div>
-            </div>
-            <div className="sidebar-filter-row">
-              <label>Close date</label>
-              <div className="row">
-                <DatePicker
-                  className="form-control hidden-input"
-                  selected={this.state.closeDateFrom}
-                  onChange={(e)=>{
-                    this.setState({closeDateFrom:e})}
-                  }
-                  placeholderText="No deadline"
-                  {...datePickerConfig}
-                  />
-                <DatePicker
-                  className="form-control hidden-input"
-                  selected={this.state.closeDateTo}
-                  onChange={(e)=>{
-                    this.setState({closeDateTo:e})}
-                  }
-                  placeholderText="No deadline"
-                  {...datePickerConfig}
-                  />
+            </NavItem>
+            <NavItem>
+              <label>Close date:</label>
+              <div className="row sidebar-filter-row">
+                <label>From:</label>
+                <div className="flex">
                   <Input
                     type="datetime-local"
                     value={this.state.closeDateFrom}
                     onChange={(e)=>{
                       this.setState({closeDateFrom:e.target.value})}
                     }
-                    className="form-control hidden-input"
+                    className="form-control invisible-input"
                     placeholder="Od" />
+                </div>
+              </div>
+            </NavItem>
+            <NavItem>
+              <div className="row sidebar-filter-row">
+                <div>
+                  <label>To:</label>
+                </div>
+                <div className="flex">
                   <Input
                     type="datetime-local"
                     value={this.state.closeDateTo}
                     onChange={(e)=>{
                       this.setState({closeDateTo:e.target.value})}
                     }
-                    className="form-control hidden-input"
+                    className="form-control invisible-input"
                     placeholder="Od" />
+                </div>
               </div>
-            </div>
-
-            <div className="sidebar-filter-row">
-              <label htmlFor="example-input-small">Typ práce</label>
-              <div className="flex">
-                <Select
-                  options={[{label:'Žiadny',value:null,id:null}].concat(this.state.workTypes)}
-                  onChange={(newValue)=>this.setState({workType:newValue})}
-                  value={this.state.workType}
-                  styles={invisibleSelectStyleOtherFont} />
+            </NavItem>
+            <NavItem>
+              <div className="row sidebar-filter-row">
+                <label htmlFor="example-input-small">Typ práce:</label>
+                <div className="flex">
+                  <Select
+                    options={[{label:'Žiadny',value:null,id:null}].concat(this.state.workTypes)}
+                    onChange={(newValue)=>this.setState({workType:newValue})}
+                    value={this.state.workType}
+                    styles={invisibleSelectStyle} />
+                </div>
               </div>
-            </div>
-        </div>
-
+            </NavItem>
+        </Nav>
       </div>
       )
     }

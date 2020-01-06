@@ -199,14 +199,14 @@ class ProjectEdit extends Component{
 
   render(){
     return (
-      <div className='sidebar-menu-item'>
-        <Button
-          className='btn-link m-t-10'
-          onClick={this.toggle.bind(this)}
-          >
-          <i className="fa fa-cog m-r-5 m-l-5 m-t-5 "/> Project settings
-        </Button>
-
+      <div className='p-l-15 p-r-15'>
+				<hr />
+	        <Button
+	          className='btn-link p-0'
+	          onClick={this.toggle.bind(this)}
+	          >
+	          Project settings
+	        </Button>
         <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
             <ModalBody>
               <FormGroup>

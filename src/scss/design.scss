@@ -189,6 +189,9 @@ html{
 .w-300px{
   width: 300px;
 }
+.w-1660px{
+  width: 1660px;
+}
 .golden-ratio-618{
   width: 61.8%;
 }
@@ -199,7 +202,7 @@ html{
   max-width: 400px;
 }
 .max-width-1660{
-  max-width: 1660px;
+  max-width: 1200px !important;
 }
 .full-height{
   height: 100% !important;
@@ -240,6 +243,10 @@ html{
   background-color: white;
 }
 
+.bkg-F2F1F1{
+  background-color: #F2F1F1;
+}
+
 .ignore-css{
   all:initial !important;
   font-family: $main-font !important;
@@ -276,7 +283,7 @@ h4.clickable:hover{
 }
 
 .dnd-column{
-  background-color: #FCFCFC;
+  background-color: #F6F6F6;
   min-width: 400px;
   border-radius: 0px;
   border: none;
@@ -288,7 +295,7 @@ h4.clickable:hover{
 }
 
 .dnd-header{
-  background-color: #FCFCFC;
+  background-color: #F6F6F6;
   border-bottom: 1px solid #EAEAEA;
 
   font-family: $main-font;
@@ -302,7 +309,7 @@ h4.clickable:hover{
 }
 
 .dnd-body{
-  background-color: #FCFCFC;
+  background-color: #F6F6F6;
   border-right: 1px solid #EAEAEA;
 }
 
@@ -342,10 +349,10 @@ h4.clickable:hover{
   font-weight: 400;
 }
 .text-bold{
-  font-weight: 700;
+  font-family: Segoe UI Semibold;
 }
 .font-bold{
-  font-family: $main-font-bold;
+  font-family: Segoe UI Semibold;
 }
 .h-30{
   height: 30px;
@@ -464,12 +471,13 @@ h4{
 .btn-link-remove{
   background-color: inherit;
   border: 0px;
-  border-radius: 0px;
-  color: black;
   height: 14;
-  font-weight: 400;
   font-size: 12px;
-  font-family: $main-font;
+  font-family: Segoe UI;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  color: #A6A6A6;
 }
 
 .btn-outline-danger {
@@ -544,7 +552,7 @@ h4{
 
 .btn-table-add-item{
   background-color: transparent;
-  color: #A0A0A0;
+  color: $basic-button-color;
 }
 .btn-table-add-item:hover{
   background-color: transparent;
@@ -601,7 +609,7 @@ h4{
 
 Label{
   font-size: 14px;
-  font-family: Segoe UI Bold;
+  font-family: Segoe UI Semibold;
   color: #333;
 }
 
@@ -644,7 +652,7 @@ th {
 }
 /*th:nth-child(2){
   font-size: 14px;
-  font-family: Segoe UI Bold;
+  font-family: Segoe UI Semibold;
   color: #333;
 }*/
 th:last-child{
@@ -857,7 +865,7 @@ tr:last-child{
 }
 
 .cmdb-info-name{
-  font-family: Segoe UI Bold;
+  font-family: Segoe UI Semibold;
   font-style: normal;
   font-weight: normal;
   font-size: 12px;
@@ -1035,17 +1043,22 @@ background-color: #f8fbfe;
 //---------------------sidebar---------------------
 .sidebar{
   width: $sidebar-width;
-  border-right: 1px solid #dee2e6;
+  border: none;
   list-style-type: none;
-  background: $sidebar-background-color;
+  background: #F6F6F6;
   position: relative;
   top: inherit;
   z-index: 999;
 }
 
+.sidebar-menu{
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
 .sidebar-btn{
-  width: calc(#{$sidebar-width} - 20px);
-  margin: 10px 10px 0px 10px;
+  width: calc(100% - 30px);
+  margin: 10px 15px 0px 15px;
   height: $button-height;
 }
 
@@ -1065,14 +1078,15 @@ background-color: #f8fbfe;
   color: $main-font-color;
   display: flex;
   flex: auto;
-  height: $sidebar-item-height;
+  height: 35px;
   border: none !important;
+  padding: 7px 15px !important;
 }
 
 .sidebar-icon{
   color: transparent;
-  padding-top: 10px;
-  padding-right: 15px;
+  padding-top: 7px;
+  padding-right: 20px;
 }
 
 .sidebar-icon.active{
@@ -1098,32 +1112,88 @@ background-color: #f8fbfe;
 }
 
 .sidebar-filter{
-  background-color: white;
-  border: none;
-  border-top: 1px solid $basic-button-color;
-  margin-bottom: 2px;
-  box-shadow: 0px 5px 5px $muted-gray;
 }
-.sidebar-filter-row{
-  margin: 8px 0px;
-  background-color: white;
-  border-bottom: 1px solid #DADADA;
 
-  .form-control{
-    margin: 0px;
-    margin-left: 5px;
-    margin-right: -60px;
-    border: none;
-  }
+.sidebar-filter-label{
+  margin: 0px 15px 0px 15px;
+  font-family: Segoe UI;
+  font-style: normal;
+  font-weight: 350;
+  font-size: 15px;
+  line-height: 38px;
+  letter-spacing: 0.5px;
+  color: #3C3C3C;
+}
+
+.sidebar-filter-name{
+  margin: 0px 15px 5px 15px;
+  font-family: Segoe UI;
+  font-style: normal;
+  font-weight: 350;
+  font-size: 12px;
+  line-height: 20px;
+  letter-spacing: 0.5px;
+  color: #3C3C3C;
+}
+
+.sidebar-filter-row{
+  margin: 0px 0px !important;
+}
+
+input[type="datetime-local"]::-webkit-inner-spin-button,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+}
+
+.sidebar-filter-row>label{
+    font-family: Segoe UI;
+    font-style: normal;
+    font-weight: 350;
+    font-size: 15px;
+    line-height: 38px;
+    letter-spacing: 0.5px;
+    color: #3C3C3C;
+    margin-bottom: -5px !important;
+}
+
+.sidebar-filter-row>.row>input{
+    font-family: Segoe UI;
+    font-style: normal;
+    font-weight: 350;
+    font-size: 13px;
+    line-height: 38px;
+    letter-spacing: 0.5px;
+    color: #3C3C3C;
+    display: inline;
+    width: 50% !important;
+    padding-right: 0px;
+    padding-left: 0px;
+}
+
+.sidebar-filter-row:hover{
+  color: inherit !important;
+  background-color: inherit !important;
 }
 
 .sidebar-filter-input{
-  margin-top: -10px;
+  font-family: Segoe UI;
+  font-style: normal;
+  font-weight: 350;
+  font-size: 12px;
+  line-height: 20px;
+  letter-spacing: 0.5px;
+  color: #3C3C3C;
+  margin-top: 0px;
+  margin-left: 15px;
+  width: calc(100% - 30px);
 }
 
 .sidebar-filter-input:focus{
   background-color: inherit;
   border: none;
+  border-bottom: 1px solid #DADADA;
+  margin: 0px 15px 0px 15px !important;
 }
 
 .sidebar-filter-navlink{
@@ -1137,7 +1207,7 @@ background-color: #f8fbfe;
 .commandbar{
   display: flex;
   width: -webkit-fill-available;
-  background-color: $main-background-color;
+  background-color: #F6F6F6;
   padding: 2px 35px 0px 20px;
   height: 41px;
 }
@@ -1154,9 +1224,8 @@ background-color: #f8fbfe;
 }
 
 .search-text{
-//  border-width: 0px;
   border-radius: 0px;
-  border-left: 0px;
+  border: none;
   height: $button-height;
 }
 
@@ -1170,9 +1239,10 @@ background-color: #f8fbfe;
 .search-btn{
 	background-color: white;
   border-width: 0px;
-	border-left: 1px solid #ced4da;
+/*	border-left: 1px solid #ced4da;
   border-bottom: 1px solid #ced4da;
-  border-top: 1px solid #ced4da;
+  border-top: 1px solid #ced4da;*/
+  border: none;
 	border-radius: 0px;
   margin: 0;
   height: $button-height;
@@ -1196,7 +1266,7 @@ background-color: #f8fbfe;
   font-weight: 600;
 }
 .nav-link:not(.sidebar-menu-item).active{
-  font-family: Segoe UI Bold;
+  font-family: Segoe UI Semibold;
   height: 28px !important;
   color: #333 !important;
 }
@@ -1274,7 +1344,11 @@ background-color: #f8fbfe;
 
 //---------------------TaskList----------------------
 .task-container{
-  background-color: #FCFCFC;
+  background-color: #F6F6F6;
+}
+
+.task-container-col{
+  background-color: #FFF;
 }
 
 .task-container>.table{
@@ -1285,7 +1359,7 @@ background-color: #f8fbfe;
 }
 
 .task-container>.table>thead{
-  background-color: #FCFCFC;
+  background-color: #F6F6F6;
   font-family: $main-font;
   font-style: normal;
   font-weight: normal;
@@ -1301,21 +1375,26 @@ background-color: #f8fbfe;
 
 .task-container>.table>tbody>tr>th{
   padding: 4px 10px 1px 0px !important;
-  background-color: #FCFCFC;
+  background-color: #FFF;
   font-family: $main-font;
   font-style: normal;
   font-weight: normal;
   font-size: 12px;
   line-height: 19px;
   color: #989898;
-  border-bottom: 1px solid #f4f4f4 !important;
+  border-bottom: 5px solid #f4f4f4 !important;
+  border-right: 5px solid #f4f4f4;
 //  border-bottom: 1px solid #bdbdbd !important;
 }
 
+.task-container>.table>tbody>tr>th:last-child{
+  border-right: 0px;
+//  border-bottom: 1px solid #bdbdbd !important;
+}
 
-.task-container>.table>tbody>tr>th:focus-within{
-  margin-left: 10px !important;
-  width: calc(100%-20px);
+.task-container>.table>tbody>tr>th>.hidden-input{
+  border: 0px !important;
+  background-color: inherit;
 }
 
 .task-container>.table>tbody>tr>td{
@@ -1342,9 +1421,9 @@ background-color: #f8fbfe;
 }
 
 .taskCol li {
-  background-color: inherit;
+  background-color: white;
   border: 0px;
-  border-bottom: 1px solid #dee2e6;
+  border-bottom: 3px solid #F6F6F6;
   padding: 10px;
   margin-bottom: 15px;
   border-radius: 0px;
@@ -1380,10 +1459,6 @@ background-color: #f8fbfe;
 }
 .small-p{
   margin: 0px;
-}
-
-.first-task{
-  border-top: 1px solid #dee2e6;
 }
 
 //-------------------END-tasklist-------------------------

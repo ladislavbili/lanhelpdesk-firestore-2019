@@ -16,7 +16,7 @@ export default class ColumnDisplay extends Component {
 							{
 								this.props.data.map((item, index)=>
 								<ul
-									className={classnames("taskCol", "clickable", "list-unstyled", {'selected-item': this.props.itemID === item.id.toString(),'first-task':index===0})}
+									className={classnames("taskCol", "clickable", "list-unstyled", {'selected-item': this.props.itemID === item.id.toString()})}
 									id="upcoming"
 									onClick={()=>{
 										this.props.history.push(this.props.link+'/'+item.id);

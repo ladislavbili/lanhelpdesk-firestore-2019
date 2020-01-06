@@ -35,7 +35,7 @@ class TaskListContainer extends Component {
 
 					{ this.props.isTask &&
 							<Button
-								className="btn-link center-hor"
+								className="btn-link-reversed center-hor"
 								onClick={()=>{
 									let body={
 										requester:null,

@@ -79,13 +79,14 @@ class MilestoneEdit extends Component{
 
   render(){
     return (
-			<div>
+			<div className='p-l-15 p-r-15'>
 				<Button
-					className='btn-link sidebar-menu-item t-a-l'
+					className='btn-link p-0'
 					onClick={this.toggle.bind(this)}
 					>
-					<i className="fa fa-cog m-r-5 m-l-5 m-t-5 "/> Milestone settings
+					Milestone settings
 				</Button>
+
           <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
             <ModalBody>
               <FormGroup>

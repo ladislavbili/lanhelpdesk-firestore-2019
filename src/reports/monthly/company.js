@@ -6,7 +6,7 @@ import {storageCompaniesStart,storageHelpTasksStart, storageHelpStatusesStart, s
 	storageHelpTaskWorksStart, storageHelpTaskWorkTripsStart, storageHelpTripTypesStart, storageHelpPricelistsStart, storageHelpPricesStart, storageHelpCompanyInvoicesStart } from '../../redux/actions';
 import { timestampToString, timestampToDate, sameStringForms, toSelArr, toFloat} from '../../helperFunctions';
 import {rebase} from '../../index';
-import TaskEdit from '../../helpdesk/task/taskEditContainer';
+import TaskEdit from '../../helpdesk/task/taskEdit';
 import MonthSelector from '../components/monthSelector';
 import {selectStyleColored} from '../../scss/selectStyles';
 
