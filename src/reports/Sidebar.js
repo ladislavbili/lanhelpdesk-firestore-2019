@@ -226,20 +226,26 @@ class Sidebar extends Component {
 								</TabPane>
 							</TabContent>
 							<hr/>
-							<div>
-								<Nav vertical>
-									<NavItem>
-										<Link
-											className="text-basic sidebar-align sidebar-menu-item"
-											to={{ pathname: `/reports/monthly/companies` }}>Mesačné firmy</Link>
-									</NavItem>
-									<NavItem>
-										<Link
-											className="text-basic sidebar-align sidebar-menu-item"
-											to={{ pathname: `/reports/monthly/requester` }}>Mesačný agenti</Link>
-									</NavItem>
-								</Nav>
-							</div>
+							<Nav vertical>
+								<NavItem>
+									<Link
+										className="text-basic sidebar-align sidebar-menu-item"
+										to={{ pathname: `/reports/monthly/companies` }}>Firmy</Link>
+								</NavItem>
+								<NavItem>
+									<Link
+										className="text-basic sidebar-align sidebar-menu-item"
+										to={{ pathname: `/reports/monthly/requester` }}>Agenti</Link>
+								</NavItem>
+							</Nav>
+							<hr/>
+							<Nav vertical>
+								<NavItem>
+									<Link
+										className="text-basic sidebar-align sidebar-menu-item"
+										to={{ pathname: `/reports/company_invoices` }}>Uložené firmy</Link>
+								</NavItem>
+							</Nav>
 						</div>
 					</div>}
 					{showSettings &&

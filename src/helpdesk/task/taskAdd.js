@@ -108,7 +108,7 @@ export default class TaskAdd extends Component{
 			status: this.state.status?this.state.status.id:null,
 
 			deadline: this.state.deadline!==null?this.state.deadline.unix()*1000:null,
-			closeDate: (this.state.closeDate!==null && (statusAction==='close'||statusAction==='invoiced'))?this.state.closeDate.unix()*1000:null,
+			closeDate: (this.state.closeDate!==null && (statusAction==='close'||statusAction==='invoiced'||statusAction==='invalid'))?this.state.closeDate.unix()*1000:null,
 			pendingDate: (this.state.pendingDate!==null && statusAction==='pending')?this.state.pendingDate.unix()*1000:null,
 
 			createdAt:moment().unix()*1000,
@@ -362,9 +362,9 @@ export default class TaskAdd extends Component{
 						<span className="center-hor flex m-r-15">
 							<input type="text" value={this.state.title} className="task-title-input text-extra-slim hidden-input" onChange={(e)=>this.setState({title:e.target.value})} placeholder="Enter task name" />
 						</span>
-						{ this.state.status && (['close','pending']).includes(this.state.status.action) && <div className="ml-auto center-hor">
+						{ this.state.status && (['close','pending','invalid']).includes(this.state.status.action) && <div className="ml-auto center-hor">
 							<span>
-								{ this.state.status.action==='close' &&
+								{ (this.state.status.action==='close' || this.state.status.action==='invalid') &&
 									<span className="text-muted">
 										Close date:
 										<DatePicker
@@ -519,7 +519,7 @@ export default class TaskAdd extends Component{
 												status,
 												pendingDate:  moment().add(1,'d'),
 											})
-										}else if(status.action==='close'){
+										}else if(status.action==='close'||status.action==='invalid'){
 											this.setState({
 												status,
 												closeDate: moment(),
@@ -581,7 +581,7 @@ export default class TaskAdd extends Component{
 									<DatePicker
 										className="form-control hidden-input"
 										selected={this.state.closeDate}
-										disabled={!this.state.status || this.state.status.action!=='close'||this.state.viewOnly}
+										disabled={!this.state.status || (this.state.status.action!=='close' && this.state.status.action!=='invalid')||this.state.viewOnly}
 										onChange={date => {
 											this.setState({ closeDate: date });
 										}}

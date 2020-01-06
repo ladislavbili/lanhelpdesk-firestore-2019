@@ -17,6 +17,7 @@ import storageHelpTasks from './help-tasksReducer';
 import storageHelpUnits from './help-unitsReducer';
 import storageHelpTripTypes from './help-trip_typesReducer';
 import storageHelpWorkTypes from './help-work_typesReducer';
+import storageHelpCompanyInvoices from './help-company_invoicesReducer';
 
 import storageCompanies from './companiesReducer';
 import storageImaps from './imapsReducer';
@@ -44,6 +45,8 @@ export default {
   storageHelpUnits,
   storageHelpTripTypes,
   storageHelpWorkTypes,
+  storageHelpCompanyInvoices,
+  
   storageCompanies,
   storageImaps,
   storageMetadata,
