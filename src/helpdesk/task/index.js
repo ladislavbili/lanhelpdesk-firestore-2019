@@ -134,8 +134,8 @@ class TasksIndex extends Component {
 						company:null,
 						assigned:null,
 						workType:null,
-						statusDateFrom:'',
-						statusDateTo:'',
+						statusDateFrom: null,
+						statusDateTo: null,
 						updatedAt:(new Date()).getTime()
 					});
 					this.props.history.push('/helpdesk/taskList/i/all');
@@ -154,8 +154,12 @@ class TasksIndex extends Component {
 						company:null,
 						assigned:null,
 						workType:null,
-						statusDateFrom:'',
-						statusDateTo:'',
+						statusDateFrom: null,
+						statusDateTo: null,
+						closeDateFrom: null,
+			      closeDateTo: null,
+			      pendingDateFrom: null,
+			      pendingDateTo: null,
 						updatedAt:(new Date()).getTime()
 					});
 					this.props.history.push('/helpdesk/taskList/i/all');
@@ -196,12 +200,12 @@ class TasksIndex extends Component {
 			(filter.workType===null||(task.type===filter.workType)) &&
 			(filter.company===null||(task.company && task.company.id===filter.company) ||(task.company && filter.company==='cur' && task.company.id===this.props.currentUser.userData.company)) &&
 			(filter.assigned===null||(task.assignedTo && task.assignedTo.map((item)=>item.id).includes(filter.assigned))||(task.assignedTo && filter.requester==='cur' && task.assignedTo.map((item)=>item.id).includes(this.props.currentUser.id))) &&
-			(filter.statusDateFrom===''||task.statusChange >= filter.statusDateFrom) &&
-			(filter.statusDateTo===''||task.statusChange <= filter.statusDateTo) &&
-			(filter.closeDateFrom===''||filter.closeDateFrom===undefined||task.closeDate >= filter.closeDateFrom) &&
-			(filter.closeDateTo===''||filter.closeDateTo===undefined||task.closeDate <= filter.closeDateTo) &&
-			(filter.pendingDateFrom===''||filter.pendingDateFrom===undefined||task.pendingDate >= filter.pendingDateFrom) &&
-			(filter.pendingDateTo===''||filter.pendingDateTo===undefined||task.pendingDate <= filter.pendingDateTo) &&
+			(filter.statusDateFrom === null || task.statusChange >= filter.statusDateFrom) &&
+			(filter.statusDateTo === null || task.statusChange <= filter.statusDateTo) &&
+			(filter.closeDateFrom === null || filter.closeDateFrom === undefined || task.closeDate >= filter.closeDateFrom) &&
+			(filter.closeDateTo === null || filter.closeDateTo === undefined || task.closeDate <= filter.closeDateTo) &&
+			(filter.pendingDateFrom === null || filter.pendingDateFrom === undefined || task.pendingDate >= filter.pendingDateFrom) &&
+			(filter.pendingDateTo === null || filter.pendingDateTo === undefined || task.pendingDate <= filter.pendingDateTo) &&
 			(this.props.project===null||(task.project && task.project.id===this.props.project))&&
 			(this.props.currentUser.userData.role.value===3||(currentPermissions && currentPermissions.read)) &&
 			(this.props.milestone===null||((task.milestone)&& task.milestone === this.props.milestone))

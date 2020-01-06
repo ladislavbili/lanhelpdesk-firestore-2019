@@ -27,12 +27,12 @@ class Filter extends Component {
       company:{id:null,label:'Žiadny',value:null},
       assigned:{id:null,label:'Žiadny',value:null},
       workType:{id:null,label:'Žiadny',value:null},
-      statusDateFrom:'',
-      statusDateTo:'',
-      closeDateFrom:'',
-      closeDateTo:'',
-      pendingDateFrom:'',
-      pendingDateTo:'',
+      statusDateFrom: null,
+      statusDateTo: null,
+      closeDateFrom: null,
+      closeDateTo: null,
+      pendingDateFrom: null,
+      pendingDateTo: null,
       loading:true,
       public:false,
 
@@ -56,6 +56,7 @@ class Filter extends Component {
   }
 
   componentWillReceiveProps(props){
+    console.log("props");
     let oldFilter = this.props.filters.find((filter)=>filter.id===props.filterID);
     let newFilter = props.filters.find((filter)=>filter.id===props.filterID);
     if(this.props.filter.updatedAt!==props.filter.updatedAt||!sameStringForms(oldFilter,newFilter)){
@@ -67,19 +68,12 @@ class Filter extends Component {
         assigned:this.getItemValue('users',this.state,filter.assigned),
         workType:this.getItemValue('workTypes',this.state,filter.workType),
 
-      /*  statusDateFrom: filter.statusDateFrom !== null ? moment(filter.statusDateFrom) : null,
+        statusDateFrom: filter.statusDateFrom !== null ? moment(filter.statusDateFrom) : null,
         statusDateTo: filter.statusDateTo !== null ? moment(filter.statusDateTo) : null,
         pendingDateFrom: filter.pendingDateFrom !== null ? moment(filter.pendingDateFrom) : null,
         pendingDateTo: filter.pendingDateTo !== null ? moment(filter.pendingDateTo) : null,
         closeDateFrom: filter.closeDateFrom !== null ? moment(filter.closeDateFrom) : null,
-        closeDateTo: filter.closeDateTo !== null ? moment(filter.closeDateTo) : null,*/
-
-      /*  statusDateFrom:timestampToInput(filter.statusDateFrom),
-        statusDateTo:timestampToInput(filter.statusDateTo),
-        pendingDateFrom:timestampToInput(filter.pendingDateFrom),
-        pendingDateTo:timestampToInput(filter.pendingDateTo),
-        closeDateFrom:timestampToInput(filter.closeDateFrom),
-        closeDateTo:timestampToInput(filter.closeDateTo),*/
+        closeDateTo: filter.closeDateTo !== null ? moment(filter.closeDateTo) : null,
 
         public:newFilter?newFilter.public:false,
       });
@@ -99,6 +93,7 @@ class Filter extends Component {
   }
 
   componentWillMount(){
+    console.log("mount");
 		if(!this.props.statusesActive){
 			this.props.storageHelpStatusesStart();
 		}
@@ -144,12 +139,12 @@ class Filter extends Component {
             company:{id:null,label:'Žiadny',value:null},
             assigned:{id:null,label:'Žiadny',value:null},
             workType:{id:null,label:'Žiadny',value:null},
-            statusDateFrom:'',
-            statusDateTo:'',
-            closeDateFrom:'',
-            closeDateTo:'',
-            pendingDateFrom:'',
-            pendingDateTo:'',
+            statusDateFrom: null,
+            statusDateTo: null,
+            closeDateFrom: null,
+            closeDateTo: null,
+            pendingDateFrom: null,
+            pendingDateTo: null,
             public:false,
           },this.applyFilter.bind(this));
         });
@@ -157,6 +152,7 @@ class Filter extends Component {
     }
 
     resetFilter(){
+      console.log("reset");
       if(this.props.filterID===null){
         this.setState({
           status:[],
@@ -164,16 +160,17 @@ class Filter extends Component {
           company:{id:null,label:'Žiadny',value:null},
           assigned:{id:null,label:'Žiadny',value:null},
           workType:{id:null,label:'Žiadny',value:null},
-          statusDateFrom:'',
-          statusDateTo:'',
-          closeDateFrom:'',
-          closeDateTo:'',
-          pendingDateFrom:'',
-          pendingDateTo:'',
+          statusDateFrom: null,
+          statusDateTo: null,
+          closeDateFrom: null,
+          closeDateTo: null,
+          pendingDateFrom: null,
+          pendingDateTo: null,
           public:false,
         })
       }else{
         let filter = this.props.filterData.filter;
+
         this.setState({
           status:this.state.statuses.filter((status)=>filter.status.includes(status.id)),
           requester:this.getItemValue('users',this.state,filter.requester),
@@ -181,24 +178,19 @@ class Filter extends Component {
           assigned:this.getItemValue('users',this.state,filter.assigned),
           workType:this.getItemValue('workTypes',this.state,filter.workType),
 
-  /*        statusDateFrom: filter.statusDateFrom !== null ? moment(filter.statusDateFrom) : null,
+          statusDateFrom: filter.statusDateFrom !== null ? moment(filter.statusDateFrom) : null,
           statusDateTo: filter.statusDateTo !== null ? moment(filter.statusDateTo) : null,
           pendingDateFrom: filter.pendingDateFrom !== null ? moment(filter.pendingDateFrom) : null,
           pendingDateTo: filter.pendingDateTo !== null ? moment(filter.pendingDateTo) : null,
           closeDateFrom: filter.closeDateFrom !== null ? moment(filter.closeDateFrom) : null,
-          closeDateTo: filter.closeDateTo !== null ? moment(filter.closeDateTo) : null,*/
+          closeDateTo: filter.closeDateTo !== null ? moment(filter.closeDateTo) : null,
 
-      /*    statusDateFrom:timestampToInput(filter.statusDateFrom),
-          statusDateTo:timestampToInput(filter.statusDateTo),
-          closeDateFrom:timestampToInput(filter.closeDateFrom),
-          closeDateTo:timestampToInput(filter.closeDateTo),
-          pendingDateFrom:timestampToInput(filter.pendingDateFrom),
-          pendingDateTo:timestampToInput(filter.pendingDateTo)*/
         });
       }
     }
 
     applyFilter(){
+      console.log("apply");
       let body={
         requester:this.state.requester.id,
         company:this.state.company.id,
@@ -206,19 +198,13 @@ class Filter extends Component {
         workType:this.state.workType.id,
         status:this.state.status.map((item)=>item.id),
 
-    /*    statusDateFrom: this.state.statusDateFrom !== null ? this.state.statusDateFrom.unix()*1000 : null,
+        statusDateFrom: this.state.statusDateFrom !== null ? this.state.statusDateFrom.unix()*1000 : null,
         statusDateTo: this.state.statusDateTo !== null ? this.state.statusDateTo.unix()*1000 : null,
         closeDateFrom: this.state.closeDateFrom !== null ? this.state.closeDateFrom.unix()*1000 : null,
         closeDateTo: this.state.closeDateTo !== null ? this.state.closeDateTo.unix()*1000 : null,
         pendingDateFrom: this.state.pendingDateFrom !== null ? this.state.pendingDateFrom.unix()*1000 : null,
-        pendingDateTo: this.state.pendingDateTo !== null ? this.state.pendingDateTo.unix()*1000 : null,*/
+        pendingDateTo: this.state.pendingDateTo !== null ? this.state.pendingDateTo.unix()*1000 : null,
 
-      /*  statusDateFrom:isNaN(new Date(this.state.statusDateFrom).getTime())||this.state.statusDateFrom === '' ? '' : (new Date(this.state.statusDateFrom).getTime()),
-        statusDateTo:isNaN(new Date(this.state.statusDateTo).getTime())|| this.state.statusDateTo === '' ? '' : (new Date(this.state.statusDateTo).getTime()),
-        closeDateFrom:isNaN(new Date(this.state.closeDateFrom).getTime())||this.state.closeDateFrom === '' ? '' : (new Date(this.state.closeDateFrom).getTime()),
-        closeDateTo:isNaN(new Date(this.state.closeDateTo).getTime())|| this.state.closeDateTo === '' ? '' : (new Date(this.state.closeDateTo).getTime()),
-        pendingDateFrom:isNaN(new Date(this.state.pendingDateFrom).getTime())||this.state.pendingDateFrom === '' ? '' : (new Date(this.state.pendingDateFrom).getTime()),
-        pendingDateTo:isNaN(new Date(this.state.pendingDateTo).getTime())|| this.state.pendingDateTo === '' ? '' : (new Date(this.state.pendingDateTo).getTime()),*/
         updatedAt:(new Date()).getTime()
       }
       this.props.setFilter(body);
@@ -246,11 +232,13 @@ class Filter extends Component {
 
 
     render() {
+  //    return null;
+  console.log(this.props.filter);
       return (
         <div>
             <div className="d-flex m-l-15 m-t-5">
               <button type="button" className="btn-link-reversed" onClick={this.applyFilter.bind(this)}><i className="fa fa-check icon-M"/></button>
-              {this.canSaveFilter() &&
+              {this.canSaveFilter() && false &&
                 <AddFilter
                   filter={{
                     requester:this.state.requester.id,
@@ -258,12 +246,12 @@ class Filter extends Component {
                     assigned:this.state.assigned.id,
                     workType:this.state.workType.id,
                     status:this.state.status.map((item)=>item.id),
-                    statusDateFrom:inputToTimestamp(this.state.statusDateFrom),
-                    statusDateTo:inputToTimestamp(this.state.statusDateTo),
-                    closeDateFrom:inputToTimestamp(this.state.closeDateFrom),
-                    closeDateTo:inputToTimestamp(this.state.closeDateTo),
-                    pendingDateFrom:inputToTimestamp(this.state.pendingDateFrom),
-                    pendingDateTo:inputToTimestamp(this.state.pendingDateTo),
+                    statusDateFrom: this.state.statusDateFrom !== null ? this.state.statusDateFrom.unix()*1000 : null,
+                    statusDateTo: this.state.statusDateTo !== null ? this.state.statusDateTo.unix()*1000 : null,
+                    pendingDateFrom: this.state.pendingDateFrom !== null ? this.state.pendingDateFrom.unix()*1000 : null,
+                    pendingDateTo: this.state.pendingDateTo !== null ? this.state.pendingDateTo.unix()*1000 : null,
+                    closeDateFrom: this.state.closeDateFrom !== null ? this.state.closeDateFrom.unix()*1000 : null,
+                    closeDateTo: this.state.closeDateTo !== null ? this.state.closeDateTo.unix()*1000 : null,
                   }}
                   filterID={this.props.filterID}
                   filterData={this.props.filterData}
@@ -366,9 +354,9 @@ class Filter extends Component {
                     className="form-control hidden-input"
                     selected={this.state.statusDateFrom}
                     onChange={(e)=>{
-                      this.setState({statusDateFrom:e})}
+                      this.setState({statusDateFrom: e})}
                     }
-                    placeholderText="No deadline"
+                    placeholderText="No date"
                     {...datePickerConfig}
                     />
                   <DatePicker
@@ -377,25 +365,9 @@ class Filter extends Component {
                     onChange={(e)=>{
                       this.setState({statusDateTo:e})}
                     }
-                    placeholderText="No deadline"
+                    placeholderText="No date"
                     {...datePickerConfig}
                     />
-                  <input
-                    type="datetime-local"
-                    value={this.state.statusDateFrom}
-                    onChange={(e)=>{
-                      this.setState({statusDateFrom:e.target.value})}
-                    }
-                    className="form-control hidden-input"
-                    placeholder="Od" />
-                  <input
-                    type="datetime-local"
-                    value={this.state.statusDateTo}
-                    onChange={(e)=>{
-                      this.setState({statusDateTo:e.target.value})}
-                    }
-                    className="form-control hidden-input"
-                    placeholder="Od" />
               </div>
             </div>
 
@@ -408,7 +380,7 @@ class Filter extends Component {
                   onChange={(e)=>{
                     this.setState({pendingDateFrom:e})}
                   }
-                  placeholderText="No deadline"
+                  placeholderText="No date"
                   {...datePickerConfig}
                   />
                 <DatePicker
@@ -417,25 +389,9 @@ class Filter extends Component {
                   onChange={(e)=>{
                     this.setState({pendingDateTo:e})}
                   }
-                  placeholderText="No deadline"
+                  placeholderText="No date"
                   {...datePickerConfig}
                   />
-                  <Input
-                    type="datetime-local"
-                    value={this.state.pendingDateFrom}
-                    onChange={(e)=>{
-                      this.setState({pendingDateFrom:e.target.value})}
-                    }
-                    className="form-control hidden-input"
-                    placeholder="Od" />
-                  <Input
-                    type="datetime-local"
-                    value={this.state.pendingDateTo}
-                    onChange={(e)=>{
-                      this.setState({pendingDateTo:e.target.value})}
-                    }
-                    className="form-control hidden-input"
-                    placeholder="Od" />
               </div>
             </div>
             <div className="sidebar-filter-row">
@@ -447,7 +403,7 @@ class Filter extends Component {
                   onChange={(e)=>{
                     this.setState({closeDateFrom:e})}
                   }
-                  placeholderText="No deadline"
+                  placeholderText="No date"
                   {...datePickerConfig}
                   />
                 <DatePicker
@@ -456,25 +412,9 @@ class Filter extends Component {
                   onChange={(e)=>{
                     this.setState({closeDateTo:e})}
                   }
-                  placeholderText="No deadline"
+                  placeholderText="No date"
                   {...datePickerConfig}
                   />
-                  <Input
-                    type="datetime-local"
-                    value={this.state.closeDateFrom}
-                    onChange={(e)=>{
-                      this.setState({closeDateFrom:e.target.value})}
-                    }
-                    className="form-control hidden-input"
-                    placeholder="Od" />
-                  <Input
-                    type="datetime-local"
-                    value={this.state.closeDateTo}
-                    onChange={(e)=>{
-                      this.setState({closeDateTo:e.target.value})}
-                    }
-                    className="form-control hidden-input"
-                    placeholder="Od" />
               </div>
             </div>
 

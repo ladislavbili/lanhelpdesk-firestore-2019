@@ -5,7 +5,7 @@ import {snapshotToArray} from '../../../helperFunctions';
 
 export const storageHelpProjectsStart = () => {
   return (dispatch) => {
-    
+
     database.collection('help-projects').onSnapshot(querySnapshot => {
       dispatch({ type: STORAGE_SET_HELP_PROJECTS,projects:snapshotToArray(querySnapshot)});
       }, err => {

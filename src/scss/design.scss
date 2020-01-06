@@ -1157,7 +1157,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     margin-bottom: -5px !important;
 }
 
-.sidebar-filter-row>.row>input{
+.sidebar-filter-row>.row>.react-datepicker-wrapper{
     font-family: Segoe UI;
     font-style: normal;
     font-weight: 350;

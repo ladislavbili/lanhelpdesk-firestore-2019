@@ -92,8 +92,12 @@ class Sidebar extends Component {
 				company:null,
 				assigned:null,
 				workType:null,
-				statusDateFrom:'',
-				statusDateTo:'',
+				statusDateFrom: null,
+				statusDateTo: null,
+				closeDateFrom: null,
+	      closeDateTo: null,
+	      pendingDateFrom: null,
+	      pendingDateTo: null,
 				updatedAt:(new Date()).getTime()
 			});
 		}
@@ -180,8 +184,12 @@ class Sidebar extends Component {
 													company:null,
 													assigned:null,
 													workType:null,
-													statusDateFrom:'',
-													statusDateTo:'',
+													statusDateFrom: null,
+													statusDateTo: null,
+													closeDateFrom: null,
+										      closeDateTo: null,
+										      pendingDateFrom: null,
+										      pendingDateTo: null,
 													updatedAt:(new Date()).getTime()
 												});
 												this.props.history.push('/helpdesk/taskList/i/all');
@@ -244,8 +252,12 @@ class Sidebar extends Component {
 										company:null,
 										assigned:null,
 										workType:null,
-										statusDateFrom:'',
-										statusDateTo:'',
+										statusDateFrom:null,
+										statusDateTo:null,
+										closeDateFrom: null,
+							      closeDateTo: null,
+							      pendingDateFrom: null,
+							      pendingDateTo: null,
 										updatedAt:(new Date()).getTime()
 									});
 								}}
@@ -270,8 +282,12 @@ class Sidebar extends Component {
 														company:null,
 														assigned:null,
 														workType:null,
-														statusDateFrom:'',
-														statusDateTo:'',
+														statusDateFrom: null,
+														statusDateTo: null,
+														closeDateFrom: null,
+											      closeDateTo: null,
+											      pendingDateFrom: null,
+											      pendingDateTo: null,
 														updatedAt:(new Date()).getTime()
 													});
 												}}>Všetky</Link>
@@ -285,6 +301,12 @@ class Sidebar extends Component {
 														this.props.setHelpSidebarFilter(item);
 														this.props.setFilter({
 															...item.filter,
+															statusDateFrom: isNaN(parseInt(item.filter.statusDateFrom)) ? null : parseInt(item.filter.statusDateFrom),
+															statusDateTo: isNaN(parseInt(item.filter.statusDateTo)) ? null : parseInt(item.filter.statusDateTo),
+															pendingDateFrom: isNaN(parseInt(item.filter.pendingDateFrom)) ? null : parseInt(item.filter.pendingDateFrom),
+															pendingDateTo: isNaN(parseInt(item.filter.pendingDateTo)) ? null : parseInt(item.filter.pendingDateTo),
+															closeDateFrom: isNaN(parseInt(item.filter.closeDateFrom)) ? null : parseInt(item.filter.closeDateFrom),
+															closeDateTo: isNaN(parseInt(item.filter.closeDateTo)) ? null : parseInt(item.filter.closeDateTo),
 															updatedAt:(new Date()).getTime()
 														});
 													}}>{item.title}</Link>
