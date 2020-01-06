@@ -402,7 +402,7 @@ export default class TaskAdd extends Component{
 
 				<div className="row">
 						{this.state.viewOnly &&
-							<div className="row p-r-10 m-b-10">
+							<div className="row p-r-10">
 							<Label className="col-3 col-form-label">Projekt</Label>
 							<div className="col-9">
 								<Select
@@ -447,7 +447,7 @@ export default class TaskAdd extends Component{
 
 				{!this.state.viewOnly && <div className="col-lg-12">
 					<div className="col-lg-4">
-						<div className="row p-r-10 m-b-10">
+						<div className="row p-r-10">
 							<Label className="col-3 col-form-label">Projekt</Label>
 							<div className="col-9">
 								<Select
@@ -489,7 +489,7 @@ export default class TaskAdd extends Component{
 						</div>
 					</div>
 					<div className="col-lg-8">
-						<div className="row p-r-10 m-b-10">
+						<div className="row p-r-10">
 							<Label className="col-1-5 col-form-label">Assigned to</Label>
 							<div className="col-10-5">
 								<Select
@@ -505,7 +505,7 @@ export default class TaskAdd extends Component{
 						</div>
 					</div>
 					<div className="col-lg-4">
-						<div className="row p-r-10 m-b-10">
+						<div className="row p-r-10">
 							<Label className="col-3 col-form-label">Status</Label>
 							<div className="col-9">
 								<Select
@@ -538,7 +538,7 @@ export default class TaskAdd extends Component{
 									/>
 							</div>
 						</div>
-							<div className="row p-r-10 m-b-10">
+							<div className="row p-r-10">
 								<Label className="col-3 col-form-label">Typ</Label>
 								<div className="col-9">
 									<Select
@@ -551,7 +551,7 @@ export default class TaskAdd extends Component{
 										/>
 								</div>
 							</div>
-							<div className="row p-r-10 m-b-10">
+							<div className="row p-r-10">
 								<Label className="col-3 col-form-label m-t-3">Milestone</Label>
 								<div className="col-9">
 									<Select
@@ -574,7 +574,7 @@ export default class TaskAdd extends Component{
 								/>
 								</div>
 							</div>
-							{false && <div className="row p-r-10 m-b-10">
+							{false && <div className="row p-r-10">
 								<Label className="col-3 col-form-label">Close date</Label>
 								<div className="col-9">
 									{/*className='form-control hidden-input'*/}
@@ -593,7 +593,7 @@ export default class TaskAdd extends Component{
 					</div>
 
 					<div className="col-lg-4">
-							<div className="row p-r-10 m-b-10">
+							<div className="row p-r-10">
 								<Label className="col-3 col-form-label">Zadal*</Label>
 								<div className="col-9">
 									<Select
@@ -606,7 +606,7 @@ export default class TaskAdd extends Component{
 										/>
 								</div>
 							</div>
-							<div className="row p-r-10 m-b-10">
+							<div className="row p-r-10">
 								<Label className="col-3 col-form-label">Firma</Label>
 								<div className="col-9">
 									<Select
@@ -619,7 +619,7 @@ export default class TaskAdd extends Component{
 										/>
 								</div>
 							</div>
-							<div className="row p-r-10 m-b-10">
+							<div className="row p-r-10">
 								<Label className="col-3 col-form-label">Paušál</Label>
 								<div className="col-9">
 									<Select
@@ -633,7 +633,7 @@ export default class TaskAdd extends Component{
 								</div>
 							</div>
 
-							{false && <div className="row p-r-10 m-b-10">
+							{false && <div className="row p-r-10">
 								<Label className="col-3 col-form-label">Pending</Label>
 								<div className="col-9">
 									{/*className='form-control hidden-input'*/}
@@ -652,7 +652,7 @@ export default class TaskAdd extends Component{
 					</div>
 
 					<div className="col-lg-4">
-						<div className="row p-r-10 m-b-10">
+						<div className="row p-r-10">
 							<Label className="col-3 col-form-label">Deadline</Label>
 								<div className="col-9">
 									<DatePicker
@@ -682,7 +682,7 @@ export default class TaskAdd extends Component{
 							}}
 							columns={true}
 							/>
-							<div className="row p-r-10 m-b-10">
+							<div className="row p-r-10">
 								<Label className="col-3 col-form-label">Mimo PH</Label>
 								<div className="col-9">
 									<Select
@@ -697,8 +697,22 @@ export default class TaskAdd extends Component{
 							</div>
 					</div>
 				</div>}
+			</div>
+				<Label className="m-b-10 col-form-label">Popis úlohy</Label>
+					{!this.state.descriptionVisible && <span className="p-20 text-muted" onClick={()=>this.setState({descriptionVisible:true})}>Napíšte krátky popis úlohy</span>}
+					{this.state.descriptionVisible && <CKEditor
+						data={this.state.description}
+						onChange={(e)=>{
+							this.setState({description:e.editor.getData()})
+						}}
+						readOnly={this.state.viewOnly}
+						config={{
+							...ck4config
+						}}
+						/>
+					}
 				<div className='col-lg-12'>
-					<div className="row p-r-10 m-b-10">
+					<div className="row p-r-10">
 						<Label className="col-1 col-form-label m-b-3">Tags</Label>
 						<div className="col-11">
 							<Select
@@ -713,20 +727,6 @@ export default class TaskAdd extends Component{
 						</div>
 					</div>
 				</div>
-			</div>
-				<Label className="m-b-10 col-form-label">Popis úlohy</Label>
-					{!this.state.descriptionVisible && <span className="p-20 text-muted" onClick={()=>this.setState({descriptionVisible:true})}>Napíšte krátky popis úlohy</span>}
-					{this.state.descriptionVisible && <CKEditor
-						data={this.state.description}
-						onChange={(e)=>{
-							this.setState({description:e.editor.getData()})
-						}}
-						readOnly={this.state.viewOnly}
-						config={{
-							...ck4config
-						}}
-						/>
-				}
 				<Attachments
 					disabled={this.state.viewOnly}
 					taskID={null}
@@ -926,7 +926,9 @@ export default class TaskAdd extends Component{
 							</TabContent>}
 					</div>
 			</div>
-			{this.props.closeModal &&  <Button outline color="danger" onClick={this.props.closeModal}>Cancel</Button>}
+			{this.props.closeModal &&
+				<Button className="btn-link-remove" onClick={this.props.closeModal}>Cancel</Button>
+			}
 						<button
 							className="btn pull-right"
 							disabled={this.state.title==="" || this.state.status===null || this.state.project === null || this.state.company === null || this.state.saving || this.props.loading||this.props.newID===null}

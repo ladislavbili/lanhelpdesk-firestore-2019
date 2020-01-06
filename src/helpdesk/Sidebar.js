@@ -154,84 +154,82 @@ class Sidebar extends Component {
 			<div className="sidebar">
 					<SelectPage />
 				<div className="scrollable fit-with-header">
-					{!showSettings && <div>
+					{!showSettings &&
 						<div>
-						<li>
-							<Select
-								options={this.state.projects.filter((project)=>{
-									let curr = this.props.currentUser;
-									if((curr.userData && curr.userData.role.value===3)||(project.id===-1||project.id===null)){
-										return true;
-									}
-									let permission = project.permissions.find((permission)=>permission.user===curr.id);
-									return permission && permission.read;
-								})}
-								value={this.props.projectState}
-								styles={sidebarSelectStyle}
-								onChange={project => {
-									if (project.id === -1) {
-										this.setState({openProjectAdd: true})
-									} else {
-										if(this.props.filterState!== null && !this.props.filterState.global && this.props.filterState.project!==project.id){
-											this.props.setHelpSidebarMilestone(allMilestones);
-											this.props.setHelpSidebarFilter(null);
-											this.props.setFilter({
-												status:[],
-												requester:null,
-												company:null,
-												assigned:null,
-												workType:null,
-												statusDateFrom:'',
-												statusDateTo:'',
-												updatedAt:(new Date()).getTime()
-											});
-											this.props.history.push('/helpdesk/taskList/i/all');
-										}
-										this.props.setHelpSidebarProject(project);
-										this.props.setProject(project.value);
-										this.props.setHelpSidebarMilestone(allMilestones);
-										this.props.setMilestone(null);
-									}
-								}}
-								components={{
-									DropdownIndicator: ({ innerProps, isDisabled }) =>
-									<div style={{marginTop: "-15px"}}>
-										<i className="fa fa-folder-open" style={{position:'absolute', left:15, color: "#212121"}}/>
-										<i className="fa fa-chevron-down" style={{position:'absolute', right:15, color: "#212121"}}/>
-									</div>
-								}}
-								/>
-						</li>
-						<hr/>
-							{ this.props.project!==null && this.props.project!==-1 && <li>
 								<Select
-									options={this.state.milestones.concat(addsMilestones?[addMilestone]:[])
-										.filter((milestone)=> milestone.id===-1|| milestone.id===null|| milestone.project===this.props.project)}
-									value={this.props.milestoneState}
+									options={this.state.projects.filter((project)=>{
+										let curr = this.props.currentUser;
+										if((curr.userData && curr.userData.role.value===3)||(project.id===-1||project.id===null)){
+											return true;
+										}
+										let permission = project.permissions.find((permission)=>permission.user===curr.id);
+										return permission && permission.read;
+									})}
+									value={this.props.projectState}
 									styles={sidebarSelectStyle}
-									onChange={milestone => {
-										if (milestone.id === -1) {
-											this.setState({openMilestoneAdd: true})
+									onChange={project => {
+										if (project.id === -1) {
+											this.setState({openProjectAdd: true})
 										} else {
-											this.props.setHelpSidebarMilestone(milestone);
-											this.props.setMilestone(milestone.value);
+											if(this.props.filterState!== null && !this.props.filterState.global && this.props.filterState.project!==project.id){
+												this.props.setHelpSidebarMilestone(allMilestones);
+												this.props.setHelpSidebarFilter(null);
+												this.props.setFilter({
+													status:[],
+													requester:null,
+													company:null,
+													assigned:null,
+													workType:null,
+													statusDateFrom:'',
+													statusDateTo:'',
+													updatedAt:(new Date()).getTime()
+												});
+												this.props.history.push('/helpdesk/taskList/i/all');
+											}
+											this.props.setHelpSidebarProject(project);
+											this.props.setProject(project.value);
+											this.props.setHelpSidebarMilestone(allMilestones);
+											this.props.setMilestone(null);
 										}
 									}}
 									components={{
 										DropdownIndicator: ({ innerProps, isDisabled }) =>
 										<div style={{marginTop: "-15px"}}>
-											<i className="fa fa-map-signs" style={{position:'absolute', left:15, color: "#212121"}}/>
+											<i className="fa fa-folder-open" style={{position:'absolute', left:15, color: "#212121"}}/>
 											<i className="fa fa-chevron-down" style={{position:'absolute', right:15, color: "#212121"}}/>
-										</div>,
+										</div>
 									}}
 									/>
-											<hr/>
-							</li>}
+								<hr className="m-l-15 m-r-15"/>
+							{ this.props.project!==null && this.props.project!==-1 &&
+								<div className="">
+									<Select
+										options={this.state.milestones.concat(addsMilestones?[addMilestone]:[])
+											.filter((milestone)=> milestone.id===-1|| milestone.id===null|| milestone.project===this.props.project)}
+										value={this.props.milestoneState}
+										styles={sidebarSelectStyle}
+										onChange={milestone => {
+											if (milestone.id === -1) {
+												this.setState({openMilestoneAdd: true})
+											} else {
+												this.props.setHelpSidebarMilestone(milestone);
+												this.props.setMilestone(milestone.value);
+											}
+										}}
+										components={{
+											DropdownIndicator: ({ innerProps, isDisabled }) =>
+											<div style={{marginTop: "-15px"}}>
+												<i className="fa fa-map-signs" style={{position:'absolute', left:15, color: "#212121"}}/>
+												<i className="fa fa-chevron-down" style={{position:'absolute', right:15, color: "#212121"}}/>
+											</div>,
+										}}
+										/>
+										<hr className="m-l-15 m-r-15"/>
+								</div>}
 
 						<TaskAdd history={this.props.history} project={this.state.projects.map((item)=>item.id).includes(this.props.projectState.id)?this.props.projectState.id:null} triggerDate={this.state.projectChangeDate} />
 
-
-
+					{	this.state.activeTab !== 1 &&
 						<div
 							className="sidebar-btn"
 							>
@@ -256,13 +254,14 @@ class Sidebar extends Component {
 							</div>
 						 	<div><i className="fas fa-filter m-r-5 m-l-5" ></i>Filters</div>
 						</div>
+					}
 
 							<TabContent activeTab={this.state.activeTab}>
 								<TabPane tabId={0} >
 									<Nav vertical>
 										<NavItem>
 											<Link
-												className="sidebar-menu-item p-l-20"
+												className="sidebar-menu-item"
 												to={{ pathname: `/helpdesk/taskList/i/all` }} onClick={()=>{
 													this.props.setHelpSidebarFilter(null);
 													this.props.setFilter({
@@ -333,7 +332,6 @@ class Sidebar extends Component {
 								this.state.milestones.map((item)=>item.id).includes(this.props.milestoneState.id) &&
 								<MilestoneEdit item={this.props.milestoneState}/>
 							}
-						</div>
 					</div>}
 					{showSettings &&
 						<Nav vertical>

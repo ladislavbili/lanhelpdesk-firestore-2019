@@ -300,13 +300,13 @@ export const sidebarSelectStyle = {
 		return { ...provided, width:0,  };
 	},
 	control:(provided, state) => {
-		return { ...provided, background: "#F7F7F7", borderRadius: 0 , borderWidth: "0", height: 40 };
+		return { ...provided, background: "#F6F6F6", borderRadius: 0 , borderWidth: "0", height: 40, padding: 0};
 	},
 	input:(provided, state) => {
-		return { ...provided, marginLeft:30 };
+		return { ...provided, marginLeft: 30 };
 	},
 	placeholder:(provided, state) => {
-		return { ...provided, marginLeft:30 };
+		return { ...provided, marginLeft: 30 };
 	},
 };
 
@@ -388,6 +388,53 @@ export const selectStyleColored = {
 	singleValue: (styles, { data }) =>{
 		return ({ ...styles, color:'#FFF',padding:'0px 5px', backgroundColor: data.color });
 	},
+};
+
+export const invisibleSelectStyleOtherFont = {
+	control: (base,state) => ({
+		...base,
+		minHeight: 30,
+		backgroundColor: state.isFocused?'white':'inherit',
+		borderWidth:0,
+		borderRadius: 0,
+		fontFamily: "Segoe UI",
+		fontStyle: "normal",
+		fontWeight: 350,
+		fontSize: "12px",
+		lineHeight: "20px",
+		letterSpacing: "0.5px",
+		color: "#3C3C3C",
+	}),
+	dropdownIndicator: base => ({
+		...base,
+		padding: 4,
+	}),
+	clearIndicator: base => ({
+		...base,
+		padding: 4,
+	}),
+	multiValue: base => ({
+		...base,
+		backgroundColor: "#F2F1F1",
+		borderRadius: 0
+	}),
+	valueContainer: base => ({
+		...base,
+		padding: '0px 6px',
+		borderRadius: 0
+	}),
+	input: base => ({
+		...base,
+		margin: 0,
+		padding: 0,
+		backgroundColor: "inherit",
+		borderRadius: 0
+	}),
+	indicatorSeparator: base => ({
+		...base,
+		width: 0,
+	}),
+
 };
 
 export const selectStyle = {

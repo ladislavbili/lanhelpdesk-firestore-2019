@@ -56,7 +56,7 @@ class FilterAdd extends Component{
           <i className="far fa-save icon-M"/>
         </Button>
 
-        <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
+        <Modal style={{width: "800px"}} isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
             <ModalBody>
               <FormGroup className="m-t-15">
                 <Label>Filter name</Label>
