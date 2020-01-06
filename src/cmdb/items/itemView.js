@@ -229,7 +229,7 @@ export default class ItemView extends Component{
                         </div>
                       </div>
                     )}
-                    {this.backupTasksDescription ? this.state.backupTasksDescription.text : ""}
+                    {this.backupTasksDescription ? this.state.backupTasksDescription.text : "No backup tasks description"}
                   </div>
                   <div className="cmdb-yellow">
                     Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean et est a dui semper facilisis. Pellentesque placerat elit a nunc. Nullam tortor odio, rutrum quis, egestas ut, posuere sed, felis. Vestibulum placerat feugiat nisl. Suspendisse lacinia, odio non feugiat vestibulum, sem erat blandit metus, ac nonummy magna odio pharetra felis.

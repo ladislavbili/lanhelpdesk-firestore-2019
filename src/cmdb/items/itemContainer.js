@@ -23,6 +23,11 @@ export default class ItemContainer extends Component {
 									<i
 										className="fas fa-pen icon-M"
 										/>
+									{false && <img
+										className="commandbar-icon"
+										src={require('../../scss/icons/edit.svg')}
+										alt="Generic placeholder XX"
+										/>}
 									{" Edit"}
 								</button>
 							}

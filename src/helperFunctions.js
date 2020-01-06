@@ -35,8 +35,8 @@ export const hightlightText = (message,text, color)=>{
 
 
 export const calculateTextAreaHeight = (e) => {
-  const firstHeight = 29;
-  const expansionHeight = 21;
+//  const firstHeight = 29;
+//  const expansionHeight = 21;
 //  return firstHeight + Math.floor(Math.abs((e.target.scrollHeight-firstHeight))/expansionHeight)*expansionHeight;
   return e.target.scrollHeight;
 }
