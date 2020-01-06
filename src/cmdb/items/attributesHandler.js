@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Input, FormGroup, Label } from 'reactstrap';
+import { Input, Label } from 'reactstrap';
 import Select from 'react-select';
 import {selectStyle} from "../../scss/selectStyles";
 

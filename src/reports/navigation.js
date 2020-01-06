@@ -9,6 +9,7 @@ import PageHeader from '../components/PageHeader';
 import GeneralReports from './general';
 import CompanyMonthlyReport from './monthly/company';
 import AssignedMonthlyReport from './monthly/assigned';
+import CompanyInvoices from './invoices/company';
 
 import StatusList from './../helpdesk/settings/statuses';
 import ProjectList from './../helpdesk/settings/projects';
@@ -78,6 +79,7 @@ class Navigation extends Component {
 					<Route exact path="/reports/i/:id" component={GeneralReports} />
 					<Route exact path="/reports/monthly/companies" component={CompanyMonthlyReport} />
 					<Route exact path="/reports/monthly/requester" component={AssignedMonthlyReport} />
+					<Route exact path="/reports/company_invoices" component={CompanyInvoices} />
 
 					<Route exact path='/reports/settings/statuses' component={StatusList} />
 	        <Route exact path='/reports/settings/statuses/:id' component={StatusList} />

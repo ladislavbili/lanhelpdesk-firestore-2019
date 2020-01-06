@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Button, Label, Input } from 'reactstrap';
+import { Input } from 'reactstrap';
 import {calculateTextAreaHeight} from '../../helperFunctions';
-import BackupList from './backupList';
 
 
 export default class Backups extends Component{

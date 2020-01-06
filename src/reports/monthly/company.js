@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import { Button, Input, Modal, ModalBody, ModalHeader } from 'reactstrap';
+import { Button, Input, Modal, ModalBody, ModalHeader, FormGroup, Label } from 'reactstrap';
 import Select from 'react-select';
-import {storageCompaniesStart,storageHelpTasksStart, storageHelpStatusesStart, storageHelpTaskTypesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart, storageHelpTaskWorksStart, storageHelpTaskWorkTripsStart, storageHelpTripTypesStart, storageHelpPricelistsStart, storageHelpPricesStart } from '../../redux/actions';
+import {storageCompaniesStart,storageHelpTasksStart, storageHelpStatusesStart, storageHelpTaskTypesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart,
+	storageHelpTaskWorksStart, storageHelpTaskWorkTripsStart, storageHelpTripTypesStart, storageHelpPricelistsStart, storageHelpPricesStart, storageHelpCompanyInvoicesStart } from '../../redux/actions';
 import { timestampToString, timestampToDate, sameStringForms, toSelArr, toFloat} from '../../helperFunctions';
 import {rebase} from '../../index';
 import TaskEdit from '../../helpdesk/task/taskEditContainer';
@@ -21,6 +22,8 @@ class MothlyReportsCompany extends Component {
 			loading:false,
 			pickedTasks:[],
 			taskOpened:null,
+			newInvoice:null,
+			newInvoiceTitle:'',
 		}
 		this.filterTask.bind(this);
 	}
@@ -37,7 +40,8 @@ class MothlyReportsCompany extends Component {
 		props.tripTypesLoaded &&
 		props.workTripsLoaded &&
 		props.pricelistsLoaded &&
-		props.pricesLoaded
+		props.pricesLoaded &&
+		props.companyInvoicesLoaded
 	}
 
 	componentWillReceiveProps(props){
@@ -54,9 +58,13 @@ class MothlyReportsCompany extends Component {
 			!sameStringForms(props.workTrips,this.props.workTrips)||
 			!sameStringForms(props.pricelists,this.props.pricelists)||
 			!sameStringForms(props.prices,this.props.prices)||
+			!sameStringForms(props.companyInvoices,this.props.companyInvoices)||
 			(this.storageLoaded(props) && this.storageLoaded(this.props))
 		){
 			this.setData(props);
+		}
+		if(!sameStringForms(props.statuses,this.props.statuses)){
+			this.setState({status:toSelArr(props.statuses.filter((status)=>status.action==='close'))})
 		}
 		if(
 			props.from!==this.props.from||
@@ -76,6 +84,11 @@ class MothlyReportsCompany extends Component {
 		if(!this.props.statusesActive){
 			this.props.storageHelpStatusesStart();
 		}
+
+		if(this.props.statusesLoaded){
+			this.setState({status:toSelArr(this.props.statuses.filter((status)=>status.action==='close'))});
+		}
+
 		if(!this.props.taskTypesActive){
 			this.props.storageHelpTaskTypesStart();
 		}
@@ -103,6 +116,9 @@ class MothlyReportsCompany extends Component {
 		if(!this.props.pricesActive){
 			this.props.storageHelpPricesStart();
 		}
+		if(!this.props.companyInvoicesActive){
+			this.props.storageHelpCompanyInvoicesStart();
+		}
 		this.setData(this.props);
 	}
 
@@ -126,7 +142,6 @@ class MothlyReportsCompany extends Component {
 			allTasks:tasks,
 			pickedTasks:this.state.pickedTasks.length===0?taskIDs:this.state.pickedTasks.filter((id)=>taskIDs.includes(id)),
 			companies,
-			status:toSelArr(props.statuses.filter((status)=>status.action==='close')),
 			loading:false
 		});
 	}
@@ -369,34 +384,117 @@ class MothlyReportsCompany extends Component {
 	}
 
 	invoiceTasks(){
-		let statusIDs= this.state.status.map((status)=>status.id);
-		let allTasks = this.state.allTasks.filter((task)=>task.company && task.company.id===this.state.showCompany.id && this.state.pickedTasks.includes(task.id));
 		let invoiced = this.props.statuses.find((status)=>status.action==='invoiced')
-		let newReport={
-			title:'Fakturačný výkaz firmy '+this.state.showCompany.title+' od '+timestampToDate(this.props.from)+' do '+timestampToDate(this.props.to)+' vytvorený dňa '+timestampToDate(new Date()),
-			from:this.props.from,
-			to:this.props.to,
-			company: {title:this.state.showCompany.title, id:this.state.showCompany.id},
-			totalPausalWorks:
-				this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id)).reduce((acc,item)=>{
-				return acc+item.pausalWorks.reduce((acc,item)=>{
-					if(!isNaN(parseInt(item.quantity))){
-						return acc+parseInt(item.quantity);
-					}
-					return acc;
-				},0);
-			},0),
-			totalPausalTrips:
-				this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id)).reduce((acc,item)=>{
-				return acc+item.pausalTrips.reduce((acc,item)=>{
-					if(!isNaN(parseInt(item.quantity))){
-						return acc+parseInt(item.quantity);
-					}
-					return acc;
-				},0);
-			},0),
-			pausalTasks:
-				this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && (task.pausalWorks.length!==0||task.pausalTrips.length!==0)).map((task)=>{
+		let statusIDs= this.state.status.map((status)=>status.id);
+		let newInvoiceTitle = 'Fakturačný výkaz firmy '+this.state.showCompany.title+' od '+timestampToDate(this.props.from)+' do '+timestampToDate(this.props.to)+' vytvorený dňa '+timestampToDate(new Date());
+		let existingInvoices = this.props.companyInvoices.filter((invoice)=>invoice.title.includes(newInvoiceTitle));
+		if(existingInvoices.length===1 && existingInvoices[0].title===newInvoiceTitle){
+			newInvoiceTitle+='_1';
+		}else if(existingInvoices.length > 1){
+			let newEnding = Math.max(...existingInvoices.map((invoice)=>invoice.title.substring(newInvoiceTitle.length+1,invoice.title.length)).map((order)=>parseInt(order)).filter((order)=>!isNaN(order)))+1;
+			newInvoiceTitle+='_'+newEnding;
+		}
+		if(invoiced!==undefined){
+			let newInvoice={
+				from:this.props.from,
+				to:this.props.to,
+				createdAt:(new Date()).getTime(),
+				company: {title:this.state.showCompany.title, id:this.state.showCompany.id},
+				totalPausalWorks:
+					this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id)).reduce((acc,item)=>{
+					return acc+item.pausalWorks.reduce((acc,item)=>{
+						if(!isNaN(parseInt(item.quantity))){
+							return acc+parseInt(item.quantity);
+						}
+						return acc;
+					},0);
+				},0),
+				totalPausalTrips:
+					this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id)).reduce((acc,item)=>{
+					return acc+item.pausalTrips.reduce((acc,item)=>{
+						if(!isNaN(parseInt(item.quantity))){
+							return acc+parseInt(item.quantity);
+						}
+						return acc;
+					},0);
+				},0),
+
+				pausalTasks:
+					this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && (task.pausalWorks.length!==0||task.pausalTrips.length!==0)).map((task)=>{
+						return {
+							id:task.id,
+							title:task.title,
+							requester:task.requester?task.requester.email:'Nikto',
+							assignedTo:task.assignedTo.map((assignedTo)=>{return assignedTo.email}),
+							status:task.status?{color:task.status.color, title:task.status.title}:{title:'white',color:'Neznámy status'},
+							closeDate:task.closeDate,
+							works:task.pausalWorks.map((work)=>{
+								return {
+									id:work.id,
+									title:work.title,
+									type:work.type?work.type.title:'Undefined',
+									quantity:parseInt(work.quantity)
+								}
+							}),
+							trips:task.pausalTrips.map((trip)=>{
+								return {
+									id:trip.id,
+									title:trip.type?trip.type.title:"Undefined",
+									quantity:parseInt(trip.quantity)
+								}
+							}),
+						}
+				}),
+				pausalInfo:{
+					worksTotalTime:this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalWorks.length!==0).reduce((acc,item)=>{
+						return acc+item.pausalWorks.reduce((acc,item)=>{
+							if(!isNaN(parseInt(item.quantity))){
+								return acc+parseInt(item.quantity);
+							}
+							return acc;
+						},0);
+					},0),
+					worksTotalOvertime:this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalWorks.length!==0 && task.overtime).reduce((acc,item)=>{
+						return acc+item.pausalWorks.reduce((acc,item)=>{
+							if(!isNaN(parseInt(item.quantity))){
+								return acc+parseInt(item.quantity);
+							}
+							return acc;
+						},0);
+					},0),
+					worksOvertimeTasks:this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalWorks.length!==0 && task.overtime).map((task)=>task.id),
+					worksExtraPay:this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalWorks.length!==0 && task.overtime).reduce((acc,item)=>{
+						return acc+item.pausalWorks.reduce((acc,work)=>{
+							return acc+=isNaN(this.getTotalAHExtraPrice(work))?0:this.getTotalAHExtraPrice(work)
+						},0);
+					},0),
+
+					tripsTotalTime:this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalTrips.length!==0).reduce((acc,item)=>{
+						return acc+item.pausalTrips.reduce((acc,item)=>{
+							if(!isNaN(parseInt(item.quantity))){
+								return acc+parseInt(item.quantity);
+							}
+							return acc;
+						},0);
+					},0),
+					tripsTotalOvertime:this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalTrips.length!==0 && task.overtime).reduce((acc,item)=>{
+						return acc+item.pausalTrips.reduce((acc,item)=>{
+							if(!isNaN(parseInt(item.quantity))){
+								return acc+parseInt(item.quantity);
+							}
+							return acc;
+						},0);
+					},0),
+					tripsOvertimeTasks:this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalTrips.length!==0 && task.overtime).map((task)=>task.id),
+					tripsExtraPay:this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalTrips.length!==0 && task.overtime).reduce((acc,item)=>{
+						return acc+item.pausalTrips.reduce((acc,trip)=>{
+							return acc+=isNaN(this.getTotalAHExtraPrice(trip))?0:this.getTotalAHExtraPrice(trip)
+						},0);
+					},0),
+
+				},
+
+				pausalExtraTasks:this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && (task.extraWorks.length!==0||task.extraTrips.length!==0) && this.state.pickedTasks.includes(task.id)).map((task)=>{
 					return {
 						id:task.id,
 						title:task.title,
@@ -404,323 +502,244 @@ class MothlyReportsCompany extends Component {
 						assignedTo:task.assignedTo.map((assignedTo)=>{return assignedTo.email}),
 						status:task.status?{color:task.status.color, title:task.status.title}:{title:'white',color:'Neznámy status'},
 						closeDate:task.closeDate,
-						works:task.pausalWorks.map((work)=>{
+						works:task.extraWorks.map((work)=>{
 							return {
 								id:work.id,
 								title:work.title,
 								type:work.type?work.type.title:'Undefined',
-								quantity:parseInt(work.quantity)
+								quantity:parseInt(work.quantity),
+								unitPrice:task.overtime?this.getUnitAHPrice(work):this.getUnitDiscountedPrice(work),
+								totalPrice:task.overtime?this.getTotalAHPrice(work):this.getTotalDiscountedPrice(work)
 							}
 						}),
-						trips:task.pausalTrips.map((trip)=>{
+						trips:task.extraTrips.map((trip)=>{
 							return {
 								id:trip.id,
 								title:trip.type?trip.type.title:"Undefined",
-								quantity:parseInt(trip.quantity)
+								quantity:parseInt(trip.quantity),
+								unitPrice:task.overtime?this.getUnitAHPrice(trip):this.getUnitDiscountedPrice(trip),
+								totalPrice:task.overtime?this.getTotalAHPrice(trip):this.getTotalDiscountedPrice(trip)
 							}
 						}),
 					}
-			}),
-			pausalInfo:{
-				worksTotalTime:this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalWorks.length!==0).reduce((acc,item)=>{
-					return acc+item.pausalWorks.reduce((acc,item)=>{
-						if(!isNaN(parseInt(item.quantity))){
-							return acc+parseInt(item.quantity);
-						}
-						return acc;
-					},0);
-				},0),
-				worksTotalOvertime:this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalWorks.length!==0 && task.overtime).reduce((acc,item)=>{
-					return acc+item.pausalWorks.reduce((acc,item)=>{
-						if(!isNaN(parseInt(item.quantity))){
-							return acc+parseInt(item.quantity);
-						}
-						return acc;
-					},0);
-				},0),
-				worksOvertimeTasks:this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalWorks.length!==0 && task.overtime).map((task)=>task.id),
-				worksExtraPay:this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalWorks.length!==0 && task.overtime).reduce((acc,item)=>{
-					return acc+item.pausalWorks.reduce((acc,work)=>{
-						return acc+=isNaN(this.getTotalAHExtraPrice(work))?0:this.getTotalAHExtraPrice(work)
-					},0);
-				},0),
-
-				tripsTotalTime:this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalTrips.length!==0).reduce((acc,item)=>{
-					return acc+item.pausalTrips.reduce((acc,item)=>{
-						if(!isNaN(parseInt(item.quantity))){
-							return acc+parseInt(item.quantity);
-						}
-						return acc;
-					},0);
-				},0),
-				tripsTotalOvertime:this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalTrips.length!==0 && task.overtime).reduce((acc,item)=>{
-					return acc+item.pausalTrips.reduce((acc,item)=>{
-						if(!isNaN(parseInt(item.quantity))){
-							return acc+parseInt(item.quantity);
-						}
-						return acc;
-					},0);
-				},0),
-				tripsOvertimeTasks:this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalTrips.length!==0 && task.overtime).map((task)=>task.id),
-				tripsExtraPay:this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalTrips.length!==0 && task.overtime).reduce((acc,item)=>{
-					return acc+item.pausalTrips.reduce((acc,trip)=>{
-						return acc+=isNaN(this.getTotalAHExtraPrice(trip))?0:this.getTotalAHExtraPrice(trip)
-					},0);
-				},0),
-
-			},
-
-			pausalExtraTasks:this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && (task.extraWorks.length!==0||task.extraTrips.length!==0)).map((task)=>{
-				return {
-					id:task.id,
-					title:task.title,
-					requester:task.requester?task.requester.email:'Nikto',
-					assignedTo:task.assignedTo.map((assignedTo)=>{return assignedTo.email}),
-					status:task.status?{color:task.status.color, title:task.status.title}:{title:'white',color:'Neznámy status'},
-					closeDate:task.closeDate,
-					works:task.extraWorks.map((work)=>{
-						return {
-							id:work.id,
-							title:work.title,
-							type:work.type?work.type.title:'Undefined',
-							quantity:parseInt(work.quantity),
-							unitPrice:task.overtime?this.getUnitAHPrice(work):this.getUnitDiscountedPrice(work),
-							totalPrice:task.overtime?this.getTotalAHPrice(work):this.getTotalDiscountedPrice(work)
-						}
-					}),
-					trips:task.extraTrips.map((trip)=>{
-						return {
-							id:trip.id,
-							title:trip.type?trip.type.title:"Undefined",
-							quantity:parseInt(trip.quantity),
-							unitPrice:task.overtime?this.getUnitAHPrice(trip):this.getUnitDiscountedPrice(trip),
-							totalPrice:task.overtime?this.getTotalAHPrice(trip):this.getTotalDiscountedPrice(trip)
-						}
-					}),
-				}
-			}),
-			pausalExtraInfo:{
-				worksTotalTime:this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraWorks.length!==0).reduce((acc,item)=>{
-					return acc+item.extraWorks.reduce((acc,item)=>{
-						if(!isNaN(parseInt(item.quantity))){
-							return acc+parseInt(item.quantity);
-						}
-						return acc;
-					},0);
-				},0),
-				worksTotalOvertime:this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraWorks.length!==0 && task.overtime).reduce((acc,item)=>{
+				}),
+				pausalExtraInfo:{
+					worksTotalTime:this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraWorks.length!==0).reduce((acc,item)=>{
 						return acc+item.extraWorks.reduce((acc,item)=>{
 							if(!isNaN(parseInt(item.quantity))){
 								return acc+parseInt(item.quantity);
 							}
 							return acc;
 						},0);
-				},0),
-				worksOvertimeTasks:this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraWorks.length!==0 && task.overtime).map((task)=>task.id),
-				worksExtraPay:parseFloat(this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraWorks.length!==0 && task.overtime).reduce((acc,item)=>{
-					return acc+item.extraWorks.reduce((acc,work)=>{
-						return acc+=isNaN(this.getTotalAHExtraPrice(work))?0:this.getTotalAHExtraPrice(work)
-					},0);
-				},0).toFixed(2)),
-				worksPriceWithoutDPH:parseFloat((this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraWorks.length!==0).reduce((acc,task)=>{
-					return acc+task.extraWorks.reduce((acc,work)=>{
-						if(task.overtime){
-							return acc+(isNaN(this.getTotalAHPrice(work))?0:this.getTotalAHPrice(work));
-						}
-						return acc+(isNaN(this.getTotalDiscountedPrice(work))?0:this.getTotalDiscountedPrice(work));
-					},0);
-				},0)).toFixed(2)),
-				worksPriceWithDPH:parseFloat((this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraWorks.length!==0).reduce((acc,task)=>{
+					},0),
+					worksTotalOvertime:this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraWorks.length!==0 && task.overtime).reduce((acc,item)=>{
+							return acc+item.extraWorks.reduce((acc,item)=>{
+								if(!isNaN(parseInt(item.quantity))){
+									return acc+parseInt(item.quantity);
+								}
+								return acc;
+							},0);
+					},0),
+					worksOvertimeTasks:this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraWorks.length!==0 && task.overtime).map((task)=>task.id),
+					worksExtraPay:parseFloat(this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraWorks.length!==0 && task.overtime).reduce((acc,item)=>{
+						return acc+item.extraWorks.reduce((acc,work)=>{
+							return acc+=isNaN(this.getTotalAHExtraPrice(work))?0:this.getTotalAHExtraPrice(work)
+						},0);
+					},0).toFixed(2)),
+					worksPriceWithoutDPH:parseFloat((this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraWorks.length!==0).reduce((acc,task)=>{
 						return acc+task.extraWorks.reduce((acc,work)=>{
+							if(task.overtime){
+								return acc+(isNaN(this.getTotalAHPrice(work))?0:this.getTotalAHPrice(work));
+							}
+							return acc+(isNaN(this.getTotalDiscountedPrice(work))?0:this.getTotalDiscountedPrice(work));
+						},0);
+					},0)).toFixed(2)),
+					worksPriceWithDPH:parseFloat((this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraWorks.length!==0).reduce((acc,task)=>{
+							return acc+task.extraWorks.reduce((acc,work)=>{
+								return acc+(isNaN(this.getTotalWithDPH(work,task.overtime))?0:this.getTotalWithDPH(work,task.overtime));
+							},0);
+					},0)).toFixed(2)),
+
+					tripsTotalTime:this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraTrips.length!==0).reduce((acc,item)=>{
+						return acc+item.extraTrips.reduce((acc,item)=>{
+							if(!isNaN(parseInt(item.quantity))){
+								return acc+parseInt(item.quantity);
+							}
+							return acc;
+						},0);
+					},0),
+					tripsTotalOvertime:this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraTrips.length!==0 && task.overtime).reduce((acc,item)=>{
+						return acc+item.extraTrips.reduce((acc,item)=>{
+							if(!isNaN(parseInt(item.quantity))){
+								return acc+parseInt(item.quantity);
+							}
+							return acc;
+						},0);
+					},0),
+					tripsOvertimeTasks:this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraTrips.length!==0 && task.overtime).map((task)=>task.id),
+					tripsExtraPay:parseFloat(this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraTrips.length!==0 && task.overtime).reduce((acc,item)=>{
+						return acc+item.extraTrips.reduce((acc,trip)=>{
+							return acc+(isNaN(this.getTotalAHExtraPrice(trip))?0:this.getTotalAHExtraPrice(trip))
+						},0);
+					},0).toFixed(2)),
+					tripsPriceWithoutDPH:parseFloat(this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraTrips.length!==0).reduce((acc,task)=>{
+						return acc+task.extraTrips.reduce((acc,trip)=>{
+							if(task.overtime){
+								return acc+(isNaN(this.getTotalAHPrice(trip))?0:this.getTotalAHPrice(trip));
+							}
+							return acc+(isNaN(this.getTotalDiscountedPrice(trip))?0:this.getTotalDiscountedPrice(trip));
+						},0);
+					},0).toFixed(2)),
+					tripsPriceWithDPH:parseFloat(this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraTrips.length!==0).reduce((acc,task)=>{
+						return acc+task.extraTrips.reduce((acc,trip)=>{
+							return acc+(isNaN(this.getTotalWithDPH(trip,task.overtime))?0:this.getTotalWithDPH(trip,task.overtime));
+						},0);
+					},0).toFixed(2)),
+				},
+
+				projectTasks:this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && (task.works.length!==0||task.trips.length!==0) && this.state.pickedTasks.includes(task.id)).map((task)=>{
+					return {
+						id:task.id,
+						title:task.title,
+						requester:task.requester?task.requester.email:'Nikto',
+						assignedTo:task.assignedTo.map((assignedTo)=>{return assignedTo.email}),
+						status:task.status?{color:task.status.color, title:task.status.title}:{title:'white',color:'Neznámy status'},
+						closeDate:task.closeDate,
+						works:task.works.map((work)=>{
+							return {
+								id:work.id,
+								title:work.title,
+								type:work.type?work.type.title:'Undefined',
+								quantity:parseInt(work.quantity),
+								unitPrice:task.overtime?this.getUnitAHPrice(work):this.getUnitDiscountedPrice(work),
+								totalPrice:task.overtime?this.getTotalAHPrice(work):this.getTotalDiscountedPrice(work)
+							}
+						}),
+						trips:task.trips.map((trip)=>{
+							return {
+								id:trip.id,
+								title:trip.type?trip.type.title:"Undefined",
+								quantity:parseInt(trip.quantity),
+								unitPrice:task.overtime?this.getUnitAHPrice(trip):this.getUnitDiscountedPrice(trip),
+								totalPrice:task.overtime?this.getTotalAHPrice(trip):this.getTotalDiscountedPrice(trip)
+							}
+						}),
+					}
+				}),
+				projectInfo:{
+					worksTotalTime:	this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.works.length!==0).reduce((acc,item)=>{
+							return acc+item.works.reduce((acc,item)=>{
+								if(!isNaN(parseInt(item.quantity))){
+									return acc+parseInt(item.quantity);
+								}
+								return acc;
+							},0);
+						},0),
+					worksTotalOvertime:	this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.works.length!==0 && task.overtime).reduce((acc,item)=>{
+							return acc+item.works.reduce((acc,item)=>{
+								if(!isNaN(parseInt(item.quantity))){
+									return acc+parseInt(item.quantity);
+								}
+								return acc;
+							},0);
+						},0),
+					worksOvertimeTasks: this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.works.length!==0 && task.overtime).map((task)=>task.id),
+					worksExtraPay:parseFloat(this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.works.length!==0 && task.overtime).reduce((acc,item)=>{
+						return acc+item.works.reduce((acc,work)=>{
+							return acc+=isNaN(this.getTotalAHExtraPrice(work))?0:this.getTotalAHExtraPrice(work)
+						},0);
+					},0).toFixed(2)),
+					worksPriceWithoutDPH:parseFloat(this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.works.length!==0).reduce((acc,task)=>{
+						return acc+task.works.reduce((acc,work)=>{
+							if(task.overtime){
+								return acc+(isNaN(this.getTotalAHPrice(work))?0:this.getTotalAHPrice(work));
+							}
+							return acc+(isNaN(this.getTotalDiscountedPrice(work))?0:this.getTotalDiscountedPrice(work));
+						},0);
+					},0).toFixed(2)),
+					worksPriceWithDPH:parseFloat(this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.works.length!==0).reduce((acc,task)=>{
+						return acc+task.works.reduce((acc,work)=>{
 							return acc+(isNaN(this.getTotalWithDPH(work,task.overtime))?0:this.getTotalWithDPH(work,task.overtime));
 						},0);
-				},0)).toFixed(2)),
+					},0).toFixed(2)),
 
-				tripsTotalTime:this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraTrips.length!==0).reduce((acc,item)=>{
-					return acc+item.extraTrips.reduce((acc,item)=>{
-						if(!isNaN(parseInt(item.quantity))){
-							return acc+parseInt(item.quantity);
-						}
-						return acc;
-					},0);
-				},0),
-				tripsTotalOvertime:this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraTrips.length!==0 && task.overtime).reduce((acc,item)=>{
-					return acc+item.extraTrips.reduce((acc,item)=>{
-						if(!isNaN(parseInt(item.quantity))){
-							return acc+parseInt(item.quantity);
-						}
-						return acc;
-					},0);
-				},0),
-				tripsOvertimeTasks:this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraTrips.length!==0 && task.overtime).map((task)=>task.id),
-				tripsExtraPay:parseFloat(this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraTrips.length!==0 && task.overtime).reduce((acc,item)=>{
-					return acc+item.extraTrips.reduce((acc,trip)=>{
-						return acc+(isNaN(this.getTotalAHExtraPrice(trip))?0:this.getTotalAHExtraPrice(trip))
-					},0);
-				},0).toFixed(2)),
-				tripsPriceWithoutDPH:parseFloat(this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraTrips.length!==0).reduce((acc,task)=>{
-					return acc+task.extraTrips.reduce((acc,trip)=>{
-						if(task.overtime){
-							return acc+(isNaN(this.getTotalAHPrice(trip))?0:this.getTotalAHPrice(trip));
-						}
-						return acc+(isNaN(this.getTotalDiscountedPrice(trip))?0:this.getTotalDiscountedPrice(trip));
-					},0);
-				},0).toFixed(2)),
-				tripsPriceWithDPH:parseFloat(this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraTrips.length!==0).reduce((acc,task)=>{
-					return acc+task.extraTrips.reduce((acc,trip)=>{
-						return acc+(isNaN(this.getTotalWithDPH(trip,task.overtime))?0:this.getTotalWithDPH(trip,task.overtime));
-					},0);
-				},0).toFixed(2)),
-			},
-
-			projectTasks:this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && (task.works.length!==0||task.trips.length!==0)).map((task)=>{
-				return {
-					id:task.id,
-					title:task.title,
-					requester:task.requester?task.requester.email:'Nikto',
-					assignedTo:task.assignedTo.map((assignedTo)=>{return assignedTo.email}),
-					status:task.status?{color:task.status.color, title:task.status.title}:{title:'white',color:'Neznámy status'},
-					closeDate:task.closeDate,
-					works:task.works.map((work)=>{
-						return {
-							id:work.id,
-							title:work.title,
-							type:work.type?work.type.title:'Undefined',
-							quantity:parseInt(work.quantity),
-							unitPrice:task.overtime?this.getUnitAHPrice(work):this.getUnitDiscountedPrice(work),
-							totalPrice:task.overtime?this.getTotalAHPrice(work):this.getTotalDiscountedPrice(work)
-						}
-					}),
-					trips:task.trips.map((trip)=>{
-						return {
-							id:trip.id,
-							title:trip.type?trip.type.title:"Undefined",
-							quantity:parseInt(trip.quantity),
-							unitPrice:task.overtime?this.getUnitAHPrice(trip):this.getUnitDiscountedPrice(trip),
-							totalPrice:task.overtime?this.getTotalAHPrice(trip):this.getTotalDiscountedPrice(trip)
-						}
-					}),
-				}
-			}),
-			projectInfo:{
-				worksTotalTime:	this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.works.length!==0).reduce((acc,item)=>{
-						return acc+item.works.reduce((acc,item)=>{
+					tripsTotalTime:this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.trips.length!==0).reduce((acc,item)=>{
+						return acc+item.trips.reduce((acc,item)=>{
 							if(!isNaN(parseInt(item.quantity))){
 								return acc+parseInt(item.quantity);
 							}
 							return acc;
 						},0);
 					},0),
-				worksTotalOvertime:	this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.works.length!==0 && task.overtime).reduce((acc,item)=>{
-						return acc+item.works.reduce((acc,item)=>{
+					tripsTotalOvertime:this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.trips.length!==0 && task.overtime).reduce((acc,item)=>{
+						return acc+item.trips.reduce((acc,item)=>{
 							if(!isNaN(parseInt(item.quantity))){
 								return acc+parseInt(item.quantity);
 							}
 							return acc;
 						},0);
 					},0),
-				worksOvertimeTasks: this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.works.length!==0 && task.overtime).map((task)=>task.id),
-				worksExtraPay:parseFloat(this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.works.length!==0 && task.overtime).reduce((acc,item)=>{
-					return acc+item.works.reduce((acc,work)=>{
-						return acc+=isNaN(this.getTotalAHExtraPrice(work))?0:this.getTotalAHExtraPrice(work)
-					},0);
-				},0).toFixed(2)),
-				worksPriceWithoutDPH:parseFloat(this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.works.length!==0).reduce((acc,task)=>{
-					return acc+task.works.reduce((acc,work)=>{
-						if(task.overtime){
-							return acc+(isNaN(this.getTotalAHPrice(work))?0:this.getTotalAHPrice(work));
-						}
-						return acc+(isNaN(this.getTotalDiscountedPrice(work))?0:this.getTotalDiscountedPrice(work));
-					},0);
-				},0).toFixed(2)),
-				worksPriceWithDPH:parseFloat(this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.works.length!==0).reduce((acc,task)=>{
-					return acc+task.works.reduce((acc,work)=>{
-						return acc+(isNaN(this.getTotalWithDPH(work,task.overtime))?0:this.getTotalWithDPH(work,task.overtime));
-					},0);
-				},0).toFixed(2)),
+					tripsOvertimeTasks:this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.trips.length!==0 && task.overtime).map((task)=>task.id),
+					tripsExtraPay:parseFloat(this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.trips.length!==0 && task.overtime).reduce((acc,item)=>{
+						return acc+item.trips.reduce((acc,trip)=>{
+							return acc+(isNaN(this.getTotalAHExtraPrice(trip))?0:this.getTotalAHExtraPrice(trip))
+						},0);
+					},0).toFixed(2)),
+					tripsPriceWithoutDPH:parseFloat(this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.trips.length!==0).reduce((acc,task)=>{
+						return acc+task.trips.reduce((acc,trip)=>{
+							if(task.overtime){
+								return acc+(isNaN(this.getTotalAHPrice(trip))?0:this.getTotalAHPrice(trip));
+							}
+							return acc+(isNaN(this.getTotalDiscountedPrice(trip))?0:this.getTotalDiscountedPrice(trip));
+						},0);
+					},0).toFixed(2)),
+					tripsPriceWithDPH:parseFloat(this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.trips.length!==0).reduce((acc,task)=>{
+						return acc+task.trips.reduce((acc,trip)=>{
+							return acc+(isNaN(this.getTotalWithDPH(trip,task.overtime))?0:this.getTotalWithDPH(trip,task.overtime));
+						},0);
+					},0).toFixed(2)),
+				},
 
-				tripsTotalTime:this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.trips.length!==0).reduce((acc,item)=>{
-					return acc+item.trips.reduce((acc,item)=>{
-						if(!isNaN(parseInt(item.quantity))){
-							return acc+parseInt(item.quantity);
-						}
-						return acc;
-					},0);
-				},0),
-				tripsTotalOvertime:this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.trips.length!==0 && task.overtime).reduce((acc,item)=>{
-					return acc+item.trips.reduce((acc,item)=>{
-						if(!isNaN(parseInt(item.quantity))){
-							return acc+parseInt(item.quantity);
-						}
-						return acc;
-					},0);
-				},0),
-				tripsOvertimeTasks:this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.trips.length!==0 && task.overtime).map((task)=>task.id),
-				tripsExtraPay:parseFloat(this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.trips.length!==0 && task.overtime).reduce((acc,item)=>{
-					return acc+item.trips.reduce((acc,trip)=>{
-						return acc+(isNaN(this.getTotalAHExtraPrice(trip))?0:this.getTotalAHExtraPrice(trip))
-					},0);
-				},0).toFixed(2)),
-				tripsPriceWithoutDPH:parseFloat(this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.trips.length!==0).reduce((acc,task)=>{
-					return acc+task.trips.reduce((acc,trip)=>{
-						if(task.overtime){
-							return acc+(isNaN(this.getTotalAHPrice(trip))?0:this.getTotalAHPrice(trip));
-						}
-						return acc+(isNaN(this.getTotalDiscountedPrice(trip))?0:this.getTotalDiscountedPrice(trip));
-					},0);
-				},0).toFixed(2)),
-				tripsPriceWithDPH:parseFloat(this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.trips.length!==0).reduce((acc,task)=>{
-					return acc+task.trips.reduce((acc,trip)=>{
-						return acc+(isNaN(this.getTotalWithDPH(trip,task.overtime))?0:this.getTotalWithDPH(trip,task.overtime));
-					},0);
-				},0).toFixed(2)),
-			},
+				materialTasks:this.state.allTasks.filter((task)=>this.filterTask(task,statusIDs) && task.materials.length > 0 && this.state.pickedTasks.includes(task.id)).map((task)=>{
+					return {
+						id:task.id,
+						title:task.title,
+						requester:task.requester?task.requester.email:'Nikto',
+						assignedTo:task.assignedTo.map((assignedTo)=>{return assignedTo.email}),
+						status:task.status?{color:task.status.color, title:task.status.title}:{title:'white',color:'Neznámy status'},
+						closeDate:task.closeDate,
+						materials:task.materials.map((material)=>{
+							return {
+								id:material.id,
+								title:material.title,
+								quantity:material.quantity,
+								unit:material.unit.title,
+								unitPrice:toFloat(material.finalUnitPrice),
+								totalPrice:toFloat(material.totalPrice),
+							}
+						})
+					}
+				}),
+				materialInfo:{
+					priceWithoutDPH:toFloat(this.state.allTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id)).reduce((acc,task)=>{
+						return acc+task.materials.reduce((acc,material)=>acc+=isNaN(parseFloat(material.totalPrice))?0:parseFloat(material.totalPrice),0)
+					},0)),
+					priceWithDPH:toFloat(this.state.allTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id)).reduce((acc,task)=>{
+						return acc+task.materials.reduce((acc,material)=>acc+=isNaN(parseFloat(material.totalPrice))?0:parseFloat(material.totalPrice),0)
+					},0)*(1+(isNaN(parseInt(this.state.showCompany.dph))?0:parseInt(this.state.showCompany.dph))/100))
+				},
 
-			materialTasks:this.state.allTasks.filter((task)=>this.filterTask(task,statusIDs) && task.materials.length > 0 ).map((task)=>{
-				return {
-					id:task.id,
-					title:task.title,
-					requester:task.requester?task.requester.email:'Nikto',
-					assignedTo:task.assignedTo.map((assignedTo)=>{return assignedTo.email}),
-					status:task.status?{color:task.status.color, title:task.status.title}:{title:'white',color:'Neznámy status'},
-					closeDate:task.closeDate,
-					materials:task.materials.map((material)=>{
-						return {
-							id:material.id,
-							title:material.title,
-							quantity:material.quantity,
-							unit:material.unit.title,
-							unitPrice:toFloat(material.finalUnitPrice),
-							totalPrice:toFloat(material.totalPrice),
-						}
-					})
+				rented:[...this.state.showCompany.rented],
+				rentedInfo:{
+					priceWithoutDPH:parseFloat(((this.state.showCompany.rented===undefined ? [] : this.state.showCompany.rented).reduce((acc,rentedItem)=>{
+						return acc+(isNaN(parseFloat(rentedItem.totalPrice))?0:parseFloat(rentedItem.totalPrice))
+					},0)*this.getMonthDiff(this.props)).toFixed(2)),
+					priceWithDPH:parseFloat(((this.state.showCompany.rented===undefined ? [] : this.state.showCompany.rented).reduce((acc,rentedItem)=>{
+						return acc+(isNaN(parseFloat(rentedItem.totalPrice))?0:parseFloat(rentedItem.totalPrice))
+					},0)*this.getMonthDiff(this.props)*(1+(isNaN(parseInt(this.state.showCompany.dph))?0:parseInt(this.state.showCompany.dph))/100)).toFixed(2)),
 				}
-			}),
-			materialInfo:{
-				priceWithoutDPH:toFloat(this.state.allTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id)).reduce((acc,task)=>{
-					return acc+task.materials.reduce((acc,material)=>acc+=isNaN(parseFloat(material.totalPrice))?0:parseFloat(material.totalPrice),0)
-				},0)),
-				priceWithDPH:toFloat(this.state.allTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id)).reduce((acc,task)=>{
-					return acc+task.materials.reduce((acc,material)=>acc+=isNaN(parseFloat(material.totalPrice))?0:parseFloat(material.totalPrice),0)
-				},0)*(1+(isNaN(parseInt(this.state.showCompany.dph))?0:parseInt(this.state.showCompany.dph))/100))
-			},
-			rented:[...this.state.showCompany.rented],
-			rentedInfo:{
-				priceWithoutDPH:parseFloat(((this.state.showCompany.rented===undefined ? [] : this.state.showCompany.rented).reduce((acc,rentedItem)=>{
-					return acc+(isNaN(parseFloat(rentedItem.totalPrice))?0:parseFloat(rentedItem.totalPrice))
-				},0)*this.getMonthDiff(this.props)).toFixed(2)),
-				priceWithDPH:parseFloat(((this.state.showCompany.rented===undefined ? [] : this.state.showCompany.rented).reduce((acc,rentedItem)=>{
-					return acc+(isNaN(parseFloat(rentedItem.totalPrice))?0:parseFloat(rentedItem.totalPrice))
-				},0)*this.getMonthDiff(this.props)*(1+(isNaN(parseInt(this.state.showCompany.dph))?0:parseInt(this.state.showCompany.dph))/100)).toFixed(2)),
 			}
-		}
-		if(invoiced!==undefined && window.confirm("Chcete naozaj vykázať úlohy: "+ allTasks.reduce((acc,task)=>acc+task.id+',','').slice(0,-1)+" ?")){
-			allTasks.forEach((task)=>{
-				task.works.filter((work)=>work.finished!==true).map((work)=>rebase.updateDoc('/help-task_works/'+work.id, {price:work.price, dph:work.dph, afterHours:work.afterHours,finished:true}))
-				task.trips.filter((trip)=>trip.finished!==true).map((trip)=>rebase.updateDoc('/help-task_work_trips/'+trip.id, {price:trip.price, dph:trip.dph, afterHours:trip.afterHours,finished:true}))
-				rebase.updateDoc('/help-tasks/'+task.id, {status:invoiced.id,invoicedDate:(new Date()).getTime()});
-				rebase.addToCollection('help-company_reports',newReport);
-			});
+			this.setState({newInvoice, newInvoiceTitle});
 		}
 	}
 
@@ -796,7 +815,7 @@ class MothlyReportsCompany extends Component {
 								{this.state.pickedTasks.length===this.state.allTasks.filter((task)=>this.state.showCompany && task.company.id===this.state.showCompany.id && statusIDs.includes(task.status.id)).length ? "Odznačiť všetky" : "Označiť všetky"}
 							</Button>
 							<Button
-								className="btn-danger center-hor"
+								className="btn-danger m-l-5 center-hor"
 								onClick={this.invoiceTasks.bind(this)}
 								>
 								Faktúrovať
@@ -1575,7 +1594,12 @@ class MothlyReportsCompany extends Component {
 											<td className="clickable" style={{ color: "#1976d2" }} onClick={()=>this.setState({taskOpened:task})}>{task.title}</td>
 											<td>{task.requester?task.requester.email:'Nikto'}</td>
 											<td>{task.assigned?task.assigned.email:'Nikto'}</td>
-											<td>{task.status.title}</td>
+											<td>
+												<span className="label label-info"
+													style={{backgroundColor:task.status && task.status.color?task.status.color:'white'}}>
+													{task.status?task.status.title:'Neznámy status'}
+												</span>
+											</td>
 											<td>{timestampToString(task.statusChange)}</td>
 											<td colSpan="5">
 												<table className="table-borderless full-width">
@@ -1641,6 +1665,31 @@ class MothlyReportsCompany extends Component {
 								},0)*this.getMonthDiff(this.props)*(1+(isNaN(parseInt(this.state.showCompany.dph))?0:parseInt(this.state.showCompany.dph))/100)).toFixed(2)} EUR</p>
 						</div>
 					</div>}
+					<Modal isOpen={this.state.newInvoice!==null} className="modal-width-1000" toggle={()=>this.setState({newInvoice:null})} >
+						<ModalHeader toggle={()=>this.setState({newInvoice:null})}>{this.state.newInvoice!==null?('Creating new invoice ('+this.state.allTasks.filter((task)=>task.company && task.company.id===this.state.showCompany.id && this.state.pickedTasks.includes(task.id)).reduce((acc,task)=>acc+task.id+',','').slice(0,-1)+')'):''}</ModalHeader>
+						<ModalBody>
+							<FormGroup>
+								<Label for="name">Invoice name</Label>
+								<Input type="text" name="name" id="name" placeholder="Enter invoice name" value={this.state.newInvoiceTitle} onChange={(e)=>this.setState({newInvoiceTitle:e.target.value})} />
+							</FormGroup>
+						<Button
+							className="btn-primary center-hor"
+							onClick={()=>{
+								let allTasks = this.state.allTasks.filter((task)=>task.company && task.company.id===this.state.showCompany.id && this.state.pickedTasks.includes(task.id));
+								let invoiced = this.props.statuses.find((status)=>status.action==='invoiced');
+								allTasks.forEach((task)=>{
+									task.works.filter((work)=>work.finished!==true).map((work)=>rebase.updateDoc('/help-task_works/'+work.id, {price:work.price, dph:work.dph, afterHours:work.afterHours,finished:true}))
+									task.trips.filter((trip)=>trip.finished!==true).map((trip)=>rebase.updateDoc('/help-task_work_trips/'+trip.id, {price:trip.price, dph:trip.dph, afterHours:trip.afterHours,finished:true}))
+									rebase.updateDoc('/help-tasks/'+task.id, {status:invoiced.id,invoicedDate:(new Date()).getTime()});
+								});
+								rebase.addToCollection('help-company_invoices',{...this.state.newInvoice,title:this.state.newInvoiceTitle});
+								this.setState({newInvoice:null})
+							}}
+						>
+							Add
+						</Button>
+						</ModalBody>
+					</Modal>
 					<Modal isOpen={this.state.taskOpened!==null} className="modal-width-1000 modal-without-borders" toggle={()=>this.setState({taskOpened:null})} >
 						<ModalHeader toggle={()=>this.setState({taskOpened:null})}>{this.state.taskOpened!==null?('Editing: '+this.state.taskOpened.title):''}</ModalHeader>
 						<ModalBody>
@@ -1759,7 +1808,8 @@ class MothlyReportsCompany extends Component {
 	}
 }
 
-const mapStateToProps = ({ filterReducer,reportReducer,userReducer, storageCompanies, storageHelpTasks, storageHelpStatuses, storageHelpTaskTypes, storageHelpUnits, storageUsers, storageHelpTaskMaterials, storageHelpTaskWorks, storageHelpTaskWorkTrips, storageHelpTripTypes, storageHelpPricelists, storageHelpPrices }) => {
+const mapStateToProps = ({ filterReducer,reportReducer,userReducer, storageCompanies, storageHelpTasks, storageHelpStatuses, storageHelpTaskTypes, storageHelpUnits, storageUsers, storageHelpTaskMaterials,
+	storageHelpTaskWorks, storageHelpTaskWorkTrips, storageHelpTripTypes, storageHelpPricelists, storageHelpPrices, storageHelpCompanyInvoices }) => {
 	const { filter, project, milestone } = filterReducer;
 	const { from, to } = reportReducer;
 
@@ -1775,6 +1825,7 @@ const mapStateToProps = ({ filterReducer,reportReducer,userReducer, storageCompa
 	const { tripTypesActive, tripTypes, tripTypesLoaded } = storageHelpTripTypes;
 	const { pricelistsLoaded, pricelistsActive, pricelists } = storageHelpPricelists;
 	const { pricesLoaded, pricesActive, prices } = storageHelpPrices;
+	const { companyInvoicesLoaded, companyInvoicesActive, companyInvoices } = storageHelpCompanyInvoices;
 
 	return {
 		from, to,
@@ -1792,7 +1843,9 @@ const mapStateToProps = ({ filterReducer,reportReducer,userReducer, storageCompa
 		tripTypesActive, tripTypes, tripTypesLoaded,
 		pricelistsLoaded, pricelistsActive, pricelists,
 		pricesLoaded, pricesActive, prices,
+		companyInvoicesLoaded, companyInvoicesActive, companyInvoices,
 	};
 };
 
-export default connect(mapStateToProps, { storageCompaniesStart, storageHelpTasksStart, storageHelpStatusesStart, storageHelpTaskTypesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart, storageHelpTaskWorksStart, storageHelpTaskWorkTripsStart, storageHelpTripTypesStart, storageHelpPricelistsStart, storageHelpPricesStart })(MothlyReportsCompany);
+export default connect(mapStateToProps, { storageCompaniesStart, storageHelpTasksStart, storageHelpStatusesStart, storageHelpTaskTypesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart,
+	storageHelpTaskWorksStart, storageHelpTaskWorkTripsStart, storageHelpTripTypesStart, storageHelpPricelistsStart, storageHelpPricesStart, storageHelpCompanyInvoicesStart })(MothlyReportsCompany);

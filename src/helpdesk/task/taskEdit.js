@@ -196,7 +196,7 @@ class TaskEdit extends Component {
 			milestone:this.state.milestone.id,
 			attachments:this.state.attachments,
 			deadline: this.state.deadline!==null?this.state.deadline.unix()*1000:null,
-			closeDate: (this.state.closeDate!==null && (statusAction==='close'||statusAction==='invoiced'))?this.state.closeDate.unix()*1000:null,
+			closeDate: (this.state.closeDate!==null && (statusAction==='close'||statusAction==='invoiced'|| statusAction==='invalid'))?this.state.closeDate.unix()*1000:null,
 			pendingDate: (this.state.pendingDate!==null && statusAction==='pending')?this.state.pendingDate.unix()*1000:null,
 			pendingChangable: this.state.pendingChangable,
 			invoicedDate,
@@ -516,7 +516,7 @@ class TaskEdit extends Component {
 												pendingStatus:status,
 												pendingOpen:true
 											})
-										}else if(status.action==='close'){
+										}else if(status.action==='close'||status.action==='invalid'){
 											this.setState({
 												status,
 												statusChange:(new Date().getTime()),
@@ -599,7 +599,7 @@ class TaskEdit extends Component {
 															{...datePickerConfig}
 															/>
 													</span>)
-												}else if(this.state.status && (this.state.status.action==='close'||this.state.status.action==='invoiced')){
+												}else if(this.state.status && (this.state.status.action==='close'||this.state.status.action==='invoiced'||this.state.status.action==='invalid')){
 													return (<span className="flex-row">
 														<span className="center-hor" style={{width:'8em'}}>
 															Closed at:
@@ -607,7 +607,7 @@ class TaskEdit extends Component {
 														<DatePicker
 															className="form-control hidden-input"
 															selected={this.state.closeDate}
-															disabled={!this.state.status || this.state.status.action!=='close'||this.state.viewOnly}
+															disabled={!this.state.status || (this.state.status.action!=='close' && this.state.status.action!=='invalid')||this.state.viewOnly}
 															onChange={date => {
 																this.setState({ closeDate: date },this.submitTask.bind(this));
 															}}
