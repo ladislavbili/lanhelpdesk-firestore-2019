@@ -207,7 +207,7 @@ class ProjectEdit extends Component{
 	          >
 	          Project settings
 	        </Button>
-        <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
+        <Modal isOpen={this.state.opened} size="width-1000" toggle={this.toggle.bind(this)} >
             <ModalBody>
               <FormGroup>
                 <Label>Project name</Label>

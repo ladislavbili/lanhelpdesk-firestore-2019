@@ -68,6 +68,9 @@ class TripTypesList extends Component{
                         className={(this.props.match.params.id === tripType.id ? "text-highlight":"")}>
                         {tripType.title}
                       </td>
+                      <td className={(this.props.match.params.id === tripType.id ? "text-highlight":"")}>
+                        {tripType.order?tripType.order:0}
+                      </td>
                     </tr>
                   )}
                 </tbody>

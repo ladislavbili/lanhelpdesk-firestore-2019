@@ -18,12 +18,7 @@ class StatusesList extends Component{
 
   componentWillReceiveProps(props){
     if(!sameStringForms(props.statuses,this.props.statuses)){
-      this.setState({statuses:props.statuses.sort((item1,item2)=>{
-        if(item1.order &&item2.order){
-          return item1.order > item2.order? 1 :-1;
-        }
-        return -1;
-      })})
+      this.setState({statuses:props.statuses})
     }
   }
 
@@ -31,12 +26,7 @@ class StatusesList extends Component{
     if(!this.props.statusesActive){
       this.props.storageHelpStatusesStart();
     }
-    this.setState({statuses:this.props.statuses.sort((item1,item2)=>{
-      if(item1.order &&item2.order){
-        return item1.order > item2.order? 1 :-1;
-      }
-      return -1;
-    })});
+    this.setState({statuses:this.props.statuses});
   }
 
   render(){

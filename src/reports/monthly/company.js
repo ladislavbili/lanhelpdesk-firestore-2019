@@ -161,7 +161,7 @@ class MothlyReportsCompany extends Component {
 	}
 
 	getCompany(item,props){
-		let task = props.tasks.find((task)=>item.task);
+		let task = props.tasks.find((task)=>task.id===item.task);
 		let company = undefined;
 		if(task){
 			company = props.companies.find((company)=>company.id===task.company);

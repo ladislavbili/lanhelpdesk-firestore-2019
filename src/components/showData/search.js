@@ -42,11 +42,13 @@ class TaskListContainer extends Component {
 										company:null,
 										assigned:null,
 										workType:null,
-										status:null,
-										statusDateFrom:'',
-										statusDateTo:'',
+										status:[],
+										statusDateFrom:null,
+										statusDateTo:null,
 										updatedAt:(new Date()).getTime()
 									}
+									this.props.setSearch(this.state.search);
+									this.props.history.push('/helpdesk/taskList/i/all');
 									this.props.setFilter(body);
 								}}
 								>

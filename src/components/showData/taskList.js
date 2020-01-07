@@ -28,9 +28,15 @@ class List extends Component {
 							<thead>
 									<tr>
 										{
-											this.props.displayValues.map((display)=> {
+											this.props.displayValues.map((display,index)=> {
+												if(display.type==='important'){
+													return null;
+												}
 												return (
-													<th key={display.value} width={display.value === 'title' ? "30%" : (display.value === "id" ? "50px" : "")}>
+													<th
+														colSpan={(index===0 || this.props.displayValues[index-1].type!=='important')?'1':'2'}
+														key={display.value}
+														width={display.value === 'title' ? "30%" : ((display.value === "id") ? "50px" : '')}>
 														{display.label}
 													</th>
 												)
@@ -43,19 +49,24 @@ class List extends Component {
 								<tbody>
 									<tr>
 										{
-											this.props.displayValues.map((display)=>
-											<th key={display.value}>
-												<input
-													type="text"
-													value={filter[display.value]}
-													className="form-control hidden-input"
-													style={{fontSize: "12px", marginRight: "10px"}}
-													onChange={(e) => {
-														let newFilterData={};
-														newFilterData[display.value]=e.target.value;
-														this.props.setShowDataFilter(this.props.filterName,newFilterData);
-													}}/>
-											</th>
+											this.props.displayValues.map((display,index)=>{
+												if(display.type==='important'){
+													return null;
+												}else{
+													return <th key={display.value} colSpan={(index===0 || this.props.displayValues[index-1].type!=='important')?'1':'2'}>
+														<input
+															type="text"
+															value={filter[display.value]}
+															className="form-control hidden-input"
+															style={{fontSize: "12px", marginRight: "10px"}}
+															onChange={(e) => {
+																let newFilterData={};
+																newFilterData[display.value]=e.target.value;
+																this.props.setShowDataFilter(this.props.filterName,newFilterData);
+															}}/>
+														</th>
+												}
+											}
 										)}
 										<th>
 											<button type="button" className="btn btn-link waves-effect" onClick={this.clearFilter.bind(this)}>
@@ -86,6 +97,9 @@ class List extends Component {
 															}
 															if(display.value === "password"){
 																value = item["password"];
+															}
+															if(display.value === 'important'){
+																return true;
 															}
 															return value.toString().toLowerCase().includes(filter[display.value].toLowerCase());
 														});

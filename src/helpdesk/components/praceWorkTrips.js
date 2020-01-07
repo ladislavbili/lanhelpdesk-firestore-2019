@@ -160,14 +160,16 @@ export default class PraceWorkTrips extends Component {
 				<div className="row m-b-30 m-t-20">
 					<div className="col-md-12">
 						<div>
+							<div className="p-l-8" style={{color: "#FF4500"}}>
+								{this.getCreationError()}
+							</div>
 							<table className="table m-t--30">
 								<thead>
 									<tr>
 										<th width="25" className="col-form-label">
 											Práce
 										</th>
-										<th style={{color: "#FF4500"}}>
-											{this.getCreationError()}
+										<th>
 										</th>
 										{this.props.extended &&  <th style={{fontSize: "12px", fontFamily: "Segoe UI", fontWeight: "500", color: "#333"}} width="170">Rieši</th>}
 										{this.props.extended &&  <th width="100">Typ</th>}
@@ -512,6 +514,7 @@ export default class PraceWorkTrips extends Component {
 												disabled={this.state.newSubtaskType===null||this.props.disabled|| this.state.newSubtaskAssigned===null}
 												onClick={()=>{
 													let body={
+														done:false,
 														title:this.state.newSubtaskTitle,
 														type: this.state.newSubtaskType.id,
 														quantity:this.state.newSubtaskQuantity!==''?parseInt(this.state.newSubtaskQuantity):0,
@@ -609,6 +612,7 @@ export default class PraceWorkTrips extends Component {
 												disabled={this.state.newTripType===null||isNaN(parseInt(this.state.newTripQuantity))||this.props.disabled|| this.state.newTripAssignedTo===null}
 												onClick={()=>{
 													let body={
+														done:false,
 														type:this.state.newTripType?this.state.newTripType.id:null,
 														assignedTo: this.state.newTripAssignedTo?this.state.newTripAssignedTo.id:null,
 														quantity: this.state.newTripQuantity!==''?this.state.newTripQuantity:0,

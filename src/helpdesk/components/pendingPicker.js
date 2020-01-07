@@ -28,7 +28,7 @@ export default class PendingPicker extends Component{
 
   render(){
     return (
-        <Modal isOpen={this.props.open} toggle={()=>{}} >
+        <Modal className="modal-width-1000" isOpen={this.props.open} toggle={()=>{}} >
             <ModalBody>
               <FormGroup>
                 <Label>Pending until</Label>

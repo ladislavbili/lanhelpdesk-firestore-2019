@@ -21,9 +21,9 @@ import {sidebarSelectStyle} from '../scss/selectStyles';
 
 import classnames from "classnames";
 
-const dashboard = {id:null,title:'Dashboard', label:'Dashboard',value:null};
+const dashboard = {id:null,title:'Any project', label:'Any project',value:null};
 const addProject = {id:-1,title:'+ Add project', label:'+ Add project',value:-1};
-const allMilestones = {id:null,title:'Any', label:'Any',value:null};
+const allMilestones = {id:null,title:'Any milestone', label:'Any milestone',value:null};
 const addMilestone = {id:-1,title:'+ Add milestone', label:'+ Add milestone',value:-1};
 
 class Sidebar extends Component {

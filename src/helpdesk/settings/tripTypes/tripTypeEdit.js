@@ -11,6 +11,7 @@ class TripTypeEdit extends Component{
     super(props);
     this.state={
       title:'',
+      order: 0,
       loading:true,
       saving:false
     }
@@ -40,7 +41,7 @@ class TripTypeEdit extends Component{
 
   setData(props){
     let data = props.tripTypes.find((item)=>item.id===props.match.params.id);
-    this.setState({title:data.title,loading:false})
+    this.setState({title:data.title, order:data.order?data.order:0, loading:false})
   }
 
   render(){
@@ -56,11 +57,18 @@ class TripTypeEdit extends Component{
               <Label for="name">Task type name</Label>
               <Input type="text" name="name" id="name" placeholder="Enter trip type" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
             </FormGroup>
-
+            <FormGroup>
+              <Label for="order">Order</Label>
+              <Input type="number" name="order" id="order" placeholder="Lower means first" value={this.state.order} onChange={(e)=>this.setState({order:e.target.value})} />
+            </FormGroup>
           <div className="row">
             <Button className="btn" disabled={this.state.saving} onClick={()=>{
                 this.setState({saving:true});
-                rebase.updateDoc('/help-trip_types/'+this.props.match.params.id, {title:this.state.title})
+                let order = this.state.order!==''?parseInt(this.state.order):0;
+                if(isNaN(order)){
+                  order=0;
+                }
+                rebase.updateDoc('/help-trip_types/'+this.props.match.params.id, {title:this.state.title, order})
                   .then(()=>{this.setState({saving:false})});
               }}>{this.state.saving?'Saving trip type...':'Save trip type'}</Button>
 

@@ -287,6 +287,7 @@ class TasksIndex extends Component {
 				}
 				filterName="help-tasks"
 				displayValues={[
+					{value:'important',label:'',type:'important'},
 					{value:'title',label:'Title',type:'text'},
 					{value:'id',label:'ID',type:'int'},
 					{value:'status',label:'Status',type:'object'},

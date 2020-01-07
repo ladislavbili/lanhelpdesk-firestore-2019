@@ -59,6 +59,9 @@ export const htmlFixNewLines = (text) => {
 }
 
 export const getItemDisplayValue= (item,value) => {
+  if(!item[value.value] && value.type === 'important'){
+    return '';
+  }
   if(!item[value.value]){
     return 'Neexistuje';
   }
@@ -81,7 +84,10 @@ export const getItemDisplayValue= (item,value) => {
     return timestampToString(item[value.value]);
   }else if(value.type==='user'){
     return item[value.value].name+' '+item[value.value].surname;
-  }else{
+  }else	if(value.type === "important"){
+    return <i className="far fa-star" style={{color: '#ffc107' }} />;
+  }
+  else{
     return 'Error'
   }
 }

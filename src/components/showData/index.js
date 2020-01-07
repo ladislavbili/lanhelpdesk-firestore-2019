@@ -63,6 +63,13 @@ class ShowDataContainer extends Component {
 				}
 				return val1 < val2? 1 : -1;
 			}
+		}).sort((val1,val2)=>{
+			if(val1.important && !val2.important){
+				return -1;
+			}else if(!val2.important && val2.important){
+				return 1;
+			}
+			return 0;
 		});
 	}
 	getSortValue(item){

@@ -56,7 +56,6 @@ class Filter extends Component {
   }
 
   componentWillReceiveProps(props){
-    console.log("props");
     let oldFilter = this.props.filters.find((filter)=>filter.id===props.filterID);
     let newFilter = props.filters.find((filter)=>filter.id===props.filterID);
     if(this.props.filter.updatedAt!==props.filter.updatedAt||!sameStringForms(oldFilter,newFilter)){
@@ -93,7 +92,6 @@ class Filter extends Component {
   }
 
   componentWillMount(){
-    console.log("mount");
 		if(!this.props.statusesActive){
 			this.props.storageHelpStatusesStart();
 		}
@@ -152,7 +150,6 @@ class Filter extends Component {
     }
 
     resetFilter(){
-      console.log("reset");
       if(this.props.filterID===null){
         this.setState({
           status:[],
@@ -190,7 +187,6 @@ class Filter extends Component {
     }
 
     applyFilter(){
-      console.log("apply");
       let body={
         requester:this.state.requester.id,
         company:this.state.company.id,
@@ -232,8 +228,6 @@ class Filter extends Component {
 
 
     render() {
-  //    return null;
-  console.log(this.props.filter);
       return (
         <div>
             <div className="d-flex m-l-15 m-t-5">
@@ -347,6 +341,7 @@ class Filter extends Component {
                     styles={invisibleSelectStyleOtherFont} />
                 </div>
               </div>
+              {/*
             <div className="sidebar-filter-row">
               <label>Status change</label>
               <div className="row">
@@ -417,6 +412,7 @@ class Filter extends Component {
                   />
               </div>
             </div>
+            */}
 
             <div className="sidebar-filter-row">
               <label htmlFor="example-input-small">Typ práce</label>

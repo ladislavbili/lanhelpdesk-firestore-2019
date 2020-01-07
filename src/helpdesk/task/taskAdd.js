@@ -73,7 +73,7 @@ export default class TaskAdd extends Component{
 			repeat:null,
 			toggleTab: "1",
 			viewOnly:true,
-			descriptionVisible:false,
+			descriptionVisible:true,
 			attachments:[],
 			pendingChangable:false,
 		}
@@ -236,13 +236,16 @@ export default class TaskAdd extends Component{
 			let permission = project.permissions.find((permission)=>permission.user===this.props.currentUser.id);
 			let requester=this.props.users?this.props.users.find((user)=>user.id===this.props.currentUser.id):null;
 
+			let permissionIDs = state.project?state.project.permissions.map((permission) => permission.user):[];
+			let assignedTo= state.assignedTo.filter((user)=>permissionIDs.includes(user.id));
+
 			this.setState({
-				assignedTo: def.assignedTo&& (def.assignedTo.fixed||def.assignedTo.def)? state.users.filter((item)=> def.assignedTo.value.includes(item.id)):[],
-				company: def.company&& (def.company.fixed||def.company.def)?state.companies.find((item)=> item.id===def.company.value):(this.props.companies && requester ? this.props.companies.find((company)=>company.id===this.props.currentUser.userData.company) : null),
+				assignedTo: def.assignedTo&& (def.assignedTo.fixed||def.assignedTo.def)? state.users.filter((item)=> def.assignedTo.value.includes(item.id)):assignedTo,
+				company: def.company && (def.company.fixed||def.company.def)?state.companies.find((item)=> item.id===def.company.value):(this.props.companies && requester ? this.props.companies.find((company)=>company.id===this.props.currentUser.userData.company) : null),
 				requester: def.requester&& (def.requester.fixed||def.requester.def)?state.users.find((item)=> item.id===def.requester.value):requester,
 				status: def.status&& (def.status.fixed||def.status.def)?state.statuses.find((item)=> item.id===def.status.value):state.statuses[0],
-				tags: def.tags&& (def.tags.fixed||def.tags.def)? state.allTags.filter((item)=> def.tags.value.includes(item.id)):[],
-				type: def.type && (def.type.fixed||def.type.def)?state.taskTypes.find((item)=> item.id===def.type.value):null,
+				tags: def.tags&& (def.tags.fixed||def.tags.def)? state.allTags.filter((item)=> def.tags.value.includes(item.id)):this.state.tags,
+				type: def.type && (def.type.fixed||def.type.def)?state.taskTypes.find((item)=> item.id===def.type.value):this.state.type,
 				project,
 				viewOnly: this.props.currentUser.userData.role.value===0 && !permission.write,
 				defaults: def
@@ -353,6 +356,7 @@ export default class TaskAdd extends Component{
 				totalPrice
 			}
 		});
+
 		return (
 			<div>
 			<div className="scrollable">
@@ -454,8 +458,12 @@ export default class TaskAdd extends Component{
 									placeholder="Select required"
 									value={this.state.project}
 									onChange={(project)=>{
-										let newState={project,
+										let permissionIDs = project.permissions.map((permission) => permission.user);
+										let assignedTo=this.state.assignedTo.filter((user)=>permissionIDs.includes(user.id));
+										let newState={
+											project,
 											milestone:noMilestone,
+											assignedTo,
 											viewOnly:this.props.currentUser.userData.role.value===0 && !project.permissions.find((permission)=>permission.user===this.props.currentUser.id).write
 										}
 										if(newState.viewOnly){
@@ -498,12 +506,13 @@ export default class TaskAdd extends Component{
 									isDisabled={this.state.defaults.assignedTo.fixed||this.state.viewOnly}
 									isMulti
 									onChange={(users)=>this.setState({assignedTo:users})}
-									options={this.state.users}
+									options={this.state.users.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id))}
 									styles={invisibleSelectStyleNoArrowRequired}
 									/>
 								</div>
 						</div>
 					</div>
+
 					<div className="col-lg-4">
 						<div className="row p-r-10">
 							<Label className="col-3 col-form-label">Status</Label>
@@ -594,7 +603,7 @@ export default class TaskAdd extends Component{
 
 					<div className="col-lg-4">
 							<div className="row p-r-10">
-								<Label className="col-3 col-form-label">Zadal*</Label>
+								<Label className="col-3 col-form-label">Zadal</Label>
 								<div className="col-9">
 									<Select
 										value={this.state.requester}
