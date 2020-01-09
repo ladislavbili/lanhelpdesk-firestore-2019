@@ -311,16 +311,16 @@ class Sidebar extends Component {
 														});
 													}}>{item.title}</Link>
 
-												<div className={classnames("sidebar-icon", {"active" : this.props.location.pathname.includes(item.id)})}
+												<div className={classnames("sidebar-icon", "clickable" , {"active" : this.props.location.pathname.includes(item.id)})}
 													onClick={() => {
 														if (this.props.location.pathname.includes(item.id)){
 															this.props.history.push(`/helpdesk/taskList/i/`+item.id);
 															this.props.setHelpSidebarFilter(item);
-															this.setState({activeTab: 1});
 															this.props.setFilter({
 																...item.filter,
 																updatedAt:(new Date()).getTime()
 															});
+															this.setState({activeTab: 1});
 														}
 													}}>
 														<i className="fa fa-cog"/>

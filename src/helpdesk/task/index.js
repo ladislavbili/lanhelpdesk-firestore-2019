@@ -202,10 +202,10 @@ class TasksIndex extends Component {
 			(filter.assigned===null||(task.assignedTo && task.assignedTo.map((item)=>item.id).includes(filter.assigned))||(task.assignedTo && filter.requester==='cur' && task.assignedTo.map((item)=>item.id).includes(this.props.currentUser.id))) &&
 			(filter.statusDateFrom === null || task.statusChange >= filter.statusDateFrom) &&
 			(filter.statusDateTo === null || task.statusChange <= filter.statusDateTo) &&
-			(filter.closeDateFrom === null || filter.closeDateFrom === undefined || task.closeDate >= filter.closeDateFrom) &&
-			(filter.closeDateTo === null || filter.closeDateTo === undefined || task.closeDate <= filter.closeDateTo) &&
-			(filter.pendingDateFrom === null || filter.pendingDateFrom === undefined || task.pendingDate >= filter.pendingDateFrom) &&
-			(filter.pendingDateTo === null || filter.pendingDateTo === undefined || task.pendingDate <= filter.pendingDateTo) &&
+			(filter.closeDateFrom === null || task.closeDate >= filter.closeDateFrom) &&
+			(filter.closeDateTo === null || task.closeDate <= filter.closeDateTo) &&
+			(filter.pendingDateFrom === null || task.pendingDate >= filter.pendingDateFrom) &&
+			(filter.pendingDateTo === null || task.pendingDate <= filter.pendingDateTo) &&
 			(this.props.project===null||(task.project && task.project.id===this.props.project))&&
 			(this.props.currentUser.userData.role.value===3||(currentPermissions && currentPermissions.read)) &&
 			(this.props.milestone===null||((task.milestone)&& task.milestone === this.props.milestone))

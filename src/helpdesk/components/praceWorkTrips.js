@@ -612,7 +612,6 @@ export default class PraceWorkTrips extends Component {
 												disabled={this.state.newTripType===null||isNaN(parseInt(this.state.newTripQuantity))||this.props.disabled|| this.state.newTripAssignedTo===null}
 												onClick={()=>{
 													let body={
-														done:false,
 														type:this.state.newTripType?this.state.newTripType.id:null,
 														assignedTo: this.state.newTripAssignedTo?this.state.newTripAssignedTo.id:null,
 														quantity: this.state.newTripQuantity!==''?this.state.newTripQuantity:0,

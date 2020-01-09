@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {NavItem, Nav, Input} from 'reactstrap';
+import { Input } from 'reactstrap';
 import Select from 'react-select';
 import { connect } from "react-redux";
 
@@ -7,12 +7,26 @@ import {database, rebase} from '../../index';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import {setFilter, storageHelpTaskTypesStart,storageUsersStart, storageCompaniesStart, storageHelpStatusesStart} from '../../redux/actions';
-import {toSelArr, snapshotToArray, sameStringForms, timestampToInput, inputToTimestamp} from '../../helperFunctions';
+import {toSelArr, snapshotToArray, sameStringForms, toMomentInput, fromMomentToUnix } from '../../helperFunctions';
 import AddFilter from './filterAdd';
 
 import datePickerConfig from '../../scss/datePickerConfig';
-
 import {invisibleSelectStyleOtherFont} from '../../scss/selectStyles';
+
+const emptyFilter = {
+  status:[],
+  requester:{id:null,label:'Žiadny',value:null},
+  company:{id:null,label:'Žiadny',value:null},
+  assigned:{id:null,label:'Žiadny',value:null},
+  workType:{id:null,label:'Žiadny',value:null},
+  statusDateFrom: null,
+  statusDateTo: null,
+  closeDateFrom: null,
+  closeDateTo: null,
+  pendingDateFrom: null,
+  pendingDateTo: null,
+  public:false,
+}
 
 class Filter extends Component {
   constructor(props) {
@@ -22,19 +36,9 @@ class Filter extends Component {
       users:[],
       companies:[],
       workTypes:[],
-      status:[],
-      requester:{id:null,label:'Žiadny',value:null},
-      company:{id:null,label:'Žiadny',value:null},
-      assigned:{id:null,label:'Žiadny',value:null},
-      workType:{id:null,label:'Žiadny',value:null},
-      statusDateFrom: null,
-      statusDateTo: null,
-      closeDateFrom: null,
-      closeDateTo: null,
-      pendingDateFrom: null,
-      pendingDateTo: null,
       loading:true,
-      public:false,
+
+      ...emptyFilter,
 
       newFilterName: "",
       openEditName: false,
@@ -67,12 +71,12 @@ class Filter extends Component {
         assigned:this.getItemValue('users',this.state,filter.assigned),
         workType:this.getItemValue('workTypes',this.state,filter.workType),
 
-        statusDateFrom: filter.statusDateFrom !== null ? moment(filter.statusDateFrom) : null,
-        statusDateTo: filter.statusDateTo !== null ? moment(filter.statusDateTo) : null,
-        pendingDateFrom: filter.pendingDateFrom !== null ? moment(filter.pendingDateFrom) : null,
-        pendingDateTo: filter.pendingDateTo !== null ? moment(filter.pendingDateTo) : null,
-        closeDateFrom: filter.closeDateFrom !== null ? moment(filter.closeDateFrom) : null,
-        closeDateTo: filter.closeDateTo !== null ? moment(filter.closeDateTo) : null,
+        statusDateFrom: toMomentInput(filter.statusDateFrom),
+        statusDateTo: toMomentInput(filter.statusDateTo),
+        pendingDateFrom: toMomentInput(filter.pendingDateFrom),
+        pendingDateTo: toMomentInput(filter.pendingDateTo),
+        closeDateFrom: toMomentInput(filter.closeDateFrom),
+        closeDateTo: toMomentInput(filter.closeDateTo),
 
         public:newFilter?newFilter.public:false,
       });
@@ -114,117 +118,84 @@ class Filter extends Component {
   }
 
   fetchData(){
-    Promise.all(
-      [
-        database.collection('help-statuses').get(),
-        database.collection('users').get(),
-        database.collection('companies').get(),
-        database.collection('help-task_types').get(),
-      ]).then(([statuses,users, companies, workTypes])=>{
-        this.setData(toSelArr(snapshotToArray(statuses)),toSelArr(snapshotToArray(users),'email'),toSelArr(snapshotToArray(companies)),toSelArr(snapshotToArray(workTypes)));
+    Promise.all([
+      database.collection('help-statuses').get(),
+      database.collection('users').get(),
+      database.collection('companies').get(),
+      database.collection('help-task_types').get(),
+    ]).then(([statuses,users, companies, workTypes])=>{
+      this.setData(toSelArr(snapshotToArray(statuses)),toSelArr(snapshotToArray(users),'email'),toSelArr(snapshotToArray(companies)),toSelArr(snapshotToArray(workTypes)));
+    });
+  }
+
+  deleteFilter(){
+    if(window.confirm("Are you sure?")&& this.props.filterID!==null){
+      this.props.resetFilter();
+      this.props.close();
+      this.props.history.push('/helpdesk/taskList/i/all');
+      rebase.removeDoc('/help-filters/'+this.props.filterID).then(()=>{
+        this.setState(emptyFilter,this.applyFilter.bind(this));
       });
     }
+  }
 
-    deleteFilter(){
-      if(window.confirm("Are you sure?")&& this.props.filterID!==null){
-        this.props.resetFilter();
-        this.props.close();
-        this.props.history.push('/helpdesk/taskList/i/all');
-        rebase.removeDoc('/help-filters/'+this.props.filterID).then(()=>{
-          this.setState({
-            status:[],
-            requester:{id:null,label:'Žiadny',value:null},
-            company:{id:null,label:'Žiadny',value:null},
-            assigned:{id:null,label:'Žiadny',value:null},
-            workType:{id:null,label:'Žiadny',value:null},
-            statusDateFrom: null,
-            statusDateTo: null,
-            closeDateFrom: null,
-            closeDateTo: null,
-            pendingDateFrom: null,
-            pendingDateTo: null,
-            public:false,
-          },this.applyFilter.bind(this));
-        });
-      }
+  resetFilter(){
+    if(this.props.filterID===null){
+      this.setState({...emptyFilter})
     }
+    let filter = this.props.filterData.filter;
 
-    resetFilter(){
-      if(this.props.filterID===null){
-        this.setState({
-          status:[],
-          requester:{id:null,label:'Žiadny',value:null},
-          company:{id:null,label:'Žiadny',value:null},
-          assigned:{id:null,label:'Žiadny',value:null},
-          workType:{id:null,label:'Žiadny',value:null},
-          statusDateFrom: null,
-          statusDateTo: null,
-          closeDateFrom: null,
-          closeDateTo: null,
-          pendingDateFrom: null,
-          pendingDateTo: null,
-          public:false,
-        })
-      }else{
-        let filter = this.props.filterData.filter;
+    this.setState({
+      status:this.state.statuses.filter((status)=>filter.status.includes(status.id)),
+      requester:this.getItemValue('users',this.state,filter.requester),
+      company:this.getItemValue('companies',this.state,filter.company),
+      assigned:this.getItemValue('users',this.state,filter.assigned),
+      workType:this.getItemValue('workTypes',this.state,filter.workType),
 
-        this.setState({
-          status:this.state.statuses.filter((status)=>filter.status.includes(status.id)),
-          requester:this.getItemValue('users',this.state,filter.requester),
-          company:this.getItemValue('companies',this.state,filter.company),
-          assigned:this.getItemValue('users',this.state,filter.assigned),
-          workType:this.getItemValue('workTypes',this.state,filter.workType),
+      statusDateFrom: toMomentInput(filter.statusDateFrom),
+      statusDateTo: toMomentInput(filter.statusDateTo),
+      pendingDateFrom: toMomentInput(filter.pendingDateFrom),
+      pendingDateTo: toMomentInput(filter.pendingDateTo),
+      closeDateFrom: toMomentInput(filter.closeDateFrom),
+      closeDateTo: toMomentInput(filter.closeDateTo),
+    });
+  }
 
-          statusDateFrom: filter.statusDateFrom !== null ? moment(filter.statusDateFrom) : null,
-          statusDateTo: filter.statusDateTo !== null ? moment(filter.statusDateTo) : null,
-          pendingDateFrom: filter.pendingDateFrom !== null ? moment(filter.pendingDateFrom) : null,
-          pendingDateTo: filter.pendingDateTo !== null ? moment(filter.pendingDateTo) : null,
-          closeDateFrom: filter.closeDateFrom !== null ? moment(filter.closeDateFrom) : null,
-          closeDateTo: filter.closeDateTo !== null ? moment(filter.closeDateTo) : null,
+  applyFilter(){
+    let body={
+      requester:this.state.requester.id,
+      company:this.state.company.id,
+      assigned:this.state.assigned.id,
+      workType:this.state.workType.id,
+      status:this.state.status.map((item)=>item.id),
 
-        });
-      }
+      statusDateFrom: fromMomentToUnix(this.state.statusDateFrom),
+      statusDateTo: fromMomentToUnix(this.state.statusDateTo),
+      closeDateFrom: fromMomentToUnix(this.state.closeDateFrom),
+      closeDateTo: fromMomentToUnix(this.state.closeDateTo),
+      pendingDateFrom: fromMomentToUnix(this.state.pendingDateFrom),
+      pendingDateTo: fromMomentToUnix(this.state.pendingDateTo),
+
+      updatedAt:(new Date()).getTime()
     }
+    this.props.setFilter(body);
+  }
 
-    applyFilter(){
-      let body={
-        requester:this.state.requester.id,
-        company:this.state.company.id,
-        assigned:this.state.assigned.id,
-        workType:this.state.workType.id,
-        status:this.state.status.map((item)=>item.id),
-
-        statusDateFrom: this.state.statusDateFrom !== null ? this.state.statusDateFrom.unix()*1000 : null,
-        statusDateTo: this.state.statusDateTo !== null ? this.state.statusDateTo.unix()*1000 : null,
-        closeDateFrom: this.state.closeDateFrom !== null ? this.state.closeDateFrom.unix()*1000 : null,
-        closeDateTo: this.state.closeDateTo !== null ? this.state.closeDateTo.unix()*1000 : null,
-        pendingDateFrom: this.state.pendingDateFrom !== null ? this.state.pendingDateFrom.unix()*1000 : null,
-        pendingDateTo: this.state.pendingDateTo !== null ? this.state.pendingDateTo.unix()*1000 : null,
-
-        updatedAt:(new Date()).getTime()
-      }
-      this.props.setFilter(body);
-//      this.props.close();
+  renameFilter(){
+    if (this.props.filterData.title !== this.state.newFilterName && this.state.newFilterName.length > 0){
+      rebase.updateDoc('/help-filters/'+this.props.filterID, {title: this.state.newFilterName})
     }
+  }
 
-    renameFilter(){
-      if (this.props.filterData.title !== this.state.newFilterName
-        && this.state.newFilterName.length > 0){
-        rebase.updateDoc('/help-filters/'+this.props.filterID, {title: this.state.newFilterName})
-        .then(()=> {
-        });
-      }
+  canSaveFilter(){
+    if(this.props.filterID===null){
+      return true;
     }
-
-    canSaveFilter(){
-      if(this.props.filterID===null){
-        return true;
-      }
-      let filter = this.props.filterData;
-      return this.props.currentUser.userData.role.value > 1 || (
-        filter && filter.createdBy===this.props.currentUser.id
-      )
-    }
+    let filter = this.props.filterData;
+    return this.props.currentUser.userData.role.value > 1 || (
+      filter && filter.createdBy===this.props.currentUser.id
+    )
+  }
 
 
     render() {
@@ -232,7 +203,7 @@ class Filter extends Component {
         <div>
             <div className="d-flex m-l-15 m-t-5">
               <button type="button" className="btn-link-reversed" onClick={this.applyFilter.bind(this)}><i className="fa fa-check icon-M"/></button>
-              {this.canSaveFilter() && false &&
+              {this.canSaveFilter() &&
                 <AddFilter
                   filter={{
                     requester:this.state.requester.id,
@@ -240,43 +211,48 @@ class Filter extends Component {
                     assigned:this.state.assigned.id,
                     workType:this.state.workType.id,
                     status:this.state.status.map((item)=>item.id),
-                    statusDateFrom: this.state.statusDateFrom !== null ? this.state.statusDateFrom.unix()*1000 : null,
-                    statusDateTo: this.state.statusDateTo !== null ? this.state.statusDateTo.unix()*1000 : null,
-                    pendingDateFrom: this.state.pendingDateFrom !== null ? this.state.pendingDateFrom.unix()*1000 : null,
-                    pendingDateTo: this.state.pendingDateTo !== null ? this.state.pendingDateTo.unix()*1000 : null,
-                    closeDateFrom: this.state.closeDateFrom !== null ? this.state.closeDateFrom.unix()*1000 : null,
-                    closeDateTo: this.state.closeDateTo !== null ? this.state.closeDateTo.unix()*1000 : null,
+                    statusDateFrom: fromMomentToUnix(this.state.statusDateFrom),
+                    statusDateTo: fromMomentToUnix(this.state.statusDateTo),
+                    pendingDateFrom: fromMomentToUnix(this.state.pendingDateFrom),
+                    pendingDateTo: fromMomentToUnix(this.state.pendingDateTo),
+                    closeDateFrom: fromMomentToUnix(this.state.closeDateFrom),
+                    closeDateTo: fromMomentToUnix(this.state.closeDateTo),
                   }}
                   filterID={this.props.filterID}
                   filterData={this.props.filterData}
                   />}
               <button type="button" className="btn-link-reversed m-2" onClick={this.resetFilter.bind(this)}><i className="fa fa-sync icon-M"/></button>
-              {this.canSaveFilter() && <button type="button" className="btn-link-reversed m-2" onClick={this.deleteFilter.bind(this)}><i className="far fa-trash-alt icon-M"/></button>}
+              {this.canSaveFilter() && <button type="button" className="btn-link-reversed m-2" disabled={this.props.filterID===null} onClick={this.deleteFilter.bind(this)}><i className="far fa-trash-alt icon-M"/></button>}
               <button type="button" className="btn-link-reversed m-2" onClick={() => this.props.close()}><i className="fa fa-times icon-M"/></button>
             </div>
 
-         <div className="sidebar-filter-label">
-           Filter name
-         </div>
-         <div
-              className=""
-              onClick={() => this.setState({openEditName: (this.props.filterID ? true : false)})}
-              >
-              {(!this.state.openEditName || !this.canSaveFilter()) &&
-                <h5 className="sidebar-filter-name">{this.props.filterID?' '+ (this.state.newFilterName ? this.state.newFilterName : this.props.filterData.title):' Všetky'}</h5>
-              }
-              {this.state.openEditName && this.canSaveFilter() &&
-                  <Input
-                    type="text"
-                    className="from-control sidebar-filter-input"
-                    placeholder="Enter filter name"
-                    autoFocus
-                    value={this.state.newFilterName ? this.state.newFilterName : this.props.filterData.title}
-                    onChange={(e)=>this.setState({newFilterName: e.target.value})}
-                    onBlur={() => this.setState({openEditName: false}, () => this.renameFilter())}
-                />
-            }
-          </div>
+
+          { this.props.filterID!==null  &&
+            <div>
+              <div className="sidebar-filter-label">
+                Filter name
+              </div>
+              <div
+                   className=""
+                   onClick={() => this.setState({openEditName: (this.props.filterID ? true : false)})}
+                   >
+                   {(!this.state.openEditName || !this.canSaveFilter()) &&
+                     <h5 className="sidebar-filter-name">{this.props.filterID?' '+ (this.state.newFilterName ? this.state.newFilterName : this.props.filterData.title):' Všetky'}</h5>
+                   }
+                   {this.state.openEditName && this.canSaveFilter() &&
+                       <Input
+                         type="text"
+                         className="from-control sidebar-filter-input"
+                         placeholder="Enter filter name"
+                         autoFocus
+                         value={this.state.newFilterName ? this.state.newFilterName : this.props.filterData.title}
+                         onChange={(e)=>this.setState({newFilterName: e.target.value})}
+                         onBlur={() => this.setState({openEditName: false}, () => this.renameFilter())}
+                     />
+                 }
+               </div>
+            </div>
+          }
 
           <div className=" p-r-15 p-l-15 sidebar-filter">
 
@@ -293,7 +269,7 @@ class Filter extends Component {
                             let checked = this.state.status.find(s => s.id === status.id);
                             let newStatus = [];
                             if (checked){
-                              newStatus = this.state.status.filter(s => s.id != status.id);
+                              newStatus = this.state.status.filter(s => s.id !== status.id);
                             } else {
                               newStatus = [...this.state.status, status];
                             }
@@ -341,12 +317,12 @@ class Filter extends Component {
                     styles={invisibleSelectStyleOtherFont} />
                 </div>
               </div>
-              {/*
             <div className="sidebar-filter-row">
               <label>Status change</label>
               <div className="row">
                   <DatePicker
                     className="form-control hidden-input"
+                    isClearable
                     selected={this.state.statusDateFrom}
                     onChange={(e)=>{
                       this.setState({statusDateFrom: e})}
@@ -356,6 +332,7 @@ class Filter extends Component {
                     />
                   <DatePicker
                     className="form-control hidden-input"
+                    isClearable
                     selected={this.state.statusDateTo}
                     onChange={(e)=>{
                       this.setState({statusDateTo:e})}
@@ -365,12 +342,12 @@ class Filter extends Component {
                     />
               </div>
             </div>
-
             <div className="sidebar-filter-row">
               <label>Pending date</label>
               <div className="row">
                 <DatePicker
                   className="form-control hidden-input"
+                  isClearable
                   selected={this.state.pendingDateFrom}
                   onChange={(e)=>{
                     this.setState({pendingDateFrom:e})}
@@ -380,6 +357,7 @@ class Filter extends Component {
                   />
                 <DatePicker
                   className="form-control hidden-input"
+                  isClearable
                   selected={this.state.pendingDateTo}
                   onChange={(e)=>{
                     this.setState({pendingDateTo:e})}
@@ -394,6 +372,7 @@ class Filter extends Component {
               <div className="row">
                 <DatePicker
                   className="form-control hidden-input"
+                  isClearable
                   selected={this.state.closeDateFrom}
                   onChange={(e)=>{
                     this.setState({closeDateFrom:e})}
@@ -403,6 +382,7 @@ class Filter extends Component {
                   />
                 <DatePicker
                   className="form-control hidden-input"
+                  isClearable
                   selected={this.state.closeDateTo}
                   onChange={(e)=>{
                     this.setState({closeDateTo:e})}
@@ -412,7 +392,6 @@ class Filter extends Component {
                   />
               </div>
             </div>
-            */}
 
             <div className="sidebar-filter-row">
               <label htmlFor="example-input-small">Typ práce</label>

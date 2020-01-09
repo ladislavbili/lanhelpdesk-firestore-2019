@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import { connect } from "react-redux";
-import {Button, Label, TabContent, TabPane, Nav, NavItem, NavLink, Modal, ModalBody} from 'reactstrap';
+import { Label, TabContent, TabPane, Nav, NavItem, NavLink, Modal, ModalBody} from 'reactstrap';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import CKEditor from 'ckeditor4-react';
@@ -616,6 +616,7 @@ class TaskEdit extends Component {
 													let assignedTo=this.state.assignedTo.filter((user)=>permissionIDs.includes(user.id));
 
 													this.setState({project,
+														assignedTo,
 														projectChangeDate:(new Date()).getTime(),
 														milestone:noMilestone
 													},()=>{this.submitTask();this.setDefaults(project.id)});

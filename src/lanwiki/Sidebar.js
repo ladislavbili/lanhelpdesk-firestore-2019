@@ -100,7 +100,7 @@ class Sidebar extends Component {
 							.map((item)=>
 								<NavItem key={item.id}  className="row">
 									<Link className= "sidebar-menu-item" to={{ pathname:`/lanwiki/i/`+item.id}}>{item.title}</Link>
-									<div  className={classnames("sidebar-icon", {"active" : this.props.location.pathname.includes(item.id)})}
+									<div  className={classnames("sidebar-icon", "clickable", {"active" : this.props.location.pathname.includes(item.id)})}
 										onClick={() => {this.setState({tagEdit: item, openedEdit: true})}}
 										>
 										<i className="fa fa-cog"/>
