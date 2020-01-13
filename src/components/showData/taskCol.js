@@ -11,13 +11,14 @@ export default class ColumnDisplay extends Component {
 					<div className="p-0 golden-ratio-382">
 						<CommandBar {...this.props.commandBar} />
 
-						<div className="scroll-visible fit-with-header-and-commandbar">
+						<div className="scroll-visible fit-with-header-and-commandbar task-list">
 							<ListHeader {...this.props.commandBar} listName={this.props.listName}/>
 							{
 								this.props.data.map((item, index)=>
 								<ul
-									className={classnames("taskCol", "clickable", "list-unstyled", {'selected-item': this.props.itemID === item.id.toString()})}
+									className={classnames("taskCol", "clickable", "dnd-item", "list-unstyled", {'selected-item': this.props.itemID === item.id.toString()})}
 									id="upcoming"
+									style={{borderLeft: "3px solid " + (item.status.color?item.status.color:'white')}}
 									onClick={()=>{
 										this.props.history.push(this.props.link+'/'+item.id);
 									}}

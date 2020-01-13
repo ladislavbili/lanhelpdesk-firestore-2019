@@ -539,68 +539,64 @@ class TaskEdit extends Component {
 								<span className="center-hor flex m-r-15">
 						    	<input type="text" disabled={this.state.viewOnly} value={this.state.title} className="task-title-input text-extra-slim hidden-input" onChange={(e)=>this.setState({title:e.target.value},this.submitTask.bind(this))} placeholder="Enter task name" />
 								</span>
+
 								<div className="ml-auto center-hor">
-								<span className="label label-info"
-									style={{backgroundColor:this.state.status && this.state.status.color?this.state.status.color:'white'}}>
-									{this.state.status?(this.state.status.action==='invoiced'?(this.state.status.title+' at '+timestampToString(this.state.invoicedDate)):this.state.status.title):'Neznámy status'}
-								</span>
+									<p className="m-b-0">
+										<span className="text-muted">
+											{createdBy?"Created by ":""}
+										</span>
+										{createdBy? (createdBy.name + " " +createdBy.surname) :''}
+										<span className="text-muted">
+											{createdBy?' at ':'Created at '}
+											{this.state.createdAt?(timestampToString(this.state.createdAt)):''}
+										</span>
+									</p>
+									<p className="m-b-0">
+										{(()=>{
+											if(this.state.status && this.state.status.action==='pending'){
+												return (
+													<span className="text-muted f-r">
+														<span className="center-hor" style={{width:'8em'}}>
+															Pending date:
+														</span>
+														<DatePicker
+															className="form-control hidden-input"
+															selected={this.state.pendingDate}
+															disabled={!this.state.status || this.state.status.action!=='pending'||this.state.viewOnly||!this.state.pendingChangable}
+															onChange={date => {
+																this.setState({ pendingDate: date },this.submitTask.bind(this));
+															}}
+															placeholderText="No pending date"
+															{...datePickerConfig}
+															/>
+													</span>)
+										}else if(this.state.status && (this.state.status.action==='close'||this.state.status.action==='invoiced'||this.state.status.action==='invalid')){
+											return (
+												<span className="text-muted f-r">
+													<span className="center-hor" style={{width:'8em'}}>
+														Closed at:
+													</span>
+													<DatePicker
+														className="form-control hidden-input"
+														selected={this.state.closeDate}
+														disabled={!this.state.status || (this.state.status.action!=='close' && this.state.status.action!=='invalid')||this.state.viewOnly}
+														onChange={date => {
+															this.setState({ closeDate: date },this.submitTask.bind(this));
+														}}
+														placeholderText="No pending date"
+														{...datePickerConfig}
+														/>
+												</span>)
+											}else{
+												return this.state.statusChange?('Status changed at ' + timestampToString(this.state.statusChange)):''
+											}
+										})()}
+									</p>
 								</div>
 							</div>
 						</div>
 
 						<hr className="m-t-5 m-b-5"/>
-						<div className="col-lg-12 d-flex m-t-10"> {/* Information row */}
-							<p className="">
-								<span className="text-muted">
-									{createdBy?"Created by ":""}
-								</span>
-								{createdBy? (createdBy.name + " " +createdBy.surname) :''}
-								<span className="text-muted">
-									{createdBy?' at ':'Created at '}
-									{this.state.createdAt?(timestampToString(this.state.createdAt)):''}
-								</span>
-							</p>
-							<p className="text-muted ml-auto">
-								{(()=>{
-									if(this.state.status && this.state.status.action==='pending'){
-										return (<span className="flex-row">
-										<span className="center-hor" style={{width:'8em'}}>
-											Pending date:
-										</span>
-										<DatePicker
-											className="form-control hidden-input"
-											selected={this.state.pendingDate}
-											disabled={!this.state.status || this.state.status.action!=='pending'||this.state.viewOnly||!this.state.pendingChangable}
-											onChange={date => {
-												this.setState({ pendingDate: date },this.submitTask.bind(this));
-											}}
-											placeholderText="No pending date"
-											{...datePickerConfig}
-											/>
-									</span>)
-								}else if(this.state.status && (this.state.status.action==='close'||this.state.status.action==='invoiced'||this.state.status.action==='invalid')){
-									return (
-										<span className="flex-row">
-										<span className="center-hor" style={{width:'8em'}}>
-											Closed at:
-										</span>
-										<DatePicker
-											className="form-control hidden-input"
-											selected={this.state.closeDate}
-											disabled={!this.state.status || (this.state.status.action!=='close' && this.state.status.action!=='invalid')||this.state.viewOnly}
-											onChange={date => {
-												this.setState({ closeDate: date },this.submitTask.bind(this));
-											}}
-											placeholderText="No pending date"
-											{...datePickerConfig}
-											/>
-									</span>)
-									}else{
-										return this.state.statusChange?('Status changed at ' + timestampToString(this.state.statusChange)):''
-									}
-									})()}
-							</p>
-						</div>
 
 							<div className="col-lg-12"> {/*Project, Assigned to*/}
 								<div className="col-lg-4"> {/*Project*/}
@@ -834,11 +830,11 @@ class TaskEdit extends Component {
 							</div>
 
 							<div>{/*Description*/}
-								<Label className="m-t-5 col-form-label">Popis úlohy</Label>
+								<Label className="col-form-label m-b-10">Popis úlohy</Label>
 								{ this.state.viewOnly ?
 									(this.state.description.length!==0 ?
-										<div dangerouslySetInnerHTML={{__html:this.state.description }} /> :
-											<div>Úloha nemá popis</div>
+										<div className="task-edit-popis" dangerouslySetInnerHTML={{__html:this.state.description }} /> :
+											<div className="task-edit-popis">Úloha nemá popis</div>
 									) :
 									(
 										this.state.showDescription ?
@@ -856,18 +852,16 @@ class TaskEdit extends Component {
 											/>
 									) :
 									(
-										<div className="clickable" onClick={()=>this.setState({showDescription:true})}>
+										<div className="clickable task-edit-popis" onClick={()=>this.setState({showDescription:true})}>
 											<div dangerouslySetInnerHTML={{__html:this.state.description }} />
-												<button type="button" className="btn btn-link waves-effect">
-													(Edit)
-												</button>
+												<div></div>
 										</div>
 									)
 									)
 								}
 							</div>
 
-						<div className="row"> {/*Tags*/}
+						<div className="row m-t-10"> {/*Tags*/}
 							<div className="center-hor"><Label className="center-hor">Tagy: </Label></div>
 							<div className="f-1 ">
 								<Select
@@ -958,8 +952,6 @@ class TaskEdit extends Component {
 								},this.submitTask.bind(this))
 							}}
 						/>
-
-						<hr className="m-b-15" style={{marginLeft: "-30px", marginRight: "-20px", marginTop: "-5px"}}/>
 
 						<Nav tabs className="b-0 m-b-22 m-l--10">
 							<NavItem>

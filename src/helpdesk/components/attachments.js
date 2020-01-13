@@ -9,11 +9,14 @@ export default class Attachments extends Component {
 
 	render() {
 		return (
-					<div className="full-width m-t-10 m-b-10">
+					<div className="full-width m-t-5">
 							{!this.props.disabled &&
-								<div>
-								<label htmlFor={"uploadAttachment"+this.props.taskID} className="btn-link-add">
-									+ Attachment
+								<div className="attachment-label">
+								<label className="m-r-5">
+									Attachments:
+								</label>
+								<label htmlFor={"uploadAttachment"+this.props.taskID} className="btn-link-add" >
+									<i className="fa fa-plus" />
 								</label>
 								<input type="file" id={"uploadAttachment"+this.props.taskID} multiple={true} style={{display:'none'}}
 									onChange={(e)=>{
