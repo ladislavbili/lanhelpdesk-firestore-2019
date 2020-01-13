@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import {storageCompaniesStart,storageHelpTasksStart, storageHelpStatusesStart, storageHelpTaskTypesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart, storageHelpTaskWorksStart} from '../../redux/actions';
-import { timestampToString, sameStringForms} from '../../helperFunctions';
+import {storageCompaniesStart, storageHelpTasksStart, storageHelpStatusesStart, storageHelpTaskTypesStart, storageUsersStart,
+	storageHelpTaskWorksStart, storageHelpTaskWorkTripsStart, storageHelpTripTypesStart} from '../../redux/actions';
+import { timestampToString, sameStringForms, toSelArr } from '../../helperFunctions';
 import { Link } from 'react-router-dom';
 import MonthSelector from '../components/monthSelector';
 
@@ -10,6 +11,7 @@ class MothlyReportsAssigned extends Component {
 		super(props);
 		this.state={
 			users:[],
+			status:[],
 			showUser:null,
 			loading:false
 		}
@@ -20,32 +22,35 @@ class MothlyReportsAssigned extends Component {
 		props.tasksLoaded &&
 		props.statusesLoaded &&
 		props.taskTypesLoaded &&
-		props.unitsLoaded &&
 		props.usersLoaded &&
-		props.materialsLoaded &&
-		props.taskWorksLoaded
+		props.taskWorksLoaded &&
+		props.tripTypesLoaded &&
+		props.workTripsLoaded
 	}
 
 	componentWillReceiveProps(props){
-		if(props.year.value!==this.props.year.value|| props.month.value!==this.props.month.value){
-			this.setState({showUser:null});
-		}
 		if(
 			!sameStringForms(props.companies,this.props.companies)||
 			!sameStringForms(props.tasks,this.props.tasks)||
 			!sameStringForms(props.statuses,this.props.statuses)||
 			!sameStringForms(props.taskTypes,this.props.taskTypes)||
-			!sameStringForms(props.units,this.props.units)||
 			!sameStringForms(props.users,this.props.users)||
-			!sameStringForms(props.materials,this.props.materials)||
 			!sameStringForms(props.taskWorks,this.props.taskWorks)||
+			!sameStringForms(props.tripTypes,this.props.tripTypes)||
+			!sameStringForms(props.workTrips,this.props.workTrips)||
 			(props.year!==null && this.props.year===null)||
-			(props.year && this.props.year && props.year.value!==this.props.year.value)||
-			(props.month && this.props.month && props.month.value!==this.props.month.value)||
-			(props.project!==this.props.project)||
-			(props.milestone!==this.props.milestone)
+			(this.storageLoaded(props) && this.storageLoaded(this.props))
 		){
 			this.setData(props);
+		}
+		if(!sameStringForms(props.statuses,this.props.statuses)){
+			this.setState({status:toSelArr(props.statuses.filter((status)=>status.action==='close'))})
+		}
+		if(
+			props.from!==this.props.from||
+			props.to!==this.props.to
+		){
+			this.setState({pickedTasks:[],showCompany:null},()=>{this.setData(props)})
 		}
 	}
 
@@ -59,20 +64,25 @@ class MothlyReportsAssigned extends Component {
 		if(!this.props.statusesActive){
 			this.props.storageHelpStatusesStart();
 		}
+
+		if(this.props.statusesLoaded){
+			this.setState({status:toSelArr(this.props.statuses.filter((status)=>status.action==='close'))});
+		}
+
 		if(!this.props.taskTypesActive){
 			this.props.storageHelpTaskTypesStart();
-		}
-		if(!this.props.unitsActive){
-			this.props.storageHelpUnitsStart();
 		}
 		if(!this.props.usersActive){
 			this.props.storageUsersStart();
 		}
-		if(!this.props.materialsActive){
-			this.props.storageHelpTaskMaterialsStart();
-		}
 		if(!this.props.taskWorksActive){
 			this.props.storageHelpTaskWorksStart();
+		}
+		if(!this.props.workTripsActive){
+			this.props.storageHelpTaskWorkTripsStart();
+		}
+		if(!this.props.tripTypesActive){
+			this.props.storageHelpTripTypesStart();
 		}
 		this.setData(this.props);
 	}
@@ -81,171 +91,15 @@ class MothlyReportsAssigned extends Component {
 		if(!this.storageLoaded(props)){
 			return;
 		}
-		let tasks=props.tasks.map((task)=>{
-			return {
-				...task,
-				company:task.company===null?null: props.companies.find((company)=>company.id===task.company),
-				requester:task.requester===null ? null:props.users.find((user)=>user.id===task.requester),
-				assigned:task.assigned===null ? null:props.users.find((user)=>user.id===task.assigned),
-				status:task.status===null ? null: props.statuses.find((status)=>status.id===task.status),
-			}
-		});
-		let taskMaterials = this.processMaterials(props.materials,tasks,props.units,props);
-		let taskWorks = this.filterWorks(props.taskWorks,props.taskTypes,tasks,props);
-		let users = this.processUsers(taskWorks, taskMaterials);
+		let works = this.processWorks(props);
+		let trips = this.processTrips(props);
+
+		//let allTasks = this.processTasks(props, materials, works, trips).sort((task1,task2)=> task1.closeDate > task2.closeDate ? 1 : -1 );
+
+		return;
 		this.setState({
-			users,
+			users:[],
 			loading:false
-		});
-	}
-
-	processUsers(works,materials){
-		let users = [];
-		let tasks = new Set([]);
-		//userom priradit works a materials, sucty a tasks
-		works.forEach((work)=>{
-			tasks.add(work.task.id);
-			let user = work.assignedTo;
-			let userIndex = users.findIndex((item)=>item.id===user.id);
-			if(userIndex!==-1){
-				users[userIndex].works.push(work);
-				users[userIndex].tasks.add(work.task.id);
-				users[userIndex].hours+=parseInt(work.quantity);
- 			}else{
-				users.push({
-					...user,
-					works:[work],
-					tasks: new Set([work.task.id]),
-					materials:[],
-					numOfMaterials:0,
-					hours:parseInt(work.quantity)
-				});
-			}
-		});
-		users = users.map((user)=>{
-			return {
-				...user,
-				works:this.groupWorks(user.works)
-			}
-		})
-		materials.filter((item)=>tasks.has(item.task.id)).forEach((material)=>{
-			users.filter((user)=>user.tasks.has(material.task.id)).forEach((user)=>{
-				user.materials.push(material);
-				user.numOfMaterials+=material.quantity.reduce((total,num)=>total+=parseInt(num),0);
-			})
-		});
-		return users.filter((user)=>user.hours>0 || user.numOfMaterials>0);
-	}
-
-	filterWorks(works,taskTypes,tasks,props){
-		let newWorks = works.map((work)=>{
-			let finalUnitPrice=parseFloat(work.price);
-			if(work.extraWork){
-				finalUnitPrice+=finalUnitPrice*parseFloat(work.extraPrice)/100;
-			}
-			let discountPerItem = finalUnitPrice*parseFloat(work.discount)/100;
-			finalUnitPrice=(finalUnitPrice*(1-parseFloat(work.discount)/100)).toFixed(2)
-			let totalPrice=(finalUnitPrice*parseFloat(work.quantity)).toFixed(2);
-			let workType= taskTypes.find((item)=>item.id===work.workType);
-			return{
-				...work,
-				assignedTo:props.users.find((user)=>user.id===work.assignedTo),
-				task:tasks.find((task)=>work.task===task.id),
-				workType:workType?workType:{title:'Unknown',id:Math.random()},
-				finalUnitPrice,
-				totalPrice,
-				totalDiscount:(parseFloat(work.quantity)*discountPerItem).toFixed(2)
-
-			}
-		});
-		let filter = props.filter;
-		newWorks = newWorks.filter((work)=>
-			(filter.status.length===0||(work.task.status && filter.status.includes(work.task.status.id))) &&
-			(filter.requester===null||(work.task.requester && work.task.requester.id===filter.requester)
-				||(work.task.requester && filter.requester==='cur' && work.task.requester.id === props.currentUser.id)) &&
-			(filter.company===null||(work.task.company && work.task.company.id===filter.company)
-				||(work.task.company && filter.company==='cur' && work.task.company.id===props.currentUser.userData.company)) &&
-			(filter.assigned===null||(work.task.assignedTo && work.task.assignedTo.map((item)=>item.id).includes(filter.assigned))||
-				(work.task.assignedTo && filter.requester==='cur' && work.task.assignedTo.map((item)=>item.id).includes(props.currentUser.id))) &&
-			(filter.workType===null||(work.workType.id===filter.workType)) &&
-			(props.project===null || (work.task.project && work.task.project===props.project)) &&
-			(props.year && props.year.value === (new Date(work.task.closeDate)).getFullYear()) &&
-			(props.month && props.month.value === (new Date(work.task.closeDate)).getMonth()+1) &&
-			(filter.statusDateFrom===''||work.task.statusChange >= filter.statusDateFrom) &&
-			(filter.statusDateTo===''||work.task.statusChange <= filter.statusDateTo) &&
-			(filter.closeDateFrom===undefined || filter.closeDateFrom===''||(work.task.closeDate && work.task.closeDate >= filter.closeDateFrom)) &&
-			(filter.closeDateTo===undefined || filter.closeDateTo===''||(work.task.closeDate && work.task.closeDate <= filter.closeDateTo)) &&
-			(filter.pendingDateFrom===undefined || filter.pendingDateFrom===''||(work.task.pendingDate && work.task.pendingDate >= filter.pendingDateFrom)) &&
-			(filter.pendingDateTo===undefined || filter.pendingDateTo===''||(work.task.pendingDate && work.task.pendingDate <= filter.pendingDateTo))&&
-			(props.milestone===null||(work.task.milestone&& work.task.milestone === props.milestone))
-			);
-			return newWorks;
-	}
-
-	groupWorks(works){
-		let groupedWorks = works.filter((item, index)=>{
-			return works.findIndex((item2)=>item2.task.id===item.task.id)===index
-			});
-		return groupedWorks.map((item)=>{
-			let newWorks = works.filter((item2)=>item.task.id===item2.task.id);
-			return{
-				...item,
-				title: newWorks.map((item)=>item.title),
-				workType: newWorks.map((item)=>item.workType),
-				quantity: newWorks.map((item)=>item.quantity),
-				finalUnitPrice: newWorks.map((item)=>item.finalUnitPrice),
-				totalPrice: newWorks.map((item)=>item.totalPrice),
-				totalDiscount: newWorks.map((item)=>item.totalDiscount)
-			}
-		});
-	}
-
-	processMaterials(materials,tasks,units,props){
-		let newMaterials = materials.map((material)=>{
-			let finalUnitPrice=(parseFloat(material.price)*(1+parseFloat(material.margin)/100)).toFixed(2);
-			let totalPrice=(finalUnitPrice*parseFloat(material.quantity)).toFixed(2);
-			return{...material,
-				task:tasks.find((task)=>material.task===task.id),
-				unit:units.find((unit)=>unit.id===material.unit),
-				finalUnitPrice,
-				totalPrice
-			}
-		})
-		let filter = props.filter;
-		newMaterials = newMaterials.filter((material)=>
-			(filter.status.length===0||(material.task.status && filter.status.includes(material.task.status.id))) &&
-			(filter.requester===null||(material.task.requester && material.task.requester.id===filter.requester)
-				||(material.task.requester && filter.requester==='cur' && material.task.requester.id === props.currentUser.id)) &&
-			(filter.company===null||(material.task.company && material.task.company.id===filter.company)
-				||(material.task.company && filter.company==='cur' && material.task.company.id===props.currentUser.userData.company)) &&
-			(filter.assigned===null||(material.task.assignedTo && material.task.assignedTo.map((item)=>item.id).includes(filter.assigned))
-				||(material.task.assignedTo && filter.requester==='cur' && material.task.assignedTo.map((item)=>item.id).includes(props.currentUser.id))) &&
-			(props.project===null || (material.task.project && material.task.project===props.project)) &&
-			(props.year!==null && props.year.value === (new Date(material.task.closeDate)).getFullYear()) &&
-			(props.month!==null && props.month.value === (new Date(material.task.closeDate)).getMonth()+1) &&
-			(filter.statusDateFrom===''||material.task.statusChange >= filter.statusDateFrom) &&
-			(filter.statusDateTo===''||material.task.statusChange <= filter.statusDateTo) &&
-			(filter.closeDateFrom===undefined || filter.closeDateFrom===''||(material.task.closeDate && material.task.closeDate >= filter.closeDateFrom)) &&
-			(filter.closeDateTo===undefined || filter.closeDateTo===''||(material.task.closeDate && material.task.closeDate <= filter.closeDateTo)) &&
-			(filter.pendingDateFrom===undefined || filter.pendingDateFrom===''||(material.task.pendingDate && material.task.pendingDate >= filter.pendingDateFrom)) &&
-			(filter.pendingDateTo===undefined || filter.pendingDateTo===''||(material.task.pendingDate && material.task.pendingDate <= filter.pendingDateTo))&&
-			(props.milestone===null||(material.task.milestone&& material.task.milestone === props.milestone))
-		);
-
-		let groupedMaterials = newMaterials.filter((item, index)=>{
-			return newMaterials.findIndex((item2)=>item2.task.id===item.task.id)===index
-		});
-
-		return groupedMaterials.map((item)=>{
-			let materials = newMaterials.filter((item2)=>item.task.id===item2.task.id);
-			return{
-				...item,
-				title:materials.map((item)=>item.title),
-				unit:materials.map((item)=>item.unit),
-				quantity:materials.map((item)=>item.quantity),
-				finalUnitPrice:materials.map((item)=>item.finalUnitPrice),
-				totalPrice:materials.map((item)=>item.totalPrice),
-			}
 		});
 	}
 
@@ -417,36 +271,53 @@ class MothlyReportsAssigned extends Component {
 						</div>
 					</div>}
 				 </div>
-			);
+		);
+	}
+		//Processing tasks
+
+	getMonthDiff(props){
+			let from = (new Date(props.from));
+			let to = (new Date(props.to));
+			let yearDiff = to.getFullYear()-from.getFullYear();
+			let monthDiff = to.getMonth()-from.getMonth();
+			let numberOfMonths=0;
+			if(monthDiff < 0){
+				numberOfMonths += (yearDiff-1)*12
+				numberOfMonths += 12+monthDiff
+			}else{
+				numberOfMonths += yearDiff*12;
+				numberOfMonths += monthDiff
+			}
+			return numberOfMonths;
 		}
+
 	}
 
-const mapStateToProps = ({ filterReducer,reportReducer,userReducer, storageCompanies, storageHelpTasks, storageHelpStatuses, storageHelpTaskTypes, storageHelpUnits, storageUsers, storageHelpTaskMaterials, storageHelpTaskWorks }) => {
-	const { filter, project, milestone } = filterReducer;
-	const { month, year } = reportReducer;
+const mapStateToProps = ({ reportReducer, storageCompanies, storageHelpTasks, storageHelpStatuses, storageHelpTaskTypes, storageUsers,
+	storageHelpTaskWorks, storageHelpTaskWorkTrips, storageHelpTripTypes }) => {
+	const { from, to } = reportReducer;
 
 	const { companiesActive, companies, companiesLoaded } = storageCompanies;
 	const { tasksActive, tasks, tasksLoaded } = storageHelpTasks;
 	const { statusesActive, statuses, statusesLoaded } = storageHelpStatuses;
 	const { taskTypesActive, taskTypes, taskTypesLoaded } = storageHelpTaskTypes;
-	const { unitsActive, units, unitsLoaded } = storageHelpUnits;
 	const { usersActive, users, usersLoaded } = storageUsers;
-	const { materialsActive, materials, materialsLoaded } = storageHelpTaskMaterials;
 	const { taskWorksActive, taskWorks, taskWorksLoaded } = storageHelpTaskWorks;
+	const { workTripsActive, workTrips, workTripsLoaded } = storageHelpTaskWorkTrips;
+	const { tripTypesActive, tripTypes, tripTypesLoaded } = storageHelpTripTypes;
 
 	return {
-		month, year,
-		filter, project, milestone,
-		currentUser:userReducer,
+		from, to,
 		companiesActive, companies, companiesLoaded,
 		tasksActive, tasks,tasksLoaded,
 		statusesActive, statuses,statusesLoaded,
 		taskTypesActive, taskTypes,taskTypesLoaded,
-		unitsActive, units,unitsLoaded,
 		usersActive, users,usersLoaded,
-		materialsActive, materials,materialsLoaded,
-		taskWorksActive, taskWorks,taskWorksLoaded
+		taskWorksActive, taskWorks,taskWorksLoaded,
+		workTripsActive, workTrips, workTripsLoaded,
+		tripTypesActive, tripTypes, tripTypesLoaded,
 	};
 };
 
-export default connect(mapStateToProps, { storageCompaniesStart, storageHelpTasksStart, storageHelpStatusesStart, storageHelpTaskTypesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart, storageHelpTaskWorksStart })(MothlyReportsAssigned);
+export default connect(mapStateToProps, { storageCompaniesStart, storageHelpTasksStart, storageHelpStatusesStart, storageHelpTaskTypesStart, storageUsersStart,
+	storageHelpTaskWorksStart, storageHelpTaskWorkTripsStart, storageHelpTripTypesStart })(MothlyReportsAssigned);
