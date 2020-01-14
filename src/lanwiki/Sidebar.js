@@ -91,7 +91,7 @@ class Sidebar extends Component {
 
 					<Nav vertical>
 						<NavItem>
-							<Link  className="sidebar-align sidebar-menu-item" to={{ pathname: `/lanwiki/i/all` }}>All</Link>
+							<Link  className="sidebar-menu-item" to={{ pathname: `/lanwiki/i/all` }}>All</Link>
 						</NavItem>
 
 						{

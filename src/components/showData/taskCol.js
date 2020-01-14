@@ -18,7 +18,7 @@ export default class ColumnDisplay extends Component {
 								<ul
 									className={classnames("taskCol", "clickable", "dnd-item", "list-unstyled", {'selected-item': this.props.itemID === item.id.toString()})}
 									id="upcoming"
-									style={{borderLeft: "3px solid " + (item.status.color?item.status.color:'white')}}
+									style={{borderLeft: "3px solid " + (item.status ? (item.status.color?item.status.color:'white') : "white")}}
 									onClick={()=>{
 										this.props.history.push(this.props.link+'/'+item.id);
 									}}

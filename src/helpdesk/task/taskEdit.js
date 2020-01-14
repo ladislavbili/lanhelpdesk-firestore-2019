@@ -100,7 +100,7 @@ class TaskEdit extends Component {
 			isColumn: false,
 			search: '',
 			openCopyModal: false,
-			toggleTab:"3",
+			toggleTab:"1",
 			pendingOpen:false,
 			pendingStatus:null,
 			important:false,
@@ -394,7 +394,7 @@ class TaskEdit extends Component {
 		let newState = {
 			workTrips,
 			taskMaterials,
-			toggleTab:viewOnly?"1":"3",
+			toggleTab: "1", //viewOnly?"1":"3",
 			taskWorks,
 			repeat,
 
@@ -555,8 +555,8 @@ class TaskEdit extends Component {
 										{(()=>{
 											if(this.state.status && this.state.status.action==='pending'){
 												return (
-													<span className="text-muted f-r">
-														<span className="center-hor" style={{width:'8em'}}>
+													<span className="text-muted task-info">
+														<span className="center-hor">
 															Pending date:
 														</span>
 														<DatePicker
@@ -572,8 +572,8 @@ class TaskEdit extends Component {
 													</span>)
 										}else if(this.state.status && (this.state.status.action==='close'||this.state.status.action==='invoiced'||this.state.status.action==='invalid')){
 											return (
-												<span className="text-muted f-r">
-													<span className="center-hor" style={{width:'8em'}}>
+												<span className="text-muted task-info m-r--40">
+													<span className="center-hor">
 														Closed at:
 													</span>
 													<DatePicker
@@ -588,7 +588,14 @@ class TaskEdit extends Component {
 														/>
 												</span>)
 											}else{
-												return this.state.statusChange?('Status changed at ' + timestampToString(this.state.statusChange)):''
+												return (
+													<span className="task-info ">
+														<span className="center-hor text-muted">
+															{this.state.statusChange ? ('Status changed at ' + timestampToString(this.state.statusChange) ) : ""}
+														</span>
+													</span>
+												)
+
 											}
 										})()}
 									</p>
@@ -598,7 +605,7 @@ class TaskEdit extends Component {
 
 						<hr className="m-t-5 m-b-5"/>
 
-							<div className="col-lg-12"> {/*Project, Assigned to*/}
+							<div className="col-lg-12"> {/*Project, Assigned*/}
 								<div className="col-lg-4"> {/*Project*/}
 									<div className="row p-r-10">
 										<Label className="col-3 col-form-label">Projekt</Label>
@@ -630,9 +637,9 @@ class TaskEdit extends Component {
 										</div>
 									</div>
 								</div>
-								<div className="col-lg-8"> {/*Assigned to*/}
+								<div className="col-lg-8"> {/*Assigned*/}
 									<div className="row p-r-10">
-										<Label className="col-1-5 col-form-label">Assigned to</Label>
+										<Label className="col-1-5 col-form-label">Assigned</Label>
 										<div className="col-10-5">
 											<Select
 												value={this.state.assignedTo.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id))}
@@ -862,7 +869,9 @@ class TaskEdit extends Component {
 							</div>
 
 						<div className="row m-t-10"> {/*Tags*/}
-							<div className="center-hor"><Label className="center-hor">Tagy: </Label></div>
+							<div className="center-hor">
+								<Label className="center-hor">Tagy: </Label>
+							</div>
 							<div className="f-1 ">
 								<Select
 									placeholder="Zvoľte tagy"

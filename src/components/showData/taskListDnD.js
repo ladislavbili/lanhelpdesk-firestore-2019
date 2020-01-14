@@ -27,6 +27,8 @@ export default class TaskListDnD extends Component {
 	}
 
 	render() {
+		const GROUP_DATA = this.groupData().filter(item => this.props.status.includes(item.groupItem.id));
+
 		return (
 				<div>
 					<CommandBar {...this.props.commandBar} />
@@ -34,8 +36,8 @@ export default class TaskListDnD extends Component {
 					<ListHeader {...this.props.commandBar} listName={this.props.listName}  useBreadcrums={this.props.useBreadcrums} breadcrumsData={this.props.breadcrumsData}/>
 						<div className="flex-row">
 								{
-									this.groupData().map((group)=>
-									<Card className="flex-column dnd-column" key={group.groupItem.id}>
+									GROUP_DATA.map((group)=>
+									<Card className="dnd-column" key={group.groupItem.id}>
 										<CardHeader className="dnd-header">{group.groupItem.title}</CardHeader>
 										<CardBody className="dnd-body">
 											{
@@ -61,7 +63,7 @@ export default class TaskListDnD extends Component {
 								)}
 								{
 									this.groupRest().length>0 &&
-									<Card className="flex-column dnd-column" key="Undefined group">
+									<Card className="dnd-column" key="Undefined group">
 										<CardHeader style={{backgroundColor:'#b8d9db'}}>Undefined group</CardHeader>
 										<CardBody>
 											{

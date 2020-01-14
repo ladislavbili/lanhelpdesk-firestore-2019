@@ -114,7 +114,7 @@ class TaskInfo extends Component {
 								}
 						</div>
 						<div className="col-lg-12 row">
-							<div className="center-hor text-slim row m-r-5">Assigned to: </div>
+							<div className="center-hor text-slim row m-r-5">Assigned: </div>
 								{this.props.assignedTo.length === 0 &&
 									<div className="display-inline m-r-5">
 										no people were assigned

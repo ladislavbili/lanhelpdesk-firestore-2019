@@ -87,7 +87,7 @@ class MilestoneEdit extends Component{
 					Milestone settings
 				</Button>
 
-          <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
+          <Modal isOpen={this.state.opened} style={{width: "800px"}} toggle={this.toggle.bind(this)} >
             <ModalBody>
               <FormGroup>
                 <Label for="title">Milestone title</Label>
@@ -98,37 +98,53 @@ class MilestoneEdit extends Component{
     						<Label htmlFor="description">Popis</Label>
     						<Input type="textarea" className="form-control" id="description" placeholder="Zadajte text" value={this.state.description} onChange={(e) => this.setState({description: e.target.value})}/>
     					</FormGroup>
+              <div className="col-lg-12">
+                <FormGroup className="col-lg-6">
+                  <div>
+                    <Label htmlFor="od">OD</Label>
+                  </div>
+                  <div>
+                    <DatePicker
+      							selected={this.state.startsAt}
+      							onChange={date => {
+      								this.setState({ startsAt: date });
+      							}}
+                    id="od"
+      							locale="en-gb"
+      							placeholderText="No starting date"
+      							showTimeSelect
+      							className="form-control hidden-input center-ver"
+      							todayButton="Today"
+      							timeFormat="HH:mm"
+      							timeIntervals={15}
+      							dateFormat="HH:mm DD.MM.YYYY"
+      						/>
+                </div>
+                </FormGroup>
+                <FormGroup className="col-lg-6">
+                  <div>
+                    <Label htmlFor="do">DO</Label>
+                  </div>
+                  <div>
+                    <DatePicker
+      							selected={this.state.endsAt}
+      							onChange={date => {
+      								this.setState({ endsAt: date });
+      							}}
+                    id="do"
+      							locale="en-gb"
+      							placeholderText="No ending date"
+      							showTimeSelect
+      							className="form-control hidden-input center-ver"
+      							todayButton="Today"
+      							timeFormat="HH:mm"
+      							timeIntervals={15}
+      							dateFormat="HH:mm DD.MM.YYYY"
+      						/>
+                </div>
+                </FormGroup>
+              </div>
             </ModalBody>
-
-						<DatePicker
-							selected={this.state.startsAt}
-							onChange={date => {
-								this.setState({ startsAt: date });
-							}}
-							locale="en-gb"
-							placeholderText="No starting date"
-							showTimeSelect
-							className="form-control hidden-input"
-							todayButton="Today"
-							timeFormat="HH:mm"
-							timeIntervals={15}
-							dateFormat="HH:mm DD.MM.YYYY"
-						/>
-
-						<DatePicker
-							selected={this.state.endsAt}
-							onChange={date => {
-								this.setState({ endsAt: date });
-							}}
-							locale="en-gb"
-							placeholderText="No ending date"
-							showTimeSelect
-							className="form-control hidden-input"
-							todayButton="Today"
-							timeFormat="HH:mm"
-							timeIntervals={15}
-							dateFormat="HH:mm DD.MM.YYYY"
-						/>
 
             <ModalFooter>
               <Button className="btn mr-auto" disabled={this.state.saving} onClick={this.toggle.bind(this)}>

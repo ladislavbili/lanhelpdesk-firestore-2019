@@ -203,7 +203,13 @@ class Sidebar extends Component {
 									components={{
 										DropdownIndicator: ({ innerProps, isDisabled }) =>
 										<div style={{marginTop: "-15px"}}>
-											<i className="fa fa-folder-open" style={{position:'absolute', left:15, color: "#212121"}}/>
+											<img
+												className=""
+												style={{position:'absolute', left:15, color: "#212121", height: "17px"}}
+												src={require('../scss/icons/folder.svg')}
+												alt="Generic placeholder XX"
+												/>
+											{false &&	<i className="fa fa-folder-open" style={{position:'absolute', left:15, color: "#212121", height: "17px"}}/> }
 											<i className="fa fa-chevron-down" style={{position:'absolute', right:15, color: "#212121"}}/>
 										</div>
 									}}
@@ -227,7 +233,14 @@ class Sidebar extends Component {
 										components={{
 											DropdownIndicator: ({ innerProps, isDisabled }) =>
 											<div style={{marginTop: "-15px"}}>
-												<i className="fa fa-map-signs" style={{position:'absolute', left:15, color: "#212121"}}/>
+												<img
+													className=""
+													style={{position:'absolute', left:15, color: "#212121", height: "17px"}}
+													src={require('../scss/icons/sign.svg')}
+													alt="Generic placeholder XX"
+													/>
+												{false &&
+												<i className="fa fa-map-signs" style={{position:'absolute', left:15, color: "#212121"}}/> }
 												<i className="fa fa-chevron-down" style={{position:'absolute', right:15, color: "#212121"}}/>
 											</div>,
 										}}
@@ -264,7 +277,16 @@ class Sidebar extends Component {
 									>
 								<i className="fa fa-plus pull-right m-r-5 m-t-5 clickable" />
 							</div>
-						 	<div><i className="fas fa-filter m-r-5 m-l-5" ></i>Filters</div>
+						 	<div>
+									<img
+										className="m-r-5"
+										style={{color: "#212121", height: "17px", marginBottom: "3px"}}
+										src={require('../scss/icons/filter.svg')}
+										alt="Generic placeholder XX"
+										/>
+								{ false && <i className="fas fa-filter m-r-5 m-l-5" > </i> }
+								Filters
+							</div>
 						</div>
 					}
 

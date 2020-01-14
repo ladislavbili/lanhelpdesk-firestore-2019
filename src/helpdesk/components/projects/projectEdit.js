@@ -397,11 +397,14 @@ class ProjectEdit extends Component{
                 </div>}
               </ModalBody>
               <ModalFooter>
-              <Button className="mr-auto btn-link" disabled={this.state.saving} onClick={this.toggle.bind(this)}>
+              <Button className="btn-link" disabled={this.state.saving} onClick={this.toggle.bind(this)}>
                 Close
               </Button>
+							<Button className="btn-danger" disabled={this.state.saving} onClick={this.deleteProject.bind(this)}>
+								Delete
+							</Button>
               <Button
-                className="btn"
+                className="ml-auto btn"
                 disabled={this.state.saving||this.state.title===""||(this.state.company.value===null&&this.state.company.fixed)||(this.state.status.value===null&&this.state.status.fixed)}
                 onClick={()=>{
                   this.setState({saving:true});
@@ -431,9 +434,6 @@ class ProjectEdit extends Component{
               }}>
                 {(this.state.saving?'Saving...':'Save project')}
               </Button>
-							<Button className="mr-auto btn-danger" disabled={this.state.saving} onClick={this.deleteProject.bind(this)}>
-								Delete
-							</Button>
             </ModalFooter>
           </Modal>
           </div>
