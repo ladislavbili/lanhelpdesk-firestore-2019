@@ -136,7 +136,8 @@ class MothlyReportsCompany extends Component {
 
 		//podla firmy, datumu
 		let statusIDs= toSelArr(props.statuses.filter((status)=>status.action==='close')).map((status)=>status.id);
-		let taskIDs= this.state.showCompany!==null?tasks.filter((task)=>task.company.id===this.state.showCompany.id && statusIDs.includes(task.status.id)).map((task)=>task.id):[];
+		let taskIDs= this.state.showCompany!==null?allTasks.filter((task)=>task.company.id===this.state.showCompany.id && statusIDs.includes(task.status.id)).map((task)=>task.id):[];
+		console.log(tasks);
 		this.setState({
 			tasks,
 			allTasks,
