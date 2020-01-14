@@ -498,7 +498,7 @@ export default class TaskAdd extends Component{
 					</div>
 					<div className="col-lg-8">
 						<div className="row p-r-10">
-							<Label className="col-1-5 col-form-label">Assigned to</Label>
+							<Label className="col-1-5 col-form-label">Assigned</Label>
 							<div className="col-10-5">
 								<Select
 									placeholder="Select required"
@@ -708,7 +708,7 @@ export default class TaskAdd extends Component{
 				</div>}
 			</div>
 				<Label className="m-b-10 col-form-label">Popis úlohy</Label>
-					{!this.state.descriptionVisible && <span className="p-20 text-muted" onClick={()=>this.setState({descriptionVisible:true})}>Napíšte krátky popis úlohy</span>}
+					{!this.state.descriptionVisible && <span className="task-edit-popis p-20 text-muted" onClick={()=>this.setState({descriptionVisible:true})}>Napíšte krátky popis úlohy</span>}
 					{this.state.descriptionVisible && <CKEditor
 						data={this.state.description}
 						onChange={(e)=>{
@@ -720,20 +720,20 @@ export default class TaskAdd extends Component{
 						}}
 						/>
 					}
-				<div className='col-lg-12'>
-					<div className="row p-r-10">
-						<Label className="col-1 col-form-label m-b-3">Tags</Label>
-						<div className="col-11">
-							<Select
-								value={this.state.tags}
-								placeholder="None"
-								isDisabled={this.state.defaults.tags.fixed||this.state.viewOnly}
-								isMulti
-								onChange={(tags)=>this.setState({tags})}
-								options={this.state.allTags}
-								styles={invisibleSelectStyleNoArrowColored}
-								/>
-						</div>
+				<div className="row m-t-10"> {/*Tags*/}
+					<div className="center-hor">
+						<Label className="center-hor">Tagy: </Label>
+					</div>
+					<div className="f-1 ">
+						<Select
+							value={this.state.tags}
+							placeholder="None"
+							isDisabled={this.state.defaults.tags.fixed||this.state.viewOnly}
+							isMulti
+							onChange={(tags)=>this.setState({tags})}
+							options={this.state.allTags}
+							styles={invisibleSelectStyleNoArrowColored}
+							/>
 					</div>
 				</div>
 				<Attachments
@@ -787,8 +787,8 @@ export default class TaskAdd extends Component{
 						/>}
 
 						{!this.state.viewOnly &&
-							<Nav tabs className="b-0 m-t-20 m-b-22 m-l--10 flex p-t-1 p-b-1" style={{backgroundColor: "#faf9f8"}}>
-								<NavItem  className="p-t-5 p-b-5">
+							<Nav tabs className="b-0 m-b-22 m-l--10">
+								<NavItem>
 									<NavLink
 										className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "")}
 										onClick={() => { this.setState({toggleTab:'1'}); }}
@@ -796,8 +796,7 @@ export default class TaskAdd extends Component{
 										Výkaz
 									</NavLink>
 								</NavItem>
-								<div style={{borderRight:"2px solid #BDBDBD"}} className="m-t-5 m-b-5"></div>
-								<NavItem  className="p-t-5 p-b-5">
+								<NavItem>
 									<NavLink
 										className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
 										onClick={() => { this.setState({toggleTab:'2'}); }}

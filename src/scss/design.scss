@@ -192,6 +192,10 @@ html{
 .w-1660px{
   width: 1660px;
 }
+.h-100{
+  height: 100%;
+}
+
 .golden-ratio-618{
   width: 61.8%;
 }
@@ -209,6 +213,10 @@ html{
 }
 .position-inherit{
   position: inherit;
+}
+
+.m-r--40{
+  margin-right: -40px;
 }
 
 .cke{
@@ -423,7 +431,7 @@ h4{
   border: 0px;
   border-radius: 0px;
   color: #0078D4;;
-  height: $button-height;
+//  height: $button-height;
   font-weight: 400;
   font-size: $main-font-size;
   font-family: $main-font;
@@ -574,11 +582,12 @@ Label{
   color: #333;
 }
 
-.f-r>.react-datepicker-wrapper{
-  margin-right: -40px;
+
+.task-info{
+  float: right;
 }
-.f-r>.react-datepicker-wrapper:focus-within{
-  margin-right: 0px;
+.task-info>.react-datepicker-wrapper{
+  width: 60% !important;
 }
 
 .tag{
@@ -1051,7 +1060,7 @@ background-color: #f8fbfe;
   display: flex;
   margin: 0px;
   padding-left: 12px;
-  height:  $sidebar-item-height;
+  height: $button-height;
 }
 
 .sidebar-btn-link:hover{
@@ -1077,7 +1086,6 @@ background-color: #f8fbfe;
 .sidebar-icon.active{
   font-weight: 900;
   color: #0078D4 !important;
-  background-color: rgb(238,238,238);
 }
 
 .sidebar-icon-cmdb{
@@ -1201,6 +1209,10 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   height: 19px;
 }
 
+.breadcrumbs>h4{
+  font-size: 2rem !important;
+}
+
 .search-row{
     display: flex !important;
     margin: 0px;
@@ -1247,7 +1259,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 .nav-link:not(.sidebar-menu-item){
   font-family: $main-font;
   height: 28px;
-  font-size: 16px;
+  font-size: 18px;
 }
 .nav>li>a:not(.sidebar-menu-item) {
   padding: 2px 10px 2px 0px;
@@ -1265,39 +1277,42 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   height: 28px !important;
   color: #333 !important;
   font-weight: 600;
-  background-color: #eeeeee !important;
+//  background-color: #eeeeee !important;
 }
 
 //sidebar
 .nav:not(.nav-tabs) a.active {
   font-weight: 900;
   color: #0078D4 !important;
-  background-color: rgb(238,238,238);
+  background-color: transparent;
   text-decoration: none !important;
 }
 
 .nav:not(.nav-tabs) a:focus {
   font-weight: 900;
   color: #0078D4 !important;
-  background-color: rgb(238,238,238);
   text-decoration: none !important;
 }
 
 .nav:not(.nav-tabs) a:hover {
-  background-color: rgb(238,238,238);
+  background-color: #F6F6F6;
   color: #0078D4 !important;
   text-decoration: none !important;
 }
 
+.nav:not(.nav-tabs) a.visited {
+  background-color: #F6F6F6;
+}
+
 .nav-item:hover{
-  background-color: rgb(238,238,238);
+//  background-color: rgb(238,238,238);
   color: $basic-button-color;
 }
 
 .nav:not(.nav-tabs) a.active + .sidebar-menu-item-btn {
   .hidden-button{
     color: $basic-button-color;
-    background-color: rgb(238,238,238);
+    background-color: #F6F6F6;
   }
 }
 
@@ -1389,6 +1404,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 .dnd-column{
   background-color: #F6F6F6;
   min-width: 400px;
+  max-width: 401px;
   border-radius: 0px;
   border: none;
 }
@@ -1426,11 +1442,6 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   height: 12px;
   margin-top: -3px;
   margin-right: 3px;
-}
-
-
-.task-list{
-  background-color: #f4f8fb;
 }
 
 .taskCol {
@@ -1471,9 +1482,9 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 }
 
 .selected-item {
-	background-color: white;
+	background-color: #f4f8fb;
 	li {
-		background-color: white;
+		background-color: #f4f8fb;
 	}
 }
 .small-p{

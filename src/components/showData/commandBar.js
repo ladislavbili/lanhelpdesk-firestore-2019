@@ -4,21 +4,27 @@ import React, { Component } from 'react';
 export default class CommandBar extends Component {
 
 	render() {
+		const FILTERED_BREADCRUMBS = ( this.props.breadcrumsData ? this.props.breadcrumsData.filter((breadcrum)=>breadcrum.show) : [] );
+
 		return (
 			<div className={"commandbar " + (this.props.layout === 1 ? "" : "")}>
 
 				<div className="center-hor">
 					{
 						this.props.useBreadcrums !== true &&
-						<h4 className="font-24 text-slim">
+						<h4 className="text-slim">
 							{this.props.listName?this.props.listName:""}
 						</h4>
 					}
 					{this.props.useBreadcrums  &&
-						<div className="flex-row">
+						<div className="flex-row breadcrumbs">
 							{
-								this.props.breadcrumsData.filter((breadcrum)=>breadcrum.show).map((breadcrum)=>
-									<h4 className="clickable" style={{marginRight:'0.3em'}} key={breadcrum.label} onClick={breadcrum.onClick}>{breadcrum.label + ` \\`}</h4>
+								FILTERED_BREADCRUMBS.map((breadcrum, index)=>
+									<h4
+										className="clickable"
+										style={{marginRight:'0.3em'}}
+										key={breadcrum.label}
+										onClick={breadcrum.onClick}>{breadcrum.label + ((FILTERED_BREADCRUMBS.length - 1 !== index) ? ` \\` : "")}</h4>
 								)
 							}
 						</div>

@@ -273,7 +273,7 @@ class TasksIndex extends Component {
 								</span>
 							</p>
 							<p className="m-b-0">
-								<span style={{textOverflow: 'ellipsis'}}><span className="text-muted">Assigned to: </span>{task.assignedTo?task.assignedTo.reduce((total,user)=>total+=user.name+' '+user.surname+', ','').slice(0,-2):'Neznámy používateľ'}</span>
+								<span style={{textOverflow: 'ellipsis'}}><span className="text-muted">Assigned: </span>{task.assignedTo?task.assignedTo.reduce((total,user)=>total+=user.name+' '+user.surname+', ','').slice(0,-2):'Neznámy používateľ'}</span>
 							</p>
 						</div>
 
@@ -293,7 +293,7 @@ class TasksIndex extends Component {
 					{value:'status',label:'Status',type:'object'},
 					{value:'requester',label:'Requester',type:'user'},
 					{value:'company',label:'Company',type:'object'},
-					{value:'assignedTo',label:'Assigned to',type:'list',func:(items)=>
+					{value:'assignedTo',label:'Assigned',type:'list',func:(items)=>
 						(<div>
 							{
 								items.map((item)=><div key={item.id}>{item.name+' '+item.surname}</div>)
@@ -315,7 +315,7 @@ class TasksIndex extends Component {
 					{value:'status',label:'Status',type:'object'},
 					{value:'title',label:'Title',type:'text'},
 					{value:'requester',label:'Requester',type:'user'},
-					{value:'assignedTo',label:'Assigned to',type:'list',func:((total,user)=>total+=user.email+' '+user.name+' '+user.surname+' ')},
+					{value:'assignedTo',label:'Assigned',type:'list',func:((total,user)=>total+=user.email+' '+user.name+' '+user.surname+' ')},
 					{value:'createdAt',label:'Created at',type:'date'},
 					//		{value:'tags',label:'Tags',type:'list',func:((cur,item)=>cur+item.title+' ')},
 					{value:'deadline',label:'Deadline',type:'date'}

@@ -166,7 +166,8 @@ class Sidebar extends Component {
 						{ this.state.openProjectAdd &&
 								<ProjectAdd close={() => this.setState({openProjectAdd: false})}/>
 						}
-						{ this.state.project.id &&
+						{ false &&
+							this.state.project.id &&
 							this.state.projects.map((item)=>item.id).includes(this.state.project.id) &&
 							<ProjectEdit item={this.state.project} triggerChange={()=>{this.setState({projectChangeDate:(new Date()).getTime()})}}/>
 						}

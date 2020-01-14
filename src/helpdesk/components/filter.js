@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 
 import {database, rebase} from '../../index';
 import DatePicker from 'react-datepicker';
-import {setFilter, storageHelpTaskTypesStart,storageUsersStart, storageCompaniesStart, storageHelpStatusesStart} from '../../redux/actions';
+import {setFilter, storageHelpTaskTypesStart, storageUsersStart, storageCompaniesStart, storageHelpStatusesStart} from '../../redux/actions';
 import {toSelArr, snapshotToArray, sameStringForms, toMomentInput, fromMomentToUnix } from '../../helperFunctions';
 import AddFilter from './filterAdd';
 
