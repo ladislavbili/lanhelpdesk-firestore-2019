@@ -148,7 +148,7 @@ export default class PraceWorkTrips extends Component {
 
 	getDPH(){
 		let dph = 20;
-		if(this.props.company && this.props.company.dph < 0){
+		if(this.props.company && this.props.company.dph > 0){
 			dph = this.props.company.dph;
 		}
 		return (100+dph)/100;
