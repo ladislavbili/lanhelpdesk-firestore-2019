@@ -129,17 +129,17 @@ class MothlyReportsCompany extends Component {
 		let works = this.newProcessWorks(props);
 		let trips = this.newProcessTrips(props);
 		let materials = this.processMaterials(props);
-		let tasks = this.processTasks(props, materials, works, trips).sort((task1,task2)=> task1.closeDate > task2.closeDate ? 1 : -1 );
+		let allTasks = this.processTasks(props, materials, works, trips).sort((task1,task2)=> task1.closeDate > task2.closeDate ? 1 : -1 );
 		let monthsTasks = this.processThisMonthTasks(props, materials, works, trips).sort((task1,task2)=> task1.closeDate > task2.closeDate ? 1 : -1 );
-		let separatedTasks = this.separateTasks(tasks, monthsTasks);
-		let companies = this.processCompanies(tasks,props.pricelists);
+		let tasks = this.separateTasks(allTasks, monthsTasks);
+		let companies = this.processCompanies(allTasks,props.pricelists);
 
 		//podla firmy, datumu
 		let statusIDs= toSelArr(props.statuses.filter((status)=>status.action==='close')).map((status)=>status.id);
 		let taskIDs= this.state.showCompany!==null?tasks.filter((task)=>task.company.id===this.state.showCompany.id && statusIDs.includes(task.status.id)).map((task)=>task.id):[];
 		this.setState({
-			tasks:separatedTasks,
-			allTasks:tasks,
+			tasks,
+			allTasks,
 			pickedTasks:this.state.pickedTasks.length===0?taskIDs:this.state.pickedTasks.filter((id)=>taskIDs.includes(id)),
 			companies,
 			loading:false
@@ -294,8 +294,8 @@ class MothlyReportsCompany extends Component {
 		task.closeDate &&
 		(new Date(task.closeDate)).getFullYear() >= (new Date(props.from)).getFullYear()  &&
 		(new Date(task.closeDate)).getFullYear() <= (new Date(props.to)).getFullYear()  &&
-		(new Date(task.closeDate)).getMonth() >= (new Date(props.from)).getMonth()  &&
-		(new Date(task.closeDate)).getMonth() <= (new Date(props.to)).getMonth()
+		((new Date(task.closeDate)).getMonth() >= (new Date(props.from)).getMonth() || (new Date(props.from)).getFullYear() < (new Date(task.closeDate)).getFullYear())  &&
+		((new Date(task.closeDate)).getMonth() <= (new Date(props.to)).getMonth() || (new Date(props.to)).getFullYear() > (new Date(task.closeDate)).getFullYear())
 		);
 		return tasks;
 	}
@@ -305,19 +305,29 @@ class MothlyReportsCompany extends Component {
 		tasks.forEach((task)=>{
 			let company = companies.find((company)=>company.id===task.company.id);
 			if(company===undefined){
-				companies.push({...task.company,materials:0,works:0,trips:0});
+				companies.push({...task.company,materials:[],works:[],trips:[]});
 				company = companies.find((company)=>company.id===task.company.id);
 			}
-			task.works.forEach((work)=>{
-				company.works+=isNaN(parseInt(work.quantity))?0:parseInt(work.quantity);
-			})
-			task.trips.forEach((trip)=>{
-				company.trips+=isNaN(parseInt(trip.quantity))?0:parseInt(trip.quantity);
-			})
-			task.materials.forEach((material)=>{
-				company.materials+=isNaN(parseInt(material.quantity))?0:parseInt(material.quantity);
-			})
+			company.works.push(...(task.works.map((work)=>{
+				return {
+					...work,
+					statusID:task.status.id,
+				}
+			})));
+			company.trips.push(...(task.trips.map((trip)=>{
+				return {
+					...trip,
+					statusID:task.status.id,
+				}
+			})));
+			company.materials.push(...(task.materials.map((material)=>{
+				return {
+					...material,
+					statusID:task.status.id,
+				}
+			})));
 		})
+
 		companies = companies.map((company)=>{
 			return {
 				...company,
@@ -327,7 +337,7 @@ class MothlyReportsCompany extends Component {
 			pricelist:pricelists.find((pricelist)=>company.pricelist===pricelist.id)
 			}
 		})
-		return companies.filter((company)=>company.works > 0 || company.materials > 0 || company.trips > 0 || company.rentedCount);
+		return companies.filter((company)=>company.works.length > 0 || company.materials.length > 0 || company.trips.length > 0 || company.rentedCount);
 	}
 
 	//Unit prices
@@ -790,9 +800,9 @@ class MothlyReportsCompany extends Component {
 											this.setState({showCompany:company, pickedTasks: pickedTasks.length > 0 ? pickedTasks : taskIDs });
 										}}>
 										<td>{company.title}</td>
-										<td>{company.works}</td>
-										<td>{company.materials}</td>
-										<td>{company.trips}</td>
+										<td>{company.works.reduce((acc,work)=>acc+((isNaN(parseInt(work.quantity))||!statusIDs.includes(work.statusID))?0:parseInt(work.quantity)),0)}</td>
+										<td>{company.materials.reduce((acc,materials)=>acc+((isNaN(parseInt(materials.quantity))||!statusIDs.includes(materials.statusID))?0:parseInt(materials.quantity)),0)}</td>
+										<td>{company.trips.reduce((acc,trips)=>acc+((isNaN(parseInt(trips.quantity))||!statusIDs.includes(trips.statusID))?0:parseInt(trips.quantity)),0)}</td>
 										<td>{company.rentedCount}</td>
 									</tr>
 								)}
@@ -1808,9 +1818,8 @@ class MothlyReportsCompany extends Component {
 	}
 }
 
-const mapStateToProps = ({ filterReducer,reportReducer,userReducer, storageCompanies, storageHelpTasks, storageHelpStatuses, storageHelpTaskTypes, storageHelpUnits, storageUsers, storageHelpTaskMaterials,
+const mapStateToProps = ({ reportReducer, storageCompanies, storageHelpTasks, storageHelpStatuses, storageHelpTaskTypes, storageHelpUnits, storageUsers, storageHelpTaskMaterials,
 	storageHelpTaskWorks, storageHelpTaskWorkTrips, storageHelpTripTypes, storageHelpPricelists, storageHelpPrices, storageHelpCompanyInvoices }) => {
-	const { filter, project, milestone } = filterReducer;
 	const { from, to } = reportReducer;
 
 	const { companiesActive, companies, companiesLoaded } = storageCompanies;
@@ -1829,8 +1838,6 @@ const mapStateToProps = ({ filterReducer,reportReducer,userReducer, storageCompa
 
 	return {
 		from, to,
-		filter, project, milestone,
-		currentUser:userReducer,
 		companiesActive, companies, companiesLoaded,
 		tasksActive, tasks,tasksLoaded,
 		statusesActive, statuses,statusesLoaded,
