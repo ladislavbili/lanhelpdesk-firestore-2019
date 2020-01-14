@@ -294,8 +294,8 @@ class MothlyReportsCompany extends Component {
 		task.closeDate &&
 		(new Date(task.closeDate)).getFullYear() >= (new Date(props.from)).getFullYear()  &&
 		(new Date(task.closeDate)).getFullYear() <= (new Date(props.to)).getFullYear()  &&
-		(new Date(task.closeDate)).getMonth() >= (new Date(props.from)).getMonth()  &&
-		(new Date(task.closeDate)).getMonth() <= (new Date(props.to)).getMonth()
+		((new Date(task.closeDate)).getMonth() >= (new Date(props.from)).getMonth() || (new Date(props.from)).getFullYear() < (new Date(task.closeDate)).getFullYear())  &&
+		((new Date(task.closeDate)).getMonth() <= (new Date(props.to)).getMonth() || (new Date(props.to)).getFullYear() > (new Date(task.closeDate)).getFullYear())
 		);
 		return tasks;
 	}
@@ -327,7 +327,7 @@ class MothlyReportsCompany extends Component {
 				}
 			})));
 		})
-		
+
 		companies = companies.map((company)=>{
 			return {
 				...company,
