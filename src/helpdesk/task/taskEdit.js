@@ -861,7 +861,7 @@ class TaskEdit extends Component {
 									(
 										<div className="clickable task-edit-popis" onClick={()=>this.setState({showDescription:true})}>
 											<div dangerouslySetInnerHTML={{__html:this.state.description }} />
-												<div></div>
+												(edit)
 										</div>
 									)
 									)

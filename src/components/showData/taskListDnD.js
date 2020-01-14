@@ -27,7 +27,7 @@ export default class TaskListDnD extends Component {
 	}
 
 	render() {
-		const GROUP_DATA = this.groupData().filter(item => this.props.status.includes(item.groupItem.id));
+		const GROUP_DATA = ( this.props.status.length === 0 ? this.groupData() : this.groupData().filter(item => this.props.status.includes(item.groupItem.id)));
 
 		return (
 				<div>
