@@ -150,7 +150,7 @@ class PageHeader extends Component {
 
 						<i className="header-icon fa fa-exclamation-triangle center-hor"/>
 						<i className="header-icon fa fa-envelope center-hor" />
-						{((this.props.currentUser.userData && this.props.currentUser.userData.role.value===3)||testing) && this.props.settings && this.props.settings.length>0 && <Dropdown className="center-hor" isOpen={this.state.settingsOpen} toggle={()=>this.setState({settingsOpen:!this.state.settingsOpen})}>
+						{((this.props.currentUser.userData && this.props.currentUser.userData.role.value > 0 )|| testing) && this.props.settings && this.props.settings.length>0 && <Dropdown className="center-hor" isOpen={this.state.settingsOpen} toggle={()=>this.setState({settingsOpen:!this.state.settingsOpen})}>
 			        <DropdownToggle className="header-dropdown">
 								<i className="header-icon fa fa-cog"/>
 			        </DropdownToggle>
@@ -158,7 +158,7 @@ class PageHeader extends Component {
 			          <DropdownItem header>Settings</DropdownItem>
 			          <DropdownItem divider />
 								{
-									this.props.settings.map((item,index)=>
+									this.props.settings.filter((setting)=>setting.minimalRole <= this.props.currentUser.userData.role.value).map((item,index)=>
 									<DropdownItem key={index} onClick={()=>this.props.history.push(this.getLocation()+'/settings/'+item.link)}>{item.title}</DropdownItem>
 								)}
 			        </DropdownMenu>
