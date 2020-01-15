@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 
-export const testing = true;
+export const testing = false;
 
 export const toSelArr = (arr,index = 'title')=> arr.map((item)=>{return {...item,value:item.id,label:item[index]}})
 

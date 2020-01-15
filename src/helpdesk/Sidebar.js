@@ -139,7 +139,7 @@ class Sidebar extends Component {
 	}
 
 	render() {
-		let showSettings= this.props.history.location.pathname.includes('settings')&&(this.props.currentUser.userData.role.value===3||testing);
+		let showSettings= this.props.history.location.pathname.includes('settings')&&(this.props.currentUser.userData.role.value > 0 ||testing);
 		let managesProjects = this.props.projectState.id!==null && this.props.projectState.id!==-1 && (
 			this.props.currentUser.userData.role.value===3 || testing ||
 			(this.props.projectState.permissions.find((permission)=>permission.user===this.props.currentUser.id)!==undefined && this.props.projectState.permissions.find((permission)=>permission.user===this.props.currentUser.id).isAdmin)
@@ -379,7 +379,7 @@ class Sidebar extends Component {
 					</div>}
 					{showSettings &&
 						<Nav vertical>
-							{this.props.settings.map((setting)=>
+							{this.props.settings.filter((setting)=>setting.minimalRole <= this.props.currentUser.userData.role.value).map((setting)=>
 								<NavItem key={setting.link}>
 									<Link className="sidebar-align sidebar-menu-item"
 										to={{ pathname:'/helpdesk/settings/'+setting.link }}>{setting.title}</Link>
