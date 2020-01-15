@@ -33,12 +33,12 @@ import {invisibleSelectStyleNoArrow, invisibleSelectStyleNoArrowColored,invisibl
 const noMilestone = {id:null,value:null,title:'None',label:'None',startsAt:null};
 const booleanSelects = [{value:false,label:'No'},{value:true,label:'Yes'}];
 const noDef={
-	status:{def:false,fixed:false, value: null},
-	tags:{def:false,fixed:false, value: []},
-	assignedTo:{def:false,fixed:false, value: []},
-	type:{def:false,fixed:false, value: null},
-	requester:{def:false,fixed:false, value: null},
-	company:{def:false,fixed:false, value: null}
+	status:{def:false,fixed:false, value: null, show:true },
+	tags:{def:false,fixed:false, value: [], show:true },
+	assignedTo:{def:false,fixed:false, value: [], show:true },
+	type:{def:false,fixed:false, value: null, show:true },
+	requester:{def:false,fixed:false, value: null, show:true },
+	company:{def:false,fixed:false, value: null, show:true }
 }
 
 class TaskEdit extends Component {
@@ -637,7 +637,7 @@ class TaskEdit extends Component {
 										</div>
 									</div>
 								</div>
-								<div className="col-lg-8"> {/*Assigned*/}
+								{ this.state.defaultFields.assignedTo.show && <div className="col-lg-8"> {/*Assigned*/}
 									<div className="row p-r-10">
 										<Label className="col-1-5 col-form-label">Assigned</Label>
 										<div className="col-10-5">
@@ -655,12 +655,12 @@ class TaskEdit extends Component {
 												/>
 										</div>
 									</div>
-								</div>
+								</div>}
 							</div>
 
 							<div className="col-lg-12"> {/*Attributes*/}
 								<div className="col-lg-4">
-									<div className="row p-r-10"> {/*Status*/}
+									{ this.state.defaultFields.status.show && <div className="row p-r-10"> {/*Status*/}
 										<Label className="col-3 col-form-label">Status</Label>
 										<div className="col-9">
 											<Select
@@ -688,8 +688,8 @@ class TaskEdit extends Component {
 												options={this.state.statuses.filter((status)=>status.action!=='invoiced')}
 												/>
 										</div>
-									</div>
-									<div className="row p-r-10"> {/*Type*/}
+									</div>}
+									{ this.state.defaultFields.type.show && <div className="row p-r-10"> {/*Type*/}
 										<Label className="col-3 col-form-label">Typ</Label>
 										<div className="col-9">
 											<Select
@@ -701,7 +701,7 @@ class TaskEdit extends Component {
 			                  options={this.state.taskTypes}
 			                  />
 										</div>
-									</div>
+									</div>}
 									<div className="row p-r-10"> {/*Milestone*/}
 											<Label className="col-3 col-form-label">Milestone</Label>
 											<div className="col-9">
@@ -727,7 +727,7 @@ class TaskEdit extends Component {
 								</div>
 
 								<div className="col-lg-4">
-									<div className="row p-r-10"> {/*Requester*/}
+									{ this.state.defaultFields.requester.show && <div className="row p-r-10"> {/*Requester*/}
 										<Label className="col-3 col-form-label">Zadal</Label>
 										<div className="col-9">
 											<Select
@@ -749,8 +749,8 @@ class TaskEdit extends Component {
 												styles={invisibleSelectStyleNoArrowRequired}
 												/>
 										</div>
-									</div>
-									<div className="row p-r-10"> {/*Company*/}
+									</div> }
+									{ this.state.defaultFields.company.show && <div className="row p-r-10"> {/*Company*/}
 										<Label className="col-3 col-form-label">Firma</Label>
 										<div className="col-9">
 											<Select
@@ -770,7 +770,7 @@ class TaskEdit extends Component {
 												styles={invisibleSelectStyleNoArrowRequired}
 												/>
 										</div>
-									</div>
+									</div>}
 									<div className="form-group row"> {/*Pausal*/}
 										<label className="col-3 col-form-label">Paušál</label>
 										<div className="col-9">
@@ -868,7 +868,7 @@ class TaskEdit extends Component {
 								}
 							</div>
 
-						<div className="row m-t-10"> {/*Tags*/}
+						{ this.state.defaultFields.tags.show && <div className="row m-t-10"> {/*Tags*/}
 							<div className="center-hor">
 								<Label className="center-hor">Tagy: </Label>
 							</div>
@@ -883,7 +883,7 @@ class TaskEdit extends Component {
 									styles={invisibleSelectStyleNoArrowColored}
 									/>
 							</div>
-						</div>
+						</div>}
 
 						<Attachments
 							disabled={this.state.viewOnly}

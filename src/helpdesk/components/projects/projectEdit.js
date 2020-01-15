@@ -10,12 +10,12 @@ import {invisibleSelectStyle} from '../../../scss/selectStyles';
 import Permissions from "./permissions";
 
 const noDef={
-	status:{def:false,fixed:false, value: null},
-	tags:{def:false,fixed:false, value: []},
-	assignedTo:{def:false,fixed:false, value: []},
-	type:{def:false,fixed:false, value: null},
-	requester:{def:false,fixed:false, value: null},
-	company:{def:false,fixed:false, value: null}
+	status:{def:false,fixed:false, value: null, show:true },
+	tags:{def:false,fixed:false, value: [], show:true },
+	assignedTo:{def:false,fixed:false, value: [], show:true },
+	type:{def:false,fixed:false, value: null, show:true },
+	requester:{def:false,fixed:false, value: null, show:true },
+	company:{def:false,fixed:false, value: null, show:true }
 }
 
 class ProjectEdit extends Component{
@@ -127,17 +127,19 @@ class ProjectEdit extends Component{
 				user:users.find((user)=>user.id===permission.user)
 			}
 		})
+		let def = project.def;
+
 		this.setState({
 			title:project.title,
 			description:project.description?project.description:'',
 			permissions,
 
-			status:status?{value:status,def:project.def.status.def,fixed:project.def.status.fixed}:{def:false,fixed:false, value: null},
-			tags:project.def?{value:tags,def:project.def.tags.def,fixed:project.def.tags.fixed}:{def:false,fixed:false, value: []},
-			assignedTo:project.def?{value:assignedTo,def:project.def.assignedTo.def,fixed:project.def.assignedTo.fixed}:{def:false,fixed:false, value: []},
-			type:type?{value:type,def:project.def.type.def,fixed:project.def.type.fixed}:{def:false,fixed:false, value: null},
-			requester:requester?{value:requester,def:project.def.requester.def,fixed:project.def.requester.fixed}:{def:false,fixed:false, value: null},
-			company:company?{value:company,def:project.def.company.def,fixed:project.def.company.fixed}:{def:false,fixed:false, value: null},
+			status:status?				{...def.status,value:status}					:{def:false,fixed:false, value: null, show:true },
+			tags:def?							{...def.tags,value:tags}							:{def:false,fixed:false, value: [], show:true },
+			assignedTo:def?				{...def.assignedTo,value:assignedTo}	:{def:false,fixed:false, value: [], show:true },
+			type:type?						{...def.type,value:type}							:{def:false,fixed:false, value: null, show:true },
+			requester:requester?	{...def.requester,value:requester}		:{def:false,fixed:false, value: null, show:true },
+			company:company?			{...def.company,value:company}				:{def:false,fixed:false, value: null, show:true },
 		});
 
 	}
@@ -198,6 +200,9 @@ class ProjectEdit extends Component{
 	}
 
   render(){
+		let canReadUserIDs = this.state.permissions.map((permission)=>permission.user.id);
+		let canBeAssigned = this.state.users.filter((user)=>canReadUserIDs.includes(user.id));
+
     return (
       <div className='p-l-15 p-r-15'>
 				<hr />
@@ -235,8 +240,10 @@ class ProjectEdit extends Component{
 									item.isAdmin=permission.isAdmin;
 									if(!item.read){
 										permissions.splice(index,1);
+										this.setState({permissions,assignedTo:{...this.state.assignedTo,value:this.state.assignedTo.value.filter((user)=>user.id!==item.user.id)}});
+									}else{
+										this.setState({permissions});
 									}
-									this.setState({permissions});
 								}}
 								permissions={this.state.permissions}
 								userID={this.props.currentUser.id}
@@ -252,6 +259,7 @@ class ProjectEdit extends Component{
                       <th ></th>
                       <th width="10">Def.</th>
                       <th width="10">Fixed</th>
+                      <th width="10">Show</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -269,11 +277,14 @@ class ProjectEdit extends Component{
                           </div>
                         </div>
                       </td>
-                      <td>
-                        <input type="checkbox" checked={this.state.status.def} onChange={(e)=>this.setState({status:{...this.state.status,def:!this.state.status.def}})} disabled={this.state.status.fixed} />
+											<td>
+                        <input type="checkbox" checked={this.state.status.def} onChange={(e)=>this.setState({status:{...this.state.status,def:!this.state.status.def}})} disabled={this.state.status.fixed || !this.state.status.show} />
                       </td>
                       <td>
-                        <input type="checkbox" checked={this.state.status.fixed} onChange={(e)=>this.setState({status:{...this.state.status,fixed:!this.state.status.fixed, def: !this.state.status.fixed ? true : this.state.status.def }})} />
+                        <input type="checkbox" checked={this.state.status.fixed} onChange={(e)=>this.setState({status:{...this.state.status,fixed:!this.state.status.fixed, def: !this.state.status.fixed ? true : this.state.status.def }})} disabled={!this.state.status.show} />
+                      </td>
+											<td>
+                        <input type="checkbox" checked={this.state.status.show} onChange={(e)=>this.setState({status:{...this.state.status, show:!this.state.status.show, def: true, fixed: true }})} />
                       </td>
                     </tr>
 
@@ -292,11 +303,14 @@ class ProjectEdit extends Component{
                           </div>
                         </div>
                       </td>
-                      <td>
+											<td>
                         <input type="checkbox" checked={this.state.tags.def} onChange={(e)=>this.setState({tags:{...this.state.tags,def:!this.state.tags.def}})} disabled={this.state.tags.fixed} />
                       </td>
                       <td>
                         <input type="checkbox" checked={this.state.tags.fixed} onChange={(e)=>this.setState({tags:{...this.state.tags,fixed:!this.state.tags.fixed, def: !this.state.tags.fixed ? true : this.state.tags.def }})} />
+                      </td>
+											<td>
+                        <input type="checkbox" checked={this.state.tags.show} onChange={(e)=>this.setState({tags:{...this.state.tags, show:!this.state.tags.show }})} />
                       </td>
                     </tr>
 
@@ -309,17 +323,20 @@ class ProjectEdit extends Component{
                               isMulti
                               value={this.state.assignedTo.value}
                               onChange={(assignedTo)=>this.setState({assignedTo:{...this.state.assignedTo,value:assignedTo}})}
-                              options={this.state.users}
+                              options={canBeAssigned}
                               styles={invisibleSelectStyle}
                               />
                           </div>
                         </div>
                       </td>
-                      <td>
-                        <input type="checkbox" checked={this.state.assignedTo.def} onChange={(e)=>this.setState({assignedTo:{...this.state.assignedTo,def:!this.state.assignedTo.def}})} disabled={this.state.assignedTo.fixed} />
+											<td>
+                        <input type="checkbox" checked={this.state.assignedTo.def} onChange={(e)=>this.setState({assignedTo:{...this.state.assignedTo,def:!this.state.assignedTo.def}})} disabled={this.state.assignedTo.fixed || !this.state.assignedTo.show} />
                       </td>
                       <td>
-                        <input type="checkbox" checked={this.state.assignedTo.fixed} onChange={(e)=>this.setState({assignedTo:{...this.state.assignedTo,fixed:!this.state.assignedTo.fixed, def: !this.state.assignedTo.fixed ? true : this.state.assignedTo.def }})} />
+                        <input type="checkbox" checked={this.state.assignedTo.fixed} onChange={(e)=>this.setState({assignedTo:{...this.state.assignedTo,fixed:!this.state.assignedTo.fixed, def: !this.state.assignedTo.fixed ? true : this.state.assignedTo.def }})} disabled={!this.state.assignedTo.show} />
+                      </td>
+											<td>
+                        <input type="checkbox" checked={this.state.assignedTo.show} onChange={(e)=>this.setState({assignedTo:{...this.state.assignedTo, show:!this.state.assignedTo.show, def:true, fixed:true }})} />
                       </td>
                     </tr>
 
@@ -337,11 +354,14 @@ class ProjectEdit extends Component{
                           </div>
                         </div>
                       </td>
-                      <td>
-                        <input type="checkbox" checked={this.state.type.def} onChange={(e)=>this.setState({type:{...this.state.type,def:!this.state.type.def}})} disabled={this.state.type.fixed} />
+											<td>
+                        <input type="checkbox" checked={this.state.type.def} onChange={(e)=>this.setState({type:{...this.state.type,def:!this.state.type.def}})} disabled={this.state.type.fixed || !this.state.type.show } />
                       </td>
                       <td>
-                        <input type="checkbox" checked={this.state.type.fixed} onChange={(e)=>this.setState({type:{...this.state.type,fixed:!this.state.type.fixed, def: !this.state.type.fixed ? true : this.state.type.def }})} />
+                        <input type="checkbox" checked={this.state.type.fixed} onChange={(e)=>this.setState({type:{...this.state.type,fixed:!this.state.type.fixed, def: !this.state.type.fixed ? true : this.state.type.def }})} disabled={ !this.state.type.show } />
+                      </td>
+											<td>
+                        <input type="checkbox" checked={this.state.type.show} onChange={(e)=>this.setState({type:{...this.state.type, show:!this.state.type.show, def:true, fixed:true }})} />
                       </td>
                     </tr>
 
@@ -359,11 +379,14 @@ class ProjectEdit extends Component{
                           </div>
                         </div>
                       </td>
-                      <td>
+											<td>
                         <input type="checkbox" checked={this.state.requester.def} onChange={(e)=>this.setState({requester:{...this.state.requester,def:!this.state.requester.def}})} disabled={this.state.requester.fixed} />
                       </td>
                       <td>
                         <input type="checkbox" checked={this.state.requester.fixed} onChange={(e)=>this.setState({requester:{...this.state.requester,fixed:!this.state.requester.fixed, def: !this.state.requester.fixed ? true : this.state.requester.def }})} />
+                      </td>
+											<td>
+                        <input type="checkbox" checked={this.state.requester.show} onChange={(e)=>this.setState({requester:{...this.state.requester, show:!this.state.requester.show }})} />
                       </td>
                     </tr>
 
@@ -381,19 +404,22 @@ class ProjectEdit extends Component{
                           </div>
                         </div>
                       </td>
-                      <td>
-                        <input type="checkbox" checked={this.state.company.def} onChange={(e)=>this.setState({company:{...this.state.company,def:!this.state.company.def}})} disabled={this.state.company.fixed} />
+											<td>
+                        <input type="checkbox" checked={this.state.company.def} onChange={(e)=>this.setState({company:{...this.state.company,def:!this.state.company.def}})} disabled={this.state.company.fixed || !this.state.company.show } />
                       </td>
                       <td>
-                        <input type="checkbox" checked={this.state.company.fixed} onChange={(e)=>this.setState({company:{...this.state.company,fixed:!this.state.company.fixed, def: !this.state.company.fixed ? true : this.state.company.def }})} />
+                        <input type="checkbox" checked={this.state.company.fixed} onChange={(e)=>this.setState({company:{...this.state.company,fixed:!this.state.company.fixed, def: !this.state.company.fixed ? true : this.state.company.def }})} disabled={ !this.state.company.show } />
+                      </td>
+											<td>
+                        <input type="checkbox" checked={this.state.company.show} onChange={(e)=>this.setState({company:{...this.state.company, show:!this.state.company.show, def:true, fixed:true }})} />
                       </td>
                     </tr>
 
                   </tbody>
                 </table>
 
-                {((this.state.company.value===null&&this.state.company.fixed)||(this.state.status.value===null&&this.state.status.fixed)) && <div className="red" style={{color:'red'}}>
-                  Status and company can't be empty if they are fixed!
+								{((this.state.company.value===null&&this.state.company.fixed)||(this.state.status.value===null&&this.state.status.fixed)||(this.state.assignedTo.value.length===0 && this.state.assignedTo.fixed)||(this.state.type.value===null&&this.state.type.fixed)) && <div className="red" style={{color:'red'}}>
+                  Status, assigned to, task type and company can't be empty if they are fixed!
                 </div>}
               </ModalBody>
               <ModalFooter>
@@ -405,19 +431,19 @@ class ProjectEdit extends Component{
 							</Button>
               <Button
                 className="ml-auto btn"
-                disabled={this.state.saving||this.state.title===""||(this.state.company.value===null&&this.state.company.fixed)||(this.state.status.value===null&&this.state.status.fixed)}
+								disabled={this.state.saving||this.state.title===""||(this.state.company.value===null&&this.state.company.fixed)||(this.state.status.value===null&&this.state.status.fixed)||(this.state.assignedTo.value.length===0 && this.state.assignedTo.fixed)||(this.state.type.value===null&&this.state.type.fixed)}
                 onClick={()=>{
                   this.setState({saving:true});
                   let body = {
                     title: this.state.title,
                     description: this.state.description,
                     def:{
-                      status:this.state.status.value?{...this.state.status,value:this.state.status.value.id}:{def:false,fixed:false, value: null},
-                      tags:this.state.tags.value?{...this.state.tags,value:this.state.tags.value.map(item=>item.id)}:{def:false,fixed:false, value: []},
-                      assignedTo:this.state.assignedTo.value?{...this.state.assignedTo,value:this.state.assignedTo.value.map(item=>item.id)}:{def:false,fixed:false, value: []},
-                      type:this.state.type.value?{...this.state.type,value:this.state.type.value.id}:{def:false,fixed:false, value: null},
-                      requester:this.state.requester.value?{...this.state.requester,value:this.state.requester.value.id}:{def:false,fixed:false, value: null},
-                      company:this.state.company.value?{...this.state.company,value:this.state.company.value.id}:{def:false,fixed:false, value: null}
+                      status:this.state.status.value?{...this.state.status,value:this.state.status.value.id}:{def:false,fixed:false, value: null, show:true },
+                      tags:this.state.tags.value?{...this.state.tags,value:this.state.tags.value.map(item=>item.id)}:{def:false,fixed:false, value: [], show:true },
+                      assignedTo:this.state.assignedTo.value?{...this.state.assignedTo,value:this.state.assignedTo.value.map(item=>item.id)}:{def:false,fixed:false, value: [], show:true },
+                      type:this.state.type.value?{...this.state.type,value:this.state.type.value.id}:{def:false,fixed:false, value: null, show:true },
+                      requester:this.state.requester.value?{...this.state.requester,value:this.state.requester.value.id}:{def:false,fixed:false, value: null, show:true },
+                      company:this.state.company.value?{...this.state.company,value:this.state.company.value.id}:{def:false,fixed:false, value: null, show:true },
                     },
 										permissions:this.state.permissions.map((permission)=>{
 											return {
@@ -457,7 +483,7 @@ const mapStateToProps = ({ storageHelpStatuses, storageHelpTags, storageUsers, s
 		taskTypesActive, taskTypes, taskTypesLoaded,
 		companiesActive, companies, companiesLoaded,
 		projectsActive, projects, projectsLoaded,
-		tasksActive, tasks, tasksLoaded
+		tasksActive, tasks, tasksLoaded,
 	 };
 };
 

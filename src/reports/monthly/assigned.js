@@ -104,7 +104,6 @@ class MothlyReportsAssigned extends Component {
 
 		let allTasks = this.processAllTasks(props, works, trips).sort((task1,task2)=> task1.closeDate > task2.closeDate ? 1 : -1 );
 		let selectedTasks = this.processSelectedTasks(props, works, trips).sort((task1,task2)=> task1.closeDate > task2.closeDate ? 1 : -1 );
-		console.log(selectedTasks.length);
 		let tasks = this.separateTasks(allTasks, selectedTasks);
 		let users = this.processAgents(allTasks,props);
 		this.setState({
