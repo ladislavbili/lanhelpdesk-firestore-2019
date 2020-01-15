@@ -67,7 +67,7 @@ class ProjectList extends Component{
                 this.props.match.params.id && this.props.match.params.id==='add' && <ProjectAdd />
               }
               {
-                this.props.match.params.id && this.props.match.params.id!=='add' && this.props.projects.some((item)=>item.id===this.props.match.params.id) && <ProjectEdit match={this.props.match} history={this.props.history} id={this.props.match.params.id} />
+                this.props.match.params.id && this.props.match.params.id!=='add' && this.props.projects.some((item)=>item.id===this.props.match.params.id) && <ProjectEdit match={this.props.match} history={this.props.history} item={{id:this.props.match.params.id}} />
               }
             </div>
           </div>

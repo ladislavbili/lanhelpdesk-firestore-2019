@@ -138,7 +138,7 @@ class Permissions extends Component {
 											/>
 										</td>
 										<td className="table-checkbox t-a-c">
-											<button className="btn btn-link waves-effect" disabled={this.props.disabled} onClick={()=>{
+											<button className="btn btn-link waves-effect" disabled={(this.props.userID===permission.user.id && !this.props.isAdmin) || this.props.disabled} onClick={()=>{
 													if(window.confirm('Are you sure?')){
 														this.props.givePermission(permission.user,{read:false, write:false, delete:false, isAdmin:false});
 													}

@@ -23,12 +23,12 @@ const noMilestone = {id:null,value:null,title:'None',label:'None'};
 const booleanSelects = [{value:false,label:'No'},{value:true,label:'Yes'}];
 
 const noDef={
-	status:{def:false,fixed:false, value: null},
-	tags:{def:false,fixed:false, value: []},
-	assignedTo:{def:false,fixed:false, value: []},
-	type:{def:false,fixed:false, value: null},
-	requester:{def:false,fixed:false, value: null},
-	company:{def:false,fixed:false, value: null}
+	status:{def:false,fixed:false, value: null, show:true },
+	tags:{def:false,fixed:false, value: [], show:true },
+	assignedTo:{def:false,fixed:false, value: [], show:true },
+	type:{def:false,fixed:false, value: null, show:true },
+	requester:{def:false,fixed:false, value: null, show:true },
+	company:{def:false,fixed:false, value: null, show:true }
 }
 
 export default class TaskAdd extends Component{
@@ -450,71 +450,73 @@ export default class TaskAdd extends Component{
 						}
 
 				{!this.state.viewOnly && <div className="col-lg-12">
-					<div className="col-lg-4">
-						<div className="row p-r-10">
-							<Label className="col-3 col-form-label">Projekt</Label>
-							<div className="col-9">
-								<Select
-									placeholder="Select required"
-									value={this.state.project}
-									onChange={(project)=>{
-										let permissionIDs = project.permissions.map((permission) => permission.user);
-										let assignedTo=this.state.assignedTo.filter((user)=>permissionIDs.includes(user.id));
-										let newState={
-											project,
-											milestone:noMilestone,
-											assignedTo,
-											viewOnly:this.props.currentUser.userData.role.value===0 && !project.permissions.find((permission)=>permission.user===this.props.currentUser.id).write
-										}
-										if(newState.viewOnly){
-											newState={
-												...newState,
-												repeat:null,
-												taskWorks:[],
-												subtasks:[],
-												workTrips:[],
-												taskMaterials:[],
-												allTags:[],
-												deadline:null,
-												closeDate:null,
-												pendingDate:null,
-												reminder:null,
+					<div class="col-lg-12">{/*NUTNE !! INAK AK NIE JE ZOBRAZENY ASSIGNED SELECT TAK SA VZHLAD POSUVA*/}
+						<div className="col-lg-4">
+							<div className="row p-r-10">
+								<Label className="col-3 col-form-label">Projekt</Label>
+								<div className="col-9">
+									<Select
+										placeholder="Select required"
+										value={this.state.project}
+										onChange={(project)=>{
+											let permissionIDs = project.permissions.map((permission) => permission.user);
+											let assignedTo=this.state.assignedTo.filter((user)=>permissionIDs.includes(user.id));
+											let newState={
+												project,
+												milestone:noMilestone,
+												assignedTo,
+												viewOnly:this.props.currentUser.userData.role.value===0 && !project.permissions.find((permission)=>permission.user===this.props.currentUser.id).write
 											}
-										}
-										this.setState(newState,()=>this.setDefaults(project.id, true))
-									}}
-									options={this.state.projects.filter((project)=>{
-										let curr = this.props.currentUser;
-										if(curr.userData.role.value===3){
-											return true;
-										}
-										let permission = project.permissions.find((permission)=>permission.user===curr.id);
-										return permission && permission.read;
-									})}
-									styles={invisibleSelectStyleNoArrowRequired}
-									/>
+											if(newState.viewOnly){
+												newState={
+													...newState,
+													repeat:null,
+													taskWorks:[],
+													subtasks:[],
+													workTrips:[],
+													taskMaterials:[],
+													allTags:[],
+													deadline:null,
+													closeDate:null,
+													pendingDate:null,
+													reminder:null,
+												}
+											}
+											this.setState(newState,()=>this.setDefaults(project.id, true))
+										}}
+										options={this.state.projects.filter((project)=>{
+											let curr = this.props.currentUser;
+											if(curr.userData.role.value===3){
+												return true;
+											}
+											let permission = project.permissions.find((permission)=>permission.user===curr.id);
+											return permission && permission.read;
+										})}
+										styles={invisibleSelectStyleNoArrowRequired}
+										/>
+								</div>
 							</div>
 						</div>
-					</div>
-					<div className="col-lg-8">
-						<div className="row p-r-10">
-							<Label className="col-1-5 col-form-label">Assigned to</Label>
-							<div className="col-10-5">
-								<Select
-									placeholder="Select required"
-									value={this.state.assignedTo}
-									isDisabled={this.state.defaults.assignedTo.fixed||this.state.viewOnly}
-									isMulti
-									onChange={(users)=>this.setState({assignedTo:users})}
-									options={this.state.users.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id))}
-									styles={invisibleSelectStyleNoArrowRequired}
-									/>
-								</div>
-						</div>
+						{this.state.defaults.assignedTo.show && <div className="col-lg-8">
+							<div className="row p-r-10">
+								<Label className="col-1-5 col-form-label">Assigned to</Label>
+								<div className="col-10-5">
+									<Select
+										placeholder="Select required"
+										value={this.state.assignedTo}
+										isDisabled={this.state.defaults.assignedTo.fixed||this.state.viewOnly}
+										isMulti
+										onChange={(users)=>this.setState({assignedTo:users})}
+										options={this.state.users.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id))}
+										styles={invisibleSelectStyleNoArrowRequired}
+										/>
+									</div>
+							</div>
+						</div>}
 					</div>
 
 					<div className="col-lg-4">
-						<div className="row p-r-10">
+						{this.state.defaults.status.show && <div className="row p-r-10">
 							<Label className="col-3 col-form-label">Status</Label>
 							<div className="col-9">
 								<Select
@@ -546,8 +548,8 @@ export default class TaskAdd extends Component{
 									})}
 									/>
 							</div>
-						</div>
-							<div className="row p-r-10">
+						</div>}
+							{this.state.defaults.type.show && <div className="row p-r-10">
 								<Label className="col-3 col-form-label">Typ</Label>
 								<div className="col-9">
 									<Select
@@ -559,7 +561,7 @@ export default class TaskAdd extends Component{
 										options={this.state.taskTypes}
 										/>
 								</div>
-							</div>
+							</div>}
 							<div className="row p-r-10">
 								<Label className="col-3 col-form-label m-t-3">Milestone</Label>
 								<div className="col-9">
@@ -583,26 +585,10 @@ export default class TaskAdd extends Component{
 								/>
 								</div>
 							</div>
-							{false && <div className="row p-r-10">
-								<Label className="col-3 col-form-label">Close date</Label>
-								<div className="col-9">
-									{/*className='form-control hidden-input'*/}
-									<DatePicker
-										className="form-control hidden-input"
-										selected={this.state.closeDate}
-										disabled={!this.state.status || (this.state.status.action!=='close' && this.state.status.action!=='invalid')||this.state.viewOnly}
-										onChange={date => {
-											this.setState({ closeDate: date });
-										}}
-										placeholderText="No pending date"
-										{...datePickerConfig}
-										/>
-								</div>
-							</div>}
 					</div>
 
 					<div className="col-lg-4">
-							<div className="row p-r-10">
+							{this.state.defaults.requester.show && <div className="row p-r-10">
 								<Label className="col-3 col-form-label">Zadal</Label>
 								<div className="col-9">
 									<Select
@@ -614,8 +600,8 @@ export default class TaskAdd extends Component{
 										styles={invisibleSelectStyleNoArrowRequired}
 										/>
 								</div>
-							</div>
-							<div className="row p-r-10">
+							</div>}
+							{this.state.defaults.company.show && <div className="row p-r-10">
 								<Label className="col-3 col-form-label">Firma</Label>
 								<div className="col-9">
 									<Select
@@ -627,7 +613,7 @@ export default class TaskAdd extends Component{
 										styles={invisibleSelectStyleNoArrowRequired}
 										/>
 								</div>
-							</div>
+							</div>}
 							<div className="row p-r-10">
 								<Label className="col-3 col-form-label">Paušál</Label>
 								<div className="col-9">
@@ -720,7 +706,7 @@ export default class TaskAdd extends Component{
 						}}
 						/>
 					}
-				<div className='col-lg-12'>
+				{this.state.defaults.tags.show && <div className='col-lg-12'>
 					<div className="row p-r-10">
 						<Label className="col-1 col-form-label m-b-3">Tags</Label>
 						<div className="col-11">
@@ -735,7 +721,7 @@ export default class TaskAdd extends Component{
 								/>
 						</div>
 					</div>
-				</div>
+				</div>}
 				<Attachments
 					disabled={this.state.viewOnly}
 					taskID={null}
