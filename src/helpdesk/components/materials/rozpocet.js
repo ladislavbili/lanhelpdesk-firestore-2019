@@ -23,6 +23,7 @@ export default class Rozpocet extends Component {
 			newPrice:0,
 			marginChanged:false,
 		}
+		this.getDPH.bind(this);
 	}
 
 	componentWillReceiveProps(props){
@@ -53,7 +54,16 @@ export default class Rozpocet extends Component {
 		}
 	}
 
+	getDPH(){
+		let dph = 20;
+		if(this.props.company && this.props.company.dph > 0){
+			dph = this.props.company.dph;
+		}
+		return (100+dph)/100;
+	}
+
 	render() {
+		console.log(this.props);
 		const unitPrice= this.state.newPrice?(this.state.newPrice*(this.state.newMargin/100+1)):0;
 		let editedFinalUnitPrice = 0;
 		if(this.state.focusedMaterial!==null){
@@ -426,6 +436,19 @@ export default class Rozpocet extends Component {
 								</tbody>
 							</table>
 						</div>
+						<div className="text-right">
+								<b>Cena bez DPH: </b>
+								{this.props.materials.reduce((acc, cur)=> acc+(isNaN(parseInt(cur.totalPrice))? 0 : parseInt(cur.totalPrice)),0).toFixed(2)}
+						</div>
+						<div className="text-right">
+								<b>DPH: </b>
+								{this.getDPH()}
+						</div>
+						<div className="text-right">
+								<b>Cena s DPH: </b>
+								{this.props.materials.reduce((acc, cur)=> acc+(isNaN(parseInt(cur.totalPrice))? 0 : (parseInt(cur.totalPrice)*this.getDPH())),0).toFixed(2)}
+						</div>
+						{false &&
 						<div className="row justify-content-end">
 							<div className="col-md-6">
 								<p className="text-right" style={{marginTop: ((this.state.showAddItem||this.props.disabled) ? "" : "-45px")}}>
@@ -435,6 +458,7 @@ export default class Rozpocet extends Component {
 
 								</div>
 							</div>
+							}
 						</div>
 
 					</div>

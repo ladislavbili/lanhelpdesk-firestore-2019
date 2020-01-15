@@ -24,6 +24,7 @@ export default class Rozpocet extends Component {
 			newPrice:0,
 			marginChanged:false,
 		}
+		this.getDPH.bind(this);
 	}
 
 	componentWillReceiveProps(props){
@@ -52,6 +53,14 @@ export default class Rozpocet extends Component {
 				marginChanged:false,
 			})
 		}
+	}
+
+	getDPH(){
+		let dph = 20;
+		if(this.props.company && this.props.company.dph > 0){
+			dph = this.props.company.dph;
+		}
+		return (100+dph)/100;
 	}
 
 	render() {
@@ -371,7 +380,21 @@ export default class Rozpocet extends Component {
 								</tbody>
 							</table>
 						</div>
-						<div className="row justify-content-end">
+						<div className="text-right">
+								<b>Cena bez DPH: </b>
+								{this.props.materials.reduce((acc, cur)=> acc +( isNaN(parseFloat(cur.totalPrice)) ? 0 : parseFloat(cur.totalPrice)),0).toFixed(2)}
+						</div>
+						<div className="text-right">
+								<b>DPH: </b>
+								{this.getDPH()}
+						</div>
+						<div className="text-right">
+								<b>Cena s DPH: </b>
+								{this.props.materials.reduce((acc, cur)=> acc+(isNaN(parseFloat(cur.totalPrice))? 0 : (parseFloat(cur.totalPrice)*this.getDPH())),0).toFixed(2)}
+						</div>
+
+						{false &&
+							<div className="row justify-content-end">
 							<div className="col-md-6">
 								<p className="text-right">
 									<b>Sub-total:</b>
@@ -379,6 +402,8 @@ export default class Rozpocet extends Component {
 								</p>
 								</div>
 							</div>
+						}
+
 						</div>
 
 					</div>

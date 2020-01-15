@@ -664,26 +664,39 @@ export default class PraceWorkTrips extends Component {
 								</tbody>
 							</table>
 						</div>
-						{this.props.showAll && <div>
-							<p className="text-right" style={{marginTop: (((this.state.showAddSubtask||this.state.showAddTrip) || this.props.disabled) ? "" : "")}}>
+						{this.props.showAll &&
+							<div className="text-right">
 								<b>Cena bez DPH: </b>
 								{this.props.subtasks.concat(this.props.workTrips).reduce((acc, cur)=> acc+(isNaN(this.getTotalPrice(cur))?0:this.getTotalPrice(cur)),0).toFixed(2)}
-							</p>
 						</div>}
-						{this.props.showAll && <div>
+						{this.props.showAll &&
+							<div className="text-right">
+								<b>DPH: </b>
+								{this.getDPH()}
+						</div>}
+						{this.props.showAll &&
+							<div className="text-right">
+								<b>Cena s DPH: </b>
+								{this.props.subtasks.concat(this.props.workTrips).reduce((acc, cur)=> acc+(isNaN(this.getTotalPrice(cur))?0:this.getTotalPrice(cur)*this.getDPH()),0).toFixed(2)}
+						</div>}
+
+						{false &&
+							this.props.showAll && <div>
 							<p className="text-right" style={{marginTop: (((this.state.showAddSubtask||this.state.showAddTrip) || this.props.disabled) ? "" : "")}}>
 								<b>Zľava: </b>
 								{this.props.subtasks.concat(this.props.workTrips).reduce((acc, cur)=> acc+(isNaN(this.getTotalPrice(cur)*(cur.discount))?0:this.getTotalPrice(cur)*(cur.discount)/100),0).toFixed(2)}
 							</p>
 						</div>}
-						{this.props.showAll && <div>
+						{false &&
+							this.props.showAll && <div>
 							<p className="text-right" style={{marginTop: (((this.state.showAddSubtask||this.state.showAddTrip) || this.props.disabled) ? "" : "")}}>
 								<b>Cena bez DPH po zlave: </b>
 								{this.props.subtasks.concat(this.props.workTrips).reduce((acc, cur)=> acc+(isNaN(this.getTotalDiscountedPrice(cur))?0:this.getTotalDiscountedPrice(cur)),0).toFixed(2)}
 							</p>
 						</div>}
 
-						{this.props.showAll && <div>
+						{false &&
+							this.props.showAll && <div>
 							<p className="text-right" style={{marginTop: (((this.state.showAddSubtask||this.state.showAddTrip) || this.props.disabled) ? "" : "")}}>
 								<b>Cena s DPH po zlave: </b>
 								{this.props.subtasks.concat(this.props.workTrips).reduce((acc, cur)=> acc+(isNaN(this.getTotalDiscountedPrice(cur))?0:this.getTotalDiscountedPrice(cur)*this.getDPH()),0).toFixed(2)}
