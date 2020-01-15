@@ -5,6 +5,7 @@ import classnames from "classnames";
 
 export default class ColumnDisplay extends Component {
 	render() {
+		console.log(this.props);
 		return (
 			<div>
 				<div className="row p-0 task-container">
@@ -16,9 +17,9 @@ export default class ColumnDisplay extends Component {
 							{
 								this.props.data.map((item, index)=>
 								<ul
-									className={classnames("taskCol", "clickable", "dnd-item", "list-unstyled", {'selected-item': this.props.itemID === item.id.toString()})}
+									className={classnames("taskCol", "clickable", {"basic-item": !this.props.link.includes("helpdesk")}, {"dnd-item": this.props.link.includes("helpdesk")}, "list-unstyled", {'selected-item': this.props.itemID === item.id.toString()})}
 									id="upcoming"
-									style={{borderLeft: "3px solid " + (item.status ? (item.status.color?item.status.color:'white') : "white")}}
+									style={{borderLeft: (this.props.link.includes("helpdesk") ? ("3px solid " + (item.status ? (item.status.color?item.status.color:'white') : "white")) : "")}}
 									onClick={()=>{
 										this.props.history.push(this.props.link+'/'+item.id);
 									}}

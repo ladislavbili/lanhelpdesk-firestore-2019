@@ -12,9 +12,11 @@ export default class CommandBar extends Component {
 				<div className="center-hor">
 					{
 						this.props.useBreadcrums !== true &&
-						<h4 className="text-slim">
-							{this.props.listName?this.props.listName:""}
-						</h4>
+						<div className="breadcrumbs">
+							<h4 className="text-slim">
+								{this.props.listName?this.props.listName:""}
+							</h4>
+						</div>
 					}
 					{this.props.useBreadcrums  &&
 						<div className="flex-row breadcrumbs">

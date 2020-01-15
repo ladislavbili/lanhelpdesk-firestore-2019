@@ -200,7 +200,7 @@ html{
   width: 61.8%;
 }
 .golden-ratio-382{
-  width: 38.2%;
+  width: 38.2% !important;
 }
 .max-width-400{
   max-width: 400px;
@@ -585,6 +585,7 @@ Label{
 
 .task-info{
   float: right;
+  font-size: 12px;
 }
 .task-info>.react-datepicker-wrapper{
   width: 60% !important;
@@ -1257,15 +1258,22 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 
 //TABY
 .nav-link:not(.sidebar-menu-item){
-  font-family: $main-font;
+  font-family: $main-font-color;
   height: 28px;
-  font-size: 18px;
+  font-size: 14px;
 }
 .nav>li>a:not(.sidebar-menu-item) {
-  padding: 2px 10px 2px 0px;
+  padding: 2px 10px 2px 8px;
   color: #979797 !important;
   border-radius: 0px !important;
   border: none !important;
+  border-right: 2px solid #333 !important;
+}
+.nav>li:last-child>a:not(.sidebar-menu-item){
+  border-right: 0px !important;
+}
+.nav>li:first-child>a:not(.sidebar-menu-item){
+  padding-left: 0px;
 }
 .nav>li>a:not(.sidebar-menu-item):hover{
   background-color: transparent;
@@ -1279,6 +1287,13 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   font-weight: 600;
 //  background-color: #eeeeee !important;
 }
+/*
+.nav-tabs>.nav-item{
+  border-right: 1px solid $main-font !important;
+}
+.nav-tabs>.nav-item:last-child{
+  border-right: 0px solid $main-font !important;
+}*/
 
 //sidebar
 .nav:not(.nav-tabs) a.active {
@@ -1341,7 +1356,10 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 
 .task-container>.table{
   background-color: white;
-  width: auto;
+  width: 100%;
+  width: -moz-available;          /* WebKit-based browsers will ignore this. */
+  width: -webkit-fill-available;  /* Mozilla-based browsers will ignore this. */
+  width: fill-available;
   margin-left: 20px;
   margin-right: 20px;
 }
@@ -1442,6 +1460,23 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   height: 12px;
   margin-top: -3px;
   margin-right: 3px;
+}
+
+.basic-item{
+  background-color: white;
+  border: 0px;
+  border-top: 0px;
+  padding: 0px 10px 0px 10px;
+  border-radius: 0px;
+}
+.basic-item>li {
+  border: 0px;
+  border-bottom: 1px solid #f1f1f1 ;
+  padding: 10px;
+  border-radius: 0px;
+}
+.basic-item:hover{
+  background-color: #f4f8fb;
 }
 
 .taskCol {

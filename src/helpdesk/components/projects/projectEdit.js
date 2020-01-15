@@ -205,7 +205,7 @@ class ProjectEdit extends Component{
 
     return (
       <div className='p-l-15 p-r-15'>
-				<hr />
+				<hr className='m-t-10 m-b-10'/>
 	        <Button
 	          className='btn-link p-0'
 	          onClick={this.toggle.bind(this)}
@@ -214,6 +214,8 @@ class ProjectEdit extends Component{
 	        </Button>
         <Modal isOpen={this.state.opened} size="width-1000" toggle={this.toggle.bind(this)} >
             <ModalBody>
+							<h1  className='m-t-20'>Project edit</h1>
+							<hr className='m-t-10 m-b-10' />
               <FormGroup>
                 <Label>Project name</Label>
                 <Input type="text" className="from-control" placeholder="Enter project name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />

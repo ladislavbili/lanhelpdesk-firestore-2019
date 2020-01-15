@@ -40,29 +40,31 @@ class SupplierInvoicesList extends Component{
   render(){
     return (
       <div className="content">
-        <div className="commandbar">
-            <div className="search">
-                <input
-                  type="text"
-                  className="form-control search-text"
-                  value={this.state.supplierInvoiceFilter}
-                  onChange={(e)=>this.setState({supplierInvoiceFilter:e.target.value})}
-                  placeholder="Search"
-                />
-              <button className="search-btn" type="button">
-                <i className="fa fa-search" />
-              </button>
+        <div className="row m-0 p-0 taskList-container">
+          <div className="col-lg-4">
+            <div className="commandbar">
+              <div className="search-row">
+                <div className="search">
+                  <input
+                    type="text"
+                    className="form-control search-text"
+                    value={this.state.supplierInvoiceFilter}
+                    onChange={(e)=>this.setState({supplierInvoiceFilter:e.target.value})}
+                    placeholder="Search"
+                    />
+                  <button className="search-btn" type="button">
+                    <i className="fa fa-search" />
+                  </button>
+                </div>
+              </div>
+              <Button
+                className="btn-link center-hor"
+                onClick={()=>this.props.history.push('/helpdesk/settings/supplierInvoices/add')}>
+                <i className="fa fa-plus p-l-5 p-r-5"/> Add invoice
+              </Button>
             </div>
-            <Button
-              className="btn-link center-hor"
-              onClick={()=>this.props.history.push('/helpdesk/settings/supplierInvoices/add')}>
-             <i className="fa fa-plus p-l-5 p-r-5"/> Add invoice
-            </Button>
-        </div>
-
-          <div className="row m-0 p-0 taskList-container">
-            <div className="col-lg-4 p-t-9 p-r-10 p-l-10 scroll-visible fit-with-header-and-commandbar">
-              <h4 className="font-24 p-b-10 ">
+            <div className="p-t-9 p-r-10 p-l-10 scroll-visible fit-with-header-and-commandbar">
+              <h4 className="font-24 p-l-10 p-b-10 ">
   							Invoices
   						</h4>
               <table className="table table-hover">
@@ -93,16 +95,18 @@ class SupplierInvoicesList extends Component{
                 </tbody>
               </table>
             </div>
-            <div className="col-lg-8">
-              {
-                this.props.match.params.id && this.props.match.params.id==='add' && <SupplierInvoiceAdd />
-              }
-              {
-                this.props.match.params.id && this.props.match.params.id!=='add' && this.state.supplierInvoices.some((item)=>item.id===this.props.match.params.id) && <SupplierInvoiceEdit match={this.props.match} history={this.props.history} />
-              }
-            </div>
+          </div>
+          <div className="col-lg-8">
+            <div className="commandbar"></div>
+            {
+              this.props.match.params.id && this.props.match.params.id==='add' && <SupplierInvoiceAdd />
+            }
+            {
+              this.props.match.params.id && this.props.match.params.id!=='add' && this.state.supplierInvoices.some((item)=>item.id===this.props.match.params.id) && <SupplierInvoiceEdit match={this.props.match} history={this.props.history} />
+            }
           </div>
         </div>
+      </div>
     );
   }
 }

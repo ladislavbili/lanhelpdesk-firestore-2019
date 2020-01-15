@@ -32,49 +32,53 @@ class StatusesList extends Component{
   render(){
     return (
       <div className="content">
-        <div className="commandbar">
-            <div className="search">
-                <input
-                  type="text"
-                  className="form-control search-text"
-                  value={this.state.statusFilter}
-                  onChange={(e)=>this.setState({statusFilter:e.target.value})}
-                  placeholder="Search"
-                />
-              <button className="search-btn" type="button">
-                <i className="fa fa-search" />
-              </button>
-            </div>
-            <Button
-              className="btn-link center-hor"
-              onClick={()=>this.props.history.push('/helpdesk/settings/statuses/add')}>
-             <i className="fa fa-plus p-l-5 p-r-5"/> Add status
-            </Button>
-        </div>
-
         <div className="row m-0 p-0 taskList-container">
-          <div className="col-lg-4 p-t-9 p-r-10 p-l-10 scroll-visible fit-with-header-and-commandbar">
-            <h4 className="font-24 p-b-10 ">
-              Statuses
-            </h4>
-            <table className="table table-hover">
-              <tbody>
-                {this.state.statuses.filter((item)=>item.title.toLowerCase().includes(this.state.statusFilter.toLowerCase())).map((status)=>
-                  <tr key={status.id}
-                     className={"clickable" + (this.props.match.params.id === status.id ? " sidebar-item-active":"")}
-                     onClick={()=>this.props.history.push('/helpdesk/settings/statuses/'+status.id)}>
-                    <td className={(this.props.match.params.id === status.id ? "text-highlight":"")}>
-                      {status.title}
-                    </td>
-                    <td className={(this.props.match.params.id === status.id ? "text-highlight":"")}>
-                      {status.order?status.order:0}
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+          <div className="col-lg-4">
+            <div className="commandbar">
+              <div className="search-row">
+                <div className="search">
+                  <input
+                    type="text"
+                    className="form-control search-text"
+                    value={this.state.statusFilter}
+                    onChange={(e)=>this.setState({statusFilter:e.target.value})}
+                    placeholder="Search"
+                    />
+                  <button className="search-btn" type="button">
+                    <i className="fa fa-search" />
+                  </button>
+                </div>
+              </div>
+              <Button
+                className="btn-link center-hor"
+                onClick={()=>this.props.history.push('/helpdesk/settings/statuses/add')}>
+                <i className="fa fa-plus p-l-5 p-r-5"/> Add status
+              </Button>
+            </div>
+            <div className=" p-t-9 p-r-10 p-l-10 scroll-visible fit-with-header-and-commandbar">
+              <h4 className="font-24 p-l-10 p-b-10 ">
+                Statuses
+              </h4>
+              <table className="table table-hover">
+                <tbody>
+                  {this.state.statuses.filter((item)=>item.title.toLowerCase().includes(this.state.statusFilter.toLowerCase())).map((status)=>
+                    <tr key={status.id}
+                       className={"clickable" + (this.props.match.params.id === status.id ? " sidebar-item-active":"")}
+                       onClick={()=>this.props.history.push('/helpdesk/settings/statuses/'+status.id)}>
+                      <td className={(this.props.match.params.id === status.id ? "text-highlight":"")}>
+                        {status.title}
+                      </td>
+                      <td className={(this.props.match.params.id === status.id ? "text-highlight":"")}>
+                        {status.order?status.order:0}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
           <div className="col-lg-8">
+            <div className="commandbar"></div>
             {
               this.props.match.params.id && this.props.match.params.id==='add' && <StatusAdd />
             }

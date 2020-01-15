@@ -63,7 +63,6 @@ export default class Rozpocet extends Component {
 	}
 
 	render() {
-		console.log(this.props);
 		const unitPrice= this.state.newPrice?(this.state.newPrice*(this.state.newMargin/100+1)):0;
 		let editedFinalUnitPrice = 0;
 		if(this.state.focusedMaterial!==null){

@@ -362,9 +362,13 @@ export default class TaskAdd extends Component{
 			<div className="scrollable">
 				<div className="p-t-0">
 					<div className="row m-b-15">
-						<h1 className="center-hor text-extra-slim">NEW: </h1>
+						<h1 className="center-hor text-extra-slim">NEW TASK </h1>
 						<span className="center-hor flex m-r-15">
-							<input type="text" value={this.state.title} className="task-title-input text-extra-slim hidden-input" onChange={(e)=>this.setState({title:e.target.value})} placeholder="Enter task name" />
+							<input type="text"
+								 value={this.state.title}
+								 className="task-title-input text-extra-slim hidden-input"
+								 onChange={(e)=>this.setState({title:e.target.value})}
+								 placeholder="Enter task name" />
 						</span>
 						{ this.state.status && (['close','pending','invalid']).includes(this.state.status.action) && <div className="ml-auto center-hor">
 							<span>
@@ -563,7 +567,7 @@ export default class TaskAdd extends Component{
 								</div>
 							</div>}
 							<div className="row p-r-10">
-								<Label className="col-3 col-form-label m-t-3">Milestone</Label>
+								<Label className="col-3 col-form-label">Milestone</Label>
 								<div className="col-9">
 									<Select
 										isDisabled={this.state.viewOnly}

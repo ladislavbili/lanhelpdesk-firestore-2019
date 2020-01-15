@@ -89,6 +89,9 @@ class MilestoneEdit extends Component{
 
           <Modal isOpen={this.state.opened} style={{width: "800px"}} toggle={this.toggle.bind(this)} >
             <ModalBody>
+              <h1  className='m-t-20'>Milestone edit</h1>
+							<hr className='m-t-10 m-b-10' />
+
               <FormGroup>
                 <Label for="title">Milestone title</Label>
                 <Input type="text" id="title" placeholder="Enter project name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
@@ -147,7 +150,7 @@ class MilestoneEdit extends Component{
             </ModalBody>
 
             <ModalFooter>
-              <Button className="btn mr-auto" disabled={this.state.saving} onClick={this.toggle.bind(this)}>
+              <Button className="btn-link mr-auto" disabled={this.state.saving} onClick={this.toggle.bind(this)}>
                 Close
               </Button>
 

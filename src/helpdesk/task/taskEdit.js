@@ -537,11 +537,16 @@ class TaskEdit extends Component {
 							<div className="row flex">
 								<h1 className="center-hor text-extra-slim">{taskID}: </h1>
 								<span className="center-hor flex m-r-15">
-						    	<input type="text" disabled={this.state.viewOnly} value={this.state.title} className="task-title-input text-extra-slim hidden-input" onChange={(e)=>this.setState({title:e.target.value},this.submitTask.bind(this))} placeholder="Enter task name" />
+						    	<input type="text"
+										disabled={this.state.viewOnly}
+										value={this.state.title}
+										className="task-title-input text-extra-slim hidden-input"
+										onChange={(e)=>this.setState({title:e.target.value},this.submitTask.bind(this))}
+										placeholder="Enter task name" />
 								</span>
 
 								<div className="ml-auto center-hor">
-									<p className="m-b-0">
+									<p className="m-b-0 task-info">
 										<span className="text-muted">
 											{createdBy?"Created by ":""}
 										</span>

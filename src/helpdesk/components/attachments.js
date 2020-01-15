@@ -16,7 +16,7 @@ export default class Attachments extends Component {
 									Attachments:
 								</label>
 								<label htmlFor={"uploadAttachment"+this.props.taskID} className="btn-link-add" >
-									<i className="fa fa-plus" />
+									<i className="fa fa-plus" /> Add
 								</label>
 								<input type="file" id={"uploadAttachment"+this.props.taskID} multiple={true} style={{display:'none'}}
 									onChange={(e)=>{

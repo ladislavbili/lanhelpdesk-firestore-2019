@@ -189,10 +189,10 @@ submitEmail(){
             { !this.state.isEmail &&
               <span>
                 <label
-                  className="btn btn-table-add-item m-t-9"
+                  className="btn btn-table-add-item m-t-8 m-l-5"
                   style={{fontFamily:"Segoe UI"}}
                   htmlFor="uploadCommentAttachments">
-                  + Add New Attachement
+                  Add Attachement
                 </label>
                 <input type="file" id="uploadCommentAttachments" multiple={true} style={{display:'none'}}
                   onChange={(e)=>{

@@ -35,7 +35,11 @@ class ShowDataContainer extends Component {
 					return;
 				}
 				if(value.type==='object'){
-					filterString+= item[value.value].title + " ";
+					if (value.value === "status"){
+						filterString+= (100 - item[value.value].order) + " " + item.statusChange + " ";
+					} else {
+						filterString+= item[value.value].title + " ";
+					}
 				}else if(value.type==='text'){
 					filterString+= item[value.value] + " ";
 				}else if(value.type==='int'){
@@ -75,6 +79,9 @@ class ShowDataContainer extends Component {
 	getSortValue(item){
 		let value = this.props.orderByValues.find((val)=>val.value===this.props.orderBy);
 		if(value.type==='object'){
+			if (value.value === "status"){
+				return item[value.value] ? ((100 - item[value.value].order) + " " +  item.statusChange) : null;
+			}
 			return item[value.value]?item[value.value].title.toLowerCase():null;
 		}else if(value.type==='text'){
 			return item[value.value].toLowerCase();
