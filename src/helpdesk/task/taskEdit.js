@@ -4,7 +4,9 @@ import { connect } from "react-redux";
 import { Label, TabContent, TabPane, Nav, NavItem, NavLink, Modal, ModalBody} from 'reactstrap';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
-import CKEditor from 'ckeditor4-react';
+import CKEditor5 from 'ckeditor4-react';
+import CKEditor from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 import Attachments from '../components/attachments.js';
 import Comments from '../components/comments.js';
@@ -23,6 +25,7 @@ import TaskPrint from './taskPrint';
 import classnames from "classnames";
 import {rebase, database} from '../../index';
 import firebase from 'firebase';
+import ck5config from '../../scss/ck5config';
 import ck4config from '../../scss/ck4config';
 import datePickerConfig from '../../scss/datePickerConfig';
 import PendingPicker from '../components/pendingPicker';
@@ -301,7 +304,6 @@ class TaskEdit extends Component {
     });
   }
 
-
 	setDefaults(projectID){
 		if(projectID===null){
 			this.setState({defaultFields:noDef});
@@ -447,7 +449,6 @@ class TaskEdit extends Component {
 
     this.setState(newState);
   }
-
 
 	render() {
 		let permission = null;
@@ -854,16 +855,14 @@ class TaskEdit extends Component {
 									(
 										this.state.showDescription ?
 										(<CKEditor
+											editor={ ClassicEditor }
 											data={this.state.description}
-											onInstanceReady={(instance)=>{
+											onInit={(editor)=>{
 											}}
-											onChange={(e)=>{
-												this.setState({description:e.editor.getData()},this.submitTask.bind(this))
+											onChange={(e,editor)=>{
+												this.setState({description: editor.getData()},this.submitTask.bind(this))
 											}}
-											readOnly={this.state.viewOnly}
-											config={{
-												...ck4config
-											}}
+											config={ck5config}
 											/>
 									) :
 									(
