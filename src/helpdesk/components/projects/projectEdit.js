@@ -9,13 +9,17 @@ import {toSelArr, sameStringForms, snapshotToArray,testing} from '../../../helpe
 import {invisibleSelectStyle} from '../../../scss/selectStyles';
 import Permissions from "./permissions";
 
+const booleanSelects = [{value:false,label:'No'},{value:true,label:'Yes'}];
+
 const noDef={
-	status:{def:false,fixed:false, value: null, show:true },
-	tags:{def:false,fixed:false, value: [], show:true },
-	assignedTo:{def:false,fixed:false, value: [], show:true },
-	type:{def:false,fixed:false, value: null, show:true },
-	requester:{def:false,fixed:false, value: null, show:true },
-	company:{def:false,fixed:false, value: null, show:true }
+	status:{def:false, fixed:false, value: null, show: true },
+	tags:{def:false, fixed:false, value: [], show: true },
+	assignedTo:{def:false, fixed:false, value: [], show: true },
+	type:{def:false, fixed:false, value: null, show: true },
+	requester:{def:false, fixed:false, value: null, show: true },
+	company:{def:false, fixed:false, value: null, show: true },
+	pausal:{def:false, fixed:false, value: booleanSelects[0], show: true },
+	overtime:{def:false, fixed:false, value: booleanSelects[0], show: true },
 }
 
 class ProjectEdit extends Component{
@@ -120,6 +124,8 @@ class ProjectEdit extends Component{
 		let type = types.find(item=> project.def && item.id===project.def.type.value);
 		let requester = users.find(item=> project.def && item.id===project.def.requester.value);
 		let company = companies.find(item=> project.def && item.id===project.def.company.value);
+		let pausal = booleanSelects.find(item=> project.def && project.def.pausal && item.value===project.def.pausal.value);
+		let overtime = booleanSelects.find(item=> project.def && project.def.overtime && item.value===project.def.overtime.value);
 		let permissions = project.permissions?project.permissions:[];
 		permissions = permissions.map((permission)=>{
 			return {
@@ -134,14 +140,15 @@ class ProjectEdit extends Component{
 			description:project.description?project.description:'',
 			permissions,
 
-			status:status?				{...def.status,value:status}					:{def:false,fixed:false, value: null, show:true },
-			tags:def?							{...def.tags,value:tags}							:{def:false,fixed:false, value: [], show:true },
-			assignedTo:def?				{...def.assignedTo,value:assignedTo}	:{def:false,fixed:false, value: [], show:true },
-			type:type?						{...def.type,value:type}							:{def:false,fixed:false, value: null, show:true },
-			requester:requester?	{...def.requester,value:requester}		:{def:false,fixed:false, value: null, show:true },
-			company:company?			{...def.company,value:company}				:{def:false,fixed:false, value: null, show:true },
+			status:status?				{...def.status,value:status}					:{def:false, fixed:false, value: null, show:true },
+			tags:def?							{...def.tags,value:tags}							:{def:false, fixed:false, value: [], show:true },
+			assignedTo:def?				{...def.assignedTo,value:assignedTo}	:{def:false, fixed:false, value: [], show:true },
+			type:type?						{...def.type,value:type}							:{def:false, fixed:false, value: null, show:true },
+			requester:requester?	{...def.requester,value:requester}		:{def:false, fixed:false, value: null, show:true },
+			company:company?			{...def.company,value:company}				:{def:false, fixed:false, value: null, show:true },
+			pausal:pausal?				{...def.pausal,value:pausal}					:{def:false, fixed:false, value: booleanSelects[0], show: true },
+			overtime:overtime?		{...def.overtime,value:overtime}			:{def:false, fixed:false, value: booleanSelects[0], show: true },
 		});
-
 	}
 
 	setData(props){
@@ -417,6 +424,56 @@ class ProjectEdit extends Component{
                       </td>
                     </tr>
 
+										<tr>
+											<td>
+												<div className="row">
+													<label className="col-3 col-form-label">Pausal</label>
+													<div className="col-9">
+														<Select
+															value={this.state.pausal.value}
+															onChange={(pausal)=>this.setState({pausal:{...this.state.pausal,value:pausal}})}
+															options={booleanSelects}
+															styles={invisibleSelectStyle}
+															/>
+													</div>
+												</div>
+											</td>
+											<td>
+												<input type="checkbox" checked={this.state.pausal.def} onChange={(e)=>this.setState({pausal:{...this.state.pausal,def:!this.state.pausal.def}})} disabled={this.state.pausal.fixed || !this.state.pausal.show} />
+											</td>
+											<td>
+												<input type="checkbox" checked={this.state.pausal.fixed} onChange={(e)=>this.setState({pausal:{...this.state.pausal,fixed:!this.state.pausal.fixed, def: !this.state.pausal.fixed ? true : this.state.pausal.def }})} disabled={!this.state.pausal.show} />
+											</td>
+											<td>
+												<input type="checkbox" checked={this.state.pausal.show} onChange={(e)=>this.setState({pausal:{...this.state.pausal, show:!this.state.pausal.show, def:true, fixed:true }})} />
+											</td>
+										</tr>
+
+										<tr>
+											<td>
+												<div className="row">
+													<label className="col-3 col-form-label">Mimo pracovných hodín</label>
+													<div className="col-9">
+														<Select
+															value={this.state.overtime.value}
+															onChange={(overtime)=>this.setState({overtime:{...this.state.overtime,value:overtime}})}
+															options={booleanSelects}
+															styles={invisibleSelectStyle}
+															/>
+													</div>
+												</div>
+											</td>
+											<td>
+												<input type="checkbox" checked={this.state.overtime.def} onChange={(e)=>this.setState({overtime:{...this.state.overtime,def:!this.state.overtime.def}})} disabled={this.state.overtime.fixed || !this.state.overtime.show} />
+											</td>
+											<td>
+												<input type="checkbox" checked={this.state.overtime.fixed} onChange={(e)=>this.setState({overtime:{...this.state.overtime,fixed:!this.state.overtime.fixed, def: !this.state.overtime.fixed ? true : this.state.overtime.def }})} disabled={!this.state.overtime.show} />
+											</td>
+											<td>
+												<input type="checkbox" checked={this.state.overtime.show} onChange={(e)=>this.setState({overtime:{...this.state.overtime, show:!this.state.overtime.show, def:true, fixed:true }})} />
+											</td>
+										</tr>
+
                   </tbody>
                 </table>
 
@@ -446,6 +503,8 @@ class ProjectEdit extends Component{
                       type:this.state.type.value?{...this.state.type,value:this.state.type.value.id}:{def:false,fixed:false, value: null, show:true },
                       requester:this.state.requester.value?{...this.state.requester,value:this.state.requester.value.id}:{def:false,fixed:false, value: null, show:true },
                       company:this.state.company.value?{...this.state.company,value:this.state.company.value.id}:{def:false,fixed:false, value: null, show:true },
+											pausal:this.state.pausal.value?{...this.state.pausal,value:this.state.pausal.value.value}:{def:false,fixed:false, value: false, show:true},
+											overtime:this.state.overtime.value?{...this.state.overtime,value:this.state.overtime.value.value}:{def:false,fixed:false, value: false, show:true},
                     },
 										permissions:this.state.permissions.map((permission)=>{
 											return {

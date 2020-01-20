@@ -8,14 +8,17 @@ import {toSelArr, sameStringForms, testing} from '../../../helperFunctions';
 import {rebase} from '../../../index';
 import Permissions from "../../components/projects/permissions";
 
+const booleanSelects = [{value:false,label:'No'},{value:true,label:'Yes'}];
 
 const noDef={
-	status:{def:false,fixed:false, value: null, show:true },
-	tags:{def:false,fixed:false, value: [], show:true },
-	assignedTo:{def:false,fixed:false, value: [], show:true },
-	type:{def:false,fixed:false, value: null, show:true },
-	requester:{def:false,fixed:false, value: null, show:true },
-	company:{def:false,fixed:false, value: null, show:true }
+	status:{def:false, fixed:false, value: null, show: true },
+	tags:{def:false, fixed:false, value: [], show: true },
+	assignedTo:{def:false, fixed:false, value: [], show: true },
+	type:{def:false, fixed:false, value: null, show: true },
+	requester:{def:false, fixed:false, value: null, show: true },
+	company:{def:false, fixed:false, value: null, show: true },
+	pausal:{def:false, fixed:false, value: booleanSelects[0], show: true },
+	overtime:{def:false, fixed:false, value: booleanSelects[0], show: true },
 }
 
 class ProjectAdd extends Component{
@@ -87,6 +90,7 @@ class ProjectAdd extends Component{
   render(){
 		let canReadUserIDs = this.state.permissions.map((permission)=>permission.user.id);
 		let canBeAssigned = this.state.users.filter((user)=>canReadUserIDs.includes(user.id))
+
     return (
       <div className="p-20 scroll-visible fit-with-header-and-commandbar">
 				<FormGroup>
@@ -288,6 +292,56 @@ class ProjectAdd extends Component{
 									<input type="checkbox" checked={this.state.company.show} onChange={(e)=>this.setState({company:{...this.state.company, show:!this.state.company.show, def:true, fixed:true }})} />
 								</td>
 							</tr>
+
+							<tr>
+								<td>
+									<div className="row">
+										<label className="col-3 col-form-label">Pausal</label>
+										<div className="col-9">
+											<Select
+												value={this.state.pausal.value}
+												onChange={(pausal)=>this.setState({pausal:{...this.state.pausal,value:pausal}})}
+												options={booleanSelects}
+												styles={invisibleSelectStyle}
+												/>
+										</div>
+									</div>
+								</td>
+								<td>
+									<input type="checkbox" checked={this.state.pausal.def} onChange={(e)=>this.setState({pausal:{...this.state.pausal,def:!this.state.pausal.def}})} disabled={this.state.pausal.fixed || !this.state.pausal.show} />
+								</td>
+								<td>
+									<input type="checkbox" checked={this.state.pausal.fixed} onChange={(e)=>this.setState({pausal:{...this.state.pausal,fixed:!this.state.pausal.fixed, def: !this.state.pausal.fixed ? true : this.state.pausal.def }})} disabled={!this.state.pausal.show} />
+								</td>
+								<td>
+									<input type="checkbox" checked={this.state.pausal.show} onChange={(e)=>this.setState({pausal:{...this.state.pausal, show:!this.state.pausal.show, def:true, fixed:true }})} />
+								</td>
+							</tr>
+
+							<tr>
+								<td>
+									<div className="row">
+										<label className="col-3 col-form-label">Mimo pracovných hodín</label>
+										<div className="col-9">
+											<Select
+												value={this.state.overtime.value}
+												onChange={(overtime)=>this.setState({overtime:{...this.state.overtime,value:overtime}})}
+												options={booleanSelects}
+												styles={invisibleSelectStyle}
+												/>
+										</div>
+									</div>
+								</td>
+								<td>
+									<input type="checkbox" checked={this.state.overtime.def} onChange={(e)=>this.setState({overtime:{...this.state.overtime,def:!this.state.overtime.def}})} disabled={this.state.overtime.fixed || !this.state.overtime.show} />
+								</td>
+								<td>
+									<input type="checkbox" checked={this.state.overtime.fixed} onChange={(e)=>this.setState({overtime:{...this.state.overtime,fixed:!this.state.overtime.fixed, def: !this.state.overtime.fixed ? true : this.state.overtime.def }})} disabled={!this.state.overtime.show} />
+								</td>
+								<td>
+									<input type="checkbox" checked={this.state.overtime.show} onChange={(e)=>this.setState({overtime:{...this.state.overtime, show:!this.state.overtime.show, def:true, fixed:true }})} />
+								</td>
+							</tr>
 						</tbody>
 					</table>
 					{((this.state.company.value===null&&this.state.company.fixed)||(this.state.status.value===null&&this.state.status.fixed)||(this.state.assignedTo.value.length===0 && this.state.assignedTo.fixed)||(this.state.type.value===null&&this.state.type.fixed)) && <div className="red" style={{color:'red'}}>
@@ -313,7 +367,9 @@ class ProjectAdd extends Component{
 									assignedTo:this.state.assignedTo.value?{...this.state.assignedTo,value:this.state.assignedTo.value.map(item=>item.id)}:{def:false,fixed:false, value: [], show:true},
 									type:this.state.type.value?{...this.state.type,value:this.state.type.value.id}:{def:false,fixed:false, value: null, show:true},
 									requester:this.state.requester.value?{...this.state.requester,value:this.state.requester.value.id}:{def:false,fixed:false, value: null, show:true},
-									company:this.state.company.value?{...this.state.company,value:this.state.company.value.id}:{def:false,fixed:false, value: null, show:true}
+									company:this.state.company.value?{...this.state.company,value:this.state.company.value.id}:{def:false,fixed:false, value: null, show:true},
+									pausal:this.state.pausal.value?{...this.state.pausal,value:this.state.pausal.value.id}:{def:false,fixed:false, value: false, show:true},
+									overtime:this.state.overtime.value?{...this.state.overtime,value:this.state.overtime.value.value}:{def:false,fixed:false, value: false, show:true},
 								}
 							};
 							rebase.addToCollection('/help-projects', body)

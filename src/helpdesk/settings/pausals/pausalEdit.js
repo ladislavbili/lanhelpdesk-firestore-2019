@@ -4,6 +4,7 @@ import {rebase} from '../../../index';
 
 import { connect } from "react-redux";
 import {storageCompaniesStart} from '../../../redux/actions';
+import CompanyRents from '../companies/companyRents';
 
 class PausalEdit extends Component{
   constructor(props){
@@ -12,6 +13,9 @@ class PausalEdit extends Component{
       title:'',
       drivePausal:0,
       pausal:0,
+      rented:[],
+
+      fakeID:0,
       loading:true,
       saving:false,
     }
@@ -52,12 +56,18 @@ class PausalEdit extends Component{
 
   setData(props){
     let company = props.companies.find((company)=>company.id===props.match.params.id);
-
+    let rented = company.rented||[];
+    let fakeID = 0;
+    if(rented.length!==0){
+      fakeID = rented.sort((item1,item2)=>item1.id < item2.id?1:-1)[0].id+1;
+    }
     this.setState({
       title: company.title,
       workPausal: company.workPausal || 0,
       drivePausal: company.drivePausal || 0,
+      rented,
 
+      fakeID,
       loading:false,
       newData: false,
     })
@@ -66,8 +76,19 @@ class PausalEdit extends Component{
   submit(){
       this.setState({saving:true});
       rebase.updateDoc('/companies/'+this.props.match.params.id,
-      { workPausal:this.state.workPausal,
+      {
+        workPausal:this.state.workPausal,
         drivePausal:this.state.drivePausal,
+        rented:this.state.rented.map((rent)=>{
+          return{
+            id:rent.id,
+            title:rent.title,
+            quantity:isNaN(parseInt(rent.quantity))?0:rent.quantity,
+            unitCost:isNaN(parseFloat(rent.unitCost))?0:rent.unitCost,
+            unitPrice:isNaN(parseFloat(rent.unitPrice))?0:rent.unitPrice,
+            totalPrice:isNaN(parseFloat(rent.totalPrice))?0:rent.totalPrice,
+          }
+        }),
       })
         .then(()=>this.setState({
           saving:false,
@@ -105,6 +126,26 @@ class PausalEdit extends Component{
             onChange={(e)=>this.setState({drivePausal:e.target.value,})}
             />
         </FormGroup>
+        <CompanyRents
+          clearForm={this.state.clearCompanyRents}
+          setClearForm={()=>this.setState({clearCompanyRents:false})}
+          data={this.state.rented}
+          updateRent={(rent)=>{
+            let newRents=[...this.state.rented];
+            newRents[newRents.findIndex((item)=>item.id===rent.id)]={...newRents.find((item)=>item.id===rent.id),...rent};
+            this.setState({rented:newRents });
+          }}
+          addRent={(rent)=>{
+            let newRents=[...this.state.rented];
+            newRents.push({...rent,id:this.getFakeID()})
+            this.setState({rented:newRents });
+          }}
+          removeRent={(rent)=>{
+            let newRents=[...this.state.rented];
+            newRents.splice(newRents.findIndex((item)=>item.id===rent.id),1);
+            this.setState({rented:newRents });
+          }}
+        />
         <Button
           className="btn"
           disabled={this.state.saving || this.state.title.length === 0 }

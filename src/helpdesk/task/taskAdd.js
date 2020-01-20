@@ -23,12 +23,14 @@ const noMilestone = {id:null,value:null,title:'None',label:'None'};
 const booleanSelects = [{value:false,label:'No'},{value:true,label:'Yes'}];
 
 const noDef={
-	status:{def:false,fixed:false, value: null, show:true },
-	tags:{def:false,fixed:false, value: [], show:true },
-	assignedTo:{def:false,fixed:false, value: [], show:true },
-	type:{def:false,fixed:false, value: null, show:true },
-	requester:{def:false,fixed:false, value: null, show:true },
-	company:{def:false,fixed:false, value: null, show:true }
+	status:{def:false, fixed:false, value: null, show: true },
+	tags:{def:false, fixed:false, value: [], show: true },
+	assignedTo:{def:false, fixed:false, value: [], show: true },
+	type:{def:false, fixed:false, value: null, show: true },
+	requester:{def:false, fixed:false, value: null, show: true },
+	company:{def:false, fixed:false, value: null, show: true },
+	pausal:{def:false, fixed:false, value: booleanSelects[0], show: true },
+	overtime:{def:false, fixed:false, value: booleanSelects[0], show: true },
 }
 
 export default class TaskAdd extends Component{
@@ -246,6 +248,8 @@ export default class TaskAdd extends Component{
 				status: def.status&& (def.status.fixed||def.status.def)?state.statuses.find((item)=> item.id===def.status.value):state.statuses[0],
 				tags: def.tags&& (def.tags.fixed||def.tags.def)? state.allTags.filter((item)=> def.tags.value.includes(item.id)):this.state.tags,
 				type: def.type && (def.type.fixed||def.type.def)?state.taskTypes.find((item)=> item.id===def.type.value):this.state.type,
+				overtime: def.overtime&& (def.overtime.fixed||def.overtime.def)? booleanSelects.filter((item)=> def.overtime.value === item.value):this.state.overtime,
+				pausal: def.pausal&& (def.pausal.fixed||def.pausal.def)? booleanSelects.filter((item)=> def.pausal.value === item.value):this.state.pausal,
 				project,
 				viewOnly: this.props.currentUser.userData.role.value===0 && !permission.write,
 				defaults: def
@@ -618,19 +622,19 @@ export default class TaskAdd extends Component{
 										/>
 								</div>
 							</div>}
-							<div className="row p-r-10">
-								<Label className="col-3 col-form-label">Paušál</Label>
-								<div className="col-9">
-									<Select
-										value={this.state.pausal}
-										placeholder="Select required"
-										isDisabled={this.state.viewOnly||!this.state.company || parseInt(this.state.company.workPausal)===0}
-										styles={invisibleSelectStyleNoArrowRequired}
-										onChange={(pausal)=>this.setState({pausal})}
-										options={booleanSelects}
-										/>
-								</div>
-							</div>
+							{this.state.defaults.pausal.show && <div className="row p-r-10">
+									<Label className="col-3 col-form-label">Paušál</Label>
+									<div className="col-9">
+										<Select
+											value={this.state.pausal}
+											placeholder="Select required"
+											isDisabled={this.state.viewOnly||!this.state.company || parseInt(this.state.company.workPausal)===0||this.state.defaults.pausal.fixed}
+											styles={invisibleSelectStyleNoArrowRequired}
+											onChange={(pausal)=>this.setState({pausal})}
+											options={booleanSelects}
+											/>
+									</div>
+								</div>}
 
 							{false && <div className="row p-r-10">
 								<Label className="col-3 col-form-label">Pending</Label>
@@ -681,19 +685,19 @@ export default class TaskAdd extends Component{
 							}}
 							columns={true}
 							/>
-							<div className="row p-r-10">
+							{this.state.defaults.overtime.show && <div className="row p-r-10">
 								<Label className="col-3 col-form-label">Mimo PH</Label>
 								<div className="col-9">
 									<Select
 										placeholder="Select required"
 										value={this.state.overtime}
-										disabled={this.state.viewOnly}
+										isDisabled={this.state.viewOnly||this.state.defaults.overtime.fixed}
 										styles={invisibleSelectStyleNoArrowRequired}
 										onChange={(overtime)=>this.setState({overtime})}
 										options={booleanSelects}
 										/>
 								</div>
-							</div>
+							</div>}
 					</div>
 				</div>}
 			</div>

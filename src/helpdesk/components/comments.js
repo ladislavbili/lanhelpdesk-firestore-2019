@@ -16,6 +16,7 @@ constructor(props){
   this.state={
     newComment:'',
     isEmail:false,
+    hasError:false,
     comments:[],
     subject:'',
     emailBody:'',
@@ -92,9 +93,8 @@ submitComment(){
           }
           rebase.addToCollection('/help-comments',body).then(()=>{this.setState({saving:false,newComment:'',attachments:[]});this.getData(this.props.id)})
           if(this.state.isEmail){
-            this.submitEmail();
+            this.setState({subject:'',tos:[], emailBody:''})
           }
-
         })
     })
 
@@ -102,16 +102,33 @@ submitComment(){
 }
 
 submitEmail(){
+  this.setState({hasError:false});
   firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then((token)=>{
     fetch('https://api01.lansystems.sk:8080/send-mail',{ //127.0.0.1 https://api01.lansystems.sk:8080
       headers: {
         'Content-Type': 'application/json'
       },
       method: 'POST',
-      body:JSON.stringify({message:this.state.emailBody,tos:this.state.tos.map((item)=>item.label), subject:this.state.subject, taskID:this.props.id,token,email:this.props.users.find((user)=>user.id===this.props.userID).email}),
+      body:JSON.stringify({
+          message:this.state.emailBody,
+          tos:this.state.tos.map((item)=>item.label),
+          subject:this.state.subject,
+          taskID:this.props.id,
+          token,
+          email:this.props.users.find((user)=>user.id===this.props.userID).email
+        }),
     }).then((response)=>response.json().then((response)=>{
-      this.setState({subject:'',tos:[], emailBody:''})
-    }))
+      if(response.error){
+        this.setState({hasError:true})
+        console.log(response);
+      }else{
+        this.submitComment();
+        console.log(response);
+      }
+    })).catch((error)=>{
+      this.setState({hasError:true})
+      console.log(error);
+    })
   });
 }
 
@@ -147,13 +164,18 @@ submitEmail(){
               <Input type="textarea" placeholder="Enter comment" value={this.state.newComment} onChange={(e)=>this.setState({newComment:e.target.value})}/>
             </FormGroup>
           }
+          {this.state.isEmail && this.state.hasError &&
+            <div style={{color:'red'}}>
+              E-mail failed to send! Check console for more information
+            </div>
+          }
 
           <div className="row m-b-30">
 
             <Button className="btn waves-effect m-t-5 p-l-20 p-r-20"
               disabled={(!this.state.isEmail && this.state.newComment==='')||
                 (this.state.isEmail&&(this.state.tos.length < 1 ||this.state.subject===''||this.state.emailBody===''))||this.state.saving}
-                onClick={this.submitComment.bind(this)}>Submit</Button>
+                onClick={this.state.isEmail ? this.submitEmail.bind(this) : this.submitComment.bind(this)}>Submit</Button>
               <div>
                 <div className="m-l-10">
                   <label className="custom-container">

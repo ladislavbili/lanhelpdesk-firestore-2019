@@ -5,7 +5,6 @@ import classnames from "classnames";
 
 export default class ColumnDisplay extends Component {
 	render() {
-		console.log(this.props);
 		return (
 			<div>
 				<div className="row p-0 task-container">

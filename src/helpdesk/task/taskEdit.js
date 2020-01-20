@@ -32,13 +32,16 @@ import {invisibleSelectStyleNoArrow, invisibleSelectStyleNoArrowColored,invisibl
 
 const noMilestone = {id:null,value:null,title:'None',label:'None',startsAt:null};
 const booleanSelects = [{value:false,label:'No'},{value:true,label:'Yes'}];
+
 const noDef={
-	status:{def:false,fixed:false, value: null, show:true },
-	tags:{def:false,fixed:false, value: [], show:true },
-	assignedTo:{def:false,fixed:false, value: [], show:true },
-	type:{def:false,fixed:false, value: null, show:true },
-	requester:{def:false,fixed:false, value: null, show:true },
-	company:{def:false,fixed:false, value: null, show:true }
+	status:{def:false, fixed:false, value: null, show: true },
+	tags:{def:false, fixed:false, value: [], show: true },
+	assignedTo:{def:false, fixed:false, value: [], show: true },
+	type:{def:false, fixed:false, value: null, show: true },
+	requester:{def:false, fixed:false, value: null, show: true },
+	company:{def:false, fixed:false, value: null, show: true },
+	pausal:{def:false, fixed:false, value: booleanSelects[0], show: true },
+	overtime:{def:false, fixed:false, value: booleanSelects[0], show: true },
 }
 
 class TaskEdit extends Component {
@@ -310,7 +313,7 @@ class TaskEdit extends Component {
 			return;
 		}
 		this.setState({
-			defaultFields:project.def
+			defaultFields:{...noDef,...project.def}
 		});
 	}
 
@@ -776,18 +779,18 @@ class TaskEdit extends Component {
 												/>
 										</div>
 									</div>}
-									<div className="form-group row"> {/*Pausal*/}
+									{this.state.defaultFields.pausal.show && <div className="form-group row"> {/*Pausal*/}
 										<label className="col-3 col-form-label">Paušál</label>
 										<div className="col-9">
 											<Select
 												value={this.state.pausal}
-												isDisabled={this.state.viewOnly||!this.state.company || parseInt(this.state.company.workPausal)===0}
+												isDisabled={this.state.viewOnly||!this.state.company || parseInt(this.state.company.workPausal)===0||this.state.defaultFields.pausal.fixed}
 												styles={invisibleSelectStyleNoArrowRequired}
 												onChange={(pausal)=>this.setState({pausal},this.submitTask.bind(this))}
 												options={booleanSelects}
 												/>
 										</div>
-									</div>
+									</div>}
 								</div>
 
 								<div className="col-lg-4">
@@ -826,18 +829,18 @@ class TaskEdit extends Component {
 											columns={this.props.columns}
 											/>
 									</div>
-									<div className="form-group row"> {/*Overtime*/}
+									{this.state.defaultFields.overtime.show && <div className="form-group row"> {/*Overtime*/}
 										<label className="col-3 col-form-label">Mimo PH</label>
 										<div className="col-9">
 											<Select
 												value={this.state.overtime}
-												disabled={this.state.viewOnly}
+												isDisabled={this.state.viewOnly||this.state.defaultFields.overtime.fixed}
 												styles={invisibleSelectStyleNoArrowRequired}
 												onChange={(overtime)=>this.setState({overtime},this.submitTask.bind(this))}
 												options={booleanSelects}
 												/>
 										</div>
-									</div>
+									</div>}
 								</div>
 							</div>
 
