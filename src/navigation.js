@@ -15,7 +15,7 @@ import ProjectsNavigation from './projects/navigation';
 import ReportsNavigation from './reports/navigation';
 import MonitoringNavigation from './monitoring/navigation';
 import Login from './login';
-
+import Test from './test';
 
 class Navigation extends Component {
   constructor(props){
@@ -36,6 +36,7 @@ class Navigation extends Component {
       return(
         <div>
           <Route exact path='/' component={Reroute} />
+          <Route exact path='/test' component={Test} />
           <Route path='/helpdesk' component={HelpdeskNavigation} />
           <Route path='/cmdb' component={CMDBNavigation} />
           <Route path='/lanwiki' component={LanWikiNavigation} />

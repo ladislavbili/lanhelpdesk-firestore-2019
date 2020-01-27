@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { Label, TabContent, TabPane, Nav, NavItem, NavLink, Modal, ModalBody} from 'reactstrap';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
-import CKEditor5 from 'ckeditor4-react';
+import CKEditor4 from 'ckeditor4-react';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
@@ -32,6 +32,9 @@ import PendingPicker from '../components/pendingPicker';
 import {toSelArr, snapshotToArray, timestampToString, sameStringForms} from '../../helperFunctions';
 import { storageCompaniesStart, storageHelpPricelistsStart, storageHelpPricesStart,storageHelpProjectsStart, storageHelpStatusesStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageHelpTasksStart, storageHelpUnitsStart,storageHelpWorkTypesStart, storageMetadataStart, storageUsersStart, storageHelpMilestonesStart, storageHelpTripTypesStart } from '../../redux/actions';
 import {invisibleSelectStyleNoArrow, invisibleSelectStyleNoArrowColored,invisibleSelectStyleNoArrowColoredRequired, invisibleSelectStyleNoArrowRequired} from '../../scss/selectStyles';
+
+console.log(ClassicEditor);
+console.log(CKEditor);
 
 const noMilestone = {id:null,value:null,title:'None',label:'None',startsAt:null};
 const booleanSelects = [{value:false,label:'No'},{value:true,label:'Yes'}];
