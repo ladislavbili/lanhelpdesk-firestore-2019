@@ -113,20 +113,20 @@ class Sidebar extends Component {
 							<Nav vertical>
 								<NavItem>
 									<Link
-										className="text-basic sidebar-align sidebar-menu-item"
+										className="sidebar-menu-item"
 										to={{ pathname: `/reports/monthly/companies` }}>Firmy</Link>
 								</NavItem>
 								<NavItem>
 									<Link
-										className="text-basic sidebar-align sidebar-menu-item"
+										className=" sidebar-menu-item"
 										to={{ pathname: `/reports/monthly/requester` }}>Agenti</Link>
 								</NavItem>
 							</Nav>
-							<hr/>
+							<hr className="m-b-10 m-t-10"/>
 							<Nav vertical>
 								<NavItem>
 									<Link
-										className="text-basic sidebar-align sidebar-menu-item"
+										className="sidebar-menu-item"
 										to={{ pathname: `/reports/company_invoices` }}>Uložené firmy</Link>
 								</NavItem>
 							</Nav>
@@ -136,7 +136,7 @@ class Sidebar extends Component {
 						<Nav vertical>
 							{settings.map((setting)=>
 								<NavItem key={setting.link}>
-									<Link className="text-basic sidebar-align sidebar-menu-item"
+									<Link className="sidebar-menu-item"
 										to={{ pathname:'/reports/settings/'+setting.link }}>{setting.title}</Link>
 								</NavItem>
 							)}

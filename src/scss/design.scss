@@ -399,6 +399,7 @@ h4.clickable:hover{
 //---------------všeobecné-elementy---------------------
 h4{
   color: $main-font-color;
+  font-size: 2rem !important;
 }
 
 .btn{
@@ -1069,6 +1070,12 @@ background-color: #f8fbfe;
   background-color: rgb(238,238,238);
 }
 
+.sidebar-plus{
+  margin-right: 10px;
+  margin-left: 8px;
+  margin-top: 5px;
+}
+
 .sidebar-menu-item{
   color: $main-font-color;
   display: flex;
@@ -1087,18 +1094,6 @@ background-color: #f8fbfe;
 .sidebar-icon.active{
   font-weight: 900;
   color: #0078D4 !important;
-}
-
-.sidebar-icon-cmdb{
-  color: transparent;
-  padding-top: 10px;
-  padding-left: 15px;
-}
-
-.sidebar-icon-cmdb.active{
-  font-weight: 900;
-  color: #0078D4 !important;
-  background-color: rgb(238,238,238);
 }
 
 .sidebar-align{
@@ -1202,16 +1197,12 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   display: flex;
   width: 100%;
   background-color: #F6F6F6;
-  padding: 2px 35px 0px 20px;
+  padding: 0px 0px 0px 0px;
   height: 41px;
 }
 
 .commandbar-icon{
   height: 19px;
-}
-
-.breadcrumbs>h4{
-  font-size: 2rem !important;
 }
 
 .search-row{
@@ -1469,7 +1460,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 .basic-item>li {
   border: 0px;
   border-bottom: 1px solid #f1f1f1 ;
-  padding: 10px;
+  padding: 5px 10px 5px 10px;
   border-radius: 0px;
 }
 .basic-item:hover{

@@ -77,6 +77,18 @@ class Sidebar extends Component {
 					</li>
 					<hr />
 
+					<Button
+						block
+						className="btn-link t-a-l "
+						onClick={()=>{this.props.history.push('/cmdb/add')}}
+						> <i className="fa fa-plus sidebar-plus"/> Item
+					</Button>
+
+					<CompanyAdd />
+					{ this.state.company.id
+						&&
+						<CompanyEdit item={this.state.company}/>
+					}
 					<Nav vertical>
 						{false &&
 							<NavItem>
@@ -87,30 +99,18 @@ class Sidebar extends Component {
 							this.state.sidebar
 							.map((item)=>
 								<NavItem key={item.id}  className="row">
-									<div className={classnames("sidebar-icon-cmdb", {"active" : this.props.location.pathname.includes(item.url)})}
+									<Link className= "sidebar-menu-item" to={{ pathname: `/cmdb/i/`+item.url }}>{item.title}</Link>
+									<div className={classnames("sidebar-icon", "clickable", {"active" : this.props.location.pathname.includes(item.url)})}
 										onClick={() => this.props.history.push('/cmdb/edit/'+item.id)}
 										>
 										<i className="fa fa-cog"/>
 									</div>
-									<Link className= "sidebar-menu-item" to={{ pathname: `/cmdb/i/`+item.url }}>{item.title}</Link>
 								</NavItem>
 							)
 						}
 
 				</Nav>
 
-				<Button
-					block
-					className="btn-link t-a-l sidebar-btn-link"
-					onClick={()=>{this.props.history.push('/cmdb/add')}}
-					> <i className="fa fa-plus m-r-15 m-l-3 m-t-5"/> Item
-				</Button>
-
-				<CompanyAdd />
-				{ this.state.company.id
-					&&
-					<CompanyEdit item={this.state.company}/>
-				}
 
 				</div>
 			</div>

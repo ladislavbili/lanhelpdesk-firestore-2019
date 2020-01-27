@@ -501,7 +501,7 @@ class TaskEdit extends Component {
 
 		return (
 			<div className="flex">
-				<div className="commandbar"> {/*Commandbar*/}
+				<div className="commandbar p-l-25"> {/*Commandbar*/}
 					<div className="d-flex flex-row center-hor p-2 ">
 							<div className="display-inline center-hor">
 							{!this.props.columns &&
@@ -567,7 +567,7 @@ class TaskEdit extends Component {
 										{(()=>{
 											if(this.state.status && this.state.status.action==='pending'){
 												return (
-													<span className="text-muted task-info">
+													<span className="text-muted task-info m-r--40">
 														<span className="center-hor">
 															Pending date:
 														</span>

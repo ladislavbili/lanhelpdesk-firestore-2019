@@ -31,24 +31,27 @@ class CompaniesList extends Component{
 
     return (
       <div className="content">
-        <div className="commandbar">
-            <div className="search">
-                <input
-                  type="text"
-                  className="form-control search-text"
-                  value={this.state.companyFilter}
-                  onChange={(e)=>this.setState({companyFilter:e.target.value})}
-                  placeholder="Search"
-                />
-              <button className="search-btn" type="button">
-                <i className="fa fa-search" />
-              </button>
+        <div className="row m-0 p-0 taskList-container">
+          <div className="col-lg-4">
+            <div className="commandbar">
+              <div className="search-row">
+                <div className="search">
+                  <button className="search-btn" type="button">
+                    <i className="fa fa-search" />
+                  </button>
+                    <input
+                      type="text"
+                      className="form-control search-text"
+                      value={this.state.companyFilter}
+                      onChange={(e)=>this.setState({companyFilter:e.target.value})}
+                      placeholder="Search"
+                    />
+                </div>
+              </div>
             </div>
-        </div>
 
-          <div className="row m-0 p-0 taskList-container">
-            <div className="col-lg-4 p-t-9 p-r-10 p-l-10 scroll-visible fit-with-header-and-commandbar">
-              <h4 className="font-24 p-b-10 ">
+            <div className="p-t-9 p-r-10 p-l-10 scroll-visible fit-with-header-and-commandbar">
+              <h4 className="font-24 p-b-10 p-l-10">
                 Mesačné paušály firiem
   						</h4>
               <table className="table table-hover">
@@ -75,14 +78,16 @@ class CompaniesList extends Component{
                 </tbody>
               </table>
             </div>
-            <div className="col-lg-8">
-              {
-                this.props.match.params.id && this.state.companies.some((item)=>item.id===this.props.match.params.id) && <PausalEdit match={this.props.match} history = {this.props.history} />
-              }
-            </div>
+          </div>
+          <div className="col-lg-8">
+            <div className="commandbar"></div>
+            {
+              this.props.match.params.id && this.state.companies.some((item)=>item.id===this.props.match.params.id) && <PausalEdit match={this.props.match} history = {this.props.history} />
+            }
           </div>
         </div>
-);
+        </div>
+      );
 }
 }
 

@@ -199,7 +199,7 @@ class Reports extends Component {
 	render() {
 		return (
 				<div className="scrollable fit-with-header">
-					<div className="commandbar">
+					<div className="commandbar p-l-15">
 							<button type="button" className="btn-link waves-effect center-hor">
 								<i
 									className="fa fa-file-pdf"

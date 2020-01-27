@@ -30,12 +30,14 @@ class ImapsList extends Component{
   render(){
     return (
       <div className="content">
-
           <div className="row m-0 p-0 taskList-container">
             <div className="col-lg-4">
               <div className="commandbar">
                 <div className="search-row">
                   <div className="search">
+                    <button className="search-btn" type="button">
+                      <i className="fa fa-search" />
+                    </button>
                     <input
                       type="text"
                       className="form-control search-text"
@@ -43,9 +45,6 @@ class ImapsList extends Component{
                       onChange={(e)=>this.setState({imapFilter:e.target.value})}
                       placeholder="Search"
                       />
-                    <button className="search-btn" type="button">
-                      <i className="fa fa-search" />
-                    </button>
                   </div>
                 </div>
                 <Button
@@ -54,7 +53,7 @@ class ImapsList extends Component{
                   <i className="fa fa-plus p-l-5 p-r-5"/> Add IMAP
                 </Button>
               </div>
-              <div className=" p-t-9 p-r-10 p-l-10 scroll-visible fit-with-header-and-commandbar">
+              <div className="p-t-9 p-r-10 p-l-10 scroll-visible fit-with-header-and-commandbar">
                 <h4 className="font-24 p-l-10 p-b-10 ">
     							IMAPs
     						</h4>

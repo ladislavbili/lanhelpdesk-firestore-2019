@@ -138,8 +138,8 @@ export default class Note extends Component{
   render(){
     return (
       <div className="flex" >
-				<div className="commandbar p-2">
-					<div className={"d-flex flex-row" + (!this.props.columns ? " w-50  ml-auto mr-auto" : "p-l-18") }>
+				<div className="commandbar p-2 p-l-25">
+					<div className={"d-flex flex-row" + (!this.props.columns ? " w-50  ml-auto mr-auto" : "") }>
 						<div className="center-hor">
 							{!this.props.columns &&
 								<button type="button" className="btn btn-link waves-effect" onClick={()=>this.props.history.goBack()}>

@@ -65,8 +65,8 @@ class List extends Component {
 				displayCol={(pass)=>
 					<li className="" >
 						<div className="m-b-0">
-							<label>{pass.title}</label>
-							<div className="m-t-5">
+							<label className="m-b-0">{pass.title}</label>
+							<div>
 								<p className="text-muted m-b-0 font-13">
 									<span className="">URL:
 										<a href={pass.URL} target="_blank" rel="noopener noreferrer" onClick={(e)=>e.stopPropagation()}>{pass.URL?pass.URL:'Nezadané'}</a>
@@ -76,7 +76,7 @@ class List extends Component {
 									<span className="">Login: {pass.login?pass.login:'Žiadny'}</span>
 								</p>
 								<p className="text-muted m-b-0 font-13 row">
-									<span className="center-hor pr-2">Pass:</span>
+									<span className="center-hor p-r-2">Pass:</span>
 										<span onClick={(e)=>e.stopPropagation()}>
 										{
 											pass.shown &&

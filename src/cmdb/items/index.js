@@ -106,7 +106,7 @@ class ItemList extends Component {
 	render() {
 		return (
 			<div>
-				<div className="commandbar commandbar-list-align">
+				<div className="commandbar p-l-20">
 					<div className="search-row">
 						<div className="search">
 							<button className="search-btn" type="button" onClick={()=>this.setState({activeSearch:this.state.search})}>
@@ -145,7 +145,7 @@ class ItemList extends Component {
 								{(this.state.sidebarItem?this.state.sidebarItem.title:'item')}
 							</Button>
 
-							<div className="ml-auto row">
+							<div className="ml-auto row p-r-20">
 								<div className="center-hor p-l-5 p-r-5">
 									Sort by
 								</div>
@@ -179,7 +179,7 @@ class ItemList extends Component {
 						</div>
 					</div>
 
-				<div className="fit-with-header-and-commandbar scrollable p-30 cmdb-table">
+				<div className="fit-with-header-and-commandbar scrollable p-20 cmdb-table">
 					<h1 className="full-width">{this.state.sidebarItem?this.state.sidebarItem.title:'Item'}</h1>
 
 						<table className="table">

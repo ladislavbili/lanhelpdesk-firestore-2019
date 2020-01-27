@@ -103,30 +103,30 @@ class NotificationList extends Component {
 
 		return (
 			<div>
-				<div className="commandbar commandbar-list-align">
+				<div className="commandbar p-l-20">
 					<div className="search-row">
 						<div className="search">
+							<button className="search-btn" type="button">
+								<i className="fa fa-search" />
+							</button>
 							<input
 								type="text"
 								value={this.state.search}
 								className="form-control search-text"
 								onChange={(e)=>this.setState({search:e.target.value})}
 								placeholder="Search" />
-								<button className="search-btn" type="button">
-									<i className="fa fa-search" />
-								</button>
 						</div>
 						<Button className="btn-link center-hor">
 							Global
 						</Button>
 					</div>
-					<Button className="btn center-hor" onClick={() => this.props.history.push("/monitoring/mail-notifications/add")}>
-						<i className="fa fa-plus"/> mail notification
+					<Button className="btn-link center-hor" onClick={() => this.props.history.push("/monitoring/mail-notifications/add")}>
+						<i className="fa fa-plus"/> Mail notification
 					</Button>
 				</div>
 
 				<div className="fit-with-header-and-commandbar row">
-					<div className="p-20 scrollable golden-ratio-618" style={this.props.layout===1?{flex:'auto'}:{}}>
+					<div className="p-t-20 p-b-20 p-l-15 p-r-15  scrollable golden-ratio-618" style={this.props.layout===1?{flex:'auto'}:{}}>
 						<table className="table">
 								<thead>
 									<tr>

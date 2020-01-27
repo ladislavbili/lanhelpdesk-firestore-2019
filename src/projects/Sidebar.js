@@ -67,7 +67,7 @@ export default class Sidebar extends Component {
 					<Nav vertical>
 						<NavItem>
 							<Link
-								className="sidebar-align sidebar-menu-item"
+								className="sidebar-menu-item"
 								to={{ pathname: `/projects/all/all` }}>
 								All
 							</Link>
@@ -83,7 +83,7 @@ export default class Sidebar extends Component {
 											to={{ pathname: `/projects/${project.id}/all` }}>
 											{project.title}
 										</Link>
-									<div className={classnames("sidebar-icon", {"active" : this.props.location.pathname.includes(`${project.id}/all`)})}
+									<div className={classnames("sidebar-icon", "clickable", {"active" : this.props.location.pathname.includes(`${project.id}/all`)})}
 										onClick={() => {this.setState({projectEdit: project, openedEdit: true})}}
 										>
 												<i className="fa fa-cog"/>
@@ -102,7 +102,7 @@ export default class Sidebar extends Component {
 																{mil.title}
 															</Link>
 															<div
-																className={classnames("sidebar-align sidebar-icon", {"active" : this.props.location.pathname.includes(project.id) && this.props.location.pathname.includes(mil.id)})}
+																className={classnames("sidebar-icon", "clickable", {"active" : this.props.location.pathname.includes(project.id) && this.props.location.pathname.includes(mil.id)})}
 																onClick={() => {this.setState({milestoneEdit: mil, openMilestoneEdit: true})}}
 																>
 																	<i className="fa fa-cog"/>

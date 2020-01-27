@@ -58,7 +58,24 @@ export default class NotificationInfo extends Component{
 			this.fetch(props.id);
 		}
 	}
+/*
+<div>
+  <h1>{this.state.title}</h1>
+  <span
+    className="m-l-15"
+    style={{backgroundColor: this.state.success ? 'lime' :'red', color: "white", padding: "3px"}}
+    > {this.state.success ? "working" : "failed"}
+  </span>
+</div>
+<div className="m-l-auto">
+  <Button
+    className="btn-link"
+    onClick={() => this.props.toggleEdit()}
+  > Edit
+  </Button>
+</div>
 
+*/
 
   render(){
       return (
@@ -67,11 +84,11 @@ export default class NotificationInfo extends Component{
             <div >
 							<h1>{this.state.title}</h1>
 						</div>
-            <div className="mr-auto m-l-15">
-              <Button
-                className={this.state.success ? "btn-success" : "btn-danger"}
-              > {this.state.success ? "working" : "failed"}
-              </Button>
+            <div className="mr-auto m-l-15 p-t-5">
+              <span
+                style={{backgroundColor: this.state.success ? 'lime' :'red', color: "white", padding: "3px"}}
+                > {this.state.success ? "working" : "failed"}
+              </span>
 						</div>
 						<div className="pull-right">
 							<Button

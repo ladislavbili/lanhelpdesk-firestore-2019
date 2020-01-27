@@ -6,8 +6,12 @@ export default class CommandBar extends Component {
 	render() {
 		const FILTERED_BREADCRUMBS = ( this.props.breadcrumsData ? this.props.breadcrumsData.filter((breadcrum)=>breadcrum.show) : [] );
 
+		console.log(this.props.match.url);
+		console.log(this.props.layout);
 		return (
-			<div className={"commandbar " + (this.props.layout === 1 ? "" : "")}>
+			<div className={"commandbar " + (
+					(this.props.match.url.includes("helpdesk") && this.props.layout === 0 && !this.props.match.url.includes("settings"))
+					? "p-l-10" :  (!this.props.match.url.includes("settings") ? "p-l-20" : 0))}>
 
 				<div className="center-hor">
 					{

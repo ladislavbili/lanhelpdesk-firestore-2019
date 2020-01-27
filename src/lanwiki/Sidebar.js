@@ -72,20 +72,20 @@ class Sidebar extends Component {
 				<div className="scrollable fit-with-header">
 					<Button
 						block
-						className="btn-link t-a-l sidebar-btn-link"
+						className="btn-link t-a-l"
 						onClick={()=>{this.setState({openedAdd:true})}}
 						>
-						<i className="fa fa-plus m-r-5 m-l-5 m-t-5"/> Add tag
+						<i className="fa fa-plus sidebar-plus"/> Add tag
 					</Button>
 
 					<Button
 						block
-					  className="btn-link t-a-l sidebar-btn-link"
+					  className="btn-link t-a-l"
             onClick={(e) => {
               e.preventDefault();
               this.createNew();
             }}>
-						<i className="fa fa-plus m-r-5 m-l-5 m-t-5"/> New Note
+						<i className="fa fa-plus sidebar-plus"/> New Note
 					</Button>
 
 

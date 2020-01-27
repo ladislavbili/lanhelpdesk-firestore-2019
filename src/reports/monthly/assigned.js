@@ -279,6 +279,7 @@ class MothlyReportsAssigned extends Component {
 		//statusIDs = this.props.statuses.map((status)=>status.id);
 		return (
 				<div className="scrollable fit-with-header">
+					<h1 className="m-l-20 m-t-20">Agenti</h1>
 					<div style={{maxWidth:500}}>
 						<MonthSelector />
 						<div className="p-20">

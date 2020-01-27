@@ -53,7 +53,7 @@ class PageHeader extends Component {
 		const URL = this.props.history.location.pathname;
 		return (
 			<div className="page-header">
-				<div className="d-flex full-height">
+				<div className="d-flex full-height p-l-10">
 					<div className="center-hor">
 						<Link to={{ pathname: `/helpdesk/taskList/i/all` }} className={"header-link" + (URL.includes("helpdesk/taskList") ? " header-link-active" : "")}>
 							Úlohy

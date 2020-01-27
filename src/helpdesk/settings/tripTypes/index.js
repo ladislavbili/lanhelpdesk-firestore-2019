@@ -38,6 +38,9 @@ class TripTypesList extends Component{
             <div className="commandbar">
               <div className="search-row">
                 <div className="search">
+                  <button className="search-btn" type="button">
+                    <i className="fa fa-search" />
+                  </button>
                   <input
                     type="text"
                     className="form-control search-text"
@@ -45,9 +48,6 @@ class TripTypesList extends Component{
                     onChange={(e)=>this.setState({tripTypeFilter:e.target.value})}
                     placeholder="Search"
                     />
-                  <button className="search-btn" type="button">
-                    <i className="fa fa-search" />
-                  </button>
                 </div>
               </div>
               <Button

@@ -57,10 +57,10 @@ export default class CompanyEdit extends Component{
       <div>
           <Button
             block
-            className='btn-link t-a-l sidebar-menu-item'
+            className='btn-link t-a-l '
             onClick={() => this.setState({opened:true})}
             >
-           <i className="fa fa-cog m-r-15 m-l-7 m-t-5"/> Company settings
+           <i className="fa fa-cog sidebar-plus"/> Company settings
           </Button>
 
         <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
