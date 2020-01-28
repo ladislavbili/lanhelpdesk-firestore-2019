@@ -20,6 +20,7 @@ constructor(props){
     comments:[],
     subject:'',
     emailBody:'',
+    isInternal:false,
     attachments:[],
     tos:[]
   }
@@ -86,12 +87,17 @@ submitComment(){
             comment:this.state.isEmail?this.state.emailBody: this.state.newComment,
             subject:this.state.subject,
             isEmail: this.state.isEmail,
+            isInternal:this.state.isInternal,
             tos:this.state.tos.map((item)=>item.value),
             createdAt: (new Date()).getTime(),
             task:this.props.id,
             attachments:newAttachments
           }
-          rebase.addToCollection('/help-comments',body).then(()=>{this.setState({saving:false,newComment:'',attachments:[]});this.getData(this.props.id)})
+          rebase.addToCollection('/help-comments',body).then(()=>{
+            this.getData(this.props.id);
+            this.props.addToHistory(this.state.isInternal);
+            this.setState({saving:false,newComment:'',attachments:[],isInternal:false});
+          })
           if(this.state.isEmail){
             this.setState({subject:'',tos:[], emailBody:''})
           }
@@ -180,9 +186,9 @@ submitEmail(){
                 <div className="m-l-10">
                   <label className="custom-container">
                     <Input type="checkbox"
-                      checked={!this.state.isEmail}
+                      checked={this.state.isInternal}
                       onChange={()=>{
-                        this.setState({isEmail:!this.state.isEmail})
+                        this.setState({isInternal:!this.state.isInternal})
                         }}  />
                       <span className="checkmark">  </span>
                   </label>

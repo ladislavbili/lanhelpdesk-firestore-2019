@@ -24,6 +24,7 @@ import TagList from './settings/tags';
 import TaskTypeList from './settings/taskTypes';
 import ImapList from './settings/imaps';
 import SMTPList from './settings/smtps';
+import NotificationList from './notifications';
 
 let settings = [
 	{title:'Users',link:'users',minimalRole:1},
@@ -71,6 +72,8 @@ class Navigation extends Component {
 					<Route exact path="/helpdesk/taskList" component={TaskList} />
 					<Route exact path="/helpdesk/taskList/i/:listID" component={TaskList} />
 					<Route exact path="/helpdesk/taskList/i/:listID/:taskID" component={TaskList} />
+					<Route exact path="/helpdesk/notifications" component={NotificationList} />
+					<Route exact path="/helpdesk/notifications/:notificationID/:taskID" component={NotificationList} />
 
 					{((this.props.currentUser.userData && this.props.currentUser.userData.role.value > 	0) || testing) && <div>
 						<Route exact path='/helpdesk/settings/companies' component={CompanyList} />

@@ -489,7 +489,6 @@ class ProjectEdit extends Component{
 							rebase.updateDoc(`/help-projects/${this.props.item.id}`, body)
 										.then(()=>{
 											this.setState({saving:false, opened: false});
-											this.props.triggerChange();
 									});
 					}}>
 						{(this.state.saving?'Saving...':'Save project')}

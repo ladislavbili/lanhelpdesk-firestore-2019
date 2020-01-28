@@ -1,4 +1,6 @@
-import {SET_USER_DATA,SET_USER_ID,DELETE_USER_DATA} from '../types';
+import {SET_USER_DATA, SET_USER_ID, DELETE_USER_DATA, SET_USER_NOTIFICATIONS } from '../types';
+import {database} from '../../index.js';
+import {snapshotToArray} from '../../helperFunctions';
 
 
 export const setUserID = (id) => {
@@ -16,5 +18,15 @@ export const deleteUserData = () => {
 export const setUserData = (userData) => {
   return (dispatch) => {
     dispatch({ type: SET_USER_DATA, userData });
+  };
+};
+
+export const startUsersNotifications = (userID) => {
+  return (dispatch) => {
+    database.collection('user_notifications').where("user", "==", userID).onSnapshot(querySnapshot => {
+      dispatch({ type: SET_USER_NOTIFICATIONS, notifications:snapshotToArray(querySnapshot).sort((item1, item2)=> (item1.createdAt > item2.createdAt) ? -1 : 1 )});
+      }, err => {
+      console.log(`Encountered error: ${err}`);
+    });
   };
 };

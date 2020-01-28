@@ -33,6 +33,7 @@ class UserEdit extends Component{
       passResetEnded:true,
       companies:[],
       role:roles[0],
+      mailNotifications:false,
     }
     this.setData.bind(this);
   }
@@ -90,6 +91,7 @@ class UserEdit extends Component{
       surname:user.surname,
       email:user.email,
       role,
+      mailNotifications: user.mailNotifications === true,
       loading:false
     })
   }
@@ -128,6 +130,14 @@ class UserEdit extends Component{
             <Label for="email">E-mail</Label>
             <Input type="email" name="email" id="email" disabled={true} placeholder="Enter email" value={this.state.email} onChange={(e)=>this.setState({email:e.target.value})} />
           </FormGroup>
+
+          <FormGroup check className="m-b-5 p-l-0">
+            <Input type="checkbox" id="notificationCheck" checked={this.state.mailNotifications} onChange={(e)=>this.setState({mailNotifications:!this.state.mailNotifications})}/>
+            <Label htmlFor="notificationCheck" check className="p-l-15">
+              Receive e-mail notifications
+            </Label>
+          </FormGroup>
+
           <FormGroup>
             <Label for="company">Company</Label>
             <Select
@@ -147,14 +157,16 @@ class UserEdit extends Component{
                 surname:this.state.surname,
                 email:this.state.email,
                 company:this.state.company.id,
-                role:this.state.role
+                role:this.state.role,
+                mailNotifications:this.state.mailNotifications,
               }
               rebase.updateDoc('/users/'+this.props.match.params.id, body)
                 .then(()=>{
-                  this.props.setUserData(body);
+                  if(this.props.match.params.id === this.props.currentUser.id){
+                    this.props.setUserData(body);
+                  }
                   this.setState({saving:false})});
                 }}>{this.state.saving?'Saving user...':'Save user'}</Button>
-
               <Button className="btn-red ml-auto" disabled={true} onClick={()=>{
                   if(window.confirm("Are you sure?")){
                     rebase.removeDoc('/users/'+this.props.match.params.id).then(()=>{
@@ -177,10 +189,10 @@ class UserEdit extends Component{
   }
 }
 
-const mapStateToProps = ({ storageCompanies, storageUsers}) => {
+const mapStateToProps = ({ storageCompanies, storageUsers, userReducer}) => {
   const { companiesActive, companies, companiesLoaded } = storageCompanies;
   const { usersActive, users, usersLoaded } = storageUsers;
-  return { companiesActive, companies, companiesLoaded, usersActive, users, usersLoaded };
+  return { companiesActive, companies, companiesLoaded, usersActive, users, usersLoaded, currentUser:userReducer };
 };
 
 export default connect(mapStateToProps, { storageCompaniesStart,storageUsersStart,setUserData })(UserEdit);

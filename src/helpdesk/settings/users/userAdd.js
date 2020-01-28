@@ -30,6 +30,7 @@ class UserAdd extends Component{
       saving:false,
       password:'',
       companies:[],
+      mailNotifications: true,
       role:roles[0],
     }
   }
@@ -84,6 +85,14 @@ class UserAdd extends Component{
             <Label for="password">Password</Label>
             <Input type="password" name="password" id="password" placeholder="Enter password" value={this.state.password} onChange={(e)=>this.setState({password:e.target.value})} />
           </FormGroup>
+
+          <FormGroup check className="m-b-5 p-l-0">
+            <Input type="checkbox" id="notificationCheck" checked={this.state.mailNotifications} onChange={(e)=>this.setState({mailNotifications:!this.state.mailNotifications})}/>
+            <Label htmlFor="notificationCheck" check className="p-l-15">
+              Receive e-mail notifications
+            </Label>
+          </FormGroup>
+
           <FormGroup>
             <Label for="company">Company</Label>
             <Select
@@ -107,6 +116,7 @@ class UserAdd extends Component{
                       email:this.state.email,
                       company:this.state.company.id,
                       role:this.state.role,
+                      mailNotifications:this.state.mailNotifications,
                     };
                     rebase.addToCollection('/users', newUser, user.user.uid)
                     .then(()=>{
@@ -119,6 +129,7 @@ class UserAdd extends Component{
                         company,
                         password:'',
                         role:roles[0],
+                        mailNotifications:true,
                         saving:false
                       }, () => {
                         if (this.props.userAdd){

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import { connect } from "react-redux";
-import { Label, TabContent, TabPane, Nav, NavItem, NavLink, Modal, ModalBody} from 'reactstrap';
+import { Label, TabContent, TabPane, Nav, NavItem, NavLink, Modal, ModalBody, ListGroup, ListGroupItem} from 'reactstrap';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
-import CKEditor4 from 'ckeditor4-react';
+//import CKEditor4 from 'ckeditor4-react';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
@@ -26,15 +26,12 @@ import classnames from "classnames";
 import {rebase, database} from '../../index';
 import firebase from 'firebase';
 import ck5config from '../../scss/ck5config';
-import ck4config from '../../scss/ck4config';
+//import ck4config from '../../scss/ck4config';
 import datePickerConfig from '../../scss/datePickerConfig';
 import PendingPicker from '../components/pendingPicker';
 import {toSelArr, snapshotToArray, timestampToString, sameStringForms} from '../../helperFunctions';
 import { storageCompaniesStart, storageHelpPricelistsStart, storageHelpPricesStart,storageHelpProjectsStart, storageHelpStatusesStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageHelpTasksStart, storageHelpUnitsStart,storageHelpWorkTypesStart, storageMetadataStart, storageUsersStart, storageHelpMilestonesStart, storageHelpTripTypesStart } from '../../redux/actions';
 import {invisibleSelectStyleNoArrow, invisibleSelectStyleNoArrowColored,invisibleSelectStyleNoArrowColoredRequired, invisibleSelectStyleNoArrowRequired} from '../../scss/selectStyles';
-
-console.log(ClassicEditor);
-console.log(CKEditor);
 
 const noMilestone = {id:null,value:null,title:'None',label:'None',startsAt:null};
 const booleanSelects = [{value:false,label:'No'},{value:true,label:'Yes'}];
@@ -78,6 +75,7 @@ class TaskEdit extends Component {
 			tripTypes:[],
 			defaultUnit:null,
 			defaultFields:noDef,
+			history:[],
 
 			title:'',
 			company:null,
@@ -119,6 +117,7 @@ class TaskEdit extends Component {
 			viewOnly:true,
 			print: false,
 			showDescription:false,
+			newHistoryEntery:null,
 		};
     this.submitTask.bind(this);
     this.submitMaterial.bind(this);
@@ -126,6 +125,8 @@ class TaskEdit extends Component {
     this.submitService.bind(this);
 		this.canSave.bind(this);
 		this.deleteTask.bind(this);
+		this.addToHistory.bind(this);
+		this.getHistoryMessage.bind(this);
     this.fetchData(this.props.match.params.taskID);
 	}
 
@@ -216,7 +217,11 @@ class TaskEdit extends Component {
 
     rebase.updateDoc('/help-tasks/'+taskID, body)
     .then(()=>{
-      this.setState({saving:false});
+			if(this.state.newHistoryEntery!==null){
+				this.addToHistory(this.state.newHistoryEntery);
+				this.addNotification(this.state.newHistoryEntery,false);
+			}
+      this.setState({saving:false, newHistoryEntery:null});
     });
   }
 
@@ -293,8 +298,9 @@ class TaskEdit extends Component {
 				database.collection('help-task_work_trips').where("task", "==", taskID).get(),
         database.collection('help-task_materials').where("task", "==", taskID).get(),
         database.collection('help-task_works').where("task", "==", taskID).get(),
-        database.collection('help-repeats').doc(taskID).get()
-    ]).then(([workTrips,taskMaterials, taskWorks,repeat])=>{
+        database.collection('help-repeats').doc(taskID).get(),
+				database.collection('help-task_history').where("task", "==", taskID).get(),
+    ]).then(([workTrips,taskMaterials, taskWorks,repeat,history])=>{
 				this.setState({
 					extraData:{
 						workTrips:snapshotToArray(workTrips),
@@ -302,10 +308,76 @@ class TaskEdit extends Component {
 						taskWorks:snapshotToArray(taskWorks),
 						repeat:repeat.exists ? {id:repeat.id,...repeat.data()} : null,
 					},
+					history:snapshotToArray(history).sort((item1,item2)=>item1.createdAt > item2.createdAt ? -1 : 1 ),
 					extraDataLoaded:true
 				},()=>this.setData(this.props));
     });
   }
+
+	addToHistory(event){
+		rebase.addToCollection('help-task_history',event).then((result)=>{
+      this.setState({history: [ {...event, id: Math.random() } , ...this.state.history]});
+    });
+	}
+
+	addNotification(originalEvent,internal){
+		let event = {
+			...originalEvent,
+			read:false
+		}
+		let usersToNotify=[...this.state.assignedTo];
+		if(!internal && this.state.requester && !usersToNotify.some((user)=>user.id===this.state.requester.id)){
+			usersToNotify.push(this.state.requester);
+		}
+		usersToNotify = usersToNotify.filter((user)=>user.id!==this.props.currentUser.id);
+		usersToNotify.forEach((user)=>{
+			rebase.addToCollection('user_notifications',{ ...event, user: user.id }).then((newNotification)=>{
+				if(user.mailNotifications){
+					firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then((token)=>{
+						fetch('https://api01.lansystems.sk:8080/send-notification',{ //127.0.0.1 https://api01.lansystems.sk:8080
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						method: 'POST',
+						body:JSON.stringify({
+							message:`<div>
+							<h4>Nové upozornenie</h4>
+							<p>Zmena: ${event.message}</p>
+							<p>V úlohe: ${event.task}: ${this.state.title}</p>
+							<p>Odkaz: https://lanhelpdesk2019.lansystems.sk/helpdesk/notifications/${newNotification.id}/${event.task}</p>
+						</div>`,
+						tos:[user.email],
+						subject:`Upozornenie na zmenu: ${event.message}`,
+						token,
+					}),
+				}).then((response)=>response.json().then((response)=>{
+					if(response.error){
+						console.log(response);
+					}
+				})).catch((error)=>{
+					console.log(error);
+				});
+			});
+			//end of sending mail
+		}
+			});
+	 })
+	}
+
+	getHistoryMessage(type, data){
+		let user = "Používateľ " + this.props.currentUser.userData.name + ' ' + this.props.currentUser.userData.surname;
+		switch (type) {
+			case 'status':{
+				return user + ' zmenil status na ' + data.title + '.';
+			}
+			case 'comment':{
+				return user + ' komentoval úlohu.';
+			}
+			default:{
+				return user + ' spravil nedefinovanú zmenu.';
+			}
+		}
+	}
 
 	setDefaults(projectID){
 		if(projectID===null){
@@ -681,20 +753,31 @@ class TaskEdit extends Component {
 												isDisabled={this.state.defaultFields.status.fixed||this.state.viewOnly}
 												styles={invisibleSelectStyleNoArrowColoredRequired}
 												onChange={(status)=>{
+													let newHistoryEntery = {
+														createdAt:(new Date()).getTime(),
+														message:this.getHistoryMessage('status', status),
+														task:this.props.match.params.taskID,
+													};
 													if(status.action==='pending'){
 														this.setState({
 															pendingStatus:status,
-															pendingOpen:true
+															pendingOpen:true,
+															newHistoryEntery
 														})
 													}else if(status.action==='close'||status.action==='invalid'){
 														this.setState({
 															status,
 															statusChange:(new Date().getTime()),
 															closeDate: moment(),
+															newHistoryEntery
 														},this.submitTask.bind(this))
 													}
 													else{
-														this.setState({status,statusChange:(new Date().getTime())},this.submitTask.bind(this))
+														this.setState({
+															status,
+															statusChange:(new Date().getTime()),
+															newHistoryEntery
+														},this.submitTask.bind(this))
 													}
 												}}
 												options={this.state.statuses.filter((status)=>status.action!=='invoiced')}
@@ -997,11 +1080,31 @@ class TaskEdit extends Component {
 									Rozpočet
 								</NavLink>
 							</NavItem>
+							{this.props.currentUser.userData.role.value > 0 && <NavItem>
+								<NavLink
+									className={classnames({ active: this.state.toggleTab === '4' }, "clickable", "")}
+									onClick={() => { this.setState({toggleTab:'4'}); }}
+								>
+									História
+								</NavLink>
+							</NavItem>}
 						</Nav>
 
 						<TabContent activeTab={this.state.toggleTab}>
 								<TabPane tabId="1">
-									<Comments id={taskID?taskID:null} users={this.state.users} />
+									<Comments
+										id={taskID?taskID:null}
+										users={this.state.users}
+										addToHistory={(internal)=>{
+											let event = {
+												message:this.getHistoryMessage('comment'),
+												createdAt:(new Date()).getTime(),
+												task:this.props.match.params.taskID
+											}
+											this.addToHistory(event);
+											this.addNotification(event,internal);
+										}}
+										/>
 								</TabPane>
 								<TabPane tabId="2">
 									<PraceWorkTrips
@@ -1044,7 +1147,7 @@ class TaskEdit extends Component {
 												this.setState({workTrips:newTrips});
 											});
 										}}
-									/>
+										/>
 
 									<MaterialsExpenditure
 										disabled={this.state.viewOnly}
@@ -1067,7 +1170,7 @@ class TaskEdit extends Component {
 										defaultUnit={this.state.defaultUnit}
 										company={this.state.company}
 										match={this.props.match}
-									/>
+										/>
 								</TabPane>
 								<TabPane tabId="3">
 									<PraceWorkTrips
@@ -1135,6 +1238,18 @@ class TaskEdit extends Component {
 										match={this.props.match}
 									/>
 								</TabPane>
+								{this.props.currentUser.userData.role.value > 0 && <TabPane tabId="4">
+									<h3>História</h3>
+										<ListGroup>
+											{ this.state.history.map((event)=>
+												<ListGroupItem key={event.id}>
+													({timestampToString(event.createdAt)})
+													{' ' + event.message}
+												</ListGroupItem>
+											)}
+										</ListGroup>
+									{this.state.history.length===0 && <div>História je prázdna.</div>}
+								</TabPane>}
 							</TabContent>
 					</div>
 		    </div>
