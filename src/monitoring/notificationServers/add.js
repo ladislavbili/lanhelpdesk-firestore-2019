@@ -2,12 +2,11 @@ import React, { Component } from 'react';
 import { Button, FormGroup, Label, Input } from 'reactstrap';
 import Select, { Creatable } from 'react-select';
 import DatePicker from 'react-datepicker';
-import moment from 'moment';
 
 import {rebase} from "../../index";
 import {selectStyle, disabledSelectStyle} from '../../scss/selectStyles';
 import datePickerConfig from '../../scss/datePickerConfig';
-import { isEmail, toMillisec, toMomentInput, fromMomentToUnix } from "../../helperFunctions";
+import { isEmail, toMillisec, fromMomentToUnix } from "../../helperFunctions";
 
 const TIME_OPTIONS = [
 //  { label: "minutes", value: "m"},

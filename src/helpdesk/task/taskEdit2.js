@@ -13,8 +13,7 @@ import Comments from '../components/comments.js';
 //import Subtasks from '../components/subtasks';
 import Repeat from '../components/repeat';
 
-import MaterialsExpenditure from '../components/materials/materials';
-import MaterialsBudget from '../components/materials/rozpocet';
+import Materials from '../components/materials';
 import PraceWorkTrips from '../components/praceWorkTrips';
 
 import UserAdd from '../settings/users/userAdd';
@@ -897,28 +896,29 @@ class TaskEdit extends Component {
 										}}
 										/>
 
-									<MaterialsExpenditure
-										disabled={this.state.viewOnly}
-										materials={taskMaterials}
-						        submitMaterial={this.submitMaterial.bind(this)}
-										updateMaterial={(id,newData)=>{
-											rebase.updateDoc('help-task_materials/'+id,newData);
-											let newTaskMaterials=[...this.state.taskMaterials];
-											newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
-											this.setState({taskMaterials:newTaskMaterials});
-										}}
-										removeMaterial={(id)=>{
-											rebase.removeDoc('help-task_materials/'+id).then(()=>{
+										<Materials
+											showColumns={[0,1,2,3,4,6]}
+											disabled={this.state.viewOnly}
+											materials={taskMaterials}
+							        submitMaterial={this.submitMaterial.bind(this)}
+											updateMaterial={(id,newData)=>{
+												rebase.updateDoc('help-task_materials/'+id,newData);
 												let newTaskMaterials=[...this.state.taskMaterials];
-												newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
+												newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
 												this.setState({taskMaterials:newTaskMaterials});
-											});
-										}}
-						        units={this.state.units}
-										defaultUnit={this.state.defaultUnit}
-										company={this.state.company}
-										match={this.props.match}
-										/>
+											}}
+											removeMaterial={(id)=>{
+												rebase.removeDoc('help-task_materials/'+id).then(()=>{
+													let newTaskMaterials=[...this.state.taskMaterials];
+													newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
+													this.setState({taskMaterials:newTaskMaterials});
+												});
+											}}
+							        units={this.state.units}
+											defaultUnit={this.state.defaultUnit}
+											company={this.state.company}
+											match={this.props.match}
+											/>
 								</TabPane>
 								<TabPane tabId="3">
 									<PraceWorkTrips
@@ -963,7 +963,8 @@ class TaskEdit extends Component {
 										}}
 									/>
 
-									<MaterialsBudget
+									<Materials
+										showColumns={[0,1,2,3,4,5,6]}
 										disabled={this.state.viewOnly}
 										materials={taskMaterials}
 						        submitMaterial={this.submitMaterial.bind(this)}

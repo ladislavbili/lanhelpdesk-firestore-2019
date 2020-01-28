@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Button, FormGroup, Label, Input } from 'reactstrap';
 import Select, { Creatable }  from 'react-select';
 import DatePicker from 'react-datepicker';
-import moment from 'moment';
 
 import {rebase} from "../../index";
 import {selectStyle, disabledSelectStyle} from '../../scss/selectStyles';
