@@ -1,9 +1,10 @@
-import {SET_USER_DATA, SET_USER_ID, DELETE_USER_DATA} from '../../types'
+import {SET_USER_DATA, SET_USER_ID, DELETE_USER_DATA, SET_USER_NOTIFICATIONS} from '../../types'
 
 const initialState = {
   id:null,
   loggedIn:false,
-  userData:null
+  userData:null,
+  notifications:[],
 };
 
 export default function appReducer(state = initialState, action) {
@@ -21,13 +22,14 @@ export default function appReducer(state = initialState, action) {
         id: action.id
       };
     }
-    case DELETE_USER_DATA:
+    case SET_USER_NOTIFICATIONS:{
       return {
         ...state,
-        id:null,
-        loggedIn: false,
-        userData:null
+        notifications:action.notifications,
       };
+    }
+    case DELETE_USER_DATA:
+      return initialState;
     default:
       return state;
   }

@@ -51,6 +51,10 @@
   }
 }
 
+.list-group-item+.list-group-item {
+    border-top-width: 1px;
+}
+
 .modal-width-1000{
   width: 1000px;
 }
@@ -1023,6 +1027,37 @@ background-color: #f8fbfe;
   border-width: 0;
   margin-right: 15px;
   color: white;
+}
+
+.header-icon-with-text{
+  font-size:15px;
+  background-color: inherit;
+  border-width: 0;
+  margin-right: 5px;
+  color: white;
+}
+
+.header-icon-text{
+  font-size:10px;
+  margin-right: 15px;
+  margin-top: auto;
+  margin-left: -5px;
+  padding-bottom: 4px;
+  color: #F2F1F1;
+}
+
+.notification-read-small{
+}
+
+.notification-not-read-small{
+  font-weight: bold;
+}
+
+.notification-read{
+}
+
+.notification-not-read{
+  font-weight: bold;
 }
 
 .toolbar-item{

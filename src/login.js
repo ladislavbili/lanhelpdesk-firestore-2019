@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input } from 'reactstrap';
 import firebase from 'firebase';
-import {rebase} from './index';
 import { connect } from "react-redux";
-import {setUserID, setUserData} from './redux/actions';
+import {setUserID, setUserData, startUsersNotifications} from './redux/actions';
 
 class Login extends Component {
 	constructor(props) {
@@ -21,10 +20,6 @@ class Login extends Component {
 		this.setState({error:false, working:true});
 		firebase.auth().signInWithEmailAndPassword(this.state.email,this.state.password).then((res)=>{
 			this.setState({working:false})
-			this.props.setUserID(res.user.uid);
-			rebase.get('users/'+res.user.uid, {
-				context: this,
-			}).then((user)=>this.props.setUserData(user));
 		}).catch(error=>{this.setState({error:true,working:false});console.log('error')});
 	}
 
@@ -70,4 +65,4 @@ const mapStateToProps = ({ userReducer }) => {
 	return { id };
 };
 
-export default connect(mapStateToProps, { setUserID, setUserData })(Login);
+export default connect(mapStateToProps, { setUserID, setUserData, startUsersNotifications })(Login);

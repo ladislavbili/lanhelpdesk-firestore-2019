@@ -3,7 +3,9 @@ import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap
 import { Link } from 'react-router-dom';
 import { connect } from "react-redux";
 import firebase from 'firebase';
-import {deleteUserData } from '../redux/actions';
+import classnames from 'classnames';
+import { rebase } from '../index';
+import {deleteUserData, storageHelpTasksStart } from '../redux/actions';
 import {testing} from '../helperFunctions';
 
 class PageHeader extends Component {
@@ -11,9 +13,18 @@ class PageHeader extends Component {
 		super();
 		this.state = {
 			companies: [],
+			notificationsOpen: false,
+			settingsOpen: false,
 		};
+		this.processNotifications.bind(this);
 		this.getLocation.bind(this);
 	}
+
+	componentWillMount(){
+    if(!this.props.tasksActive){
+      this.props.storageHelpTasksStart();
+    }
+  }
 
 	getLocation() {
 		let url = this.props.history.location.pathname;
@@ -49,7 +60,18 @@ class PageHeader extends Component {
 		}
 	}
 
+	processNotifications(){
+		return this.props.currentUser.notifications.map((notification)=>{
+			let task = this.props.tasks.find((task)=>task.id === notification.task );
+			return{
+				...notification,
+				task: task !== undefined ? task : {id:notification.task, title: 'Unknown task' }
+			}
+		})
+	}
+
 	render() {
+		let unreadNotifications = [...this.props.currentUser.notifications].splice(5,this.props.currentUser.notifications.length - 1).filter((notification)=>!notification.read);
 		const URL = this.props.history.location.pathname;
 		return (
 			<div className="page-header">
@@ -149,7 +171,45 @@ class PageHeader extends Component {
 						</Dropdown>}
 
 						<i className="header-icon fa fa-exclamation-triangle center-hor"/>
-						<i className="header-icon fa fa-envelope center-hor" />
+
+						<Dropdown className="center-hor" isOpen={this.state.notificationsOpen} toggle={()=>this.setState({notificationsOpen:!this.state.notificationsOpen})}>
+							<DropdownToggle className="header-dropdown">
+								<i className="header-icon-with-text fa fa fa-envelope"/>
+							</DropdownToggle>
+							<DropdownMenu right>
+								<DropdownItem header>Notifications</DropdownItem>
+								<DropdownItem divider />
+								{
+									this.props.currentUser.notifications.length === 0 &&
+									<DropdownItem>You have no notifications!</DropdownItem>
+								}
+								{
+									this.processNotifications().splice(0,5).map((notification)=>
+									<DropdownItem
+										key={notification.id}
+										onClick={()=>{
+											this.props.history.push('/helpdesk/notifications/'+notification.id+'/'+notification.task.id)
+											if(!notification.read){
+												rebase.updateDoc('user_notifications/' + notification.id, {read:true} );
+											}
+										}}
+										className={classnames({ 'notification-read-small': notification.read, 'notification-not-read-small': !notification.read })}
+										>
+										<div>
+											<i className={classnames({ 'far fa-envelope-open': notification.read, 'fas fa-envelope': !notification.read })} /> {notification.message}
+										</div>
+										<div style={{overflowX:'hidden', maxWidth:250}}>{notification.task.id}: {notification.task.title} </div>
+									</DropdownItem>
+								)}
+								<DropdownItem divider />
+								<DropdownItem onClick={()=>this.props.history.push('/helpdesk/notifications/')}>
+									<span style={{ fontWeight: 'bold' }}>Go to notifications</span>
+									{ unreadNotifications.length > 0 ? (' ' + unreadNotifications.length + ' more unread...') : '' }
+								</DropdownItem>
+							</DropdownMenu>
+						</Dropdown>
+						<span className="header-icon-text clickable">{this.props.currentUser.notifications.length}</span>
+
 						{((this.props.currentUser.userData && this.props.currentUser.userData.role.value > 0 )|| testing) && this.props.settings && this.props.settings.length>0 && <Dropdown className="center-hor" isOpen={this.state.settingsOpen} toggle={()=>this.setState({settingsOpen:!this.state.settingsOpen})}>
 			        <DropdownToggle className="header-dropdown">
 								<i className="header-icon fa fa-cog"/>
@@ -177,8 +237,9 @@ class PageHeader extends Component {
 }
 
 
-const mapStateToProps = ({ userReducer}) => {
-	return { currentUser:userReducer };
+const mapStateToProps = ({ userReducer, storageHelpTasks}) => {
+  const { tasksActive, tasks } = storageHelpTasks;
+	return { currentUser:userReducer, tasksActive, tasks };
 };
 
-export default connect(mapStateToProps, { deleteUserData })(PageHeader);
+export default connect(mapStateToProps, { deleteUserData, storageHelpTasksStart })(PageHeader);
