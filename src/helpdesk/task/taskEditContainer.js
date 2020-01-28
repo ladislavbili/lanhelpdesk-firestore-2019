@@ -6,7 +6,7 @@ export default class TaskEditContainer extends Component{
   constructor(props){
     super(props);
     this.state={
-      edit: 1,
+      edit: 0,
     }
   }
 

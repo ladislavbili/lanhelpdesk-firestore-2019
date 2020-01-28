@@ -855,8 +855,8 @@ class TaskEdit extends Component {
 								</TabPane>
 								<TabPane tabId="2">
 									<PraceWorkTrips
-										extended={false}
-										showAll={false}
+										showColumns={[0,1,4,8]}
+										showTotals={false}
 										disabled={this.state.viewOnly}
 										taskAssigned={this.state.assignedTo}
 										submitService={this.submitService.bind(this)}
@@ -922,8 +922,8 @@ class TaskEdit extends Component {
 								</TabPane>
 								<TabPane tabId="3">
 									<PraceWorkTrips
-										extended={true}
-										showAll={true}
+										showColumns={[0,1,2,3,4,5,6,7,8]}
+										showTotals={true}
 										disabled={this.state.viewOnly}
 										taskAssigned={this.state.assignedTo}
 										submitService={this.submitService.bind(this)}
