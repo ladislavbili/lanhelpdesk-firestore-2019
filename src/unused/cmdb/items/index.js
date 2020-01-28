@@ -85,7 +85,7 @@ export default class Sidebar extends Component {
 					</Button>
 				</div>
 				<div className="fit-with-header scrollable">
-					<h1>Items</h1>
+					<h2>Items</h2>
 						<table className="table table-centered table-borderless table-hover mb-0">
 							<thead className="thead-light">
 								<tr>

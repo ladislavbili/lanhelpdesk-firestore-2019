@@ -49,7 +49,7 @@ export default class PriceList extends Component{
               <Button
                 className="btn-link t-a-l"
                 onClick={()=>this.props.history.push('/helpdesk/settings/pricelists/add')}>
-               <i className="fa fa-plus m-r-5 m-l-5 "/> Add new pricelist
+               <i className="fa fa-plus m-r-5 m-l-5 "/> New pricelist
               </Button>
 
             </div>

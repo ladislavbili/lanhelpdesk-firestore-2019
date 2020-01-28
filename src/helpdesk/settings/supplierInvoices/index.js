@@ -60,13 +60,13 @@ class SupplierInvoicesList extends Component{
               <Button
                 className="btn-link center-hor"
                 onClick={()=>this.props.history.push('/helpdesk/settings/supplierInvoices/add')}>
-                <i className="fa fa-plus p-l-5 p-r-5"/> Add invoice
+                <i className="fa fa-plus p-l-5 p-r-5"/> Invoice
               </Button>
             </div>
             <div className="p-t-9 p-r-10 p-l-10 scroll-visible fit-with-header-and-commandbar">
-              <h4 className="font-24 p-l-10 p-b-10 ">
+              <h2 className=" p-l-10 p-b-10 ">
   							Invoices
-  						</h4>
+  						</h2>
               <table className="table table-hover">
                 <thead>
                   <tr>

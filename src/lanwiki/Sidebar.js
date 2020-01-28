@@ -75,7 +75,7 @@ class Sidebar extends Component {
 						className="btn-link t-a-l"
 						onClick={()=>{this.setState({openedAdd:true})}}
 						>
-						<i className="fa fa-plus sidebar-plus"/> Add tag
+						<i className="fa fa-plus sidebar-plus"/> Tag
 					</Button>
 
 					<Button
@@ -85,7 +85,7 @@ class Sidebar extends Component {
               e.preventDefault();
               this.createNew();
             }}>
-						<i className="fa fa-plus sidebar-plus"/> New Note
+						<i className="fa fa-plus sidebar-plus"/> Note
 					</Button>
 
 

@@ -20,6 +20,8 @@
 - input-group-append
 */
 
+
+
 .testSonka{
   color: red;
   font-size: 10px;
@@ -277,7 +279,12 @@ html{
 	cursor:pointer;
 }
 
-h4.clickable:hover{
+h2{
+  color: $main-font-color;
+  font-size: 2.5rem !important;
+}
+
+h2.clickable:hover{
 	color: $basic-button-color;
 }
 
@@ -401,10 +408,7 @@ h4.clickable:hover{
 //---------------END-všeobecné-atribúty-----------------
 
 //---------------všeobecné-elementy---------------------
-h4{
-  color: $main-font-color;
-  font-size: 2rem !important;
-}
+
 
 .btn{
   background-color: $basic-button-color;
@@ -578,7 +582,17 @@ h4{
   line-height: 16px;
   padding-top: 8px;
   padding-bottom: none;
+}
 
+.col-form-label-2{
+  font-family: $main-font;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 16px;
+  padding-top: 8px;
+  padding-bottom: none;
+  padding-left: 7px;
 }
 
 Label{
@@ -905,79 +919,6 @@ tr:last-child{
   color: #333333;
   padding: 15px;
 }
-
-.cmdb-table>.table>thead>tr>th{
-  font-family: Segoe UI;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 12px;
-  line-height: 16px;
-  color: #333333;
-}
-
-.cmdb-table>.table>tbody>tr>td:first-child{
-  font-family: Segoe UI;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 14px;
-  line-height: 16px;
-  text-transform: capitalize;
-  color: #333333;
-}
-
-
-.cmdb-table>.table>tbody>tr>td{
-  font-family: Segoe UI;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 12px;
-  line-height: 19px;
-  color: #767676;
-}
-
-.cmdb-item-table>.table{
-background-color: #f8fbfe;
-}
-
-.cmdb-item-table>.table>thead>tr>th:first-child{
-  font-family: Segoe UI;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 16px;
-  color: #333333;
-}
-
-.cmdb-item-table>.table>thead>tr>th{
-  font-family: Segoe UI;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 12px;
-  line-height: 16px;
-  color: #333333;
-  border: 0px;
-}
-
-.cmdb-item-table>.table>tbody>tr>td{
-  font-family: Segoe UI;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 12px;
-  line-height: 16px;
-  color: #333333;
-  border: 0px;
-}
-
-.cmdb-item-table>.table>tbody>tr.add-item>td{
-  font-family: Segoe UI;
-  font-size: 14px;
-  line-height: 19px;
-  color: #A0A0A0;
-}
-.cmdb-item-table>.table>tbody>tr.add-item>td:hover{
-  background-color: #f8fbfe;
-  cursor: pointer;
-}
 //----------------------END-CMDB---------------------
 
 //---------------------header---------------------
@@ -1289,11 +1230,11 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   font-size: 14px;
 }
 .nav>li>a:not(.sidebar-menu-item) {
-  padding: 2px 10px 2px 8px;
+  padding: 2px 0px 2px 2px;
   color: #979797 !important;
   border-radius: 0px !important;
   border: none !important;
-  border-right: 2px solid #333 !important;
+//  border-right: 2px solid #333 !important;
 }
 .nav>li:last-child>a:not(.sidebar-menu-item){
   border-right: 0px !important;
@@ -1384,7 +1325,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   background-color: white;
   margin-left: 20px;
   margin-right: 20px;
-  width: 0 !important;
+  width: calc(100% - 40px) !important; //0
 }
 
 .task-container>.table>thead{
@@ -1398,8 +1339,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 }
 
 .task-container>.table>thead>tr>th{
-  border-color: #FCFCFC !important;
-//  border-bottom: 1px solid #f4f4f4 !important;
+  border-color: #F6F6F6 !important;
 }
 
 .task-container>.table>tbody>tr>th{
@@ -1471,12 +1411,13 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 .dnd-body{
   background-color: #F6F6F6;
   border-right: 1px solid #EAEAEA;
+  padding: 20px 10px 10px 20px ;
 }
 
 .dnd-item{
   background: #FFFFFF;
-  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
-  margin: 10px 10px 20px 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.16);
+  margin: 0px 10px 10px 0px !important;
 }
 
 .dnd-item-icon{
@@ -1485,59 +1426,48 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   margin-right: 3px;
 }
 
-.basic-item{
-  background-color: white;
-  border: 0px;
-  border-top: 0px;
-  padding: 0px 10px 0px 10px;
-  border-radius: 0px;
-}
-.basic-item>li {
-  border: 0px;
-  border-bottom: 1px solid #f1f1f1 ;
-  padding: 5px 10px 5px 10px;
-  border-radius: 0px;
-}
-.basic-item:hover{
-  background-color: #f4f8fb;
-}
-
 .taskCol {
+  background-color: #FFFFFF;
   min-height: 40px;
-  margin-bottom: 0;
+  margin-bottom: 2px;
   border-top: 0px;
 }
-/*
-.taskCol li {
+
+.taskCol:hover{
   background-color: #f4f8fb;
-  border: 2px solid #F6F6F6;
-  border-top: 0px;
+}
+
+.taskCol li {
   padding: 10px;
-  margin-bottom: 15px;
-  border-radius: 0px;
 }
 
-.taskCol li:hover{
-  background-color: white;
+.taskCol-title{
+  font-size: 15px;
+  font-weight: bold;
 }
 
-.taskCol li:last-of-type {
+.taskCol-body{
+  margin-top: 0px;
+  font-size: 12px;
+}
+
+.taskCol-body>p{
   margin-bottom: 0px;
 }
 
-.taskCol li .btn-sm {
-  padding: 2px 8px;
-  font-size: 12px;
-}
-*/
-.taskCol .checkbox {
-  margin-left: 20px;
-  margin-top: 5px;
+.attribute-label{
+   color: $muted-font-color !important;
 }
 
 .taskCol-tags{
   min-height: 21px;
 }
+
+.taskCol .checkbox {
+  margin-left: 20px;
+  margin-top: 5px;
+}
+
 
 .selected-item {
 	background-color: #f4f8fb;

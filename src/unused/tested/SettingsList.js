@@ -27,7 +27,7 @@ export default class SettingsList extends Component {
 					<div className="commandbar">
 						<div className="row">
 							<div className="col-sm-6">
-								<h4 className="page-title">Settings</h4>
+								<h2 className="page-title">Settings</h2>
 							</div>
 						</div>
 					</div>

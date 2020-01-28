@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import ShowData from '../../components/showData';
 import {timestampToString, sameStringForms} from '../../helperFunctions';
-import TaskEdit from './taskEdit';
+import TaskEdit from './taskEditContainer';
 import TaskEmpty from './taskEmpty';
 import {setTasksOrderBy, setTasksAscending,storageCompaniesStart,storageHelpTagsStart,storageUsersStart,
 	storageHelpProjectsStart,storageHelpStatusesStart,storageHelpTasksStart, storageHelpFiltersStart,
@@ -236,33 +236,36 @@ class TasksIndex extends Component {
 					{value:'company',type:'object'},
 				]}
 				displayCol={(task)=>
-					<li className="p-10" >
-						<div className="font-15 font-bold">
-							<span className="text-muted font-15">#{task.id} | </span> {task.title}
+					<li>
+						<div className="taskCol-title">
+							<span className="attribute-label">#{task.id} | </span> {task.title}
 						</div>
-						<div className="m-t-0 font-12">
-							<p className="pull-right m-0 ">
+						<div className="taskCol-body">
+							<p className="pull-right m-0">
 								<span className="label label-info" style={{backgroundColor:task.status && task.status.color?task.status.color:'white'}}>
 									{task.status?task.status.title:'Neznámy status'}
 								</span>
 							</p>
-							<p className="m-b-0">
+							<p>
 								<span>
-									<span className="text-muted">Requested by: </span>
+									<span className="attribute-label">Requested by: </span>
 											{task.requester?(" " + task.requester.name+' '+task.requester.surname):' Neznámy používateľ '}
 								</span>
 							</p>
-							<p className="m-b-0 pull-right">
+							<p className="pull-right">
 								<span>
-									<span className="text-muted">	<i className="fa fa-star-of-life" /> </span>
+									<span className="attribute-label">	<i className="fa fa-star-of-life" /> </span>
 									{task.createdAt?timestampToString(task.createdAt):'None'}
 								</span>
 							</p>
-							<p className="m-b-0">
-									<span className="text-muted">{task.company ? ` From ${task.company.title}` : " from Unknown"}</span>
+							<p>
+								<span>
+									<span className="attribute-label">From </span>
+									{task.company ? task.company.title : " Unknown"}
+								</span>
 							</p>
 
-							<p className="pull-right m-b-0">
+							<p className="pull-right">
 								<span>
 									<img
 										className="dnd-item-icon"
@@ -272,8 +275,10 @@ class TasksIndex extends Component {
 									{task.deadline?timestampToString(task.deadline):'None'}
 								</span>
 							</p>
-							<p className="m-b-0">
-								<span style={{textOverflow: 'ellipsis'}}><span className="text-muted">Assigned: </span>{task.assignedTo?task.assignedTo.reduce((total,user)=>total+=user.name+' '+user.surname+', ','').slice(0,-2):'Neznámy používateľ'}</span>
+							<p >
+								<span style={{textOverflow: 'ellipsis'}}>
+									<span className="attribute-label">Assigned: </span>
+									{task.assignedTo?task.assignedTo.reduce((total,user)=>total+=user.name+' '+user.surname+', ','').slice(0,-2):'Neznámy používateľ'}</span>
 							</p>
 						</div>
 

@@ -274,7 +274,7 @@ submitEmail(){
                   <div className="flex" >
                     <p>
                       <span className="media-meta pull-right text-muted">{timestampToString(comment.createdAt)}</span>
-                      <h4 className="font-13 m-0"><Label>{comment.from.map((item)=>item.address).toString()}</Label></h4>
+                      <h2 className="font-13 m-0"><Label>{comment.from.map((item)=>item.address).toString()}</Label></h2>
                     </p>
                         <Dropdown className="center-hor pull-right"
                           isOpen={comment.open}
@@ -336,7 +336,7 @@ submitEmail(){
                     />
                   <div className="flex">
                     <span className="media-meta pull-right text-muted">{timestampToString(comment.createdAt)}</span>
-                    <h4 className="font-13 m-0"><Label>{comment.user!==undefined?(comment.user.name + ' '+comment.user.surname):'Unknown sender'}</Label></h4>
+                    <h2 className="font-13 m-0"><Label>{comment.user!==undefined?(comment.user.name + ' '+comment.user.surname):'Unknown sender'}</Label></h2>
                   </div>
                 </div>
                 <div className="m-l-40 m-b-15 font-13" style={{marginTop: "-40px"}} dangerouslySetInnerHTML={{__html: comment.isEmail? comment.comment : comment.comment.replace(/(?:\r\n|\r|\n)/g, '<br>') }}>

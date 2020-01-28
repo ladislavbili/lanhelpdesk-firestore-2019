@@ -149,7 +149,7 @@ export default class Links extends Component{
               }
             }
             >
-            <i className="fa fa-plus" /> Add link
+            <i className="fa fa-plus" /> Link
             </button>
           </td>
 

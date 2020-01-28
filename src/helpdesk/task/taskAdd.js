@@ -366,7 +366,7 @@ export default class TaskAdd extends Component{
 			<div className="scrollable">
 				<div className="p-t-0">
 					<div className="row m-b-15">
-						<h1 className="center-hor text-extra-slim">NEW TASK </h1>
+						<h2 className="center-hor text-extra-slim">NEW TASK </h2>
 						<span className="center-hor flex m-r-15">
 							<input type="text"
 								 value={this.state.title}

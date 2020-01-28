@@ -49,7 +49,7 @@ export default class ProjectList extends Component{
               <Button
                 className="btn-link t-a-l"
                 onClick={()=>this.props.history.push('/helpdesk/settings/projects/add')}>
-               <i className="fa fa-plus m-r-5 m-l-5 "/> Add project
+               <i className="fa fa-plus m-r-5 m-l-5 "/> Project
               </Button>
 
             </div>

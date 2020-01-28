@@ -125,7 +125,7 @@ export default class AllMailServersEdit extends Component{
     return (
       <div>
             <ModalBody>
-              <h1>Mail settings</h1>
+              <h2>Mail settings</h2>
 
               <FormGroup>
   							<Label>Timeout (min)</Label>
@@ -138,7 +138,7 @@ export default class AllMailServersEdit extends Component{
 
               <hr className="m-b-15"/>
 
-              <h1>Send e-mail SMTP settings</h1>
+              <h2>Send e-mail SMTP settings</h2>
               <FormGroup>
                 <Label>Server</Label>
                 <Input type="text" placeholder="Enter server" value={this.state.smtpServer} onChange={(e)=>this.setState({smtpServer: e.target.value})} />
@@ -203,7 +203,7 @@ export default class AllMailServersEdit extends Component{
               </div>
               <hr className="m-t-10 m-b-10"/>
 
-              <h1>Receive e-mail IMAP settings</h1>
+              <h2>Receive e-mail IMAP settings</h2>
                 <FormGroup>
                   <Label>Server</Label>
                   <Input type="text" placeholder="Enter server" value={this.state.imapServer} onChange={(e)=>this.setState({imapServer: e.target.value})} />

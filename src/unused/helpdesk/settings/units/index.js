@@ -49,7 +49,7 @@ export default class UnitsList extends Component{
                 <Button
           				className="btn-link t-a-l"
           				onClick={()=>this.props.history.push('/helpdesk/settings/units/add')}>
-          			 <i className="fa fa-plus m-r-5 m-l-5 "/> Add unit
+          			 <i className="fa fa-plus m-r-5 m-l-5 "/> Unit
           			</Button>
 
             </div>

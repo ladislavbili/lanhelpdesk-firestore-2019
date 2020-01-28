@@ -49,7 +49,7 @@ export default class ImapsList extends Component{
                 <Button
           				className="btn-link t-a-l"
           				onClick={()=>this.props.history.push('/helpdesk/settings/imaps/add')}>
-          			 <i className="fa fa-plus m-r-5 m-l-5 "/> Add Imap
+          			 <i className="fa fa-plus m-r-5 m-l-5 "/> Imap
           			</Button>
 
             </div>

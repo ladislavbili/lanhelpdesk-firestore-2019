@@ -58,7 +58,7 @@ export default class SupplierInvoicesList extends Component{
                 <Button
           				className="btn-link t-a-l"
           				onClick={()=>this.props.history.push('/helpdesk/settings/supplierInvoices/add')}>
-          			 <i className="fa fa-plus m-r-5 m-l-5 "/> Add invoice
+          			 <i className="fa fa-plus m-r-5 m-l-5 "/> Invoice
           			</Button>
 
             </div>

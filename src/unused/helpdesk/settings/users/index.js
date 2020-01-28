@@ -50,7 +50,7 @@ export default class UsersList extends Component{
                 <Button
           				className="btn-link t-a-l"
           				onClick={()=>this.props.history.push('/helpdesk/settings/users/add')}>
-          			 <i className="fa fa-plus m-r-5 m-l-5 "/> Add user
+          			 <i className="fa fa-plus m-r-5 m-l-5 "/> User
           			</Button>
 
             </div>

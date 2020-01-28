@@ -261,7 +261,7 @@ class CompanyEdit extends Component{
         <div style={{position: "fixed", zIndex: "999", backgroundColor: "rgba(255,255,255,0.5)", top: "0", left: "0", width: "100%", height: "100vh"}}></div>
       }
 
-      <h1 className="p-t-10 p-l-20 p-b-5" style={(this.state.newData ? {position: "relative", zIndex: "99999"} : {})}>Edit company</h1>
+      <h2 className="p-t-10 p-l-20 p-b-5" style={(this.state.newData ? {position: "relative", zIndex: "99999"} : {})}>Edit company</h2>
       <hr style={(this.state.newData ? {position: "relative", zIndex: "99999"} : {})}/>
 
         {

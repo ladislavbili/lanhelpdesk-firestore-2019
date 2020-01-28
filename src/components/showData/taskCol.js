@@ -16,7 +16,7 @@ export default class ColumnDisplay extends Component {
 							{
 								this.props.data.map((item, index)=>
 								<ul
-									className={classnames("taskCol", "clickable", {"basic-item": !this.props.link.includes("helpdesk")}, {"dnd-item": this.props.link.includes("helpdesk")}, "list-unstyled", {'selected-item': this.props.itemID === item.id.toString()})}
+									className={classnames("taskCol", "clickable", {"dnd-item": this.props.link.includes("helpdesk")}, "list-unstyled", {'selected-item': this.props.itemID === item.id.toString()})}
 									id="upcoming"
 									style={{borderLeft: (this.props.link.includes("helpdesk") ? ("3px solid " + (item.status ? (item.status.color?item.status.color:'white') : "white")) : "")}}
 									onClick={()=>{

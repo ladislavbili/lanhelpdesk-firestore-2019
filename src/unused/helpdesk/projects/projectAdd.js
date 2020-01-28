@@ -79,7 +79,7 @@ export default class ProjectAdd extends Component{
         <i className="fa fa-plus m-r-5 m-l-5 " /> Project
         </Button>
           <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
-            <ModalHeader toggle={this.toggle.bind(this)}> <h1> Add project </h1></ModalHeader>
+            <ModalHeader toggle={this.toggle.bind(this)}> <h2> Add project </h2></ModalHeader>
             <ModalBody>
               <FormGroup>
                 <Label for="name">Project name</Label>

@@ -43,13 +43,13 @@ class ProjectList extends Component{
               <Button
                 className="btn-link center-hor"
                 onClick={()=>this.props.history.push('/helpdesk/settings/projects/add')}>
-                <i className="fa fa-plus p-l-5 p-r-5"/> Add project
+                <i className="fa fa-plus p-l-5 p-r-5"/> Project
               </Button>
             </div>
             <div className="p-t-9 p-r-10 p-l-10 scroll-visible scrollable fit-with-header-and-commandbar">
-              <h4 className="font-24 p-l-10 p-b-10 ">
+              <h2 className=" p-l-10 p-b-10 ">
   							Project names
-  						</h4>
+  						</h2>
               <table className="table table-hover">
                 <tbody>
                   {this.props.projects.filter((item)=>item.title.toLowerCase().includes(this.state.projectFilter.toLowerCase())).map((project)=>

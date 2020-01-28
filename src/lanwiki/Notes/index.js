@@ -98,17 +98,23 @@ class List extends Component {
 				})
 					.filter((item)=>item.tags.some((item)=>item.id===this.props.match.params.listID)||this.props.match.params.listID==='all'||!this.props.match.params.listID)}
 				displayCol={(note)=>
-					<li className="" >
-						<p className="pull-right m-b-0 font-13">
-							<i className="fa fa-clock-o" /> <span>Start: {note.dateCreated?timestampToString(note.dateCreated):'None'}</span>
-						</p>
-						<div className="m-b-0">
-							<label className="m-b-0">{note.name}</label>
-							<div className="m-t-0">
-								<p className="pull-right m-b-0 font-13">
-									<i className="fa fa-clock-o" /> <span>Updated: {note.lastUpdated&& <TimeAgo className="text-muted" date={new Date(note.lastUpdated)} />}</span>
-								</p>
-							</div>
+					<li>
+						<div className="taskCol-title">
+							<span>{note.name}</span>
+						</div>
+						<div className="taskCol-body">
+							<p className="pull-right">
+								<span>
+									<span className="attribute-label"> Updated: </span>
+									{note.lastUpdated&& <TimeAgo date={new Date(note.lastUpdated)} />}
+								</span>
+							</p>
+							<p >
+								<span>
+									<span className="attribute-label"> Start </span>
+									{note.dateCreated?timestampToString(note.dateCreated):'None'}
+								</span>
+							</p>
 						</div>
 						<div className="taskCol-tags">
 							{note.tags.map((tag)=>

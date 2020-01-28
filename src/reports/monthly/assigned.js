@@ -279,7 +279,7 @@ class MothlyReportsAssigned extends Component {
 		//statusIDs = this.props.statuses.map((status)=>status.id);
 		return (
 				<div className="scrollable fit-with-header">
-					<h1 className="m-l-20 m-t-20">Agenti</h1>
+					<h2 className="m-l-20 m-t-20">Agenti</h2>
 					<div style={{maxWidth:500}}>
 						<MonthSelector />
 						<div className="p-20">
@@ -331,7 +331,7 @@ class MothlyReportsAssigned extends Component {
 									Obdobie od: {timestampToString(this.props.from)} do: {timestampToString(this.props.to)}
 								</div>
 							</div>
-							<h4>Práce</h4>
+							<h3>Práce</h3>
 							<hr />
 							<table className="table m-b-30">
 								<thead>
@@ -426,7 +426,7 @@ class MothlyReportsAssigned extends Component {
 								})
 							</p>
 
-							<h4>Výjazdy</h4>
+							<h3>Výjazdy</h3>
 							<hr />
 							<table className="table m-b-30">
 								<thead>
@@ -518,7 +518,7 @@ class MothlyReportsAssigned extends Component {
 									}," ").slice(0,-1)
 								})
 							</p>
-							<h4>Sumár podľa typu práce a výjazdov - v rámci paušálu, nad rámec paušálu, projektových</h4>
+							<h3>Sumár podľa typu práce a výjazdov - v rámci paušálu, nad rámec paušálu, projektových</h3>
 							<table className="table m-b-10">
 								<tbody>
 									<tr>

@@ -53,13 +53,13 @@ class CompaniesList extends Component{
               <Button
                 className="btn-link center-hor"
                 onClick={()=>this.props.history.push('/helpdesk/settings/companies/add')}>
-                <i className="fa fa-plus p-l-5 p-r-5"/> Add company
+                <i className="fa fa-plus p-l-5 p-r-5"/> Company
               </Button>
             </div>
             <div className="p-t-9 p-r-10 p-l-10 scroll-visible fit-with-header-and-commandbar">
-              <h4 className="font-24 p-l-10 p-b-10 ">
+              <h2 className=" p-l-10 p-b-10 ">
   							Companies
-  						</h4>
+  						</h2>
               <table className="table table-hover">
                 <tbody>
                     {

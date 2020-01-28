@@ -221,7 +221,7 @@ class ProjectEdit extends Component{
 	        </Button>
         <Modal isOpen={this.state.opened} size="width-1000" toggle={this.toggle.bind(this)} >
             <ModalBody>
-							<h1  className='m-t-20'>Project edit</h1>
+							<h2  className='m-t-20'>Project edit</h2>
 							<hr className='m-t-10 m-b-10' />
               <FormGroup>
                 <Label>Project name</Label>

@@ -117,9 +117,9 @@ export default class ProjectEdit extends Component{
     return (
       <div>
             <ModalBody>
-              <h1>Email notification settings</h1>
+              <h2>Email notification settings</h2>
 
-              <h1>Send e-mail SMTP settings</h1>
+              <h2>Send e-mail SMTP settings</h2>
                 <FormGroup>
                   <Label>Server</Label>
                   <Input type="text" placeholder="Enter server" value={this.state.smtpServer} onChange={(e)=>this.setState({smtpServer: e.target.value})} />
@@ -185,7 +185,7 @@ export default class ProjectEdit extends Component{
               </div>
               <hr className="m-t-10 m-b-10"/>
 
-              <h1>Receive e-mail IMAP settings</h1>
+              <h2>Receive e-mail IMAP settings</h2>
                 <FormGroup>
                   <Label>Server</Label>
                   <Input type="text" placeholder="Enter server" value={this.state.imapServer} onChange={(e)=>this.setState({imapServer: e.target.value})} />

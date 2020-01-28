@@ -168,7 +168,7 @@ export default class Note extends Component{
         <div className={"card-box-lanwiki scrollable fit-with-header-and-commandbar " + (!this.props.columns ? " center-ver w-50" : "")}>
           <div style={{padding: "20px 30px"}} onClick={() => this.state.editBodyOpen ? this.setState({editBodyOpen: false}) : null}>
                 <div className="row">
-                  <h1 className="center-hor">#</h1>
+                  <h2 className="center-hor">#</h2>
                   <span className="center-hor flex">
                     <input type="text" value={this.state.name} className="task-title-input hidden-input flex" onChange={(e)=>this.setState({name:e.target.value},this.submit.bind(this))} placeholder="Enter task name" />
                   </span>

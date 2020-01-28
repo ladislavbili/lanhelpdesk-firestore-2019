@@ -75,21 +75,28 @@ class List extends Component {
 				setLayout={this.props.setLayout}
 				data={this.state.instances}
 				displayCol={(expenditure)=>
-					<li className="" >
-						<div className="m-b-0">
-							<label>{expenditure.title}</label>
-							<div className="m-t05">
-								<p className="pull-right m-b-0 font-13">
-									<i className="fa fa-clock-o" /> <span>Start: {expenditure.startDate?timestampToString(expenditure.startDate):'None'}</span>
-								</p>
-								<p className="text-muted m-b-0 font-13">
-									<span className="">Opakovanie: {expenditure.repeat?expenditure.repeat:'Žiadne'}</span>
-								</p>
-								<p className="text-muted m-b-0 font-13">
-									<span className="">Cena: {expenditure.price?expenditure.price:'Nezadaná'}</span>
-								</p>
-							</div>
+					<li>
+						<div className="taskCol-title">
+							<span>{expenditure.title}</span>
 						</div>
+						<div className="taskCol-body">
+							<p className="pull-right">
+								<span>
+									<span className="attribute-label">Start: </span>
+									{expenditure.startDate?timestampToString(expenditure.startDate):'None'}</span>
+							</p>
+							<p >
+								<span>
+									<span className="attribute-label">Opakovanie: </span>
+									{expenditure.repeat?expenditure.repeat:'Žiadne'}</span>
+							</p>
+							<p>
+								<span>
+									<span className="attribute-label">Cena: </span>
+									{expenditure.price?expenditure.price:'Nezadaná'}</span>
+							</p>
+						</div>
+						<div className="taskCol-tags"></div>
 					</li>
 				}
 				filterBy={[

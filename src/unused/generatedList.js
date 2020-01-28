@@ -119,7 +119,7 @@ export default class Sidebar extends Component {
 					</div>
 				</div>
 				<div className="fit-with-header scrollable">
-					<h1>{this.state.currentSidebarItem.title}</h1>
+					<h2>{this.state.currentSidebarItem.title}</h2>
 						<table className="table table-centered table-borderless table-hover mb-0">
 							<thead className="thead-light">
 								<tr>

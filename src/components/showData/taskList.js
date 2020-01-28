@@ -20,7 +20,7 @@ class List extends Component {
 	render() {
 		let filter = this.props.filter[this.props.filterName];
 		return (
-				<div className="row">
+				<div>
 					<CommandBar {...this.props.commandBar} />
 					<div className="full-width scroll-visible fit-with-header-and-commandbar task-container">
 						<ListHeader {...this.props.commandBar} listName={this.props.listName} />
@@ -87,7 +87,7 @@ class List extends Component {
 																value = item["assignedTo"].map(item => `${item.name} ${item.surname} (${item.email})`).toString();
 															}
 															if(display.value === "status"){
-																value = item["status"].title.toString();
+																value = item["status"] ? item["status"].title.toString() : "";
 															}
 															if(display.value === "tags"){
 																value = item["tags"].map(item => `${item.title}`).toString();

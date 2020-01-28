@@ -50,7 +50,7 @@ export default class CompaniesList extends Component{
                 <Button
           				className="btn-link t-a-l"
           				onClick={()=>this.props.history.push('/helpdesk/settings/companies/add')}>
-          			 <i className="fa fa-plus m-r-5 m-l-5 "/> Add company
+          			 <i className="fa fa-plus m-r-5 m-l-5 "/> Company
           			</Button>
 
             </div>

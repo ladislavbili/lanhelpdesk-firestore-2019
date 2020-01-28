@@ -52,13 +52,13 @@ class UsersList extends Component{
               <Button
                 className="btn-link center-hor"
                 onClick={()=>this.props.history.push('/helpdesk/settings/users/add')}>
-                <i className="fa fa-plus p-l-5 p-r-5"/> Add user
+                <i className="fa fa-plus p-l-5 p-r-5"/> User
               </Button>
             </div>
             <div className="p-t-9 p-r-10 p-l-10 scroll-visible fit-with-header-and-commandbar">
-              <h4 className="font-24 p-l-10 p-b-10">
+              <h2 className=" p-l-10 p-b-10">
   							Users
-  						</h4>
+  						</h2>
               <table className="table table-hover">
                 <tbody>
                   {this.state.users.filter((item)=>item.email.toLowerCase().includes(this.state.userFilter.toLowerCase())).sort((user1,user2)=>user1.email>user2.email?1:-1).map((user)=>

@@ -56,7 +56,7 @@ export default class MailServerInfo extends Component{
         <div className="flex">
 					<div className="row m-b-30">
 						<div >
-							<h1>{this.state.title}</h1>
+							<h2>{this.state.title}</h2>
 						</div>
             <div className="mr-auto m-l-15 p-t-5">
               <span

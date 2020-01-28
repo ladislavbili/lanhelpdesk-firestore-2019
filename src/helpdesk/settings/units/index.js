@@ -52,13 +52,13 @@ class UnitsList extends Component {
               <Button
                 className="btn-link center-hor"
                 onClick={()=>this.props.history.push('/helpdesk/settings/units/add')}>
-                <i className="fa fa-plus p-l-5 p-r-5"/> Add unit
+                <i className="fa fa-plus p-l-5 p-r-5"/> Unit
               </Button>
             </div>
             <div className="p-t-9 p-r-10 p-l-10 scroll-visible fit-with-header-and-commandbar">
-              <h4 className="font-24 p-l-10 p-b-10 ">
+              <h2 className=" p-l-10 p-b-10 ">
   							Unit name
-  						</h4>
+  						</h2>
               <table className="table table-hover">
                 <tbody>
                   {this.state.units.filter((item)=>item.title.toLowerCase().includes(this.state.unitFilter.toLowerCase())).map((unit)=>

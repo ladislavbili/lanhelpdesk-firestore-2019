@@ -3,6 +3,7 @@ import {Button} from 'reactstrap';
 import { connect } from "react-redux";
 import {rebase} from '../../index';
 import {setCompany, setCMDBAscending, setCMDBOrderBy} from '../../redux/actions';
+import classnames from "classnames";
 
 class ItemList extends Component {
 	constructor(props) {
@@ -13,7 +14,9 @@ class ItemList extends Component {
 			items:[],
 			companies:[],
 			statuses:[],
-			sidebarItem:null
+			sidebarItem:null,
+
+			filterData: [],
 		};
 		this.fetchData.bind(this);
 		this.getSortValue.bind(this);
@@ -102,29 +105,48 @@ class ItemList extends Component {
 		})
 	}
 
+	clearFilter(){
+		if(window.confirm("Are you sure you want to clear the filter?")){
+			let newFilterData = [];
+			this.setState({
+				filterData: newFilterData,
+			});
+		}
+	}
+
 
 	render() {
 		return (
-			<div>
+			<div className="row">
 				<div className="commandbar p-l-20">
-					<div className="search-row">
-						<div className="search">
-							<button className="search-btn" type="button" onClick={()=>this.setState({activeSearch:this.state.search})}>
-								<i className="fa fa-search" />
-							</button>
-							<input
-								type="text"
-								className="form-control search-text"
-								value={this.state.search}
-								onKeyPress={(e)=>{
-									if(e.key==='Enter'){
-										this.setState({activeSearch:this.state.search})
-									}
-								}}
-								onChange={(e)=>this.setState({search:e.target.value})}
-								placeholder="Search"
-							/>
-						</div>
+					<div className="center-hor">
+						<h2>{this.state.sidebarItem?this.state.sidebarItem.title:'Item'}</h2>
+					</div>
+				</div>
+
+				<div className="fit-with-header-and-commandbar full-width scroll-visible task-container">
+					<div className="d-flex m-b-10 flex-row">
+						<div className={classnames({"m-l-0": this.props.layout === 0},
+
+																			 {"m-l-20": this.props.layout !== 0},
+																			 "search-row")}>
+							<div className="search">
+								<button className="search-btn" type="button" onClick={()=>this.setState({activeSearch:this.state.search})}>
+									<i className="fa fa-search" />
+								</button>
+								<input
+									type="text"
+									className="form-control search-text"
+									value={this.state.search}
+									onKeyPress={(e)=>{
+										if(e.key==='Enter'){
+											this.setState({activeSearch:this.state.search})
+										}
+									}}
+									onChange={(e)=>this.setState({search:e.target.value})}
+									placeholder="Search"
+									/>
+							</div>
 
 							<Button
 								className="btn-link center-hor"
@@ -136,51 +158,48 @@ class ItemList extends Component {
 							</Button>
 						</div>
 
-							<Button
-								className="btn-link center-hor"
-								onClick={()=>{
-									this.props.history.push('/cmdb/i/'+this.props.match.params.sidebarID+'/i/add');
-								}}
-								> <i className="fa fa-plus text-highlight p-l-5 p-r-5"/>
-								{(this.state.sidebarItem?this.state.sidebarItem.title:'item')}
-							</Button>
+						<Button
+							className="btn-link center-hor"
+							onClick={()=>{
+								this.props.history.push('/cmdb/i/'+this.props.match.params.sidebarID+'/i/add');
+							}}
+							> <i className="fa fa-plus text-highlight p-l-5 p-r-5"/>
+							{(this.state.sidebarItem?this.state.sidebarItem.title:'item')}
+						</Button>
 
-							<div className="ml-auto row p-r-20">
-								<div className="center-hor p-l-5 p-r-5">
-									Sort by
-								</div>
+						<div className="d-flex flex-row align-items-center ml-auto m-r-20">
+							<div className="text-basic m-r-5 m-l-5">
+								Sort by
+							</div>
 
-								<select
-									value={this.props.orderBy}
-									className="invisible-select text-bold"
-									onChange={(e)=>this.props.setCMDBOrderBy(e.target.value)}>
-									{
-										[{value:'title',label:'Title'},{value:'company',label:'Company'},{value:'IP',label:'IP'},{value:'status',label:'Status'}].map((item,index)=>
-										<option value={item.value} key={index}>{item.label}</option>
-									)
-									}
-								</select>
-
-								{ !this.props.ascending &&
-									<button type="button" className="btn btn-link btn-outline-blue waves-effect center-hor" onClick={()=>this.props.setCMDBAscending(true)}>
-										<i
-											className="fas fa-arrow-up"
-											/>
-									</button>
+							<select
+								value={this.props.orderBy}
+								className="invisible-select text-bold text-highlight"
+								onChange={(e)=>this.props.setCMDBOrderBy(e.target.value)}>
+								{
+									[{value:'title',label:'Title'},{value:'company',label:'Company'},{value:'IP',label:'IP'},{value:'status',label:'Status'}].map((item,index)=>
+									<option value={item.value} key={index}>{item.label}</option>
+								)
 								}
+							</select>
 
-								{ this.props.ascending &&
-									<button type="button" className="btn btn-link btn-outline-blue waves-effect center-hor" onClick={()=>this.props.setCMDBAscending(false)}>
-										<i
-											className="fas fa-arrow-down"
-											/>
-									</button>
+							{ !this.props.ascending &&
+								<button type="button" className="btn btn-link btn-outline-blue waves-effect center-hor" onClick={()=>this.props.setCMDBAscending(true)}>
+									<i
+										className="fas fa-arrow-up"
+										/>
+								</button>
 							}
+
+							{ this.props.ascending &&
+								<button type="button" className="btn btn-link btn-outline-blue waves-effect center-hor" onClick={()=>this.props.setCMDBAscending(false)}>
+									<i
+										className="fas fa-arrow-down"
+										/>
+								</button>
+						}
 						</div>
 					</div>
-
-				<div className="fit-with-header-and-commandbar scrollable p-20 cmdb-table">
-					<h1 className="full-width">{this.state.sidebarItem?this.state.sidebarItem.title:'Item'}</h1>
 
 						<table className="table">
 							<thead>
@@ -188,17 +207,83 @@ class ItemList extends Component {
 										<th>Name</th>
 										<th>Company</th>
 										<th>IP</th>
-										<th>Status</th>
+										<th colSpan="2">Status</th>
 								</tr>
 							</thead>
 							<tbody>
+								<tr>
+									 <th key="0">
+											<input
+												type="text"
+												value={this.state.filterData[0]}
+												className="form-control hidden-input"
+												style={{fontSize: "12px", marginRight: "10px"}}
+												onChange={(e) => {
+													let newFilterData = [...this.state.filterData];
+													newFilterData[0] = e.target.value;
+													this.setState({
+														filterData: newFilterData
+													});
+												}}/>
+									 </th>
+									 <th key="1">
+											<input
+												type="text"
+												value={this.state.filterData[1]}
+												className="form-control hidden-input"
+												style={{fontSize: "12px", marginRight: "10px"}}
+												onChange={(e) => {
+													let newFilterData = [...this.state.filterData];
+													newFilterData[1] = e.target.value;
+													this.setState({
+														filterData: newFilterData
+													});
+												}}/>
+									 </th>
+									 <th key="2">
+											<input
+												type="text"
+												value={this.state.filterData[2]}
+												className="form-control hidden-input"
+												style={{fontSize: "12px", marginRight: "10px"}}
+												onChange={(e) => {
+													let newFilterData = [...this.state.filterData];
+													newFilterData[2] = e.target.value;
+													this.setState({
+														filterData: newFilterData
+													});
+												}}/>
+									 </th>
+									 <th key="3">
+											<input
+												type="text"
+												value={this.state.filterData[3]}
+												className="form-control hidden-input"
+												style={{fontSize: "12px", marginRight: "10px"}}
+												onChange={(e) => {
+													let newFilterData = [...this.state.filterData];
+													newFilterData[3] = e.target.value;
+													this.setState({
+														filterData: newFilterData
+													});
+												}}/>
+									 </th>
+									 <th key="4" width="30px">
+										 <button type="button" className="btn btn-link waves-effect" onClick={this.clearFilter.bind(this)}>
+											 <i
+												 className="fas fa-times commandbar-command-icon m-l-8 text-highlight"
+												 />
+										 </button>
+									 </th>
+								 </tr>
 								{
 									this.getData().map((item)=>
 										<tr key={item.id} className="clickable" onClick={()=>this.props.history.push('/cmdb/i/'+this.props.match.params.sidebarID+'/'+item.id)}>
 												<td>{item.title}</td>
 												<td>{item.company?item.company.title:'Žiadna'}</td>
 												<td>{item.IP.map((item2)=><span key={item2}>{item2}  </span>)}</td>
-												<td>{item.status?item.status.title:'Žiadny'}</td>
+												<td colSpan="2">{item.status?item.status.title:'Žiadny'}</td>
+
 										</tr>
 									)
 								}

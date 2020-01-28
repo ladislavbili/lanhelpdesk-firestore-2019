@@ -372,7 +372,7 @@ export default class TasksTwoEdit extends Component {
 						<div className={"card-box fit-with-header-and-commandbar scrollable" + (!this.props.columns? " center-ver w-70 " : "")}>
 							<div className="d-flex p-2">
 								<div className="row flex">
-									<h1 className="center-hor text-extra-slim"># {this.props.match.params.taskID}</h1>
+									<h2 className="center-hor text-extra-slim"># {this.props.match.params.taskID}</h2>
 									<span className="center-hor">
 							    	<input type="text" value={this.state.title} className="task-title-input text-extra-slim hidden-input" onChange={(e)=>this.setState({title:e.target.value},this.submitTask.bind(this))} placeholder="Enter task name" />
 									</span>

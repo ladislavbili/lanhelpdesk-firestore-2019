@@ -192,7 +192,7 @@ class TaskList extends Component {
 
 				<div className="fit-with-header-and-commandbar row">
 					<div className="p-20 scrollable golden-ratio-618" style={this.props.layout===1?{flex:'auto'}:{}}>
-						<h1>Tasks</h1>
+						<h2>Tasks</h2>
 
 							<div className="p-2 max-width-400">
 								<div className="input-group">

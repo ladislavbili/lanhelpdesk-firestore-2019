@@ -92,9 +92,9 @@ export default class ItemAdd extends Component{
 
         <div className="card-box fit-with-header-and-commandbar p-t-15 scrollable" >
           <div className="row m-b-10">
-            <h4 className="center-hor flex cmdb-title-edit m-r-10">
+            <h2 className="center-hor flex cmdb-title-edit m-r-10">
               <Input type="text" placeholder="Enter name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
-            </h4>
+            </h2>
             <div className="ml-auto cmdb-info">
               <div> <span style={{color: "#7FFFD4"}}>*</span> Created by <span className="cmdb-info-name">Natalia Tyulina</span> at 22:00 16.6.2019 <span style={{color: "#7FFFD4"}}>*</span></div>
               <div><span style={{color: "#7FFFD4"}}>*</span> Edit by <span className="cmdb-info-name">Natalia Tyulina</span> at 22:00 16.6.2019 <span style={{color: "#7FFFD4"}}>*</span></div>

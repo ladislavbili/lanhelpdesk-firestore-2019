@@ -273,7 +273,7 @@ export default class TaskAdd extends Component{
 				<div className="scrollable">
 					<div className="p-t-0">
 						<div className="row m-b-15">
-							<h1 className="center-hor"># NEW</h1>
+							<h2 className="center-hor"># NEW</h2>
 							<span className="center-hor">
 								<input type="text" value={this.state.title} className="task-title-input-add required" onChange={(e)=>this.setState({title:e.target.value})} placeholder="Enter task name" />
 							</span>

@@ -72,9 +72,9 @@ class NotificationList extends Component {
               </div>
             </div>
             <div className="p-t-9 p-r-10 p-l-10 scroll-visible fit-with-header-and-commandbar">
-              <h4 className="font-24 p-l-10 p-b-10 ">
+              <h2 className=" p-l-10 p-b-10 ">
   							Notifications
-  						</h4>
+  						</h2>
               <div>
                 <button type="button" className="btn btn-link waves-effect" onClick={this.markAllAsRead.bind(this)} disabled={this.props.notifications.every((notification)=>notification.read)}>Označit všetky ako prečítané</button>
                 <button type="button" className="btn btn-link waves-effect" onClick={this.deleteAll.bind(this)} disabled={this.props.notifications.length === 0}>Vymazať všetky</button>

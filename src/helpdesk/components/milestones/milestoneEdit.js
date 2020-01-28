@@ -89,7 +89,7 @@ class MilestoneEdit extends Component{
 
           <Modal isOpen={this.state.opened} style={{width: "800px"}} toggle={this.toggle.bind(this)} >
             <ModalBody>
-              <h1  className='m-t-20'>Milestone edit</h1>
+              <h2  className='m-t-20'>Milestone edit</h2>
 							<hr className='m-t-10 m-b-10' />
 
               <FormGroup>

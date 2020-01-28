@@ -78,7 +78,7 @@ class TaskInfo extends Component {
 				<div className="m-100">
 					<div className="d-flex p-2">
 						<div className="row flex">
-							<h1 className="center-hor text-extra-slim"># {this.props.match.params.taskID}</h1>
+							<h2 className="center-hor text-extra-slim"># {this.props.match.params.taskID}</h2>
 							<span className="center-hor">
 					    	<input type="text" value={this.props.title} onChange={() => {}} className="task-title-input text-extra-slim hidden-input"/>
 							</span>

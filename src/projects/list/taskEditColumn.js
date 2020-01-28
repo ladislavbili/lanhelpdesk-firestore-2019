@@ -205,7 +205,7 @@ export default class TaskEditColumn extends Component {
         {/*MAIN*/}
         <div>
           <FormGroup className="row">
-            <p className="task-title-input" style={{paddingTop:9}}># 100</p>
+            <p className="task-title-input" style={{paddingTop:5}}># 100</p>
             <div className="flex">
 
               <Input type="text" placeholder="Task name" className="task-title-input text-extra-slim hidden-input m-0" value={this.state.title} onChange={(e) => this.setState({ title: e.target.value }, this.submitTask.bind(this))} />

@@ -51,9 +51,9 @@ class CompaniesList extends Component{
             </div>
 
             <div className="p-t-9 p-r-10 p-l-10 scroll-visible fit-with-header-and-commandbar">
-              <h4 className="font-24 p-b-10 p-l-10">
+              <h2 className=" p-b-10 p-l-10">
                 Mesačné paušály firiem
-  						</h4>
+  						</h2>
               <table className="table table-hover">
                 <tbody>
                   {

@@ -63,42 +63,25 @@ class List extends Component {
 				setLayout={this.props.setLayout}
 				data={this.state.passwords}
 				displayCol={(pass)=>
-					<li className="" >
-						<div className="m-b-0">
-							<label className="m-b-0">{pass.title}</label>
-							<div>
-								<p className="text-muted m-b-0 font-13">
-									<span className="">URL:
-										<a href={pass.URL} target="_blank" rel="noopener noreferrer" onClick={(e)=>e.stopPropagation()}>{pass.URL?pass.URL:'Nezadané'}</a>
-									</span>
-								</p>
-								<p className="text-muted m-b-0 font-13">
-									<span className="">Login: {pass.login?pass.login:'Žiadny'}</span>
-								</p>
-								<p className="text-muted m-b-0 font-13 row">
-									<span className="center-hor p-r-2">Pass:</span>
-										<span onClick={(e)=>e.stopPropagation()}>
-										{
-											pass.shown &&
-											<Input type="text" placeholder="No pass" className="mb-auto mt-auto w-a" id={'input'+pass.id}	value={pass.password} disabled={true}/>
-										}
-										{!pass.shown && <Button  className="btn" style={{height: 20, padding: 0, paddingLeft: 4, paddingRight: 4, marginTop: 4}} onClick={()=>{
-											let newPasswords = [...this.state.passwords];
-											newPasswords.find((item2)=>pass.id===item2.id).shown=true;
-											this.setState({passwords:newPasswords});
-										}}>
-										Show password
-									</Button>}
+					<li>
+						<div className="taskCol-title">
+							<span>{pass.title}</span>
+						</div>
+						<div className="taskCol-body">
+							<p>
+								<span>
+									<span className="attribute-label">URL: </span>
+										<a href={pass.URL} target="_blank" rel="noopener noreferrer" onClick={(e)=>e.stopPropagation()}>{pass.URL? pass.URL:' Nezadané'}</a>
 								</span>
-
-								<Button  className="mb-auto mt-auto btn-link" onClick={(e)=>{
-										e.stopPropagation();
-										navigator.clipboard.writeText(pass.password);
-									}}>
-									Copy
-								</Button>
-								</p>
-							</div>
+							</p>
+							<p>
+								<span>
+									<span className="attribute-label">Login: </span>
+									{pass.login?pass.login:'Žiadny'}
+								</span>
+							</p>
+						</div>
+						<div className="taskCol-tags">
 						</div>
 					</li>
 				}
@@ -128,7 +111,7 @@ class List extends Component {
 						</Button>}
 					</span>
 
-					<Button color="warning" className="mb-auto mt-auto" onClick={(e)=>{
+					<Button color="warning" className="m-l-10 mb-auto mt-auto" onClick={(e)=>{
 							e.stopPropagation();
 							navigator.clipboard.writeText(pass.password);
 						}}>

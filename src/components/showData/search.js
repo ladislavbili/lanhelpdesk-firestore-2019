@@ -16,16 +16,9 @@ class TaskListContainer extends Component {
 	render() {
 		return (
 			<div className={classnames({"m-l-0": (this.props.link.includes("settings")
-																						|| (this.props.link.includes("lanwiki") && this.props.layout === 0)
-																						|| (this.props.link.includes("passmanager") && this.props.layout === 0)
-																						|| (this.props.link.includes("expenditures") && this.props.layout === 0) )},
+																						|| this.props.layout === 0)},
 
-																 {"m-l-10": this.props.link.includes("helpdesk") && !this.props.link.includes("settings") && this.props.layout === 0},
-
-																 {"m-l-20": ((this.props.link.includes("helpdesk") && !this.props.link.includes("settings") && this.props.layout !== 0)
-													 									 || (this.props.link.includes("lanwiki") && this.props.layout === 1)
-													 									 || (this.props.link.includes("passmanager") && this.props.layout === 1)
-													 									 || (this.props.link.includes("expenditures") && this.props.layout === 1) )},
+																 {"m-l-20": this.props.layout !== 0},
 																 "search-row")}>
 					<div className="search">
 						<button className="search-btn" type="button" onClick={()=>this.props.setSearch(this.state.search)}>

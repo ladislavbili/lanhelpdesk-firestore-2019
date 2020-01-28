@@ -172,7 +172,7 @@ class Reports extends Component {
 									</button>
 						</div>
 							<div className="p-10">
-								<h1 className="m-b-15">Výkaz prác</h1>
+								<h2 className="m-b-15">Výkaz prác</h2>
 								<div>
 									<h3>Služby</h3>
 									<hr />

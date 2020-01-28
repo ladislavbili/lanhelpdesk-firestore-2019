@@ -21,7 +21,7 @@ export default class CompanyInvoice extends Component {
 							</div>
 							<div className="m-b-30">
 								<h3 className="m-b-10">Práce a výjazdy vrámci paušálu</h3>
-								<h4>Práce</h4>
+								<h2>Práce</h2>
 								<hr />
 								<table className="table m-b-10">
 									<thead>
@@ -82,7 +82,7 @@ export default class CompanyInvoice extends Component {
 								<p className="m-0 m-b-10">Spolu prirážka za práce mimo pracovných hodín: {invoice.pausalInfo.worksExtraPay} eur
 								</p>
 
-								<h4>Výjazdy</h4>
+								<h2>Výjazdy</h2>
 								<hr />
 								<table className="table m-b-10">
 									<thead>
@@ -144,7 +144,7 @@ export default class CompanyInvoice extends Component {
 
 							<div className="m-b-30">
 								<h3 className="m-b-10">Práce a výjazdy nad rámec paušálu</h3>
-								<h4>Práce</h4>
+								<h2>Práce</h2>
 								<hr />
 								<table className="table m-b-10">
 									<thead>
@@ -216,7 +216,7 @@ export default class CompanyInvoice extends Component {
 								<p className="m-0">Spolu cena s DPH: {invoice.pausalExtraInfo.worksPriceWithDPH} eur
 								</p>
 
-								<h4>Výjazdy</h4>
+								<h2>Výjazdy</h2>
 								<hr />
 								<table className="table m-b-10">
 									<thead>
@@ -289,7 +289,7 @@ export default class CompanyInvoice extends Component {
 
 							<div className="m-b-30">
 								<h3 className="m-b-10">Projektové práce a výjazdy</h3>
-								<h4>Práce</h4>
+								<h2>Práce</h2>
 								<hr />
 								<table className="table m-b-10">
 									<thead>
@@ -361,7 +361,7 @@ export default class CompanyInvoice extends Component {
 								<p className="m-0">Spolu cena s DPH: {invoice.projectInfo.worksPriceWithDPH} eur
 								</p>
 
-								<h4>Výjazdy</h4>
+								<h2>Výjazdy</h2>
 								<hr />
 								<table className="table m-b-10">
 									<thead>

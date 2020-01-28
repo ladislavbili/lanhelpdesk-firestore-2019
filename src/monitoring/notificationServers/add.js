@@ -93,7 +93,7 @@ export default class NotificationAdd extends Component{
 
 					<div className={"card-box p-t-15 scrollable fit-with-header-and-commandbar " + (!this.props.columns ? " center-ver w-50" : "")}>
             <div className="row">
-            <h1 className="flex">Add mail notification</h1>
+            <h2 className="flex">Add mail notification</h2>
               <Button
                 className={this.state.success ? "btn-success" : "btn-danger"}
                 onClick={() => this.setState({success: !this.state.success})}

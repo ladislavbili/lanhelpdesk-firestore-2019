@@ -54,7 +54,7 @@ export default class StatusesList extends Component{
               <Button
                 className="btn-link t-a-l"
                 onClick={()=>this.props.history.push('/helpdesk/settings/statuses/add')}>
-               <i className="fa fa-plus m-r-5 m-l-5 "/> Add status
+               <i className="fa fa-plus m-r-5 m-l-5 "/> Status
               </Button>
 
           </div>

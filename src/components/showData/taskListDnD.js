@@ -43,7 +43,7 @@ export default class TaskListDnD extends Component {
 											{
 												group.data.map((item)=>
 												<ul
-													className={classnames("clickable", "list-unstyled", "dnd-item")}
+													className={classnames("taskCol" ,"clickable", "list-unstyled", "dnd-item")}
 													style={{borderLeft: "3px solid " + group.groupItem.color}}
 													onClick={(e)=>{
 														this.props.history.push(this.props.link+'/'+item.id);
@@ -69,7 +69,7 @@ export default class TaskListDnD extends Component {
 											{
 												this.groupRest().map((item)=>
 												<ul
-													className={classnames("taskList", "clickable", "list-unstyled")}
+													className={classnames("taskCol", "clickable", "list-unstyled")}
 													onClick={(e)=>{
 														this.props.history.push(this.props.link+'/'+item.id);
 													}}
