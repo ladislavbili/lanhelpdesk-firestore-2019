@@ -166,25 +166,22 @@ export default class PraceWorkTrips extends Component {
 							<table className="table m-t--30">
 								<thead>
 									<tr>
-										<th width="25" className="col-form-label">
-											Práce
-										</th>
-										<th>
-										</th>
-										{this.props.extended &&  <th style={{fontSize: "12px", fontFamily: "Segoe UI", fontWeight: "500", color: "#333"}} width="170">Rieši</th>}
-										{this.props.extended &&  <th width="100">Typ</th>}
-										<th width="100">Mn.</th>
-										{this.props.showAll && <th width="100" className="table-highlight-background">Cena/Mn.</th>}
-										{this.props.showAll && <th width="100" className="table-highlight-background">Zlava</th>}
-										{this.props.showAll && <th width="130" className="table-highlight-background">Spolu</th>}
-										<th className="t-a-c" width="100"></th>
+										{ this.props.showColumns.includes(0) && <th width="25" className="col-form-label">Práce</th>}
+										{ this.props.showColumns.includes(1) && <th>{/* Typ / Nazov */}</th>}
+										{ this.props.showColumns.includes(2) && <th style={{fontSize: "12px", fontFamily: "Segoe UI", fontWeight: "500", color: "#333"}} width="170">Rieši</th>}
+										{ this.props.showColumns.includes(3) && <th width="100">Typ</th>}
+										{ this.props.showColumns.includes(4) && <th width="100">Mn.</th>}
+										{ this.props.showColumns.includes(5) && <th width="100" className="table-highlight-background">Cena/Mn.</th>}
+										{ this.props.showColumns.includes(6) && <th width="100" className="table-highlight-background">Zlava</th>}
+										{ this.props.showColumns.includes(7) && <th width="130" className="table-highlight-background">Spolu</th>}
+										{ this.props.showColumns.includes(8) && <th className="t-a-c" width="100"></th>}
 									</tr>
 								</thead>
 								<tbody>
 									{
 										this.props.subtasks.map((subtask)=>
 										<tr key={subtask.id}>
-											<td className="table-checkbox">
+											{ this.props.showColumns.includes(0) && <td className="table-checkbox">
 												<label className="custom-container">
 													<Input type="checkbox"
 														checked={subtask.done}
@@ -192,10 +189,10 @@ export default class PraceWorkTrips extends Component {
 														onChange={()=>{
 															this.props.updateSubtask(subtask.id,{done:!subtask.done})
 															}} />
-														<span className="checkmark" style={{ marginTop: "-3px"}}> </span>
+													<span className="checkmark" style={{ marginTop: "-3px"}}> </span>
 												</label>
-											</td>
-											<td>
+											</td>}
+											{ this.props.showColumns.includes(1) && <td>
 												<div>
 													<input
 														disabled={this.props.disabled}
@@ -217,8 +214,9 @@ export default class PraceWorkTrips extends Component {
 														}
 														/>
 												</div>
-											</td>
-											{ this.props.extended && <td>
+											</td>}
+
+											{ this.props.showColumns.includes(2) && <td>
 												<Select
 													isDisabled={this.props.disabled}
 													value={subtask.assignedTo}
@@ -228,10 +226,9 @@ export default class PraceWorkTrips extends Component {
 													options={this.props.taskAssigned}
 													styles={invisibleSelectStyle}
 													/>
-											</td>
-											}
+											</td> }
 
-											{ this.props.extended && <td >
+											{ this.props.showColumns.includes(3) && <td>
 												<Select
 													isDisabled={this.props.disabled}
 													value={subtask.type}
@@ -243,7 +240,7 @@ export default class PraceWorkTrips extends Component {
 													/>
 											</td>}
 
-											<td>
+											{ this.props.showColumns.includes(4) && <td>
 												<input
 													disabled={this.props.disabled}
 													type="number"
@@ -264,67 +261,70 @@ export default class PraceWorkTrips extends Component {
 														this.setState({ editedSubtaskQuantity: e.target.value })}
 													}
 													/>
-											</td>
-
-											{ this.props.showAll && <td className="table-highlight-background">
-												{isNaN(this.getPrice(subtask.type))?
-												'No price'
-												:
-												this.getPrice(subtask.type)
-											}
 											</td>}
-											{ this.props.showAll && <td className="table-highlight-background">
+
+											{ this.props.showColumns.includes(5) && <td className="table-highlight-background">
+												{ isNaN(this.getPrice(subtask.type))?
+													'No price'
+													:
+													this.getPrice(subtask.type)
+												}
+											</td>}
+
+											{ this.props.showColumns.includes(6) && <td className="table-highlight-background">
 												<input
 													disabled={this.props.disabled}
 													type="number"
 													className="form-control hidden-input h-30"
 													value={
-														parseInt(subtask.id === this.state.focusedSubtask
-															? this.state.editedSubtaskDiscount
-															: subtask.discount)
+														parseInt(subtask.id === this.state.focusedSubtask ?
+															this.state.editedSubtaskDiscount :
+															subtask.discount)
+													}
+													onBlur={() => {
+														this.props.updateSubtask(subtask.id,{discount:isNaN(parseInt(this.state.editedSubtaskDiscount))?0:parseInt(this.state.editedSubtaskDiscount)})
+														this.setState({ focusedSubtask: null });
+													}}
+													onFocus={() => {
+														this.onFocusSubtask(subtask);
+													}}
+													onChange={e =>{
+														this.setState({ editedSubtaskDiscount: e.target.value })}
+													}
+												/>
+											</td>}
+
+											{ this.props.showColumns.includes(7) && <td className="table-highlight-background">
+												{isNaN(this.getTotalDiscountedPrice(subtask))?
+													'No price'
+													:
+													this.getTotalDiscountedPrice(subtask)}
+											</td>}
+
+											{ this.props.showColumns.includes(8) && <td className="t-a-r">
+												<button className="btn btn-link waves-effect" disabled={this.props.disabled}>
+													<i className="fa fa-arrow-up"  />
+												</button>
+												<button className="btn btn-link waves-effect" disabled={this.props.disabled}>
+														<i className="fa fa-arrow-down"  />
+												</button>
+												<button className="btn btn-link waves-effect" disabled={this.props.disabled}
+													onClick={()=>{
+														if(window.confirm('Are you sure?')){
+															this.props.removeSubtask(subtask.id);
 														}
-														onBlur={() => {
-															this.props.updateSubtask(subtask.id,{discount:isNaN(parseInt(this.state.editedSubtaskDiscount))?0:parseInt(this.state.editedSubtaskDiscount)})
-															this.setState({ focusedSubtask: null });
-														}}
-														onFocus={() => {
-															this.onFocusSubtask(subtask);
-														}}
-														onChange={e =>{
-															this.setState({ editedSubtaskDiscount: e.target.value })}
-														}
-														/>
-												</td>}
-												{this.props.showAll && <td className="table-highlight-background">
-													{isNaN(this.getTotalDiscountedPrice(subtask))?
-														'No price'
-														:
-														this.getTotalDiscountedPrice(subtask)}
-												</td>}
-												<td className="t-a-r">
-													<button className="btn btn-link waves-effect" disabled={this.props.disabled}>
-														<i className="fa fa-arrow-up"  />
-													</button>
-													<button className="btn btn-link waves-effect" disabled={this.props.disabled}>
-															<i className="fa fa-arrow-down"  />
-													</button>
-													<button className="btn btn-link waves-effect" disabled={this.props.disabled}
-														onClick={()=>{
-															if(window.confirm('Are you sure?')){
-																this.props.removeSubtask(subtask.id);
-															}
-														}}>
-														<i className="fa fa-times" />
-													</button>
-												</td>
-											</tr>
+													}}>
+													<i className="fa fa-times" />
+												</button>
+											</td>}
+										</tr>
 										)
 									}
 									{/* END OF GENERATED Works*/}
 									{
 										this.props.workTrips.map((trip)=>
 										<tr key={trip.id}>
-											<td className="table-checkbox">
+											{ this.props.showColumns.includes(0) && <td className="table-checkbox">
 												<label className="custom-container">
 													<Input type="checkbox"
 														checked={trip.done}
@@ -334,8 +334,8 @@ export default class PraceWorkTrips extends Component {
 															}} />
 														<span className="checkmark" style={{ marginTop: "-3px"}}> </span>
 												</label>
-											</td>
-											<td>
+											</td>}
+											{ this.props.showColumns.includes(1) && <td>
 												<Select
 													isDisabled={this.props.disabled}
 													value={trip.type}
@@ -345,9 +345,8 @@ export default class PraceWorkTrips extends Component {
 													options={this.props.tripTypes}
 													styles={invisibleSelectStyle}
 													/>
-											</td>
-
-											{this.props.showAll && <td>
+											</td>}
+											{ this.props.showColumns.includes(2) && <td>
 												<Select
 													isDisabled={this.props.disabled}
 													value={trip.assignedTo}
@@ -358,8 +357,8 @@ export default class PraceWorkTrips extends Component {
 													styles={invisibleSelectStyle}
 													/>
 											</td>}
-											{this.props.showAll && <td>Výjazd</td>}
-											<td>
+											{ this.props.showColumns.includes(3) && <td>Výjazd</td>}
+											{ this.props.showColumns.includes(4) && <td>
 												<input
 													disabled={this.props.disabled}
 													type="number"
@@ -380,14 +379,14 @@ export default class PraceWorkTrips extends Component {
 														this.setState({ editedTripQuantity: e.target.value })}
 													}
 													/>
-											</td>
-											{this.props.showAll && <td className="table-highlight-background">
+											</td>}
+											{ this.props.showColumns.includes(5) && <td className="table-highlight-background">
 												{isNaN(this.getPrice(trip.type))?
 													'No price'
 													:
 													this.getPrice(trip.type)}
 											</td>}
-											{this.props.showAll && <td className="table-highlight-background">
+											{ this.props.showColumns.includes(6) && <td className="table-highlight-background">
 												<input
 													disabled={this.props.disabled}
 													type="number"
@@ -409,13 +408,13 @@ export default class PraceWorkTrips extends Component {
 													}
 													/>
 											</td>}
-											{this.props.showAll && <td className="table-highlight-background">
+											{ this.props.showColumns.includes(7) && <td className="table-highlight-background">
 												{isNaN(this.getTotalDiscountedPrice(trip))?
 													'No price'
 													:
 													this.getTotalDiscountedPrice(trip)}
 											</td>}
-											<td className="t-a-r">
+											{ this.props.showColumns.includes(8) && <td className="t-a-r">
 												<button className="btn btn-link waves-effect" disabled={this.props.disabled}>
 													<i className="fa fa-arrow-up"  />
 												</button>
@@ -430,86 +429,85 @@ export default class PraceWorkTrips extends Component {
 													}}>
 													<i className="fa fa-times" />
 												</button>
-											</td>
+											</td>}
 										</tr>
 									)}
 									{/* END OF GENERATED Work trips*/}
+									{/* ADD work form*/}
 									{this.state.showAddSubtask && !this.props.disabled &&
 										<tr>
-										<td colSpan="2">
-											<input
-												disabled={this.props.disabled}
-												type="text"
-												className="form-control"
-												id="inlineFormInput"
-												placeholder=""
-												value={this.state.newSubtaskTitle}
-												onChange={(e)=>this.setState({newSubtaskTitle:e.target.value})}
-												/>
-										</td>
-										{ this.props.extended && <td>
-											<Select
-												isDisabled={this.props.disabled}
-												value={this.state.newSubtaskAssigned}
-												onChange={(newSubtaskAssigned)=>{
-													this.setState({newSubtaskAssigned})
+											{ this.props.showColumns.includes(1) && <td colSpan={this.props.showColumns.includes(0)?2:1}>
+												<input
+													disabled={this.props.disabled}
+													type="text"
+													className="form-control"
+													id="inlineFormInput"
+													placeholder=""
+													value={this.state.newSubtaskTitle}
+													onChange={(e)=>this.setState({newSubtaskTitle:e.target.value})}
+													/>
+											</td>}
+											{ this.props.showColumns.includes(2) && <td>
+												<Select
+													isDisabled={this.props.disabled}
+													value={this.state.newSubtaskAssigned}
+													onChange={(newSubtaskAssigned)=>{
+														this.setState({newSubtaskAssigned})
+														}
 													}
-												}
-												options={this.props.taskAssigned}
-												styles={selectStyle}
-												/>
-										</td>}
-										{ this.props.extended && <td>
-											<Select
-												isDisabled={this.props.disabled}
-												value={this.state.newSubtaskType}
-												options={this.props.workTypes}
-												onChange={(type)=>{
-													this.setState({newSubtaskType:type})
+													options={this.props.taskAssigned}
+													styles={selectStyle}
+													/>
+											</td>}
+											{ this.props.showColumns.includes(3) && <td>
+												<Select
+													isDisabled={this.props.disabled}
+													value={this.state.newSubtaskType}
+													options={this.props.workTypes}
+													onChange={(type)=>{
+														this.setState({newSubtaskType:type})
+														}
 													}
+													styles={selectStyle}
+													/>
+											</td>}
+											{ this.props.showColumns.includes(4) && <td>
+												<input
+													disabled={this.props.disabled}
+													type="number"
+													value={this.state.newSubtaskQuantity}
+													onChange={(e)=>this.setState({newSubtaskQuantity:e.target.value})}
+													className="form-control h-30"
+													id="inlineFormInput"
+													placeholder=""
+													/>
+											</td>}
+											{ this.props.showColumns.includes(5) && <td className="table-highlight-background">
+												{isNaN(this.getPrice(this.state.newSubtaskType))?
+													'No price'
+													:
+													this.getPrice(this.state.newSubtaskType)
 												}
-												styles={selectStyle}
-												/>
-										</td>}
-										<td>
-											<input
-												disabled={this.props.disabled}
-												type="number"
-												value={this.state.newSubtaskQuantity}
-												onChange={(e)=>this.setState({newSubtaskQuantity:e.target.value})}
-												className="form-control h-30"
-												id="inlineFormInput"
-												placeholder=""
-												/>
-										</td>
-										{this.props.showAll && <td className="table-highlight-background">
-											{isNaN(this.getPrice(this.state.newSubtaskType))?
-												'No price'
-												:
-												this.getPrice(this.state.newSubtaskType)
-											}
-										</td>}
-										{ this.props.showAll && <td className="table-highlight-background">
-											<input
-												disabled={this.props.disabled}
-												type="number"
-												value={this.state.newSubtaskDiscount}
-												onChange={(e)=>this.setState({newSubtaskDiscount:e.target.value})}
-												className="form-control input h-30"
-												id="inlineFormInput"
-												placeholder=""
-												/>
-										</td>}
-
-										{this.props.showAll && <td className="table-highlight-background">
-											{isNaN(this.getTotalDiscountedPrice({discount:this.state.newSubtaskDiscount,quantity:this.state.newSubtaskQuantity,type:this.state.newSubtaskType}))?
-												'No price'
-												:
-												this.getTotalDiscountedPrice({discount:this.state.newSubtaskDiscount,quantity:this.state.newSubtaskQuantity,type:this.state.newSubtaskType})
-											}
-											</td>
-										}
-										<td className="t-a-r">
+											</td>}
+											{ this.props.showColumns.includes(6) && <td className="table-highlight-background">
+												<input
+													disabled={this.props.disabled}
+													type="number"
+													value={this.state.newSubtaskDiscount}
+													onChange={(e)=>this.setState({newSubtaskDiscount:e.target.value})}
+													className="form-control input h-30"
+													id="inlineFormInput"
+													placeholder=""
+													/>
+											</td>}
+											{ this.props.showColumns.includes(7) && <td className="table-highlight-background">
+												{isNaN(this.getTotalDiscountedPrice({discount:this.state.newSubtaskDiscount,quantity:this.state.newSubtaskQuantity,type:this.state.newSubtaskType}))?
+													'No price'
+													:
+													this.getTotalDiscountedPrice({discount:this.state.newSubtaskDiscount,quantity:this.state.newSubtaskQuantity,type:this.state.newSubtaskType})
+												}
+											</td>}
+											{ this.props.showColumns.includes(8) && <td className="t-a-r">
 											<button className="btn btn-link waves-effect"
 												disabled={this.state.newSubtaskType===null||this.props.disabled|| this.state.newSubtaskAssigned===null}
 												onClick={()=>{
@@ -541,109 +539,110 @@ export default class PraceWorkTrips extends Component {
 												}}>
 												<i className="fa fa-times"  />
 												</button>
-										</td>
-									</tr>}
+										</td>}
+										</tr>
+									}
+									{/* ADD trip form*/}
 									{this.state.showAddTrip && !this.props.disabled &&
 										<tr>
-										<td colSpan="2">
-											<Select
-												isDisabled={this.props.disabled}
-												value={this.state.newTripType}
-												onChange={(newTripType)=>{
-														this.setState({newTripType})
+											{ this.props.showColumns.includes(1) && <td colSpan={this.props.showColumns.includes(0)?2:1}>
+												<Select
+													isDisabled={this.props.disabled}
+													value={this.state.newTripType}
+													onChange={(newTripType)=>{
+															this.setState({newTripType})
+														}
 													}
+													options={this.props.tripTypes}
+													styles={selectStyle}
+													/>
+											</td>}
+											{ this.props.showColumns.includes(2) && <td>
+												<Select
+													isDisabled={this.props.disabled}
+													value={this.state.newTripAssignedTo}
+													onChange={(newTripAssignedTo)=>{
+														this.setState({newTripAssignedTo})
+														}
+													}
+													options={this.props.taskAssigned}
+													styles={selectStyle}
+													/>
+											</td>}
+											{ this.props.showColumns.includes(3) && <td>Výjazd</td>}
+											{ this.props.showColumns.includes(4) && <td>
+												<input
+													disabled={this.props.disabled}
+													type="number"
+													value={this.state.newTripQuantity}
+													onChange={(e)=>this.setState({newTripQuantity:e.target.value})}
+													className="form-control h-30"
+													id="inlineFormInput"
+													placeholder="Quantity"
+													/>
+											</td>}
+											{ this.props.showColumns.includes(5) && <td className="table-highlight-background">
+												{isNaN(this.getPrice(this.state.newTripType))?
+													'No price'
+													:
+													this.getPrice(this.state.newTripType)
 												}
-												options={this.props.tripTypes}
-												styles={selectStyle}
-												/>
-										</td>
-										{this.props.showAll && <td>
-											<Select
-												isDisabled={this.props.disabled}
-												value={this.state.newTripAssignedTo}
-												onChange={(newTripAssignedTo)=>{
-													this.setState({newTripAssignedTo})
-													}
+											</td>}
+											{ this.props.showColumns.includes(6) && <td className="table-highlight-background">
+												<input
+													disabled={this.props.disabled}
+													type="number"
+													value={this.state.newTripDiscount}
+													onChange={(e)=>this.setState({newTripDiscount:e.target.value})}
+													className="form-control h-30"
+													id="inlineFormInput"
+													placeholder="Discount"
+													/>
+											</td>}
+											{ this.props.showColumns.includes(7) && <td className="table-highlight-background">
+												{isNaN(this.getTotalDiscountedPrice({discount:this.state.newTripDiscount,quantity:this.state.newTripQuantity,type:this.state.newTripType}))?
+													'No price'
+													:
+													this.getTotalDiscountedPrice({discount:this.state.newTripDiscount,quantity:this.state.newTripQuantity,type:this.state.newTripType})
 												}
-												options={this.props.taskAssigned}
-												styles={selectStyle}
-												/>
-										</td>
-										}
-										{this.props.showAll && <td>Výjazd</td>}
-										<td>
-											<input
-												disabled={this.props.disabled}
-												type="number"
-												value={this.state.newTripQuantity}
-												onChange={(e)=>this.setState({newTripQuantity:e.target.value})}
-												className="form-control h-30"
-												id="inlineFormInput"
-												placeholder="Quantity"
-												/>
-										</td>
-										{this.props.showAll && <td className="table-highlight-background">
-											{isNaN(this.getPrice(this.state.newTripType))?
-												'No price'
-												:
-												this.getPrice(this.state.newTripType)
-											}
-										</td>}
-										{this.props.showAll && <td className="table-highlight-background">
-											<input
-												disabled={this.props.disabled}
-												type="number"
-												value={this.state.newTripDiscount}
-												onChange={(e)=>this.setState({newTripDiscount:e.target.value})}
-												className="form-control h-30"
-												id="inlineFormInput"
-												placeholder="Discount"
-												/>
-										</td>}
-									{this.props.showAll && <td className="table-highlight-background">
-										{isNaN(this.getTotalDiscountedPrice({discount:this.state.newTripDiscount,quantity:this.state.newTripQuantity,type:this.state.newTripType}))?
-											'No price'
-											:
-											this.getTotalDiscountedPrice({discount:this.state.newTripDiscount,quantity:this.state.newTripQuantity,type:this.state.newTripType})
-										}
-									</td>}
-										<td className="t-a-r">
-											<button className="btn btn-link waves-effect"
-												disabled={this.state.newTripType===null||isNaN(parseInt(this.state.newTripQuantity))||this.props.disabled|| this.state.newTripAssignedTo===null}
-												onClick={()=>{
-													let body={
-														type:this.state.newTripType?this.state.newTripType.id:null,
-														assignedTo: this.state.newTripAssignedTo?this.state.newTripAssignedTo.id:null,
-														quantity: this.state.newTripQuantity!==''?this.state.newTripQuantity:0,
-														discount: this.state.newTripDiscount!==''?this.state.newTripDiscount:0,
-														done: false,
-													}
+											</td>}
+											{ this.props.showColumns.includes(8) && <td className="t-a-r">
+												<button className="btn btn-link waves-effect"
+													disabled={this.state.newTripType===null||isNaN(parseInt(this.state.newTripQuantity))||this.props.disabled|| this.state.newTripAssignedTo===null}
+													onClick={()=>{
+														let body={
+															type:this.state.newTripType?this.state.newTripType.id:null,
+															assignedTo: this.state.newTripAssignedTo?this.state.newTripAssignedTo.id:null,
+															quantity: this.state.newTripQuantity!==''?this.state.newTripQuantity:0,
+															discount: this.state.newTripDiscount!==''?this.state.newTripDiscount:0,
+															done: false,
+														}
 
-													this.setState({
-														newTripAssignedTo:this.props.taskAssigned.length>0?this.props.taskAssigned[0]:null,
-														newTripQuantity:1,
-														newTripDiscount:0,
-														showAddTrip:false
-													});
-													this.props.submitTrip(body);
+														this.setState({
+															newTripAssignedTo:this.props.taskAssigned.length>0?this.props.taskAssigned[0]:null,
+															newTripQuantity:1,
+															newTripDiscount:0,
+															showAddTrip:false
+														});
+														this.props.submitTrip(body);
+														}
 													}
-												}
-												>
-												<i className="fa fa-plus" />
-											</button>
-											<button className="btn btn-link waves-effect"
-												disabled={this.props.disabled}
-												onClick={()=>{
-													this.setState({showAddTrip: false,showAddSubtask:false})
-												}}>
-												<i className="fa fa-times"  />
+													>
+													<i className="fa fa-plus" />
 												</button>
-										</td>
-									</tr>}
-
+												<button className="btn btn-link waves-effect"
+													disabled={this.props.disabled}
+													onClick={()=>{
+														this.setState({showAddTrip: false,showAddSubtask:false})
+													}}>
+													<i className="fa fa-times"  />
+													</button>
+											</td>}
+										</tr>}
+									{/* Add buttons */}
 									{!this.state.showAddSubtask && !this.state.showAddTrip && !this.props.disabled &&
 										<tr >
-											<td colSpan={this.props.showAll?"8":"4"}>
+											<td colSpan={this.props.showColumns.length}>
 												{!this.state.showAddSubtask && <button className="btn btn-table-add-item"
 													disabled={this.props.disabled}
 													onClick={()=>{
@@ -664,31 +663,32 @@ export default class PraceWorkTrips extends Component {
 								</tbody>
 							</table>
 						</div>
-						{this.props.showAll &&
+						{/* Totals */}
+						{this.props.showTotals &&
 							<div className="text-right">
 								<b>Cena bez DPH: </b>
 								{this.props.subtasks.concat(this.props.workTrips).reduce((acc, cur)=> acc+(isNaN(this.getTotalPrice(cur))?0:this.getTotalPrice(cur)),0).toFixed(2)}
 						</div>}
-						{this.props.showAll &&
+						{this.props.showTotals &&
 							<div className="text-right">
 								<b>DPH: </b>
 								{this.getDPH()}
 						</div>}
-						{this.props.showAll &&
+						{this.props.showTotals &&
 							<div className="text-right">
 								<b>Cena s DPH: </b>
 								{this.props.subtasks.concat(this.props.workTrips).reduce((acc, cur)=> acc+(isNaN(this.getTotalPrice(cur))?0:this.getTotalPrice(cur)*this.getDPH()),0).toFixed(2)}
 						</div>}
 
 						{false &&
-							this.props.showAll && <div>
+							this.props.showTotals && <div>
 							<p className="text-right" style={{marginTop: (((this.state.showAddSubtask||this.state.showAddTrip) || this.props.disabled) ? "" : "")}}>
 								<b>Zľava: </b>
 								{this.props.subtasks.concat(this.props.workTrips).reduce((acc, cur)=> acc+(isNaN(this.getTotalPrice(cur)*(cur.discount))?0:this.getTotalPrice(cur)*(cur.discount)/100),0).toFixed(2)}
 							</p>
 						</div>}
 						{false &&
-							this.props.showAll && <div>
+							this.props.showTotals && <div>
 							<p className="text-right" style={{marginTop: (((this.state.showAddSubtask||this.state.showAddTrip) || this.props.disabled) ? "" : "")}}>
 								<b>Cena bez DPH po zlave: </b>
 								{this.props.subtasks.concat(this.props.workTrips).reduce((acc, cur)=> acc+(isNaN(this.getTotalDiscountedPrice(cur))?0:this.getTotalDiscountedPrice(cur)),0).toFixed(2)}
@@ -696,7 +696,7 @@ export default class PraceWorkTrips extends Component {
 						</div>}
 
 						{false &&
-							this.props.showAll && <div>
+							this.props.showTotals && <div>
 							<p className="text-right" style={{marginTop: (((this.state.showAddSubtask||this.state.showAddTrip) || this.props.disabled) ? "" : "")}}>
 								<b>Cena s DPH po zlave: </b>
 								{this.props.subtasks.concat(this.props.workTrips).reduce((acc, cur)=> acc+(isNaN(this.getTotalDiscountedPrice(cur))?0:this.getTotalDiscountedPrice(cur)*this.getDPH()),0).toFixed(2)}

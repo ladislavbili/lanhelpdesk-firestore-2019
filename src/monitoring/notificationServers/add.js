@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label, Input } from 'reactstrap';
 import Select, { Creatable } from 'react-select';
-import {selectStyle, disabledSelectStyle} from '../../scss/selectStyles';
+import DatePicker from 'react-datepicker';
+import moment from 'moment';
+
 import {rebase} from "../../index";
-import {isEmail, toMillisec} from "../../helperFunctions";
+import {selectStyle, disabledSelectStyle} from '../../scss/selectStyles';
+import datePickerConfig from '../../scss/datePickerConfig';
+import { isEmail, toMillisec, toMomentInput, fromMomentToUnix } from "../../helperFunctions";
 
 const TIME_OPTIONS = [
 //  { label: "minutes", value: "m"},
@@ -17,12 +21,12 @@ export default class NotificationAdd extends Component{
     this.state={
       title: "",
       company: null,
-      startDate: "",
+      startDate: null,
       startDateDisabled: false,
       repeatNumber: "",
       repeatTime: "",
 
-      from: "",
+      emailFrom: "",
       fromDisabled: false,
       subject: "",
       subjectDisabled: false,
@@ -62,16 +66,16 @@ export default class NotificationAdd extends Component{
     let data = {
       title: this.state.title,
       company: this.state.company ? this.state.company.value : null,
-      startDate: this.state.startDate ? new Date(this.state.startDate).getTime() : null,
+      startDate: fromMomentToUnix(this.state.startDate),
       startDateDisabled: this.state.startDateDisabled,
       repeatTime: this.state.repeatTime ? this.state.repeatTime.label : null,
       repeatNumber: this.state.repeatNumber ? toMillisec(this.state.repeatNumber, this.state.repeatTime.label) : null,
-      from: this.state.from ? this.state.from : null,
+      from: this.state.emailFrom ? this.state.emailFrom : null,
       fromDisabled: this.state.fromDisabled,
       subject: this.state.subject ? this.state.subject : null,
       subjectDisabled: this.state.subjectDisabled,
       mailOK: this.state.mailOK.length > 0 ? this.state.mailOK.map(b => b.label) : null,
-      mailInvalid: this.state.mailInvalid.length > 0 ? this.state.mailInvalid.map(b => b.label) : null,
+      mailInvalid: this.state.mailInvalid.length > 0 ? this.state.mailInvalid.map(b => b.label) : [],
       alertMail: this.state.alertMail ? this.state.alertMail : null,
       alertMailDisabled: this.state.alertMailDisabled,
       note: this.state.note ? this.state.note : null,
@@ -126,7 +130,16 @@ export default class NotificationAdd extends Component{
                   <div className="m-l-15 w-10" htmlFor="startDis">Disabled</div>
                 </div>
                 <div>
-                  <Input type="datetime-local" disabled={this.state.startDateDisabled} placeholder="Enter start date" value={this.state.startDate} onChange={(e)=>this.setState({startDate: e.target.value})} />
+                  <DatePicker
+                    className="form-control hidden-input"
+                    disabled={this.state.startDateDisabled}
+                    selected={this.state.startDate}
+                    onChange={date => {
+                      this.setState({ startDate: date });
+                    }}
+                    placeholderText="No pending date"
+                    {...datePickerConfig}
+                    />
                 </div>
               </FormGroup>
 
@@ -161,9 +174,9 @@ export default class NotificationAdd extends Component{
                   <div className="m-l-15 w-10" htmlFor="fromDis">Disabled</div>
                 </div>
                 <div>
-                  <Input type="text"  className={(this.state.from.length > 0 && !isEmail(this.state.from)) ? "form-control-warning" : ""} disabled={this.state.fromDisabled} placeholder="Enter sender" value={this.state.from} onChange={(e)=>this.setState({from: e.target.value})} />
-                  { this.state.from.length > 0 &&
-                    !isEmail(this.state.from) &&
+                  <Input type="text"  className={(this.state.emailFrom.length > 0 && !isEmail(this.state.emailFrom)) ? "form-control-warning" : ""} disabled={this.state.fromDisabled} placeholder="Enter sender" value={this.state.emailFrom} onChange={(e)=>this.setState({emailFrom: e.target.value})} />
+                  { this.state.emailFrom.length > 0 &&
+                    !isEmail(this.state.emailFrom) &&
                     <Label className="pull-right warning">This mail address is invalid.</Label>
                   }
                </div>
@@ -231,10 +244,10 @@ export default class NotificationAdd extends Component{
     						className="btn pull-right"
                 disabled={this.state.saving
                   || this.state.title === ""
-                  || (!this.state.startDateDisabled && this.state.startDate === "")
+                  || (!this.state.startDateDisabled && this.state.startDate === null)
                   || (!this.state.startDateDisabled && this.state.repeatNumber < 0)
                   || (!this.state.startDateDisabled && !this.state.repeatTime )
-                  || (!this.state.fromDisabled && !isEmail(this.state.from))
+                  || (!this.state.fromDisabled && !isEmail(this.state.emailFrom))
                   || (!this.state.subjectDisabled && this.state.subject === "")
                   || this.state.mailOK.length === 0
                   || (!this.state.alertMailDisabled && !isEmail(this.state.alertMail))}

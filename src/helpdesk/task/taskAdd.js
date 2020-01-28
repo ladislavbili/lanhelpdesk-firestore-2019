@@ -7,8 +7,7 @@ import { Label, TabContent, TabPane, Nav, NavItem, NavLink, Button } from 'react
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 
-import MaterialsBudget from '../components/materials/rozpocet';
-import MaterialsExpenditure from '../components/materials/materials';
+import Materials from '../components/materials';
 
 import Subtasks from '../components/subtasks';
 import Repeat from '../components/repeat';
@@ -248,8 +247,8 @@ export default class TaskAdd extends Component{
 				status: def.status&& (def.status.fixed||def.status.def)?state.statuses.find((item)=> item.id===def.status.value):state.statuses[0],
 				tags: def.tags&& (def.tags.fixed||def.tags.def)? state.allTags.filter((item)=> def.tags.value.includes(item.id)):this.state.tags,
 				type: def.type && (def.type.fixed||def.type.def)?state.taskTypes.find((item)=> item.id===def.type.value):this.state.type,
-				overtime: def.overtime&& (def.overtime.fixed||def.overtime.def)? booleanSelects.filter((item)=> def.overtime.value === item.value):this.state.overtime,
-				pausal: def.pausal&& (def.pausal.fixed||def.pausal.def)? booleanSelects.filter((item)=> def.pausal.value === item.value):this.state.pausal,
+				overtime: def.overtime&& (def.overtime.fixed||def.overtime.def)? booleanSelects.find((item)=> def.overtime.value === item.value):this.state.overtime,
+				pausal: def.pausal&& (def.pausal.fixed||def.pausal.def)? booleanSelects.find((item)=> def.pausal.value === item.value):this.state.pausal,
 				project,
 				viewOnly: this.props.currentUser.userData.role.value===0 && !permission.write,
 				defaults: def
@@ -307,12 +306,7 @@ export default class TaskAdd extends Component{
 						delete w['fake'];
 						delete w['task'];
 						return {...w, id:this.getNewID()};})
-					 : [],/*
-			 subtasks: this.props.task ? this.props.task.subtasks.map(s => {
-						delete s['fake'];
-						delete s['task'];
-						return {...s, id:this.getNewID()};})
-					 : [],*/
+					 : [],
 				taskMaterials: this.props.task ? this.props.task.taskMaterials.map(m => {
 						delete m['fake'];
 						delete m['task'];
@@ -360,7 +354,6 @@ export default class TaskAdd extends Component{
 				totalPrice
 			}
 		});
-
 		return (
 			<div>
 			<div className="scrollable">
@@ -458,7 +451,7 @@ export default class TaskAdd extends Component{
 						}
 
 				{!this.state.viewOnly && <div className="col-lg-12">
-					<div class="col-lg-12">{/*NUTNE !! INAK AK NIE JE ZOBRAZENY ASSIGNED SELECT TAK SA VZHLAD POSUVA*/}
+					<div className="col-lg-12">{/*NUTNE !! INAK AK NIE JE ZOBRAZENY ASSIGNED SELECT TAK SA VZHLAD POSUVA*/}
 						<div className="col-lg-4">
 							<div className="row p-r-10">
 								<Label className="col-3 col-form-label">Projekt</Label>
@@ -803,8 +796,8 @@ export default class TaskAdd extends Component{
 								<TabContent activeTab={this.state.toggleTab}>
 								<TabPane tabId="1">
 									<PraceWorkTrips
-										extended={false}
-										showAll={false}
+										showColumns={[0,1,4,8]}
+										showTotals={false}
 										disabled={this.state.viewOnly}
 										taskAssigned={this.state.assignedTo}
 										subtasks={taskWorks}
@@ -841,7 +834,9 @@ export default class TaskAdd extends Component{
 											this.setState({workTrips:newTrips});
 										}}
 										/>
-									<MaterialsExpenditure
+									<Materials
+										showColumns={[0,1,2,3,4,6]}
+										showTotals={true}
 										disabled={this.state.viewOnly}
 										materials={taskMaterials}
 										submitMaterial={(newMaterial)=>{
@@ -865,8 +860,7 @@ export default class TaskAdd extends Component{
 								</TabPane>
 								<TabPane tabId="2">
 									<PraceWorkTrips
-										extended={true}
-										showAll={true}
+										showColumns={[0,1,2,3,4,5,6,7,8]}
 										disabled={this.state.viewOnly}
 										taskAssigned={this.state.assignedTo}
 										subtasks={taskWorks}
@@ -903,7 +897,8 @@ export default class TaskAdd extends Component{
 											this.setState({workTrips:newTrips});
 										}}
 										/>
-									<MaterialsBudget
+									<Materials
+										showColumns={[0,1,2,3,4,5,6]}
 										disabled={this.state.viewOnly}
 										materials={taskMaterials}
 										submitMaterial={(newMaterial)=>{
