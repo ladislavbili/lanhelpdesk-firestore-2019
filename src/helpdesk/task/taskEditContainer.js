@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Modal, ModalBody, Button } from 'reactstrap';
 import TaskEdit from './taskEdit';
 import TaskEdit2 from './taskEdit2';
 
