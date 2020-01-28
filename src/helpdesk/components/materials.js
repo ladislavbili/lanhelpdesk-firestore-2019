@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import {Input } from 'reactstrap';
 import Select from 'react-select';
-import { selectStyle, invisibleSelectStyle} from '../../../scss/selectStyles';
+import { selectStyle, invisibleSelectStyle} from '../../scss/selectStyles';
 
 export default class Rozpocet extends Component {
 	constructor(props){
@@ -29,10 +28,10 @@ export default class Rozpocet extends Component {
 
 	componentWillReceiveProps(props){
 		if((this.props.company===null && props.company!==null) ||
-		(props.company && this.props.company && props.company.id!==this.props.company.id)){
+		(this.props.company && props.company && props.company.id!==this.props.company.id)){
 			this.setState({newMargin:props.company.pricelist.materialMargin});
 		}
-		if((this.props.units&& props.units&& this.props.units.length!==props.units.length)){
+		if(this.props.units && props.units && this.props.units.length!==props.units.length){
 			let newUnit= props.units[0];
 			if(props.defaultUnit!==null){
 				newUnit=props.units.find((item)=>item.id===props.defaultUnit)
@@ -74,50 +73,23 @@ export default class Rozpocet extends Component {
 				<div className="row">
 					<div className="col-md-12">
 						<div>
-							<table className="table m-t--30">
+							<table className="table">
 								<thead>
-									<tr >
-										{false && <th width="25" className="table-checkbox">
-											<label className="custom-container">
-		                    <Input type="checkbox"
-													checked={this.props.materials.length===this.state.selectedIDs.length}
-													onChange={()=>this.setState({selectedIDs:(this.props.materials.length===this.state.selectedIDs.length?[]:this.props.materials.map((item)=>item.id))})}
-													/>
-												<span className="checkmark" style={{ marginTop: "-8px"}}> </span>
-		                  </label>
-										</th>}
-										<th className="t-a-l p-l-15 col-form-label">Material</th>
-										<th style={{fontSize: "12px", fontFamily: "Segoe UI", fontWeight: "500", color: "#333"}}  width="100">Mn.</th>
-										<th width="100">Jednotka</th>
-										<th width="100">Cena</th>
-										<th width="100">Nákup</th>
-										{false && <th width="120">Cena</th>}
-										<th className="t-a-r" width="100"></th>
+									<tr>
+										{ this.props.showColumns.includes(0) && <th className="col-form-label">Materiál</th>}
+										{ this.props.showColumns.includes(1) && <th style={{fontSize: "12px", fontFamily: "Segoe UI", fontWeight: "500", color: "#333"}} width="100">Mn.</th>}
+										{ this.props.showColumns.includes(2) && <th width="100">Jednotka</th>}
+										{ this.props.showColumns.includes(3) && <th width="100">Cena</th>}
+										{ this.props.showColumns.includes(4) && <th width="100" className="table-highlight-background">Nákup</th>}
+										{ this.props.showColumns.includes(5) && <th width="100" className="table-highlight-background">Marža</th>}
+										{ this.props.showColumns.includes(6) && <th className="t-a-c" width="130"></th>}
 									</tr>
 								</thead>
 								<tbody>
 									{
 										this.props.materials.map((material)=>
 										<tr key={material.id}>
-											{false && <td className="table-checkbox t-a-r">
-												<label className="custom-container">
-			                    <Input type="checkbox"
-														disabled={this.props.disabled}
-														checked={this.state.selectedIDs.includes(material.id)}
-														onChange={()=>{
-															if(!this.state.selectedIDs.includes(material.id)){
-																this.setState({selectedIDs:[...this.state.selectedIDs,material.id]})
-															}else{
-																let newSelectedIDs=[...this.state.selectedIDs];
-																newSelectedIDs.splice(newSelectedIDs.findIndex((item)=>item.id===material.id),1);
-																this.setState({selectedIDs:newSelectedIDs})
-															}
-														}
-													} />
-												<span className="checkmark" style={{ marginTop: "-2px"}}> </span>
-			                  </label>
-											</td>}
-											<td>
+											{ this.props.showColumns.includes(0) && <td>
 													<input
 														disabled={this.props.disabled}
 														className="form-control hidden-input"
@@ -145,8 +117,8 @@ export default class Rozpocet extends Component {
 															this.setState({ editedMaterialTitle: e.target.value })}
 														}
 														/>
-											</td>
-											<td>
+												</td>}
+											{ this.props.showColumns.includes(1) && <td>
 												<input
 													disabled={this.props.disabled}
 													type="number"
@@ -175,8 +147,8 @@ export default class Rozpocet extends Component {
 														this.setState({ editedMaterialQuantity: e.target.value })}
 													}
 													/>
-											</td>
-											<td>
+											</td>}
+											{ this.props.showColumns.includes(2) && <td>
 												<Select
 													isDisabled={this.props.disabled}
 													value={material.unit}
@@ -186,14 +158,9 @@ export default class Rozpocet extends Component {
 													options={this.props.units}
 													styles={invisibleSelectStyle}
 													/>
-											</td>
-											{false && <td>
-												{parseFloat(material.id === this.state.focusedMaterial
-														? editedFinalUnitPrice
-														: material.finalUnitPrice).toFixed(2)
-													}
 											</td>}
-											<td>
+											{ this.props.showColumns.includes(3) && <td>
+												<div className="p-t-5">
 													{
 														(
 														(parseFloat(material.id === this.state.focusedMaterial
@@ -203,8 +170,9 @@ export default class Rozpocet extends Component {
 														)
 														.toFixed(2)
 													}
-											</td>
-										<td className="table-highlight-background">
+												</div>
+											</td>}
+											{ this.props.showColumns.includes(4) && <td className="table-highlight-background">
 												<input
 													disabled={this.props.disabled}
 													type="number"
@@ -233,9 +201,46 @@ export default class Rozpocet extends Component {
 														this.setState({ editedMaterialPrice: e.target.value })}
 													}
 													/>
-											</td>
-
-											<td className="t-a-r">
+											</td>}
+											{ this.props.showColumns.includes(5) && <td className="table-highlight-background">
+												<input
+													disabled={this.props.disabled}
+													type="number"
+													className="form-control hidden-input h-30"
+													value={
+														parseInt(material.id === this.state.focusedMaterial
+															? this.state.editedMaterialMargin
+															: material.margin)
+														}
+														onBlur={() => {
+															this.props.updateMaterial(material.id,{margin:this.state.editedMaterialMargin})
+															this.setState({ focusedMaterial: null });
+														}}
+														onFocus={() => {
+															this.setState({
+																editedMaterialTitle:material.title,
+																editedMaterialQuantity:material.quantity,
+																editedMaterialUnit:material.unit,
+																editedMaterialMargin:material.margin,
+																editedMaterialPrice:material.price,
+																focusedMaterial: material.id
+															});
+														}}
+														onChange={e =>{
+															this.setState({ editedMaterialMargin: e.target.value })}
+														}
+														/>
+												</td>}
+											{ this.props.showColumns.includes(6) && <td className="t-a-r">
+												<button className="btn btn-link waves-effect" disabled={this.props.disabled}>
+														<i className="fa fa-sync-alt" onClick={()=>{
+																if(parseInt(material.price) <= 50){
+																	this.props.updateMaterial(material.id,{margin:(this.props.company && this.props.company.pricelist)?parseInt(this.props.company.pricelist.materialMargin):material.margin})
+																}else{
+																	this.props.updateMaterial(material.id,{margin:(this.props.company && this.props.company.pricelist)?parseInt(this.props.company.pricelist.materialMarginExtra):material.margin})
+																}
+															}} />
+												</button>
 												<button className="btn btn-link waves-effect" disabled={this.props.disabled}>
 													<i className="fa fa-arrow-up"  />
 												</button>
@@ -252,32 +257,27 @@ export default class Rozpocet extends Component {
 													}}>
 													<i className="fa fa-times" />
 												</button>
-											</td>
-
+											</td>}
 											</tr>
 										)
 									}
 
 									{!this.state.showAddItem && !this.props.disabled &&
-										<tr>
-											<td>
-												<button className="btn btn-table-add-item"
-													disabled={this.props.disabled}
-													onClick={()=>{
-													 this.setState({showAddItem: true});
-													}}>
-													+ Materiál
-												</button>
-											</td>
-											<td></td>
-											<td></td>
-											<td></td>
+										<tr >
+										<td colSpan={this.props.showColumns.length}>
+											<button className="btn btn-table-add-item"
+												onClick={()=>{
+												 this.setState({showAddItem: true});
+												}}>
+												+ Materiál
+											</button>
+										</td>
 									</tr>
 									}
 
 								{this.state.showAddItem && !this.props.disabled &&
 									<tr>
-										<td>
+										{ this.props.showColumns.includes(0) && <td>
 											<input
 												disabled={this.props.disabled}
 												type="text"
@@ -287,8 +287,8 @@ export default class Rozpocet extends Component {
 												value={this.state.newTitle}
 												onChange={(e)=>this.setState({newTitle:e.target.value})}
 												/>
-										</td>
-										<td >
+										</td>}
+										{ this.props.showColumns.includes(1) && <td >
 											<input
 												disabled={this.props.disabled}
 												type="number"
@@ -298,8 +298,8 @@ export default class Rozpocet extends Component {
 												id="inlineFormInput"
 												placeholder=""
 												/>
-										</td>
-										<td>
+										</td>}
+										{ this.props.showColumns.includes(2) && <td>
 											<Select
 												isDisabled={this.props.disabled}
 												value={this.state.newUnit}
@@ -310,41 +310,50 @@ export default class Rozpocet extends Component {
 											options={this.props.units}
 											styles={selectStyle}
 											/>
-									</td>
-							{false &&				<td>
-										{unitPrice.toFixed(2)}
 									</td>}
-									<td>
-										{
-											(unitPrice*this.state.newQuantity).toFixed(2)
-										}
-									</td>
-									<td className="table-highlight-background">
-										<input
-											type="number"
-											disabled={this.props.disabled}
-											value={this.state.newPrice}
-											onChange={(e)=>{
-												let newPrice = e.target.value;
-												if(!this.state.marginChanged){
-													if(newPrice==='' || parseFloat(newPrice) < 50 ){
-														this.setState({newPrice,newMargin:(this.props.company? this.props.company.pricelist.materialMargin : 0)});
+										{ this.props.showColumns.includes(3) && <td>
+											<div className="p-t-5">
+											{
+												(unitPrice*this.state.newQuantity).toFixed(2)
+											}
+											</div>
+										</td>}
+										{ this.props.showColumns.includes(4) && <td className="table-highlight-background">
+											<input
+												disabled={this.props.disabled}
+												type="number"
+												value={this.state.newPrice}
+												onChange={(e)=>{
+													let newPrice = e.target.value;
+													if(!this.state.marginChanged){
+														if(newPrice==='' || parseFloat(newPrice) < 50 ){
+															this.setState({newPrice,newMargin:(this.props.company? this.props.company.pricelist.materialMargin : 0)});
+														}else{
+															this.setState({newPrice,newMargin:(this.props.company? this.props.company.pricelist.materialMarginExtra : 0)});
+														}
 													}else{
-														this.setState({newPrice,newMargin:(this.props.company? this.props.company.pricelist.materialMarginExtra : 0)});
+														this.setState({newPrice});
 													}
-												}else{
-													this.setState({newPrice});
-												}
-											}}
-											className="form-control h-30"
-											id="inlineFormInput"
-											placeholder=""
-											/>
-									</td>
-
-										<td className="t-a-r">
+												}}
+												className="form-control h-30"
+												id="inlineFormInput"
+												placeholder=""
+												/>
+										</td>}
+										{ this.props.showColumns.includes(5) && <td className="table-highlight-background">
+											<input
+												disabled={this.props.disabled}
+												type="number"
+												value={this.state.newMargin}
+												onChange={(e)=>this.setState({newMargin:e.target.value,marginChanged:true})}
+												className="form-control h-30"
+												id="inlineFormInput"
+												placeholder=""
+												/>
+										</td>}
+										{ this.props.showColumns.includes(6) && <td className="t-a-r">
 											<button className="btn btn-link waves-effect"
-												disabled={this.state.newUnit===null||this.state.disabled}
+												disabled={this.state.newUnit===null||this.props.disabled}
 												onClick={()=>{
 													let body={
 											      margin:this.state.newMargin!==''?this.state.newMargin:0,
@@ -374,15 +383,14 @@ export default class Rozpocet extends Component {
 												}}>
 												<i className="fa fa-times"  />
 												</button>
-										</td>
-									</tr>
-								}
+										</td>}
+									</tr> }
 								</tbody>
 							</table>
 						</div>
 						<div className="text-right">
 								<b>Cena bez DPH: </b>
-								{this.props.materials.reduce((acc, cur)=> acc +( isNaN(parseFloat(cur.totalPrice)) ? 0 : parseFloat(cur.totalPrice)),0).toFixed(2)}
+								{this.props.materials.reduce((acc, cur)=> acc+(isNaN(parseInt(cur.totalPrice))? 0 : parseInt(cur.totalPrice)),0).toFixed(2)}
 						</div>
 						<div className="text-right">
 								<b>DPH: </b>
@@ -390,20 +398,19 @@ export default class Rozpocet extends Component {
 						</div>
 						<div className="text-right">
 								<b>Cena s DPH: </b>
-								{this.props.materials.reduce((acc, cur)=> acc+(isNaN(parseFloat(cur.totalPrice))? 0 : (parseFloat(cur.totalPrice)*this.getDPH())),0).toFixed(2)}
+								{this.props.materials.reduce((acc, cur)=> acc+(isNaN(parseInt(cur.totalPrice))? 0 : (parseInt(cur.totalPrice)*this.getDPH())),0).toFixed(2)}
 						</div>
-
 						{false &&
-							<div className="row justify-content-end">
+						<div className="row justify-content-end">
 							<div className="col-md-6">
-								<p className="text-right">
+								<p className="text-right" style={{marginTop: ((this.state.showAddItem||this.props.disabled) ? "" : "-45px")}}>
 									<b>Sub-total:</b>
 									{(this.props.materials.map((material)=>parseFloat(material.totalPrice)).reduce((acc, cur)=> acc+cur,0)).toFixed(2)}
 								</p>
+
 								</div>
 							</div>
-						}
-
+							}
 						</div>
 
 					</div>

@@ -2,16 +2,19 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import { Button, Popover, PopoverHeader, PopoverBody } from 'reactstrap';
 import { FormGroup, Label, Input } from 'reactstrap';
+import DatePicker from 'react-datepicker';
+
 import {selectStyle} from '../../scss/selectStyles';
-import {toCentralTime, fromCentralTime} from '../../helperFunctions';
-var intervals = [{title:null,value:null,label:'Žiadny'},{title:'Deň',value:86400000,label:'Deň'},{title:'Týždeň',value:604800016.56,label:'Týždeň'},{title:'Mesiac',value:2629800000,label:'Mesiac'}];
+import datePickerConfig from '../../scss/datePickerConfig';
+import {toMomentInput, fromMomentToUnix } from '../../helperFunctions';
+var intervals = [{title:null,value:null,label:'Žiadny'},{title:'Deň',value:86400000,label:'Deň'},{title:'Týždeň',value:604800000,label:'Týždeň'},{title:'Mesiac',value:2629800000,label:'Mesiac'}];
 
 export default class Repeat extends Component{
 constructor(props) {
   super(props);
   this.state = {
     open: false,
-    startAt:"",
+    startAt:null,
     repeatEvery:1,
     repeatInterval:intervals[0],
   };
@@ -23,7 +26,7 @@ componentWillReceiveProps(props){
     this.setState({open: false});
     if(props.repeat===null){
       this.setState({
-        startAt:"",
+        startAt:null,
         repeatEvery:1,
         repeatInterval:intervals[0],
       });
@@ -32,7 +35,7 @@ componentWillReceiveProps(props){
   if((this.props.repeat===null && props.repeat!==null)|| (this.props.repeat!==null && props.repeat!==null && props.repeat.id!==this.props.repeat.id)){
       let repeatInterval = intervals.find((interval)=>interval.title===props.repeat.repeatInterval);
       this.setState({
-        startAt:props.repeat.startAt ? new Date(fromCentralTime(props.repeat.startAt)).toISOString().replace("Z", "") : "",
+        startAt:toMomentInput(props.repeat.startAt),
         repeatEvery:props.repeat.repeatEvery/repeatInterval.value,
         repeatInterval,
       });
@@ -86,10 +89,14 @@ render() {
           <div>
             <FormGroup>
               <Label>Start date *</Label>
-              <Input type="datetime-local"
-                placeholder="Enter start date"
-                value={this.state.startAt}
-                onChange={(e)=>this.setState({startAt: e.target.value})}
+              <DatePicker
+                className="form-control hidden-input"
+                selected={this.state.startAt}
+                onChange={startAt => {
+                  this.setState({ startAt });
+                }}
+                placeholderText="No start date"
+                {...datePickerConfig}
                 />
             </FormGroup>
 
@@ -124,12 +131,12 @@ render() {
               <div className="flex">
                 <Button type="button"
                   onClick={()=>{
-                     if(this.state.repeatInterval.value===null || this.state.repeatEvery <= 0 || isNaN(this.state.repeatEvery) || isNaN(new Date(this.state.startAt).getTime())){
+                     if(this.state.repeatInterval.value===null || this.state.repeatEvery <= 0 || isNaN(this.state.repeatEvery) || this.state.startAt === null ){
                        if(this.props.repeat!==null){
                          this.props.deleteRepeat();
                        }
                      }else{
-                       this.props.submitRepeat({startAt:toCentralTime(this.state.startAt),repeatEvery:this.state.repeatEvery*this.state.repeatInterval.value,repeatInterval:this.state.repeatInterval.title});
+                       this.props.submitRepeat({startAt:fromMomentToUnix(this.state.startAt),repeatEvery:this.state.repeatEvery*this.state.repeatInterval.value,repeatInterval:this.state.repeatInterval.title});
                      }
                     this.setState({open:false});
                   }}>

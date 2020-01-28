@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button } from 'reactstrap';
 import Reports from "./reports"
 import {rebase} from "../../index";
-import {arraySelectToString, fromMillisec} from "../../helperFunctions";
+import {arraySelectToString, fromMillisec, timestampToString} from "../../helperFunctions";
 
 export default class NotificationInfo extends Component{
   constructor(props){
@@ -10,7 +10,7 @@ export default class NotificationInfo extends Component{
     this.state={
 			title: "",
       company: {},
-      startDate: "",
+      startDate: null,
       repeatNumber: "",
 
       from: "",
@@ -29,7 +29,6 @@ export default class NotificationInfo extends Component{
 		this.fetch(this.props.id);
   }
 
-
 	fetch(id){
 		rebase.get(`monitoring-notifications/${id}`, {
 			context: this,
@@ -38,13 +37,13 @@ export default class NotificationInfo extends Component{
 				 this.setState({
 					 title: datum.title ? datum.title : "untitled",
 		       company: datum.company ? datum.company.label : "no company",
-		       startDate: datum.startDate ? new Date(datum.startDate).toLocaleString() : "no start date",
+		       startDate: datum.startDate ? timestampToString(datum.startDate) : "no start date",
 		       repeatEvery: datum.repeatNumber ? fromMillisec(datum.repeatNumber, "minutes") + " min." : "not provided",
 
 		       from: (datum.from ? datum.from : "no sender") + (datum.fromDisabled ? " (sender disabled)" : "") ,
 		       subject: (datum.subject ? datum.subject : "no subject")  + (datum.subjectDisabled ? " (subject disabled)" : "") ,
 		       mailOK: datum.mailOK ? datum.mailOK : ["no phrases"],
-		       mailInvalid: datum.mailInvalid ? datum.mailInvalid : ["no phrases"],
+		       mailInvalid: datum.mailInvalid.length>0 ? datum.mailInvalid : ["no phrases"],
 		       alertMail: (datum.alertMail ? datum.alertMail : "no alert mail")  + (datum.alertMailDisabled ? " (disabled)" : ""),
 
 		       note: datum.note ? datum.note : "no note",
@@ -58,24 +57,6 @@ export default class NotificationInfo extends Component{
 			this.fetch(props.id);
 		}
 	}
-/*
-<div>
-  <h2>{this.state.title}</h2>
-  <span
-    className="m-l-15"
-    style={{backgroundColor: this.state.success ? 'lime' :'red', color: "white", padding: "3px"}}
-    > {this.state.success ? "working" : "failed"}
-  </span>
-</div>
-<div className="m-l-auto">
-  <Button
-    className="btn-link"
-    onClick={() => this.props.toggleEdit()}
-  > Edit
-  </Button>
-</div>
-
-*/
 
   render(){
       return (

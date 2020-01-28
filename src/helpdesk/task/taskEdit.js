@@ -13,8 +13,7 @@ import Comments from '../components/comments.js';
 //import Subtasks from '../components/subtasks';
 import Repeat from '../components/repeat';
 
-import MaterialsExpenditure from '../components/materials/materials';
-import MaterialsBudget from '../components/materials/rozpocet';
+import Materials from '../components/materials';
 import PraceWorkTrips from '../components/praceWorkTrips';
 
 import UserAdd from '../settings/users/userAdd';
@@ -368,7 +367,7 @@ class TaskEdit extends Component {
 		let user = "Používateľ " + this.props.currentUser.userData.name + ' ' + this.props.currentUser.userData.surname;
 		switch (type) {
 			case 'status':{
-				return user + ' zmenil status na ' + data.title + '.';
+				return `${user} zmenil status z ${data.oldStatus?data.oldStatus.title:''} na ${data.newStatus?data.newStatus.title:''}.`;
 			}
 			case 'comment':{
 				return user + ' komentoval úlohu.';
@@ -761,7 +760,7 @@ class TaskEdit extends Component {
 												onChange={(status)=>{
 													let newHistoryEntery = {
 														createdAt:(new Date()).getTime(),
-														message:this.getHistoryMessage('status', status),
+														message:this.getHistoryMessage('status', {newStatus:status,oldStatus:this.state.status}),
 														task:this.props.match.params.taskID,
 													};
 													if(status.action==='pending'){
@@ -1114,8 +1113,8 @@ class TaskEdit extends Component {
 								</TabPane>
 								<TabPane tabId="2">
 									<PraceWorkTrips
-										extended={false}
-										showAll={false}
+										showColumns={[0,1,4,8]}
+										showTotals={false}
 										disabled={this.state.viewOnly}
 										taskAssigned={this.state.assignedTo}
 										submitService={this.submitService.bind(this)}
@@ -1155,7 +1154,8 @@ class TaskEdit extends Component {
 										}}
 										/>
 
-									<MaterialsExpenditure
+									<Materials
+										showColumns={[0,1,2,3,4,6]}
 										disabled={this.state.viewOnly}
 										materials={taskMaterials}
 						        submitMaterial={this.submitMaterial.bind(this)}
@@ -1180,8 +1180,8 @@ class TaskEdit extends Component {
 								</TabPane>
 								<TabPane tabId="3">
 									<PraceWorkTrips
-										extended={true}
-										showAll={true}
+										showColumns={[0,1,2,3,4,5,6,7,8]}
+										showTotals={true}
 										disabled={this.state.viewOnly}
 										taskAssigned={this.state.assignedTo}
 										submitService={this.submitService.bind(this)}
@@ -1221,7 +1221,8 @@ class TaskEdit extends Component {
 										}}
 									/>
 
-									<MaterialsBudget
+									<Materials
+										showColumns={[0,1,2,3,4,5,6]}
 										disabled={this.state.viewOnly}
 										materials={taskMaterials}
 						        submitMaterial={this.submitMaterial.bind(this)}
