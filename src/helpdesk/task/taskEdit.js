@@ -572,6 +572,10 @@ class TaskEdit extends Component {
 
 		return (
 			<div className="flex">
+				{this.state.showDescription &&
+					<div style={{backgroundColor: "transparent", width: "100%", height: "100%", position: "absolute"}} onClick={()=>this.setState({showDescription:false})}>
+					</div>
+				}
 				<div className="commandbar p-l-25"> {/*Commandbar*/}
 					<div className="d-flex flex-row center-hor p-2 ">
 							<div className="display-inline center-hor">
@@ -936,7 +940,7 @@ class TaskEdit extends Component {
 								</div>
 							</div>
 
-							<div className="">{/*Description*/}
+							<div className="" style={{zIndex: "9999"}}>{/*Description*/}
 								<Label className="col-form-label m-b-10 m-t-10">Popis úlohy</Label>
 								{ this.state.viewOnly ?
 									(this.state.description.length!==0 ?
@@ -945,16 +949,18 @@ class TaskEdit extends Component {
 									) :
 									(
 										this.state.showDescription ?
-										(<CKEditor
-											editor={ ClassicEditor }
-											data={this.state.description}
-											onInit={(editor)=>{
-											}}
-											onChange={(e,editor)=>{
-												this.setState({description: editor.getData()},this.submitTask.bind(this))
-											}}
-											config={ck5config}
-											/>
+										(<div onClick={()=>this.setState({showDescription:true})}>
+											<CKEditor
+												editor={ ClassicEditor }
+												data={this.state.description}
+												onInit={(editor)=>{
+												}}
+												onChange={(e,editor)=>{
+													this.setState({description: editor.getData()},this.submitTask.bind(this))
+												}}
+												config={ck5config}
+												/>
+										</div>
 									) :
 									(
 										<div className="clickable task-edit-popis" onClick={()=>this.setState({showDescription:true})}>

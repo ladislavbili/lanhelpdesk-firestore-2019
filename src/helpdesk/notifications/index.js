@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { ListGroup, ListGroupItem } from 'reactstrap';
+import { ListGroupItem } from 'reactstrap';
 import classnames from 'classnames';
 import { rebase } from '../../index';
-import TaskEdit from '../task/taskEdit';
+import TaskEdit from '../task/taskEditSwitch';
 
 import { connect } from "react-redux";
 import { storageHelpTasksStart } from '../../redux/actions';
@@ -58,6 +58,9 @@ class NotificationList extends Component {
             <div className="commandbar">
               <div className="search-row">
                 <div className="search">
+                  <button className="search-btn" type="button">
+                    <i className="fa fa-search" />
+                  </button>
                   <input
                     type="text"
                     className="form-control search-text"
@@ -65,9 +68,6 @@ class NotificationList extends Component {
                     onChange={(e)=>this.setState({searchFilter:e.target.value})}
                     placeholder="Search"
                     />
-                  <button className="search-btn" type="button">
-                    <i className="fa fa-search" />
-                  </button>
                 </div>
               </div>
             </div>
@@ -81,27 +81,34 @@ class NotificationList extends Component {
                 <button type="button" className="btn btn-link waves-effect" onClick={this.deleteRead.bind(this)} disabled={this.props.notifications.filter((notification)=>notification.read).length === 0}>Vymazať prečítané</button>
               </div>
               <div>
-                <ListGroup>
-                {
-                  this.processNotifications().map((notification)=>
-                  <ListGroupItem
-                    key={notification.id}
-                    onClick={()=>{
-                      this.props.history.push('/helpdesk/notifications/'+notification.id+'/'+notification.task.id);
-                      if(!notification.read){
-                        rebase.updateDoc('user_notifications/' + notification.id, {read:true} );
-                      }
-                    }}
-                    className={classnames({ 'notification-read': notification.read, 'notification-not-read': !notification.read, 'selected-item': this.props.match.params.notificationID === notification.id }, "clickable")}
-                    >
-                    <div>
-                      <i className={classnames({ 'far fa-envelope-open': notification.read, 'fas fa-envelope': !notification.read })} /> {notification.message}
-                    </div>
-                    <div style={{overflowX:'hidden'}}>{notification.task.id}: {notification.task.title}</div>
-                  </ListGroupItem>
-                )}
+                <table className="table table-hover">
+                  <tbody>
+                      {
+                        this.processNotifications().map((notification) =>
+                            <tr
+                              key={notification.id}
+                              className={classnames({ 'notification-read': notification.read,
+                                'notification-not-read': !notification.read,
+                                'sidebar-item-active': this.props.match.params.notificationID === notification.id },
+                                "clickable")}
+                              onClick={()=> {
+                                this.props.history.push('/helpdesk/notifications/'+notification.id+'/'+notification.task.id);
+                                if(!notification.read){
+                                  rebase.updateDoc('user_notifications/' + notification.id, {read:true} );
+                                }
+                              }}>
+                              <td className={(this.props.match.params.notificationID === notification.id ? "text-highlight":"")}>
+                                <div>
+                                  <i className={classnames({ 'far fa-envelope-open': notification.read, 'fas fa-envelope': !notification.read })} /> {notification.message}
+                                </div>
+                                <div style={{overflowX:'hidden'}}>{notification.task.id}: {notification.task.title}</div>
+                              </td>
+                            </tr>
+                        )
+                    }
+                  </tbody>
+                </table>
                 {this.props.notifications.length === 0 && <ListGroupItem>You have no new notifications.</ListGroupItem>}
-                </ListGroup>
               </div>
 
             </div>

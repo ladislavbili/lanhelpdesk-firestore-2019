@@ -138,6 +138,10 @@ export default class Note extends Component{
   render(){
     return (
       <div className="flex" >
+        {this.state.editBodyOpen &&
+					<div style={{backgroundColor: "transparent", width: "100%", height: "100%", position: "absolute"}} onClick={()=>this.setState({editBodyOpen:false})}>
+					</div>
+				}
 				<div className="commandbar p-2 p-l-25">
 					<div className={"d-flex flex-row" + (!this.props.columns ? " w-50  ml-auto mr-auto" : "") }>
 						<div className="center-hor">
@@ -199,17 +203,14 @@ export default class Note extends Component{
           </div>
                 {!this.state.editBodyOpen &&
                   <div style={{padding: "0px 30px 20px 30px"}}>
-                    <Button className="btn-link-inverted" onClick={()=>this.setState({editBodyOpen:true})}>Upraviť text</Button>
-                    <div className="clickable m-t-30" onClick={()=>this.setState({editBodyOpen:true})} dangerouslySetInnerHTML={{__html:this.state.body===null?'': this.state.body }}></div>
+                    <Button className="btn-link p-l-0" onClick={()=>this.setState({editBodyOpen:true})}>Upraviť text</Button>
+                    <div className="clickable m-t-30 task-edit-popis" onClick={()=>this.setState({editBodyOpen:true})} dangerouslySetInnerHTML={{__html:this.state.body===null?'': this.state.body }}></div>
                   </div>
                 }
 
               { this.state.editBodyOpen &&
-              <FormGroup style={{padding: "0px 30px 20px 30px"}}>
-                  <div className="row">
-                    <Button className="btn-link-inverted" onClick={this.toggleModal.bind(this)}>Pridať obrázok z uložiska</Button>
-                    <div className="flex" onClick={() => this.state.editBodyOpen ? this.setState({editBodyOpen: false}) : null}></div>
-                  </div>
+              <FormGroup className="p-t-0 p-b-20 p-l-30 p-r-30" style={{zIndex: "9999"}}>
+                  <Button className="btn-link p-l-0" onClick={this.toggleModal.bind(this)}>Pridať obrázok z uložiska</Button>
 
                   <Modal isOpen={this.state.modalOpen} toggle={this.toggleModal.bind(this)} >
                     <ModalBody className="m-t-15">

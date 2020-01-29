@@ -615,8 +615,8 @@ class TaskEdit extends Component {
 					</div>
 				</div>
 
-				<div className="fit-with-header-and-commandbar row scroll-visible bkg-F2F1F1">
-					<div className="max-width-1660 card-box" style={{width: "1660px"}}>
+				<div className="fit-with-header-and-commandbar row scroll-visible bkg-F6F6F6">
+					<div className="task-edit-left card-box">
 						<div className="d-flex p-2">{/* Task name row */}
 							<div className="row flex">
 								<h2 className="center-hor text-extra-slim">{taskID}: </h2>
@@ -1002,91 +1002,99 @@ class TaskEdit extends Component {
 							</TabContent>
 					</div>
 
-				<div className="p-13">
-					{ this.state.defaultFields.status.show &&
+				<div className="task-edit-right">
+					<div className="">
+						<Label className="col-form-label-2">Projekt</Label>
+						<div className="col-form-value-2">
 							<Select
-								placeholder="Status required"
-								value={this.state.status}
-								isDisabled={this.state.defaultFields.status.fixed||this.state.viewOnly}
-								styles={invisibleSelectStyleNoArrowColoredRequired}
-								onChange={(status)=>{
-									let newHistoryEntery = {
-										createdAt:(new Date()).getTime(),
-										message:this.getHistoryMessage('status', status),
-										task:this.props.match.params.taskID,
-									};
-									if(status.action==='pending'){
-										this.setState({
-											pendingStatus:status,
-											pendingOpen:true,
-											newHistoryEntery
-										})
-									}else if(status.action==='close'||status.action==='invalid'){
-										this.setState({
-											status,
-											statusChange:(new Date().getTime()),
-											closeDate: moment(),
-											newHistoryEntery
-										},this.submitTask.bind(this))
-									}
-									else{
-										this.setState({
-											status,
-											statusChange:(new Date().getTime()),
-											newHistoryEntery
-										},this.submitTask.bind(this))
-									}
+								placeholder="Zadajte projekt"
+								isDisabled={this.state.viewOnly}
+								value={this.state.project}
+								onChange={(project)=>{
+									let permissionIDs = project.permissions.map((permission) => permission.user);
+									let assignedTo=this.state.assignedTo.filter((user)=>permissionIDs.includes(user.id));
+
+									this.setState({project,
+										assignedTo,
+										projectChangeDate:(new Date()).getTime(),
+										milestone:noMilestone
+									},()=>{this.submitTask();this.setDefaults(project.id)});
 								}}
-								options={this.state.statuses.filter((status)=>status.action!=='invoiced')}
-								/>}
+								options={this.state.projects.filter((project)=>{
+									let curr = this.props.currentUser;
+									if((curr.userData && curr.userData.role.value===3)||(project.id===-1||project.id===null)){
+										return true;
+									}
+									let permission = project.permissions.find((permission)=>permission.user===curr.id);
+									return permission && permission.read;
+								})}
+								styles={invisibleSelectStyleNoArrowRequired}
+								/>
+						</div>
+					</div>
 
-							<div className="">
-								<Label className="col-form-label-2">Projekt</Label>
-								<div className="col-form-value-2">
+					{ this.state.defaultFields.assignedTo.show &&
+					<div className="">
+						<Label className="col-form-label-2">Assigned</Label>
+						<div className="col-form-value-2" style={{marginLeft: "-5px"}}>
+							<Select
+								value={this.state.assignedTo.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id))}
+								placeholder="Zadajte poverených pracovníkov"
+								isMulti
+								isDisabled={this.state.defaultFields.assignedTo.fixed||this.state.viewOnly}
+								onChange={(users)=>this.setState({assignedTo:users},this.submitTask.bind(this))}
+								options={
+									(canAdd?[{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}]:[])
+									.concat(this.state.users.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id)))
+								}
+								styles={invisibleSelectStyleNoArrowRequired}
+								/>
+						</div>
+					</div>}
+
+
+					{ this.state.defaultFields.status.show &&
+						<div className="">
+							<Label className="col-form-label-2">Status</Label>
+							<div className="col-form-value-2">
 									<Select
-										placeholder="Zadajte projekt"
-										isDisabled={this.state.viewOnly}
-										value={this.state.project}
-										onChange={(project)=>{
-											let permissionIDs = project.permissions.map((permission) => permission.user);
-											let assignedTo=this.state.assignedTo.filter((user)=>permissionIDs.includes(user.id));
-
-											this.setState({project,
-												assignedTo,
-												projectChangeDate:(new Date()).getTime(),
-												milestone:noMilestone
-											},()=>{this.submitTask();this.setDefaults(project.id)});
-										}}
-										options={this.state.projects.filter((project)=>{
-											let curr = this.props.currentUser;
-											if((curr.userData && curr.userData.role.value===3)||(project.id===-1||project.id===null)){
-												return true;
+										placeholder="Status required"
+										value={this.state.status}
+										isDisabled={this.state.defaultFields.status.fixed||this.state.viewOnly}
+										styles={invisibleSelectStyleNoArrowColoredRequired}
+										onChange={(status)=>{
+											let newHistoryEntery = {
+												createdAt:(new Date()).getTime(),
+												message:this.getHistoryMessage('status', status),
+												task:this.props.match.params.taskID,
+											};
+											if(status.action==='pending'){
+												this.setState({
+													pendingStatus:status,
+													pendingOpen:true,
+													newHistoryEntery
+												})
+											}else if(status.action==='close'||status.action==='invalid'){
+												this.setState({
+													status,
+													statusChange:(new Date().getTime()),
+													closeDate: moment(),
+													newHistoryEntery
+												},this.submitTask.bind(this))
 											}
-											let permission = project.permissions.find((permission)=>permission.user===curr.id);
-											return permission && permission.read;
-										})}
-										styles={invisibleSelectStyleNoArrowRequired}
+											else{
+												this.setState({
+													status,
+													statusChange:(new Date().getTime()),
+													newHistoryEntery
+												},this.submitTask.bind(this))
+											}
+										}}
+										options={this.state.statuses.filter((status)=>status.action!=='invoiced')}
 										/>
 								</div>
-							</div>
-						{ this.state.defaultFields.assignedTo.show &&
-						<div className="">
-							<Label className="col-form-label-2">Assigned</Label>
-							<div className="col-form-value-2" style={{marginLeft: "-5px"}}>
-								<Select
-									value={this.state.assignedTo.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id))}
-									placeholder="Zadajte poverených pracovníkov"
-									isMulti
-									isDisabled={this.state.defaultFields.assignedTo.fixed||this.state.viewOnly}
-									onChange={(users)=>this.setState({assignedTo:users},this.submitTask.bind(this))}
-									options={
-										(canAdd?[{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}]:[])
-										.concat(this.state.users.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id)))
-									}
-									styles={invisibleSelectStyleNoArrowRequired}
-									/>
-							</div>
-						</div>}
+							</div>}
+
 
 
 					{ this.state.defaultFields.type.show &&
@@ -1128,7 +1136,7 @@ class TaskEdit extends Component {
 						</div>
 
 						{ this.state.defaultFields.tags.show &&
-							<div className=""> {/*Tags*/}
+							<div style={{maxWidth:"250px"}}> {/*Tags*/}
 								<Label className="col-form-label-2">Tagy: </Label>
 								<div className="col-form-value-2">
 									<Select

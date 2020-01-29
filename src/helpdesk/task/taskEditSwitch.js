@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import TaskEdit from './taskEdit';
 import TaskEdit2 from './taskEdit2';
 
-export default class TaskEditContainer extends Component{
+export default class TaskEditSwitch extends Component{
   constructor(props){
     super(props);
     this.state={

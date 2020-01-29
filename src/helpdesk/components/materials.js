@@ -76,7 +76,7 @@ export default class Rozpocet extends Component {
 							<table className="table">
 								<thead>
 									<tr>
-										{ this.props.showColumns.includes(0) && <th className="col-form-label">Materiál</th>}
+										{ this.props.showColumns.includes(0) && <th className="col-form-label p-l-0">Materiál</th>}
 										{ this.props.showColumns.includes(1) && <th style={{fontSize: "12px", fontFamily: "Segoe UI", fontWeight: "500", color: "#333"}} width="100">Mn.</th>}
 										{ this.props.showColumns.includes(2) && <th width="100">Jednotka</th>}
 										{ this.props.showColumns.includes(3) && <th width="100">Cena</th>}
@@ -89,10 +89,10 @@ export default class Rozpocet extends Component {
 									{
 										this.props.materials.map((material)=>
 										<tr key={material.id}>
-											{ this.props.showColumns.includes(0) && <td>
+											{ this.props.showColumns.includes(0) && <td className="p-l-0">
 													<input
 														disabled={this.props.disabled}
-														className="form-control hidden-input"
+														className="form-control hidden-input p-l-0"
 														value={
 															material.id === this.state.focusedMaterial
 															? this.state.editedMaterialTitle
@@ -388,18 +388,22 @@ export default class Rozpocet extends Component {
 								</tbody>
 							</table>
 						</div>
-						<div className="text-right">
-								<b>Cena bez DPH: </b>
-								{this.props.materials.reduce((acc, cur)=> acc+(isNaN(parseInt(cur.totalPrice))? 0 : parseInt(cur.totalPrice)),0).toFixed(2)}
-						</div>
-						<div className="text-right">
-								<b>DPH: </b>
-								{this.getDPH()}
-						</div>
-						<div className="text-right">
-								<b>Cena s DPH: </b>
-								{this.props.materials.reduce((acc, cur)=> acc+(isNaN(parseInt(cur.totalPrice))? 0 : (parseInt(cur.totalPrice)*this.getDPH())),0).toFixed(2)}
-						</div>
+						{this.props.materials.length > 0 &&
+							<div className="row">
+								<div className="text-right ml-auto m-r-5">
+										<b>Cena bez DPH: </b>
+										{this.props.materials.reduce((acc, cur)=> acc+(isNaN(parseInt(cur.totalPrice))? 0 : parseInt(cur.totalPrice)),0).toFixed(2)}
+								</div>
+								<div className="text-right m-r-5">
+										<b>DPH: </b>
+										{this.getDPH()}
+								</div>
+								<div className="text-right">
+										<b>Cena s DPH: </b>
+										{this.props.materials.reduce((acc, cur)=> acc+(isNaN(parseInt(cur.totalPrice))? 0 : (parseInt(cur.totalPrice)*this.getDPH())),0).toFixed(2)}
+								</div>
+							</div>
+						}
 						{false &&
 						<div className="row justify-content-end">
 							<div className="col-md-6">

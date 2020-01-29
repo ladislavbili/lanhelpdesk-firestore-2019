@@ -355,8 +355,8 @@ export default class TaskAdd extends Component{
 			}
 		});
 		return (
-			<div>
-			<div className="scrollable p-20">
+			<div className="scrollable row">
+			<div className="task-edit-left p-l-20 p-r-20 p-b-15 p-t-15">
 				<div className="p-t-0">
 					<div className="row m-b-15">
 						<h2 className="center-hor text-extra-slim">NEW TASK </h2>
@@ -411,295 +411,7 @@ export default class TaskAdd extends Component{
 
 					<hr className="m-t-15 m-b-10"/>
 
-				<div className="row">
-						{this.state.viewOnly &&
-							<div className="row p-r-10">
-							<Label className="col-3 col-form-label">Projekt</Label>
-							<div className="col-9">
-								<Select
-									value={this.state.project}
-									placeholder="None"
-									onChange={(project)=>{
-										let newState={project,
-											milestone:noMilestone,
-											pausal:booleanSelects[0],
-											viewOnly:this.props.currentUser.userData.role.value===0 && !project.permissions.find((permission)=>permission.user===this.props.currentUser.id).write
-										}
-										if(newState.viewOnly){
-											newState={
-												...newState,
-												repeat:null,
-												taskWorks:[],
-												subtasks:[],
-												taskMaterials:[],
-												workTrips:[],
-												allTags:[],
-												deadline:null,
-												closeDate:null,
-												pendingDate:null,
-												reminder:null,
-											}
-										}
-										this.setState(newState,()=>this.setDefaults(project.id, true))
-									}}
-									options={this.state.projects.filter((project)=>{
-										let curr = this.props.currentUser;
-										if(curr.userData.role.value===3){
-											return true;
-										}
-										let permission = project.permissions.find((permission)=>permission.user===curr.id);
-										return permission && permission.read;
-									})}
-									styles={invisibleSelectStyleNoArrow}
-									/>
-							</div>
-						</div>
-						}
 
-				{!this.state.viewOnly && <div className="col-lg-12">
-					<div className="col-lg-12">{/*NUTNE !! INAK AK NIE JE ZOBRAZENY ASSIGNED SELECT TAK SA VZHLAD POSUVA*/}
-						<div className="col-lg-4">
-							<div className="row p-r-10">
-								<Label className="col-3 col-form-label">Projekt</Label>
-								<div className="col-9">
-									<Select
-										placeholder="Select required"
-										value={this.state.project}
-										onChange={(project)=>{
-											let permissionIDs = project.permissions.map((permission) => permission.user);
-											let assignedTo=this.state.assignedTo.filter((user)=>permissionIDs.includes(user.id));
-											let newState={
-												project,
-												milestone:noMilestone,
-												assignedTo,
-												viewOnly:this.props.currentUser.userData.role.value===0 && !project.permissions.find((permission)=>permission.user===this.props.currentUser.id).write
-											}
-											if(newState.viewOnly){
-												newState={
-													...newState,
-													repeat:null,
-													taskWorks:[],
-													subtasks:[],
-													workTrips:[],
-													taskMaterials:[],
-													allTags:[],
-													deadline:null,
-													closeDate:null,
-													pendingDate:null,
-													reminder:null,
-												}
-											}
-											this.setState(newState,()=>this.setDefaults(project.id, true))
-										}}
-										options={this.state.projects.filter((project)=>{
-											let curr = this.props.currentUser;
-											if(curr.userData.role.value===3){
-												return true;
-											}
-											let permission = project.permissions.find((permission)=>permission.user===curr.id);
-											return permission && permission.read;
-										})}
-										styles={invisibleSelectStyleNoArrowRequired}
-										/>
-								</div>
-							</div>
-						</div>
-						{this.state.defaults.assignedTo.show && <div className="col-lg-8">
-							<div className="row p-r-10">
-								<Label className="col-1-5 col-form-label">Assigned</Label>
-								<div className="col-10-5">
-									<Select
-										placeholder="Select required"
-										value={this.state.assignedTo}
-										isDisabled={this.state.defaults.assignedTo.fixed||this.state.viewOnly}
-										isMulti
-										onChange={(users)=>this.setState({assignedTo:users})}
-										options={this.state.users.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id))}
-										styles={invisibleSelectStyleNoArrowRequired}
-										/>
-									</div>
-							</div>
-						</div>}
-					</div>
-
-					<div className="col-lg-4">
-						{this.state.defaults.status.show && <div className="row p-r-10">
-							<Label className="col-3 col-form-label">Status</Label>
-							<div className="col-9">
-								<Select
-									placeholder="Select required"
-									value={this.state.status}
-									isDisabled={this.state.defaults.status.fixed||this.state.viewOnly}
-									styles={invisibleSelectStyleNoArrowColoredRequired}
-									onChange={(status)=>{
-										if(status.action==='pending'){
-											this.setState({
-												status,
-												pendingDate:  moment().add(1,'d'),
-											})
-										}else if(status.action==='close'||status.action==='invalid'){
-											this.setState({
-												status,
-												closeDate: moment(),
-											})
-										}
-										else{
-											this.setState({status})
-										}
-									}}
-									options={this.state.statuses.filter((status)=>status.action!=='invoiced').sort((item1,item2)=>{
-										if(item1.order &&item2.order){
-											return item1.order > item2.order? 1 :-1;
-										}
-										return -1;
-									})}
-									/>
-							</div>
-						</div>}
-							{this.state.defaults.type.show && <div className="row p-r-10">
-								<Label className="col-3 col-form-label">Typ</Label>
-								<div className="col-9">
-									<Select
-										placeholder="Select required"
-										value={this.state.type}
-										isDisabled={this.state.defaults.type.fixed||this.state.viewOnly}
-										styles={invisibleSelectStyleNoArrowRequired}
-										onChange={(type)=>this.setState({type})}
-										options={this.state.taskTypes}
-										/>
-								</div>
-							</div>}
-							<div className="row p-r-10">
-								<Label className="col-3 col-form-label">Milestone</Label>
-								<div className="col-9">
-									<Select
-										isDisabled={this.state.viewOnly}
-										placeholder="None"
-										value={this.state.milestone}
-										onChange={(milestone)=> {
-											if(this.state.status.action==='pending'){
-												if(milestone.startsAt!==null){
-													this.setState({milestone,pendingDate:moment(milestone.startsAt),pendingChangable:false});
-												}else{
-													this.setState({milestone, pendingChangable:true });
-												}
-											}else{
-												this.setState({milestone});
-											}
-										}}
-										options={this.state.milestones.filter((milestone)=>milestone.id===null || (this.state.project!== null && milestone.project===this.state.project.id))}
-										styles={invisibleSelectStyleNoArrow}
-								/>
-								</div>
-							</div>
-					</div>
-
-					<div className="col-lg-4">
-							{this.state.defaults.requester.show && <div className="row p-r-10">
-								<Label className="col-3 col-form-label">Zadal</Label>
-								<div className="col-9">
-									<Select
-										value={this.state.requester}
-										placeholder="Select required"
-										isDisabled={this.state.defaults.requester.fixed||this.state.viewOnly}
-										onChange={(requester)=>this.setState({requester})}
-										options={this.state.users}
-										styles={invisibleSelectStyleNoArrowRequired}
-										/>
-								</div>
-							</div>}
-							{this.state.defaults.company.show && <div className="row p-r-10">
-								<Label className="col-3 col-form-label">Firma</Label>
-								<div className="col-9">
-									<Select
-										value={this.state.company}
-										placeholder="Select required"
-										isDisabled={this.state.defaults.company.fixed||this.state.viewOnly}
-										onChange={(company)=>this.setState({company, pausal:parseInt(company.workPausal)>0?booleanSelects[1]:booleanSelects[0]})}
-										options={this.state.companies}
-										styles={invisibleSelectStyleNoArrowRequired}
-										/>
-								</div>
-							</div>}
-							{this.state.defaults.pausal.show && <div className="row p-r-10">
-									<Label className="col-3 col-form-label">Paušál</Label>
-									<div className="col-9">
-										<Select
-											value={this.state.pausal}
-											placeholder="Select required"
-											isDisabled={this.state.viewOnly||!this.state.company || parseInt(this.state.company.workPausal)===0||this.state.defaults.pausal.fixed}
-											styles={invisibleSelectStyleNoArrowRequired}
-											onChange={(pausal)=>this.setState({pausal})}
-											options={booleanSelects}
-											/>
-									</div>
-								</div>}
-
-							{false && <div className="row p-r-10">
-								<Label className="col-3 col-form-label">Pending</Label>
-								<div className="col-9">
-									{/*className='form-control hidden-input'*/}
-									<DatePicker
-										className="form-control hidden-input"
-										selected={this.state.pendingDate}
-										disabled={!this.state.status || this.state.status.action!=='pending'||this.state.viewOnly||!this.state.pendingChangable}
-										onChange={date => {
-											this.setState({ pendingDate: date });
-										}}
-										placeholderText="No pending date"
-										{...datePickerConfig}
-										/>
-								</div>
-							</div>}
-					</div>
-
-					<div className="col-lg-4">
-						<div className="row p-r-10">
-							<Label className="col-3 col-form-label">Deadline</Label>
-								<div className="col-9">
-									<DatePicker
-										className="form-control hidden-input"
-										selected={this.state.deadline}
-										disabled={this.state.viewOnly}
-										onChange={date => {
-											this.setState({ deadline: date });
-										}}
-										placeholderText="No deadline"
-										{...datePickerConfig}
-										/>
-								</div>
-						</div>
-					<Repeat
-							taskID={null}
-							repeat={this.state.repeat}
-							disabled={this.state.viewOnly}
-							submitRepeat={(repeat)=>{
-								if(this.state.viewOnly){
-									return;
-								}
-								this.setState({repeat:repeat})
-							}}
-							deleteRepeat={()=>{
-								this.setState({repeat:null})
-							}}
-							columns={true}
-							/>
-							{this.state.defaults.overtime.show && <div className="row p-r-10">
-								<Label className="col-3 col-form-label">Mimo PH</Label>
-								<div className="col-9">
-									<Select
-										placeholder="Select required"
-										value={this.state.overtime}
-										isDisabled={this.state.viewOnly||this.state.defaults.overtime.fixed}
-										styles={invisibleSelectStyleNoArrowRequired}
-										onChange={(overtime)=>this.setState({overtime})}
-										options={booleanSelects}
-										/>
-								</div>
-							</div>}
-					</div>
-				</div>}
-			</div>
 				<Label className="m-b-10 col-form-label m-t-10">Popis úlohy</Label>
 					{!this.state.descriptionVisible && <span className="task-edit-popis p-20 text-muted" onClick={()=>this.setState({descriptionVisible:true})}>Napíšte krátky popis úlohy</span>}
 					{this.state.descriptionVisible && <CKEditor
@@ -713,22 +425,7 @@ export default class TaskAdd extends Component{
 						}}
 						/>
 					}
-				{this.state.defaults.tags.show && <div className="row m-t-10"> {/*Tags*/}
-					<div className="center-hor">
-						<Label className="center-hor">Tagy: </Label>
-					</div>
-					<div className="f-1 ">
-						<Select
-							value={this.state.tags}
-							placeholder="None"
-							isDisabled={this.state.defaults.tags.fixed||this.state.viewOnly}
-							isMulti
-							onChange={(tags)=>this.setState({tags})}
-							options={this.state.allTags}
-							styles={invisibleSelectStyleNoArrowColored}
-							/>
-					</div>
-				</div>}
+
 				<Attachments
 					disabled={this.state.viewOnly}
 					taskID={null}
@@ -929,17 +626,336 @@ export default class TaskAdd extends Component{
 							</TabContent>}
 					</div>
 			</div>
-			{this.props.closeModal &&
-				<Button className="btn-link-remove" onClick={this.props.closeModal}>Cancel</Button>
-			}
+					{this.props.closeModal &&
+						<Button className="btn-link-remove" onClick={this.props.closeModal}>Cancel</Button>
+					}
 						<button
 							className="btn pull-right"
 							disabled={this.state.title==="" || this.state.status===null || this.state.project === null || this.state.company === null || this.state.saving || this.props.loading||this.props.newID===null}
 							onClick={this.submitTask.bind(this)}
 							> Create task
 						</button>
-					</div>
+		</div>
+
+					<div className="task-edit-right">
+							{this.state.viewOnly &&
+								<div className="">
+									<Label className="col-form-label-2">Projekt</Label>
+									<div className="col-form-value-2">
+										<Select
+											value={this.state.project}
+											placeholder="None"
+											onChange={(project)=>{
+												let newState={project,
+													milestone:noMilestone,
+													pausal:booleanSelects[0],
+													viewOnly:this.props.currentUser.userData.role.value===0 && !project.permissions.find((permission)=>permission.user===this.props.currentUser.id).write
+												}
+												if(newState.viewOnly){
+													newState={
+														...newState,
+														repeat:null,
+														taskWorks:[],
+														subtasks:[],
+														taskMaterials:[],
+														workTrips:[],
+														allTags:[],
+														deadline:null,
+														closeDate:null,
+														pendingDate:null,
+														reminder:null,
+													}
+												}
+												this.setState(newState,()=>this.setDefaults(project.id, true))
+											}}
+											options={this.state.projects.filter((project)=>{
+												let curr = this.props.currentUser;
+												if(curr.userData.role.value===3){
+													return true;
+												}
+												let permission = project.permissions.find((permission)=>permission.user===curr.id);
+												return permission && permission.read;
+											})}
+											styles={invisibleSelectStyleNoArrow}
+											/>
+									</div>
+								</div>
+							}
+
+							{/*NUTNE !! INAK AK NIE JE ZOBRAZENY ASSIGNED SELECT TAK SA VZHLAD POSUVA*/}
+					{!this.state.viewOnly &&
+								<div className="">
+									<Label className="col-form-label-2">Projekt</Label>
+									<div className="col-form-value-2">
+										<Select
+											placeholder="Select required"
+											value={this.state.project}
+											onChange={(project)=>{
+												let permissionIDs = project.permissions.map((permission) => permission.user);
+												let assignedTo=this.state.assignedTo.filter((user)=>permissionIDs.includes(user.id));
+												let newState={
+													project,
+													milestone:noMilestone,
+													assignedTo,
+													viewOnly:this.props.currentUser.userData.role.value===0 && !project.permissions.find((permission)=>permission.user===this.props.currentUser.id).write
+												}
+												if(newState.viewOnly){
+													newState={
+														...newState,
+														repeat:null,
+														taskWorks:[],
+														subtasks:[],
+														workTrips:[],
+														taskMaterials:[],
+														allTags:[],
+														deadline:null,
+														closeDate:null,
+														pendingDate:null,
+														reminder:null,
+													}
+												}
+												this.setState(newState,()=>this.setDefaults(project.id, true))
+											}}
+											options={this.state.projects.filter((project)=>{
+												let curr = this.props.currentUser;
+												if(curr.userData.role.value===3){
+													return true;
+												}
+												let permission = project.permissions.find((permission)=>permission.user===curr.id);
+												return permission && permission.read;
+											})}
+											styles={invisibleSelectStyleNoArrowRequired}
+											/>
+									</div>
+								</div>
+							}
+							{!this.state.viewOnly &&
+								this.state.defaults.assignedTo.show &&
+								<div className="">
+									<Label className="col-form-label-2">Assigned</Label>
+									<div className="col-form-value-2">
+										<Select
+											placeholder="Select required"
+											value={this.state.assignedTo}
+											isDisabled={this.state.defaults.assignedTo.fixed||this.state.viewOnly}
+											isMulti
+											onChange={(users)=>this.setState({assignedTo:users})}
+											options={this.state.users.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id))}
+											styles={invisibleSelectStyleNoArrowRequired}
+											/>
+										</div>
+								</div>}
+
+							{!this.state.viewOnly &&
+								this.state.defaults.status.show &&
+								<div className="">
+								<Label className="col-form-label-2">Status</Label>
+								<div className="col-form-value-2">
+									<Select
+										placeholder="Select required"
+										value={this.state.status}
+										isDisabled={this.state.defaults.status.fixed||this.state.viewOnly}
+										styles={invisibleSelectStyleNoArrowColoredRequired}
+										onChange={(status)=>{
+											if(status.action==='pending'){
+												this.setState({
+													status,
+													pendingDate:  moment().add(1,'d'),
+												})
+											}else if(status.action==='close'||status.action==='invalid'){
+												this.setState({
+													status,
+													closeDate: moment(),
+												})
+											}
+											else{
+												this.setState({status})
+											}
+										}}
+										options={this.state.statuses.filter((status)=>status.action!=='invoiced').sort((item1,item2)=>{
+											if(item1.order &&item2.order){
+												return item1.order > item2.order? 1 :-1;
+											}
+											return -1;
+										})}
+										/>
+								</div>
+							</div>}
+
+								{!this.state.viewOnly &&
+									this.state.defaults.type.show &&
+									<div className="">
+									<Label className="col-form-label-2">Typ</Label>
+									<div className="col-form-value-2">
+										<Select
+											placeholder="Select required"
+											value={this.state.type}
+											isDisabled={this.state.defaults.type.fixed||this.state.viewOnly}
+											styles={invisibleSelectStyleNoArrowRequired}
+											onChange={(type)=>this.setState({type})}
+											options={this.state.taskTypes}
+											/>
+									</div>
+								</div>}
+							{!this.state.viewOnly &&
+								<div className="">
+									<Label className="col-form-label-2">Milestone</Label>
+									<div className="col-form-value-2">
+										<Select
+											isDisabled={this.state.viewOnly}
+											placeholder="None"
+											value={this.state.milestone}
+											onChange={(milestone)=> {
+												if(this.state.status.action==='pending'){
+													if(milestone.startsAt!==null){
+														this.setState({milestone,pendingDate:moment(milestone.startsAt),pendingChangable:false});
+													}else{
+														this.setState({milestone, pendingChangable:true });
+													}
+												}else{
+													this.setState({milestone});
+												}
+											}}
+											options={this.state.milestones.filter((milestone)=>milestone.id===null || (this.state.project!== null && milestone.project===this.state.project.id))}
+											styles={invisibleSelectStyleNoArrow}
+									/>
+									</div>
+								</div>}
+
+								{this.state.defaults.tags.show &&
+									<div className=""> {/*Tags*/}
+										<Label className="col-form-label-2">Tagy: </Label>
+										<div className="col-form-value-2">
+											<Select
+												value={this.state.tags}
+												placeholder="None"
+												isDisabled={this.state.defaults.tags.fixed||this.state.viewOnly}
+												isMulti
+												onChange={(tags)=>this.setState({tags})}
+												options={this.state.allTags}
+												styles={invisibleSelectStyleNoArrowColored}
+												/>
+										</div>
+									</div>}
+
+								{!this.state.viewOnly &&
+									this.state.defaults.requester.show &&
+									<div className="">
+										<Label className="col-form-label-2">Zadal</Label>
+										<div className="col-form-value-2">
+											<Select
+												value={this.state.requester}
+												placeholder="Select required"
+												isDisabled={this.state.defaults.requester.fixed||this.state.viewOnly}
+												onChange={(requester)=>this.setState({requester})}
+												options={this.state.users}
+												styles={invisibleSelectStyleNoArrowRequired}
+												/>
+										</div>
+									</div>}
+
+								{!this.state.viewOnly &&
+									this.state.defaults.company.show &&
+									<div className="">
+										<Label className="col-form-label-2">Firma</Label>
+										<div className="col-form-value-2">
+											<Select
+												value={this.state.company}
+												placeholder="Select required"
+												isDisabled={this.state.defaults.company.fixed||this.state.viewOnly}
+												onChange={(company)=>this.setState({company, pausal:parseInt(company.workPausal)>0?booleanSelects[1]:booleanSelects[0]})}
+												options={this.state.companies}
+												styles={invisibleSelectStyleNoArrowRequired}
+												/>
+										</div>
+									</div>}
+
+								{!this.state.viewOnly &&
+									this.state.defaults.pausal.show &&
+									<div className="">
+										<Label className="col-form-label-2">Paušál</Label>
+										<div className="col-form-value-2">
+											<Select
+												value={this.state.pausal}
+												placeholder="Select required"
+												isDisabled={this.state.viewOnly||!this.state.company || parseInt(this.state.company.workPausal)===0||this.state.defaults.pausal.fixed}
+												styles={invisibleSelectStyleNoArrowRequired}
+												onChange={(pausal)=>this.setState({pausal})}
+												options={booleanSelects}
+												/>
+										</div>
+									</div>}
+
+								{false && <div className="">
+									<Label className="col-form-label-2">Pending</Label>
+									<div className="col-form-value-2">
+										{/*className='form-control hidden-input'*/}
+										<DatePicker
+											className="form-control hidden-input"
+											selected={this.state.pendingDate}
+											disabled={!this.state.status || this.state.status.action!=='pending'||this.state.viewOnly||!this.state.pendingChangable}
+											onChange={date => {
+												this.setState({ pendingDate: date });
+											}}
+											placeholderText="No pending date"
+											{...datePickerConfig}
+											/>
+									</div>
+								</div>}
+
+						{!this.state.viewOnly &&
+							<div className="">
+								<Label className="col-form-label-2">Deadline</Label>
+									<div className="col-form-value-2">
+										<DatePicker
+											className="form-control hidden-input"
+											selected={this.state.deadline}
+											disabled={this.state.viewOnly}
+											onChange={date => {
+												this.setState({ deadline: date });
+											}}
+											placeholderText="No deadline"
+											{...datePickerConfig}
+											/>
+									</div>
+							</div>}
+
+					{!this.state.viewOnly &&
+						<Repeat
+								taskID={null}
+								repeat={this.state.repeat}
+								disabled={this.state.viewOnly}
+								submitRepeat={(repeat)=>{
+									if(this.state.viewOnly){
+										return;
+									}
+									this.setState({repeat:repeat})
+								}}
+								deleteRepeat={()=>{
+									this.setState({repeat:null})
+								}}
+								columns={true}
+								vertical={true}
+								/>}
+
+						{!this.state.viewOnly &&
+							this.state.defaults.overtime.show &&
+							<div className="">
+							<Label className="col-form-label-2">Mimo PH</Label>
+							<div className="col-form-value-2">
+								<Select
+									placeholder="Select required"
+									value={this.state.overtime}
+									isDisabled={this.state.viewOnly||this.state.defaults.overtime.fixed}
+									styles={invisibleSelectStyleNoArrowRequired}
+									onChange={(overtime)=>this.setState({overtime})}
+									options={booleanSelects}
+									/>
+							</div>
+						</div>}
+
 				</div>
+			</div>
 			);
 		}
 	}

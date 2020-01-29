@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import {toSelArr, sameStringForms } from '../../helperFunctions';
 import { Modal, ModalBody, Button } from 'reactstrap';
 import TaskAdd from './taskAdd';
+import TaskAdd2 from './taskAdd2';
 import {storageHelpStatusesStart, storageHelpProjectsStart, storageUsersStart, storageCompaniesStart, storageHelpWorkTypesStart, storageHelpUnitsStart, storageHelpPricesStart, storageHelpPricelistsStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageMetadataStart, storageHelpMilestonesStart, storageHelpTripTypesStart} from '../../redux/actions';
 
 const noMilestone = {id:null,value:null,title:'None',label:'None'};
@@ -26,8 +27,17 @@ class TaskAddContainer extends Component{
       tripTypes:[],
       newID: null,
       defaultUnit: null,
+
+      add: 1,
     }
     this.setData.bind(this);
+    this.switch.bind(this);
+  }
+
+  switch(){
+    this.setState({
+      add: (this.state.add === 0 ? 1 : 0),
+    })
   }
 
   storageLoaded(props){
@@ -199,8 +209,9 @@ class TaskAddContainer extends Component{
 
 
 			<Modal style={{width: "1000px"}} isOpen={this.state.openAddTaskModal} toggle={()=>{}} >
-					<ModalBody className="scrollable" style={{maxHeight:'calc(100vh - 37px)', backgroundColor: "white", marginLeft: "-20px", marginRight: "-20px", padding: "20px", paddingLeft: "40px", paddingRight: "40px"}}>
+					<ModalBody className="scrollable" style={{maxHeight:'calc(100vh - 37px)', backgroundColor: "white", marginLeft: "-20px", marginRight: "-20px", padding: "0px"}}>
             {  this.state.openAddTaskModal && this.storageLoaded(this.props) &&
+              this.state.add === 0 &&
 						   <TaskAdd {...this.props}
                  loading={this.state.loading}
                  statuses={this.state.statuses}
@@ -216,6 +227,27 @@ class TaskAddContainer extends Component{
                  defaultUnit={this.state.defaultUnit}
                  newID = {this.state.newID}
                  closeModal={ () => this.setState({openAddTaskModal: false,})}
+                 switch={() => this.switch()}
+                 />
+            }
+            {  this.state.openAddTaskModal && this.storageLoaded(this.props) &&
+              this.state.add === 1 &&
+						   <TaskAdd2 {...this.props}
+                 loading={this.state.loading}
+                 statuses={this.state.statuses}
+                 projects={this.state.projects}
+                 users={this.state.users}
+                 companies={this.state.companies}
+                 workTypes={this.state.workTypes}
+                 taskTypes={this.state.taskTypes}
+                 allTags={this.state.allTags}
+                 units={this.state.units}
+                 tripTypes={this.state.tripTypes}
+                 milestones={this.state.milestones}
+                 defaultUnit={this.state.defaultUnit}
+                 newID = {this.state.newID}
+                 closeModal={ () => this.setState({openAddTaskModal: false,})}
+                 switch={() => this.switch()}
                  />
             }
 					</ModalBody>

@@ -157,16 +157,16 @@ export default class PraceWorkTrips extends Component {
 	render() {
 		//const afterHours= this.props.company && this.state.newExtraWork ? this.props.company.pricelist.afterHours : 0;
 		return (
-				<div className="row m-b-30 m-t-20">
+				<div className="row m-b-30">
 					<div className="col-md-12">
 						<div>
-							<div className="p-l-8" style={{color: "#FF4500"}}>
+							<div className="" style={{color: "#FF4500", height: "20px"}}>
 								{this.getCreationError()}
 							</div>
 							<table className="table m-t--30">
 								<thead>
 									<tr>
-										{ this.props.showColumns.includes(0) && <th width="25" className="col-form-label">Práce</th>}
+										{ this.props.showColumns.includes(0) && <th width="25" className="col-form-label p-l-0">Práce</th>}
 										{ this.props.showColumns.includes(1) && <th>{/* Typ / Nazov */}</th>}
 										{ this.props.showColumns.includes(2) && <th style={{fontSize: "12px", fontFamily: "Segoe UI", fontWeight: "500", color: "#333"}} width="170">Rieši</th>}
 										{ this.props.showColumns.includes(3) && <th width="100">Typ</th>}
@@ -181,7 +181,7 @@ export default class PraceWorkTrips extends Component {
 									{
 										this.props.subtasks.map((subtask)=>
 										<tr key={subtask.id}>
-											{ this.props.showColumns.includes(0) && <td className="table-checkbox">
+											{ this.props.showColumns.includes(0) && <td className="table-checkbox p-l-0">
 												<label className="custom-container">
 													<Input type="checkbox"
 														checked={subtask.done}
@@ -665,23 +665,25 @@ export default class PraceWorkTrips extends Component {
 						</div>
 						{/* Totals */}
 						{this.props.showTotals &&
-							<div className="text-right">
-								<b>Cena bez DPH: </b>
-								{this.props.subtasks.concat(this.props.workTrips).reduce((acc, cur)=> acc+(isNaN(this.getTotalPrice(cur))?0:this.getTotalPrice(cur)),0).toFixed(2)}
-						</div>}
-						{this.props.showTotals &&
-							<div className="text-right">
-								<b>DPH: </b>
-								{this.getDPH()}
-						</div>}
-						{this.props.showTotals &&
-							<div className="text-right">
-								<b>Cena s DPH: </b>
-								{this.props.subtasks.concat(this.props.workTrips).reduce((acc, cur)=> acc+(isNaN(this.getTotalPrice(cur))?0:this.getTotalPrice(cur)*this.getDPH()),0).toFixed(2)}
-						</div>}
+							(this.props.workTrips.length + this.props.subtasks.length > 0) &&
+							<div className="row">
+								<div className="text-right ml-auto m-r-5">
+									<b>Cena bez DPH: </b>
+									{this.props.subtasks.concat(this.props.workTrips).reduce((acc, cur)=> acc+(isNaN(this.getTotalPrice(cur))?0:this.getTotalPrice(cur)),0).toFixed(2)}
+								</div>
+								<div className="text-right m-r-5">
+									<b>DPH: </b>
+									{this.getDPH()}
+								</div>
+								<div className="text-right">
+									<b>Cena s DPH: </b>
+									{this.props.subtasks.concat(this.props.workTrips).reduce((acc, cur)=> acc+(isNaN(this.getTotalPrice(cur))?0:this.getTotalPrice(cur)*this.getDPH()),0).toFixed(2)}
+								</div>
+							</div>}
 
 						{false &&
-							this.props.showTotals && <div>
+							this.props.showTotals &&
+							<div className="row">
 							<p className="text-right" style={{marginTop: (((this.state.showAddSubtask||this.state.showAddTrip) || this.props.disabled) ? "" : "")}}>
 								<b>Zľava: </b>
 								{this.props.subtasks.concat(this.props.workTrips).reduce((acc, cur)=> acc+(isNaN(this.getTotalPrice(cur)*(cur.discount))?0:this.getTotalPrice(cur)*(cur.discount)/100),0).toFixed(2)}

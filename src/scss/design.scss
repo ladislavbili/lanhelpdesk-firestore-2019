@@ -264,6 +264,9 @@ html{
 .bkg-F2F1F1{
   background-color: #F2F1F1;
 }
+.bkg-F6F6F6{
+  background-color: #F6F6F6;
+}
 
 .ignore-css{
   all:initial !important;
@@ -404,6 +407,10 @@ h2.clickable:hover{
   padding-top: 10px;
   padding-left: 20px;
   padding-right: 40px;
+}
+
+.asc{
+  align-self: center;
 }
 //---------------END-všeobecné-atribúty-----------------
 
@@ -785,16 +792,15 @@ tr:last-child{
   border: 1px solid red;
 }
 
-.task-edit-right-half{
-  width: 300px;
-  padding-left: 20px;
-  height: 600px;
+.task-edit-right{
+  width: 250px;
+  padding: 20px 20px 20px 13px;
+  background-color: #F6F6F6;
 }
 
-.task-edit-left-half{
-  flex: 1;
-  padding-right: 20px;
-  border-right: 1px solid #EAEAEA;
+.task-edit-left{
+  max-width: 1200px;
+  width: calc(100% - 250px) !important;
 }
 
 .task-edit-popis{
@@ -1174,7 +1180,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   width: 100%;
   background-color: #F6F6F6;
   padding: 0px 0px 0px 0px;
-  height: 41px;
+  height: 50px;
 }
 
 .commandbar-icon{
