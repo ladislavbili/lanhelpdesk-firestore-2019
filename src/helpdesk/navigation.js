@@ -66,6 +66,7 @@ class Navigation extends Component {
 						setLayout={this.setLayout.bind(this)}
 						layout={this.props.layout}
 						dndLayout={true}
+						calendarLayout={true}
 						settings={settings} />
 
 					<Route exact path="/helpdesk" component={TaskList} />

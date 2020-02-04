@@ -55,6 +55,8 @@ class PageHeader extends Component {
 				return "fa-list";
 			case 2:
 				return "fa-map";
+			case 3:
+				return "fa-calendar-alt";
 			default:
 				return "fa-cog";
 		}
@@ -166,6 +168,22 @@ class PageHeader extends Component {
 										/>
 										<i className="fa fa-map" />
 									</label>}
+
+									{this.props.calendarLayout && <label
+										className={
+											'btn btn-link btn-outline-blue waves-effect waves-light' +
+											(this.props.layout === 3 ? ' active' : '')
+										}
+									>
+										<input
+											type="radio"
+											name="options"
+											onChange={() => this.props.setLayout(3)}
+											checked={this.props.layout === 3}
+										/>
+										<i className="fa fa-calendar-alt" />
+									</label>}
+
 								</div>
 							</DropdownMenu>
 						</Dropdown>}

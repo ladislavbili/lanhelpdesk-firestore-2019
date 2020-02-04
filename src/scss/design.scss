@@ -1632,6 +1632,10 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   width: 185px;
 }
 
+.rbc-time-content{
+  overflow-y: visible;
+}
+
 // /0078D4
 //background: $main-background-color;
 //background: #3C3C3C;

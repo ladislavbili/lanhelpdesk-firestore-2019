@@ -5,6 +5,7 @@ import TaskListDnD from './taskListDnD';
 import { connect } from "react-redux";
 import {timestampToString} from '../../helperFunctions';
 import {setSearch, setFilter,addShowDataFilter } from '../../redux/actions';
+
 class ShowDataContainer extends Component {
 	constructor(props) {
 		super(props);
@@ -158,6 +159,23 @@ class ShowDataContainer extends Component {
 										status={this.props.status}
 										/>
 								}
+							</div>
+						)}
+						{this.props.layout === 3 && (
+							<div className={'' + (this.state.filterView ? 'col-xl-9' : 'col-xl-12')}>
+								<this.props.calendar
+									commandBar={this.props}
+									useBreadcrums={this.props.useBreadcrums}
+									breadcrumsData={this.props.breadcrumsData}
+									listName={this.props.listName}
+									history={this.props.history}
+									match={this.props.match}
+									data={this.props.toCalendarData ? this.props.toCalendarData(this.filterData()):this.filterData()}
+									link={this.props.link}
+									groupBy={this.props.dndGroupAttribute}
+									groupData={this.props.dndGroupData}
+									status={this.props.status}
+									/>
 							</div>
 						)}
 					</div>

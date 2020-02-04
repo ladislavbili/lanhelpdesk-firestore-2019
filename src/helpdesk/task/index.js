@@ -4,6 +4,8 @@ import ShowData from '../../components/showData';
 import {timestampToString, sameStringForms} from '../../helperFunctions';
 import TaskEdit from './taskEditSwitch';
 import TaskEmpty from './taskEmpty';
+import TaskCalendar from '../calendar';
+
 import {setTasksOrderBy, setTasksAscending,storageCompaniesStart,storageHelpTagsStart,storageUsersStart,
 	storageHelpProjectsStart,storageHelpStatusesStart,storageHelpTasksStart, storageHelpFiltersStart,
 	setTasklistLayout, storageHelpMilestonesStart,
@@ -176,6 +178,95 @@ class TasksIndex extends Component {
 		]
 	}
 
+	displayCol(task){
+			return (<li>
+				<div className="taskCol-title">
+					<span className="attribute-label">#{task.id} | </span> {task.title}
+				</div>
+				<div className="taskCol-body">
+					<p className="pull-right m-0">
+						<span className="label label-info" style={{backgroundColor:task.status && task.status.color?task.status.color:'white'}}>
+							{task.status?task.status.title:'Neznámy status'}
+						</span>
+					</p>
+					<p>
+						<span>
+							<span className="attribute-label">Requested by: </span>
+									{task.requester?(" " + task.requester.name+' '+task.requester.surname):' Neznámy používateľ '}
+						</span>
+					</p>
+					<p className="pull-right">
+						<span>
+							<span className="attribute-label">	<i className="fa fa-star-of-life" /> </span>
+							{task.createdAt?timestampToString(task.createdAt):'None'}
+						</span>
+					</p>
+					<p>
+						<span>
+							<span className="attribute-label">From </span>
+							{task.company ? task.company.title : " Unknown"}
+						</span>
+					</p>
+
+					<p className="pull-right">
+						<span>
+							<img
+								className="dnd-item-icon"
+								src={require('../../scss/icons/excl-triangle.svg')}
+								alt="Generic placeholder XX"
+								/>
+							{task.deadline?timestampToString(task.deadline):'None'}
+						</span>
+					</p>
+					<p >
+						<span style={{textOverflow: 'ellipsis'}}>
+							<span className="attribute-label">Assigned: </span>
+							{task.assignedTo?task.assignedTo.reduce((total,user)=>total+=user.name+' '+user.surname+', ','').slice(0,-2):'Neznámy používateľ'}</span>
+					</p>
+				</div>
+
+					<div className="taskCol-tags">
+						{task.tags.map((tag)=>
+							<span key={tag.id} className="label label-info m-r-5" style={{backgroundColor: tag.color, color: "white"}}>{tag.title}</span>
+						)}
+					</div>
+
+			</li>)
+	}
+
+	displayCal(task){
+			return (<div>
+					<p className="m-0">
+						<span className="label label-info" style={{backgroundColor:task.status && task.status.color?task.status.color:'white'}}>
+							{task.status?task.status.title:'Neznámy status'}
+						</span>
+						<span className="attribute-label m-l-3">#{task.id} | {task.title}</span>
+					</p>
+					{false &&  <p className="m-0">
+						<span className="m-l-3">
+							<span className="attribute-label">Requested by: </span>
+									{task.requester?(" " + task.requester.name+' '+task.requester.surname):' Neznámy používateľ '}
+						</span>
+						<span className="m-l-3">
+							<span className="attribute-label">	<i className="fa fa-star-of-life" /> </span>
+							{task.createdAt?timestampToString(task.createdAt):'None'}
+						</span>
+						<span className="m-l-3">
+							<span className="attribute-label">From: </span>
+							{task.company ? task.company.title : " Unknown"}
+						</span>
+						<span className="m-l-3">
+							<span className="attribute-label">Deadline: </span>
+							{task.deadline?timestampToString(task.deadline):'None'}
+						</span>
+						<span className="m-l-3">
+							<span className="attribute-label">Assigned: </span>
+							{task.assignedTo?task.assignedTo.reduce((total,user)=>total+=user.name+' '+user.surname+', ','').slice(0,-2):'Neznámy používateľ'}
+						</span>
+					</p>}
+			</div>)
+	}
+
 	filterTasks(){
 		let newTasks=this.state.tasks.map((task)=>{
 			return {
@@ -235,61 +326,7 @@ class TasksIndex extends Component {
 					{value:'id',type:'int'},
 					{value:'company',type:'object'},
 				]}
-				displayCol={(task)=>
-					<li>
-						<div className="taskCol-title">
-							<span className="attribute-label">#{task.id} | </span> {task.title}
-						</div>
-						<div className="taskCol-body">
-							<p className="pull-right m-0">
-								<span className="label label-info" style={{backgroundColor:task.status && task.status.color?task.status.color:'white'}}>
-									{task.status?task.status.title:'Neznámy status'}
-								</span>
-							</p>
-							<p>
-								<span>
-									<span className="attribute-label">Requested by: </span>
-											{task.requester?(" " + task.requester.name+' '+task.requester.surname):' Neznámy používateľ '}
-								</span>
-							</p>
-							<p className="pull-right">
-								<span>
-									<span className="attribute-label">	<i className="fa fa-star-of-life" /> </span>
-									{task.createdAt?timestampToString(task.createdAt):'None'}
-								</span>
-							</p>
-							<p>
-								<span>
-									<span className="attribute-label">From </span>
-									{task.company ? task.company.title : " Unknown"}
-								</span>
-							</p>
-
-							<p className="pull-right">
-								<span>
-									<img
-										className="dnd-item-icon"
-										src={require('../../scss/icons/excl-triangle.svg')}
-										alt="Generic placeholder XX"
-										/>
-									{task.deadline?timestampToString(task.deadline):'None'}
-								</span>
-							</p>
-							<p >
-								<span style={{textOverflow: 'ellipsis'}}>
-									<span className="attribute-label">Assigned: </span>
-									{task.assignedTo?task.assignedTo.reduce((total,user)=>total+=user.name+' '+user.surname+', ','').slice(0,-2):'Neznámy používateľ'}</span>
-							</p>
-						</div>
-
-							<div className="taskCol-tags">
-								{task.tags.map((tag)=>
-									<span key={tag.id} className="label label-info m-r-5" style={{backgroundColor: tag.color, color: "white"}}>{tag.title}</span>
-								)}
-							</div>
-
-					</li>
-				}
+				displayCol={this.displayCol}
 				filterName="help-tasks"
 				displayValues={[
 					{value:'important',label:'',type:'important'},
@@ -327,6 +364,17 @@ class TasksIndex extends Component {
 				]}
 				dndGroupAttribute="status"
 				dndGroupData={this.props.statuses}
+				calendar={TaskCalendar}
+				toCalendarData={(tasks) => tasks.map((task) => {
+					return {
+						...task,
+						title:this.displayCal(task),
+						//title:task.title,
+						start: new Date(task.createdAt),
+						end: new Date(task.deadline !== null ? task.deadline : task.createdAt),
+						allDay: task.deadline === null,
+					}
+				})}
 				link={link}
 				history={this.props.history}
 				orderBy={this.props.orderBy}
