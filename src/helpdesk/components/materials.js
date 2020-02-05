@@ -5,7 +5,7 @@ import { selectStyle, invisibleSelectStyle} from '../../scss/selectStyles';
 export default class Rozpocet extends Component {
 	constructor(props){
 		super(props);
-		const newMargin= this.props.company? this.props.company.pricelist.materialMargin : 0;
+		const newMargin= this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMargin : 0;
 		const newUnit= this.props.units.find((item)=>item.id===this.props.defaultUnit);
 		this.state={
 			editedMaterialTitle: "",
@@ -29,7 +29,7 @@ export default class Rozpocet extends Component {
 	componentWillReceiveProps(props){
 		if((this.props.company===null && props.company!==null) ||
 		(this.props.company && props.company && props.company.id!==this.props.company.id)){
-			this.setState({newMargin:props.company.pricelist.materialMargin});
+			this.setState({newMargin: (props.company && props.company.pricelist ? props.company.pricelist.materialMargin : 0)});
 		}
 		if(this.props.units && props.units && this.props.units.length!==props.units.length){
 			let newUnit= props.units[0];
@@ -47,7 +47,7 @@ export default class Rozpocet extends Component {
 				newTitle:'',
 				newQuantity:1,
 				newUnit,
-				newMargin:props.company? props.company.pricelist.materialMargin : 0,
+				newMargin: props.company && props.company.pricelist ? props.company.pricelist.materialMargin : 0,
 				newPrice:0,
 				marginChanged:false,
 			})
@@ -327,9 +327,9 @@ export default class Rozpocet extends Component {
 													let newPrice = e.target.value;
 													if(!this.state.marginChanged){
 														if(newPrice==='' || parseFloat(newPrice) < 50 ){
-															this.setState({newPrice,newMargin:(this.props.company? this.props.company.pricelist.materialMargin : 0)});
+															this.setState({newPrice,newMargin:(this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMargin : 0)});
 														}else{
-															this.setState({newPrice,newMargin:(this.props.company? this.props.company.pricelist.materialMarginExtra : 0)});
+															this.setState({newPrice,newMargin:(this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMarginExtra : 0)});
 														}
 													}else{
 														this.setState({newPrice});

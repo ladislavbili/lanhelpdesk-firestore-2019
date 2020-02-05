@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+ import React, { Component } from 'react';
 import PriceAdd from './priceAdd';
 import PriceEdit from './priceEdit';
 import {Button } from 'reactstrap';
@@ -68,6 +68,9 @@ class PriceList extends Component{
                         <td className={(this.props.match.params.id === pricelist.id ? "text-highlight":"")}>
                           {pricelist.title}
                         </td>
+                        <td width="10%" className={(this.props.match.params.id === pricelist.id ? "text-highlight":"")}>
+                          {pricelist.id === "NXH3ohdC4IlLgMUL4NR8" ? "Default" : ""}
+                        </td>
                       </tr>
                     )}
                   </tbody>
@@ -77,12 +80,14 @@ class PriceList extends Component{
             <div className="col-lg-8">
               <div className="commandbar">
               </div>
-              {
-                this.props.match.params.id && this.props.match.params.id==='add' && <PriceAdd />
-              }
-              {
-                this.props.match.params.id && this.props.match.params.id!=='add' && this.state.pricelists.some((item)=>item.id===this.props.match.params.id) && <PriceEdit match={this.props.match} history={this.props.history}/>
-              }
+              <div className="p-20 scroll-visible fit-with-header-and-commandbar">
+                {
+                  this.props.match.params.id && this.props.match.params.id==='add' && <PriceAdd />
+                }
+                {
+                  this.props.match.params.id && this.props.match.params.id!=='add' && this.state.pricelists.some((item)=>item.id===this.props.match.params.id) && <PriceEdit match={this.props.match} history={this.props.history}/>
+                }
+              </div>
             </div>
           </div>
         </div>

@@ -59,13 +59,14 @@ class PriceAdd extends Component{
     this.setState({
       taskTypes,
       tripTypes,
+      pricelistName: props.name,
       loading:false
     });
   }
 
   render(){
     return (
-      <div className="p-20 scroll-visible fit-with-header-and-commandbar">
+      <div>
           {
             this.state.loading &&
             <Alert color="success">
@@ -73,66 +74,90 @@ class PriceAdd extends Component{
             </Alert>
           }
           <FormGroup check className="m-b-5 p-l-0">
-            <Input type="checkbox" checked={this.state.def} onChange={(e)=>this.setState({def:!this.state.def})}/>
+            <Input type="checkbox" checked={this.state.def} disabled={true} onChange={(e)=>this.setState({def:!this.state.def})}/>
             <Label check className="m-l-15">
               Default
             </Label>
           </FormGroup>
 
-          <FormGroup>
-            <Label for="name">Pricelist name</Label>
-            <Input type="text" name="name" id="name" placeholder="Enter pricelist name" value={this.state.pricelistName} onChange={(e)=>this.setState({pricelistName:e.target.value})} />
+          <FormGroup className="row m-b-10">
+            <div className="m-r-10 w-20">
+              <Label for="name">Pricelist name</Label>
+            </div>
+            <div className="flex">
+              <Input type="text" name="name" id="name" placeholder="Enter pricelist name" value={this.state.pricelistName} onChange={(e)=>this.setState({pricelistName:e.target.value})} />
+            </div>
           </FormGroup>
 
           <h3>Ceny úloh</h3>
-          <div className="p-10">
+          <div className="p-t-10 p-b-10">
             {
               this.state.taskTypes.map((item,index)=>
-              <FormGroup key={index}>
-                <Label for={item.title}>{item.title}</Label>
-                <Input type="text" name={item.title} id={item.title} placeholder="Enter price" value={item.price.price} onChange={(e)=>{
-                    let newTaskTypes=[...this.state.taskTypes];
-                    let newTaskType = {...newTaskTypes[index]};
-                    newTaskType.price.price=e.target.value;
-                    newTaskTypes[index] = newTaskType;
-                    this.setState({taskTypes:newTaskTypes});
-                  }} />
+              <FormGroup key={index} className="row m-b-10">
+                <div className="m-r-10 w-20">
+                  <Label for={item.title}>{item.title}</Label>
+                </div>
+                <div className="flex">
+                  <Input type="text" name={item.title} id={item.title} placeholder="Enter price" value={item.price.price} onChange={(e)=>{
+                      let newTaskTypes=[...this.state.taskTypes];
+                      let newTaskType = {...newTaskTypes[index]};
+                      newTaskType.price.price=e.target.value;
+                      newTaskTypes[index] = newTaskType;
+                      this.setState({taskTypes:newTaskTypes});
+                    }} />
+                </div>
               </FormGroup>
               )
             }
           </div>
 
           <h3>Ceny Výjazdov</h3>
-            <div className="p-10">
+            <div className="p-t-10 p-b-10">
               {
                 this.state.tripTypes.map((item,index)=>
-                <FormGroup key={index}>
-                  <Label for={item.title}>{item.title}</Label>
-                  <Input type="text" name={item.title} id={item.title} placeholder="Enter price" value={item.price.price} onChange={(e)=>{
-                      let newTripTypes=[...this.state.tripTypes];
-                      let newTripType = {...newTripTypes[index]};
-                      newTripType.price.price=e.target.value;
-                      newTripTypes[index] = newTripType;
-                      this.setState({tripTypes:newTripTypes});
-                    }} />
+                <FormGroup key={index} className="row m-b-10">
+                  <div className="m-r-10 w-20">
+                    <Label for={item.title}>{item.title}</Label>
+                  </div>
+                  <div className="flex">
+                    <Input type="text" name={item.title} id={item.title} placeholder="Enter price" value={item.price.price} onChange={(e)=>{
+                        let newTripTypes=[...this.state.tripTypes];
+                        let newTripType = {...newTripTypes[index]};
+                        newTripType.price.price=e.target.value;
+                        newTripTypes[index] = newTripType;
+                        this.setState({tripTypes:newTripTypes});
+                      }} />
+                  </div>
                 </FormGroup>
                 )
               }
             </div>
 
           <h3>Všeobecné prirážky</h3>
-          <div className="p-10">
-            <FormGroup>
-              <Label for="afterPer">After hours percentage</Label>
-              <Input type="text" name="afterPer" id="afterPer" placeholder="Enter after hours percentage" value={this.state.afterHours} onChange={(e)=>this.setState({afterHours:e.target.value})} />
+          <div className="p-t-10 p-b-10">
+            <FormGroup className="row m-b-10">
+              <div className="m-r-10 w-20">
+                <Label for="afterPer">After hours percentage</Label>
+              </div>
+              <div className="flex">
+                <Input type="text" name="afterPer" id="afterPer" placeholder="Enter after hours percentage" value={this.state.afterHours} onChange={(e)=>this.setState({afterHours:e.target.value})} />
+              </div>
             </FormGroup>
-            <FormGroup>
-              <Label for="materMarg">Materials margin percentage 50-</Label>
-              <Input type="text" name="materMarg" id="materMarg" placeholder="Enter materials margin percentage" value={this.state.margin} onChange={(e)=>this.setState({margin:e.target.value})} />
+            <FormGroup className="row m-b-10">
+              <div className="m-r-10 w-20">
+                <Label for="materMarg">Materials margin percentage 50-</Label>
+              </div>
+              <div className="flex">
+                <Input type="text" name="materMarg" id="materMarg" placeholder="Enter materials margin percentage" value={this.state.margin} onChange={(e)=>this.setState({margin:e.target.value})} />
+              </div>
             </FormGroup>
-            <FormGroup>
-              <Label for="materMarg">Materials margin percentage 50+</Label>
-              <Input type="text" name="materMarg" id="materMarg" placeholder="Enter materials margin percentage" value={this.state.marginExtra} onChange={(e)=>this.setState({marginExtra:e.target.value})} />
+            <FormGroup className="row m-b-10">
+              <div className="m-r-10 w-20">
+                <Label for="materMarg">Materials margin percentage 50+</Label>
+              </div>
+              <div className="flex">
+                <Input type="text" name="materMarg" id="materMarg" placeholder="Enter materials margin percentage" value={this.state.marginExtra} onChange={(e)=>this.setState({marginExtra:e.target.value})} />
+              </div>
             </FormGroup>
           </div>
 

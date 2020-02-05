@@ -102,6 +102,7 @@ class PausalEdit extends Component{
 
       <h2 className="p-t-10 p-l-20 p-b-5">Paušále firmy: {this.state.title}</h2>
 
+      <div className="p-20">
 
         <h3>Paušál</h3>
         <FormGroup>
@@ -153,6 +154,7 @@ class PausalEdit extends Component{
             this.submit()
           }}>{this.state.saving?'Saving...':'Save changes'}</Button>
       </div>
+    </div>
     );
   }
 }

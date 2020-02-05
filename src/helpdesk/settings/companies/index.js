@@ -12,7 +12,8 @@ class CompaniesList extends Component{
     super(props);
     this.state={
       companies:[],
-      companyFilter:''
+      companyFilter:'',
+      sortBy: "0",
     }
   }
 
@@ -30,7 +31,7 @@ class CompaniesList extends Component{
   }
 
   render(){
-
+    console.log(this.state.sortBy);
     return (
       <div className="content">
         <div className="row m-0 p-0 taskList-container">
@@ -57,13 +58,37 @@ class CompaniesList extends Component{
               </Button>
             </div>
             <div className="p-t-9 p-r-10 p-l-10 scroll-visible fit-with-header-and-commandbar">
-              <h2 className=" p-l-10 p-b-10 ">
-  							Companies
-  						</h2>
+              <div className="row">
+                <h2 className=" p-l-10 p-b-10 ">
+    							Companies
+    						</h2>
+                <div className="d-flex flex-row align-items-center ml-auto">
+                  <div className="text-basic m-r-5 m-l-5">
+      							Sort by
+      						</div>
+                  <select
+    								value={this.state.sortBy}
+    								className="invisible-select text-bold text-highlight"
+    								onChange={(e)=> this.setState({sortBy: e.target.value})}>
+    									<option value={0} key={0}>All</option>
+      								<option value={1} key={1}>Contracted</option>
+        							<option value={2} key={2}>Non-contracted</option>
+    							</select>
+                </div>
+              </div>
               <table className="table table-hover">
                 <tbody>
                     {
-                      this.state.companies.filter((item) => item.title.toLowerCase().includes(this.state.companyFilter.toLowerCase()))
+                      this.state.companies.filter((item) => {
+                        let cond = true;
+                        if (this.state.sortBy === "1"){
+                          cond = parseInt(item.drivePausal) > 0 || parseInt(item.workPausal) > 0;
+                        } else if (this.state.sortBy === "2"){
+                          cond = !(parseInt(item.drivePausal) > 0 || parseInt(item.workPausal) > 0);
+                        }
+
+                        return cond && item.title.toLowerCase().includes(this.state.companyFilter.toLowerCase());
+                      })
                         .map((company)=>
                           <tr
                             key={company.id}
@@ -71,6 +96,9 @@ class CompaniesList extends Component{
                             onClick={()=>this.props.history.push('/helpdesk/settings/companies/'+company.id)}>
                             <td className={(this.props.match.params.id === company.id ? "text-highlight":"")}>
                               {company.title}
+                            </td>
+                            <td width="10%" className={(this.props.match.params.id === company.id ? "text-highlight":"") }>
+                              {parseInt(company.drivePausal) > 0 || parseInt(company.workPausal) > 0 ? "Zmluvný" : "Nezmluvný"}
                             </td>
                           </tr>
                       )

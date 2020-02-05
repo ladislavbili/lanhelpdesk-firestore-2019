@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 export default class Rozpocet extends Component {
 	constructor(props){
 		super(props);
-		const newMargin= this.props.company? this.props.company.pricelist.materialMargin : 0;
+		const newMargin= this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMargin : 0;
 		const newUnit= this.props.units.find((item)=>item.id===this.props.defaultUnit);
 		this.state={
 			editedMaterialTitle: "",
@@ -26,7 +26,7 @@ export default class Rozpocet extends Component {
 	componentWillReceiveProps(props){
 		if((this.props.company===null && props.company!==null) ||
 		(props.company!==null && props.company!==null && props.company.id!==this.props.company.id)){
-			this.setState({newMargin:props.company.pricelist.materialMargin});
+			this.setState({newMargin: (props.company && props.company.pricelist ? props.company.pricelist.materialMargin : 0)});
 		}
 		if((this.props.units.length!==props.units.length)){
 			let newUnit= props.units[0];
@@ -44,7 +44,7 @@ export default class Rozpocet extends Component {
 				newTitle:'',
 				newQuantity:1,
 				newUnit,
-				newMargin:props.company? props.company.pricelist.materialMargin : 0,
+				newMargin: props.company && props.company.pricelist ? props.company.pricelist.materialMargin : 0,
 				newPrice:0,
 				marginChanged:false,
 			})
