@@ -189,6 +189,8 @@ class CompanyAdd extends Component{
             rented:[],
             dph:20,
             newData: false,
+            editingPriceList: false,
+            priceName: "",
             saving:false}, () => {
               if (this.props.addCompany){
                 this.props.addCompany({...newCompany, id: comp.id, label: newCompany.title, value: comp.id});
@@ -554,7 +556,7 @@ class CompanyAdd extends Component{
                   styles={selectStyle}
                   options={this.state.pricelists}
                   value={this.state.pricelist}
-                  onChange={e =>{ this.setState({pricelist: e, newData: true, editingPriceList: false  }) }}
+                  onChange={e =>{ this.setState({pricelist: e, newData: (e.value === 0), editingPriceList: false  }) }}
                   />
               </div>
             </FormGroup>
