@@ -581,7 +581,7 @@ class CompanyAdd extends Component{
               </FormGroup>
             }
             {this.state.editingPriceList &&
-              <PriceEdit listId={this.state.pricelist.id}/>
+              <PriceEdit listId={this.state.pricelist.id}  deletedList={() => this.setState({pricelist: [], priceName: "", editingPriceList: false})}/>
             }
 
           </div>

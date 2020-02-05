@@ -252,7 +252,11 @@ class PriceEdit extends Component{
                       this.state.taskTypes.filter((item)=>item.price.id!==undefined).map((taskType)=>
                         rebase.removeDoc('/help-prices/'+taskType.price.id)
                       );
-                      this.props.history.goBack();
+                      if (this.props.listId) {
+                        this.props.deletedList();
+                      } else {
+                        this.props.history.goBack();
+                      }
                     }
                 }}>Delete price list</Button>
           </div>
