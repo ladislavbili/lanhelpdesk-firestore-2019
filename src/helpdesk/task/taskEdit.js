@@ -166,6 +166,10 @@ class TaskEdit extends Component {
 			.then((data)=>{
 				snapshotToArray(data).forEach((item)=>rebase.removeDoc('/help-comments/'+item.id));
 			});
+			database.collection('help-calendar_events').where("taskID", "==", taskID).get()
+			.then((data)=>{
+				snapshotToArray(data).forEach((item)=>rebase.removeDoc('/help-calendar_events/'+item.id));
+			});
 			if(this.props.inModal){
 				this.props.closeModal();
 			}else{
@@ -1159,7 +1163,6 @@ class TaskEdit extends Component {
 										});
 									}}
 									/>
-								{console.log(this.state.company)}
 								<Materials
 									showColumns={[0,1,2,3,4,6]}
 									disabled={this.state.viewOnly}

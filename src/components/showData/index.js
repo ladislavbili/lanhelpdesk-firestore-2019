@@ -98,6 +98,7 @@ class ShowDataContainer extends Component {
 	}
 
 	render() {
+
 		return (
 			<div className="content-page">
 				<div className="content" style={{ paddingTop: 0 }}>
@@ -171,7 +172,11 @@ class ShowDataContainer extends Component {
 									listName={this.props.listName}
 									history={this.props.history}
 									match={this.props.match}
-									data={this.props.toCalendarData ? this.props.toCalendarData(this.filterData()):this.filterData()}
+									data={
+										(this.props.calendarAllDayData ? this.props.calendarAllDayData(this.filterData()):[]).concat(
+											this.props.calendarEventsData ? this.props.calendarEventsData(this.filterData()):[]
+										)
+									}
 									link={this.props.link}
 									groupBy={this.props.dndGroupAttribute}
 									groupData={this.props.dndGroupData}

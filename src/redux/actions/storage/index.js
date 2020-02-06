@@ -18,6 +18,7 @@ export * from './help-work_types';
 export * from './help-task_works';
 export * from './help-task_materials';
 export * from './help-company_invoices';
+export * from './help-calendar_events';
 
 export * from './companies';
 export * from './imaps';

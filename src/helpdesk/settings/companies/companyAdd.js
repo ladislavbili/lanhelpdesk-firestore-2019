@@ -616,8 +616,6 @@ class CompanyAdd extends Component{
 }
 
 const mapStateToProps = ({ storageMetadata, storageHelpPricelists, storageHelpTaskTypes, storageHelpTripTypes}) => {
-  const { taskTypesLoaded, taskTypesActive, taskTypes } = storageHelpTaskTypes;
-  const { tripTypesActive, tripTypes, tripTypesLoaded } = storageHelpTripTypes;
   const { metadataActive, metadata, metadataLoaded } = storageMetadata;
   const { pricelistsActive, pricelists, pricelistsLoaded } = storageHelpPricelists;
   return { metadataActive, metadata, metadataLoaded, pricelistsActive, pricelists, pricelistsLoaded };

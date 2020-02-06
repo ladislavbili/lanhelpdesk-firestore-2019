@@ -6,6 +6,8 @@ import { SketchPicker } from "react-color";
 import {selectStyle} from "../../../scss/selectStyles";
 
 let actions = [
+  {label:'None (is open)',value:'open'},
+  {label:'None (is new)',value:'new'},
   {label:'None (nothing happens when status is selected)',value:'none'},
   {label:'Set close date (sets close date as current)',value:'close'},
   {label:'Set close invalid (sets close date as current)',value:'invalid'},

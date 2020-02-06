@@ -203,6 +203,10 @@ class ProjectEdit extends Component{
 				rebase.removeDoc('/help-repeats/'+taskID);
 			}
 			snapshotToArray(comments).forEach((item)=>rebase.removeDoc('/help-comments/'+item.id));
+			database.collection('help-calendar_events').where("taskID", "==", taskID).get()
+			.then((data)=>{
+				snapshotToArray(data).forEach((item)=>rebase.removeDoc('/help-calendar_events/'+item.id));
+			});
 		});
 	}
 

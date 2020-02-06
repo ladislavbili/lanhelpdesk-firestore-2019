@@ -1,9 +1,10 @@
-import {SET_TASKS_ORDER_BY, SET_TASKS_ASCENDING,SET_TASKLIST_LAYOUT, SET_USER_DATA} from '../../types'
+import {SET_TASKS_ORDER_BY, SET_TASKS_ASCENDING,SET_TASKLIST_LAYOUT, SET_USER_DATA, SET_CALENDAR_LAYOUT } from '../../types'
 
 const initialState = {
   orderBy:'status',
   ascending:false,
   tasklistLayout:0,
+  calendarLayout:'month',
 };
 
 export default function userReducer(state = initialState, action) {
@@ -23,11 +24,18 @@ export default function userReducer(state = initialState, action) {
         ...state,
         tasklistLayout: action.tasklistLayout,
       };
-    case SET_USER_DATA:
+    case SET_USER_DATA:{
       return {
         ...state,
         tasklistLayout: action.userData.tasklistLayout?action.userData.tasklistLayout:state.tasklistLayout,
       };
+    }
+    case SET_CALENDAR_LAYOUT:{
+      return {
+        ...state,
+        calendarLayout: action.calendarLayout,
+      };
+    }
 
     default:
       return state;

@@ -31,7 +31,6 @@ class CompaniesList extends Component{
   }
 
   render(){
-    console.log(this.state.sortBy);
     return (
       <div className="content">
         <div className="row m-0 p-0 taskList-container">

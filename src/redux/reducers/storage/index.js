@@ -1,3 +1,4 @@
+import storageHelpCalendarEvents from './help-calendar_eventsReducer';
 import storageHelpFilters from './help-filtersReducer';
 import storageHelpInvoiceItems from './help-invoice_itemsReducer';
 import storageHelpMilestones from './help-milestonesReducer';
@@ -26,6 +27,7 @@ import storageSmtps from './smtpsReducer';
 import storageUsers from './usersReducer';
 
 export default {
+  storageHelpCalendarEvents,
   storageHelpFilters,
   storageHelpInvoiceItems,
   storageHelpMilestones,
@@ -46,7 +48,7 @@ export default {
   storageHelpTripTypes,
   storageHelpWorkTypes,
   storageHelpCompanyInvoices,
-  
+
   storageCompanies,
   storageImaps,
   storageMetadata,

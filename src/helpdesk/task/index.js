@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import ShowData from '../../components/showData';
-import {timestampToString, sameStringForms} from '../../helperFunctions';
+import { timestampToString, sameStringForms, fromMomentToUnix } from '../../helperFunctions';
 import TaskEdit from './taskEditSwitch';
 import TaskEmpty from './taskEmpty';
 import TaskCalendar from '../calendar';
+import moment from 'moment';
 
 import {setTasksOrderBy, setTasksAscending,storageCompaniesStart,storageHelpTagsStart,storageUsersStart,
 	storageHelpProjectsStart,storageHelpStatusesStart,storageHelpTasksStart, storageHelpFiltersStart,
-	setTasklistLayout, storageHelpMilestonesStart,
+	setTasklistLayout, storageHelpMilestonesStart, storageHelpCalendarEventsStart,
 	setHelpSidebarProject, setHelpSidebarMilestone, setHelpSidebarFilter, setFilter, setMilestone,setProject,
 } from '../../redux/actions';
 const allMilestones = {id:null,title:'Any', label:'Any',value:null};
@@ -27,6 +28,7 @@ class TasksIndex extends Component {
 			filterName:''
 		}
 		this.filterTasks.bind(this);
+		this.getCalendarAllDayData.bind(this);
 		this.getBreadcrumsData.bind(this);
 	}
 
@@ -95,6 +97,9 @@ class TasksIndex extends Component {
 		}
 		if(!this.props.milestonesActive){
 			this.props.storageHelpMilestonesStart();
+		}
+		if(!this.props.calendarEventsActive){
+			this.props.storageHelpCalendarEventsStart();
 		}
 
 		this.getFilterName(this.props);
@@ -302,6 +307,67 @@ class TasksIndex extends Component {
 			(this.props.milestone===null||((task.milestone)&& task.milestone === this.props.milestone))
 		})
 	}
+
+	getCalendarEventsData(tasks){
+		let taskIDs = tasks.map((task)=>task.id);
+		return this.props.calendarEvents.filter((event)=>taskIDs.includes(event.taskID)).map((event)=>{
+			let task = tasks.find((task)=>event.taskID===task.id);
+			return {
+				...task,
+				isTask:false,
+				eventID:event.id,
+				title:this.displayCal(task),
+				start:new Date(event.start),
+				end:new Date(event.end),
+			}
+		})
+	}
+
+	getCalendarAllDayData(tasks){
+		return tasks.map((task) => {
+			let newTask = {
+				...task,
+				isTask:true,
+				title:this.displayCal(task),
+				allDay:task.status.action!=='pending',
+			}
+
+			switch (task.status.action) {
+				case 'invoiced':{
+					return {
+						...newTask,
+						start:new Date(task.invoicedDate),
+					}
+				}
+				case 'close':{
+					return {
+						...newTask,
+						start:new Date(task.closeDate),
+					}
+				}
+				case 'invalid':{
+					return {
+						...newTask,
+						start:new Date(task.closeDate),
+					}
+				}
+				case 'pending':{
+					return {
+						...newTask,
+						start:new Date(task.pendingDate),
+						end:new Date(task.pendingDateTo?task.pendingDateTo:fromMomentToUnix(moment(task.pendingDate).add(30,'minutes'))),
+					}
+				}
+				default:{
+					return {
+						...newTask,
+						start:new Date(),
+					}
+				}
+			}
+		}).map((task)=>({...task,end: task.status.action!=='pending' ? task.start : task.end }))
+	}
+
 	render() {
 		let link='';
 		if(this.props.match.params.hasOwnProperty('listID')){
@@ -316,7 +382,7 @@ class TasksIndex extends Component {
 				data={this.filterTasks()}
 				filterBy={[
 					{value:'assignedTo',type:'list',func:((total,user)=>total+=user.email+' '+user.name+' '+user.surname+' ')},
-			//		{value:'tags',type:'list',func:((cur,item)=>cur+item.title+' ')},
+					//		{value:'tags',type:'list',func:((cur,item)=>cur+item.title+' ')},
 					{value:'statusChange',type:'date'},
 					{value:'createdAt',type:'date'},
 					{value:'requester',type:'user'},
@@ -365,16 +431,8 @@ class TasksIndex extends Component {
 				dndGroupAttribute="status"
 				dndGroupData={this.props.statuses}
 				calendar={TaskCalendar}
-				toCalendarData={(tasks) => tasks.map((task) => {
-					return {
-						...task,
-						title:this.displayCal(task),
-						//title:task.title,
-						start: new Date(task.createdAt),
-						end: new Date(task.deadline !== null ? task.deadline : task.createdAt),
-						allDay: task.deadline === null,
-					}
-				})}
+				calendarAllDayData={this.getCalendarAllDayData.bind(this)}
+				calendarEventsData={this.getCalendarEventsData.bind(this)}
 				link={link}
 				history={this.props.history}
 				orderBy={this.props.orderBy}
@@ -395,7 +453,7 @@ class TasksIndex extends Component {
 	}
 }
 
-const mapStateToProps = ({ userReducer, filterReducer, taskReducer, storageCompanies, storageHelpTags, storageUsers, storageHelpProjects, storageHelpStatuses,storageHelpTasks,storageHelpFilters, storageHelpMilestones, helpSidebarStateReducer }) => {
+const mapStateToProps = ({ userReducer, filterReducer, taskReducer, storageCompanies, storageHelpTags, storageUsers, storageHelpProjects, storageHelpStatuses,storageHelpTasks,storageHelpFilters, storageHelpMilestones, helpSidebarStateReducer, storageHelpCalendarEvents }) => {
 	const { project, milestone, filter } = filterReducer;
 	const { orderBy, ascending, tasklistLayout } = taskReducer;
 
@@ -407,6 +465,7 @@ const mapStateToProps = ({ userReducer, filterReducer, taskReducer, storageCompa
 	const { tasksActive, tasks } = storageHelpTasks;
 	const { filtersActive, filters } = storageHelpFilters;
 	const { milestonesActive, milestones } = storageHelpMilestones;
+	const { calendarEventsActive, calendarEvents } = storageHelpCalendarEvents;
 
 	return {
 		project, milestone, filter,
@@ -422,10 +481,11 @@ const mapStateToProps = ({ userReducer, filterReducer, taskReducer, storageCompa
 		projectState:helpSidebarStateReducer.project,
 		milestoneState:helpSidebarStateReducer.milestone,
 		filterState:helpSidebarStateReducer.filter,
+		calendarEventsActive, calendarEvents,
 	 };
 };
 
 export default connect(mapStateToProps, { setTasksOrderBy, setTasksAscending ,
-	storageCompaniesStart,storageHelpTagsStart,storageUsersStart,storageHelpProjectsStart,storageHelpStatusesStart,storageHelpTasksStart, storageHelpFiltersStart, setTasklistLayout, storageHelpMilestonesStart,
+	storageCompaniesStart,storageHelpTagsStart,storageUsersStart,storageHelpProjectsStart,storageHelpStatusesStart,storageHelpTasksStart, storageHelpFiltersStart, setTasklistLayout, storageHelpMilestonesStart, storageHelpCalendarEventsStart,
 	setHelpSidebarProject, setHelpSidebarMilestone, setHelpSidebarFilter, setFilter, setMilestone, setProject,
 })(TasksIndex);
