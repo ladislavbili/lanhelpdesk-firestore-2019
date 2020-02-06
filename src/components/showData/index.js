@@ -116,7 +116,8 @@ class ShowDataContainer extends Component {
 									itemID={this.props.itemID}
 									link={this.props.link}
 									displayCol={this.props.displayCol}
-									edit={this.props.edit}/>
+									edit={this.props.edit}
+									/>
 							</div>
 						)}
 
@@ -175,6 +176,7 @@ class ShowDataContainer extends Component {
 									groupBy={this.props.dndGroupAttribute}
 									groupData={this.props.dndGroupData}
 									status={this.props.status}
+									edit={this.props.edit}
 									/>
 							</div>
 						)}

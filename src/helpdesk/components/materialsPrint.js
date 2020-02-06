@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 export default class Rozpocet extends Component {
 	constructor(props){
 		super(props);
-		const newMargin= this.props.company? this.props.company.pricelist.materialMargin : 0;
+		const newMargin= this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMargin : 0;
 		const newUnit= this.props.units.find((item)=>item.id===this.props.defaultUnit);
 		this.state={
 			editedMaterialTitle: "",

@@ -30,6 +30,9 @@ class TaskCalendar extends Component {
 	};
 
   render() {
+		if(this.props.match.params.taskID){
+			return (<this.props.edit match={this.props.match} columns={true} history={this.props.history} />);
+		}
 	   return (
   		<div>
 				<CommandBar { ...this.props.commandBar } />
@@ -46,8 +49,15 @@ class TaskCalendar extends Component {
 						drilldownView="day"
 						popup={true}
 						views={['month', 'day', 'week', 'agenda']}
-						onDoubleClickEvent={(event)=>{console.log('open event');console.log(event);}}
-						onSelecting={()=>{console.log('prevent?');return true;}}
+						onDoubleClickEvent={(event)=>{
+							console.log('open event');
+							console.log(event);
+							this.props.history.push(this.props.link+'/'+event.id);
+						}}
+						onSelecting={()=>{
+							console.log('prevent?');
+							return true;
+						}}
 	          style = {{ height: "100vh" }}
 	        />
 				</div>
