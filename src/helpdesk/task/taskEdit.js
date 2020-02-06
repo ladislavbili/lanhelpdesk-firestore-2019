@@ -1067,203 +1067,203 @@ class TaskEdit extends Component {
 						/>
 
 					<Nav tabs className="b-0 m-b-22 m-l--10 m-t-15">
-							<NavItem>
-								<NavLink
-									className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "")}
-									onClick={() => { this.setState({toggleTab:'1'}); }}
-								>
-									Komentáre   |
-            		</NavLink>
-							</NavItem>
-							<NavItem>
-								<NavLink
-									className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
-									onClick={() => { this.setState({toggleTab:'2'}); }}
-								>
-									Výkazy   |
-								</NavLink>
-							</NavItem>
-							<NavItem>
-								<NavLink
-									className={classnames({ active: this.state.toggleTab === '3' }, "clickable", "")}
-									onClick={() => { this.setState({toggleTab:'3'}); }}
-								>
-									Rozpočet   |
-								</NavLink>
-							</NavItem>
-							{this.props.currentUser.userData.role.value > 0 && <NavItem>
-								<NavLink
-									className={classnames({ active: this.state.toggleTab === '4' }, "clickable", "")}
-									onClick={() => { this.setState({toggleTab:'4'}); }}
-								>
-									História
-								</NavLink>
-							</NavItem>}
-						</Nav>
+						<NavItem>
+							<NavLink
+								className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "")}
+								onClick={() => { this.setState({toggleTab:'1'}); }}
+							>
+								Komentáre   |
+          		</NavLink>
+						</NavItem>
+						<NavItem>
+							<NavLink
+								className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
+								onClick={() => { this.setState({toggleTab:'2'}); }}
+							>
+								Výkazy   |
+							</NavLink>
+						</NavItem>
+						<NavItem>
+							<NavLink
+								className={classnames({ active: this.state.toggleTab === '3' }, "clickable", "")}
+								onClick={() => { this.setState({toggleTab:'3'}); }}
+							>
+								Rozpočet   |
+							</NavLink>
+						</NavItem>
+						{this.props.currentUser.userData.role.value > 0 && <NavItem>
+							<NavLink
+								className={classnames({ active: this.state.toggleTab === '4' }, "clickable", "")}
+								onClick={() => { this.setState({toggleTab:'4'}); }}
+							>
+								História
+							</NavLink>
+						</NavItem>}
+					</Nav>
 
-						<TabContent activeTab={this.state.toggleTab}>
-								<TabPane tabId="1">
-									<Comments
-										id={taskID?taskID:null}
-										users={this.state.users}
-										addToHistory={(internal)=>{
-											let event = {
-												message:this.getHistoryMessage('comment'),
-												createdAt:(new Date()).getTime(),
-												task:this.props.match.params.taskID
-											}
-											this.addToHistory(event);
-											this.addNotification(event,internal);
-										}}
-										/>
-								</TabPane>
-								<TabPane tabId="2">
-									<PraceWorkTrips
-										showColumns={[0,1,4,8]}
-										showTotals={false}
-										disabled={this.state.viewOnly}
-										taskAssigned={this.state.assignedTo}
-										submitService={this.submitService.bind(this)}
-										subtasks={taskWorks}
-										defaultType={this.state.type}
-										workTypes={this.state.taskTypes}
-										company={this.state.company}
-										taskID={this.props.match.params.taskID}
-										updateSubtask={(id,newData)=>{
-											rebase.updateDoc('help-task_works/'+id,newData);
-											let newTaskWorks=[...this.state.taskWorks];
-											newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
-											this.setState({taskWorks:newTaskWorks});
-										}}
-										removeSubtask={(id)=>{
-											rebase.removeDoc('help-task_works/'+id).then(()=>{
-												let newTaskWorks=[...this.state.taskWorks];
-												newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
-												this.setState({taskWorks:newTaskWorks});
-											});
-										}}
-										workTrips={workTrips}
-										tripTypes={this.state.tripTypes}
-										submitTrip={this.submitWorkTrip.bind(this)}
-										updateTrip={(id,newData)=>{
-											rebase.updateDoc('help-task_work_trips/'+id,newData);
-											let newTrips=[...this.state.workTrips];
-											newTrips[newTrips.findIndex((trip)=>trip.id===id)]={...newTrips.find((trip)=>trip.id===id),...newData};
-											this.setState({workTrips:newTrips});
-										}}
-										removeTrip={(id)=>{
-											rebase.removeDoc('help-task_work_trips/'+id).then(()=>{
-												let newTrips=[...this.state.workTrips];
-												newTrips.splice(newTrips.findIndex((trip)=>trip.id===id),1);
-												this.setState({workTrips:newTrips});
-											});
-										}}
-										/>
-
-									<Materials
-										showColumns={[0,1,2,3,4,6]}
-										disabled={this.state.viewOnly}
-										materials={taskMaterials}
-						        submitMaterial={this.submitMaterial.bind(this)}
-										updateMaterial={(id,newData)=>{
-											rebase.updateDoc('help-task_materials/'+id,newData);
-											let newTaskMaterials=[...this.state.taskMaterials];
-											newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
-											this.setState({taskMaterials:newTaskMaterials});
-										}}
-										removeMaterial={(id)=>{
-											rebase.removeDoc('help-task_materials/'+id).then(()=>{
-												let newTaskMaterials=[...this.state.taskMaterials];
-												newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
-												this.setState({taskMaterials:newTaskMaterials});
-											});
-										}}
-						        units={this.state.units}
-										defaultUnit={this.state.defaultUnit}
-										company={this.state.company}
-										match={this.props.match}
-										/>
-								</TabPane>
-								<TabPane tabId="3">
-									<PraceWorkTrips
-										showColumns={[0,1,2,3,4,5,6,7,8]}
-										showTotals={true}
-										disabled={this.state.viewOnly}
-										taskAssigned={this.state.assignedTo}
-										submitService={this.submitService.bind(this)}
-										subtasks={taskWorks}
-										defaultType={this.state.type}
-										workTypes={this.state.taskTypes}
-										company={this.state.company}
-										taskID={this.props.match.params.taskID}
-										updateSubtask={(id,newData)=>{
-											rebase.updateDoc('help-task_works/'+id,newData);
-											let newTaskWorks=[...this.state.taskWorks];
-											newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
-											this.setState({taskWorks:newTaskWorks});
-										}}
-										removeSubtask={(id)=>{
-											rebase.removeDoc('help-task_works/'+id).then(()=>{
-												let newTaskWorks=[...this.state.taskWorks];
-												newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
-												this.setState({taskWorks:newTaskWorks});
-											});
-										}}
-										workTrips={workTrips}
-										tripTypes={this.state.tripTypes}
-										submitTrip={this.submitWorkTrip.bind(this)}
-										updateTrip={(id,newData)=>{
-											rebase.updateDoc('help-task_work_trips/'+id,newData);
-											let newTrips=[...this.state.workTrips];
-											newTrips[newTrips.findIndex((trip)=>trip.id===id)]={...newTrips.find((trip)=>trip.id===id),...newData};
-											this.setState({workTrips:newTrips});
-										}}
-										removeTrip={(id)=>{
-											rebase.removeDoc('help-task_work_trips/'+id).then(()=>{
-												let newTrips=[...this.state.workTrips];
-												newTrips.splice(newTrips.findIndex((trip)=>trip.id===id),1);
-												this.setState({workTrips:newTrips});
-											});
-										}}
+					<TabContent activeTab={this.state.toggleTab}>
+							<TabPane tabId="1">
+								<Comments
+									id={taskID?taskID:null}
+									users={this.state.users}
+									addToHistory={(internal)=>{
+										let event = {
+											message:this.getHistoryMessage('comment'),
+											createdAt:(new Date()).getTime(),
+											task:this.props.match.params.taskID
+										}
+										this.addToHistory(event);
+										this.addNotification(event,internal);
+									}}
 									/>
-
-									<Materials
-										showColumns={[0,1,2,3,4,5,6]}
-										disabled={this.state.viewOnly}
-										materials={taskMaterials}
-						        submitMaterial={this.submitMaterial.bind(this)}
-										updateMaterial={(id,newData)=>{
-											rebase.updateDoc('help-task_materials/'+id,newData);
-											let newTaskMaterials=[...this.state.taskMaterials];
-											newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
-											this.setState({taskMaterials:newTaskMaterials});
-										}}
-										removeMaterial={(id)=>{
-											rebase.removeDoc('help-task_materials/'+id).then(()=>{
-												let newTaskMaterials=[...this.state.taskMaterials];
-												newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
-												this.setState({taskMaterials:newTaskMaterials});
-											});
-										}}
-						        units={this.state.units}
-										defaultUnit={this.state.defaultUnit}
-										company={this.state.company}
-										match={this.props.match}
+							</TabPane>
+							<TabPane tabId="2">
+								<PraceWorkTrips
+									showColumns={[0,1,4,8]}
+									showTotals={false}
+									disabled={this.state.viewOnly}
+									taskAssigned={this.state.assignedTo}
+									submitService={this.submitService.bind(this)}
+									subtasks={taskWorks}
+									defaultType={this.state.type}
+									workTypes={this.state.taskTypes}
+									company={this.state.company}
+									taskID={this.props.match.params.taskID}
+									updateSubtask={(id,newData)=>{
+										rebase.updateDoc('help-task_works/'+id,newData);
+										let newTaskWorks=[...this.state.taskWorks];
+										newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
+										this.setState({taskWorks:newTaskWorks});
+									}}
+									removeSubtask={(id)=>{
+										rebase.removeDoc('help-task_works/'+id).then(()=>{
+											let newTaskWorks=[...this.state.taskWorks];
+											newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
+											this.setState({taskWorks:newTaskWorks});
+										});
+									}}
+									workTrips={workTrips}
+									tripTypes={this.state.tripTypes}
+									submitTrip={this.submitWorkTrip.bind(this)}
+									updateTrip={(id,newData)=>{
+										rebase.updateDoc('help-task_work_trips/'+id,newData);
+										let newTrips=[...this.state.workTrips];
+										newTrips[newTrips.findIndex((trip)=>trip.id===id)]={...newTrips.find((trip)=>trip.id===id),...newData};
+										this.setState({workTrips:newTrips});
+									}}
+									removeTrip={(id)=>{
+										rebase.removeDoc('help-task_work_trips/'+id).then(()=>{
+											let newTrips=[...this.state.workTrips];
+											newTrips.splice(newTrips.findIndex((trip)=>trip.id===id),1);
+											this.setState({workTrips:newTrips});
+										});
+									}}
 									/>
-								</TabPane>
-								{this.props.currentUser.userData.role.value > 0 && <TabPane tabId="4">
-									<h3>História</h3>
-										<ListGroup>
-											{ this.state.history.map((event)=>
-												<ListGroupItem key={event.id}>
-													({timestampToString(event.createdAt)})
-													{' ' + event.message}
-												</ListGroupItem>
-											)}
-										</ListGroup>
-									{this.state.history.length===0 && <div>História je prázdna.</div>}
-								</TabPane>}
-							</TabContent>
+								{console.log(this.state.company)}
+								<Materials
+									showColumns={[0,1,2,3,4,6]}
+									disabled={this.state.viewOnly}
+									materials={taskMaterials}
+					        submitMaterial={this.submitMaterial.bind(this)}
+									updateMaterial={(id,newData)=>{
+										rebase.updateDoc('help-task_materials/'+id,newData);
+										let newTaskMaterials=[...this.state.taskMaterials];
+										newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
+										this.setState({taskMaterials:newTaskMaterials});
+									}}
+									removeMaterial={(id)=>{
+										rebase.removeDoc('help-task_materials/'+id).then(()=>{
+											let newTaskMaterials=[...this.state.taskMaterials];
+											newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
+											this.setState({taskMaterials:newTaskMaterials});
+										});
+									}}
+					        units={this.state.units}
+									defaultUnit={this.state.defaultUnit}
+									company={this.state.company}
+									match={this.props.match}
+									/>
+							</TabPane>
+							<TabPane tabId="3">
+								<PraceWorkTrips
+									showColumns={[0,1,2,3,4,5,6,7,8]}
+									showTotals={true}
+									disabled={this.state.viewOnly}
+									taskAssigned={this.state.assignedTo}
+									submitService={this.submitService.bind(this)}
+									subtasks={taskWorks}
+									defaultType={this.state.type}
+									workTypes={this.state.taskTypes}
+									company={this.state.company}
+									taskID={this.props.match.params.taskID}
+									updateSubtask={(id,newData)=>{
+										rebase.updateDoc('help-task_works/'+id,newData);
+										let newTaskWorks=[...this.state.taskWorks];
+										newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
+										this.setState({taskWorks:newTaskWorks});
+									}}
+									removeSubtask={(id)=>{
+										rebase.removeDoc('help-task_works/'+id).then(()=>{
+											let newTaskWorks=[...this.state.taskWorks];
+											newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
+											this.setState({taskWorks:newTaskWorks});
+										});
+									}}
+									workTrips={workTrips}
+									tripTypes={this.state.tripTypes}
+									submitTrip={this.submitWorkTrip.bind(this)}
+									updateTrip={(id,newData)=>{
+										rebase.updateDoc('help-task_work_trips/'+id,newData);
+										let newTrips=[...this.state.workTrips];
+										newTrips[newTrips.findIndex((trip)=>trip.id===id)]={...newTrips.find((trip)=>trip.id===id),...newData};
+										this.setState({workTrips:newTrips});
+									}}
+									removeTrip={(id)=>{
+										rebase.removeDoc('help-task_work_trips/'+id).then(()=>{
+											let newTrips=[...this.state.workTrips];
+											newTrips.splice(newTrips.findIndex((trip)=>trip.id===id),1);
+											this.setState({workTrips:newTrips});
+										});
+									}}
+								/>
+
+								<Materials
+									showColumns={[0,1,2,3,4,5,6]}
+									disabled={this.state.viewOnly}
+									materials={taskMaterials}
+					        submitMaterial={this.submitMaterial.bind(this)}
+									updateMaterial={(id,newData)=>{
+										rebase.updateDoc('help-task_materials/'+id,newData);
+										let newTaskMaterials=[...this.state.taskMaterials];
+										newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
+										this.setState({taskMaterials:newTaskMaterials});
+									}}
+									removeMaterial={(id)=>{
+										rebase.removeDoc('help-task_materials/'+id).then(()=>{
+											let newTaskMaterials=[...this.state.taskMaterials];
+											newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
+											this.setState({taskMaterials:newTaskMaterials});
+										});
+									}}
+					        units={this.state.units}
+									defaultUnit={this.state.defaultUnit}
+									company={this.state.company}
+									match={this.props.match}
+								/>
+							</TabPane>
+							{this.props.currentUser.userData.role.value > 0 && <TabPane tabId="4">
+								<h3>História</h3>
+									<ListGroup>
+										{ this.state.history.map((event)=>
+											<ListGroupItem key={event.id}>
+												({timestampToString(event.createdAt)})
+												{' ' + event.message}
+											</ListGroupItem>
+										)}
+									</ListGroup>
+								{this.state.history.length===0 && <div>História je prázdna.</div>}
+							</TabPane>}
+						</TabContent>
 					</div>
 		    </div>
 			</div>
