@@ -8,12 +8,31 @@ import { setCalendarLayout } from '../../redux/actions';
 import CommandBar from '../../components/showData/commandBar';
 import ListHeader from '../../components/showData/listHeader';
 import {rebase} from '../../index';
-import {fromMomentToUnix} from '../../helperFunctions';
+import { fromMomentToUnix, timestampToDate, timestampToHoursAndMinutes } from '../../helperFunctions';
 
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 const localizer = momentLocalizer(moment);
+const formats = {
+
+  dayFormat: (date, culture , localizer) => timestampToDate(date),
+	timeGutterFormat: (date, culture , localizer) => {
+		return timestampToHoursAndMinutes(date);
+	},
+  dayRangeHeaderFormat: ({ start, end }, culture, localizer) =>{
+		return timestampToDate(start) + ' - ' + timestampToDate(end);
+	},
+	agendaHeaderFormat: ({ start, end }, culture, localizer) =>{
+		return timestampToDate(start) + ' - ' + timestampToDate(end);
+	},
+	selectRangeFormat: ({ start, end }, culture, localizer) =>{
+		return timestampToHoursAndMinutes(start) + ' - ' + timestampToHoursAndMinutes(end);
+	},
+	eventTimeRangeFormat: ({ start, end }, culture, localizer) =>{
+		return timestampToHoursAndMinutes(start) + ' - ' + timestampToHoursAndMinutes(end);
+	},
+}
 const DnDCalendar = withDragAndDrop(Calendar);
 
 // http://intljusticemission.github.io/react-big-calendar/examples/index.html
@@ -21,11 +40,15 @@ const DnDCalendar = withDragAndDrop(Calendar);
 class TaskCalendar extends Component {
 
 	onEventResize (item){
+		if(this.props.currentUser.userData.role.value === 0){
+			return;
+		}
 		if(this.props.calendarLayout === 'week'){
 			if(!item.event.isTask){
 				rebase.updateDoc('/help-calendar_events/'+item.event.eventID, {start:item.start.getTime(),end:item.end.getTime()})
 			}else if(item.event.status.action==='pending'){
-				rebase.updateDoc('/help-tasks/'+item.event.id, { pendingDate:item.start.getTime(), pendingDateTo:item.end.getTime() })				
+				console.log(item);
+				rebase.updateDoc('/help-tasks/'+item.event.id, { pendingDate:item.start.getTime(), pendingDateTo:item.end.getTime(), pendingChange:true })
 			}
 		}
 	};
@@ -35,22 +58,29 @@ class TaskCalendar extends Component {
 	}
 
 	onEventDrop (item) {
+		if(this.props.currentUser.userData.role.value === 0){
+			return;
+		}
 		//manage calendar all day
 		if((item.isAllDay || this.props.calendarLayout === 'month') && item.event.isTask){
 			if(['new','open'].includes(item.event.status.action)){
 				if(this.getOnlyDaytime(item.start) > this.getOnlyDaytime(new Date())){
-					rebase.updateDoc('/help-tasks/'+item.event.id, {pendingDate:item.start.getTime(), pendingChange:true, status: this.props.statuses.find((status)=>status.action==='pending').id })
+					this.props.data.filter((event)=>!event.isTask).forEach((event) => {
+						rebase.removeDoc('/help-calendar_events/'+event.eventID);
+					});
+					console.log(item);
+					rebase.updateDoc('/help-tasks/'+item.event.id, {pendingDate:item.start.getTime(),pendingDateTo:fromMomentToUnix(moment(item.end.getTime()).add(30,'minutes')), pendingChange:true, status: this.props.statuses.find((status)=>status.action==='pending').id })
 				}else if(this.getOnlyDaytime(item.start) < this.getOnlyDaytime(new Date()) && this.props.statusesLoaded){
 					rebase.updateDoc('/help-tasks/'+item.event.id, {closeDate:item.start.getTime(), status: this.props.statuses.find((status)=>status.action==='close').id })
 				}
 			}else if(item.event.status.action === 'close'){
 				rebase.updateDoc('/help-tasks/'+item.event.id, {closeDate:item.start.getTime()});
 			}else if(item.event.status.action === 'pending' && this.getOnlyDaytime(item.start) >= this.getOnlyDaytime(new Date())){
-				rebase.updateDoc('/help-tasks/'+item.event.id, {pendingDate:item.start.getTime() });
+				console.log(item);
+				rebase.updateDoc('/help-tasks/'+item.event.id, {pendingDate:item.start.getTime(), pendingDateTo:item.end.getTime(), });
 			}
 			return false;
 		}
-
 		//manage calendar with time
 		if(this.props.calendarLayout === 'week'){
 			if(item.isAllDay){
@@ -66,9 +96,11 @@ class TaskCalendar extends Component {
 				}
 				//if in fucture, set as PENDING
 				if(['new','open'].includes(item.event.status.action) && this.getOnlyDaytime(item.start) > this.getOnlyDaytime(new Date()) ){
-					newEvent.end=fromMomentToUnix(moment(newEvent.start).add(30,'minutes'));
-					rebase.addToCollection('help-calendar_events',newEvent);
-					rebase.updateDoc('/help-tasks/'+item.event.id, {status: this.props.statuses.find((status)=>status.action==='pending').id, pendingDate:item.start.getTime(), pendingChange:true })
+					this.props.data.filter((event)=>!event.isTask).forEach((event) => {
+						rebase.removeDoc('/help-calendar_events/'+event.eventID);
+					});
+
+					rebase.updateDoc('/help-tasks/'+item.event.id, {status: this.props.statuses.find((status)=>status.action==='pending').id, pendingDate:item.start.getTime(), pendingDateTo: fromMomentToUnix(moment(newEvent.start).add(30,'minutes')) ,pendingChange:true })
 				//if new it will be open
 				}else if(item.event.status.action==='new' && this.props.statusesLoaded){
 					//new task is open
@@ -76,7 +108,9 @@ class TaskCalendar extends Component {
 					rebase.addToCollection('help-calendar_events',newEvent);
 					rebase.updateDoc('/help-tasks/'+item.event.id, {status: this.props.statuses.find((status)=>status.action==='open').id })
 				}else if(item.event.status.action==='pending'){
-					rebase.updateDoc('/help-tasks/'+item.event.id, { pendingDate:item.start.getTime(), pendingDateTo:item.end.getTime() })
+					console.log('EEEE');
+					console.log(item);
+					rebase.updateDoc('/help-tasks/'+item.event.id, { pendingDate:item.start.getTime(), pendingDateTo: item.end.getTime() })
 				}else{
 					rebase.addToCollection('help-calendar_events',newEvent);
 				}
@@ -87,6 +121,8 @@ class TaskCalendar extends Component {
 	};
 
   render() {
+		let data = this.props.data.map((event)=>({...event,title:event.titleFunction(event, !event.isTask && this.props.calendarLayout==='month') }))
+
 		//console.log(this.props.data.filter((item)=>item.isTask && item.status.action==='pending'));
 		//console.log(this.props.data.filter((item)=>!item.isTask).length);
 		if(this.props.match.params.taskID){
@@ -98,7 +134,7 @@ class TaskCalendar extends Component {
 				<div className="full-width scroll-visible fit-with-header-and-commandbar task-container p-20">
 					<ListHeader { ...this.props.commandBar } listName={ this.props.listName } />
 					<DnDCalendar
-						events = { this.props.data }
+						events = { data }
 	          defaultDate = { new Date() }
 	          defaultView = { this.props.calendarLayout }
 						style = {{ height: "100vh" }}
@@ -107,6 +143,7 @@ class TaskCalendar extends Component {
 	          localizer = { localizer }
 	          resizable
 						popup={true}
+						formats={formats}
 
 
 						onEventDrop = { this.onEventDrop.bind(this) }

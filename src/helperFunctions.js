@@ -30,6 +30,11 @@ export const timestampToDate = (timestamp) => {
   return date.getDate()+"."+(date.getMonth()+1)+"."+date.getFullYear();
 }
 
+export const timestampToHoursAndMinutes = (timestamp) => {
+  let date = (new Date(timestamp));
+  return date.getHours()+":"+(date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
+}
+
 export const toFloat = (number) => parseFloat(parseFloat(number).toFixed(2))
 
 export const hightlightText = (message,text, color)=>{

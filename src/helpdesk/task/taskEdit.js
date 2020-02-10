@@ -438,6 +438,9 @@ class TaskEdit extends Component {
 		let pricelists = props.pricelists;
 		let companies = toSelArr(props.companies).map((company)=>{
 			let newCompany={...company,pricelist:pricelists.find((item)=>item.id===company.pricelist)};
+			if(newCompany.pricelist===undefined){
+				newCompany.pricelist=pricelists[0];
+			}
 			return newCompany;
 		});;
 
@@ -1058,6 +1061,10 @@ class TaskEdit extends Component {
 							milestones={this.state.milestones.filter((milestone)=>this.state.project!== null && milestone.project===this.state.project.id && milestone.startsAt!==null)}
 							closeModal={()=>this.setState({pendingOpen:false})}
 							savePending={(pending)=>{
+								database.collection('help-calendar_events').where("taskID", "==", parseInt(this.props.match.params.taskID)).get()
+								.then((data)=>{
+									snapshotToArray(data).forEach((item)=>rebase.removeDoc('/help-calendar_events/'+item.id));
+								});
 								this.setState({
 									pendingOpen:false,
 									pendingStatus:null,

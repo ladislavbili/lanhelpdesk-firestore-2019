@@ -581,6 +581,12 @@ h2.clickable:hover{
   background-color: $basic-button-color;
 }
 
+.label-event{
+  background-color: inherit;
+  color: rgb(155, 155, 155);
+  padding-left: 0px;
+}
+
 .col-form-label{
   font-family: $main-font;
   font-style: normal;
