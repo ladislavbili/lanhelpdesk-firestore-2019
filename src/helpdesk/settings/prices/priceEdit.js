@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
-import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
-import {rebase } from '../../../index';
-
 import { connect } from "react-redux";
+import { Button, FormGroup, Label,Input, Alert, Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
+import Select from 'react-select';
+
+import { rebase, database } from '../../../index';
+import { snapshotToArray, toSelArr } from '../../../helperFunctions';
+import { selectStyle } from "../../../scss/selectStyles";
 import {storageMetadataStart,storageHelpPricelistsStart,storageHelpPricesStart,storageHelpTaskTypesStart, storageHelpTripTypesStart} from '../../../redux/actions';
 
 class PriceEdit extends Component{
@@ -21,8 +24,12 @@ class PriceEdit extends Component{
       taskTypes:[],
       tripTypes:[],
 
+      companies:[],
+      openEditCompanies:false,
+
     }
     this.setData.bind(this);
+    this.deletePricelist.bind(this);
   }
 
   storageLoaded(props){
@@ -104,6 +111,35 @@ class PriceEdit extends Component{
     });
   }
 
+  deletePricelistPopup(){
+    if(window.confirm("Are you sure you want to delete this pricelist?")){
+      database.collection('companies').where("pricelist", "==", (this.props.match ? this.props.match.params.id : this.props.listId)).get()
+			.then((data)=>{
+        let companies = snapshotToArray(data);
+        if(companies.length === 0){
+          this.deletePricelist();
+        }else{
+          this.setState({ companies:companies.map((company)=>({...company,pricelist:null})), openEditCompanies:true })
+        }
+			});
+    }
+  }
+
+  deletePricelist(){
+    rebase.removeDoc('/help-pricelists/'+(this.props.match ? this.props.match.params.id : this.props.listId));
+    if(this.state.defaultPricelist===(this.props.match ? this.props.match.params.id : this.props.listId)){
+      rebase.updateDoc('/metadata/0',{defaultPricelist:null});
+    }
+    this.state.taskTypes.filter((item)=>item.price.id!==undefined).map((taskType)=>
+      rebase.removeDoc('/help-prices/'+taskType.price.id)
+    );
+    if (this.props.listId) {
+      this.props.deletedList();
+    } else {
+      this.props.history.goBack();
+    }
+  }
+
   render(){
     return (
       <div>
@@ -152,26 +188,26 @@ class PriceEdit extends Component{
           </div>
 
           <h3>Ceny Výjazdov</h3>
-            <div className="p-t-10 p-b-10">
-              {
-                this.state.tripTypes.map((item,index)=>
-                <FormGroup key={index} className="row m-b-10">
-                  <div className="m-r-10 w-20">
-                    <Label for={item.title}>{item.title}</Label>
-                  </div>
-                  <div className="flex">
-                    <Input type="text" name={item.title} id={item.title} placeholder="Enter price" value={item.price.price} onChange={(e)=>{
-                        let newTripTypes=[...this.state.tripTypes];
-                        let newTripType = {...newTripTypes[index]};
-                        newTripType.price.price=e.target.value;
-                        newTripTypes[index] = newTripType;
-                        this.setState({tripTypes:newTripTypes});
-                      }} />
-                  </div>
-                </FormGroup>
-                )
-              }
-            </div>
+          <div className="p-t-10 p-b-10">
+            {
+              this.state.tripTypes.map((item,index)=>
+              <FormGroup key={index} className="row m-b-10">
+                <div className="m-r-10 w-20">
+                  <Label for={item.title}>{item.title}</Label>
+                </div>
+                <div className="flex">
+                  <Input type="text" name={item.title} id={item.title} placeholder="Enter price" value={item.price.price} onChange={(e)=>{
+                      let newTripTypes=[...this.state.tripTypes];
+                      let newTripType = {...newTripTypes[index]};
+                      newTripType.price.price=e.target.value;
+                      newTripTypes[index] = newTripType;
+                      this.setState({tripTypes:newTripTypes});
+                    }} />
+                </div>
+              </FormGroup>
+              )
+            }
+          </div>
 
           <h3>Všeobecné prirážky</h3>
           <div className="p-t-10 p-b-10">
@@ -193,10 +229,10 @@ class PriceEdit extends Component{
             </FormGroup>
             <FormGroup className="row m-b-10">
               <div className="m-r-10 w-20">
-                <Label for="materMarg">Materials margin percentage 50+</Label>
+                <Label for="materMarg+">Materials margin percentage 50+</Label>
               </div>
               <div className="flex">
-                <Input type="text" name="materMarg" id="materMarg" placeholder="Enter materials margin percentage" value={this.state.marginExtra} onChange={(e)=>this.setState({marginExtra:e.target.value})} />
+                <Input type="text" name="materMarg+" id="materMarg+" placeholder="Enter materials margin percentage" value={this.state.marginExtra} onChange={(e)=>this.setState({marginExtra:e.target.value})} />
               </div>
             </FormGroup>
           </div>
@@ -243,23 +279,60 @@ class PriceEdit extends Component{
                     );
                 }}>{this.state.saving?'Saving prices...':'Save prices'}</Button>
 
-              <Button className="btn-red ml-auto" disabled={this.state.saving} onClick={()=>{
-                    if(window.confirm("Are you sure?")){
-                      rebase.removeDoc('/help-pricelists/'+(this.props.match ? this.props.match.params.id : this.props.listId));
-                      if(this.state.defaultPricelist===(this.props.match ? this.props.match.params.id : this.props.listId)){
-                        rebase.updateDoc('/metadata/0',{defaultPricelist:null});
-                      }
-                      this.state.taskTypes.filter((item)=>item.price.id!==undefined).map((taskType)=>
-                        rebase.removeDoc('/help-prices/'+taskType.price.id)
-                      );
-                      if (this.props.listId) {
-                        this.props.deletedList();
-                      } else {
-                        this.props.history.goBack();
-                      }
-                    }
-                }}>Delete price list</Button>
+              <Button className="btn-red ml-auto" disabled={this.state.saving} onClick={this.deletePricelistPopup.bind(this)}>Delete price list</Button>
           </div>
+          <Modal isOpen={this.state.openEditCompanies} style={{width: "1000px"}} toggle={()=>this.setState({openEditCompanies:false})}>
+            <ModalHeader toggle={()=>this.setState({openEditCompanies:false})}>Edit companies</ModalHeader>
+            <ModalBody style={{maxHeight:'calc(100vh - 37px)', backgroundColor: "white"}}>
+              <h4 style={{color:'#FF4500'}}>Please update these companies, they use this pricelist</h4>
+              <table className="table">
+								<thead>
+									<tr>
+                    <th>Company name</th>
+                    <th>Pricelist</th>
+									</tr>
+								</thead>
+								<tbody>
+                  { this.state.companies.map((company)=>
+                    <tr key={company.id}>
+                      <td>
+                        {company.title}
+                      </td>
+                      <td>
+                        <Select
+                          id="pricelist"
+                          name="pricelist"
+                          styles={selectStyle}
+                          options={toSelArr(this.props.pricelists).filter((pricelist)=>pricelist.id !== (this.props.match ? this.props.match.params.id : this.props.listId) )}
+                          value={company.pricelist}
+                          onChange={ pricelist =>{
+                            let newCompanies = [...this.state.companies];
+                            newCompanies.find((item)=>item.id===company.id).pricelist = pricelist;
+                            this.setState({companies: newCompanies })
+                          }}
+                          />
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                className="mr-auto"
+                disabled={this.state.companies.some((company)=>company.pricelist===null)}
+                onClick={()=>{
+                  Promise.all(this.state.companies.map((company)=>rebase.updateDoc('/companies/'+company.id, {pricelist:company.pricelist.id}))).then(()=>{
+                    this.setState({openEditCompanies:false})
+                    this.deletePricelist();
+                  });
+                }}>
+                Save companies and delete pricelist
+              </Button>
+              <Button className="btn-red" onClick={()=>this.setState({openEditCompanies:false})}>Cancel</Button>
+            </ModalFooter>
+          </Modal>
+
       </div>
     );
   }

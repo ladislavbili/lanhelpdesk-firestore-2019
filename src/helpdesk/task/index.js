@@ -239,9 +239,12 @@ class TasksIndex extends Component {
 			</li>)
 	}
 
-	displayCal(task){
+	displayCal(task,showEvent){
 			return (<div>
 					<p className="m-0">
+						{showEvent && <span className="label label-event">
+						Event
+					</span>}
 						<span className="label label-info" style={{backgroundColor:task.status && task.status.color?task.status.color:'white'}}>
 							{task.status?task.status.title:'Neznámy status'}
 						</span>
@@ -316,7 +319,7 @@ class TasksIndex extends Component {
 				...task,
 				isTask:false,
 				eventID:event.id,
-				title:this.displayCal(task),
+				titleFunction:this.displayCal,
 				start:new Date(event.start),
 				end:new Date(event.end),
 			}
@@ -328,7 +331,7 @@ class TasksIndex extends Component {
 			let newTask = {
 				...task,
 				isTask:true,
-				title:this.displayCal(task),
+				titleFunction:this.displayCal,
 				allDay:task.status.action!=='pending',
 			}
 
@@ -355,7 +358,7 @@ class TasksIndex extends Component {
 					return {
 						...newTask,
 						start:new Date(task.pendingDate),
-						end:new Date(task.pendingDateTo?task.pendingDateTo:fromMomentToUnix(moment(task.pendingDate).add(30,'minutes'))),
+						end:new Date(task.pendingDateTo ? task.pendingDateTo: fromMomentToUnix(moment(task.pendingDate).add(30,'minutes')) ),
 					}
 				}
 				default:{

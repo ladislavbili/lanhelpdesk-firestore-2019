@@ -1064,7 +1064,7 @@ class TaskEdit extends Component {
 							savePending={(pending)=>{
 								database.collection('help-calendar_events').where("taskID", "==", parseInt(this.props.match.params.taskID)).get()
                 .then((data)=>{
-                    snapshotToArray(data).forEach((item)=>rebase.removeDoc('/help-calendar_events/'+item.id));
+                  snapshotToArray(data).forEach((item)=>rebase.removeDoc('/help-calendar_events/'+item.id));
                 });
 								this.setState({
 									pendingOpen:false,
