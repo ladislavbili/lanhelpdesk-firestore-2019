@@ -12,7 +12,7 @@ export default class Attachments extends Component {
 					<div className="full-width m-t-5">
 							{!this.props.disabled &&
 								<div className="attachment-label">
-								<label className="m-r-5">
+								<label className="m-r-5" style={{fontWeight: "400", fontFamily: "Segoe UI"}}>
 									Attachments:
 								</label>
 								<label htmlFor={"uploadAttachment"+this.props.taskID} className="btn-link-add" >

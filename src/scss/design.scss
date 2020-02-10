@@ -535,15 +535,6 @@ h2.clickable:hover{
   background-color: red;
 }
 
-.btn-table-add-item{
-  background-color: transparent;
-  color: $basic-button-color;
-}
-.btn-table-add-item:hover{
-  background-color: transparent;
-  color: #A0A0A0;
-}
-
 .hidden-button{
   color: transparent;
   background-color: inherit;
@@ -1236,7 +1227,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   font-size: 14px;
 }
 .nav>li>a:not(.sidebar-menu-item) {
-  padding: 2px 0px 2px 2px;
+  padding: 2px 0px 5px 2px;
   color: #979797 !important;
   border-radius: 0px !important;
   border: none !important;
@@ -1255,18 +1246,12 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 }
 .nav-link:not(.sidebar-menu-item).active{
   font-family: Segoe UI Semibold;
-  height: 28px !important;
+  height: 208x !important;
   color: #333 !important;
   font-weight: 600;
-//  background-color: #eeeeee !important;
+  border-bottom: 1px solid $basic-button-color !important;
 }
-/*
-.nav-tabs>.nav-item{
-  border-right: 1px solid $main-font !important;
-}
-.nav-tabs>.nav-item:last-child{
-  border-right: 0px solid $main-font !important;
-}*/
+
 
 //sidebar
 .nav:not(.nav-tabs) a.active {
@@ -1550,6 +1535,58 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 .dropdown-menu{
   min-width: auto;
 }
+
+.vykazyTable>.table{
+  font-size: 12px;
+}
+
+.vykazyTable>.table>thead{
+  width: 100%;
+}
+.vykazyTable>.table>thead>tr>th{
+  padding-left: 8px;
+  padding-right: 0px;
+}
+
+.vykazyTable>.table>thead>tr>th:first-child{
+  padding-bottom: 0px;
+  padding-left: 0px;
+}
+
+.vykazyTable>.table>tbody>tr>td{
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.vykazyTable>.table>tbody>tr>td:nth-child(2){
+  padding-left: 20px;
+  padding-right: 0px;
+}
+
+.vykazyTable input::-webkit-outer-spin-button,
+.vykazyTable input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.vykazyTable input[type=number] {
+  -moz-appearance:textfield;
+}
+
+.vykazyTable .btn {
+  background-color: transparent;
+  color: #A0A0A0;
+}
+
+.vykazyTable .btn:hover {
+  background-color: transparent;
+  color: $basic-button-color;
+}
+
+.vykazyTable .btn-link {
+  background-color: transparent;
+  color: $basic-button-color;
+}
+
 
 //-------------------END-taskEdit-------------------------
 //--------CUSTOM-CHECKBOX

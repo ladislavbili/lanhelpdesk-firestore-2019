@@ -198,7 +198,7 @@ class TaskAddContainer extends Component{
 				this.props.task &&
 				<button
 					type="button"
-					className="btn btn-link waves-effect"
+					className="btn btn-link-reversed waves-effect"
 					disabled={this.props.disabled}
 					onClick={()=>{this.setState({openAddTaskModal:true,hidden:false})}}>
 					<i

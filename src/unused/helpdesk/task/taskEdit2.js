@@ -15,7 +15,6 @@ import Repeat from '../components/repeat';
 
 import Materials from '../components/materials';
 import PraceWorkTrips from '../components/praceWorkTrips';
-import VykazyTable from '../components/vykazyTable';
 
 import UserAdd from '../settings/users/userAdd';
 import CompanyAdd from '../settings/companies/companyAdd';
@@ -166,10 +165,6 @@ class TaskEdit extends Component {
 			database.collection('help-comments').where("task", "==", taskID).get()
 			.then((data)=>{
 				snapshotToArray(data).forEach((item)=>rebase.removeDoc('/help-comments/'+item.id));
-			});
-			database.collection('help-calendar_events').where("taskID", "==", taskID).get()
-			.then((data)=>{
-				snapshotToArray(data).forEach((item)=>rebase.removeDoc('/help-calendar_events/'+item.id));
 			});
 			if(this.props.inModal){
 				this.props.closeModal();
@@ -372,7 +367,7 @@ class TaskEdit extends Component {
 		let user = "Používateľ " + this.props.currentUser.userData.name + ' ' + this.props.currentUser.userData.surname;
 		switch (type) {
 			case 'status':{
-				return `${user} zmenil status z ${data.oldStatus?data.oldStatus.title:''} na ${data.newStatus?data.newStatus.title:''}.`;
+				return user + ' zmenil status na ' + data.title + '.';
 			}
 			case 'comment':{
 				return user + ' komentoval úlohu.';
@@ -440,8 +435,8 @@ class TaskEdit extends Component {
 		let companies = toSelArr(props.companies).map((company)=>{
 			let newCompany={...company,pricelist:pricelists.find((item)=>item.id===company.pricelist)};
 			if(newCompany.pricelist===undefined){
-					 newCompany.pricelist=pricelists[0];
-			 }
+							 newCompany.pricelist=pricelists[0];
+					 }
 			return newCompany;
 		});;
 
@@ -580,15 +575,11 @@ class TaskEdit extends Component {
 
 		return (
 			<div className="flex">
-				{this.state.showDescription &&
-					<div style={{backgroundColor: "transparent", width: "100%", height: "100%", position: "absolute"}} onClick={()=>this.setState({showDescription:false})}>
-					</div>
-				}
 				<div className="commandbar p-l-25"> {/*Commandbar*/}
 					<div className="d-flex flex-row center-hor p-2 ">
 							<div className="display-inline center-hor">
 							{!this.props.columns &&
-								<button type="button" className="btn btn-link-reversed waves-effect" onClick={() => this.props.history.push(`/helpdesk/taskList/i/${this.props.match.params.listID}`)}>
+								<button type="button" className="btn btn-link waves-effect" onClick={() => this.props.history.push(`/helpdesk/taskList/i/${this.props.match.params.listID}`)}>
 									<i
 										className="fas fa-arrow-left commandbar-command-icon"
 										/>
@@ -607,12 +598,12 @@ class TaskEdit extends Component {
 						</div>
 						<div className="ml-auto center-hor">
 							<TaskPrint match={this.props.match} {...this.state} isLoaded={this.state.extraDataLoaded && this.storageLoaded(this.props) && !this.state.loading} />
-							{canDelete && <button type="button" disabled={!canDelete} className="btn btn-link-reversed waves-effect" onClick={this.deleteTask.bind(this)}>
+							{canDelete && <button type="button" disabled={!canDelete} className="btn btn-link waves-effect" onClick={this.deleteTask.bind(this)}>
 								<i
 									className="far fa-trash-alt"
 									/> Delete
 								</button>}
-								<button type="button" style={{color:this.state.important ? '#ffc107' : '#0078D4'}} disabled={this.state.viewOnly} className="btn btn-link-reversed waves-effect" onClick={()=>this.setState({important:!this.state.important},this.submitTask.bind(this))}>
+								<button type="button" style={{color:this.state.important ? '#ffc107' : 'black'}} disabled={this.state.viewOnly} className="btn btn-link waves-effect" onClick={()=>this.setState({important:!this.state.important},this.submitTask.bind(this))}>
 									<i
 										className="far fa-star"
 										/> Important
@@ -620,15 +611,15 @@ class TaskEdit extends Component {
 							</div>
 							<button
 								type="button"
-								className="btn btn-link-reversed waves-effect"
+								className="btn btn-link waves-effect"
 								onClick={() => this.props.switch()}>
 								Switch layout
 							</button>
 					</div>
 				</div>
 
-				<div className="fit-with-header-and-commandbar scroll-visible bkg-F2F1F1">
-					<div className="max-width-1660 card-box ">
+				<div className="fit-with-header-and-commandbar row scroll-visible bkg-F6F6F6">
+					<div className="task-edit-left card-box">
 						<div className="d-flex p-2">{/* Task name row */}
 							<div className="row flex">
 								<h2 className="center-hor text-extra-slim">{taskID}: </h2>
@@ -706,249 +697,8 @@ class TaskEdit extends Component {
 
 						<hr className="m-t-5 m-b-5"/>
 
-							<div className="col-lg-12"> {/*Project, Assigned*/}
-								<div className="col-lg-4"> {/*Project*/}
-									<div className="row p-r-10">
-										<Label className="col-3 col-form-label">Projekt</Label>
-										<div className="col-9">
-											<Select
-												placeholder="Zadajte projekt"
-												isDisabled={this.state.viewOnly}
-												value={this.state.project}
-												onChange={(project)=>{
-													let permissionIDs = project.permissions.map((permission) => permission.user);
-													let assignedTo=this.state.assignedTo.filter((user)=>permissionIDs.includes(user.id));
 
-													this.setState({project,
-														assignedTo,
-														projectChangeDate:(new Date()).getTime(),
-														milestone:noMilestone
-													},()=>{this.submitTask();this.setDefaults(project.id)});
-												}}
-												options={this.state.projects.filter((project)=>{
-													let curr = this.props.currentUser;
-													if((curr.userData && curr.userData.role.value===3)||(project.id===-1||project.id===null)){
-														return true;
-													}
-													let permission = project.permissions.find((permission)=>permission.user===curr.id);
-													return permission && permission.read;
-												})}
-												styles={invisibleSelectStyleNoArrowRequired}
-												/>
-										</div>
-									</div>
-								</div>
-								{ this.state.defaultFields.assignedTo.show && <div className="col-lg-8"> {/*Assigned*/}
-									<div className="row p-r-10">
-										<Label className="col-1-5 col-form-label">Assigned</Label>
-										<div className="col-10-5">
-											<Select
-												value={this.state.assignedTo.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id))}
-												placeholder="Zadajte poverených pracovníkov"
-												isMulti
-												isDisabled={this.state.defaultFields.assignedTo.fixed||this.state.viewOnly}
-												onChange={(users)=>this.setState({assignedTo:users},this.submitTask.bind(this))}
-												options={
-													(canAdd?[{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}]:[])
-													.concat(this.state.users.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id)))
-												}
-												styles={invisibleSelectStyleNoArrowRequired}
-												/>
-										</div>
-									</div>
-								</div>}
-							</div>
-
-							<div className="col-lg-12"> {/*Attributes*/}
-								<div className="col-lg-4">
-									{ this.state.defaultFields.status.show && <div className="row p-r-10"> {/*Status*/}
-										<Label className="col-3 col-form-label">Status</Label>
-										<div className="col-9">
-											<Select
-												placeholder="Status required"
-												value={this.state.status}
-												isDisabled={this.state.defaultFields.status.fixed||this.state.viewOnly}
-												styles={invisibleSelectStyleNoArrowColoredRequired}
-												onChange={(status)=>{
-													let newHistoryEntery = {
-														createdAt:(new Date()).getTime(),
-														message:this.getHistoryMessage('status', {newStatus:status,oldStatus:this.state.status}),
-														task:this.props.match.params.taskID,
-													};
-													if(status.action==='pending'){
-														this.setState({
-															pendingStatus:status,
-															pendingOpen:true,
-															newHistoryEntery
-														})
-													}else if(status.action==='close'||status.action==='invalid'){
-														this.setState({
-															status,
-															statusChange:(new Date().getTime()),
-															closeDate: moment(),
-															newHistoryEntery
-														},this.submitTask.bind(this))
-													}
-													else{
-														this.setState({
-															status,
-															statusChange:(new Date().getTime()),
-															newHistoryEntery
-														},this.submitTask.bind(this))
-													}
-												}}
-												options={this.state.statuses.filter((status)=>status.action!=='invoiced')}
-												/>
-										</div>
-									</div>}
-									{ this.state.defaultFields.type.show && <div className="row p-r-10"> {/*Type*/}
-										<Label className="col-3 col-form-label">Typ</Label>
-										<div className="col-9">
-											<Select
-												placeholder="Zadajte typ"
-			                  value={this.state.type}
-												isDisabled={this.state.defaultFields.type.fixed||this.state.viewOnly}
-												styles={invisibleSelectStyleNoArrowRequired}
-			                  onChange={(type)=>this.setState({type},this.submitTask.bind(this))}
-			                  options={this.state.taskTypes}
-			                  />
-										</div>
-									</div>}
-									<div className="row p-r-10"> {/*Milestone*/}
-											<Label className="col-3 col-form-label">Milestone</Label>
-											<div className="col-9">
-												<Select
-													isDisabled={this.state.viewOnly}
-													value={this.state.milestone}
-													onChange={(milestone)=> {
-														if(this.state.status.action==='pending'){
-															if(milestone.startsAt!==null){
-																this.setState({milestone,pendingDate:moment(milestone.startsAt),pendingChangable:false},this.submitTask.bind(this));
-															}else{
-																this.setState({milestone, pendingChangable:true }, this.submitTask.bind(this));
-															}
-														}else{
-															this.setState({milestone},this.submitTask.bind(this));
-														}
-													}}
-													options={this.state.milestones.filter((milestone)=>milestone.id===null || (this.state.project!== null && milestone.project===this.state.project.id))}
-													styles={invisibleSelectStyleNoArrow}
-													/>
-											</div>
-										</div>
-								</div>
-
-								<div className="col-lg-4">
-									{ this.state.defaultFields.requester.show && <div className="row p-r-10"> {/*Requester*/}
-										<Label className="col-3 col-form-label">Zadal</Label>
-										<div className="col-9">
-											<Select
-												placeholder="Zadajte žiadateľa"
-												value={this.state.requester}
-												isDisabled={this.state.defaultFields.requester.fixed||this.state.viewOnly}
-												onChange={(requester)=>
-													{
-														if (requester.id === -1) {
-															this.setState({
-																openUserAdd: true,
-															})
-														} else {
-															this.setState({requester},this.submitTask.bind(this))
-														}
-													}
-												}
-												options={(canAdd?[{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}]:[]).concat(this.state.users)}
-												styles={invisibleSelectStyleNoArrowRequired}
-												/>
-										</div>
-									</div> }
-									{ this.state.defaultFields.company.show && <div className="row p-r-10"> {/*Company*/}
-										<Label className="col-3 col-form-label">Firma</Label>
-										<div className="col-9">
-											<Select
-												placeholder="Zadajte firmu"
-												value={this.state.company}
-												isDisabled={this.state.defaultFields.company.fixed||this.state.viewOnly}
-												onChange={(company)=> {
-													if (company.id === -1) {
-														this.setState({
-															openCompanyAdd: true,
-														})
-													} else {
-														this.setState({company, pausal:parseInt(company.workPausal)>0?booleanSelects[1]:booleanSelects[0]},this.submitTask.bind(this));
-													}
-												}}
-												options={(canAdd?[{id:-1,title:'+ Add company',body:'add', label:'+ Add company',value:null}]:[]).concat(this.state.companies)}
-												styles={invisibleSelectStyleNoArrowRequired}
-												/>
-										</div>
-									</div>}
-									{this.state.defaultFields.pausal.show && <div className="form-group row"> {/*Pausal*/}
-										<label className="col-3 col-form-label">Paušál</label>
-										<div className="col-9">
-											<Select
-												value={this.state.pausal}
-												isDisabled={this.state.viewOnly||!this.state.company || parseInt(this.state.company.workPausal)===0||this.state.defaultFields.pausal.fixed}
-												styles={invisibleSelectStyleNoArrowRequired}
-												onChange={(pausal)=>this.setState({pausal},this.submitTask.bind(this))}
-												options={booleanSelects}
-												/>
-										</div>
-									</div>}
-								</div>
-
-								<div className="col-lg-4">
-									<div className="row p-r-10"> {/*Deadline*/}
-										<Label className="col-3 col-form-label">Deadline</Label>
-										<div className="col-9">
-											<DatePicker
-												className="form-control hidden-input"
-												selected={this.state.deadline}
-												disabled={this.state.viewOnly}
-												onChange={date => {
-													this.setState({ deadline: date },this.submitTask.bind(this));
-												}}
-												placeholderText="No deadline"
-												{...datePickerConfig}
-												/>
-										</div>
-									</div>
-									<div>{/*Repeat*/}
-										<Repeat
-											disabled={this.state.viewOnly}
-											taskID={taskID}
-											repeat={this.state.repeat}
-											submitRepeat={(repeat)=>{
-												database.collection('help-repeats').doc(taskID).set({
-													...repeat,
-													task:taskID,
-													startAt:(new Date(repeat.startAt).getTime()),
-												});
-												this.setState({repeat})
-											}}
-											deleteRepeat={()=>{
-												rebase.removeDoc('/help-repeats/'+taskID);
-												this.setState({repeat:null})
-											}}
-											columns={this.props.columns}
-											/>
-									</div>
-									{this.state.defaultFields.overtime.show && <div className="form-group row"> {/*Overtime*/}
-										<label className="col-3 col-form-label">Mimo PH</label>
-										<div className="col-9">
-											<Select
-												value={this.state.overtime}
-												isDisabled={this.state.viewOnly||this.state.defaultFields.overtime.fixed}
-												styles={invisibleSelectStyleNoArrowRequired}
-												onChange={(overtime)=>this.setState({overtime},this.submitTask.bind(this))}
-												options={booleanSelects}
-												/>
-										</div>
-									</div>}
-								</div>
-							</div>
-
-							<div className="" style={{zIndex: "9999"}}>{/*Description*/}
+							<div className="">{/*Description*/}
 								<Label className="col-form-label m-b-10 m-t-10">Popis úlohy</Label>
 								{ this.state.viewOnly ?
 									(this.state.description.length!==0 ?
@@ -957,18 +707,16 @@ class TaskEdit extends Component {
 									) :
 									(
 										this.state.showDescription ?
-										(<div onClick={()=>this.setState({showDescription:true})}>
-											<CKEditor
-												editor={ ClassicEditor }
-												data={this.state.description}
-												onInit={(editor)=>{
-												}}
-												onChange={(e,editor)=>{
-													this.setState({description: editor.getData()},this.submitTask.bind(this))
-												}}
-												config={ck5config}
-												/>
-										</div>
+										(<CKEditor
+											editor={ ClassicEditor }
+											data={this.state.description}
+											onInit={(editor)=>{
+											}}
+											onChange={(e,editor)=>{
+												this.setState({description: editor.getData()},this.submitTask.bind(this))
+											}}
+											config={ck5config}
+											/>
 									) :
 									(
 										<div className="clickable task-edit-popis" onClick={()=>this.setState({showDescription:true})}>
@@ -979,23 +727,6 @@ class TaskEdit extends Component {
 									)
 								}
 							</div>
-
-						{ this.state.defaultFields.tags.show && <div className="row m-t-10"> {/*Tags*/}
-							<div className="center-hor">
-								<Label className="center-hor">Tagy: </Label>
-							</div>
-							<div className="f-1 ">
-								<Select
-									placeholder="Zvoľte tagy"
-									value={this.state.tags}
-									isMulti
-									onChange={(tags)=>this.setState({tags},this.submitTask.bind(this))}
-									options={this.state.allTags}
-									isDisabled={this.state.defaultFields.tags.fixed||this.state.viewOnly}
-									styles={invisibleSelectStyleNoArrowColored}
-									/>
-							</div>
-						</div>}
 
 						<Attachments
 							disabled={this.state.viewOnly}
@@ -1063,9 +794,9 @@ class TaskEdit extends Component {
 							closeModal={()=>this.setState({pendingOpen:false})}
 							savePending={(pending)=>{
 								database.collection('help-calendar_events').where("taskID", "==", parseInt(this.props.match.params.taskID)).get()
-                .then((data)=>{
-                    snapshotToArray(data).forEach((item)=>rebase.removeDoc('/help-calendar_events/'+item.id));
-                });
+	              .then((data)=>{
+	                  snapshotToArray(data).forEach((item)=>rebase.removeDoc('/help-calendar_events/'+item.id));
+	              });
 								this.setState({
 									pendingOpen:false,
 									pendingStatus:null,
@@ -1078,123 +809,467 @@ class TaskEdit extends Component {
 							}}
 						/>
 
-					<VykazyTable
-						showTotals={false}
-						disabled={this.state.viewOnly}
-						company={this.state.company}
-						match={this.props.match}
-						taskID={this.props.match.params.taskID}
-						taskAssigned={this.state.assignedTo}
-
-						submitService={this.submitService.bind(this)}
-						subtasks={taskWorks}
-						defaultType={this.state.type}
-						workTypes={this.state.taskTypes}
-						updateSubtask={(id,newData)=>{
-							rebase.updateDoc('help-task_works/'+id,newData);
-							let newTaskWorks=[...this.state.taskWorks];
-							newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
-							this.setState({taskWorks:newTaskWorks});
-						}}
-						removeSubtask={(id)=>{
-							rebase.removeDoc('help-task_works/'+id).then(()=>{
-								let newTaskWorks=[...this.state.taskWorks];
-								newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
-								this.setState({taskWorks:newTaskWorks});
-							});
-						}}
-						workTrips={workTrips}
-						tripTypes={this.state.tripTypes}
-						submitTrip={this.submitWorkTrip.bind(this)}
-						updateTrip={(id,newData)=>{
-							rebase.updateDoc('help-task_work_trips/'+id,newData);
-							let newTrips=[...this.state.workTrips];
-							newTrips[newTrips.findIndex((trip)=>trip.id===id)]={...newTrips.find((trip)=>trip.id===id),...newData};
-							this.setState({workTrips:newTrips});
-						}}
-						removeTrip={(id)=>{
-							rebase.removeDoc('help-task_work_trips/'+id).then(()=>{
-								let newTrips=[...this.state.workTrips];
-								newTrips.splice(newTrips.findIndex((trip)=>trip.id===id),1);
-								this.setState({workTrips:newTrips});
-							});
-						}}
-
-						materials={taskMaterials}
-						submitMaterial={this.submitMaterial.bind(this)}
-						updateMaterial={(id,newData)=>{
-							rebase.updateDoc('help-task_materials/'+id,newData);
-							let newTaskMaterials=[...this.state.taskMaterials];
-							newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
-							this.setState({taskMaterials:newTaskMaterials});
-						}}
-						removeMaterial={(id)=>{
-							rebase.removeDoc('help-task_materials/'+id).then(()=>{
-								let newTaskMaterials=[...this.state.taskMaterials];
-								newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
-								this.setState({taskMaterials:newTaskMaterials});
-							});
-						}}
-						units={this.state.units}
-						defaultUnit={this.state.defaultUnit}
-						/>
-
 					<Nav tabs className="b-0 m-b-22 m-l--10 m-t-15">
-						<NavItem>
-							<NavLink
-								className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "")}
-								onClick={() => { this.setState({toggleTab:'1'}); }}
-							>
-								Komentáre
-          		</NavLink>
-						</NavItem>
-						<NavItem>
-							<NavLink>
-								|
-							</NavLink>
-						</NavItem>
-						{this.props.currentUser.userData.role.value > 0 &&
 							<NavItem>
-							<NavLink
-								className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
-								onClick={() => { this.setState({toggleTab:'2'}); }}
-							>
-								História
-							</NavLink>
-						</NavItem>}
-					</Nav>
+								<NavLink
+									className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "")}
+									onClick={() => { this.setState({toggleTab:'1'}); }}
+								>
+									Komentáre   |
+            		</NavLink>
+							</NavItem>
+							<NavItem>
+								<NavLink
+									className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
+									onClick={() => { this.setState({toggleTab:'2'}); }}
+								>
+									Výkazy   |
+								</NavLink>
+							</NavItem>
+							<NavItem>
+								<NavLink
+									className={classnames({ active: this.state.toggleTab === '3' }, "clickable", "")}
+									onClick={() => { this.setState({toggleTab:'3'}); }}
+								>
+									Rozpočet   |
+								</NavLink>
+							</NavItem>
+							{this.props.currentUser.userData.role.value > 0 && <NavItem>
+								<NavLink
+									className={classnames({ active: this.state.toggleTab === '4' }, "clickable", "")}
+									onClick={() => { this.setState({toggleTab:'4'}); }}
+								>
+									História
+								</NavLink>
+							</NavItem>}
+						</Nav>
 
-					<TabContent activeTab={this.state.toggleTab}>
-							<TabPane tabId="1">
-								<Comments
-									id={taskID?taskID:null}
-									users={this.state.users}
-									addToHistory={(internal)=>{
-										let event = {
-											message:this.getHistoryMessage('comment'),
-											createdAt:(new Date()).getTime(),
-											task:this.props.match.params.taskID
-										}
-										this.addToHistory(event);
-										this.addNotification(event,internal);
-									}}
-									/>
-							</TabPane>
-							{this.props.currentUser.userData.role.value > 0 &&
+						<TabContent activeTab={this.state.toggleTab}>
+								<TabPane tabId="1">
+									<Comments
+										id={taskID?taskID:null}
+										users={this.state.users}
+										addToHistory={(internal)=>{
+											let event = {
+												message:this.getHistoryMessage('comment'),
+												createdAt:(new Date()).getTime(),
+												task:this.props.match.params.taskID
+											}
+											this.addToHistory(event);
+											this.addNotification(event,internal);
+										}}
+										/>
+								</TabPane>
 								<TabPane tabId="2">
-								<h3>História</h3>
-									<ListGroup>
-										{ this.state.history.map((event)=>
-											<ListGroupItem key={event.id}>
-												({timestampToString(event.createdAt)})
-												{' ' + event.message}
-											</ListGroupItem>
-										)}
-									</ListGroup>
-								{this.state.history.length===0 && <div>História je prázdna.</div>}
-							</TabPane>}
-						</TabContent>
+									<PraceWorkTrips
+										showColumns={[0,1,4,8]}
+										showTotals={false}
+										disabled={this.state.viewOnly}
+										taskAssigned={this.state.assignedTo}
+										submitService={this.submitService.bind(this)}
+										subtasks={taskWorks}
+										defaultType={this.state.type}
+										workTypes={this.state.taskTypes}
+										company={this.state.company}
+										taskID={this.props.match.params.taskID}
+										updateSubtask={(id,newData)=>{
+											rebase.updateDoc('help-task_works/'+id,newData);
+											let newTaskWorks=[...this.state.taskWorks];
+											newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
+											this.setState({taskWorks:newTaskWorks});
+										}}
+										removeSubtask={(id)=>{
+											rebase.removeDoc('help-task_works/'+id).then(()=>{
+												let newTaskWorks=[...this.state.taskWorks];
+												newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
+												this.setState({taskWorks:newTaskWorks});
+											});
+										}}
+										workTrips={workTrips}
+										tripTypes={this.state.tripTypes}
+										submitTrip={this.submitWorkTrip.bind(this)}
+										updateTrip={(id,newData)=>{
+											rebase.updateDoc('help-task_work_trips/'+id,newData);
+											let newTrips=[...this.state.workTrips];
+											newTrips[newTrips.findIndex((trip)=>trip.id===id)]={...newTrips.find((trip)=>trip.id===id),...newData};
+											this.setState({workTrips:newTrips});
+										}}
+										removeTrip={(id)=>{
+											rebase.removeDoc('help-task_work_trips/'+id).then(()=>{
+												let newTrips=[...this.state.workTrips];
+												newTrips.splice(newTrips.findIndex((trip)=>trip.id===id),1);
+												this.setState({workTrips:newTrips});
+											});
+										}}
+										/>
+
+										<Materials
+											showColumns={[0,1,2,3,4,6]}
+											disabled={this.state.viewOnly}
+											materials={taskMaterials}
+							        submitMaterial={this.submitMaterial.bind(this)}
+											updateMaterial={(id,newData)=>{
+												rebase.updateDoc('help-task_materials/'+id,newData);
+												let newTaskMaterials=[...this.state.taskMaterials];
+												newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
+												this.setState({taskMaterials:newTaskMaterials});
+											}}
+											removeMaterial={(id)=>{
+												rebase.removeDoc('help-task_materials/'+id).then(()=>{
+													let newTaskMaterials=[...this.state.taskMaterials];
+													newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
+													this.setState({taskMaterials:newTaskMaterials});
+												});
+											}}
+							        units={this.state.units}
+											defaultUnit={this.state.defaultUnit}
+											company={this.state.company}
+											match={this.props.match}
+											/>
+								</TabPane>
+								<TabPane tabId="3">
+									<PraceWorkTrips
+										showColumns={[0,1,2,3,4,5,6,7,8]}
+										showTotals={true}
+										disabled={this.state.viewOnly}
+										taskAssigned={this.state.assignedTo}
+										submitService={this.submitService.bind(this)}
+										subtasks={taskWorks}
+										defaultType={this.state.type}
+										workTypes={this.state.taskTypes}
+										company={this.state.company}
+										taskID={this.props.match.params.taskID}
+										updateSubtask={(id,newData)=>{
+											rebase.updateDoc('help-task_works/'+id,newData);
+											let newTaskWorks=[...this.state.taskWorks];
+											newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
+											this.setState({taskWorks:newTaskWorks});
+										}}
+										removeSubtask={(id)=>{
+											rebase.removeDoc('help-task_works/'+id).then(()=>{
+												let newTaskWorks=[...this.state.taskWorks];
+												newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
+												this.setState({taskWorks:newTaskWorks});
+											});
+										}}
+										workTrips={workTrips}
+										tripTypes={this.state.tripTypes}
+										submitTrip={this.submitWorkTrip.bind(this)}
+										updateTrip={(id,newData)=>{
+											rebase.updateDoc('help-task_work_trips/'+id,newData);
+											let newTrips=[...this.state.workTrips];
+											newTrips[newTrips.findIndex((trip)=>trip.id===id)]={...newTrips.find((trip)=>trip.id===id),...newData};
+											this.setState({workTrips:newTrips});
+										}}
+										removeTrip={(id)=>{
+											rebase.removeDoc('help-task_work_trips/'+id).then(()=>{
+												let newTrips=[...this.state.workTrips];
+												newTrips.splice(newTrips.findIndex((trip)=>trip.id===id),1);
+												this.setState({workTrips:newTrips});
+											});
+										}}
+									/>
+
+									<Materials
+										showColumns={[0,1,2,3,4,5,6]}
+										disabled={this.state.viewOnly}
+										materials={taskMaterials}
+						        submitMaterial={this.submitMaterial.bind(this)}
+										updateMaterial={(id,newData)=>{
+											rebase.updateDoc('help-task_materials/'+id,newData);
+											let newTaskMaterials=[...this.state.taskMaterials];
+											newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
+											this.setState({taskMaterials:newTaskMaterials});
+										}}
+										removeMaterial={(id)=>{
+											rebase.removeDoc('help-task_materials/'+id).then(()=>{
+												let newTaskMaterials=[...this.state.taskMaterials];
+												newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
+												this.setState({taskMaterials:newTaskMaterials});
+											});
+										}}
+						        units={this.state.units}
+										defaultUnit={this.state.defaultUnit}
+										company={this.state.company}
+										match={this.props.match}
+									/>
+								</TabPane>
+								{this.props.currentUser.userData.role.value > 0 && <TabPane tabId="4">
+									<h3>História</h3>
+										<ListGroup>
+											{ this.state.history.map((event)=>
+												<ListGroupItem key={event.id}>
+													({timestampToString(event.createdAt)})
+													{' ' + event.message}
+												</ListGroupItem>
+											)}
+										</ListGroup>
+									{this.state.history.length===0 && <div>História je prázdna.</div>}
+								</TabPane>}
+							</TabContent>
 					</div>
+
+				<div className="task-edit-right">
+					<div className="">
+						<Label className="col-form-label-2">Projekt</Label>
+						<div className="col-form-value-2">
+							<Select
+								placeholder="Zadajte projekt"
+								isDisabled={this.state.viewOnly}
+								value={this.state.project}
+								onChange={(project)=>{
+									let permissionIDs = project.permissions.map((permission) => permission.user);
+									let assignedTo=this.state.assignedTo.filter((user)=>permissionIDs.includes(user.id));
+
+									this.setState({project,
+										assignedTo,
+										projectChangeDate:(new Date()).getTime(),
+										milestone:noMilestone
+									},()=>{this.submitTask();this.setDefaults(project.id)});
+								}}
+								options={this.state.projects.filter((project)=>{
+									let curr = this.props.currentUser;
+									if((curr.userData && curr.userData.role.value===3)||(project.id===-1||project.id===null)){
+										return true;
+									}
+									let permission = project.permissions.find((permission)=>permission.user===curr.id);
+									return permission && permission.read;
+								})}
+								styles={invisibleSelectStyleNoArrowRequired}
+								/>
+						</div>
+					</div>
+
+					{ this.state.defaultFields.assignedTo.show &&
+					<div className="">
+						<Label className="col-form-label-2">Assigned</Label>
+						<div className="col-form-value-2" style={{marginLeft: "-5px"}}>
+							<Select
+								value={this.state.assignedTo.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id))}
+								placeholder="Zadajte poverených pracovníkov"
+								isMulti
+								isDisabled={this.state.defaultFields.assignedTo.fixed||this.state.viewOnly}
+								onChange={(users)=>this.setState({assignedTo:users},this.submitTask.bind(this))}
+								options={
+									(canAdd?[{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}]:[])
+									.concat(this.state.users.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id)))
+								}
+								styles={invisibleSelectStyleNoArrowRequired}
+								/>
+						</div>
+					</div>}
+
+
+					{ this.state.defaultFields.status.show &&
+						<div className="">
+							<Label className="col-form-label-2">Status</Label>
+							<div className="col-form-value-2">
+									<Select
+										placeholder="Status required"
+										value={this.state.status}
+										isDisabled={this.state.defaultFields.status.fixed||this.state.viewOnly}
+										styles={invisibleSelectStyleNoArrowColoredRequired}
+										onChange={(status)=>{
+											let newHistoryEntery = {
+												createdAt:(new Date()).getTime(),
+												message:this.getHistoryMessage('status', status),
+												task:this.props.match.params.taskID,
+											};
+											if(status.action==='pending'){
+												this.setState({
+													pendingStatus:status,
+													pendingOpen:true,
+													newHistoryEntery
+												})
+											}else if(status.action==='close'||status.action==='invalid'){
+												this.setState({
+													status,
+													statusChange:(new Date().getTime()),
+													closeDate: moment(),
+													newHistoryEntery
+												},this.submitTask.bind(this))
+											}
+											else{
+												this.setState({
+													status,
+													statusChange:(new Date().getTime()),
+													newHistoryEntery
+												},this.submitTask.bind(this))
+											}
+										}}
+										options={this.state.statuses.filter((status)=>status.action!=='invoiced')}
+										/>
+								</div>
+							</div>}
+
+
+
+					{ this.state.defaultFields.type.show &&
+						<div className=""> {/*Type*/}
+							<Label className="col-form-label-2">Typ</Label>
+							<div className="col-form-value-2">
+								<Select
+									placeholder="Zadajte typ"
+									value={this.state.type}
+									isDisabled={this.state.defaultFields.type.fixed||this.state.viewOnly}
+									styles={invisibleSelectStyleNoArrowRequired}
+									onChange={(type)=>this.setState({type},this.submitTask.bind(this))}
+									options={this.state.taskTypes}
+									/>
+							</div>
+						</div>}
+
+						<div className=""> {/*Milestone*/}
+							<Label className="col-form-label-2">Milestone</Label>
+							<div className="col-form-value-2">
+								<Select
+									isDisabled={this.state.viewOnly}
+									value={this.state.milestone}
+									onChange={(milestone)=> {
+										if(this.state.status.action==='pending'){
+											if(milestone.startsAt!==null){
+												this.setState({milestone,pendingDate:moment(milestone.startsAt),pendingChangable:false},this.submitTask.bind(this));
+											}else{
+												this.setState({milestone, pendingChangable:true }, this.submitTask.bind(this));
+											}
+										}else{
+											this.setState({milestone},this.submitTask.bind(this));
+										}
+									}}
+									options={this.state.milestones.filter((milestone)=>milestone.id===null || (this.state.project!== null && milestone.project===this.state.project.id))}
+									styles={invisibleSelectStyleNoArrow}
+									/>
+							</div>
+						</div>
+
+						{ this.state.defaultFields.tags.show &&
+							<div style={{maxWidth:"250px"}}> {/*Tags*/}
+								<Label className="col-form-label-2">Tagy: </Label>
+								<div className="col-form-value-2">
+									<Select
+										placeholder="Zvoľte tagy"
+										value={this.state.tags}
+										isMulti
+										onChange={(tags)=>this.setState({tags},this.submitTask.bind(this))}
+										options={this.state.allTags}
+										isDisabled={this.state.defaultFields.tags.fixed||this.state.viewOnly}
+										styles={invisibleSelectStyleNoArrowColored}
+										/>
+								</div>
+						</div>}
+
+
+				{ this.state.defaultFields.requester.show &&
+					<div className=""> {/*Requester*/}
+						<Label className="col-form-label-2">Zadal</Label>
+						<div className="col-form-value-2">
+							<Select
+								placeholder="Zadajte žiadateľa"
+								value={this.state.requester}
+								isDisabled={this.state.defaultFields.requester.fixed||this.state.viewOnly}
+								onChange={(requester)=>
+									{
+										if (requester.id === -1) {
+											this.setState({
+												openUserAdd: true,
+											})
+										} else {
+											this.setState({requester},this.submitTask.bind(this))
+										}
+									}
+								}
+								options={(canAdd?[{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}]:[]).concat(this.state.users)}
+								styles={invisibleSelectStyleNoArrowRequired}
+								/>
+						</div>
+					</div> }
+
+							{ this.state.defaultFields.company.show &&
+								<div className=""> {/*Company*/}
+									<Label className="col-form-label-2">Firma</Label>
+									<div className="col-form-value-2">
+										<Select
+											placeholder="Zadajte firmu"
+											value={this.state.company}
+											isDisabled={this.state.defaultFields.company.fixed||this.state.viewOnly}
+											onChange={(company)=> {
+															if (company.id === -1) {
+																this.setState({
+																	openCompanyAdd: true,
+																})
+															} else {
+																this.setState({company, pausal:parseInt(company.workPausal)>0?booleanSelects[1]:booleanSelects[0]},this.submitTask.bind(this));
+															}
+														}}
+											options={(canAdd?[{id:-1,title:'+ Add company',body:'add', label:'+ Add company',value:null}]:[]).concat(this.state.companies)}
+											styles={invisibleSelectStyleNoArrowRequired}
+											/>
+									</div>
+								</div>}
+
+							{this.state.defaultFields.pausal.show &&
+								<div className=""> {/*Pausal*/}
+									<label className="col-form-label m-l-7">Paušál</label>
+									<div className="col-form-value-2">
+									<Select
+										value={this.state.pausal}
+										isDisabled={this.state.viewOnly||!this.state.company || parseInt(this.state.company.workPausal)===0||this.state.defaultFields.pausal.fixed}
+										styles={invisibleSelectStyleNoArrowRequired}
+										onChange={(pausal)=>this.setState({pausal},this.submitTask.bind(this))}
+										options={booleanSelects}
+										/>
+								</div>
+								</div>}
+
+							<div className=""> {/*Deadline*/}
+								<Label className="col-form-label m-l-7">Deadline</Label>
+								<div className="col-form-value-2" style={{marginLeft: "-1px"}}>
+									<DatePicker
+										className="form-control hidden-input"
+										selected={this.state.deadline}
+										disabled={this.state.viewOnly}
+										onChange={date => {
+											this.setState({ deadline: date },this.submitTask.bind(this));
+										}}
+										placeholderText="No deadline"
+										{...datePickerConfig}
+										/>
+								</div>
+							</div>
+								<Repeat
+									disabled={this.state.viewOnly}
+									taskID={taskID}
+									repeat={this.state.repeat}
+									submitRepeat={(repeat)=>{
+										database.collection('help-repeats').doc(taskID).set({
+											...repeat,
+											task:taskID,
+											startAt:(new Date(repeat.startAt).getTime()),
+										});
+										this.setState({repeat})
+									}}
+									deleteRepeat={()=>{
+										rebase.removeDoc('/help-repeats/'+taskID);
+										this.setState({repeat:null})
+									}}
+									columns={this.props.columns}
+									vertical={true}
+									/>
+
+							{this.state.defaultFields.overtime.show &&
+								<div className=""> {/*Overtime*/}
+									<label className="col-form-label-2">Mimo PH</label>
+									<div className="col-form-value-2">
+									<Select
+										value={this.state.overtime}
+										isDisabled={this.state.viewOnly||this.state.defaultFields.overtime.fixed}
+										styles={invisibleSelectStyleNoArrowRequired}
+										onChange={(overtime)=>this.setState({overtime},this.submitTask.bind(this))}
+										options={booleanSelects}
+										/>
+								</div>
+								</div>}
+						</div>
 		    </div>
 			</div>
 		);

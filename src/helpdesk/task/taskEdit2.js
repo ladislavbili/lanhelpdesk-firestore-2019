@@ -13,8 +13,9 @@ import Comments from '../components/comments.js';
 //import Subtasks from '../components/subtasks';
 import Repeat from '../components/repeat';
 
-import Materials from '../components/materials';
-import PraceWorkTrips from '../components/praceWorkTrips';
+//import Materials from '../components/materials';
+//import PraceWorkTrips from '../components/praceWorkTrips';
+import VykazyTable from '../components/vykazyTable';
 
 import UserAdd from '../settings/users/userAdd';
 import CompanyAdd from '../settings/companies/companyAdd';
@@ -434,6 +435,9 @@ class TaskEdit extends Component {
 		let pricelists = props.pricelists;
 		let companies = toSelArr(props.companies).map((company)=>{
 			let newCompany={...company,pricelist:pricelists.find((item)=>item.id===company.pricelist)};
+			if(newCompany.pricelist===undefined){
+							 newCompany.pricelist=pricelists[0];
+					 }
 			return newCompany;
 		});;
 
@@ -576,7 +580,7 @@ class TaskEdit extends Component {
 					<div className="d-flex flex-row center-hor p-2 ">
 							<div className="display-inline center-hor">
 							{!this.props.columns &&
-								<button type="button" className="btn btn-link waves-effect" onClick={() => this.props.history.push(`/helpdesk/taskList/i/${this.props.match.params.listID}`)}>
+								<button type="button" className="btn btn-link-reversed waves-effect" onClick={() => this.props.history.push(`/helpdesk/taskList/i/${this.props.match.params.listID}`)}>
 									<i
 										className="fas fa-arrow-left commandbar-command-icon"
 										/>
@@ -595,12 +599,12 @@ class TaskEdit extends Component {
 						</div>
 						<div className="ml-auto center-hor">
 							<TaskPrint match={this.props.match} {...this.state} isLoaded={this.state.extraDataLoaded && this.storageLoaded(this.props) && !this.state.loading} />
-							{canDelete && <button type="button" disabled={!canDelete} className="btn btn-link waves-effect" onClick={this.deleteTask.bind(this)}>
+							{canDelete && <button type="button" disabled={!canDelete} className="btn btn-link-reversed waves-effect" onClick={this.deleteTask.bind(this)}>
 								<i
 									className="far fa-trash-alt"
 									/> Delete
 								</button>}
-								<button type="button" style={{color:this.state.important ? '#ffc107' : 'black'}} disabled={this.state.viewOnly} className="btn btn-link waves-effect" onClick={()=>this.setState({important:!this.state.important},this.submitTask.bind(this))}>
+								<button type="button" style={{color:this.state.important ? '#ffc107' : '#0078D4'}} disabled={this.state.viewOnly} className="btn btn-link-reversed waves-effect" onClick={()=>this.setState({important:!this.state.important},this.submitTask.bind(this))}>
 									<i
 										className="far fa-star"
 										/> Important
@@ -608,7 +612,7 @@ class TaskEdit extends Component {
 							</div>
 							<button
 								type="button"
-								className="btn btn-link waves-effect"
+								className="btn btn-link-reversed waves-effect"
 								onClick={() => this.props.switch()}>
 								Switch layout
 							</button>
@@ -790,6 +794,10 @@ class TaskEdit extends Component {
 							milestones={this.state.milestones.filter((milestone)=>this.state.project!== null && milestone.project===this.state.project.id && milestone.startsAt!==null)}
 							closeModal={()=>this.setState({pendingOpen:false})}
 							savePending={(pending)=>{
+								database.collection('help-calendar_events').where("taskID", "==", parseInt(this.props.match.params.taskID)).get()
+	              .then((data)=>{
+	                  snapshotToArray(data).forEach((item)=>rebase.removeDoc('/help-calendar_events/'+item.id));
+	              });
 								this.setState({
 									pendingOpen:false,
 									pendingStatus:null,
@@ -802,40 +810,91 @@ class TaskEdit extends Component {
 							}}
 						/>
 
-					<Nav tabs className="b-0 m-b-22 m-l--10 m-t-15">
-							<NavItem>
-								<NavLink
-									className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "")}
-									onClick={() => { this.setState({toggleTab:'1'}); }}
-								>
-									Komentáre   |
-            		</NavLink>
-							</NavItem>
-							<NavItem>
-								<NavLink
-									className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
-									onClick={() => { this.setState({toggleTab:'2'}); }}
-								>
-									Výkazy   |
-								</NavLink>
-							</NavItem>
-							<NavItem>
-								<NavLink
-									className={classnames({ active: this.state.toggleTab === '3' }, "clickable", "")}
-									onClick={() => { this.setState({toggleTab:'3'}); }}
-								>
-									Rozpočet   |
-								</NavLink>
-							</NavItem>
-							{this.props.currentUser.userData.role.value > 0 && <NavItem>
-								<NavLink
-									className={classnames({ active: this.state.toggleTab === '4' }, "clickable", "")}
-									onClick={() => { this.setState({toggleTab:'4'}); }}
-								>
-									História
-								</NavLink>
-							</NavItem>}
-						</Nav>
+						<VykazyTable
+							showTotals={false}
+							disabled={this.state.viewOnly}
+							company={this.state.company}
+							match={this.props.match}
+							taskID={this.props.match.params.taskID}
+							taskAssigned={this.state.assignedTo}
+
+							submitService={this.submitService.bind(this)}
+							subtasks={taskWorks}
+							defaultType={this.state.type}
+							workTypes={this.state.taskTypes}
+							updateSubtask={(id,newData)=>{
+								rebase.updateDoc('help-task_works/'+id,newData);
+								let newTaskWorks=[...this.state.taskWorks];
+								newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
+								this.setState({taskWorks:newTaskWorks});
+							}}
+							removeSubtask={(id)=>{
+								rebase.removeDoc('help-task_works/'+id).then(()=>{
+									let newTaskWorks=[...this.state.taskWorks];
+									newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
+									this.setState({taskWorks:newTaskWorks});
+								});
+							}}
+							workTrips={workTrips}
+							tripTypes={this.state.tripTypes}
+							submitTrip={this.submitWorkTrip.bind(this)}
+							updateTrip={(id,newData)=>{
+								rebase.updateDoc('help-task_work_trips/'+id,newData);
+								let newTrips=[...this.state.workTrips];
+								newTrips[newTrips.findIndex((trip)=>trip.id===id)]={...newTrips.find((trip)=>trip.id===id),...newData};
+								this.setState({workTrips:newTrips});
+							}}
+							removeTrip={(id)=>{
+								rebase.removeDoc('help-task_work_trips/'+id).then(()=>{
+									let newTrips=[...this.state.workTrips];
+									newTrips.splice(newTrips.findIndex((trip)=>trip.id===id),1);
+									this.setState({workTrips:newTrips});
+								});
+							}}
+
+							materials={taskMaterials}
+							submitMaterial={this.submitMaterial.bind(this)}
+							updateMaterial={(id,newData)=>{
+								rebase.updateDoc('help-task_materials/'+id,newData);
+								let newTaskMaterials=[...this.state.taskMaterials];
+								newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
+								this.setState({taskMaterials:newTaskMaterials});
+							}}
+							removeMaterial={(id)=>{
+								rebase.removeDoc('help-task_materials/'+id).then(()=>{
+									let newTaskMaterials=[...this.state.taskMaterials];
+									newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
+									this.setState({taskMaterials:newTaskMaterials});
+								});
+							}}
+							units={this.state.units}
+							defaultUnit={this.state.defaultUnit}
+							/>
+
+							<Nav tabs className="b-0 m-b-22 m-l--10 m-t-15">
+								<NavItem>
+									<NavLink
+										className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "")}
+										onClick={() => { this.setState({toggleTab:'1'}); }}
+									>
+										Komentáre
+		          		</NavLink>
+								</NavItem>
+								<NavItem>
+									<NavLink>
+										|
+									</NavLink>
+								</NavItem>
+								{this.props.currentUser.userData.role.value > 0 &&
+									<NavItem>
+									<NavLink
+										className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
+										onClick={() => { this.setState({toggleTab:'2'}); }}
+									>
+										História
+									</NavLink>
+								</NavItem>}
+							</Nav>
 
 						<TabContent activeTab={this.state.toggleTab}>
 								<TabPane tabId="1">
@@ -853,141 +912,7 @@ class TaskEdit extends Component {
 										}}
 										/>
 								</TabPane>
-								<TabPane tabId="2">
-									<PraceWorkTrips
-										showColumns={[0,1,4,8]}
-										showTotals={false}
-										disabled={this.state.viewOnly}
-										taskAssigned={this.state.assignedTo}
-										submitService={this.submitService.bind(this)}
-										subtasks={taskWorks}
-										defaultType={this.state.type}
-										workTypes={this.state.taskTypes}
-										company={this.state.company}
-										taskID={this.props.match.params.taskID}
-										updateSubtask={(id,newData)=>{
-											rebase.updateDoc('help-task_works/'+id,newData);
-											let newTaskWorks=[...this.state.taskWorks];
-											newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
-											this.setState({taskWorks:newTaskWorks});
-										}}
-										removeSubtask={(id)=>{
-											rebase.removeDoc('help-task_works/'+id).then(()=>{
-												let newTaskWorks=[...this.state.taskWorks];
-												newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
-												this.setState({taskWorks:newTaskWorks});
-											});
-										}}
-										workTrips={workTrips}
-										tripTypes={this.state.tripTypes}
-										submitTrip={this.submitWorkTrip.bind(this)}
-										updateTrip={(id,newData)=>{
-											rebase.updateDoc('help-task_work_trips/'+id,newData);
-											let newTrips=[...this.state.workTrips];
-											newTrips[newTrips.findIndex((trip)=>trip.id===id)]={...newTrips.find((trip)=>trip.id===id),...newData};
-											this.setState({workTrips:newTrips});
-										}}
-										removeTrip={(id)=>{
-											rebase.removeDoc('help-task_work_trips/'+id).then(()=>{
-												let newTrips=[...this.state.workTrips];
-												newTrips.splice(newTrips.findIndex((trip)=>trip.id===id),1);
-												this.setState({workTrips:newTrips});
-											});
-										}}
-										/>
-
-										<Materials
-											showColumns={[0,1,2,3,4,6]}
-											disabled={this.state.viewOnly}
-											materials={taskMaterials}
-							        submitMaterial={this.submitMaterial.bind(this)}
-											updateMaterial={(id,newData)=>{
-												rebase.updateDoc('help-task_materials/'+id,newData);
-												let newTaskMaterials=[...this.state.taskMaterials];
-												newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
-												this.setState({taskMaterials:newTaskMaterials});
-											}}
-											removeMaterial={(id)=>{
-												rebase.removeDoc('help-task_materials/'+id).then(()=>{
-													let newTaskMaterials=[...this.state.taskMaterials];
-													newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
-													this.setState({taskMaterials:newTaskMaterials});
-												});
-											}}
-							        units={this.state.units}
-											defaultUnit={this.state.defaultUnit}
-											company={this.state.company}
-											match={this.props.match}
-											/>
-								</TabPane>
-								<TabPane tabId="3">
-									<PraceWorkTrips
-										showColumns={[0,1,2,3,4,5,6,7,8]}
-										showTotals={true}
-										disabled={this.state.viewOnly}
-										taskAssigned={this.state.assignedTo}
-										submitService={this.submitService.bind(this)}
-										subtasks={taskWorks}
-										defaultType={this.state.type}
-										workTypes={this.state.taskTypes}
-										company={this.state.company}
-										taskID={this.props.match.params.taskID}
-										updateSubtask={(id,newData)=>{
-											rebase.updateDoc('help-task_works/'+id,newData);
-											let newTaskWorks=[...this.state.taskWorks];
-											newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
-											this.setState({taskWorks:newTaskWorks});
-										}}
-										removeSubtask={(id)=>{
-											rebase.removeDoc('help-task_works/'+id).then(()=>{
-												let newTaskWorks=[...this.state.taskWorks];
-												newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
-												this.setState({taskWorks:newTaskWorks});
-											});
-										}}
-										workTrips={workTrips}
-										tripTypes={this.state.tripTypes}
-										submitTrip={this.submitWorkTrip.bind(this)}
-										updateTrip={(id,newData)=>{
-											rebase.updateDoc('help-task_work_trips/'+id,newData);
-											let newTrips=[...this.state.workTrips];
-											newTrips[newTrips.findIndex((trip)=>trip.id===id)]={...newTrips.find((trip)=>trip.id===id),...newData};
-											this.setState({workTrips:newTrips});
-										}}
-										removeTrip={(id)=>{
-											rebase.removeDoc('help-task_work_trips/'+id).then(()=>{
-												let newTrips=[...this.state.workTrips];
-												newTrips.splice(newTrips.findIndex((trip)=>trip.id===id),1);
-												this.setState({workTrips:newTrips});
-											});
-										}}
-									/>
-
-									<Materials
-										showColumns={[0,1,2,3,4,5,6]}
-										disabled={this.state.viewOnly}
-										materials={taskMaterials}
-						        submitMaterial={this.submitMaterial.bind(this)}
-										updateMaterial={(id,newData)=>{
-											rebase.updateDoc('help-task_materials/'+id,newData);
-											let newTaskMaterials=[...this.state.taskMaterials];
-											newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
-											this.setState({taskMaterials:newTaskMaterials});
-										}}
-										removeMaterial={(id)=>{
-											rebase.removeDoc('help-task_materials/'+id).then(()=>{
-												let newTaskMaterials=[...this.state.taskMaterials];
-												newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
-												this.setState({taskMaterials:newTaskMaterials});
-											});
-										}}
-						        units={this.state.units}
-										defaultUnit={this.state.defaultUnit}
-										company={this.state.company}
-										match={this.props.match}
-									/>
-								</TabPane>
-								{this.props.currentUser.userData.role.value > 0 && <TabPane tabId="4">
+								{this.props.currentUser.userData.role.value > 0 && <TabPane tabId="2">
 									<h3>História</h3>
 										<ListGroup>
 											{ this.state.history.map((event)=>
