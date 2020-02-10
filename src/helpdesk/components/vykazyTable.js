@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import classnames from "classnames";
-import {Input, TabContent, TabPane, Nav, NavItem, NavLink, Modal, ModalBody, ListGroup, ListGroupItem} from 'reactstrap';
+import {Input, Nav, NavItem, NavLink} from 'reactstrap';
 import Select from 'react-select';
 import {selectStyle, invisibleSelectStyle} from '../../scss/selectStyles';
 import {sameStringForms} from '../../helperFunctions';

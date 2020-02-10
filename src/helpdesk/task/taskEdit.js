@@ -13,8 +13,8 @@ import Comments from '../components/comments.js';
 //import Subtasks from '../components/subtasks';
 import Repeat from '../components/repeat';
 
-import Materials from '../components/materials';
-import PraceWorkTrips from '../components/praceWorkTrips';
+//import Materials from '../components/materials';
+//import PraceWorkTrips from '../components/praceWorkTrips';
 import VykazyTable from '../components/vykazyTable';
 
 import UserAdd from '../settings/users/userAdd';
