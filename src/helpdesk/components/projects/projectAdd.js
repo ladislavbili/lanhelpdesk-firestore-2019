@@ -101,6 +101,8 @@ class ProjectAdd extends Component{
   }
 
   render(){
+		console.log(this.state.pausal);
+
 		let canReadUserIDs = this.state.permissions.map((permission)=>permission.user.id);
 		let canBeAssigned = this.state.users.filter((user)=>canReadUserIDs.includes(user.id))
 

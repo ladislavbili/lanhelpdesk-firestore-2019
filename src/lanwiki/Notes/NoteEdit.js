@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, FormGroup, Modal, ModalBody, ModalFooter } from 'reactstrap';
+import { Button, FormGroup, Modal, ModalBody, ModalFooter, Label } from 'reactstrap';
 
 import TimeAgo from 'react-timeago'
 import Select from 'react-select';
@@ -142,41 +142,39 @@ export default class Note extends Component{
 					<div style={{backgroundColor: "transparent", width: "100%", height: "100%", position: "absolute"}} onClick={()=>this.setState({editBodyOpen:false})}>
 					</div>
 				}
-				<div className="commandbar p-2 p-l-25">
+				<div className="commandbar p-2 p-l-20">
 					<div className={"d-flex flex-row" + (!this.props.columns ? " w-50  ml-auto mr-auto" : "") }>
 						<div className="center-hor">
 							{!this.props.columns &&
-								<button type="button" className="btn btn-link waves-effect" onClick={()=>this.props.history.goBack()}>
+								<button type="button" className="btn btn-link-reversed waves-effect" onClick={()=>this.props.history.goBack()}>
 									<i
-										className="fas fa-arrow-left commandbar-command-icon icon-M"
-										/>
+										className="fas fa-arrow-left commandbar-command-icon"
+										/> Back
 								</button>
 							}
 							{' '}
-							<button type="button" className="btn btn-link waves-effect" onClick={this.submit.bind(this)}>
-								{this.state.saving?'Saving... ':''}
+							<button type="button" className="btn btn-link-reversed waves-effect" onClick={this.submit.bind(this)}>
 								<i
-									className="fas fa-save icon-M"
-									/>
+									className="fas fa-save commandbar-command-icon"
+									/> 	{this.state.saving?'Saving... ':'Save'}
 							</button>
 							{' '}
-							<button type="button" className="btn btn-link waves-effect" onClick={this.remove.bind(this)}>
+							<button type="button" className="btn btn-link-reversed waves-effect" onClick={this.remove.bind(this)}>
 								<i
-									className="fas fa-trash icon-M"
-									/>
+									className="fas fa-trash commandbar-command-icon"
+									/> Delete
 							</button>
 						</div>
 					</div>
 				</div>
 
-        <div className={"card-box-lanwiki scrollable fit-with-header-and-commandbar " + (!this.props.columns ? " center-ver w-50" : "")}>
-          <div style={{padding: "20px 30px"}} onClick={() => this.state.editBodyOpen ? this.setState({editBodyOpen: false}) : null}>
-                <div className="row">
-                  <h2 className="center-hor">#</h2>
-                  <span className="center-hor flex">
-                    <input type="text" value={this.state.name} className="task-title-input hidden-input flex" onChange={(e)=>this.setState({name:e.target.value},this.submit.bind(this))} placeholder="Enter task name" />
-                  </span>
-                </div>
+        <div className={"card-box-lanwiki scrollable fit-with-header-and-commandbar p-20" + (!this.props.columns ? " center-ver w-50" : "")}>
+            <div className="row">
+              <h2 className="center-hor">#</h2>
+              <span className="center-hor flex">
+                <input type="text" value={this.state.name} className="task-title-input hidden-input flex" onChange={(e)=>this.setState({name:e.target.value},this.submit.bind(this))} placeholder="Enter task name" />
+              </span>
+            </div>
 
             <hr/>
 
@@ -188,7 +186,7 @@ export default class Note extends Component{
             </div>
 
             <div className="row">
-              <strong className="center-hor text-slim">Tagy: </strong>
+              <Label className="col-form-label">Tagy:</Label>
               <div className="f-1">
                 <Select
                   value={this.state.tags}
@@ -200,17 +198,16 @@ export default class Note extends Component{
               </div>
             </div>
 
-          </div>
                 {!this.state.editBodyOpen &&
-                  <div style={{padding: "0px 30px 20px 30px"}}>
-                    <Button className="btn-link p-l-0" onClick={()=>this.setState({editBodyOpen:true})}>Upraviť text</Button>
-                    <div className="clickable m-t-30 task-edit-popis" onClick={()=>this.setState({editBodyOpen:true})} dangerouslySetInnerHTML={{__html:this.state.body===null?'': this.state.body }}></div>
+                  <div >
+                    <Button className="btn-link-reversed p-l-0" onClick={()=>this.setState({editBodyOpen:true})}>Upraviť text</Button>
+                    <div className="clickable task-edit-popis" onClick={()=>this.setState({editBodyOpen:true})} dangerouslySetInnerHTML={{__html:this.state.body===null?'': this.state.body }}></div>
                   </div>
                 }
 
               { this.state.editBodyOpen &&
-              <FormGroup className="p-t-0 p-b-20 p-l-30 p-r-30" style={{zIndex: "9999"}}>
-                  <Button className="btn-link p-l-0" onClick={this.toggleModal.bind(this)}>Pridať obrázok z uložiska</Button>
+              <FormGroup className="" style={{zIndex: "9999"}}>
+                  <Button className="btn-link-reversed p-l-0" onClick={this.toggleModal.bind(this)}>Pridať obrázok z uložiska</Button>
 
                   <Modal isOpen={this.state.modalOpen} toggle={this.toggleModal.bind(this)} >
                     <ModalBody className="m-t-15">

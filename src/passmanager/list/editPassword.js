@@ -117,18 +117,13 @@ export default class UnitAdd extends Component{
             </InputGroup>
           </FormGroup>
 
-          {this.state.password.length>0 && this.state.password===this.state.passwordConfirm &&
-            <Alert color="success">
-              Passwords match!
-            </Alert>
-          }
-          { this.state.password.length>0 && this.state.password!==this.state.passwordConfirm &&
+          { this.state.password.length > 0 && this.state.password !== this.state.passwordConfirm &&
             <Alert color="warning">
               Passwords don't match!
             </Alert>
           }
 
-          <Button color="primary" disabled={this.state.saving||this.state.loading} onClick={()=>{
+          <Button color="primary" className="m-b-5" disabled={this.state.saving||this.state.loading} onClick={()=>{
               let password=Math.random().toString(36).slice(-8);
               this.setState({password,passwordConfirm:password});
             }}>Generate password</Button>

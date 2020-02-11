@@ -240,12 +240,12 @@ class ProjectEdit extends Component{
 					/>
 				{/*TO DELETE*/}
 
-				<h3 className="m-t-20"> Default values </h3>
+
 
 					<table className="table">
 						<thead>
 							<tr>
-								<th ></th>
+								<th ><h3 className="m-t-20"> Default values </h3></th>
 								<th width="10">Def.</th>
 								<th width="10">Fixed</th>
 								<th width="10">Show</th>
@@ -461,6 +461,7 @@ class ProjectEdit extends Component{
 						Status, assigned to, task type and company can't be empty if they are fixed!
 					</div>}
 
+					<div className="row">
 					<Button
 						className="btn"
 						disabled={this.state.saving||this.state.title===""||(this.state.company.value===null&&this.state.company.fixed)||(this.state.status.value===null&&this.state.status.fixed)||(this.state.assignedTo.value.length===0 && this.state.assignedTo.fixed)||(this.state.type.value===null&&this.state.type.fixed)}
@@ -493,9 +494,10 @@ class ProjectEdit extends Component{
 					}}>
 						{(this.state.saving?'Saving...':'Save project')}
 					</Button>
-					<Button className="mr-auto btn-danger" disabled={this.state.saving} onClick={this.deleteProject.bind(this)}>
+					<Button className="ml-auto btn-danger" disabled={this.state.saving} onClick={this.deleteProject.bind(this)}>
 						Delete
 					</Button>
+				</div>
       </div>
     );
   }

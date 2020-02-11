@@ -17,7 +17,7 @@ export default class ItemView extends Component{
       IPs:[],
       passwords:[],
       backups:[],
-      backupTasksDescription: "",
+      backupsDescription: {},
       items:[],
       links:[],
       toggleTab: "1",
@@ -73,7 +73,7 @@ export default class ItemView extends Component{
       IPs,
       passwords,
       backups,
-      backupTasksDescription: item.backupsDescription,
+      backupsDescription: item.backupsDescription,
       attributes,
       items,
       links: links.map((item)=>{
@@ -99,8 +99,7 @@ export default class ItemView extends Component{
 
   render(){
     return (
-        <div className="card-box fit-with-header-and-commandbar scrollable p-t-15">
-
+        <div className="card-box fit-with-header-and-commandbar scrollable">
             <div className="row m-b-10">
               <h2 className="center-hor cmdb-title">
                 {this.state.item===null?'':this.state.item.title}
@@ -114,7 +113,7 @@ export default class ItemView extends Component{
 
             <hr />
             <div className="cmdb-selects col-lg-12">
-                <div className="row m-b-10 col-lg-6 cmdb-selects-info">
+                <div className="row col-lg-6 cmdb-selects-info">
                   <div className="w-30">
                     <Label>Status:</Label>
                   </div>
@@ -122,7 +121,7 @@ export default class ItemView extends Component{
                     {this.state.item===null?'':this.state.statuses.find((item)=>item.id===this.state.item.status).title}
                   </div>
                 </div>
-                <div className="row m-b-10 col-lg-6 cmdb-selects-info">
+                <div className="row col-lg-6 cmdb-selects-info">
                   <div className="w-30">
                     <Label>Company:</Label>
                   </div>
@@ -131,39 +130,37 @@ export default class ItemView extends Component{
                   </div>
                 </div>
 
-              { (this.state.sidebarItem ? this.state.sidebarItem.attributes : []).map((item)=>
-                <div key={item.id} className="row m-b-10 col-lg-6 cmdb-selects-info">
+              { this.state.sidebarItem &&
+                 this.state.sidebarItem.attributes.map((item)=>
+                <div key={item.id} className="row col-lg-6 cmdb-selects-info">
                   <div className="w-30">
-                    <Label>{item.title}</Label>
+                    <Label>{item.title.length > 0 ? item.title : "No title"}</Label>
                   </div>
-                  { item.type.id==='select' &&
-                    <div className="">{this.state.attributes[item.id].label}</div>
+                  { false && item.type.id==='select' &&
+                    <div className="">{item.title}</div>
                   }
-                  { item.type.id==='input' &&
-                    <div className="">{this.state.attributes[item.id]}</div>
+                  { false && item.type.id==='input' &&
+                    <div className="">{item.title}</div>
                   }
-                  { item.type.id==='textarea' &&
-                    <div className="" dangerouslySetInnerHTML ={{__html:htmlFixNewLines(this.state.attributes[item.id])}}></div>
+                  { false && item.type.id==='textarea' &&
+                    <div className="" dangerouslySetInnerHTML ={{__html:htmlFixNewLines(item.title)}}></div>
                   }
                 </div>
-              )}
-
+              )
+            }
             </div>
 
-
-                <FormGroup className="m-b-10">
-                  <div className="m-r-5 w-10 m-b-15">
-                    <Label>Description</Label>
+              <div className="m-t-20 col-lg-12">
+                <Label className="m-0" style={{height: "30px"}}>Description</Label>
+                <div className="row">
+                  <div className="flex p-r-15" dangerouslySetInnerHTML={{__html:this.state.item===null ? '': ( this.state.item.description.length === 0 ? "No description" : this.state.item.description.replace(/(?:\r\n|\r|\n)/g, '<br>') )}}></div>
+                  <div className="cmdb-yellow">
+                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean et est a dui semper facilisis. Pellentesque placerat elit a nunc. Nullam tortor odio, rutrum quis, egestas ut, posuere sed, felis. Vestibulum placerat feugiat nisl. Suspendisse lacinia, odio non feugiat vestibulum, sem erat blandit metus, ac nonummy magna odio pharetra felis.
                   </div>
-                  <div className="row">
-                    <div className="flex p-r-15" dangerouslySetInnerHTML={{__html:this.state.item===null ? '': ( this.state.item.description.length === 0 ? "No description" : this.state.item.description.replace(/(?:\r\n|\r|\n)/g, '<br>') )}}></div>
-                    <div className="cmdb-yellow">
-                      Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean et est a dui semper facilisis. Pellentesque placerat elit a nunc. Nullam tortor odio, rutrum quis, egestas ut, posuere sed, felis. Vestibulum placerat feugiat nisl. Suspendisse lacinia, odio non feugiat vestibulum, sem erat blandit metus, ac nonummy magna odio pharetra felis.
-                    </div>
-                  </div>
-                </FormGroup>
+                </div>
+              </div>
 
-              <div className="m-t-30 cmdb-item-table">
+              <div className="m-t-20 col-lg-12">
                 <Table className="table">
                   <thead>
                     <tr>
@@ -190,7 +187,7 @@ export default class ItemView extends Component{
                 </Table>
               </div>
 
-              <div className="m-t-30 cmdb-item-table">
+              <div className="m-t-20 col-lg-12">
                 <Table className="table">
                   <thead>
                     <tr>
@@ -216,7 +213,7 @@ export default class ItemView extends Component{
                 </Table>
               </div>
 
-              <div className="m-t-30">
+              <div className="m-t-20 col-lg-12">
                 <Label>Backup tasks description</Label>
                 <div className="row">
                   <div className="flex">
@@ -229,7 +226,7 @@ export default class ItemView extends Component{
                         </div>
                       </div>
                     )}
-                    {this.backupTasksDescription ? this.state.backupTasksDescription.text : "No backup tasks description"}
+                    {this.state.backupsDescription ? this.state.backupsDescription.text : "No backup tasks description"}
                   </div>
                   <div className="cmdb-yellow">
                     Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean et est a dui semper facilisis. Pellentesque placerat elit a nunc. Nullam tortor odio, rutrum quis, egestas ut, posuere sed, felis. Vestibulum placerat feugiat nisl. Suspendisse lacinia, odio non feugiat vestibulum, sem erat blandit metus, ac nonummy magna odio pharetra felis.
@@ -237,9 +234,8 @@ export default class ItemView extends Component{
                 </div>
               </div>
 
-
-              <Nav tabs className="b-0 m-b-22 m-t-30 m-l--10">
-                <NavItem className="cmdb-tab">
+              <Nav tabs className="col-lg-12 m-t-20 ">
+                <NavItem className="">
                   <NavLink
                     className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "")}
                     onClick={() => { this.setState({toggleTab:'1'}); }}
@@ -247,7 +243,10 @@ export default class ItemView extends Component{
                     Comments
                   </NavLink>
                 </NavItem>
-                <NavItem className="cmdb-tab">
+                <NavItem>
+                  <NavLink>  |  </NavLink>
+                </NavItem>
+                <NavItem className="">
                   <NavLink
                     className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
                     onClick={() => { this.setState({toggleTab:'2'}); }}
@@ -255,7 +254,10 @@ export default class ItemView extends Component{
                     Links
                   </NavLink>
                 </NavItem>
-                <NavItem className="cmdb-tab">
+                <NavItem>
+                  <NavLink>  |  </NavLink>
+                </NavItem>
+                <NavItem className="">
                   <NavLink
                     className={classnames({ active: this.state.toggleTab === '3' }, "clickable", "")}
                     onClick={() => { this.setState({toggleTab:'3'}); }}

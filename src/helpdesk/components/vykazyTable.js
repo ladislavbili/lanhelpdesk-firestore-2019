@@ -219,7 +219,7 @@ export default class Rozpocet extends Component {
 					<table className="table">
 						<thead>
 							<tr>
-								<th colSpan="2">
+								<th colSpan={this.props.showColumns.includes(0) ? 2 : 1}>
 										<Nav tabs className="b-0 m-0">
 										<NavItem>
 											<NavLink
@@ -244,23 +244,24 @@ export default class Rozpocet extends Component {
 										</NavItem>
 									</Nav>
 								</th>
-								<th width="130">Rieši</th>
-								<th width="130">Typ</th>
-								<th width="70">Mn.</th>
-								{this.state.toggleTab === "2" && <th width="70" className="table-highlight-background">Cenník/Nákup</th> }
-								{this.state.toggleTab === "2" && <th width="70" className="table-highlight-background">Zľava/Marža</th> }
-								{this.state.toggleTab === "2" && <th width="70" className="table-highlight-background">Cena</th>}
-								{this.state.toggleTab === "2" && <th width="70" className="table-highlight-background">Spolu</th> }
-								{this.state.toggleTab === "1" && <th width="70" className=""></th> }
-								{this.state.toggleTab === "1" && <th width="70" className=""></th> }
-								<th width={this.props.materials.length === 0 ? "90" : "120"}>Akcie</th>
+								{this.props.showColumns.includes(2) && <th width="130">Rieši</th> }
+								{this.props.showColumns.includes(3) && <th width="130">Typ</th> }
+								{this.props.showColumns.includes(4) && <th width="70">Mn.</th> }
+								{this.props.showColumns.includes(5) && this.state.toggleTab === "2" && <th width="70" className="table-highlight-background">Cenník/Nákup</th> }
+								{this.props.showColumns.includes(6) && this.state.toggleTab === "2" && <th width="70" className="table-highlight-background">Zľava/Marža</th> }
+								{this.props.showColumns.includes(7) && this.state.toggleTab === "2" && <th width="70" className="table-highlight-background">Cena</th>}
+								{this.props.showColumns.includes(8) && this.state.toggleTab === "2" && <th width="70" className="table-highlight-background">Spolu</th> }
+								{this.props.showColumns.includes(5) && this.state.toggleTab === "1" && <th width="70" className=""></th> }
+								{this.props.showColumns.includes(7) && this.state.toggleTab === "1" && <th width="70" className=""></th> }
+								{this.props.showColumns.includes(9) && <th width={this.props.materials.length === 0 ? "90" : "120"}>Akcie</th> }
 							</tr>
 						</thead>
 						<tbody>
 							{
 								this.props.subtasks.map((subtask)=>
 								<tr key={subtask.id}>
-									<td className="table-checkbox p-l-0">
+									{this.props.showColumns.includes(0) &&
+										<td className="table-checkbox p-l-0">
 											<label className="custom-container">
 												<Input type="checkbox"
 													checked={subtask.done}
@@ -270,8 +271,9 @@ export default class Rozpocet extends Component {
 														}} />
 												<span className="checkmark" style={{ marginTop: "-3px"}}> </span>
 											</label>
-									</td>
-									<td className=""> {/* //name*/}
+									</td>}
+									{this.props.showColumns.includes(1) &&
+										<td className=""> {/* //name*/}
 										<input
 											disabled={this.props.disabled}
 											className="form-control hidden-input"
@@ -291,9 +293,10 @@ export default class Rozpocet extends Component {
 												this.setState({ editedSubtaskTitle: e.target.value })}
 											}
 											/>
-									</td>
+									</td>}
 
-									<td> 	{/* //riesi*/}
+									{this.props.showColumns.includes(2) &&
+										<td> 	{/* //riesi*/}
 										<Select
 											isDisabled={this.props.disabled}
 											value={subtask.assignedTo}
@@ -303,8 +306,9 @@ export default class Rozpocet extends Component {
 											options={this.props.taskAssigned}
 											styles={invisibleSelectStyle}
 											/>
-									</td>
-									<td>{/* 	//typ*/}
+									</td>}
+									{this.props.showColumns.includes(3) &&
+										<td>{/* 	//typ*/}
 										<Select
 											isDisabled={this.props.disabled}
 											value={subtask.type}
@@ -314,9 +318,10 @@ export default class Rozpocet extends Component {
 											options={this.props.workTypes}
 											styles={invisibleSelectStyle}
 											/>
-									</td>
+									</td>}
 
-									<td>{/* 	//mn.*/}
+									{this.props.showColumns.includes(4) &&
+										<td>{/* 	//mn.*/}
 										<input
 											disabled={this.props.disabled}
 											type="number"
@@ -337,11 +342,13 @@ export default class Rozpocet extends Component {
 												this.setState({ editedSubtaskQuantity: e.target.value })}
 											}
 											/>
-									</td>
+									</td>}
 
-									<td className={(this.state.toggleTab === "2" ? "table-highlight-background" : "")}></td>	{/* //nákup - cennik/nakup*/}
+									{this.props.showColumns.includes(5) &&
+										<td className={(this.state.toggleTab === "2" ? "table-highlight-background" : "")}></td>}	{/* //nákup - cennik/nakup*/}
 
-									{this.state.toggleTab === "2" &&
+									{this.props.showColumns.includes(6) &&
+										this.state.toggleTab === "2" &&
 										<td className="table-highlight-background"> {/* //zlava/marza*/}
 											<span className="text p-l-8">-<input
 												disabled={this.props.disabled}
@@ -366,7 +373,8 @@ export default class Rozpocet extends Component {
 											/>%</span>
 										</td>
 									}
-									<td className={(this.state.toggleTab === "2" ? "table-highlight-background" : "") + " p-t-15 p-l-8"}> {/* //cena*/}
+									{this.props.showColumns.includes(7) &&
+										<td className={(this.state.toggleTab === "2" ? "table-highlight-background" : "") + " p-t-15 p-l-8"}> {/* //cena*/}
 										{ this.state.toggleTab === "2" ?
 												(isNaN(this.getPrice(subtask.type))?
 												'No price'
@@ -374,9 +382,11 @@ export default class Rozpocet extends Component {
 												this.getPrice(subtask.type) + " €") :
 												""
 										}
-									</td>
+									</td>}
 
-								{this.state.toggleTab === "2" &&
+
+								{this.props.showColumns.includes(8) &&
+									this.state.toggleTab === "2" &&
 									<td className="table-highlight-background p-t-15 p-l-8">{/*  //spolu*/}
 										{isNaN(this.getTotalDiscountedPrice(subtask))?
 											'   No price'
@@ -385,6 +395,7 @@ export default class Rozpocet extends Component {
 									</td>
 								}
 
+								{this.props.showColumns.includes(9) &&
 									<td className="t-a-r">	{/* //akcie*/}
 										<button className="btn btn-link waves-effect" disabled={this.props.disabled}>
 											<i className="fa fa-arrow-up"  />
@@ -400,7 +411,7 @@ export default class Rozpocet extends Component {
 											}}>
 											<i className="fa fa-times" />
 										</button>
-									</td>
+									</td>}
 								</tr>
 								)
 							}
@@ -408,7 +419,8 @@ export default class Rozpocet extends Component {
 							{
 								this.props.workTrips.map((trip)=>
 								<tr key={trip.id}>
-									<td className="table-checkbox">
+									{this.props.showColumns.includes(0) &&
+										<td className="table-checkbox">
 										<label className="custom-container">
 											<Input type="checkbox"
 												checked={trip.done}
@@ -418,8 +430,9 @@ export default class Rozpocet extends Component {
 													}} />
 												<span className="checkmark" style={{ marginTop: "-3px"}}> </span>
 										</label>
-									</td>
-									<td className="">{/* 	//name*/}
+									</td>}
+									{this.props.showColumns.includes(1) &&
+										<td className="">{/* 	//name*/}
 										<Select
 											isDisabled={this.props.disabled}
 											value={trip.type}
@@ -429,9 +442,10 @@ export default class Rozpocet extends Component {
 											options={this.props.tripTypes}
 											styles={invisibleSelectStyle}
 											/>
-									</td>
+									</td>}
 
-									<td>{/* 	//riesi*/}
+									{this.props.showColumns.includes(2) &&
+										<td>{/* 	//riesi*/}
 										<Select
 											isDisabled={this.props.disabled}
 											value={trip.assignedTo}
@@ -441,11 +455,13 @@ export default class Rozpocet extends Component {
 											options={this.props.taskAssigned}
 											styles={invisibleSelectStyle}
 											/>
-									</td>
+									</td>}
 
-									<td className="p-l-8 p-t-15">Výjazd</td>{/* 	//typ*/}
+									{this.props.showColumns.includes(3) &&
+										<td className="p-l-8 p-t-15">Výjazd</td>}{/* 	//typ*/}
 
-									<td>{/* 	//mn.*/}
+											{this.props.showColumns.includes(4) &&
+												<td>{/* 	//mn.*/}
 										<input
 											disabled={this.props.disabled}
 											type="number"
@@ -466,11 +482,13 @@ export default class Rozpocet extends Component {
 												this.setState({ editedTripQuantity: e.target.value })}
 											}
 											/>
-									</td>
+									</td>}
 
-									<td className={(this.state.toggleTab === "2" ? "table-highlight-background" : "")}></td>	{/* //nákup - cennik/nakup*/}
+									{this.props.showColumns.includes(5) &&
+										<td className={(this.state.toggleTab === "2" ? "table-highlight-background" : "")}></td>}	{/* //nákup - cennik/nakup*/}
 
-									{this.state.toggleTab === "2" &&
+									{this.props.showColumns.includes(6) &&
+										this.state.toggleTab === "2" &&
 										<td className="table-highlight-background"> {/* //zlava/marza*/}
 												<span className="text p-l-8">-<input
 												disabled={this.props.disabled}
@@ -495,7 +513,8 @@ export default class Rozpocet extends Component {
 												/>%</span>
 										</td>
 									}
-									<td className={(this.state.toggleTab === "2" ? "table-highlight-background" : "") + " p-t-15 p-l-8"}>	{/* //cena*/}
+									{this.props.showColumns.includes(7) &&
+										<td className={(this.state.toggleTab === "2" ? "table-highlight-background" : "") + " p-t-15 p-l-8"}>	{/* //cena*/}
 										{this.state.toggleTab === "2" ?
 											(isNaN(this.getPrice(trip.type))?
 											'No price'
@@ -503,9 +522,10 @@ export default class Rozpocet extends Component {
 											this.getPrice(trip.type) + " €") :
 											""
 										}
-										</td>
+										</td>}
 
-										{this.state.toggleTab === "2" &&
+										{this.props.showColumns.includes(8) &&
+											this.state.toggleTab === "2" &&
 											<td className="table-highlight-background p-l-8 p-t-15"> {/* //spolu*/}
 												{isNaN(this.getTotalDiscountedPrice(trip))?
 													'No price'
@@ -514,7 +534,8 @@ export default class Rozpocet extends Component {
 											</td>
 										}
 
-									 <td className="t-a-r">	{/* //akcie*/}
+										{this.props.showColumns.includes(9) &&
+  										<td className="t-a-r">	{/* //akcie*/}
 										<button className="btn btn-link waves-effect" disabled={this.props.disabled}>
 											<i className="fa fa-arrow-up"  />
 										</button>
@@ -529,22 +550,24 @@ export default class Rozpocet extends Component {
 											}}>
 											<i className="fa fa-times" />
 										</button>
-									</td>
+									</td>}
 								</tr>
 							)}
 							{/* END OF GENERATED Work trips*/}
 							{
 								this.props.materials.map((material)=>
 								<tr key={material.id}>
-									<td className="table-checkbox">
+									{this.props.showColumns.includes(0) &&
+										<td className="table-checkbox">
 										<label className="custom-container">
 											<Input type="checkbox"
 												checked={false}
 												disabled={true}/>
 												<span className="checkmark" style={{ marginTop: "-3px"}}> </span>
 										</label>
-									</td>
-									<td className="">{/* 	//name*/}
+									</td>}
+									{this.props.showColumns.includes(1) &&
+										<td className="">{/* 	//name*/}
 											<input
 												disabled={this.props.disabled}
 												className="form-control hidden-input"
@@ -572,15 +595,18 @@ export default class Rozpocet extends Component {
 													this.setState({ editedMaterialTitle: e.target.value })}
 												}
 												/>
-										</td>
-										<td>	{/* //riesi*/}
-										</td>
+										</td>}
+										{this.props.showColumns.includes(2) &&
+												<td>	{/* //riesi*/}
+										</td>}
 
-										<td className="p-l-8 p-t-15">	{/* //typ*/}
+										{this.props.showColumns.includes(3) &&
+											<td className="p-l-8 p-t-15">	{/* //typ*/}
 											Materiál
-										</td>
+										</td>}
 
-									<td>	{/* //mn.*/}
+										{this.props.showColumns.includes(4) &&
+											<td>	{/* //mn.*/}
 										<input
 											disabled={this.props.disabled}
 											type="number"
@@ -609,9 +635,10 @@ export default class Rozpocet extends Component {
 												this.setState({ editedMaterialQuantity: e.target.value })}
 											}
 											/>
-									</td>
+									</td>}
 
-									<td className="table-highlight-background">	{/* //nákup - cennik/nakup*/}
+									{this.props.showColumns.includes(5) &&
+										<td className="table-highlight-background">	{/* //nákup - cennik/nakup*/}
 										<span className="text">
 											<input
 											disabled={this.props.disabled}
@@ -642,8 +669,9 @@ export default class Rozpocet extends Component {
 												this.setState({ editedMaterialPrice: e.target.value })}
 											}
 											/>€</span>
-										</td>
-									{this.state.toggleTab === "2" &&
+										</td>}
+									{this.props.showColumns.includes(6) &&
+										this.state.toggleTab === "2" &&
 
 										<td className="table-highlight-background p-l-8"> {/* //zlava/marza*/}
 											<span className="text">+
@@ -677,7 +705,8 @@ export default class Rozpocet extends Component {
 													/>%</span>
 										</td>
 									}
-									<td className="table-highlight-background p-l-8 p-t-15">{/* 	//cena*/}
+									{this.props.showColumns.includes(7) &&
+										<td className="table-highlight-background p-l-8 p-t-15">{/* 	//cena*/}
 											{
 												(
 												(parseFloat(material.id === this.state.focusedMaterial
@@ -687,16 +716,17 @@ export default class Rozpocet extends Component {
 												)
 												.toFixed(2) + " €"
 											}
-									</td>
+									</td>}
 
 
-									{this.state.toggleTab === "2" &&
+									{this.props.showColumns.includes(8) &&
+										this.state.toggleTab === "2" &&
 										<td className="p-l-8 p-t-15 table-highlight-background"> {/* //spolu*/}
 											{this.props.materials.reduce((acc, cur)=> acc+(isNaN(parseInt(cur.totalPrice))? 0 : parseInt(cur.totalPrice)),0).toFixed(2) + " €"}
 										</td>
 									}
 
-									<td className="t-a-r">	{/* //akcie*/}
+									{this.props.showColumns.includes(9) && <td className="t-a-r">	{/* //akcie*/}
 										<button className="btn btn-link waves-effect" disabled={this.props.disabled}>
 												<i className="fa fa-sync-alt" onClick={()=>{
 														if(parseInt(material.price) <= 50){
@@ -722,28 +752,29 @@ export default class Rozpocet extends Component {
 											}}>
 											<i className="fa fa-times" />
 										</button>
-									</td>
+									</td>}
 									{/* END OF GENERATED Materials*/}
 									</tr>
 								)
 							}
 							{this.state.toggleTab === "1" &&
 							<tr>
-								<th></th>
-								<th></th>
-								<th></th>
-								<th></th>
-								<th></th>
-								<th className="table-highlight-background">Nákup</th>
-								<th className="table-highlight-background">Cena</th>
-								<th></th>
+								{ this.props.showColumns.includes(0) && <th></th>}
+								{ this.props.showColumns.includes(1) && <th></th>}
+								{ this.props.showColumns.includes(2) && <th></th>}
+								{ this.props.showColumns.includes(3) && <th></th>}
+								{ this.props.showColumns.includes(4) && <th></th>}
+								{ this.props.showColumns.includes(5) && <th className="table-highlight-background">Nákup</th>}
+								{ this.props.showColumns.includes(7) && <th className="table-highlight-background">Cena</th>}
+								{ this.props.showColumns.includes(9) && <th></th>}
 							</tr>
 							}
 
 							{/* ADD work form*/}
 							{this.state.showAddSubtask && !this.props.disabled &&
 								<tr>
-									<td colSpan={2} className="p-r-8"> {/*className*/}
+									{this.props.showColumns.includes(1) &&
+										<td colSpan={2} className="p-r-8"> {/*className*/}
 										<input
 											disabled={this.props.disabled}
 											type="text"
@@ -753,9 +784,10 @@ export default class Rozpocet extends Component {
 											value={this.state.newSubtaskTitle}
 											onChange={(e)=>this.setState({newSubtaskTitle:e.target.value})}
 											/>
-									</td>
+									</td>}
 
-									<td className="p-l-8">{/*riesi*/}
+									{this.props.showColumns.includes(2) &&
+										<td className="p-l-8">{/*riesi*/}
 										<Select
 											isDisabled={this.props.disabled}
 											value={this.state.newSubtaskAssigned}
@@ -766,8 +798,9 @@ export default class Rozpocet extends Component {
 											options={this.props.taskAssigned}
 											styles={selectStyle}
 											/>
-									</td>
-											 <td className="p-l-8">{/*typ*/}
+									</td>}
+											 {this.props.showColumns.includes(3) &&
+												 <td className="p-l-8">{/*typ*/}
 												<Select
 													isDisabled={this.props.disabled}
 													value={this.state.newSubtaskType}
@@ -778,8 +811,9 @@ export default class Rozpocet extends Component {
 													}
 													styles={selectStyle}
 													/>
-											</td>
-										<td className="p-l-8 p-r-8"> {/*mn.*/}
+											</td>}
+										{this.props.showColumns.includes(4) &&
+											<td className="p-l-8 p-r-8"> {/*mn.*/}
 											<input
 												disabled={this.props.disabled}
 												type="number"
@@ -789,10 +823,12 @@ export default class Rozpocet extends Component {
 												id="inlineFormInput"
 												placeholder=""
 												/>
-										</td>
+										</td>}
 
-									<td className={(this.state.toggleTab === "2" ? "table-highlight-background" : "")}></td> {/*cennik/nakup*/}
-									{this.state.toggleTab === "2" &&
+									{this.props.showColumns.includes(5) &&
+										<td className={(this.state.toggleTab === "2" ? "table-highlight-background" : "")}></td>} {/*cennik/nakup*/}
+									{this.props.showColumns.includes(6) &&
+										this.state.toggleTab === "2" &&
 										<td className="table-highlight-background p-r-8 p-l-8"> {/*zlava*/}
 										<input
 											disabled={this.props.disabled}
@@ -804,7 +840,8 @@ export default class Rozpocet extends Component {
 											placeholder=""
 											/>
 									</td>}
-									<td className={(this.state.toggleTab === "2" ? "table-highlight-background" : "") + " p-t-15 p-l-8"}> {/*cena*/}
+									{this.props.showColumns.includes(7) &&
+										<td className={(this.state.toggleTab === "2" ? "table-highlight-background" : "") + " p-t-15 p-l-8"}> {/*cena*/}
 										{this.state.toggleTab === "2" ?
 												(isNaN(this.getPrice(this.state.newSubtaskType))?
 												'No price'
@@ -812,15 +849,18 @@ export default class Rozpocet extends Component {
 												this.getPrice(this.state.newSubtaskType)+ " €") :
 												""
 										}
-									</td>
-									{this.state.toggleTab === "2" && <td className="table-highlight-background p-r-8 p-l-8 p-t-15"> {/*spolu*/}
+									</td>}
+									{this.props.showColumns.includes(8) &&
+										this.state.toggleTab === "2" &&
+										<td className="table-highlight-background p-r-8 p-l-8 p-t-15"> {/*spolu*/}
 										{isNaN(this.getTotalDiscountedPrice({discount:this.state.newSubtaskDiscount,quantity:this.state.newSubtaskQuantity,type:this.state.newSubtaskType}))?
 											'No price'
 											:
 											this.getTotalDiscountedPrice({discount:this.state.newSubtaskDiscount,quantity:this.state.newSubtaskQuantity,type:this.state.newSubtaskType})+ " €"
 										}
 									</td>}
-									<td className="t-a-r">  {/*actions*/}
+									{this.props.showColumns.includes(9) &&
+										<td className="t-a-r">  {/*actions*/}
 									<button className="btn btn-link waves-effect"
 										disabled={this.state.newSubtaskType===null||this.props.disabled|| this.state.newSubtaskAssigned===null}
 										onClick={()=>{
@@ -852,13 +892,14 @@ export default class Rozpocet extends Component {
 										}}>
 										<i className="fa fa-times"  />
 										</button>
-								</td>
+								</td>}
 								</tr>
 							}
 							{/* ADD trip form*/}
 							{this.state.showAddTrip && !this.props.disabled &&
 								<tr>
-									<td colSpan={2} className="p-r-8"> {/*name*/}
+									{this.props.showColumns.includes(1) &&
+											<td colSpan={2} className="p-r-8"> {/*name*/}
 										<Select
 											isDisabled={this.props.disabled}
 											value={this.state.newTripType}
@@ -869,9 +910,10 @@ export default class Rozpocet extends Component {
 											options={this.props.tripTypes}
 											styles={selectStyle}
 											/>
-									</td>
+									</td>}
 
-									<td> {/*riesi*/}
+									{this.props.showColumns.includes(2) &&
+											<td> {/*riesi*/}
 									 <Select
 										 isDisabled={this.props.disabled}
 										 value={this.state.newTripAssignedTo}
@@ -882,11 +924,13 @@ export default class Rozpocet extends Component {
 										 options={this.props.taskAssigned}
 										 styles={selectStyle}
 										 />
-								 </td>
+								 </td>}
 
-								 <td className="p-t-15 p-l-8">Výjazd</td> {/*typ*/}
+								 {this.props.showColumns.includes(3) &&
+ 									 <td className="p-t-15 p-l-8">Výjazd</td>} {/*typ*/}
 
-								 <td className="p-l-8 p-r-8"> {/*mn.*/}
+										 {this.props.showColumns.includes(4) &&
+		 									 <td className="p-l-8 p-r-8"> {/*mn.*/}
 									 <input
 										 disabled={this.props.disabled}
 										 type="number"
@@ -896,10 +940,12 @@ export default class Rozpocet extends Component {
 										 id="inlineFormInput"
 										 placeholder="Quantity"
 										 />
-								 </td>
+								 </td>}
 
-								 <td className={(this.state.toggleTab === "2" ? "table-highlight-background" : "")}></td> {/*cennik*/}
- 								{this.state.toggleTab === "2" &&
+								 {this.props.showColumns.includes(5) &&
+									 <td className={(this.state.toggleTab === "2" ? "table-highlight-background" : "")}></td>} {/*cennik*/}
+ 								{this.props.showColumns.includes(6) &&
+									this.state.toggleTab === "2" &&
  									<td className="table-highlight-background p-l-8 p-r-8"> {/*zlava/marza*/}
  										<input
  											disabled={this.props.disabled}
@@ -911,22 +957,26 @@ export default class Rozpocet extends Component {
  											placeholder="Discount"
  											/>
  									</td>}
- 									<td className={(this.state.toggleTab === "2" ? "table-highlight-background" : "")}> {/*cena*/}
+									{this.props.showColumns.includes(7) &&
+											<td className={(this.state.toggleTab === "2" ? "table-highlight-background" : "")}> {/*cena*/}
  										{this.state.toggleTab === "2" ? isNaN(this.getPrice(this.state.newTripType))?
  											'No price'
  											:
  											this.getPrice(this.state.newTripType)+ " €":
  											""
  										}
- 									</td>
-									{this.state.toggleTab === "2" &&	<td className="table-highlight-background p-t-15 p-l-8"> {/*spolu*/}
+ 									</td>}
+									{this.props.showColumns.includes(8) &&
+										this.state.toggleTab === "2" &&
+											<td className="table-highlight-background p-t-15 p-l-8"> {/*spolu*/}
 											{isNaN(this.getTotalDiscountedPrice({discount:this.state.newTripDiscount,quantity:this.state.newTripQuantity,type:this.state.newTripType}))?
 												'No price'
 												:
 												this.getTotalDiscountedPrice({discount:this.state.newTripDiscount,quantity:this.state.newTripQuantity,type:this.state.newTripType})+ " €"
 											}
 										</td>}
-									<td className="t-a-r"> {/*actions*/}
+										{this.props.showColumns.includes(9) &&
+												<td className="t-a-r"> {/*actions*/}
 										<button className="btn btn-link waves-effect"
 											disabled={this.state.newTripType===null||isNaN(parseInt(this.state.newTripQuantity))||this.props.disabled|| this.state.newTripAssignedTo===null}
 											onClick={()=>{
@@ -957,12 +1007,13 @@ export default class Rozpocet extends Component {
 											}}>
 											<i className="fa fa-times"  />
 											</button>
-									</td>
+									</td>}
 								</tr>}
 								{/* ADD materials form*/}
 								{this.state.showAddMaterial && !this.props.disabled &&
 									<tr>
-										<td  colSpan={2} className="p-r-8"> {/*name*/}
+										{this.props.showColumns.includes(1) &&
+											<td  colSpan={2} className="p-r-8"> {/*name*/}
 											<input
 												disabled={this.props.disabled}
 												type="text"
@@ -972,11 +1023,14 @@ export default class Rozpocet extends Component {
 												value={this.state.newTitle}
 												onChange={(e)=>this.setState({newTitle:e.target.value})}
 												/>
-										</td>
+										</td>}
 
-										<td></td> {/*riesi*/}
-										<td className="p-t-15 p-l-8">Material</td> {/*typ*/}
-										<td className="p-r-8 p-l-8"> {/* mn.*/}
+										{this.props.showColumns.includes(2) &&
+												<td></td> }{/*riesi*/}
+													{this.props.showColumns.includes(3) &&
+														<td className="p-t-15 p-l-8">Material</td>} {/*typ*/}
+															{this.props.showColumns.includes(4) &&
+																	<td className="p-r-8 p-l-8"> {/* mn.*/}
 											<input
 												disabled={this.props.disabled}
 												type="number"
@@ -986,8 +1040,9 @@ export default class Rozpocet extends Component {
 												id="inlineFormInput"
 												placeholder=""
 												/>
-										</td>
-											<td className="table-highlight-background p-l-8 p-r-8">  {/* nakup*/}
+										</td>}
+										{this.props.showColumns.includes(5) &&
+												<td className="table-highlight-background p-l-8 p-r-8">  {/* nakup*/}
 												<input
 													disabled={this.props.disabled}
 													type="number"
@@ -1008,8 +1063,9 @@ export default class Rozpocet extends Component {
 													id="inlineFormInput"
 													placeholder=""
 													/>
-											</td>
-											{this.state.toggleTab === "2" &&	<td className="table-highlight-background p-r-8">  {/* zlava/marza*/}
+											</td>}
+											{this.props.showColumns.includes(6) &&
+												this.state.toggleTab === "2" &&	<td className="table-highlight-background p-r-8">  {/* zlava/marza*/}
 												<input
 													disabled={this.props.disabled}
 													type="number"
@@ -1020,19 +1076,22 @@ export default class Rozpocet extends Component {
 													placeholder=""
 													/>
 											</td>}
-											<td className="table-highlight-background">  {/* cena*/}
+											{this.props.showColumns.includes(7) &&
+													<td className="table-highlight-background">  {/* cena*/}
 												<div className="p-t-5 p-l-8">
 												{
 													(unitPrice*this.state.newQuantity).toFixed(2)+ " €"
 												}
 												</div>
-											</td>
-											{this.state.toggleTab === "2" &&
+											</td>}
+											{this.props.showColumns.includes(8) &&
+												this.state.toggleTab === "2" &&
 												<td className="p-l-8 p-t-15 table-highlight-background"> {/* //spolu*/}
 													{this.props.materials.reduce((acc, cur)=> acc+(isNaN(parseInt(cur.totalPrice))? 0 : parseInt(cur.totalPrice)),0).toFixed(2) + " €"}
 												</td>
 											}
-										<td className="t-a-r"> {/*actions*/}
+											{this.props.showColumns.includes(9) &&
+													<td className="t-a-r"> {/*actions*/}
 											<button className="btn btn-link waves-effect"
 												disabled={this.state.newUnit===null||this.props.disabled}
 												onClick={()=>{
@@ -1064,7 +1123,7 @@ export default class Rozpocet extends Component {
 												}}>
 												<i className="fa fa-times"  />
 												</button>
-										</td>
+										</td>}
 									</tr> }
 									{!this.state.showAddSubtask && !this.state.showAddTrip && !this.state.showAddMaterial && !this.props.disabled &&
 										<tr >

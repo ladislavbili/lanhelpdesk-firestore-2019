@@ -14,14 +14,12 @@ export default class ItemContainer extends Component {
 
 	render() {
 		return (
-			<div className="form-background scrollable fit-with-header" style={{padding:0,border:'none'}}>
-				<div className="commandbar">
-					<div className="d-flex flex-row" >
-						<div className="p-2">
+			<div className="form-background fit-with-header" style={{padding:0,border:'none'}}>
+				<div className="commandbar flex-row p-l-25">
 							{ !this.state.edit &&
-								<button type="button" className="btn btn-link waves-effect" onClick={()=>this.setState({edit:true})}>
+								<button type="button" className="center-hor btn btn-link-reversed waves-effect" onClick={()=>this.setState({edit:true})}>
 									<i
-										className="fas fa-pen icon-M"
+										className="fas fa-pen commandbar-command-icon"
 										/>
 									{false && <img
 										className="commandbar-icon"
@@ -32,29 +30,27 @@ export default class ItemContainer extends Component {
 								</button>
 							}
 							{ this.state.edit &&
-								<button type="button" className="btn btn-link waves-effect" onClick={()=>this.setState({edit:false})}>
+								<button type="button" className="center-hor btn btn-link-reversed waves-effect" onClick={()=>this.setState({edit:false})}>
 									<i
-										className="fas fa-file-invoice icon-M"
+										className="fas fa-file-invoice commandbar-command-icon"
 										/>
 									{" View"}
 								</button>
 							}
 							{ this.state.edit &&
-								<button type="button" className="btn btn-link waves-effect" onClick={()=>this.setState({saving:true})} disabled={this.state.saving}>
+								<button type="button" className="center-hor btn btn-link-reversed waves-effect" onClick={()=>this.setState({saving:true})} disabled={this.state.saving}>
 									<i
-										className="fas fa-save icon-M"
+										className="fas fa-save commandbar-command-icon"
 										/>
 									{this.state.saving?" Saving...":" Save"}
 								</button>
 							}
-							<button type="button" className="btn btn-link waves-effect" onClick={()=>this.setState({delete:true})} disabled={this.state.delete}>
+							<button type="button" className="center-hor btn btn-link-reversed waves-effect" onClick={()=>this.setState({delete:true})} disabled={this.state.delete}>
 								<i
-									className="fas fa-trash icon-M"
+									className="fas fa-trash commandbar-command-icon"
 									/>
 								{" Delete"}
 							</button>
-						</div>
-					</div>
 				</div>
 				{
 					this.state.edit &&
