@@ -34,7 +34,7 @@ class MilestoneAdd extends Component{
   render(){
     return (
       <div>
-          <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
+          <Modal isOpen={this.state.opened} style={{width: "1000px"}} toggle={this.toggle.bind(this)} >
             <ModalHeader toggle={this.toggle.bind(this)}> <h2> Add milestone </h2></ModalHeader>
             <ModalBody>
               <FormGroup>
@@ -48,35 +48,37 @@ class MilestoneAdd extends Component{
     					</FormGroup>
             </ModalBody>
 
-						<DatePicker
-							selected={this.state.startsAt}
-							onChange={date => {
-								this.setState({ startsAt: date });
-							}}
-							locale="en-gb"
-							placeholderText="No starting date"
-							showTimeSelect
-							className="form-control hidden-input"
-							todayButton="Today"
-							timeFormat="HH:mm"
-							timeIntervals={15}
-							dateFormat="HH:mm DD.MM.YYYY"
-						/>
+            <div className="row">
+  						<DatePicker
+  							selected={this.state.startsAt}
+  							onChange={date => {
+  								this.setState({ startsAt: date });
+  							}}
+  							locale="en-gb"
+  							placeholderText="No starting date"
+  							showTimeSelect
+  							className="form-control hidden-input"
+  							todayButton="Today"
+  							timeFormat="HH:mm"
+  							timeIntervals={15}
+  							dateFormat="HH:mm DD.MM.YYYY"
+  						/>
 
-						<DatePicker
-							selected={this.state.endsAt}
-							onChange={date => {
-								this.setState({ endsAt: date });
-							}}
-							locale="en-gb"
-							placeholderText="No ending date"
-							showTimeSelect
-							className="form-control hidden-input"
-							todayButton="Today"
-							timeFormat="HH:mm"
-							timeIntervals={15}
-							dateFormat="HH:mm DD.MM.YYYY"
-						/>
+  						<DatePicker
+  							selected={this.state.endsAt}
+  							onChange={date => {
+  								this.setState({ endsAt: date });
+  							}}
+  							locale="en-gb"
+  							placeholderText="No ending date"
+  							showTimeSelect
+  							className="form-control hidden-input"
+  							todayButton="Today"
+  							timeFormat="HH:mm"
+  							timeIntervals={15}
+  							dateFormat="HH:mm DD.MM.YYYY"
+  						/>
+          </div>
 
             <ModalFooter>
               <Button className="btn mr-auto" disabled={this.state.saving} onClick={this.toggle.bind(this)}>

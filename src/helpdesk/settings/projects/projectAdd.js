@@ -129,12 +129,11 @@ class ProjectAdd extends Component{
 					isAdmin={this.props.currentUser.userData.role.value===3||testing}
 					/>
 
-				<h3 className="m-t-20"> Default values </h3>
 
 					<table className="table">
 						<thead>
 							<tr>
-								<th ></th>
+								<th ><h3 className="m-t-20"> Default values </h3></th>
 								<th width="10">Def.</th>
 								<th width="10">Fixed</th>
 								<th width="10">Show</th>

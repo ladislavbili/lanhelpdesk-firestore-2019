@@ -101,6 +101,8 @@ class ProjectAdd extends Component{
   }
 
   render(){
+		console.log(this.state.pausal);
+
 		let canReadUserIDs = this.state.permissions.map((permission)=>permission.user.id);
 		let canBeAssigned = this.state.users.filter((user)=>canReadUserIDs.includes(user.id))
 
@@ -392,7 +394,7 @@ class ProjectAdd extends Component{
                       type:this.state.type.value?{...this.state.type,value:this.state.type.value.id}:{def:false,fixed:false, value: null, show:true},
                       requester:this.state.requester.value?{...this.state.requester,value:this.state.requester.value.id}:{def:false,fixed:false, value: null, show:true},
                       company:this.state.company.value?{...this.state.company,value:this.state.company.value.id}:{def:false,fixed:false, value: null, show:true},
-											pausal:this.state.pausal.value?{...this.state.pausal,value:this.state.pausal.value.id}:{def:false,fixed:false, value: false, show:true},
+											pausal:this.state.pausal.value?{...this.state.pausal,value:this.state.pausal.value.value}:{def:false,fixed:false, value: false, show:true},
 											overtime:this.state.overtime.value?{...this.state.overtime,value:this.state.overtime.value.value}:{def:false,fixed:false, value: false, show:true},
                     }
                   };

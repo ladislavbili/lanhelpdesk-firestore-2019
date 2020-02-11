@@ -1079,6 +1079,8 @@ class TaskEdit extends Component {
 						/>
 
 					<VykazyTable
+						showColumns={ (this.state.viewOnly ? [0,1,2,3,4,5,6,7,8] : [0,1,2,3,4,5,6,7,8,9]) }
+
 						showTotals={false}
 						disabled={this.state.viewOnly}
 						company={this.state.company}

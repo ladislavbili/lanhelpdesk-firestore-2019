@@ -263,7 +263,7 @@ class CompanyAdd extends Component{
         <div style={{position: "fixed", zIndex: "999", backgroundColor: "rgba(255,255,255,0.5)", top: "0", left: "0", width: "100%", height: "100vh"}}></div>
         }
 
-        <h2 className="p-t-10 p-l-20 p-b-5" style={(this.state.newData ? {position: "relative", zIndex: "99999"} : {})}>Add new company</h2>
+        <h2 className="p-t-10 p-l-20" style={(this.state.newData ? {position: "relative", zIndex: "99999"} : {})}>Add new company</h2>
         <hr style={(this.state.newData ? {position: "relative", zIndex: "99999"} : {})}/>
 
           {
@@ -272,7 +272,8 @@ class CompanyAdd extends Component{
               Loading data...
             </Alert>
           }
-          <div className="form-body-highlighted scroll-visible p-20">
+          <div className="form-body-highlighted scroll-visible">
+            <div className="p-20">
             <FormGroup className="row m-b-10">
               <div className="m-r-10 w-20">
                 <Label for="name">Company name</Label>
@@ -450,7 +451,7 @@ class CompanyAdd extends Component{
             </div>
             </FormGroup>
 
-            <FormGroup className="row m-b-10">
+            <FormGroup className="row">
               <div className="m-r-10 w-20">
               <Label for="description">Description</Label>
             </div>
@@ -466,9 +467,10 @@ class CompanyAdd extends Component{
             </div>
             </FormGroup>
 
-
+          </div>
+          <div className="p-20 table-highlight-background">
             <h3>Mesačný paušál</h3>
-              <FormGroup className="row m-b-10">
+              <FormGroup className="row m-b-10 m-t-20">
                 <div className="m-r-10 w-20">
                   <Label for="pausal">Mesačná</Label>
                 </div>
@@ -516,35 +518,38 @@ class CompanyAdd extends Component{
                 />
             </div>
             </FormGroup>
+          </div>
 
             {!this.props.addCompany &&
-              <h3>Mesačný prenájom licencií a hardware</h3>
+              <div className="p-20">
+              <h3 className="m-b-15">Mesačný prenájom licencií a hardware</h3>
+                <CompanyRents
+                  clearForm={this.state.clearCompanyRents}
+                  setClearForm={()=>this.setState({clearCompanyRents:false})}
+                  data={this.state.rented}
+                  updateRent={(rent)=>{
+                    let newRents=[...this.state.rented];
+                    newRents[newRents.findIndex((item)=>item.id===rent.id)]={...newRents.find((item)=>item.id===rent.id),...rent};
+                    this.setState({rented:newRents, newData:true });
+                  }}
+                  addRent={(rent)=>{
+                    let newRents=[...this.state.rented];
+                    newRents.push({...rent,id:this.getFakeID()})
+                    this.setState({rented:newRents, newData:true });
+                  }}
+                  removeRent={(rent)=>{
+                    let newRents=[...this.state.rented];
+                    newRents.splice(newRents.findIndex((item)=>item.id===rent.id),1);
+                    this.setState({rented:newRents, newData:true });
+                  }}
+                  />
+
+              </div>
             }
 
-            {!this.props.addCompany &&
-              <CompanyRents
-                clearForm={this.state.clearCompanyRents}
-                setClearForm={()=>this.setState({clearCompanyRents:false})}
-                data={this.state.rented}
-                updateRent={(rent)=>{
-                  let newRents=[...this.state.rented];
-                  newRents[newRents.findIndex((item)=>item.id===rent.id)]={...newRents.find((item)=>item.id===rent.id),...rent};
-                  this.setState({rented:newRents, newData:true });
-                }}
-                addRent={(rent)=>{
-                  let newRents=[...this.state.rented];
-                  newRents.push({...rent,id:this.getFakeID()})
-                  this.setState({rented:newRents, newData:true });
-                }}
-                removeRent={(rent)=>{
-                  let newRents=[...this.state.rented];
-                  newRents.splice(newRents.findIndex((item)=>item.id===rent.id),1);
-                  this.setState({rented:newRents, newData:true });
-                }}
-                />
-            }
 
-            <h3>Cenník</h3>
+            <div className="p-20 table-highlight-background">
+                <h3 className="m-b-20">Cenník</h3>
             <FormGroup className="row m-b-10">
               <div className="m-r-10 w-20">
                 <Label for="pricelist">Pricelist</Label>
@@ -583,7 +588,7 @@ class CompanyAdd extends Component{
             {this.state.editingPriceList &&
               <PriceEdit listId={this.state.pricelist.id}  deletedList={() => this.setState({pricelist: [], priceName: "", editingPriceList: false})}/>
             }
-
+          </div>
           </div>
 
          <div

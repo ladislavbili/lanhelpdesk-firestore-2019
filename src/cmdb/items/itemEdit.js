@@ -36,7 +36,7 @@ export default class ItemEdit extends Component{
       links:[],
       IPlist:[],
       backupTasks:[],
-      backupTasksDescription: {},
+      backupsDescription: {text: "", textHeight: 29, fake: true},
       passwords:[],
       attributes:{},
       toggleTab: "1",
@@ -105,6 +105,8 @@ export default class ItemEdit extends Component{
       }
       status=null
     }
+    console.log("hiiiiiiiiiiiiiiiiii");
+    console.log(item);
     this.setState({
       statuses,
       companies,
@@ -119,7 +121,7 @@ export default class ItemEdit extends Component{
       IPlist:IPs.map((item)=>{return {...item,fake:false}}),
       passwords:passwords.map((item)=>{return {...item,fake:false}}),
       backupTasks: backups.length > 0 ? backups.map((item)=>{return {...item,fake:false}}) : [{id: -1, def: true, fake: true}],
-      backupTasksDescription: item.backupsDescription,
+      backupsDescription: item.backupsDescription ? {...item.backupsDescription, fake: false} : {text: "", textHeight: 29, fake: true},
       links:links.map((item)=>{return {...item,fake:false,link:items.find((item2)=>item2.id===item.link)}}),
       attributes,
 
@@ -150,7 +152,7 @@ export default class ItemEdit extends Component{
     let body = {
       title:this.state.title,
       description:this.state.description,
-      backupsDescription: {textHeight: this.state.backupTasksDescription.textHeight, text: this.state.backupTasksDescription.text},
+      backupsDescription: {textHeight: this.state.backupsDescription.textHeight, text: this.state.backupsDescription.text},
       company:this.state.company.id,
       status:this.state.status.id,
       IP:this.state.IPlist.map((item)=>item.IP),
@@ -278,6 +280,7 @@ export default class ItemEdit extends Component{
   }
 
   render(){
+    console.log(this.state);
     return (
           <div className="card-box fit-with-header-and-commandbar scrollable p-t-15">
 
@@ -328,10 +331,8 @@ export default class ItemEdit extends Component{
                 }} />
             </div>
 
-            <FormGroup className="m-b-10">
-              <div className="m-r-5 w-10 m-b-15">
-                <Label>Description</Label>
-              </div>
+            <FormGroup className="col-lg-12  m-t-20">
+              <Label className="m-0" style={{height: "30px"}}>Description</Label>
               <div className="row">
                 <div className="flex p-r-15">
                   <CKEditor
@@ -351,15 +352,15 @@ export default class ItemEdit extends Component{
               </div>
             </FormGroup>
 
-              <div className="m-t-30 cmdb-item-table">
+              <div className="m-t-20 col-lg-12">
                 <IPList items={this.state.IPlist} onChange={(items)=>this.setState({IPlist:items})} />
               </div>
 
-              <div className="m-t-30 cmdb-item-table">
+              <div className="m-t-20 col-lg-12">
                 <Passwords items={this.state.passwords} onChange={(items)=>this.setState({passwords:items})} />
               </div>
 
-              <div className="m-t-30">
+              <div className="m-t-20 col-lg-12">
                 <Label>Backup tasks description</Label>
                   <div className="row">
                     <div className="flex p-r-15">
@@ -373,8 +374,8 @@ export default class ItemEdit extends Component{
                         addLabel="Add backup task"
                       />}
                       <BackupTasksDescription
-                        item={this.state.backupTasksDescription}
-                        onChange={(item)=>this.setState({backupTasksDescription: item})}
+                        item={this.state.backupsDescription}
+                        onChange={(item)=>this.setState({backupsDescription: item})}
                         width={300}
                       />
                     </div>
@@ -384,8 +385,8 @@ export default class ItemEdit extends Component{
                   </div>
             </div>
 
-              <Nav tabs className="b-0 m-b-22 m-t-30 m-l--10">
-                <NavItem className="cmdb-tab">
+              <Nav tabs className="m-t-20 col-lg-12">
+                <NavItem>
                   <NavLink
                     className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "")}
                     onClick={() => { this.setState({toggleTab:'1'}); }}
@@ -393,7 +394,8 @@ export default class ItemEdit extends Component{
                     Comments
                   </NavLink>
                 </NavItem>
-                <NavItem className="cmdb-tab">
+                <NavItem> <NavLink>|</NavLink> </NavItem>
+                <NavItem>
                   <NavLink
                     className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
                     onClick={() => { this.setState({toggleTab:'2'}); }}
@@ -401,7 +403,8 @@ export default class ItemEdit extends Component{
                     Links
                   </NavLink>
                 </NavItem>
-                <NavItem className="cmdb-tab">
+                <NavItem> <NavLink>|</NavLink> </NavItem>
+                <NavItem>
                   <NavLink
                     className={classnames({ active: this.state.toggleTab === '3' }, "clickable", "")}
                     onClick={() => { this.setState({toggleTab:'3'}); }}
@@ -415,7 +418,7 @@ export default class ItemEdit extends Component{
                   <TabPane tabId="1">
 
                   </TabPane>
-                  <TabPane tabId="2" className="cmdb-item-table">
+                  <TabPane tabId="2">
                     <Links items={this.state.links} links={this.state.allLinks} onChange={(links)=>this.setState({links})} />
                   </TabPane>
                   <TabPane tabId="3">

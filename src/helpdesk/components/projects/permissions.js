@@ -32,7 +32,7 @@ class Permissions extends Component {
 	render() {
 		return (
 			<div >
-				<h3 className="m-t-20"> Prístupové práva </h3>
+				<h3 className="m-t-20 m-b-20"> Prístupové práva </h3>
 				<div className="row">
 					<div className="m-r-10 center-hor">
 						<label className="">
@@ -54,7 +54,7 @@ class Permissions extends Component {
 
 				{	this.props.permissions.length > 0
 					&&
-					<table className="table">
+					<table className="table m-t-10">
 						<thead>
 							<tr>
 								<th > Username </th>

@@ -37,7 +37,7 @@ export default class AttributesHandler extends Component{
           this.props.attributes.sort((item1,item2)=>item1.order-item2.order).map((item)=>
           <div key={item.id} className="row m-b-10 col-lg-6 cmdb-selects-info">
             <div className="w-30">
-              <Label>{item.title}</Label>
+              <Label>{item.title.length > 0 ? item.title : "Untitled"}:</Label>
             </div>
             <div className="flex">
               {this.drawAttribute(item)}

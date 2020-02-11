@@ -291,6 +291,10 @@ h2.clickable:hover{
 	color: $basic-button-color;
 }
 
+h3{
+  font-family: Segoe UI Semibold;
+}
+
 .row{
   display: flex !important;
   margin: 0px;
@@ -894,15 +898,16 @@ tr:last-child{
 
 .cmdb-selects{
   display: block;
-  margin-top: 20px;
+  margin-top: 5px;
   max-width: 800px;
 }
 
 .cmdb-selects-info{
   padding-right: 10px;
+  height: 30px;
 }
 
-.cmdb-selects-info:nth-child(2){
+.cmdb-selects-info:nth-child(even){
   padding-right: 0px;
 }
 

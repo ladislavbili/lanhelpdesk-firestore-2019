@@ -320,206 +320,228 @@ class CompanyEdit extends Component{
           </Alert>
         }
 
-        <div className="form-body-highlighted scroll-visible p-20">
-          <FormGroup className="row m-b-10">
-            <div className="m-r-10 w-20">
-              <Label for="name">Company name</Label>
-            </div>
-            <div className="flex">
+        <div className="form-body-highlighted scroll-visible">
+          <div className="p-20">
+            <FormGroup className="row m-b-10">
+              <div className="m-r-10 w-20">
+                <Label for="name">Company name</Label>
+              </div>
+              <div className="flex">
+                <Input
+                  name="name"
+                  id="name"
+                  type="text"
+                  placeholder="Enter company name"
+                  value={this.state.title}
+                  onChange={(e)=>this.setState({title: e.target.value, newData: true, })}
+                  />
+              </div>
+            </FormGroup>
+
+            <FormGroup className="row m-b-10">
+              <div className="m-r-10 w-20">
+              <Label for="dph">DPH</Label>
+              </div>
+                <div className="flex">
               <Input
-                name="name"
-                id="name"
-                type="text"
-                placeholder="Enter company name"
-                value={this.state.title}
-                onChange={(e)=>this.setState({title: e.target.value, newData: true, })}
+                name="dph"
+                id="dph"
+                type="number"
+                placeholder="Enter DPH"
+                value={this.state.dph}
+                onChange={(e)=>this.setState({dph: e.target.value, newData: true })  }
                 />
             </div>
-          </FormGroup>
+            </FormGroup>
 
-          <FormGroup className="row m-b-10">
-            <div className="m-r-10 w-20">
-            <Label for="dph">DPH</Label>
+            <FormGroup className="row m-b-10">
+              <div className="m-r-10 w-20">
+              <Label for="ico">ICO</Label>
+              </div>
+                <div className="flex">
+              <Input
+                name="ico"
+                id="ico"
+                type="text"
+                placeholder="Enter ICO"
+                value={this.state.ICO}
+                onChange={(e)=>this.setState({ICO: e.target.value, newData: true })  }
+                />
             </div>
-              <div className="flex">
-            <Input
-              name="dph"
-              id="dph"
-              type="number"
-              placeholder="Enter DPH"
-              value={this.state.dph}
-              onChange={(e)=>this.setState({dph: e.target.value, newData: true })  }
-              />
+            </FormGroup>
+
+            <FormGroup className="row m-b-10">
+              <div className="m-r-10 w-20">
+              <Label for="dic">DIC</Label>
+              </div>
+                <div className="flex">
+              <Input
+                name="dic"
+                id="dic"
+                type="text"
+                placeholder="Enter DIC"
+                value={this.state.DIC}
+                onChange={(e)=>this.setState({DIC: e.target.value, newData: true }) }
+                />
+            </div>
+            </FormGroup>
+
+            <FormGroup className="row m-b-10">
+              <div className="m-r-10 w-20">
+              <Label for="ic_dph">IC DPH</Label>
+              </div>
+                <div className="flex">
+              <Input
+                name="ic_dph"
+                id="ic_dph"
+                type="text"
+                placeholder="Enter IC DPH"
+                value={this.state.IC_DPH}
+                onChange={(e)=>this.setState({IC_DPH: e.target.value, newData: true }) }
+                />
+            </div>
+            </FormGroup>
+
+            <FormGroup className="row m-b-10">
+              <div className="m-r-10 w-20">
+              <Label for="country">Country</Label>
+              </div>
+                <div className="flex">
+              <Input
+                name="country"
+                id="country"
+                type="text"
+                placeholder="Enter country"
+                value={this.state.country}
+                onChange={(e)=>this.setState({country: e.target.value, newData: true })}
+                />
+            </div>
+            </FormGroup>
+
+            <FormGroup className="row m-b-10">
+              <div className="m-r-10 w-20">
+              <Label for="city">City</Label>
+              </div>
+                <div className="flex">
+              <Input
+                name="city"
+                id="city"
+                type="text"
+                placeholder="Enter city"
+                value={this.state.city}
+                onChange={(e)=>this.setState({city: e.target.value, newData: true})}
+                />
+            </div>
+            </FormGroup>
+
+            <FormGroup className="row m-b-10">
+              <div className="m-r-10 w-20">
+              <Label for="street">Street</Label>
+              </div>
+                <div className="flex">
+              <Input
+                name="street"
+                id="street"
+                type="text"
+                placeholder="Enter street"
+                value={this.state.street}
+                onChange={(e)=>this.setState({street: e.target.value, newData: true})}
+                />
+            </div>
+            </FormGroup>
+
+            <FormGroup className="row m-b-10">
+              <div className="m-r-10 w-20">
+              <Label for="psc">PSČ</Label>
+              </div>
+                <div className="flex">
+              <Input
+                name="psc"
+                id="psc"
+                type="text"
+                placeholder="Enter PSČ"
+                value={this.state.PSC}
+                onChange={(e)=>this.setState({PSC: e.target.value, newData: true})}
+                />
+            </div>
+            </FormGroup>
+
+            <FormGroup className="row m-b-10">
+              <div className="m-r-10 w-20">
+              <Label for="mail">E-mail</Label>
+              </div>
+                <div className="flex">
+              <Input
+                name="mail"
+                id="mail"
+                className={(this.state.mail.length > 0 && !isEmail(this.state.mail)) ? "form-control-warning" : ""}
+                type="text"
+                placeholder="Enter e-mail"
+                value={this.state.mail}
+                onChange={(e)=>this.setState({mail: e.target.value, newData: true})}
+                />
+            </div>
+            </FormGroup>
+
+            <FormGroup className="row m-b-10">
+              <div className="m-r-10 w-20">
+              <Label for="phone">Phone</Label>
+              </div>
+                <div className="flex">
+              <Input
+                 name="phone"
+                 id="phone"
+                 type="text"
+                 placeholder="Enter phone"
+                 value={this.state.phone}
+                onChange={(e)=>this.setState({phone: e.target.value, newData: true})}
+                />
+            </div>
+            </FormGroup>
+
+            <FormGroup className="row">
+              <div className="m-r-10 w-20">
+              <Label for="description">Description</Label>
+              </div>
+                <div className="flex">
+              <Input
+                name="description"
+                id="description"
+                type="text"
+                placeholder="Enter description"
+                value={this.state.description}
+                onChange={(e)=>this.setState({description: e.target.value, newData: true})}
+                />
+            </div>
+            </FormGroup>
+
           </div>
-          </FormGroup>
 
-          <FormGroup className="row m-b-10">
-            <div className="m-r-10 w-20">
-            <Label for="ico">ICO</Label>
-            </div>
-              <div className="flex">
-            <Input
-              name="ico"
-              id="ico"
-              type="text"
-              placeholder="Enter ICO"
-              value={this.state.ICO}
-              onChange={(e)=>this.setState({ICO: e.target.value, newData: true })  }
-              />
-          </div>
-          </FormGroup>
-
-          <FormGroup className="row m-b-10">
-            <div className="m-r-10 w-20">
-            <Label for="dic">DIC</Label>
-            </div>
-              <div className="flex">
-            <Input
-              name="dic"
-              id="dic"
-              type="text"
-              placeholder="Enter DIC"
-              value={this.state.DIC}
-              onChange={(e)=>this.setState({DIC: e.target.value, newData: true }) }
-              />
-          </div>
-          </FormGroup>
-
-          <FormGroup className="row m-b-10">
-            <div className="m-r-10 w-20">
-            <Label for="ic_dph">IC DPH</Label>
-            </div>
-              <div className="flex">
-            <Input
-              name="ic_dph"
-              id="ic_dph"
-              type="text"
-              placeholder="Enter IC DPH"
-              value={this.state.IC_DPH}
-              onChange={(e)=>this.setState({IC_DPH: e.target.value, newData: true }) }
-              />
-          </div>
-          </FormGroup>
-
-          <FormGroup className="row m-b-10">
-            <div className="m-r-10 w-20">
-            <Label for="country">Country</Label>
-            </div>
-              <div className="flex">
-            <Input
-              name="country"
-              id="country"
-              type="text"
-              placeholder="Enter country"
-              value={this.state.country}
-              onChange={(e)=>this.setState({country: e.target.value, newData: true })}
-              />
-          </div>
-          </FormGroup>
-
-          <FormGroup className="row m-b-10">
-            <div className="m-r-10 w-20">
-            <Label for="city">City</Label>
-            </div>
-              <div className="flex">
-            <Input
-              name="city"
-              id="city"
-              type="text"
-              placeholder="Enter city"
-              value={this.state.city}
-              onChange={(e)=>this.setState({city: e.target.value, newData: true})}
-              />
-          </div>
-          </FormGroup>
-
-          <FormGroup className="row m-b-10">
-            <div className="m-r-10 w-20">
-            <Label for="street">Street</Label>
-            </div>
-              <div className="flex">
-            <Input
-              name="street"
-              id="street"
-              type="text"
-              placeholder="Enter street"
-              value={this.state.street}
-              onChange={(e)=>this.setState({street: e.target.value, newData: true})}
-              />
-          </div>
-          </FormGroup>
-
-          <FormGroup className="row m-b-10">
-            <div className="m-r-10 w-20">
-            <Label for="psc">PSČ</Label>
-            </div>
-              <div className="flex">
-            <Input
-              name="psc"
-              id="psc"
-              type="text"
-              placeholder="Enter PSČ"
-              value={this.state.PSC}
-              onChange={(e)=>this.setState({PSC: e.target.value, newData: true})}
-              />
-          </div>
-          </FormGroup>
-
-          <FormGroup className="row m-b-10">
-            <div className="m-r-10 w-20">
-            <Label for="mail">E-mail</Label>
-            </div>
-              <div className="flex">
-            <Input
-              name="mail"
-              id="mail"
-              className={(this.state.mail.length > 0 && !isEmail(this.state.mail)) ? "form-control-warning" : ""}
-              type="text"
-              placeholder="Enter e-mail"
-              value={this.state.mail}
-              onChange={(e)=>this.setState({mail: e.target.value, newData: true})}
-              />
-          </div>
-          </FormGroup>
-
-          <FormGroup className="row m-b-10">
-            <div className="m-r-10 w-20">
-            <Label for="phone">Phone</Label>
-            </div>
-              <div className="flex">
-            <Input
-               name="phone"
-               id="phone"
-               type="text"
-               placeholder="Enter phone"
-               value={this.state.phone}
-              onChange={(e)=>this.setState({phone: e.target.value, newData: true})}
-              />
-          </div>
-          </FormGroup>
-
-          <FormGroup className="row m-b-10">
-            <div className="m-r-10 w-20">
-            <Label for="description">Description</Label>
-            </div>
-              <div className="flex">
-            <Input
-              name="description"
-              id="description"
-              type="text"
-              placeholder="Enter description"
-              value={this.state.description}
-              onChange={(e)=>this.setState({description: e.target.value, newData: true})}
-              />
-          </div>
-          </FormGroup>
-
-        <h3>Mesačný paušál</h3>
-          <FormGroup className="row m-b-10">
-            <div className="m-r-10 w-20">
-              <Label for="pausal">Mesačná</Label>
-            </div>
-            <div className="flex">
+          <div className="p-20 table-highlight-background">
+            <h3>Mesačný paušál</h3>
+              <FormGroup className="row m-b-10 m-t-20">
+                <div className="m-r-10 w-20">
+                  <Label for="pausal">Mesačná</Label>
+                </div>
+                <div className="flex">
+                  <Input
+                    name="pausal"
+                    id="pausal"
+                    type="number"
+                    placeholder="Enter work pausal"
+                    value={this.state.workPausal}
+                    onChange={(e)=>this.setState({workPausal:e.target.value, newData: true,})}
+                    />
+                </div>
+                <div className="m-l-10">
+                  <Label for="pausal">EUR bez DPH/mesiac</Label>
+                </div>
+              </FormGroup>
+            <FormGroup className="row m-b-10">
+              <div className="m-r-10 w-20">
+              <Label for="pausal">Paušál práce</Label>
+              </div>
+                <div className="flex">
               <Input
                 name="pausal"
                 id="pausal"
@@ -529,104 +551,89 @@ class CompanyEdit extends Component{
                 onChange={(e)=>this.setState({workPausal:e.target.value, newData: true,})}
                 />
             </div>
-            <div className="m-l-10">
-              <Label for="pausal">EUR bez DPH/mesiac</Label>
+            </FormGroup>
+            <FormGroup className="row">
+              <div className="m-r-10 w-20">
+              <Label for="pausal">Paušál výjazdy</Label>
+              </div>
+                <div className="flex">
+              <Input
+                name="pausal"
+                id="pausal"
+                type="number"
+                placeholder="Enter drive pausal"
+                value={this.state.drivePausal}
+                onChange={(e)=>this.setState({drivePausal:e.target.value, newData: true,})}
+                />
             </div>
-          </FormGroup>
-        <FormGroup className="row m-b-10">
-          <div className="m-r-10 w-20">
-          <Label for="pausal">Paušál práce</Label>
+            </FormGroup>
           </div>
-            <div className="flex">
-          <Input
-            name="pausal"
-            id="pausal"
-            type="number"
-            placeholder="Enter work pausal"
-            value={this.state.workPausal}
-            onChange={(e)=>this.setState({workPausal:e.target.value, newData: true,})}
-            />
-        </div>
-        </FormGroup>
-        <FormGroup className="row m-b-10">
-          <div className="m-r-10 w-20">
-          <Label for="pausal">Paušál výjazdy</Label>
-          </div>
-            <div className="flex">
-          <Input
-            name="pausal"
-            id="pausal"
-            type="number"
-            placeholder="Enter drive pausal"
-            value={this.state.drivePausal}
-            onChange={(e)=>this.setState({drivePausal:e.target.value, newData: true,})}
-            />
-        </div>
-        </FormGroup>
 
-        <h3>Mesačný prenájom licencií a hardware</h3>
-        <CompanyRents
-          clearForm={this.state.clearCompanyRents}
-          setClearForm={()=>this.setState({clearCompanyRents:false})}
-          data={this.state.rented}
-          updateRent={(rent)=>{
-            let newRents=[...this.state.rented];
-            newRents[newRents.findIndex((item)=>item.id===rent.id)]={...newRents.find((item)=>item.id===rent.id),...rent};
-            this.setState({rented:newRents, newData:true });
-          }}
-          addRent={(rent)=>{
-            let newRents=[...this.state.rented];
-            newRents.push({...rent,id:this.getFakeID()})
-            this.setState({rented:newRents, newData:true });
-          }}
-          removeRent={(rent)=>{
-            let newRents=[...this.state.rented];
-            newRents.splice(newRents.findIndex((item)=>item.id===rent.id),1);
-            this.setState({rented:newRents, newData:true });
-          }}
-        />
-
-        <h3>Cenník</h3>
-        {this.state.pricelist !== null &&
-        <FormGroup className="row m-b-10">
-          <div className="m-r-10 w-20">
-          <Label for="pricelist">Pricelist</Label>
-          </div>
-            <div className="flex">
-          <Select
-            id="pricelist"
-            name="pricelist"
-            styles={selectStyle}
-            options={this.state.pricelists}
-            value={this.state.pricelist}
-            onChange={e =>{ this.setState({pricelist: e, newData: true, editingPriceList: false }) }}
+          <div className="p-20">
+            <h3 className="m-b-15">Mesačný prenájom licencií a hardware</h3>
+            <CompanyRents
+              clearForm={this.state.clearCompanyRents}
+              setClearForm={()=>this.setState({clearCompanyRents:false})}
+              data={this.state.rented}
+              updateRent={(rent)=>{
+                let newRents=[...this.state.rented];
+                newRents[newRents.findIndex((item)=>item.id===rent.id)]={...newRents.find((item)=>item.id===rent.id),...rent};
+                this.setState({rented:newRents, newData:true });
+              }}
+              addRent={(rent)=>{
+                let newRents=[...this.state.rented];
+                newRents.push({...rent,id:this.getFakeID()})
+                this.setState({rented:newRents, newData:true });
+              }}
+              removeRent={(rent)=>{
+                let newRents=[...this.state.rented];
+                newRents.splice(newRents.findIndex((item)=>item.id===rent.id),1);
+                this.setState({rented:newRents, newData:true });
+              }}
             />
         </div>
-        </FormGroup>
-      }
-        {this.state.pricelist.value === "0" &&
-          (this.state.priceName === "" ||
-          this.state.newData) &&
+      <div className="p-20 table-highlight-background">
+          <h3 className="m-b-20">Cenník</h3>
+          {this.state.pricelist !== null &&
           <FormGroup className="row m-b-10">
             <div className="m-r-10 w-20">
-            <Label for="priceName">Price list name</Label>
+            <Label for="pricelist">Pricelist</Label>
             </div>
               <div className="flex">
-            <Input
-              name="priceName"
-              id="priceName"
-              type="text"
-              placeholder="Enter price list nema"
-              value={this.state.priceName}
-              onChange={(e)=>this.setState({priceName: e.target.value, newData: true})}
+            <Select
+              id="pricelist"
+              name="pricelist"
+              styles={selectStyle}
+              options={this.state.pricelists}
+              value={this.state.pricelist}
+              onChange={e =>{ this.setState({pricelist: e, newData: true, editingPriceList: false }) }}
               />
           </div>
           </FormGroup>
         }
-        {this.state.editingPriceList &&
-          <PriceEdit listId={this.state.pricelist.id} deletedList={() => this.setState({pricelist: [], priceName: "", editingPriceList: false})}/>
-        }
-
+          {this.state.pricelist.value === "0" &&
+            (this.state.priceName === "" ||
+            this.state.newData) &&
+            <FormGroup className="row m-b-10">
+              <div className="m-r-10 w-20">
+              <Label for="priceName">Price list name</Label>
+              </div>
+                <div className="flex">
+              <Input
+                name="priceName"
+                id="priceName"
+                type="text"
+                placeholder="Enter price list nema"
+                value={this.state.priceName}
+                onChange={(e)=>this.setState({priceName: e.target.value, newData: true})}
+                />
+            </div>
+            </FormGroup>
+          }
+          {this.state.editingPriceList &&
+            <PriceEdit listId={this.state.pricelist.id} deletedList={() => this.setState({pricelist: [], priceName: "", editingPriceList: false})}/>
+          }
+        </div>
       </div>
 
 
