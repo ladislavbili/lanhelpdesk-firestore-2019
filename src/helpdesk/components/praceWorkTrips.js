@@ -155,7 +155,6 @@ export default class PraceWorkTrips extends Component {
 	}
 
 	render() {
-		console.log(this.props.company);
 		//const afterHours= this.props.company && this.state.newExtraWork ? this.props.company.pricelist.afterHours : 0;
 		return (
 				<div className="row m-b-30">

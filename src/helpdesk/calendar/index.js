@@ -46,10 +46,9 @@ class TaskCalendar extends Component {
 		if(this.props.calendarLayout === 'week'){
 			if(!item.event.isTask){
 				rebase.updateDoc('/help-calendar_events/'+item.event.eventID, {start:item.start.getTime(),end:item.end.getTime()})
-			}else if(item.event.status.action==='pending'){
-				console.log(item);
+			}/*else if(item.event.status.action==='pending'){
 				rebase.updateDoc('/help-tasks/'+item.event.id, { pendingDate:item.start.getTime(), pendingDateTo:item.end.getTime(), pendingChange:true })
-			}
+			}*/
 		}
 	};
 
@@ -57,7 +56,55 @@ class TaskCalendar extends Component {
 		return (new Date(date.getFullYear(),date.getMonth(),date.getDate())).getTime();
 	}
 
-	onEventDrop (item) {
+  onEventDrop (item) {
+    if(this.props.currentUser.userData.role.value === 0){
+      return;
+    }
+    //MOVING TASKS
+    if((item.isAllDay || this.props.calendarLayout === 'month') && item.event.isTask){
+      if(['new','open'].includes(item.event.status.action)){
+        if(this.getOnlyDaytime(item.start) > this.getOnlyDaytime(new Date())){
+          //SET PENDING
+          rebase.updateDoc('/help-tasks/'+item.event.id, {pendingDate:item.start.getTime(), pendingChange:true, status: this.props.statuses.find((status)=>status.action==='pending').id })
+        }else if(this.getOnlyDaytime(item.start) < this.getOnlyDaytime(new Date()) && this.props.statusesLoaded){
+          //SET CLOSED
+          rebase.updateDoc('/help-tasks/'+item.event.id, {closeDate:item.start.getTime(), status: this.props.statuses.find((status)=>status.action==='close').id })
+        }
+      }else if(item.event.status.action === 'close'){
+        //UPDATE CLOSE DATE
+        rebase.updateDoc('/help-tasks/'+item.event.id, {closeDate:item.start.getTime()});
+      }else if(item.event.status.action === 'pending' && this.getOnlyDaytime(item.start) >= this.getOnlyDaytime(new Date())){
+        // UPDATE PENDING DATE
+        rebase.updateDoc('/help-tasks/'+item.event.id, {pendingDate:item.start.getTime() });
+      }
+      return;
+    }
+    //MOVING EVENTS (IN WEEK)
+    if(this.props.calendarLayout === 'week' && !item.isAllDay){
+      //if TASK
+      if(item.event.isTask){
+        let newEvent = {
+          taskID: item.event.id,
+          start: item.start.getTime(),
+          end: fromMomentToUnix(moment(item.start).add(1,'hours')),
+        }
+        if(['new','open'].includes(item.event.status.action)){
+        //if new it will be open
+        }else if(item.event.status.action==='new' && this.props.statusesLoaded){
+          newEvent.end=fromMomentToUnix(moment(newEvent.start).add(2,'hours'));
+        }else if(item.event.status.action==='pending'){
+          newEvent.end=fromMomentToUnix(moment(newEvent.start).add(30,'minutes'));
+        }
+        rebase.addToCollection('help-calendar_events',newEvent);
+      }else{
+        //UPDATE EVENT
+        rebase.updateDoc('/help-calendar_events/'+item.event.eventID, {start:item.start.getTime(),end:item.end.getTime()})
+      }
+    }
+  };
+
+
+	onEventDropTASKS (item) {
 		if(this.props.currentUser.userData.role.value === 0){
 			return;
 		}
@@ -68,7 +115,6 @@ class TaskCalendar extends Component {
 					this.props.data.filter((event)=>!event.isTask).forEach((event) => {
 						rebase.removeDoc('/help-calendar_events/'+event.eventID);
 					});
-					console.log(item);
 					rebase.updateDoc('/help-tasks/'+item.event.id, {pendingDate:item.start.getTime(),pendingDateTo:fromMomentToUnix(moment(item.end.getTime()).add(30,'minutes')), pendingChange:true, status: this.props.statuses.find((status)=>status.action==='pending').id })
 				}else if(this.getOnlyDaytime(item.start) < this.getOnlyDaytime(new Date()) && this.props.statusesLoaded){
 					rebase.updateDoc('/help-tasks/'+item.event.id, {closeDate:item.start.getTime(), status: this.props.statuses.find((status)=>status.action==='close').id })
@@ -76,7 +122,6 @@ class TaskCalendar extends Component {
 			}else if(item.event.status.action === 'close'){
 				rebase.updateDoc('/help-tasks/'+item.event.id, {closeDate:item.start.getTime()});
 			}else if(item.event.status.action === 'pending' && this.getOnlyDaytime(item.start) >= this.getOnlyDaytime(new Date())){
-				console.log(item);
 				rebase.updateDoc('/help-tasks/'+item.event.id, {pendingDate:item.start.getTime(), pendingDateTo:item.end.getTime(), });
 			}
 			return false;
@@ -86,7 +131,6 @@ class TaskCalendar extends Component {
 			if(item.isAllDay){
 				return false;
 			}
-			console.log('on drop');
 			//if TASK
 			if(item.event.isTask){
 				let newEvent = {
@@ -108,8 +152,6 @@ class TaskCalendar extends Component {
 					rebase.addToCollection('help-calendar_events',newEvent);
 					rebase.updateDoc('/help-tasks/'+item.event.id, {status: this.props.statuses.find((status)=>status.action==='open').id })
 				}else if(item.event.status.action==='pending'){
-					console.log('EEEE');
-					console.log(item);
 					rebase.updateDoc('/help-tasks/'+item.event.id, { pendingDate:item.start.getTime(), pendingDateTo: item.end.getTime() })
 				}else{
 					rebase.addToCollection('help-calendar_events',newEvent);
@@ -121,42 +163,40 @@ class TaskCalendar extends Component {
 	};
 
   render() {
-		let data = this.props.data.map((event)=>({...event,title:event.titleFunction(event, !event.isTask && this.props.calendarLayout==='month') }))
+  	let data = this.props.data.map((event)=>({...event,title:event.titleFunction(event, !event.isTask && this.props.calendarLayout==='month') }))
 
-		//console.log(this.props.data.filter((item)=>item.isTask && item.status.action==='pending'));
-		//console.log(this.props.data.filter((item)=>!item.isTask).length);
-		if(this.props.match.params.taskID){
-			return (<this.props.edit match={this.props.match} columns={true} history={this.props.history} />);
-		}
-	   return (
+  	if(this.props.match.params.taskID){
+  		return (<this.props.edit match={this.props.match} columns={true} history={this.props.history} />);
+  	}
+    return (
   		<div>
-				<CommandBar { ...this.props.commandBar } />
-				<div className="full-width scroll-visible fit-with-header-and-commandbar task-container p-20">
-					<ListHeader { ...this.props.commandBar } listName={ this.props.listName } />
-					<DnDCalendar
-						events = { data }
-	          defaultDate = { new Date() }
-	          defaultView = { this.props.calendarLayout }
-						style = {{ height: "100vh" }}
-						views={['month', 'week']}
-						drilldownView="day"
-	          localizer = { localizer }
-	          resizable
-						popup={true}
-						formats={formats}
+  			<CommandBar { ...this.props.commandBar } />
+  			<div className="full-width scroll-visible fit-with-header-and-commandbar task-container p-20">
+  				<ListHeader { ...this.props.commandBar } listName={ this.props.listName } />
+  				<DnDCalendar
+  					events = { data }
+            defaultDate = { new Date() }
+            defaultView = { this.props.calendarLayout }
+  					style = {{ height: "100vh" }}
+  					views={['month', 'week']}
+  					drilldownView="day"
+            localizer = { localizer }
+            resizable
+  					popup={true}
+  					formats={formats}
 
 
-						onEventDrop = { this.onEventDrop.bind(this) }
-						onEventResize = { this.onEventResize.bind(this) }
+  					onEventDrop = { this.onEventDrop.bind(this) }
+  					onEventResize = { this.onEventResize.bind(this) }
 
-						onDoubleClickEvent={(event)=>{
-							this.props.history.push(this.props.link+'/'+event.id);
-						}}
-						onView={(viewType)=>{
-							this.props.setCalendarLayout(viewType);
-						}}
-	        />
-				</div>
+  					onDoubleClickEvent={(event)=>{
+  						this.props.history.push(this.props.link+'/'+event.id);
+  					}}
+  					onView={(viewType)=>{
+  						this.props.setCalendarLayout(viewType);
+  					}}
+            />
+  			</div>
       </div>
     );
  }

@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import ShowData from '../../components/showData';
-import { timestampToString, sameStringForms, fromMomentToUnix } from '../../helperFunctions';
+import { timestampToString, sameStringForms } from '../../helperFunctions';
 import TaskEdit from './taskEditSwitch';
 import TaskEmpty from './taskEmpty';
 import TaskCalendar from '../calendar';
-import moment from 'moment';
 
 import {setTasksOrderBy, setTasksAscending,storageCompaniesStart,storageHelpTagsStart,storageUsersStart,
 	storageHelpProjectsStart,storageHelpStatusesStart,storageHelpTasksStart, storageHelpFiltersStart,
@@ -240,7 +239,7 @@ class TasksIndex extends Component {
 	}
 
 	displayCal(task,showEvent){
-			return (<div>
+			return (<div style={ showEvent ? { backgroundColor:'#eaf6ff', borderRadius:5 } : {} }>
 					<p className="m-0">
 						{showEvent && <span className="label label-event">
 						Event
@@ -332,7 +331,7 @@ class TasksIndex extends Component {
 				...task,
 				isTask:true,
 				titleFunction:this.displayCal,
-				allDay:task.status.action!=='pending',
+				allDay:task.status.action!=='pendingOLD',
 			}
 
 			switch (task.status.action) {
@@ -358,7 +357,7 @@ class TasksIndex extends Component {
 					return {
 						...newTask,
 						start:new Date(task.pendingDate),
-						end:new Date(task.pendingDateTo ? task.pendingDateTo: fromMomentToUnix(moment(task.pendingDate).add(30,'minutes')) ),
+						//end:new Date(task.pendingDateTo ? task.pendingDateTo: fromMomentToUnix(moment(task.pendingDate).add(30,'minutes')) ),
 					}
 				}
 				default:{
@@ -368,7 +367,7 @@ class TasksIndex extends Component {
 					}
 				}
 			}
-		}).map((task)=>({...task,end: task.status.action!=='pending' ? task.start : task.end }))
+		}).map((task)=>({...task,end: task.status.action !== 'pendingOLD' ? task.start : task.end }))
 	}
 
 	render() {

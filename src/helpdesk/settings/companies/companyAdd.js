@@ -107,7 +107,6 @@ class CompanyAdd extends Component{
   }
 
   setData(props){
-    console.log(props);
     let pricelists = [{label: "Vlastný", value: "0"}, ...toSelArr(props.pricelists)];
     let meta = props.metadata;
     let pricelist = null;
