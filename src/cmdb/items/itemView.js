@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {rebase,database} from '../../index';
-import { FormGroup, Label, Table, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
+import { Label, Table, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 import {snapshotToArray, getAttributeDefaultValue, htmlFixNewLines} from '../../helperFunctions';
 import classnames from "classnames";
 
