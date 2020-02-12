@@ -284,7 +284,7 @@ html{
 
 h2{
   color: $main-font-color;
-  font-size: 2.5rem !important;
+  font-size: 2.5rem;
 }
 
 h2.clickable:hover{
@@ -1556,7 +1556,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 }
 .vykazyTable>.table>thead>tr>th{
   padding-left: 8px;
-  padding-right: 0px;
+  padding-right: 8px;
 }
 
 .vykazyTable>.table>thead>tr>th:first-child{
@@ -1574,6 +1574,10 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   padding-right: 0px;
 }
 
+.vykazyTable input[type=number]{
+  text-align: right;
+}
+
 .vykazyTable input::-webkit-outer-spin-button,
 .vykazyTable input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -1585,19 +1589,13 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 
 .vykazyTable .btn {
   background-color: transparent;
-  color: #A0A0A0;
+  color: $basic-button-color;
 }
 
 .vykazyTable .btn:hover {
   background-color: transparent;
-  color: $basic-button-color;
+  color: #A0A0A0;
 }
-
-.vykazyTable .btn-link {
-  background-color: transparent;
-  color: $basic-button-color;
-}
-
 
 //-------------------END-taskEdit-------------------------
 //--------CUSTOM-CHECKBOX

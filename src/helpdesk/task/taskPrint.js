@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import ReactToPrint from 'react-to-print';
-import Materials from '../components/materialsPrint';
-import Services from '../components/pracePrint';
+import VykazyTablePrint from '../components/vykazyTablePrint';
 
 import {timestampToString} from '../../helperFunctions';
+
+var intervals = [{title:null,value:null,label:'Žiadny'},{title:'Deň',value:86400000,label:'Deň'},{title:'Týždeň',value:604800000,label:'Týždeň'},{title:'Mesiac',value:2629800000,label:'Mesiac'}];
+
 
 export default class TaskPrint extends Component {
 	constructor(props) {
@@ -37,31 +39,31 @@ export default class TaskPrint extends Component {
 
 class TaskInfo extends Component {
 
-
 	render() {
 		if(!this.props.isLoaded){
 			return null;
 		}
-			let taskWorks= this.props.taskWorks.map((work)=>{
-				let finalUnitPrice=parseFloat(work.price);
-				if(work.extraWork){
-					finalUnitPrice+=finalUnitPrice*parseFloat(work.extraPrice)/100;
-				}
-				let totalPrice=(finalUnitPrice*parseFloat(work.quantity)*(1-parseFloat(work.discount)/100)).toFixed(3);
-				finalUnitPrice=finalUnitPrice.toFixed(3);
-				let workType= this.props.workTypes.find((item)=>item.id===work.workType);
-				let assignedTo=work.assignedTo?this.props.users.find((item)=>item.id===work.assignedTo):null
+
+
+			let workTrips= this.props.workTrips.map((trip)=>{
+				let type= this.props.tripTypes.find((item)=>item.id===trip.type);
+				let assignedTo=trip.assignedTo?this.props.users.find((item)=>item.id===trip.assignedTo):null
 
 				return {
-					...work,
-					workType,
-					unit:this.props.units.find((unit)=>unit.id===work.unit),
-					finalUnitPrice,
-					totalPrice,
+					...trip,
+					type,
 					assignedTo:assignedTo?assignedTo:null
 				}
 			});
 
+			let taskWorks= this.props.taskWorks.map((work)=>{
+				let assignedTo=work.assignedTo?this.props.users.find((item)=>item.id===work.assignedTo):null
+				return {
+					...work,
+					type:this.props.taskTypes.find((item)=>item.id===work.type),
+					assignedTo:assignedTo?assignedTo:null
+				}
+			});
 			let taskMaterials= this.props.taskMaterials.map((material)=>{
 				let finalUnitPrice=(parseFloat(material.price)*(1+parseFloat(material.margin)/100));
 				let totalPrice=(finalUnitPrice*parseFloat(material.quantity)).toFixed(3);
@@ -74,137 +76,138 @@ class TaskInfo extends Component {
 				}
 			});
 
+			let repeatInterval = (this.props.repeat ? intervals.find((interval)=>interval.title=== this.props.repeat.repeatInterval) : null);
+
+
 		return (
 				<div className="m-100">
-					<div className="d-flex p-2">
-						<div className="row flex">
-							<h2 className="center-hor text-extra-slim"># {this.props.match.params.taskID}</h2>
-							<span className="center-hor">
-					    	<input type="text" value={this.props.title} onChange={() => {}} className="task-title-input text-extra-slim hidden-input"/>
-							</span>
-							<div className="ml-auto center-hor">
-								<span className="label label-info" style={{backgroundColor:this.props.status && this.props.status.color?this.props.status.color:'white'}}>{this.props.status?this.props.status.title:'Neznámy status'}</span>
-							</div>
+					<div className="row flex">
+						<h2 className="center-hor text-extra-slim">{`${this.props.taskID}: ${this.props.title}`}</h2>
+
+						<div className="ml-auto center-hor">
+							<p className="m-b-0 task-info">
+								<span className="text-muted">
+									{this.props.createdBy?"Created by ":""}
+								</span>
+								{this.props.createdBy? (this.props.createdBy.name + " " +this.props.createdBy.surname) :''}
+								<span className="text-muted">
+									{this.props.createdBy?' at ':'Created at '}
+									{this.props.createdAt?(timestampToString(this.props.createdAt)):''}
+								</span>
+							</p>
+							<p className="m-b-0">
+								{(()=>{
+									if(this.props.status && this.props.status.action==='pending'){
+										return (
+											<span className="text-muted task-info m-r--40">
+												<span className="center-hor">
+													{`Pending date: ${this.props.pendingDate}`}
+												</span>
+											</span>)
+								}else if(this.props.status && (this.props.status.action==='close'||this.props.status.action==='invoiced'||this.props.status.action==='invalid')){
+									return (
+										<span className="text-muted task-info m-r--40">
+											<span className="center-hor">
+												{`Closed at: ${this.props.closeDate}`}
+												Closed at:
+											</span>
+										</span>)
+									}else{
+										return (
+											<span className="task-info ">
+												<span className="center-hor text-muted">
+													{this.props.statusChange ? ('Status changed at ' + timestampToString(this.props.statusChange) ) : ""}
+												</span>
+											</span>
+										)
+									}
+								})()}
+							</p>
 						</div>
 					</div>
 
-					<hr/>
-
-					<div className="row">
-						<div className="col-lg-12 d-flex">
-							<p className="text-muted">Created by Branislav Šusta at {this.props.createdAt?(timestampToString(this.props.createdAt)):''}</p>
-							<p className="text-muted ml-auto">{this.props.statusChange?('Status changed at ' + timestampToString(this.props.statusChange)):''}</p>
-						</div>
-
-					</div>
-
-						<div className="col-lg-12 row">
-							<div className="center-hor text-slim row m-r-5">Tagy: </div>
-							{this.props.tags.length === 0 &&
-								<div className="display-inline m-r-5">
-									no tags
+					<hr className="m-b-10"/>
+						<div>
+							<div className="col-lg-12 row"> {/*Project, Assigned*/}
+								<div className="col-lg-4"> {/*Project*/}
+									{`Projetkt: ${this.props.project ? this.props.project.label : "None"}`}
 								</div>
-							}
-								{
-									this.props.tags.map(tag =>
-										<div className="display-inline m-r-5" key={tag.id}>
-											{tag.title + " |"}
-										</div>
-									)
-								}
-						</div>
-						<div className="col-lg-12 row">
-							<div className="center-hor text-slim row m-r-5">Assigned: </div>
-								{this.props.assignedTo.length === 0 &&
-									<div className="display-inline m-r-5">
-										no people were assigned
-									</div>
-								}
-								{
-									this.props.assignedTo.map(at =>
-										<div className="display-inline m-r-5" key={at.id}>
-											{at.email + " |"}
-										</div>
-									)
-								}
-						</div>
-						<div className="col-lg-12">
-							<div className="col-lg-6">
-									<div className="row">
-										<label className="col-5 col-form-label text-slim">Typ</label>
-										<div className="col-7">
-											{this.props.type ? this.props.type.label : ""}
-										</div>
-									</div>
-									<div className="row">
-										<label className="col-5 col-form-label text-slim">Projekt</label>
-										<div className="col-7">
-											{this.props.project ? this.props.project.label : ""}
-										</div>
-									</div>
-									<div className="row">
-										<label className="col-5 col-form-label text-slim">Zadal</label>
-										<div className="col-7">
-											{this.props.requester ? this.props.requester.label : ""}
-										</div>
-									</div>
+								{ this.props.defaultFields.assignedTo.show &&
+									<div className="col-lg-8"> {/*Assigned*/}
+										{`Assigned: ${this.props.assignedTo.length > 0 ? this.props.assignedTo.map(a => a.label).join(" ") : "None"}`}
+								</div>}
 							</div>
 
-							<div className="col-lg-6">
-								<div className="">
-									<div className="row">
-										<label className="col-5 col-form-label text-slim">Firma</label>
-										<div className="col-7">
-											{this.props.company ? this.props.company.label : ""}
-										</div>
-									</div>
-									<div className="row">
-										<label className="col-5 col-form-label text-slim">Deadline</label>
-										<div className="col-7">
-											{this.props.deadline!==null? timestampToString(this.props.deadline.unix()*1000) :'No deadline'}
-										</div>
-									</div>
+							<div className="col-lg-12"> {/*Attributes*/}
+								<div className="col-lg-4">
+									{`Status: ${this.props.status ? this.props.status.label : "None"}`}
 
+									{ this.props.defaultFields.type.show &&
+										<div className=""> {/*Type*/}
+											{`Type: ${this.props.type ? this.props.type.label : "None"}`}
+										</div>}
+
+									{`Milestone: ${this.props.milestone ? this.props.milestone.label : "None"}`}
+								</div>
+
+								<div className="col-lg-4">
+									{ this.props.defaultFields.requester.show &&
+										<div className=""> {/*Requester*/}
+											{`Zadal: ${this.props.requester ? this.props.requester.label : "None"}`}
+										</div>
+									 }
+									{ this.props.defaultFields.company.show &&
+										<div className="row p-r-10"> {/*Company*/}
+											{`Company: ${this.props.company ? this.props.company.label : "None"}`}
+										</div>}
+
+									{this.props.defaultFields.pausal.show &&
+										<div className="form-group row"> {/*Pausal*/}
+											{`Pausal: ${this.props.pausal ? this.props.pausal.label : "None"}`}
+										</div>}
+								</div>
+
+								<div className="col-lg-4">
+									<div className="row p-r-10"> {/*Deadline*/}
+										{`Deadline: ${this.props.deadline ? this.props.deadline.label : "None"}`}
+									</div>
+									<div>{/*Repeat*/}
+										{`Repeat: ${this.props.repeat?("Opakovať každý "+ parseInt(this.props.repeat.repeatEvery/repeatInterval.value) + ' ' + repeatInterval.title) :"No repeat"}`}
+									</div>
+									{this.props.defaultFields.overtime.show &&
+										<div className="form-group row"> {/*Overtime*/}
+											{`Mimp PH: ${this.props.overtime ? this.props.overtime.label : "None"}`}
+									</div>}
 								</div>
 							</div>
 						</div>
-
-
-					{false && <div className="form-group m-b-0 row">
-						<label className="col-5 col-form-label text-slim">Mimo pracovných hodín</label>
-						<div className="col-7">
-							{this.props.overtime}
-						</div>
-					</div>}
-					{false && <div className="row">
-						<label className="col-5 col-form-label text-slim">Pripomienka</label>
-						<div className="col-7">
-							{this.props.reminder}
-						</div>
-					</div>}
 
 
 					<label className="m-t-5  text-slim">Popis</label>
-					<textarea className="form-control b-r-0" placeholder="Enter task description" value={this.props.description} onChange={() => {}} />
+					{(this.props.description.length!==0 ?
+						<div className="" dangerouslySetInnerHTML={{__html:this.props.description }} /> :
+							<div className="">Úloha nemá popis</div>
+					)}
 
-						<Services
-							taskAssigned={this.props.assignedTo}
-							subtasks={taskWorks}
-							workTypes={this.props.workTypes}
-							company={this.props.company}
-							match={this.props.match}
-							/>
+					<VykazyTablePrint
+						showColumns={ (this.props.viewOnly ? [0,1,2,3,4,5,6,7,8] : [0,1,2,3,4,5,6,7,8,9]) }
 
-						<Materials
-							dataOnly={true}
-							materials={taskMaterials}
-							submitMaterial={() => {}}
-							updateMaterial={() => {}}
-							removeMaterial={() => {}}
-							units={this.props.units}
-							defaultUnit={this.props.defaultUnit}
-							company={this.props.company}
-							match={this.props.match}
+						showTotals={false}
+						disabled={this.props.viewOnly}
+						company={this.props.company}
+						match={this.props.match}
+						taskID={this.props.match.params.taskID}
+						taskAssigned={this.props.assignedTo}
+
+						subtasks={taskWorks}
+						defaultType={this.props.type}
+						workTypes={this.props.taskTypes}
+						workTrips={workTrips}
+						tripTypes={this.props.tripTypes}
+
+						materials={taskMaterials}
+						units={this.props.units}
+						defaultUnit={this.props.defaultUnit}
 						/>
 
 				</div>

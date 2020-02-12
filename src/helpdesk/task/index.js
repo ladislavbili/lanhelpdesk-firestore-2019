@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import ShowData from '../../components/showData';
 import { timestampToString, sameStringForms } from '../../helperFunctions';
-import TaskEdit from './taskEditSwitch';
+import TaskEdit from './taskEdit';
 import TaskEmpty from './taskEmpty';
 import TaskCalendar from '../calendar';
+
 
 import {setTasksOrderBy, setTasksAscending,storageCompaniesStart,storageHelpTagsStart,storageUsersStart,
 	storageHelpProjectsStart,storageHelpStatusesStart,storageHelpTasksStart, storageHelpFiltersStart,

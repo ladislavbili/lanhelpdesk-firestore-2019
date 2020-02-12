@@ -3,16 +3,16 @@ import Select from 'react-select';
 import CKEditor from 'ckeditor4-react';
 import {rebase} from '../../index';
 import firebase from 'firebase';
-import { Label, TabContent, TabPane, Nav, NavItem, NavLink, Button } from 'reactstrap';
+import { Label, Button } from 'reactstrap';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
-
-import Materials from '../components/materials';
 
 import Subtasks from '../components/subtasks';
 import Repeat from '../components/repeat';
 import Attachments from '../components/attachments';
-import PraceWorkTrips from '../components/praceWorkTrips';
+
+import VykazyTable from '../components/vykazyTable';
+
 import classnames from "classnames";
 import ck4config from '../../scss/ck4config';
 import datePickerConfig from '../../scss/datePickerConfig';
@@ -37,6 +37,8 @@ export default class TaskAdd extends Component{
 		super(props);
 		let requester=this.props.users?this.props.users.find((user)=>user.id===this.props.currentUser.id):null;
 		this.state={
+			layout: "1",
+
 			saving:false,
 			users:[],
 			companies:[],
@@ -79,6 +81,16 @@ export default class TaskAdd extends Component{
 			pendingChangable:false,
 		}
 		this.counter = 0;
+
+		this.renderTitle.bind(this);
+		this.renderSelectsLayout1.bind(this);
+		this.renderSelectsLayout2.bind(this);
+		this.renderTags.bind(this);
+		this.renderPopis.bind(this);
+		this.renderAttachments.bind(this);
+		this.renderSubtasks.bind(this);
+		this.renderVykazyTable.bind(this);
+		this.renderButtons.bind(this);
 	}
 
 	getNewID(){
@@ -355,62 +367,96 @@ export default class TaskAdd extends Component{
 			}
 		});
 		return (
-			<div>
-			<div className="scrollable p-20">
-				<div className="p-t-0">
-					<div className="row m-b-15">
-						<h2 className="center-hor text-extra-slim">NEW TASK </h2>
-						<span className="center-hor flex m-r-15">
-							<input type="text"
-								 value={this.state.title}
-								 className="task-title-input text-extra-slim hidden-input"
-								 onChange={(e)=>this.setState({title:e.target.value})}
-								 placeholder="Enter task name" />
-						</span>
-						{ this.state.status && (['close','pending','invalid']).includes(this.state.status.action) && <div className="ml-auto center-hor">
-							<span>
-								{ (this.state.status.action==='close' || this.state.status.action==='invalid') &&
-									<span className="text-muted">
-										Close date:
-										<DatePicker
-											className="form-control hidden-input"
-											selected={this.state.closeDate}
-											disabled={this.state.viewOnly}
-											onChange={date => {
-												this.setState({ closeDate: date });
-											}}
-											placeholderText="No close date"
-											{...datePickerConfig}
-											/>
-									</span>
-								}
-								{ this.state.status.action==='pending' &&
-									<span className="text-muted">
-										Pending date:
-										<DatePicker
-											className="form-control hidden-input"
-											selected={this.state.pendingDate}
-											disabled={this.state.viewOnly}
-											onChange={date => {
-												this.setState({ pendingDate: date });
-											}}
-											placeholderText="No pending date"
-											{...datePickerConfig}
-										/>
-									</span>
-								}
-							</span>
-						</div>}
-						<button
-							type="button"
-							className="btn btn-link waves-effect ml-auto asc"
-							onClick={() => this.props.switch()}>
-							Switch layout
-						</button>
-					</div>
+			<div className={classnames("scrollable", { "p-20": this.state.layout === '1'}, { "row": this.state.layout === '2'})}>
+
+				<div className={classnames({ "task-edit-left p-l-20 p-r-20 p-b-15 p-t-15": this.state.layout === '2'})}>
+
+					{ this.renderTitle() }
 
 					<hr className="m-t-15 m-b-10"/>
 
+					{ this.state.layout === "1" && this.renderSelectsLayout1() }
+
+					{ this.renderPopis() }
+
+					{ this.state.layout === "1" && this.state.defaults.tags.show && this.renderTags() }
+
+					{ this.renderAttachments() }
+
+					{ !this.state.viewOnly && !this.state.hidden && false && this.renderSubtasks() }
+
+					{ !this.state.viewOnly && this.renderVykazyTable(taskWorks, workTrips, taskMaterials) }
+
+					{ this.renderButtons() }
+
+				</div>
+
+				{ this.state.layout === "2" && this.renderSelectsLayout2() }
+
+				</div>
+			);
+		}
+
+
+
+		renderTitle(){
+			return (
+				<div className="row m-b-15">
+					<h2 className="center-hor text-extra-slim">NEW TASK </h2>
+					<span className="center-hor flex m-r-15">
+						<input type="text"
+							 value={this.state.title}
+							 className="task-title-input text-extra-slim hidden-input"
+							 onChange={(e)=>this.setState({title:e.target.value})}
+							 placeholder="Enter task name" />
+					</span>
+					{ this.state.status && (['close','pending','invalid']).includes(this.state.status.action) && <div className="ml-auto center-hor">
+						<span>
+							{ (this.state.status.action==='close' || this.state.status.action==='invalid') &&
+								<span className="text-muted">
+									Close date:
+									<DatePicker
+										className="form-control hidden-input"
+										selected={this.state.closeDate}
+										disabled={this.state.viewOnly}
+										onChange={date => {
+											this.setState({ closeDate: date });
+										}}
+										placeholderText="No close date"
+										{...datePickerConfig}
+										/>
+								</span>
+							}
+							{ this.state.status.action==='pending' &&
+								<span className="text-muted">
+									Pending date:
+									<DatePicker
+										className="form-control hidden-input"
+										selected={this.state.pendingDate}
+										disabled={this.state.viewOnly}
+										onChange={date => {
+											this.setState({ pendingDate: date });
+										}}
+										placeholderText="No pending date"
+										{...datePickerConfig}
+									/>
+								</span>
+							}
+						</span>
+					</div>}
+					<button
+						type="button"
+						className="btn btn-link waves-effect ml-auto asc"
+						onClick={() => this.setState({layout: (this.state.layout === "1" ? "2" : "1")})}>
+						Switch layout
+					</button>
+				</div>
+
+			)
+		}
+
+		renderSelectsLayout1(){
+			return(
 				<div className="row">
 						{this.state.viewOnly &&
 							<div className="row p-r-10">
@@ -700,20 +746,334 @@ export default class TaskAdd extends Component{
 					</div>
 				</div>}
 			</div>
-				<Label className="m-b-10 col-form-label m-t-10">Popis úlohy</Label>
-					{!this.state.descriptionVisible && <span className="task-edit-popis p-20 text-muted" onClick={()=>this.setState({descriptionVisible:true})}>Napíšte krátky popis úlohy</span>}
-					{this.state.descriptionVisible && <CKEditor
-						data={this.state.description}
-						onChange={(e)=>{
-							this.setState({description:e.editor.getData()})
-						}}
-						readOnly={this.state.viewOnly}
-						config={{
-							...ck4config
-						}}
-						/>
-					}
-				{this.state.defaults.tags.show && <div className="row m-t-10"> {/*Tags*/}
+		)}
+
+		renderSelectsLayout2(){
+			return(
+				<div className="task-edit-right">
+						{this.state.viewOnly &&
+							<div className="">
+								<Label className="col-form-label-2">Projekt</Label>
+								<div className="col-form-value-2">
+									<Select
+										value={this.state.project}
+										placeholder="None"
+										onChange={(project)=>{
+											let newState={project,
+												milestone:noMilestone,
+												pausal:booleanSelects[0],
+												viewOnly:this.props.currentUser.userData.role.value===0 && !project.permissions.find((permission)=>permission.user===this.props.currentUser.id).write
+											}
+											if(newState.viewOnly){
+												newState={
+													...newState,
+													repeat:null,
+													taskWorks:[],
+													subtasks:[],
+													taskMaterials:[],
+													workTrips:[],
+													allTags:[],
+													deadline:null,
+													closeDate:null,
+													pendingDate:null,
+													reminder:null,
+												}
+											}
+											this.setState(newState,()=>this.setDefaults(project.id, true))
+										}}
+										options={this.state.projects.filter((project)=>{
+											let curr = this.props.currentUser;
+											if(curr.userData.role.value===3){
+												return true;
+											}
+											let permission = project.permissions.find((permission)=>permission.user===curr.id);
+											return permission && permission.read;
+										})}
+										styles={invisibleSelectStyleNoArrow}
+										/>
+								</div>
+							</div>
+						}
+
+						{/*NUTNE !! INAK AK NIE JE ZOBRAZENY ASSIGNED SELECT TAK SA VZHLAD POSUVA*/}
+				{!this.state.viewOnly &&
+							<div className="">
+								<Label className="col-form-label-2">Projekt</Label>
+								<div className="col-form-value-2">
+									<Select
+										placeholder="Select required"
+										value={this.state.project}
+										onChange={(project)=>{
+											let permissionIDs = project.permissions.map((permission) => permission.user);
+											let assignedTo=this.state.assignedTo.filter((user)=>permissionIDs.includes(user.id));
+											let newState={
+												project,
+												milestone:noMilestone,
+												assignedTo,
+												viewOnly:this.props.currentUser.userData.role.value===0 && !project.permissions.find((permission)=>permission.user===this.props.currentUser.id).write
+											}
+											if(newState.viewOnly){
+												newState={
+													...newState,
+													repeat:null,
+													taskWorks:[],
+													subtasks:[],
+													workTrips:[],
+													taskMaterials:[],
+													allTags:[],
+													deadline:null,
+													closeDate:null,
+													pendingDate:null,
+													reminder:null,
+												}
+											}
+											this.setState(newState,()=>this.setDefaults(project.id, true))
+										}}
+										options={this.state.projects.filter((project)=>{
+											let curr = this.props.currentUser;
+											if(curr.userData.role.value===3){
+												return true;
+											}
+											let permission = project.permissions.find((permission)=>permission.user===curr.id);
+											return permission && permission.read;
+										})}
+										styles={invisibleSelectStyleNoArrowRequired}
+										/>
+								</div>
+							</div>
+						}
+						{!this.state.viewOnly &&
+							this.state.defaults.assignedTo.show &&
+							<div className="">
+								<Label className="col-form-label-2">Assigned</Label>
+								<div className="col-form-value-2">
+									<Select
+										placeholder="Select required"
+										value={this.state.assignedTo}
+										isDisabled={this.state.defaults.assignedTo.fixed||this.state.viewOnly}
+										isMulti
+										onChange={(users)=>this.setState({assignedTo:users})}
+										options={this.state.users.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id))}
+										styles={invisibleSelectStyleNoArrowRequired}
+										/>
+									</div>
+							</div>}
+
+						{!this.state.viewOnly &&
+							this.state.defaults.status.show &&
+							<div className="">
+							<Label className="col-form-label-2">Status</Label>
+							<div className="col-form-value-2">
+								<Select
+									placeholder="Select required"
+									value={this.state.status}
+									isDisabled={this.state.defaults.status.fixed||this.state.viewOnly}
+									styles={invisibleSelectStyleNoArrowColoredRequired}
+									onChange={(status)=>{
+										if(status.action==='pending'){
+											this.setState({
+												status,
+												pendingDate:  moment().add(1,'d'),
+											})
+										}else if(status.action==='close'||status.action==='invalid'){
+											this.setState({
+												status,
+												closeDate: moment(),
+											})
+										}
+										else{
+											this.setState({status})
+										}
+									}}
+									options={this.state.statuses.filter((status)=>status.action!=='invoiced').sort((item1,item2)=>{
+										if(item1.order &&item2.order){
+											return item1.order > item2.order? 1 :-1;
+										}
+										return -1;
+									})}
+									/>
+							</div>
+						</div>}
+
+							{!this.state.viewOnly &&
+								this.state.defaults.type.show &&
+								<div className="">
+								<Label className="col-form-label-2">Typ</Label>
+								<div className="col-form-value-2">
+									<Select
+										placeholder="Select required"
+										value={this.state.type}
+										isDisabled={this.state.defaults.type.fixed||this.state.viewOnly}
+										styles={invisibleSelectStyleNoArrowRequired}
+										onChange={(type)=>this.setState({type})}
+										options={this.state.taskTypes}
+										/>
+								</div>
+							</div>}
+						{!this.state.viewOnly &&
+							<div className="">
+								<Label className="col-form-label-2">Milestone</Label>
+								<div className="col-form-value-2">
+									<Select
+										isDisabled={this.state.viewOnly}
+										placeholder="None"
+										value={this.state.milestone}
+										onChange={(milestone)=> {
+											if(this.state.status.action==='pending'){
+												if(milestone.startsAt!==null){
+													this.setState({milestone,pendingDate:moment(milestone.startsAt),pendingChangable:false});
+												}else{
+													this.setState({milestone, pendingChangable:true });
+												}
+											}else{
+												this.setState({milestone});
+											}
+										}}
+										options={this.state.milestones.filter((milestone)=>milestone.id===null || (this.state.project!== null && milestone.project===this.state.project.id))}
+										styles={invisibleSelectStyleNoArrow}
+								/>
+								</div>
+							</div>}
+
+							{this.state.defaults.tags.show &&
+								<div className=""> {/*Tags*/}
+									<Label className="col-form-label-2">Tagy: </Label>
+									<div className="col-form-value-2">
+										<Select
+											value={this.state.tags}
+											placeholder="None"
+											isDisabled={this.state.defaults.tags.fixed||this.state.viewOnly}
+											isMulti
+											onChange={(tags)=>this.setState({tags})}
+											options={this.state.allTags}
+											styles={invisibleSelectStyleNoArrowColored}
+											/>
+									</div>
+								</div>}
+
+							{!this.state.viewOnly &&
+								this.state.defaults.requester.show &&
+								<div className="">
+									<Label className="col-form-label-2">Zadal</Label>
+									<div className="col-form-value-2">
+										<Select
+											value={this.state.requester}
+											placeholder="Select required"
+											isDisabled={this.state.defaults.requester.fixed||this.state.viewOnly}
+											onChange={(requester)=>this.setState({requester})}
+											options={this.state.users}
+											styles={invisibleSelectStyleNoArrowRequired}
+											/>
+									</div>
+								</div>}
+
+							{!this.state.viewOnly &&
+								this.state.defaults.company.show &&
+								<div className="">
+									<Label className="col-form-label-2">Firma</Label>
+									<div className="col-form-value-2">
+										<Select
+											value={this.state.company}
+											placeholder="Select required"
+											isDisabled={this.state.defaults.company.fixed||this.state.viewOnly}
+											onChange={(company)=>this.setState({company, pausal:parseInt(company.workPausal)>0?booleanSelects[1]:booleanSelects[0]})}
+											options={this.state.companies}
+											styles={invisibleSelectStyleNoArrowRequired}
+											/>
+									</div>
+								</div>}
+
+							{!this.state.viewOnly &&
+								this.state.defaults.pausal.show &&
+								<div className="">
+									<Label className="col-form-label-2">Paušál</Label>
+									<div className="col-form-value-2">
+										<Select
+											value={this.state.pausal}
+											placeholder="Select required"
+											isDisabled={this.state.viewOnly||!this.state.company || parseInt(this.state.company.workPausal)===0||this.state.defaults.pausal.fixed}
+											styles={invisibleSelectStyleNoArrowRequired}
+											onChange={(pausal)=>this.setState({pausal})}
+											options={booleanSelects}
+											/>
+									</div>
+								</div>}
+
+							{false && <div className="">
+								<Label className="col-form-label-2">Pending</Label>
+								<div className="col-form-value-2">
+									{/*className='form-control hidden-input'*/}
+									<DatePicker
+										className="form-control hidden-input"
+										selected={this.state.pendingDate}
+										disabled={!this.state.status || this.state.status.action!=='pending'||this.state.viewOnly||!this.state.pendingChangable}
+										onChange={date => {
+											this.setState({ pendingDate: date });
+										}}
+										placeholderText="No pending date"
+										{...datePickerConfig}
+										/>
+								</div>
+							</div>}
+
+					{!this.state.viewOnly &&
+						<div className="">
+							<Label className="col-form-label-2">Deadline</Label>
+								<div className="col-form-value-2">
+									<DatePicker
+										className="form-control hidden-input"
+										selected={this.state.deadline}
+										disabled={this.state.viewOnly}
+										onChange={date => {
+											this.setState({ deadline: date });
+										}}
+										placeholderText="No deadline"
+										{...datePickerConfig}
+										/>
+								</div>
+						</div>}
+
+				{!this.state.viewOnly &&
+					<Repeat
+							taskID={null}
+							repeat={this.state.repeat}
+							disabled={this.state.viewOnly}
+							submitRepeat={(repeat)=>{
+								if(this.state.viewOnly){
+									return;
+								}
+								this.setState({repeat:repeat})
+							}}
+							deleteRepeat={()=>{
+								this.setState({repeat:null})
+							}}
+							columns={true}
+							vertical={true}
+							/>}
+
+					{!this.state.viewOnly &&
+						this.state.defaults.overtime.show &&
+						<div className="">
+						<Label className="col-form-label-2">Mimo PH</Label>
+						<div className="col-form-value-2">
+							<Select
+								placeholder="Select required"
+								value={this.state.overtime}
+								isDisabled={this.state.viewOnly||this.state.defaults.overtime.fixed}
+								styles={invisibleSelectStyleNoArrowRequired}
+								onChange={(overtime)=>this.setState({overtime})}
+								options={booleanSelects}
+								/>
+						</div>
+					</div>}
+
+			</div>
+			)
+		}
+
+		renderTags(){
+			return (
+				<div className="row m-t-10"> {/*Tags*/}
 					<div className="center-hor">
 						<Label className="center-hor">Tagy: </Label>
 					</div>
@@ -728,7 +1088,36 @@ export default class TaskAdd extends Component{
 							styles={invisibleSelectStyleNoArrowColored}
 							/>
 					</div>
-				</div>}
+				</div>
+			)
+		}
+
+		renderPopis(){
+			return(
+				<div>
+					<Label className="m-b-10 col-form-label m-t-10">Popis úlohy</Label>
+						{!this.state.descriptionVisible &&
+							<span className="task-edit-popis p-20 text-muted" onClick={()=>this.setState({descriptionVisible:true})}>
+								Napíšte krátky popis úlohy
+							</span>}
+						{this.state.descriptionVisible &&
+							<CKEditor
+							data={this.state.description}
+							onChange={(e)=>{
+								this.setState({description:e.editor.getData()})
+							}}
+							readOnly={this.state.viewOnly}
+							config={{
+								...ck4config
+							}}
+							/>
+						}
+			</div>
+			)
+		}
+
+		renderAttachments(){
+			return (
 				<Attachments
 					disabled={this.state.viewOnly}
 					taskID={null}
@@ -751,195 +1140,116 @@ export default class TaskAdd extends Component{
 						this.setState({attachments:newAttachments});
 					}}
 					/>
+				)
+		}
 
-				<div>
-						{!this.state.viewOnly && !this.state.hidden && false && <Subtasks
+		renderSubtasks(){
+			return (
+				<Subtasks
+				disabled={this.state.viewOnly}
+				taskAssigned={this.state.assignedTo}
+				submitService={(newSubtask)=>{
+					this.setState({subtasks:[...this.state.subtasks,{id:this.getNewID(),...newSubtask}]});
+				}}
+				subtasks={this.state.subtasks.map((subtask)=>{
+					let assignedTo=subtask.assignedTo?this.state.users.find((item)=>item.id===subtask.assignedTo):null
+					return {
+						...subtask,
+						assignedTo:assignedTo?assignedTo:null
+					}
+				})}
+				updateSubtask={(id,newData)=>{
+					let newSubtasks=[...this.state.subtasks];
+					newSubtasks[newSubtasks.findIndex((subtask)=>subtask.id===id)]={...newSubtasks.find((subtask)=>subtask.id===id),...newData};
+					this.setState({subtasks:newSubtasks});
+				}}
+				removeSubtask={(id)=>{
+					let newSubtasks=[...this.state.subtasks];
+					newSubtasks.splice(newSubtasks.findIndex((subtask)=>subtask.id===id),1);
+					this.setState({subtasks:newSubtasks});
+				}}
+				match={{params:{taskID:null}}}
+			/>
+			)
+		}
+
+		renderVykazyTable(taskWorks, workTrips, taskMaterials){
+			return(
+						<VykazyTable
+							showColumns={ [0,1,2,3,4,5,6,7,8,9] }
+
+							showTotals={false}
 							disabled={this.state.viewOnly}
+							company={this.state.company}
+							match={this.props.match}
+							taskID={null}
 							taskAssigned={this.state.assignedTo}
-							submitService={(newSubtask)=>{
-								this.setState({subtasks:[...this.state.subtasks,{id:this.getNewID(),...newSubtask}]});
+
+							submitService={(newService)=>{
+								this.setState({taskWorks:[...this.state.taskWorks,{id:this.getNewID(),...newService}]});
 							}}
-							subtasks={this.state.subtasks.map((subtask)=>{
-								let assignedTo=subtask.assignedTo?this.state.users.find((item)=>item.id===subtask.assignedTo):null
-								return {
-									...subtask,
-									assignedTo:assignedTo?assignedTo:null
-								}
-							})}
+							subtasks={taskWorks}
+							defaultType={this.state.type}
+							workTypes={this.state.taskTypes}
 							updateSubtask={(id,newData)=>{
-								let newSubtasks=[...this.state.subtasks];
-								newSubtasks[newSubtasks.findIndex((subtask)=>subtask.id===id)]={...newSubtasks.find((subtask)=>subtask.id===id),...newData};
-								this.setState({subtasks:newSubtasks});
+								let newTaskWorks=[...this.state.taskWorks];
+								newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
+								this.setState({taskWorks:newTaskWorks});
 							}}
 							removeSubtask={(id)=>{
-								let newSubtasks=[...this.state.subtasks];
-								newSubtasks.splice(newSubtasks.findIndex((subtask)=>subtask.id===id),1);
-								this.setState({subtasks:newSubtasks});
+								let newTaskWorks=[...this.state.taskWorks];
+								newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
+								this.setState({taskWorks:newTaskWorks});
 							}}
-							match={{params:{taskID:null}}}
-						/>}
+							workTrips={workTrips}
+							tripTypes={this.state.tripTypes}
+							submitTrip={(newTrip)=>{
+								this.setState({workTrips:[...this.state.workTrips,{id:this.getNewID(),...newTrip}]});
+							}}
+							updateTrip={(id,newData)=>{
+								let newTrips=[...this.state.workTrips];
+								newTrips[newTrips.findIndex((trip)=>trip.id===id)]={...newTrips.find((trip)=>trip.id===id),...newData};
+								this.setState({workTrips:newTrips});
+							}}
+							removeTrip={(id)=>{
+								let newTrips=[...this.state.workTrips];
+								newTrips.splice(newTrips.findIndex((trip)=>trip.id===id),1);
+								this.setState({workTrips:newTrips});
+							}}
 
-						{!this.state.viewOnly &&
-							<Nav tabs className="b-0 m-t-20 m-l--10">
-								<NavItem>
-									<NavLink
-										className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "")}
-										onClick={() => { this.setState({toggleTab:'1'}); }}
-									>
-										Výkaz |
-									</NavLink>
-								</NavItem>
-								<NavItem>
-									<NavLink
-										className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
-										onClick={() => { this.setState({toggleTab:'2'}); }}
-									>
-										Rozpočet
-									</NavLink>
-								</NavItem>
-							</Nav>}
-							{!this.state.viewOnly &&
-								<TabContent activeTab={this.state.toggleTab}>
-								<TabPane tabId="1">
-									<PraceWorkTrips
-										showColumns={[0,1,4,8]}
-										showTotals={false}
-										disabled={this.state.viewOnly}
-										taskAssigned={this.state.assignedTo}
-										subtasks={taskWorks}
-										defaultType={this.state.type}
-										workTypes={this.state.taskTypes}
-										company={this.state.company}
-										taskID={null}
-										submitService={(newService)=>{
-											this.setState({taskWorks:[...this.state.taskWorks,{id:this.getNewID(),...newService}]});
-										}}
-										updateSubtask={(id,newData)=>{
-											let newTaskWorks=[...this.state.taskWorks];
-											newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
-											this.setState({taskWorks:newTaskWorks});
-										}}
-										removeSubtask={(id)=>{
-											let newTaskWorks=[...this.state.taskWorks];
-											newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
-											this.setState({taskWorks:newTaskWorks});
-										}}
-										workTrips={workTrips}
-										tripTypes={this.props.tripTypes}
-										submitTrip={(newTrip)=>{
-											this.setState({workTrips:[...this.state.workTrips,{id:this.getNewID(),...newTrip}]});
-										}}
-										updateTrip={(id,newData)=>{
-											let newTrips=[...this.state.workTrips];
-											newTrips[newTrips.findIndex((trip)=>trip.id===id)]={...newTrips.find((trip)=>trip.id===id),...newData};
-											this.setState({workTrips:newTrips});
-										}}
-										removeTrip={(id)=>{
-											let newTrips=[...this.state.workTrips];
-											newTrips.splice(newTrips.findIndex((trip)=>trip.id===id),1);
-											this.setState({workTrips:newTrips});
-										}}
-										/>
-									<Materials
-										showColumns={[0,1,2,3,4,6]}
-										showTotals={true}
-										disabled={this.state.viewOnly}
-										materials={taskMaterials}
-										submitMaterial={(newMaterial)=>{
-											this.setState({taskMaterials:[...this.state.taskMaterials,{id:this.getNewID(),...newMaterial}]});
-										}}
-										updateMaterial={(id,newData)=>{
-											let newTaskMaterials=[...this.state.taskMaterials];
-											newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
-											this.setState({taskMaterials:newTaskMaterials});
-										}}
-										removeMaterial={(id)=>{
-											let newTaskMaterials=[...this.state.taskMaterials];
-											newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
-											this.setState({taskMaterials:newTaskMaterials});
-										}}
-										units={this.state.units}
-										defaultUnit={this.state.defaultUnit}
-										company={this.state.company}
-										match={{params:{taskID:null}}}
-									/>
-								</TabPane>
-								<TabPane tabId="2">
-									<PraceWorkTrips
-										showColumns={[0,1,2,3,4,5,6,7,8]}
-										disabled={this.state.viewOnly}
-										taskAssigned={this.state.assignedTo}
-										subtasks={taskWorks}
-										defaultType={this.state.type}
-										workTypes={this.state.taskTypes}
-										company={this.state.company}
-										taskID={null}
-										submitService={(newService)=>{
-											this.setState({taskWorks:[...this.state.taskWorks,{id:this.getNewID(),...newService}]});
-										}}
-										updateSubtask={(id,newData)=>{
-											let newTaskWorks=[...this.state.taskWorks];
-											newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
-											this.setState({taskWorks:newTaskWorks});
-										}}
-										removeSubtask={(id)=>{
-											let newTaskWorks=[...this.state.taskWorks];
-											newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
-											this.setState({taskWorks:newTaskWorks});
-										}}
-										workTrips={workTrips}
-										tripTypes={this.props.tripTypes}
-										submitTrip={(newTrip)=>{
-											this.setState({workTrips:[...this.state.workTrips,{id:this.getNewID(),...newTrip}]});
-										}}
-										updateTrip={(id,newData)=>{
-											let newTrips=[...this.state.workTrips];
-											newTrips[newTrips.findIndex((trip)=>trip.id===id)]={...newTrips.find((trip)=>trip.id===id),...newData};
-											this.setState({workTrips:newTrips});
-										}}
-										removeTrip={(id)=>{
-											let newTrips=[...this.state.workTrips];
-											newTrips.splice(newTrips.findIndex((trip)=>trip.id===id),1);
-											this.setState({workTrips:newTrips});
-										}}
-										/>
-									<Materials
-										showColumns={[0,1,2,3,4,5,6]}
-										disabled={this.state.viewOnly}
-										materials={taskMaterials}
-										submitMaterial={(newMaterial)=>{
-											this.setState({taskMaterials:[...this.state.taskMaterials,{id:this.getNewID(),...newMaterial}]});
-										}}
-										updateMaterial={(id,newData)=>{
-											let newTaskMaterials=[...this.state.taskMaterials];
-											newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
-											this.setState({taskMaterials:newTaskMaterials});
-										}}
-										removeMaterial={(id)=>{
-											let newTaskMaterials=[...this.state.taskMaterials];
-											newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
-											this.setState({taskMaterials:newTaskMaterials});
-										}}
-										units={this.state.units}
-										defaultUnit={this.state.defaultUnit}
-										company={this.state.company}
-										match={{params:{taskID:null}}}
-									/>
-								</TabPane>
-							</TabContent>}
-					</div>
-			</div>
-			{this.props.closeModal &&
-				<Button className="btn-link-remove" onClick={this.props.closeModal}>Cancel</Button>
-			}
-						<button
-							className="btn pull-right"
-							disabled={this.state.title==="" || this.state.status===null || this.state.project === null || this.state.company === null || this.state.saving || this.props.loading||this.props.newID===null}
-							onClick={this.submitTask.bind(this)}
-							> Create task
-						</button>
-					</div>
+							materials={taskMaterials}
+							submitMaterial={(newMaterial)=>{
+								this.setState({taskMaterials:[...this.state.taskMaterials,{id:this.getNewID(),...newMaterial}]});
+							}}
+							updateMaterial={(id,newData)=>{
+								let newTaskMaterials=[...this.state.taskMaterials];
+								newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
+								this.setState({taskMaterials:newTaskMaterials});
+							}}
+							removeMaterial={(id)=>{
+								let newTaskMaterials=[...this.state.taskMaterials];
+								newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
+								this.setState({taskMaterials:newTaskMaterials});
+							}}
+							units={this.state.units}
+							defaultUnit={this.state.defaultUnit}
+							/>
+			)
+		}
+
+		renderButtons(){
+			return (
+				<div>
+					{this.props.closeModal &&
+						<Button className="btn-link-remove" onClick={this.props.closeModal}>Cancel</Button>
+					}
+					<button
+						className="btn pull-right"
+						disabled={this.state.title==="" || this.state.status===null || this.state.project === null || this.state.company === null || this.state.saving || this.props.loading||this.props.newID===null}
+						onClick={this.submitTask.bind(this)}
+						> Create task
+					</button>
 				</div>
-			);
+			)
 		}
 	}

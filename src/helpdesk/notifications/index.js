@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { ListGroupItem } from 'reactstrap';
 import classnames from 'classnames';
 import { rebase } from '../../index';
-import TaskEdit from '../task/taskEditSwitch';
+import TaskEdit from '../task/taskEdit';
 
 import { connect } from "react-redux";
 import { storageHelpTasksStart } from '../../redux/actions';
