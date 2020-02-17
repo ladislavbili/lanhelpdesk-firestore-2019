@@ -140,6 +140,7 @@ class TaskEdit extends Component {
 		this.renderAttachments.bind(this);
 		this.renderVykazyTable.bind(this);
 		this.renderComments.bind(this);
+		this.getPermissions.bind(this);
 
     this.fetchData(this.props.match.params.taskID);
 	}
@@ -343,8 +344,8 @@ class TaskEdit extends Component {
 			...originalEvent,
 			read:false
 		}
-		let usersToNotify=[...this.state.assignedTo];
-		if(!internal && this.state.requester && !usersToNotify.some((user)=>user.id===this.state.requester.id)){
+		let usersToNotify=[...this.state.assignedTo.filter((user)=>!internal || this.getPermissions(user.id).internal)];
+		if( this.state.requester && (!internal || this.getPermissions(this.state.requester.id).internal) && !usersToNotify.some((user)=>user.id===this.state.requester.id)){
 			usersToNotify.push(this.state.requester);
 		}
 		usersToNotify = usersToNotify.filter((user)=>user.id!==this.props.currentUser.id);
@@ -545,11 +546,26 @@ class TaskEdit extends Component {
     this.setState(newState);
   }
 
+	getPermissions(id){
+		let permission = null;
+		if(this.state.project){
+			permission = this.state.project.permissions.find((permission)=>permission.user===id);
+		}
+		if(permission===undefined){
+			permission = {user:{id},read:false,write:false,delete:false,internal:false,isAdmin:false};
+		}
+		return permission;
+	}
+
 	render() {
 		let permission = null;
 		if(this.state.project){
 			permission = this.state.project.permissions.find((permission)=>permission.user===this.props.currentUser.id);
 		}
+		if(permission===undefined){
+			permission = {user:{id:this.props.currentUser.id},read:false,write:false,delete:false,internal:false,isAdmin:false};
+		}
+
 		let canAdd = this.props.currentUser.userData.role.value>0;
 		let canDelete = (permission && permission.delete)||this.props.currentUser.userData.role.value===3;
 		let canCopy = ((!permission || !permission.write) && this.props.currentUser.userData.role.value===0)||this.state.title==="" || this.state.status===null || this.state.project === null||this.state.saving;
@@ -1507,6 +1523,13 @@ class TaskEdit extends Component {
 	}
 
 	renderComments(taskID){
+		let permission = null;
+		if(this.state.project){
+			permission = this.state.project.permissions.find((permission)=>permission.user===this.props.currentUser.id);
+		}
+		if( !permission ){
+			permission = {user:this.props.currentUser.id,read:false,write:false,delete:false,internal:false,isAdmin:false};
+		}
 		return(
 			<div>
 				<Nav tabs className="b-0 m-b-22 m-l--10 m-t-15">
@@ -1538,6 +1561,7 @@ class TaskEdit extends Component {
 						<TabPane tabId="1">
 							<Comments
 								id={taskID?taskID:null}
+								showInternal={permission.internal || this.props.currentUser.userData.role.value > 1 }
 								users={this.state.users}
 								addToHistory={(internal)=>{
 									let event = {

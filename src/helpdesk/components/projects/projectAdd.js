@@ -51,7 +51,7 @@ class ProjectAdd extends Component{
 			this.setState({users:toSelArr(props.users,'email')})
 		}
 		if(props.usersLoaded && !this.props.usersLoaded){
-			this.setState({permissions:this.state.permissions.length===0?[{user:toSelArr(props.users,'email').find((user)=>user.id===this.props.currentUser.id),read:true,write:true,delete:true,isAdmin:true}]:this.state.permissions});
+			this.setState({permissions:this.state.permissions.length===0?[{user:toSelArr(props.users,'email').find((user)=>user.id===this.props.currentUser.id),read:true,write:true,delete:true,internal:true, isAdmin:true}]:this.state.permissions});
 		}
 		if(!sameStringForms(props.taskTypes,this.props.taskTypes)){
 			this.setState({taskTypes:toSelArr(props.taskTypes)})
@@ -75,7 +75,7 @@ class ProjectAdd extends Component{
 		if(!this.props.usersActive){
 			this.props.storageUsersStart();
 		}
-		this.setState({users:toSelArr(this.props.users,'email'),permissions:this.state.permissions.length===0?[{user:toSelArr(this.props.users,'email').find((user)=>user.id===this.props.currentUser.id),read:true,write:true,delete:true,isAdmin:true}]:this.state.permissions});
+		this.setState({users:toSelArr(this.props.users,'email'),permissions:this.state.permissions.length===0?[{user:toSelArr(this.props.users,'email').find((user)=>user.id===this.props.currentUser.id),read:true,write:true,delete:true,internal:true, isAdmin:true}]:this.state.permissions});
 
 		if(!this.props.taskTypesActive){
 			this.props.storageHelpTaskTypesStart();
@@ -120,11 +120,12 @@ class ProjectAdd extends Component{
     						<Label htmlFor="description">Popis</Label>
     						<Input type="textarea" className="form-control" id="description" placeholder="Zadajte text" value={this.state.description} onChange={(e) => this.setState({description: e.target.value})}/>
     					</FormGroup>
+							{console.log(this.state.permissions)}
 
 							<Permissions
 								addUser={(user)=>{
 									this.setState({
-										permissions:[...this.state.permissions,{user,read:true,write:false,delete:false,isAdmin:false}]
+										permissions:[...this.state.permissions,{user,read:true,write:false,delete:false,internal:false,isAdmin:false}]
 									})
 								}}
 								givePermission={(user,permission)=>{
@@ -134,6 +135,7 @@ class ProjectAdd extends Component{
 									item.read=permission.read;
 									item.write=permission.write;
 									item.delete=permission.delete;
+									item.internal=permission.internal;
 									item.isAdmin=permission.isAdmin;
 									if(!item.read){
 										permissions.splice(index,1);

@@ -240,7 +240,7 @@ class ProjectEdit extends Component{
               <Permissions
 								addUser={(user)=>{
 									this.setState({
-										permissions:[...this.state.permissions,{user,read:true,write:false,delete:false,isAdmin:false}]
+										permissions:[...this.state.permissions,{user,read:true,write:false,delete:false,internal:false,isAdmin:false}]
 									})
 								}}
 								givePermission={(user,permission)=>{
@@ -250,6 +250,7 @@ class ProjectEdit extends Component{
 									item.read=permission.read;
 									item.write=permission.write;
 									item.delete=permission.delete;
+									item.internal=permission.internal;
 									item.isAdmin=permission.isAdmin;
 									if(!item.read){
 										permissions.splice(index,1);

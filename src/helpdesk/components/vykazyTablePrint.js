@@ -179,8 +179,6 @@ export default class Rozpocet extends Component {
 			editedFinalUnitPrice = (parseFloat(this.state.editedMaterialPrice)*(1+parseFloat(this.state.editedMaterialMargin)/100))
 		}
 
-		console.log(this.props.subtasks);
-
 		return (
 			<div className="vykazyTable">
 					<table className="table">

@@ -87,9 +87,9 @@ submitComment(){
             comment:this.state.isEmail?this.state.emailBody: this.state.newComment,
             subject:this.state.subject,
             isEmail: this.state.isEmail,
-            isInternal:this.state.isInternal,
+            isInternal:this.state.isInternal && this.props.showInternal && !this.state.isEmail,
             tos:this.state.tos.map((item)=>item.value),
-            createdAt: (new Date()).getTime(),
+              createdAt: (new Date()).getTime(),
             task:this.props.id,
             attachments:newAttachments
           }
@@ -110,18 +110,20 @@ submitComment(){
 submitEmail(){
   this.setState({hasError:false});
   firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then((token)=>{
-    fetch('https://api01.lansystems.sk:8080/send-mail',{ //127.0.0.1 https://api01.lansystems.sk:8080
+    fetch('https://api01.lansystems.sk:8080/send-mail',{
+      //127.0.0.1 https://api01.lansystems.sk:8080
       headers: {
         'Content-Type': 'application/json'
       },
       method: 'POST',
       body:JSON.stringify({
-          message:this.state.emailBody,
+          message: this.state.emailBody,
           tos:this.state.tos.map((item)=>item.label),
           subject:this.state.subject,
           taskID:this.props.id,
           token,
-          email:this.props.users.find((user)=>user.id===this.props.userID).email
+          email:this.props.users.find((user)=>user.id===this.props.userID).email,
+          citations:this.state.comments,
         }),
     }).then((response)=>response.json().then((response)=>{
       if(response.error){
@@ -181,8 +183,26 @@ submitEmail(){
             <Button className="btn waves-effect m-t-5 p-l-20 p-r-20"
               disabled={(!this.state.isEmail && this.state.newComment==='')||
                 (this.state.isEmail&&(this.state.tos.length < 1 ||this.state.subject===''||this.state.emailBody===''))||this.state.saving}
-                onClick={this.state.isEmail ? this.submitEmail.bind(this) : this.submitComment.bind(this)}>Submit</Button>
+                onClick={this.state.isEmail ? this.submitEmail.bind(this) : this.submitComment.bind(this)}>
+                Submit
+              </Button>
               <div>
+                <div className="m-l-10">
+                  <label className="custom-container">
+                    <Input type="checkbox"
+                      checked={this.state.isEmail}
+                      onChange={()=>{
+                        this.setState({isEmail:!this.state.isEmail})
+                        }}  />
+                      <span className="checkmark">  </span>
+                  </label>
+                </div>
+                <span className="m-l-35">
+                  {'E-mail'}
+                </span>
+              </div>
+
+              {this.props.showInternal && !this.state.isEmail && <div>
                 <div className="m-l-10">
                   <label className="custom-container">
                     <Input type="checkbox"
@@ -196,23 +216,8 @@ submitEmail(){
                 <span className="m-l-35">
                   {'Internal'}
                 </span>
-              </div>
+              </div>}
 
-            <div>
-              <div className="m-l-10">
-                <label className="custom-container">
-                  <Input type="checkbox"
-                    checked={this.state.isEmail}
-                    onChange={()=>{
-                      this.setState({isEmail:!this.state.isEmail})
-                      }}  />
-                    <span className="checkmark">  </span>
-                </label>
-              </div>
-              <span className="m-l-35">
-                {'E-mail'}
-              </span>
-            </div>
 
             { !this.state.isEmail &&
               <span>
@@ -260,7 +265,7 @@ submitEmail(){
           </div>
         </div>
 
-        {this.state.comments.sort((item1,item2)=>item2.createdAt-item1.createdAt).map((comment)=>
+        {this.state.comments.filter((comment)=>this.props.showInternal || !comment.isInternal).sort((item1,item2)=>item2.createdAt-item1.createdAt).map((comment)=>
           <div key={comment.id} >
             { comment.isMail &&
               <div>

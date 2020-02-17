@@ -62,6 +62,7 @@ class Permissions extends Component {
 								<th className="t-a-c"> Write </th>
 								<th className="t-a-c"> Delete</th>
 								<th className="t-a-c"> Admin</th>
+								<th className="t-a-c"> Internal</th>
 								<th className="t-a-c"></th>
 							</tr>
 						</thead>
@@ -79,9 +80,9 @@ class Permissions extends Component {
 												onChange={()=>{
 													let permissions = null;
 													if(permission.read){
-														permissions={read:false, write:false, delete:false, isAdmin:false}
+														permissions={read:false, write:false, delete:false, isAdmin:false, internal: permission.internal }
 													}else{
-														permissions={read:true, write:false, delete:false, isAdmin:false}
+														permissions={read:true, write:false, delete:false, isAdmin:false, internal: permission.internal }
 													}
 													this.props.givePermission(permission.user,permissions);
 												}}
@@ -96,9 +97,9 @@ class Permissions extends Component {
 												onChange={()=>{
 													let permissions = null;
 													if(permission.write){
-														permissions={read:true, write:false, delete:false, isAdmin:false}
+														permissions={read:true, write:false, delete:false, isAdmin:false, internal: permission.internal }
 													}else{
-														permissions={read:true, write:true, delete:false, isAdmin:false}
+														permissions={read:true, write:true, delete:false, isAdmin:false, internal: permission.internal }
 													}
 													this.props.givePermission(permission.user,permissions);
 												}}
@@ -113,9 +114,9 @@ class Permissions extends Component {
 												onChange={()=>{
 													let permissions = null;
 													if(permission.delete){
-														permissions={read:true, write:true, delete:false, isAdmin:false}
+														permissions={read:true, write:true, delete:false, isAdmin:false, internal: permission.internal }
 													}else{
-														permissions={read:true, write:true, delete:true, isAdmin:false}
+														permissions={read:true, write:true, delete:true, isAdmin:false, internal: permission.internal }
 													}
 													this.props.givePermission(permission.user,permissions);
 												}}
@@ -129,10 +130,21 @@ class Permissions extends Component {
 												onChange={()=>{
 													let permissions = null;
 													if(permission.isAdmin){
-														permissions={read:true, write:true, delete:true, isAdmin:false}
+														permissions={read:true, write:true, delete:true, isAdmin:false, internal: permission.internal }
 													}else{
-														permissions={read:true, write:true, delete:true, isAdmin:true}
+														permissions={read:true, write:true, delete:true, isAdmin:true, internal: permission.internal }
 													}
+													this.props.givePermission(permission.user,permissions);
+												}}
+											/>
+										</td>
+										<td className="table-checkbox t-a-c">
+											<input
+												type="checkbox"
+												disabled={this.props.userID===permission.user.id && !this.props.isAdmin}
+												checked={permission.internal}
+												onChange={()=>{
+													let permissions = {read:permission.read, write:permission.write, delete:permission.delete, isAdmin:permission.isAdmin, internal: !permission.internal };
 													this.props.givePermission(permission.user,permissions);
 												}}
 											/>
@@ -140,7 +152,7 @@ class Permissions extends Component {
 										<td className="table-checkbox t-a-c">
 											<button className="btn btn-link waves-effect" disabled={(this.props.userID===permission.user.id && !this.props.isAdmin) || this.props.disabled} onClick={()=>{
 													if(window.confirm('Are you sure?')){
-														this.props.givePermission(permission.user,{read:false, write:false, delete:false, isAdmin:false});
+														this.props.givePermission(permission.user,{read:false, write:false, delete:false, isAdmin:false, internal:false});
 													}
 												}}>
 												<i className="fa fa-times"  />
