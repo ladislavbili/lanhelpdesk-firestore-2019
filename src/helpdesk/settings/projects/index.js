@@ -52,7 +52,13 @@ class ProjectList extends Component{
   						</h2>
               <table className="table table-hover">
                 <tbody>
-                  {this.props.projects.filter((item)=>item.title.toLowerCase().includes(this.state.projectFilter.toLowerCase())).map((project)=>
+                  {this.props.projects.filter((project)=>{
+										if(this.props.role === 3){
+											return true;
+										}
+										let permission = project.permissions.find((permission)=>permission.user===this.props.currUserID);
+										return permission && permission.read;
+									}).filter((item)=>item.title.toLowerCase().includes(this.state.projectFilter.toLowerCase())).map((project)=>
                     <tr key={project.id}
                       className={"clickable" + (this.props.match.params.id === project.id ? " sidebar-item-active":"")}
                       onClick={()=>this.props.history.push('/helpdesk/settings/projects/'+project.id)}>
@@ -81,9 +87,11 @@ class ProjectList extends Component{
 }
 
 
-const mapStateToProps = ({ storageHelpProjects }) => {
+const mapStateToProps = ({ storageHelpProjects, userReducer }) => {
   const { projectsActive, projects } = storageHelpProjects;
-  return { projectsActive, projects };
+  const role = userReducer.userData ? userReducer.userData.role.value : 0;
+  const currUserID = userReducer.id ;
+  return { projectsActive, projects, role, currUserID };
 };
 
 export default connect(mapStateToProps, { storageHelpProjectsStart })(ProjectList);

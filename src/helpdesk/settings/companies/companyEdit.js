@@ -54,6 +54,8 @@ class CompanyEdit extends Component{
       oldRented:[],
       dph:20,
       oldDph:20,
+      monthlyPausal:false,
+      oldMonthlyPausal:false,
       fakeID:0,
       oldFakeID:0,
       newData: false,
@@ -159,6 +161,7 @@ class CompanyEdit extends Component{
       phone: company.phone || "",
       description: company.description || "",
       dph:company.dph || 0,
+      monthlyPausal: company.monthlyPausal === true,
       pricelists,
       pricelist,
       taskTypes,
@@ -182,7 +185,7 @@ class CompanyEdit extends Component{
       oldPhone: company.phone || "",
       oldDescription: company.description || "",
       oldDph:company.dph || 0,
-
+      oldMonthlyPausal: company.monthlyPausal === true,
       loading:false,
       newData: false,
     })
@@ -215,6 +218,7 @@ class CompanyEdit extends Component{
         PSC: this.state.PSC,
         mail: this.state.mail,
         phone: this.state.phone,
+        monthlyPausal:this.state.monthlyPausal,
         description: this.state.description,
         dph:isNaN(parseInt(this.state.dph))?0:parseInt(this.state.dph),
       })
@@ -250,6 +254,7 @@ class CompanyEdit extends Component{
           oldDescription: this.state.description,
           oldPausal: this.state.pausal,
           oldDph: this.state.dph,
+          oldMonthlyPausal: this.state.monthlyPausal,
         })});
   }
 
@@ -297,6 +302,7 @@ class CompanyEdit extends Component{
       drivePausal: this.state.oldDrivePausal,
       rented:this.state.oldRented,
       dph:this.state.oldDph,
+      monthlyPausal:this.state.monthlyPausal,
 
       clearCompanyRents:true,
       newData: false,
@@ -517,8 +523,21 @@ class CompanyEdit extends Component{
 
           </div>
 
-          <div className="p-20 table-highlight-background">
-            <h3>Mesačný paušál</h3>
+          { this.props.role > 1 && <div className="p-20 table-highlight-background">
+            <div className="row">
+              <span className="m-r-5">
+                <h3>Mesačný paušál</h3>
+              </span>
+               <label className="custom-container">
+                <Input type="checkbox"
+                  checked={this.state.monthlyPausal}
+                  onChange={()=>{
+                    this.setState({monthlyPausal:!this.state.monthlyPausal, newData: true })
+                    }}  />
+                  <span className="checkmark">  </span>
+              </label>
+            </div>
+            { this.state.monthlyPausal && <div>
               <FormGroup className="row m-b-10 m-t-20">
                 <div className="m-r-10 w-20">
                   <Label for="pausal">Mesačná</Label>
@@ -567,7 +586,6 @@ class CompanyEdit extends Component{
                 />
             </div>
             </FormGroup>
-          </div>
 
           <div className="p-20">
             <h3 className="m-b-15">Mesačný prenájom licencií a hardware</h3>
@@ -592,8 +610,8 @@ class CompanyEdit extends Component{
               }}
             />
         </div>
-      <div className="p-20 table-highlight-background">
-          <h3 className="m-b-20">Cenník</h3>
+      </div>}
+        <h3 className="m-b-20">Cenník</h3>
           {this.state.pricelist !== null &&
           <FormGroup className="row m-b-10">
             <div className="m-r-10 w-20">
@@ -633,7 +651,7 @@ class CompanyEdit extends Component{
           {this.state.editingPriceList &&
             <PriceEdit listId={this.state.pricelist.id} deletedList={() => this.setState({pricelist: [], priceName: "", editingPriceList: false})}/>
           }
-        </div>
+        </div>}
       </div>
 
 
@@ -677,13 +695,14 @@ class CompanyEdit extends Component{
 }
 
 
-const mapStateToProps = ({ storageMetadata, storageHelpPricelists, storageCompanies, storageHelpTaskTypes, storageHelpTripTypes}) => {
+const mapStateToProps = ({ storageMetadata, storageHelpPricelists, storageCompanies, storageHelpTaskTypes, storageHelpTripTypes, userReducer }) => {
   const { taskTypesLoaded, taskTypesActive, taskTypes } = storageHelpTaskTypes;
   const { tripTypesActive, tripTypes, tripTypesLoaded } = storageHelpTripTypes;
   const { metadataActive, metadata, metadataLoaded } = storageMetadata;
   const { pricelistsActive, pricelists, pricelistsLoaded } = storageHelpPricelists;
   const { companiesActive, companies, companiesLoaded } = storageCompanies;
-  return { taskTypesLoaded, taskTypesActive, taskTypes, tripTypesActive, tripTypes, tripTypesLoaded, metadataActive, metadata, metadataLoaded, pricelistsActive, pricelists, pricelistsLoaded, companiesActive, companies, companiesLoaded };
+  const role = userReducer.userData ? userReducer.userData.role.value : 0;
+  return { taskTypesLoaded, taskTypesActive, taskTypes, tripTypesActive, tripTypes, tripTypesLoaded, metadataActive, metadata, metadataLoaded, pricelistsActive, pricelists, pricelistsLoaded, companiesActive, companies, companiesLoaded, role };
 };
 
 export default connect(mapStateToProps, { storageHelpPricelistsStart,storageMetadataStart, storageCompaniesStart, storageHelpTaskTypesStart, storageHelpTripTypesStart })(CompanyEdit);

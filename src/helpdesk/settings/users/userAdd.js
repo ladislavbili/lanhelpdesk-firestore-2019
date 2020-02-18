@@ -32,6 +32,9 @@ class UserAdd extends Component{
       companies:[],
       mailNotifications: true,
       role:roles[0],
+
+      signature:'',
+      signatureChanged:false,
     }
   }
 
@@ -60,7 +63,7 @@ class UserAdd extends Component{
             <Label for="role">Role</Label>
             <Select
               styles={selectStyle}
-              options={roles}
+              options={roles.filter( (role) => role.value <= this.props.role )}
               value={this.state.role}
               onChange={role => this.setState({ role })}
               />
@@ -71,11 +74,23 @@ class UserAdd extends Component{
           </FormGroup>
           <FormGroup>
             <Label for="name">Name</Label>
-            <Input type="text" name="name" id="name" placeholder="Enter name" value={this.state.name} onChange={(e)=>this.setState({name:e.target.value})} />
+            <Input type="text" name="name" id="name" placeholder="Enter name" value={this.state.name} onChange={(e)=>{
+                if(this.state.signatureChanged){
+                  this.setState({name:e.target.value})
+                }else{
+                  this.setState({ name:e.target.value, signature: `${e.target.value} ${this.state.surname}, ${(this.state.company? this.state.company.title :'')}` });
+                }
+            }} />
           </FormGroup>
           <FormGroup>
             <Label for="surname">Surname</Label>
-            <Input type="text" name="surname" id="surname" placeholder="Enter surname" value={this.state.surname} onChange={(e)=>this.setState({surname:e.target.value})} />
+            <Input type="text" name="surname" id="surname" placeholder="Enter surname" value={this.state.surname} onChange={(e)=>{
+              if(this.state.signatureChanged){
+                this.setState({surname:e.target.value})
+              }else{
+                this.setState({ surname:e.target.value, signature: `${this.state.name} ${e.target.value}, ${this.state.company? this.state.company.title :''}` });
+              }
+              }} />
           </FormGroup>
           <FormGroup>
             <Label for="email">E-mail</Label>
@@ -99,8 +114,18 @@ class UserAdd extends Component{
               styles={selectStyle}
               options={this.state.companies}
               value={this.state.company}
-              onChange={e =>{ this.setState({ company: e }); }}
+              onChange={company =>{
+                if(this.state.signatureChanged){
+                  this.setState({ company });
+                }else{
+                  this.setState({ company, signature: `${this.state.name} ${this.state.surname}, ${company? company.title :''}` });
+                }
+            }}
               />
+          </FormGroup>
+          <FormGroup>
+            <Label for="signature">Signature</Label>
+            <Input type="textarea" name="signature" id="signature" placeholder="Enter signature" value={this.state.signature} onChange={(e)=>this.setState({signature:e.target.value,signatureChanged:true})} />
           </FormGroup>
 
               <Button className="btn" disabled={this.state.saving || this.state.companies.length===0 || !isEmail(this.state.email) || this.state.password.length < 6 } onClick={()=>{
@@ -117,6 +142,7 @@ class UserAdd extends Component{
                       company:this.state.company.id,
                       role:this.state.role,
                       mailNotifications:this.state.mailNotifications,
+                      signature:this.state.signature,
                     };
                     rebase.addToCollection('/users', newUser, user.user.uid)
                     .then(()=>{
@@ -129,6 +155,7 @@ class UserAdd extends Component{
                         company,
                         password:'',
                         role:roles[0],
+                        signature:'',
                         mailNotifications:true,
                         saving:false
                       }, () => {
@@ -151,9 +178,10 @@ class UserAdd extends Component{
   }
 }
 
-const mapStateToProps = ({ storageCompanies}) => {
+const mapStateToProps = ({ storageCompanies, userReducer}) => {
   const { companiesActive, companies, companiesLoaded } = storageCompanies;
-  return { companiesActive, companies, companiesLoaded };
+  const role = userReducer.userData ? userReducer.userData.role.value : 0;
+  return { companiesActive, companies, companiesLoaded, role };
 };
 
 export default connect(mapStateToProps, { storageCompaniesStart })(UserAdd);

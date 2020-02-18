@@ -97,7 +97,7 @@ class CompaniesList extends Component{
                               {company.title}
                             </td>
                             <td width="10%" className={(this.props.match.params.id === company.id ? "text-highlight":"") }>
-                              {parseInt(company.drivePausal) > 0 || parseInt(company.workPausal) > 0 ? "Zmluvný" : "Nezmluvný"}
+                              {company.monthlyPausal  ? "Zmluvný" : "Nezmluvný"}
                             </td>
                           </tr>
                       )

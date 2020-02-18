@@ -144,9 +144,10 @@ class Sidebar extends Component {
 			this.props.currentUser.userData.role.value===3 || testing ||
 			(this.props.projectState.permissions.find((permission)=>permission.user===this.props.currentUser.id)!==undefined && this.props.projectState.permissions.find((permission)=>permission.user===this.props.currentUser.id).isAdmin)
 		);
+
 		let addsMilestones = this.props.projectState.id!==null && this.props.projectState.id!==-1 && (
 			this.props.currentUser.userData.role.value===3 || testing ||
-			(this.props.projectState.permissions.find((permission)=>permission.user===this.props.currentUser.id)!==undefined && this.props.projectState.permissions.find((permission)=>permission.user===this.props.currentUser.id).write)
+			(this.props.projectState.permissions.find((permission)=>permission.user===this.props.currentUser.id)!==undefined && this.props.projectState.permissions.find((permission)=>permission.user===this.props.currentUser.id).isAdmin)
 		);
 		let filters = [...this.state.filters];
 		if(this.props.projectState.id===null){
@@ -372,7 +373,7 @@ class Sidebar extends Component {
 							{ this.state.openMilestoneAdd &&
 								<MilestoneAdd close={() => this.setState({openMilestoneAdd: false})}/>
 							}
-							{ this.props.milestoneState.id &&
+							{ managesProjects && this.props.milestoneState.id &&
 								this.state.milestones.map((item)=>item.id).includes(this.props.milestoneState.id) &&
 								<MilestoneEdit item={this.props.milestoneState}/>
 							}

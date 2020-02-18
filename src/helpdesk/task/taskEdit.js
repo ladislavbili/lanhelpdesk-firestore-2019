@@ -1530,6 +1530,7 @@ class TaskEdit extends Component {
 		if( !permission ){
 			permission = {user:this.props.currentUser.id,read:false,write:false,delete:false,internal:false,isAdmin:false};
 		}
+
 		return(
 			<div>
 				<Nav tabs className="b-0 m-b-22 m-l--10 m-t-15">

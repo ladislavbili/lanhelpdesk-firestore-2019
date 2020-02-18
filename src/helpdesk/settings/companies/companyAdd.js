@@ -6,7 +6,7 @@ import {rebase} from '../../../index';
 import {selectStyle} from "../../../scss/selectStyles";
 
 import { connect } from "react-redux";
-import {storageHelpPricelistsStart,storageMetadataStart, storageHelpTaskTypesStart, storageHelpTripTypesStart} from '../../../redux/actions';
+import {storageHelpPricelistsStart } from '../../../redux/actions';
 import {sameStringForms, isEmail} from '../../../helperFunctions';
 import CompanyRents from './companyRents';
 import PriceEdit from "../prices/priceEdit";
@@ -22,8 +22,6 @@ class CompanyAdd extends Component{
       oldPricelist: [],
       priceName: "",
       editingPriceList: false,
-      taskTypes: [],
-      tripTypes: [],
       title:'',
       oldTitle: "",
       ICO: "",
@@ -56,6 +54,8 @@ class CompanyAdd extends Component{
       oldRented:[],
       dph:20,
       oldDph:20,
+      monthlyPausal:false,
+      oldMonthlyPausal:false,
       fakeID:0,
       newData: false,
       loading:false,
@@ -76,11 +76,11 @@ class CompanyAdd extends Component{
   }
 
   storageLoaded(props){
-    return props.pricelistsLoaded && props.metadataLoaded && props.tripTypesLoaded && props.taskTypesLoaded;
+    return props.pricelistsLoaded;
   }
 
   componentWillReceiveProps(props){
-    if(!sameStringForms(props.pricelists,this.props.pricelists)){
+    if(!sameStringForms(props.pricelists,this.props.pricelists) && this.storageLoaded(this.props) ){
       this.setState({pricelists: [{label: "Vlastný", value: "0"}, ...toSelArr(props.pricelists)]})
     }
     if(!this.storageLoaded(this.props) && this.storageLoaded(props)){
@@ -89,58 +89,36 @@ class CompanyAdd extends Component{
   }
 
   componentWillMount(){
-    if(this.storageLoaded(this.props)){
-      this.setData(this.props);
-    }
-    if(!this.props.metadataActive){
-      this.props.storageMetadataStart();
-    }
     if(!this.props.pricelistsActive){
       this.props.storageHelpPricelistsStart();
     }
-    if(!this.props.tripTypesActive){
-      this.props.storageHelpTripTypesStart();
-    }
-    if(!this.props.taskTypesActive){
-      this.props.storageHelpTaskTypesStart();
+    if(this.storageLoaded(this.props)){
+      this.setData(this.props);
     }
   }
 
   setData(props){
     let pricelists = [{label: "Vlastný", value: "0"}, ...toSelArr(props.pricelists)];
     let meta = props.metadata;
-    let pricelist = null;
-      if(pricelists.length>0){
-        if(meta.defaultPricelist!==null){
-          pricelist=pricelists.find((item)=>item.id===meta.defaultPricelist);
-        }else{
-          pricelist=pricelists[0];
-        }
+    let pricelist = pricelists.find((pricelist)=>pricelist.def);
+    if(pricelist === undefined){
+      if(pricelists.length>1){
+        pricelist = pricelists[1];
+      }else{
+        pricelist = null;
       }
+    }
 
-    let taskTypes = props.taskTypes.map((type)=>{
-      let newType={...type};
-      newType.price={price:0};
-      return newType;
-    });
-
-    let tripTypes = props.tripTypes.map((type)=>{
-      let newType={...type};
-      newType.price={price:0};
-      return newType;
-    });
     this.setState({
       pricelists,
       pricelist,
-      taskTypes,
-      tripTypes,
       loading:false})
-  }
+    }
 
   submit(){
-    if (this.state.title === "") {
-      return;
-    }
+      if (this.state.title === "") {
+        return;
+      }
       this.setState({saving:true});
       let newCompany = {
         title:this.state.title,
@@ -157,6 +135,7 @@ class CompanyAdd extends Component{
         }),
         workPausal:this.state.workPausal,
         drivePausal:this.state.drivePausal,
+        monthlyPausal:this.state.monthlyPausal,
         pricelist:this.state.pricelist.id,
         ICO: this.state.ICO,
         DIC: this.state.DIC,
@@ -171,60 +150,54 @@ class CompanyAdd extends Component{
         dph:isNaN(parseInt(this.state.dph))?0:parseInt(this.state.dph),
       };
       rebase.addToCollection('/companies', newCompany)
-        .then((comp)=>{
-          this.setState({
-            title:'',
-            pricelist:this.state.pricelists.length>0?this.state.pricelists[0]:null,
-            ICO: "",
-            DIC: "",
-            IC_DPH: "",
-            country: "",
-            city: "",
-            street: "",
-            PSC: "",
-            mail: "",
-            phone: "",
-            description: "",
-            rented:[],
-            dph:20,
-            newData: false,
-            editingPriceList: false,
-            priceName: "",
-            saving:false}, () => {
-              if (this.props.addCompany){
-                this.props.addCompany({...newCompany, id: comp.id, label: newCompany.title, value: comp.id});
-                this.props.close();
-              } else {
-                this.props.history.push(`/helpdesk/settings/companies/${comp.id}`)
-              }
+      .then((comp)=>{
+        this.setState({
+          title:'',
+          pricelist:this.state.pricelists.length>0?this.state.pricelists[0]:null,
+          ICO: "",
+          DIC: "",
+          IC_DPH: "",
+          country: "",
+          city: "",
+          street: "",
+          PSC: "",
+          mail: "",
+          phone: "",
+          description: "",
+          rented:[],
+          dph:20,
+          newData: false,
+          editingPriceList: false,
+          priceName: "",
+          monthlyPausal: false,
+          saving:false}, () => {
+            if (this.props.addCompany){
+              this.props.addCompany({...newCompany, id: comp.id, label: newCompany.title, value: comp.id});
+              this.props.close();
+            } else {
+              this.props.history.push(`/helpdesk/settings/companies/${comp.id}`)
             }
-            )
-        });
-  }
+          }
+        )
+      });
+    }
 
   savePriceList(){
-    this.setState({saving:true});
-    rebase.addToCollection('/help-pricelists',
-    {
-      title: this.state.priceName,
-      afterHours:'0',
-      materialMargin:'0',
-      materialMarginExtra:'0'
-    })
+      this.setState({saving:true});
+      rebase.addToCollection('/help-pricelists',{
+        title: this.state.priceName,
+        afterHours:'0',
+        materialMargin:'0',
+        materialMarginExtra:'0'
+      })
       .then((listResponse)=>{
-        this.state.taskTypes.map((taskType,index)=>
-          rebase.addToCollection('/help-prices', {pricelist:listResponse.id,type:taskType.id,price:"0"})
-        );
-        this.state.tripTypes.map((tripType,index)=>
-          rebase.addToCollection('/help-prices', {pricelist:listResponse.id,type:tripType.id,price:"0"})
-        );
-        this.setState({
-          saving:false,
-          pricelist: {label: this.state.priceName, value: listResponse.id, id: listResponse.id},
-          editingPriceList: true,
-          newData: false,
-        }, () => this.submit());
-      });
+      this.setState({
+        saving:false,
+        pricelist: {label: this.state.priceName, value: listResponse.id, id: listResponse.id},
+        editingPriceList: true,
+        newData: false,
+      }, () => this.submit());
+    });
   }
 
   cancel(){
@@ -247,6 +220,7 @@ class CompanyAdd extends Component{
       drivePausal: this.state.oldDrivePausal,
       rented:this.state.oldRented,
       dph:this.state.oldDph,
+      monthlyPausal:this.state.oldMonthlyPausal,
 
       clearCompanyRents:true,
       newData: false,
@@ -256,28 +230,28 @@ class CompanyAdd extends Component{
   }
 
   render(){
-    return (
-      <div className="fit-with-header-and-commandbar">
-        {this.state.newData &&
+  return (
+    <div className="fit-with-header-and-commandbar">
+      {this.state.newData &&
         <div style={{position: "fixed", zIndex: "999", backgroundColor: "rgba(255,255,255,0.5)", top: "0", left: "0", width: "100%", height: "100vh"}}></div>
-        }
+      }
 
-        <h2 className="p-t-10 p-l-20" style={(this.state.newData ? {position: "relative", zIndex: "99999"} : {})}>Add new company</h2>
-        <hr style={(this.state.newData ? {position: "relative", zIndex: "99999"} : {})}/>
+      <h2 className="p-t-10 p-l-20" style={(this.state.newData ? {position: "relative", zIndex: "99999"} : {})}>Add new company</h2>
+      <hr style={(this.state.newData ? {position: "relative", zIndex: "99999"} : {})}/>
 
-          {
-            this.state.loading &&
-            <Alert color="success">
-              Loading data...
-            </Alert>
-          }
-          <div className="form-body-highlighted scroll-visible">
-            <div className="p-20">
-            <FormGroup className="row m-b-10">
-              <div className="m-r-10 w-20">
-                <Label for="name">Company name</Label>
-              </div>
-              <div className="flex">
+      {
+        this.state.loading &&
+        <Alert color="success">
+          Loading data...
+        </Alert>
+      }
+      <div className="form-body-highlighted scroll-visible">
+        <div className="p-20">
+          <FormGroup className="row m-b-10">
+            <div className="m-r-10 w-20">
+              <Label for="name">Company name</Label>
+            </div>
+            <div className="flex">
               <Input
                 name="name"
                 id="name"
@@ -287,10 +261,10 @@ class CompanyAdd extends Component{
                 onChange={(e)=>this.setState({title: e.target.value, newData: true, })}
                 />
             </div>
-            </FormGroup>
+          </FormGroup>
 
-            <FormGroup className="row m-b-10">
-              <div className="m-r-10 w-20">
+          <FormGroup className="row m-b-10">
+            <div className="m-r-10 w-20">
               <Label for="dph">DPH</Label>
             </div>
             <div className="flex">
@@ -303,10 +277,10 @@ class CompanyAdd extends Component{
                 onChange={(e)=>this.setState({dph: e.target.value, newData: true })  }
                 />
             </div>
-            </FormGroup>
+          </FormGroup>
 
-            <FormGroup className="row m-b-10">
-              <div className="m-r-10 w-20">
+          <FormGroup className="row m-b-10">
+            <div className="m-r-10 w-20">
               <Label for="ico">ICO</Label>
             </div>
             <div className="flex">
@@ -319,10 +293,10 @@ class CompanyAdd extends Component{
                 onChange={(e)=>this.setState({ICO: e.target.value, newData: true })  }
                 />
             </div>
-            </FormGroup>
+          </FormGroup>
 
-            <FormGroup className="row m-b-10">
-              <div className="m-r-10 w-20">
+          <FormGroup className="row m-b-10">
+            <div className="m-r-10 w-20">
               <Label for="dic">DIC</Label>
             </div>
             <div className="flex">
@@ -335,10 +309,10 @@ class CompanyAdd extends Component{
                 onChange={(e)=>this.setState({DIC: e.target.value, newData: true }) }
                 />
             </div>
-            </FormGroup>
+          </FormGroup>
 
-            <FormGroup className="row m-b-10">
-              <div className="m-r-10 w-20">
+          <FormGroup className="row m-b-10">
+            <div className="m-r-10 w-20">
               <Label for="ic_dph">IC DPH</Label>
             </div>
             <div className="flex">
@@ -351,10 +325,10 @@ class CompanyAdd extends Component{
                 onChange={(e)=>this.setState({IC_DPH: e.target.value, newData: true }) }
                 />
             </div>
-            </FormGroup>
+          </FormGroup>
 
-            <FormGroup className="row m-b-10">
-              <div className="m-r-10 w-20">
+          <FormGroup className="row m-b-10">
+            <div className="m-r-10 w-20">
               <Label for="country">Country</Label>
             </div>
             <div className="flex">
@@ -367,10 +341,10 @@ class CompanyAdd extends Component{
                 onChange={(e)=>this.setState({country: e.target.value, newData: true })}
                 />
             </div>
-            </FormGroup>
+          </FormGroup>
 
-            <FormGroup className="row m-b-10">
-              <div className="m-r-10 w-20">
+          <FormGroup className="row m-b-10">
+            <div className="m-r-10 w-20">
               <Label for="city">City</Label>
             </div>
             <div className="flex">
@@ -383,10 +357,10 @@ class CompanyAdd extends Component{
                 onChange={(e)=>this.setState({city: e.target.value, newData: true})}
                 />
             </div>
-            </FormGroup>
+          </FormGroup>
 
-            <FormGroup className="row m-b-10">
-              <div className="m-r-10 w-20">
+          <FormGroup className="row m-b-10">
+            <div className="m-r-10 w-20">
               <Label for="street">Street</Label>
             </div>
             <div className="flex">
@@ -399,10 +373,10 @@ class CompanyAdd extends Component{
                 onChange={(e)=>this.setState({street: e.target.value, newData: true})}
                 />
             </div>
-            </FormGroup>
+          </FormGroup>
 
-            <FormGroup className="row m-b-10">
-              <div className="m-r-10 w-20">
+          <FormGroup className="row m-b-10">
+            <div className="m-r-10 w-20">
               <Label for="psc">PSČ</Label>
             </div>
             <div className="flex">
@@ -415,10 +389,10 @@ class CompanyAdd extends Component{
                 onChange={(e)=>this.setState({PSC: e.target.value, newData: true})}
                 />
             </div>
-            </FormGroup>
+          </FormGroup>
 
-            <FormGroup className="row m-b-10">
-              <div className="m-r-10 w-20">
+          <FormGroup className="row m-b-10">
+            <div className="m-r-10 w-20">
               <Label for="mail">E-mail</Label>
             </div>
             <div className="flex">
@@ -432,26 +406,26 @@ class CompanyAdd extends Component{
                 onChange={(e)=>this.setState({mail: e.target.value, newData: true})}
                 />
             </div>
-            </FormGroup>
+          </FormGroup>
 
-            <FormGroup className="row m-b-10">
-              <div className="m-r-10 w-20">
+          <FormGroup className="row m-b-10">
+            <div className="m-r-10 w-20">
               <Label for="phone">Phone</Label>
             </div>
             <div className="flex">
               <Input
-                 name="phone"
-                 id="phone"
-                 type="text"
-                 placeholder="Enter phone"
-                 value={this.state.phone}
+                name="phone"
+                id="phone"
+                type="text"
+                placeholder="Enter phone"
+                value={this.state.phone}
                 onChange={(e)=>this.setState({phone: e.target.value, newData: true})}
                 />
             </div>
-            </FormGroup>
+          </FormGroup>
 
-            <FormGroup className="row">
-              <div className="m-r-10 w-20">
+          <FormGroup className="row">
+            <div className="m-r-10 w-20">
               <Label for="description">Description</Label>
             </div>
             <div className="flex">
@@ -464,11 +438,24 @@ class CompanyAdd extends Component{
                 onChange={(e)=>this.setState({description: e.target.value, newData: true})}
                 />
             </div>
-            </FormGroup>
+          </FormGroup>
 
+        </div>
+        {this.props.role > 1 && <div className="p-20 table-highlight-background">
+          <div className="row">
+            <span className="m-r-5">
+              <h3>Mesačný paušál</h3>
+            </span>
+            <label className="custom-container">
+              <Input type="checkbox"
+                checked={this.state.monthlyPausal}
+                onChange={()=>{
+                  this.setState({monthlyPausal:!this.state.monthlyPausal})
+                }}  />
+              <span className="checkmark" />
+            </label>
           </div>
-          <div className="p-20 table-highlight-background">
-            <h3>Mesačný paušál</h3>
+            { this.state.monthlyPausal && <div>
               <FormGroup className="row m-b-10 m-t-20">
                 <div className="m-r-10 w-20">
                   <Label for="pausal">Mesačná</Label>
@@ -487,68 +474,64 @@ class CompanyAdd extends Component{
                   <Label for="pausal">EUR bez DPH/mesiac</Label>
                 </div>
               </FormGroup>
-            <FormGroup className="row m-b-10">
-              <div className="m-r-10 w-20">
-              <Label for="pausal">Paušál práce</Label>
-            </div>
-            <div className="flex">
-              <Input
-                name="pausal"
-                id="pausal"
-                type="number"
-                placeholder="Enter work pausal"
-                value={this.state.workPausal}
-                onChange={(e)=>this.setState({workPausal:e.target.value, newData: true,})}
-                />
-            </div>
-            </FormGroup>
-            <FormGroup className="row m-b-10">
-              <div className="m-r-10 w-20">
-              <Label for="pausal">Paušál výjazdy</Label>
-            </div>
-            <div className="flex">
-              <Input
-                name="pausal"
-                id="pausal"
-                type="number"
-                placeholder="Enter drive pausal"
-                value={this.state.drivePausal}
-                onChange={(e)=>this.setState({drivePausal:e.target.value, newData: true,})}
-                />
-            </div>
-            </FormGroup>
-          </div>
+              <FormGroup className="row m-b-10">
+                <div className="m-r-10 w-20">
+                  <Label for="pausal">Paušál práce</Label>
+                </div>
+                <div className="flex">
+                  <Input
+                    name="pausal"
+                    id="pausal"
+                    type="number"
+                    placeholder="Enter work pausal"
+                    value={this.state.workPausal}
+                    onChange={(e)=>this.setState({workPausal:e.target.value, newData: true,})}
+                    />
+                </div>
+              </FormGroup>
+              <FormGroup className="row m-b-10">
+                <div className="m-r-10 w-20">
+                  <Label for="pausal">Paušál výjazdy</Label>
+                </div>
+                <div className="flex">
+                  <Input
+                    name="pausal"
+                    id="pausal"
+                    type="number"
+                    placeholder="Enter drive pausal"
+                    value={this.state.drivePausal}
+                    onChange={(e)=>this.setState({drivePausal:e.target.value, newData: true,})}
+                    />
+                </div>
+              </FormGroup>
 
-            {!this.props.addCompany &&
-              <div className="p-20">
-              <h3 className="m-b-15">Mesačný prenájom licencií a hardware</h3>
-                <CompanyRents
-                  clearForm={this.state.clearCompanyRents}
-                  setClearForm={()=>this.setState({clearCompanyRents:false})}
-                  data={this.state.rented}
-                  updateRent={(rent)=>{
-                    let newRents=[...this.state.rented];
-                    newRents[newRents.findIndex((item)=>item.id===rent.id)]={...newRents.find((item)=>item.id===rent.id),...rent};
-                    this.setState({rented:newRents, newData:true });
-                  }}
-                  addRent={(rent)=>{
-                    let newRents=[...this.state.rented];
-                    newRents.push({...rent,id:this.getFakeID()})
-                    this.setState({rented:newRents, newData:true });
-                  }}
-                  removeRent={(rent)=>{
-                    let newRents=[...this.state.rented];
-                    newRents.splice(newRents.findIndex((item)=>item.id===rent.id),1);
-                    this.setState({rented:newRents, newData:true });
-                  }}
-                  />
-
-              </div>
-            }
-
-
-            <div className="p-20 table-highlight-background">
-                <h3 className="m-b-20">Cenník</h3>
+              {!this.props.addCompany &&
+                <div className="p-20">
+                  <h3 className="m-b-15">Mesačný prenájom licencií a hardware</h3>
+                  <CompanyRents
+                    clearForm={this.state.clearCompanyRents}
+                    setClearForm={()=>this.setState({clearCompanyRents:false})}
+                    data={this.state.rented}
+                    updateRent={(rent)=>{
+                      let newRents=[...this.state.rented];
+                      newRents[newRents.findIndex((item)=>item.id===rent.id)]={...newRents.find((item)=>item.id===rent.id),...rent};
+                      this.setState({rented:newRents, newData:true });
+                    }}
+                    addRent={(rent)=>{
+                      let newRents=[...this.state.rented];
+                      newRents.push({...rent,id:this.getFakeID()})
+                      this.setState({rented:newRents, newData:true });
+                    }}
+                    removeRent={(rent)=>{
+                      let newRents=[...this.state.rented];
+                      newRents.splice(newRents.findIndex((item)=>item.id===rent.id),1);
+                      this.setState({rented:newRents, newData:true });
+                    }}
+                    />
+                </div>
+              }
+            </div>}
+            <h3 className="m-b-20">Cenník</h3>
             <FormGroup className="row m-b-10">
               <div className="m-r-10 w-20">
                 <Label for="pricelist">Pricelist</Label>
@@ -570,59 +553,59 @@ class CompanyAdd extends Component{
               this.state.newData) &&
               <FormGroup className="row m-b-10">
                 <div className="m-r-10 w-20">
-                <Label for="priceName">Price list name</Label>
+                  <Label for="priceName">Price list name</Label>
                 </div>
-                  <div className="flex">
-                <Input
-                  name="priceName"
-                  id="priceName"
-                  type="text"
-                  placeholder="Enter price list nema"
-                  value={this.state.priceName}
-                  onChange={(e)=>this.setState({priceName: e.target.value, newData: true})}
-                  />
-              </div>
+                <div className="flex">
+                  <Input
+                    name="priceName"
+                    id="priceName"
+                    type="text"
+                    placeholder="Enter price list nema"
+                    value={this.state.priceName}
+                    onChange={(e)=>this.setState({priceName: e.target.value, newData: true})}
+                    />
+                </div>
               </FormGroup>
             }
             {this.state.editingPriceList &&
               <PriceEdit listId={this.state.pricelist.id}  deletedList={() => this.setState({pricelist: [], priceName: "", editingPriceList: false})}/>
             }
-          </div>
-          </div>
+          </div>}
+        </div>
 
-         <div
-           className={classnames({ "form-footer": this.state.newData || this.props.addCompany}, "row")}
-           style={(this.state.newData ? {zIndex: "99999"} : {})}>
-            { (this.state.newData  || this.props.addCompany) &&
-              <Button
-                className="btn-link"
-                disabled={this.state.saving}
-                onClick={() => this.cancel()}>Cancel changes</Button>
-            }
+        <div
+          className={classnames({ "form-footer": this.state.newData || this.props.addCompany}, "row")}
+          style={(this.state.newData ? {zIndex: "99999"} : {})}>
+          { (this.state.newData  || this.props.addCompany) &&
+            <Button
+              className="btn-link"
+              disabled={this.state.saving}
+              onClick={() => this.cancel()}>Cancel changes</Button>
+          }
 
-            {(this.state.newData  || this.props.addCompany) &&
-              <Button
-                className="btn ml-auto"
-                disabled={(this.state.saving || this.state.title.length === 0) && (this.state.pricelist.value !== "0" || this.state.priceName === "") }
-                onClick={()=>{
-                  if (this.state.pricelist.value === "0" && this.state.priceName !== ""){
-                    this.savePriceList();
-                  } else {
-                    this.submit()
-                  }
+          {(this.state.newData  || this.props.addCompany) &&
+            <Button
+              className="btn ml-auto"
+              disabled={(this.state.saving || this.state.title.length === 0) && (this.state.pricelist.value !== "0" || this.state.priceName === "") }
+              onClick={()=>{
+                if (this.state.pricelist.value === "0" && this.state.priceName !== ""){
+                  this.savePriceList();
+                } else {
+                  this.submit()
+                }
               }}>{(this.state.pricelist.value === "0" && this.state.priceName !== "" ? "Save changes" : (this.state.saving?'Adding...':'Add company'))}</Button>
             }
-         </div>
+        </div>
 
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ storageMetadata, storageHelpPricelists, storageHelpTaskTypes, storageHelpTripTypes}) => {
-  const { metadataActive, metadata, metadataLoaded } = storageMetadata;
+const mapStateToProps = ({ storageHelpPricelists, userReducer}) => {
   const { pricelistsActive, pricelists, pricelistsLoaded } = storageHelpPricelists;
-  return { metadataActive, metadata, metadataLoaded, pricelistsActive, pricelists, pricelistsLoaded };
+  const role = userReducer.userData ? userReducer.userData.role.value : 0;
+  return { pricelistsActive, pricelists, pricelistsLoaded, role };
 };
 
-export default connect(mapStateToProps, { storageHelpPricelistsStart,storageMetadataStart, storageHelpTaskTypesStart, storageHelpTripTypesStart  })(CompanyAdd);
+export default connect(mapStateToProps, { storageHelpPricelistsStart  })(CompanyAdd);

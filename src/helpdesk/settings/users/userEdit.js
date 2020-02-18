@@ -34,6 +34,7 @@ class UserEdit extends Component{
       companies:[],
       role:roles[0],
       mailNotifications:false,
+      signature:'',
     }
     this.setData.bind(this);
   }
@@ -83,6 +84,11 @@ class UserEdit extends Component{
     if(role===undefined){
       role=roles[0];
     }
+    let signature = user.signature;
+    if(!signature){
+      signature = `${user.name} ${user.surname}, ${ company ? company.title : '' }`;
+    }
+
     this.setState({
       company,
       companies,
@@ -92,6 +98,7 @@ class UserEdit extends Component{
       email:user.email,
       role,
       mailNotifications: user.mailNotifications === true,
+      signature,
       loading:false
     })
   }
@@ -109,7 +116,8 @@ class UserEdit extends Component{
             <Label for="role">Role</Label>
             <Select
               styles={selectStyle}
-              options={roles}
+              isDisabled={this.state.role.value > this.props.role }
+              options={this.state.role.value > this.props.role? roles : roles.filter( (role) => role.value <= this.props.role )}
               value={this.state.role}
               onChange={role => this.setState({ role })}
               />
@@ -148,6 +156,11 @@ class UserEdit extends Component{
               />
           </FormGroup>
 
+          <FormGroup>
+            <Label for="signature">Signature</Label>
+            <Input type="textarea" name="signature" id="signature" placeholder="Enter signature" value={this.state.signature} onChange={(e)=>this.setState({signature:e.target.value,signatureChanged:true})} />
+          </FormGroup>
+
           <div className="row">
             <Button className="btn m-r-5" disabled={this.state.saving|| this.state.companies.length===0||!isEmail(this.state.email)} onClick={()=>{
               this.setState({saving:true});
@@ -159,6 +172,7 @@ class UserEdit extends Component{
                 company:this.state.company.id,
                 role:this.state.role,
                 mailNotifications:this.state.mailNotifications,
+                signature:this.state.signature,
               }
               rebase.updateDoc('/users/'+this.props.match.params.id, body)
                 .then(()=>{
@@ -192,7 +206,8 @@ class UserEdit extends Component{
 const mapStateToProps = ({ storageCompanies, storageUsers, userReducer}) => {
   const { companiesActive, companies, companiesLoaded } = storageCompanies;
   const { usersActive, users, usersLoaded } = storageUsers;
-  return { companiesActive, companies, companiesLoaded, usersActive, users, usersLoaded, currentUser:userReducer };
+  const role = userReducer.userData ? userReducer.userData.role.value : 0;
+  return { companiesActive, companies, companiesLoaded, usersActive, users, usersLoaded, currentUser:userReducer, role };
 };
 
 export default connect(mapStateToProps, { storageCompaniesStart,storageUsersStart,setUserData })(UserEdit);

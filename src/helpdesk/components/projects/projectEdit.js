@@ -515,6 +515,7 @@ class ProjectEdit extends Component{
 											return {
 												...permission,
 												user:permission.user.id,
+												internal: permission.internal === undefined ? false : permission.internal,
 											}
 										})
                   };

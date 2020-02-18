@@ -69,7 +69,7 @@ class PriceList extends Component{
                           {pricelist.title}
                         </td>
                         <td width="10%" className={(this.props.match.params.id === pricelist.id ? "text-highlight":"")}>
-                          {pricelist.id === "NXH3ohdC4IlLgMUL4NR8" ? "Default" : ""}
+                          {pricelist.def ? "Default" : ""}
                         </td>
                       </tr>
                     )}

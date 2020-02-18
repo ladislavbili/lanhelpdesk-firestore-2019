@@ -111,7 +111,8 @@ submitEmail(){
   this.setState({hasError:false});
   firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then((token)=>{
     fetch('https://api01.lansystems.sk:8080/send-mail',{
-      //127.0.0.1 https://api01.lansystems.sk:8080
+      //127.0.0.1:3003
+      //https://api01.lansystems.sk:8080
       headers: {
         'Content-Type': 'application/json'
       },
@@ -124,6 +125,7 @@ submitEmail(){
           token,
           email:this.props.users.find((user)=>user.id===this.props.userID).email,
           citations:this.state.comments,
+          signature:this.props.signature,
         }),
     }).then((response)=>response.json().then((response)=>{
       if(response.error){
@@ -365,8 +367,8 @@ submitEmail(){
 }
 
 const mapStateToProps = ({ userReducer }) => {
-	const { id } = userReducer;
-	return { userID:id };
+	const { id, userData } = userReducer;
+	return { userID:id, signature:userData.signature };
 };
 
 export default connect(mapStateToProps, { })(Comments);

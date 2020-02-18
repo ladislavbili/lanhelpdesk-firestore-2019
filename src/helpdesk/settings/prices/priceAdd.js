@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
 import {rebase } from '../../../index';
 import { connect } from "react-redux";
-import {storageHelpTaskTypesStart, storageHelpTripTypesStart} from '../../../redux/actions';
+import {storageHelpTaskTypesStart, storageHelpTripTypesStart, storageHelpPricelistsStart} from '../../../redux/actions';
 
 class PriceAdd extends Component{
   constructor(props){
@@ -22,7 +22,7 @@ class PriceAdd extends Component{
   }
 
   storageLoaded(props){
-    return props.tripTypesLoaded && props.taskTypesLoaded
+    return props.tripTypesLoaded && props.taskTypesLoaded && props.pricelistsLoaded
   }
 
   componentWillReceiveProps(props){
@@ -37,6 +37,9 @@ class PriceAdd extends Component{
     }
     if(!this.props.taskTypesActive){
       this.props.storageHelpTaskTypesStart();
+    }
+    if(!this.props.pricelistsActive){
+      this.props.storageHelpPricelistsStart();
     }
     if(this.storageLoaded(this.props)){
       this.setData(this.props);
@@ -74,7 +77,7 @@ class PriceAdd extends Component{
             </Alert>
           }
           <FormGroup check className="m-b-5 p-l-0">
-            <Input type="checkbox" checked={this.state.def} disabled={true} onChange={(e)=>this.setState({def:!this.state.def})}/>
+            <Input type="checkbox" checked={this.state.def} onChange={(e)=>this.setState({def:!this.state.def})}/>
             <Label check className="m-l-15">
               Default
             </Label>
@@ -172,7 +175,8 @@ class PriceAdd extends Component{
               })
                 .then((listResponse)=>{
                   if(this.state.def){
-                    rebase.updateDoc('/metadata/0',{defaultPricelist:listResponse.id})
+
+                    rebase.updateDoc('/help-pricelists/'+this.props.pricelists.find((item)=>item.default).id,{def:false})
                   }
                   this.state.taskTypes.map((taskType,index)=>
                     rebase.addToCollection('/help-prices', {pricelist:listResponse.id,type:taskType.id,price:parseFloat(taskType.price.price === "" ? "0": taskType.price.price)})
@@ -202,13 +206,15 @@ class PriceAdd extends Component{
   }
 }
 
-const mapStateToProps = ({ storageHelpTaskTypes, storageHelpTripTypes}) => {
+const mapStateToProps = ({ storageHelpTaskTypes, storageHelpTripTypes, storageHelpPricelists}) => {
 	const { taskTypesLoaded, taskTypesActive, taskTypes } = storageHelpTaskTypes;
   const { tripTypesActive, tripTypes, tripTypesLoaded } = storageHelpTripTypes;
+    const { pricelistsLoaded ,pricelistsActive, pricelists } = storageHelpPricelists;
   return {
     taskTypesLoaded, taskTypesActive, taskTypes,
 		tripTypesActive, tripTypes, tripTypesLoaded,
+    pricelistsLoaded, pricelistsActive, pricelists,
   };
 };
 
-export default connect(mapStateToProps, { storageHelpTaskTypesStart, storageHelpTripTypesStart })(PriceAdd);
+export default connect(mapStateToProps, { storageHelpTaskTypesStart, storageHelpTripTypesStart, storageHelpPricelistsStart })(PriceAdd);

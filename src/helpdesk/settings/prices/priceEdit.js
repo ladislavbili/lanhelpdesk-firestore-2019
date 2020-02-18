@@ -6,7 +6,7 @@ import Select from 'react-select';
 import { rebase, database } from '../../../index';
 import { snapshotToArray, toSelArr } from '../../../helperFunctions';
 import { selectStyle } from "../../../scss/selectStyles";
-import {storageMetadataStart,storageHelpPricelistsStart,storageHelpPricesStart,storageHelpTaskTypesStart, storageHelpTripTypesStart} from '../../../redux/actions';
+import {storageHelpPricelistsStart,storageHelpPricesStart,storageHelpTaskTypesStart, storageHelpTripTypesStart} from '../../../redux/actions';
 
 class PriceEdit extends Component{
   constructor(props){
@@ -17,32 +17,33 @@ class PriceEdit extends Component{
       afterHours:0,
       margin:0,
       marginExtra:0,
-      defaultPricelist:null,
       def:false,
       loading:true,
       saving:false,
       taskTypes:[],
       tripTypes:[],
 
+      wasDef:false,
+
       companies:[],
       openEditCompanies:false,
 
     }
     this.setData.bind(this);
+    this.assignDefRandomly.bind(this);
     this.deletePricelist.bind(this);
   }
 
   storageLoaded(props){
-    return props.pricesLoaded && props.taskTypesLoaded && props.pricelistsLoaded && props.metadataLoaded && props.tripTypesLoaded
+    return props.pricesLoaded && props.taskTypesLoaded && props.pricelistsLoaded && props.tripTypesLoaded
   }
 
   componentWillReceiveProps(props){
     if(this.storageLoaded(props) && !this.storageLoaded(this.props)){
       this.setData(props);
     }
-    if((this.props.match && props.match && this.props.match.params.id!==props.match.params.id)
-      ||
-      (this.props.listId !== props.listId)){
+    if((this.props.match && props.match && this.props.match.params.id !== props.match.params.id) ||
+      (this.props.listId !== props.listId) ){
       this.setState({loading:true})
       if(this.storageLoaded(props)){
         this.setData(props);
@@ -51,9 +52,7 @@ class PriceEdit extends Component{
   }
 
   componentWillMount(){
-    if(!this.props.metadataActive){
-      this.props.storageMetadataStart();
-    }
+
     if(!this.props.pricelistsActive){
       this.props.storageHelpPricelistsStart();
     }
@@ -74,7 +73,6 @@ class PriceEdit extends Component{
   setData(props){
     let id = (props.listId ? props.listId : props.match.params.id);
     let pricelist = props.pricelists.find((pricelist)=>pricelist.id===id);
-    let meta = props.metadata;
     let prices = props.prices;
     let taskTypes = props.taskTypes;
     let tripTypes = props.tripTypes;
@@ -106,8 +104,8 @@ class PriceEdit extends Component{
       taskTypes,
       tripTypes,
       loading:false,
-      def:meta.defaultPricelist===id,
-      defaultPricelist:meta.defaultPricelist
+      def: pricelist.def === true,
+      wasDef: pricelist.def === true,
     });
   }
 
@@ -127,8 +125,8 @@ class PriceEdit extends Component{
 
   deletePricelist(){
     rebase.removeDoc('/help-pricelists/'+(this.props.match ? this.props.match.params.id : this.props.listId));
-    if(this.state.defaultPricelist===(this.props.match ? this.props.match.params.id : this.props.listId)){
-      rebase.updateDoc('/metadata/0',{defaultPricelist:null});
+    if(this.state.wasDef){
+      this.assignDefRandomly();
     }
     this.state.taskTypes.filter((item)=>item.price.id!==undefined).map((taskType)=>
       rebase.removeDoc('/help-prices/'+taskType.price.id)
@@ -137,6 +135,13 @@ class PriceEdit extends Component{
       this.props.deletedList();
     } else {
       this.props.history.goBack();
+    }
+  }
+
+  assignDefRandomly(){
+    let newDefPricelist = this.props.pricelists.find((pricelist)=>pricelist.id !== (this.props.match ? this.props.match.params.id : this.props.listId));
+    if(newDefPricelist){
+      rebase.updateDoc('/help-pricelists/'+newDefPricelist.id,{def:true});
     }
   }
 
@@ -150,8 +155,8 @@ class PriceEdit extends Component{
             </Alert>
           }
           <FormGroup check className="m-b-5 p-l-0">
-            <Input type="checkbox" checked={this.state.def} disabled={true} onChange={(e)=>this.setState({def:!this.state.def})}/>
-            <Label check className="m-l-15">
+            <Input type="checkbox" id="defCheck" checked={this.state.def} onChange={(e)=>this.setState({def:!this.state.def})}/>
+            <Label check htmlFor="defCheck" className="m-l-15">
               Default
             </Label>
           </FormGroup>
@@ -239,12 +244,15 @@ class PriceEdit extends Component{
           <div className="row">
               <Button className="btn" disabled={this.state.saving} onClick={()=>{
                   this.setState({saving:true});
-                  if(!this.state.def && this.state.defaultPricelist===(this.props.match ? this.props.match.params.id : this.props.listId)){
-                    this.setState({defaultPricelist:null});
-                    rebase.updateDoc('/metadata/0',{defaultPricelist:null});
-                  }else if(this.state.def){
-                    this.setState({defaultPricelist: (this.props.match ? this.props.match.params.id : this.props.listId)});
-                    rebase.updateDoc('/metadata/0',{defaultPricelist:(this.props.match ? this.props.match.params.id : this.props.listId)});
+                  if(!this.state.def && this.state.wasDef){
+                    this.setState({wasDef:false});
+                    this.assignDefRandomly();
+                  }else if(this.state.def && !this.state.wasDef){
+                    this.setState({wasDef: true});
+                    let prevDef = this.props.pricelists.find((pricelist)=>pricelist.def);
+                    if(prevDef){
+                      rebase.updateDoc('/help-pricelists/'+prevDef.id,{def:false});
+                    }
                   }
 
                   this.state.taskTypes.concat(this.state.tripTypes).filter((item)=>item.price.id!==undefined).map((type)=>
@@ -273,7 +281,14 @@ class PriceEdit extends Component{
                   )
 
 
-                  rebase.updateDoc('/help-pricelists/'+(this.props.listId ? this.props.listId : this.props.match.params.id), {title:this.state.pricelistName, afterHours:parseFloat(this.state.afterHours===''?'0':this.state.afterHours),materialMargin:parseFloat(this.state.margin===''?'0':this.state.margin),materialMarginExtra:parseFloat(this.state.marginExtra===''?'0':this.state.marginExtra)})
+                  rebase.updateDoc('/help-pricelists/'+(this.props.listId ? this.props.listId : this.props.match.params.id),
+                  {
+                    title:this.state.pricelistName,
+                    def:this.state.def,
+                    afterHours:parseFloat(this.state.afterHours===''?'0':this.state.afterHours),
+                    materialMargin:parseFloat(this.state.margin===''?'0':this.state.margin),
+                    materialMarginExtra:parseFloat(this.state.marginExtra===''?'0':this.state.marginExtra)
+                  })
                     .then(()=>
                       this.setState({saving:false})
                     );
@@ -338,15 +353,13 @@ class PriceEdit extends Component{
   }
 }
 
-const mapStateToProps = ({ storageMetadata,storageHelpPricelists,storageHelpPrices, storageHelpTaskTypes, storageHelpTripTypes}) => {
-  const { metadataActive, metadata, metadataLoaded } = storageMetadata;
+const mapStateToProps = ({ storageHelpPricelists,storageHelpPrices, storageHelpTaskTypes, storageHelpTripTypes}) => {
   const { pricelistsActive, pricelists, pricelistsLoaded } = storageHelpPricelists;
   const { pricesActive, prices, pricesLoaded } = storageHelpPrices;
 	const { taskTypesLoaded, taskTypesActive, taskTypes } = storageHelpTaskTypes;
   const { tripTypesActive, tripTypes, tripTypesLoaded } = storageHelpTripTypes;
 
   return {
-    metadataActive, metadata, metadataLoaded,
     pricelistsActive, pricelists, pricelistsLoaded,
     pricesActive, prices, pricesLoaded,
     taskTypesLoaded, taskTypesActive, taskTypes,
@@ -354,4 +367,4 @@ const mapStateToProps = ({ storageMetadata,storageHelpPricelists,storageHelpPric
   };
 };
 
-export default connect(mapStateToProps, { storageMetadataStart,storageHelpPricelistsStart,storageHelpPricesStart,storageHelpTaskTypesStart, storageHelpTripTypesStart })(PriceEdit);
+export default connect(mapStateToProps, { storageHelpPricelistsStart,storageHelpPricesStart,storageHelpTaskTypesStart, storageHelpTripTypesStart })(PriceEdit);
