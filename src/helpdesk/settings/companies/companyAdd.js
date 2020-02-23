@@ -18,10 +18,9 @@ class CompanyAdd extends Component{
     super(props);
     this.state={
       pricelists:[{label: "Vlastný", value: "0"}],
-      pricelist: [],
-      oldPricelist: [],
+      pricelist: {},
+      oldPricelist: {},
       priceName: "",
-      editingPriceList: false,
       title:'',
       oldTitle: "",
       ICO: "",
@@ -99,7 +98,7 @@ class CompanyAdd extends Component{
 
   setData(props){
     let pricelists = [{label: "Vlastný", value: "0"}, ...toSelArr(props.pricelists)];
-    let meta = props.metadata;
+  //  let meta = props.metadata;
     let pricelist = pricelists.find((pricelist)=>pricelist.def);
     if(pricelist === undefined){
       if(pricelists.length>1){
@@ -167,7 +166,6 @@ class CompanyAdd extends Component{
           rented:[],
           dph:20,
           newData: false,
-          editingPriceList: false,
           priceName: "",
           monthlyPausal: false,
           saving:false}, () => {
@@ -194,7 +192,6 @@ class CompanyAdd extends Component{
       this.setState({
         saving:false,
         pricelist: {label: this.state.priceName, value: listResponse.id, id: listResponse.id},
-        editingPriceList: true,
         newData: false,
       }, () => this.submit());
     });
@@ -224,12 +221,12 @@ class CompanyAdd extends Component{
 
       clearCompanyRents:true,
       newData: false,
-      editingPriceList: false,
       priceName: "",
     })
   }
 
   render(){
+
   return (
     <div className="fit-with-header-and-commandbar">
       {this.state.newData &&
@@ -543,7 +540,7 @@ class CompanyAdd extends Component{
                   styles={selectStyle}
                   options={this.state.pricelists}
                   value={this.state.pricelist}
-                  onChange={e =>{ this.setState({pricelist: e, newData: (e.value === 0), editingPriceList: false  }) }}
+                  onChange={e =>{ this.setState({pricelist: e, newData: true  }) }}
                   />
               </div>
             </FormGroup>
@@ -567,9 +564,15 @@ class CompanyAdd extends Component{
                 </div>
               </FormGroup>
             }
-            {this.state.editingPriceList &&
-              <PriceEdit listId={this.state.pricelist.id}  deletedList={() => this.setState({pricelist: [], priceName: "", editingPriceList: false})}/>
+
+            { this.state.pricelist !== [] &&
+              this.state.pricelist.value !== "0" &&
+              <PriceEdit {...this.props}
+                listId={this.state.pricelist.id}
+                changedName={ (e) => this.setState({pricelist: {...this.state.pricelist, label: e} }) }
+                deletedList={() => this.setState({pricelist: [], priceName: ""})}/>
             }
+
           </div>}
         </div>
 
@@ -586,7 +589,7 @@ class CompanyAdd extends Component{
           {(this.state.newData  || this.props.addCompany) &&
             <Button
               className="btn ml-auto"
-              disabled={(this.state.saving || this.state.title.length === 0) && (this.state.pricelist.value !== "0" || this.state.priceName === "") }
+              disabled={this.state.saving || this.state.title.length === 0 || (this.state.pricelist.value === "0" && this.state.priceName === "") }
               onClick={()=>{
                 if (this.state.pricelist.value === "0" && this.state.priceName !== ""){
                   this.savePriceList();

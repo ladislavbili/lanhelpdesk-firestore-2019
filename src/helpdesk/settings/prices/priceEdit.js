@@ -155,7 +155,7 @@ class PriceEdit extends Component{
             </Alert>
           }
           <FormGroup check className="m-b-5 p-l-0">
-            <Input type="checkbox" id="defCheck" checked={this.state.def} onChange={(e)=>this.setState({def:!this.state.def})}/>
+            <Input type="checkbox" id="defCheck" checked={this.state.def} onChange={(e)=> this.setState({def:!this.state.def})}/>
             <Label check htmlFor="defCheck" className="m-l-15">
               Default
             </Label>
@@ -166,7 +166,13 @@ class PriceEdit extends Component{
               <Label for="name">Pricelist name</Label>
             </div>
             <div className="flex">
-              <Input type="text" name="name" id="name" placeholder="Enter pricelist name" value={this.state.pricelistName} onChange={(e)=>this.setState({pricelistName:e.target.value})} />
+              <Input
+                type="text"
+                name="name"
+                id="name"
+                placeholder="Enter pricelist name"
+                value={this.state.pricelistName}
+                onChange={(e) => this.setState({pricelistName:e.target.value})} />
             </div>
           </FormGroup>
 
@@ -290,11 +296,11 @@ class PriceEdit extends Component{
                     materialMarginExtra:parseFloat(this.state.marginExtra===''?'0':this.state.marginExtra)
                   })
                     .then(()=>
-                      this.setState({saving:false})
+                      this.setState({saving:false}, () => {if (this.props.changedName) this.props.changedName(this.state.pricelistName)})
                     );
                 }}>{this.state.saving?'Saving prices...':'Save prices'}</Button>
 
-              <Button className="btn-red ml-auto" disabled={this.state.saving} onClick={this.deletePricelistPopup.bind(this)}>Delete price list</Button>
+              <Button className="btn-red ml-auto" disabled={this.state.saving || this.props.deletedList} onClick={this.deletePricelistPopup.bind(this)}>Delete price list</Button>
           </div>
           <Modal isOpen={this.state.openEditCompanies} style={{width: "1000px"}} toggle={()=>this.setState({openEditCompanies:false})}>
             <ModalHeader toggle={()=>this.setState({openEditCompanies:false})}>Edit companies</ModalHeader>

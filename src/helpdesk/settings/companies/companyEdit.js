@@ -16,10 +16,9 @@ class CompanyEdit extends Component{
     super(props);
     this.state={
       pricelists:[{label: "Vlastný", value: "0"}],
-      pricelist:[],
-      oldPricelist: [],
+      pricelist:{},
+      oldPricelist: {},
       priceName: "",
-      editingPriceList: false,
       taskTypes: [],
       tripTypes: [],
       title:'',
@@ -278,7 +277,6 @@ class CompanyEdit extends Component{
           saving:false,
           pricelist: {label: this.state.priceName, value: listResponse.id, id: listResponse.id},
           newData: false,
-          editingPriceList: true,
         }, () => this.submit());
       });
   }
@@ -310,6 +308,7 @@ class CompanyEdit extends Component{
   }
 
   render(){
+
     return (
       <div className="fit-with-header-and-commandbar">
         {this.state.newData &&
@@ -624,7 +623,7 @@ class CompanyEdit extends Component{
               styles={selectStyle}
               options={this.state.pricelists}
               value={this.state.pricelist}
-              onChange={e =>{ this.setState({pricelist: e, newData: true, editingPriceList: false }) }}
+              onChange={e =>{ this.setState({pricelist: e, newData: true}) }}
               />
           </div>
           </FormGroup>
@@ -648,8 +647,12 @@ class CompanyEdit extends Component{
             </div>
             </FormGroup>
           }
-          {this.state.editingPriceList &&
-            <PriceEdit listId={this.state.pricelist.id} deletedList={() => this.setState({pricelist: [], priceName: "", editingPriceList: false})}/>
+          { this.state.pricelist !== [] &&
+            this.state.pricelist.value !== "0" &&
+            <PriceEdit {...this.props}
+              listId={this.state.pricelist.id}
+              changedName={ (e) => this.setState({pricelist: {...this.state.pricelist, label: e} }) }
+              deletedList={ () => this.setState({pricelist: [], priceName: ""}) }/>
           }
         </div>}
       </div>
@@ -661,7 +664,8 @@ class CompanyEdit extends Component{
           {this.state.newData &&
             <Button
               className="btn"
-              disabled={this.state.saving || this.state.title.length === 0 }
+              disabled={this.state.saving || this.state.title.length === 0 || (this.state.pricelist.value === "0" &&
+                                                                              (this.state.priceName === "")) }
               onClick={()=>{
                 if (this.state.pricelist.value === "0" && this.state.priceName !== ""){
                   this.savePriceList();
