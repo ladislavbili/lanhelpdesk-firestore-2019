@@ -10,6 +10,7 @@ import {storageHelpPricelistsStart } from '../../../redux/actions';
 import {sameStringForms, isEmail} from '../../../helperFunctions';
 import CompanyRents from './companyRents';
 import PriceEdit from "../prices/priceEdit";
+import Checkbox from '../../../components/checkbox';
 
 import classnames from "classnames";
 
@@ -98,7 +99,7 @@ class CompanyAdd extends Component{
 
   setData(props){
     let pricelists = [{label: "Vlastný", value: "0"}, ...toSelArr(props.pricelists)];
-  //  let meta = props.metadata;
+    //  let meta = props.metadata;
     let pricelist = pricelists.find((pricelist)=>pricelist.def);
     if(pricelist === undefined){
       if(pricelists.length>1){
@@ -443,14 +444,13 @@ class CompanyAdd extends Component{
             <span className="m-r-5">
               <h3>Mesačný paušál</h3>
             </span>
-            <label className="custom-container">
-              <Input type="checkbox"
-                checked={this.state.monthlyPausal}
-                onChange={()=>{
-                  this.setState({monthlyPausal:!this.state.monthlyPausal})
-                }}  />
-              <span className="checkmark" />
-            </label>
+            <Checkbox
+              className = "m-l-5"
+              value = { this.state.monthlyPausal }
+              onChange={()=>{
+                this.setState({monthlyPausal:!this.state.monthlyPausal})
+              }}
+              />
           </div>
             { this.state.monthlyPausal && <div>
               <FormGroup className="row m-b-10 m-t-20">

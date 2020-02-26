@@ -1,56 +1,92 @@
 import React, { Component } from 'react';
+import { connect } from "react-redux";
+import { rebase } from '../../index';
 import Search from './search';
-import classnames from "classnames";
+import Checkbox from '../checkbox';
+import Multiselect from '../multiselect';
 
-export default class ListHeader extends Component {
+class ListHeader extends Component {
 	render() {
 		return (
 				<div className="d-flex m-b-10 flex-row">
 					<Search {...this.props}/>
-					<div className={classnames({"m-r-20": (this.props.link.includes("settings")
-																								|| (this.props.link.includes("lanwiki") && this.props.layout === 1)
-																								|| (this.props.link.includes("passmanager") && this.props.layout === 1)
-																								|| (this.props.link.includes("expenditures") && this.props.layout === 1)
-																								|| (this.props.link.includes("helpdesk") && !this.props.link.includes("settings") && this.props.layout !== 0))},
-
-																		 {"m-r-5": (this.props.link.includes("helpdesk") && !this.props.link.includes("settings") && this.props.layout === 0)
-																			 					|| (this.props.link.includes("passmanager") && this.props.layout === 0)
-																			 					|| (this.props.link.includes("expenditures") && this.props.layout === 0)
-																								|| (this.props.link.includes("lanwiki") && this.props.layout === 0)},
-
-																		 "d-flex", "flex-row", "align-items-center", "ml-auto")}>
-						<div className="text-basic m-r-5 m-l-5">
-							Sort by
-						</div>
-
-							<select
-								value={this.props.orderBy}
-								className="invisible-select text-bold text-highlight"
-								onChange={(e)=>this.props.setOrderBy(e.target.value)}>
-								{
-									this.props.orderByValues.map((item,index)=>
-									<option value={item.value} key={index}>{item.label}</option>
-								)
+					{ !this.props.multiselect && <div className="center-hor flex-row">
+						<Checkbox
+							className="m-l-5 m-r-10"
+							label= "All"
+							value={ this.props.statuses.length===0 || this.props.allStatuses.every((status)=>this.props.statuses.includes(status.id)) }
+							onChange={()=>{
+								if(this.props.statuses.length===0){
+									let newStatuses = this.props.allStatuses.map((status) => status.id );
+									rebase.updateDoc('/users/'+this.props.currentUser.id, {statuses:newStatuses});
+									this.props.setStatuses( newStatuses );
+								}else{
+									rebase.updateDoc('/users/'+this.props.currentUser.id, {statuses:[]});
+									this.props.setStatuses( [] );
 								}
-							</select>
-
-							{ !this.props.ascending &&
-								<button type="button" className="btn btn-link btn-outline-blue waves-effect" onClick={()=>this.props.setAscending(true)}>
-									<i
-										className="fas fa-arrow-up"
-										/>
-								</button>
-							}
-
-							{ this.props.ascending &&
-								<button type="button" className="btn btn-link btn-outline-blue waves-effect" onClick={()=>this.props.setAscending(false)}>
-									<i
-										className="fas fa-arrow-down"
-										/>
-								</button>
-							}
-					</div>
+							}}
+							/>
+						{ this.props.allStatuses.map((status)=>
+							<Checkbox
+								key={status.id}
+								className="m-l-5 m-r-10"
+								label={ status.title }
+								value={ this.props.statuses.includes(status.id) }
+								onChange={()=>{
+									if(this.props.statuses.includes(status.id)) {
+										let newStatuses = this.props.statuses.filter( (id) => !(status.id === id) );
+										rebase.updateDoc('/users/'+this.props.currentUser.id, {statuses:newStatuses});
+										this.props.setStatuses( newStatuses );
+									}else{
+										let newStatuses = [...this.props.statuses, status.id];
+										rebase.updateDoc('/users/'+this.props.currentUser.id, {statuses:newStatuses});
+										this.props.setStatuses(newStatuses);
+									}
+								}}
+								/>
+							)}
+						</div>}
+						{ this.props.multiselect &&
+							<Multiselect
+								className="ml-auto m-r-10"
+								options={ [{ id:'All', label: 'All' }, ...this.props.allStatuses.map((status)=>({...status,label:status.title}))] }
+								value={
+									[{ id:'All', label: 'All' }, ...this.props.allStatuses.map((status)=>({...status,label:status.title}))]
+									.filter((status)=> this.props.statuses.includes(status.id))
+									.concat(this.props.allStatuses.every((status)=>this.props.statuses.includes(status.id))?[{ id:'All', label: 'All' }]:[])
+								}
+								label={ "Status filter" }
+								onChange={ (status) => {
+									if(status.id === 'All'){
+										if(this.props.statuses.length===0){
+											let newStatuses = this.props.allStatuses.map((status) => status.id );
+											rebase.updateDoc('/users/'+this.props.currentUser.id, {statuses:newStatuses});
+											this.props.setStatuses( newStatuses );
+										}else{
+											rebase.updateDoc('/users/'+this.props.currentUser.id, {statuses:[]});
+											this.props.setStatuses( [] );
+										}
+									}else{
+										if(this.props.statuses.includes(status.id)) {
+											let newStatuses = this.props.statuses.filter( (id) => !(status.id === id) );
+											rebase.updateDoc('/users/'+this.props.currentUser.id, {statuses:newStatuses});
+											this.props.setStatuses( newStatuses );
+										}else{
+											let newStatuses = [...this.props.statuses, status.id];
+											rebase.updateDoc('/users/'+this.props.currentUser.id, {statuses:newStatuses});
+											this.props.setStatuses(newStatuses);
+										}
+									}
+								} }
+								/>
+					}
 				</div>
 		);
 	}
 }
+
+const mapStateToProps = ({ userReducer }) => {
+	return { currentUser:userReducer };
+};
+
+export default connect(mapStateToProps, {  })(ListHeader);

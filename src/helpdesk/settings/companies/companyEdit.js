@@ -10,6 +10,7 @@ import {storageHelpPricelistsStart,storageMetadataStart, storageCompaniesStart, 
 import {sameStringForms, isEmail} from '../../../helperFunctions';
 import CompanyRents from './companyRents';
 import PriceEdit from "../prices/priceEdit";
+import Checkbox from '../../../components/checkbox';
 
 class CompanyEdit extends Component{
   constructor(props){
@@ -527,14 +528,13 @@ class CompanyEdit extends Component{
               <span className="m-r-5">
                 <h3>Mesačný paušál</h3>
               </span>
-               <label className="custom-container">
-                <Input type="checkbox"
-                  checked={this.state.monthlyPausal}
-                  onChange={()=>{
-                    this.setState({monthlyPausal:!this.state.monthlyPausal, newData: true })
-                    }}  />
-                  <span className="checkmark">  </span>
-              </label>
+              <Checkbox
+                className = "m-l-5"
+                value = { this.state.monthlyPausal }
+                onChange={()=>{
+                  this.setState({monthlyPausal:!this.state.monthlyPausal, newData: true })
+                }}
+                />
             </div>
             { this.state.monthlyPausal && <div>
               <FormGroup className="row m-b-10 m-t-20">

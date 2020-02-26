@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, InputGroup, InputGroupAddon, InputGroupText } from 'reactstrap';
 import {rebase } from '../../../index';
+import Checkbox from '../../../components/checkbox';
 
 import { connect } from "react-redux";
 import {storageSmtpsStart} from '../../../redux/actions';
@@ -40,13 +41,14 @@ class SMTPAdd extends Component{
   render(){
     return (
       <div className="p-20 scroll-visible fit-with-header-and-commandbar">
-
-        <FormGroup check className="m-b-5 p-l-0">
-          <Input type="checkbox" id="defCheck" checked={this.state.def} onChange={(e)=>this.setState({def:!this.state.def})}/>
-          <Label htmlFor="defCheck" check className="p-l-15">
-            Default
-          </Label>
-        </FormGroup>
+        <Checkbox
+          className = "m-b-5 p-l-0"
+          value = { this.state.def }
+          onChange={()=>{
+            this.setState({def:!this.state.def})
+          }}
+          label = "Default"
+          />
 
         <FormGroup>
           <Label for="name">Title</Label>
@@ -60,12 +62,14 @@ class SMTPAdd extends Component{
           <Label for="name">Port</Label>
           <Input type="number" name="name" id="port" placeholder="Enter port" value={this.state.port} onChange={(e)=>this.setState({port:e.target.value})} />
         </FormGroup>
-        <FormGroup check className="m-b-5 p-l-0">
-          <Input type="checkbox" id="checkSec" checked={this.state.secure} onChange={(e)=>this.setState({secure:!this.state.secure})}/>
-          <Label htmlFor="checkSec" check className="p-l-15">
-            Secure
-          </Label>
-        </FormGroup>
+        <Checkbox
+          className = "m-b-5 p-l-0"
+          value = { this.state.secure }
+          onChange={()=>{
+            this.setState({secure:!this.state.secure})
+          }}
+          label = "Secure"
+          />
         <FormGroup>
           <Label for="name">Username</Label>
           <Input type="text" name="name" id="user" placeholder="Enter user" value={this.state.user} onChange={(e)=>this.setState({user:e.target.value})} />
@@ -81,12 +85,14 @@ class SMTPAdd extends Component{
             </InputGroupAddon>
           </InputGroup>
         </FormGroup>
-        <FormGroup check className="m-b-5 p-l-0">
-          <Input type="checkbox" id="checkAuth" checked={this.state.rejectUnauthorized} onChange={(e)=>this.setState({rejectUnauthorized:!this.state.rejectUnauthorized})}/>
-          <Label htmlFor="checkAuth" check className="p-l-15">
-            Reject unauthorized
-          </Label>
-        </FormGroup>
+        <Checkbox
+          className = "m-b-5 p-l-0"
+          value = { this.state.rejectUnauthorized }
+          onChange={()=>{
+            this.setState({rejectUnauthorized:!this.state.rejectUnauthorized})
+          }}
+          label = "Reject unauthorized"
+          />
 
         <Button className="btn" disabled={this.state.saving || !this.canSave()} onClick={()=>{
             this.setState({saving:true});

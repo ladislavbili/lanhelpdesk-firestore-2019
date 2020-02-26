@@ -234,8 +234,7 @@ class TaskEdit extends Component {
 			important:this.state.important,
     }
 
-    rebase.updateDoc('/help-tasks/'+taskID, body)
-    .then(()=>{
+    rebase.updateDoc('/help-tasks/'+taskID, body).then(()=>{
 			if(this.state.newHistoryEntery!==null){
 				this.addToHistory(this.state.newHistoryEntery);
 				this.addNotification(this.state.newHistoryEntery,false);
@@ -1458,8 +1457,7 @@ class TaskEdit extends Component {
 	renderVykazyTable(taskWorks, workTrips, taskMaterials){
 		return(
 			<VykazyTable
-				showColumns={ (this.state.viewOnly ? [0,1,2,3,4,5,6,7,8] : [0,1,2,3,4,5,6,7,8,9]) }
-
+				showColumns={ (this.state.viewOnly ? [0,1,2,3,4,5,6,7] : [0,1,2,3,4,5,6,7,8]) }
 				showTotals={false}
 				disabled={this.state.viewOnly}
 				company={this.state.company}
@@ -1472,48 +1470,60 @@ class TaskEdit extends Component {
 				defaultType={this.state.type}
 				workTypes={this.state.taskTypes}
 				updateSubtask={(id,newData)=>{
-					rebase.updateDoc('help-task_works/'+id,newData);
+					let extraData = {...this.state.extraData};
+					extraData.taskWorks[extraData.taskWorks.findIndex((work)=>work.id === id)] = {...extraData.taskWorks.find((work)=>work.id === id),...newData};
 					let newTaskWorks=[...this.state.taskWorks];
 					newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
-					this.setState({taskWorks:newTaskWorks});
+					rebase.updateDoc('help-task_works/'+id,newData);
+					this.setState({taskWorks:newTaskWorks, extraData});
 				}}
 				removeSubtask={(id)=>{
 					rebase.removeDoc('help-task_works/'+id).then(()=>{
+						let extraData = {...this.state.extraData};
+						extraData.taskWorks.splice(extraData.taskWorks.findIndex((work)=>work.id === id),1);
 						let newTaskWorks=[...this.state.taskWorks];
 						newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
-						this.setState({taskWorks:newTaskWorks});
+						this.setState({ taskWorks: newTaskWorks, extraData });
 					});
 				}}
 				workTrips={workTrips}
 				tripTypes={this.state.tripTypes}
 				submitTrip={this.submitWorkTrip.bind(this)}
 				updateTrip={(id,newData)=>{
-					rebase.updateDoc('help-task_work_trips/'+id,newData);
+					let extraData = {...this.state.extraData};
+					extraData.workTrips[extraData.workTrips.findIndex((trip)=>trip.id === id)] = {...extraData.workTrips.find((trip)=>trip.id === id),...newData};
 					let newTrips=[...this.state.workTrips];
 					newTrips[newTrips.findIndex((trip)=>trip.id===id)]={...newTrips.find((trip)=>trip.id===id),...newData};
-					this.setState({workTrips:newTrips});
+					rebase.updateDoc('help-task_work_trips/'+id,newData);
+					this.setState({ workTrips: newTrips, extraData });
 				}}
 				removeTrip={(id)=>{
 					rebase.removeDoc('help-task_work_trips/'+id).then(()=>{
+						let extraData = {...this.state.extraData};
+						extraData.workTrips.splice(extraData.workTrips.findIndex((trip)=>trip.id === id),1);
 						let newTrips=[...this.state.workTrips];
 						newTrips.splice(newTrips.findIndex((trip)=>trip.id===id),1);
-						this.setState({workTrips:newTrips});
+						this.setState({ workTrips:newTrips, extraData });
 					});
 				}}
 
 				materials={taskMaterials}
 				submitMaterial={this.submitMaterial.bind(this)}
 				updateMaterial={(id,newData)=>{
-					rebase.updateDoc('help-task_materials/'+id,newData);
+					let extraData = {...this.state.extraData};
+					extraData.taskMaterials[extraData.taskMaterials.findIndex((material)=>material.id === id)] = {...extraData.taskMaterials.find((material)=>material.id === id),...newData};
 					let newTaskMaterials=[...this.state.taskMaterials];
 					newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
-					this.setState({taskMaterials:newTaskMaterials});
+					rebase.updateDoc('help-task_materials/'+id,newData);
+					this.setState({taskMaterials:newTaskMaterials, extraData});
 				}}
 				removeMaterial={(id)=>{
 					rebase.removeDoc('help-task_materials/'+id).then(()=>{
+						let extraData = {...this.state.extraData};
+						extraData.taskMaterials.splice(extraData.taskMaterials.findIndex((material)=>material.id === id),1);
 						let newTaskMaterials=[...this.state.taskMaterials];
 						newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
-						this.setState({taskMaterials:newTaskMaterials});
+						this.setState({taskMaterials:newTaskMaterials, extraData});
 					});
 				}}
 				units={this.state.units}
@@ -1593,27 +1603,27 @@ class TaskEdit extends Component {
 		)
 	}
 
-	submitSubtask(body){
-		rebase.addToCollection('help-task_subtasks',{task:this.props.match.params.taskID,...body}).then((result)=>{
-			this.setState({subtasks:[...this.state.subtasks, {task:this.props.match.params.taskID,...body,id:result.id}]})
-		});
-	}
-
 	submitWorkTrip(body){
     rebase.addToCollection('help-task_work_trips',{task:this.props.match.params.taskID,...body}).then((result)=>{
-      this.setState({workTrips:[...this.state.workTrips, {task:this.props.match.params.taskID,...body,id:result.id}]})
+			let extraData = {...this.state.extraData};
+			extraData.workTrips = [{task:this.props.match.params.taskID,...body,id:result.id}, ...extraData.workTrips];
+      this.setState({workTrips:[...this.state.workTrips, {task:this.props.match.params.taskID,...body,id:result.id}],extraData})
     });
   }
 
   submitMaterial(body){
     rebase.addToCollection('help-task_materials',{task:this.props.match.params.taskID,...body}).then((result)=>{
-      this.setState({taskMaterials:[...this.state.taskMaterials, {task:this.props.match.params.taskID,...body,id:result.id}]})
+			let extraData = {...this.state.extraData};
+			extraData.taskMaterials = [{task:this.props.match.params.taskID,...body,id:result.id}, ...extraData.taskMaterials];
+      this.setState({taskMaterials:[...this.state.taskMaterials, {task:this.props.match.params.taskID,...body,id:result.id}],extraData})
     });
   }
 
   submitService(body){
     rebase.addToCollection('help-task_works',{task:this.props.match.params.taskID,...body}).then((result)=>{
-      this.setState({taskWorks:[...this.state.taskWorks, {task:this.props.match.params.taskID,...body,id:result.id}]})
+			let extraData = {...this.state.extraData};
+			extraData.taskWorks = [{task:this.props.match.params.taskID,...body,id:result.id}, ...extraData.taskWorks];
+      this.setState({taskWorks:[...this.state.taskWorks, {task:this.props.match.params.taskID,...body,id:result.id}],extraData})
     });
   }
 

@@ -195,7 +195,7 @@ class MothlyReportsCompany extends Component {
 			if(type===undefined){
 				type={title:'Unknown',id:Math.random(),prices:[]}
 			}
-			let dph = company && company.dph && isNaN(parseInt(company.dph)) && parseInt(company.dph) > 0 ? parseInt(company.dph) : 20;
+			let dph = (company && company.dph && !isNaN(parseInt(company.dph)) && (parseInt(company.dph) > 0)) ? parseInt(company.dph) : 20;
 			let afterHours = company && company.pricelist ? parseInt(company.pricelist.afterHours) : 0;
 			return {
 				finished:work.finished===true,
@@ -224,7 +224,7 @@ class MothlyReportsCompany extends Component {
 				type={title:'Unknown',id:Math.random(),prices:[]}
 			}
 
-			let dph = company && company.dph && isNaN(parseInt(company.dph)) && parseInt(company.dph) > 0 ? parseInt(company.dph) : 20;
+			let dph = company && company.dph && !isNaN(parseInt(company.dph)) && parseInt(company.dph) > 0 ? parseInt(company.dph) : 20;
 			let afterHours = company && company.pricelist ? parseInt(company.pricelist.afterHours) : 0;
 
 
@@ -1759,7 +1759,7 @@ class MothlyReportsCompany extends Component {
 			let newCompanies = period.companies.map((group)=>{
 				//iba ponechat tasky a pridat im pausalWorks a extraWorks
 				let newCompany = {company:group.company,tasks:[]};
-				let pausal = parseInt(group.company.workPausal);
+				let workPausal = parseInt(group.company.workPausal);
 				let tripPausal = parseInt(group.company.drivePausal);
 				group.tasks.forEach((task)=>{
 					let pausalWorks = [];
@@ -1767,19 +1767,19 @@ class MothlyReportsCompany extends Component {
 					let pausalTrips = [];
 					let extraTrips = [];
 					task.works.forEach((work)=>{
-						if(work.quantity < pausal){
-							pausal -= work.quantity;
+						if(work.quantity <= workPausal){
+							workPausal -= work.quantity;
 							pausalWorks.push(work);
-						}else if(pausal===0){
+						}else if(workPausal===0){
 							extraWorks.push(work);
 						}else{
-							pausalWorks.push({...work, quantity: pausal});
-							extraWorks.push({...work, quantity: work.quantity - pausal});
-							pausal = 0;
+							pausalWorks.push({...work, quantity: workPausal});
+							extraWorks.push({...work, quantity: work.quantity - workPausal});
+							workPausal = 0;
 						}
 					})
 					task.trips.forEach((trip)=>{
-						if(trip.quantity < tripPausal){
+						if(trip.quantity <= tripPausal){
 							tripPausal -= trip.quantity;
 							pausalTrips.push(trip);
 						}else if(tripPausal===0){

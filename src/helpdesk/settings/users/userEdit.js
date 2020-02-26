@@ -10,6 +10,7 @@ import {selectStyle} from "../../../scss/selectStyles";
 import { connect } from "react-redux";
 import {storageCompaniesStart,storageUsersStart, setUserData} from '../../../redux/actions';
 import {toSelArr} from '../../../helperFunctions';
+import Checkbox from '../../../components/checkbox';
 
 let roles=[
   {label:'User',value:0},
@@ -139,12 +140,14 @@ class UserEdit extends Component{
             <Input type="email" name="email" id="email" disabled={true} placeholder="Enter email" value={this.state.email} onChange={(e)=>this.setState({email:e.target.value})} />
           </FormGroup>
 
-          <FormGroup check className="m-b-5 p-l-0">
-            <Input type="checkbox" id="notificationCheck" checked={this.state.mailNotifications} onChange={(e)=>this.setState({mailNotifications:!this.state.mailNotifications})}/>
-            <Label htmlFor="notificationCheck" check className="p-l-15">
-              Receive e-mail notifications
-            </Label>
-          </FormGroup>
+          <Checkbox
+            className = "m-b-5 p-l-0"
+            value = { this.state.mailNotifications }
+            label = "Receive e-mail notifications"
+            onChange={()=>{
+              this.setState({mailNotifications:!this.state.mailNotifications})
+            }}
+            />
 
           <FormGroup>
             <Label for="company">Company</Label>

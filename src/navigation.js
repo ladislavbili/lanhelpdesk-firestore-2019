@@ -3,7 +3,7 @@ import {Route} from 'react-router-dom';
 import { connect } from "react-redux";
 import firebase from 'firebase';
 import {rebase} from './index';
-import {setUserID,deleteUserData, setUserData, startUsersNotifications } from './redux/actions';
+import {setUserID,deleteUserData, setUserData, startUsersNotifications, setUserFilterStatuses } from './redux/actions';
 
 import Reroute from './reroute';
 import HelpdeskNavigation from './helpdesk/navigation';
@@ -24,7 +24,7 @@ class Navigation extends Component {
       if(user!==null){
         rebase.get('users/'+user.uid, {
           context: this,
-        }).then((userData)=>this.props.setUserData(userData));
+        }).then((userData)=>{this.props.setUserData(userData);this.props.setUserFilterStatuses(userData.statuses)});
         this.props.setUserID(user.uid);
         this.props.startUsersNotifications(user.uid);
       }else{
@@ -63,4 +63,4 @@ const mapStateToProps = ({ userReducer }) => {
 	return { loggedIn };
 };
 
-export default connect(mapStateToProps, {setUserID,deleteUserData, setUserData, startUsersNotifications })(Navigation);
+export default connect(mapStateToProps, {setUserID,deleteUserData, setUserData, startUsersNotifications, setUserFilterStatuses })(Navigation);

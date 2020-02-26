@@ -9,10 +9,10 @@ export default class ColumnDisplay extends Component {
 			<div>
 				<div className="row p-0 task-container">
 					<div className="p-0 golden-ratio-382">
-						<CommandBar {...this.props.commandBar} />
+						<CommandBar {...this.props.commandBar} listName={this.props.listName} />
 
 						<div className="scroll-visible fit-with-header-and-commandbar task-list">
-							<ListHeader {...this.props.commandBar} listName={this.props.listName}/>
+							<ListHeader multiselect={true} {...this.props.commandBar} listName={this.props.listName} statuses={this.props.statuses} setStatuses={this.props.setStatuses} allStatuses={this.props.allStatuses} />
 							{
 								this.props.data.map((item, index)=>
 								<ul

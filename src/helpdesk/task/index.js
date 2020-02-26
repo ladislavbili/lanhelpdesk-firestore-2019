@@ -7,7 +7,7 @@ import TaskEmpty from './taskEmpty';
 import TaskCalendar from '../calendar';
 
 
-import {setTasksOrderBy, setTasksAscending,storageCompaniesStart,storageHelpTagsStart,storageUsersStart,
+import {setTasksOrderBy, setTasksAscending,storageCompaniesStart,storageHelpTagsStart,storageUsersStart, setUserFilterStatuses,
 	storageHelpProjectsStart,storageHelpStatusesStart,storageHelpTasksStart, storageHelpFiltersStart,
 	setTasklistLayout, storageHelpMilestonesStart, storageHelpCalendarEventsStart,
 	setHelpSidebarProject, setHelpSidebarMilestone, setHelpSidebarFilter, setFilter, setMilestone,setProject,
@@ -289,12 +289,13 @@ class TasksIndex extends Component {
 			}
 		});
 		let filter = this.props.filter;
+
 		return newTasks.filter((task)=>{
 			let currentPermissions = null;
 			if(task.project){
 				currentPermissions = task.project.permissions.find((permission)=>permission.user === this.props.currentUser.id);
 			}
-			return (filter.status.length===0||(task.status && filter.status.includes(task.status.id))) &&
+			return (this.props.currentUser.statuses.length===0||(task.status && this.props.currentUser.statuses.includes(task.status.id))) &&
 			(filter.requester===null||(task.requester && task.requester.id===filter.requester)||(task.requester && filter.requester==='cur' && task.requester.id === this.props.currentUser.id)) &&
 			(filter.workType===null||(task.type===filter.workType)) &&
 			(filter.company===null||(task.company && task.company.id===filter.company) ||(task.company && filter.company==='cur' && task.company.id===this.props.currentUser.userData.company)) &&
@@ -451,7 +452,10 @@ class TasksIndex extends Component {
 				empty={TaskEmpty}
 				useBreadcrums={true}
 				breadcrumsData={this.getBreadcrumsData()}
-				 />
+				setStatuses={this.props.setUserFilterStatuses}
+				statuses={this.props.currentUser.statuses}
+				allStatuses={this.props.statuses}
+			 />
 		);
 	}
 }
@@ -488,7 +492,7 @@ const mapStateToProps = ({ userReducer, filterReducer, taskReducer, storageCompa
 	 };
 };
 
-export default connect(mapStateToProps, { setTasksOrderBy, setTasksAscending ,
+export default connect(mapStateToProps, { setTasksOrderBy, setTasksAscending , setUserFilterStatuses,
 	storageCompaniesStart,storageHelpTagsStart,storageUsersStart,storageHelpProjectsStart,storageHelpStatusesStart,storageHelpTasksStart, storageHelpFiltersStart, setTasklistLayout, storageHelpMilestonesStart, storageHelpCalendarEventsStart,
 	setHelpSidebarProject, setHelpSidebarMilestone, setHelpSidebarFilter, setFilter, setMilestone, setProject,
 })(TasksIndex);

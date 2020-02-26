@@ -3,6 +3,7 @@ import Select from 'react-select';
 import { Button, FormGroup, Label, Input,Modal, ModalBody, ModalFooter } from 'reactstrap';
 import DatePicker from 'react-datepicker';
 import {invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
+import Checkbox from '../../components/checkbox';
 import datePickerConfig from '../../scss/datePickerConfig';
 import moment from 'moment';
 
@@ -43,10 +44,12 @@ export default class PendingPicker extends Component{
                 />
               </FormGroup>
 
-              <FormGroup>
-                <Label for="milestoneActive">From milestone</Label>
-                <Input type="checkbox" id="milestoneActive" checked={this.state.milestoneActive} onChange={(e)=>this.setState({milestoneActive:!this.state.milestoneActive })} />
-              </FormGroup>
+              <Checkbox
+                className = "m-l-5 m-r-5"
+                label = "From milestone"
+                value = { this.state.milestoneActive }
+                onChange={(e)=>this.setState({milestoneActive:!this.state.milestoneActive })}
+                />
 
               <div className="row p-r-10">
                 <Label className="col-3 col-form-label">Milestone</Label>

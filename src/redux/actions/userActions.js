@@ -1,6 +1,6 @@
-import {SET_USER_DATA, SET_USER_ID, DELETE_USER_DATA, SET_USER_NOTIFICATIONS } from '../types';
-import {database} from '../../index.js';
-import {snapshotToArray} from '../../helperFunctions';
+import {SET_USER_DATA, SET_USER_ID, DELETE_USER_DATA, SET_USER_NOTIFICATIONS, SET_USER_STATUSES } from '../types';
+import { database } from '../../index.js';
+import { snapshotToArray } from '../../helperFunctions';
 
 
 export const setUserID = (id) => {
@@ -28,5 +28,11 @@ export const startUsersNotifications = (userID) => {
       }, err => {
       console.log(`Encountered error: ${err}`);
     });
+  };
+};
+
+export const setUserFilterStatuses = (statuses) => {
+  return (dispatch) => {
+    dispatch({ type: SET_USER_STATUSES, statuses });
   };
 };

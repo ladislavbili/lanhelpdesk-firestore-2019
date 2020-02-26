@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
+import Checkbox from '../../../components/checkbox';
+
 import {rebase } from '../../../index';
 import { connect } from "react-redux";
 import {storageHelpTaskTypesStart, storageHelpTripTypesStart, storageHelpPricelistsStart} from '../../../redux/actions';
@@ -76,12 +78,15 @@ class PriceAdd extends Component{
               Loading data...
             </Alert>
           }
-          <FormGroup check className="m-b-5 p-l-0">
-            <Input type="checkbox" checked={this.state.def} onChange={(e)=>this.setState({def:!this.state.def})}/>
-            <Label check className="m-l-15">
-              Default
-            </Label>
-          </FormGroup>
+
+          <Checkbox
+            className = "m-b-5 p-l-0"
+            value = { this.state.def }
+            onChange={()=>{
+              this.setState({def:!this.state.def})
+            }}
+            label = "Default"
+            />
 
           <FormGroup className="row m-b-10">
             <div className="m-r-10 w-20">

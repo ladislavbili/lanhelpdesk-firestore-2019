@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { Button, FormGroup, Label,Input, Alert, Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import Select from 'react-select';
+import Checkbox from '../../../components/checkbox';
 
 import { rebase, database } from '../../../index';
 import { snapshotToArray, toSelArr } from '../../../helperFunctions';
@@ -154,12 +155,15 @@ class PriceEdit extends Component{
               Loading data...
             </Alert>
           }
-          <FormGroup check className="m-b-5 p-l-0">
-            <Input type="checkbox" id="defCheck" checked={this.state.def} onChange={(e)=> this.setState({def:!this.state.def})}/>
-            <Label check htmlFor="defCheck" className="m-l-15">
-              Default
-            </Label>
-          </FormGroup>
+
+          <Checkbox
+            className = "m-b-5 p-l-0"
+            value = { this.state.def }
+            onChange={()=>{
+              this.setState({def:!this.state.def})
+            }}
+            label = "Default"
+            />
 
           <FormGroup className="row m-b-10">
             <div className="m-r-10 w-20">
@@ -353,7 +357,6 @@ class PriceEdit extends Component{
               <Button className="btn-red" onClick={()=>this.setState({openEditCompanies:false})}>Cancel</Button>
             </ModalFooter>
           </Modal>
-
       </div>
     );
   }

@@ -714,6 +714,7 @@ tr:last-child{
 .form-control:disabled{
   background-color: inherit;
   border: none;
+  cursor: default;
 }
 
 
@@ -1569,6 +1570,10 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   padding-right: 0px;
 }
 
+.vykazyTable>.table>tbody>tr>td:first-child{
+  padding-left: 10px;
+}
+
 .vykazyTable>.table>tbody>tr>td:nth-child(2){
   padding-left: 20px;
   padding-right: 0px;
@@ -1598,6 +1603,56 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 }
 
 //-------------------END-taskEdit-------------------------
+//-----------NEW CHECKBOX -------------
+.checkbox-mark {
+  cursor: pointer;
+  height: 20px;
+  width: 20px;
+  border: 1px solid #eee;
+  border-radius: 0px;
+  background-color: white;
+}
+
+.checkbox-mark:hover {
+  background-color: #ccc;
+}
+
+.checkbox-input {
+  display:none;
+}
+
+.checkbox-container .checkbox-mark:after {
+  width: 8px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.checkbox-mark:after {
+    content: "";
+    position:relative;
+    left: 5px;
+    top: 1px;
+    display: none;
+}
+
+.checkbox-mark-grey{
+  background-color: $muted-gray !important;
+}
+
+.checkbox-container input:checked ~ .checkbox-mark:after {
+  display: block;
+}
+
+.checkbox-container input:checked ~ .checkbox-mark {
+  background-color: $basic-button-color;
+  border-color: $basic-button-color;
+}
+
+
 //--------CUSTOM-CHECKBOX
 
 .custom-table-checkbox{
@@ -1680,6 +1735,16 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 
 .rbc-time-content{
   overflow-y: visible;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Opera and Firefox */
 }
 
 // /0078D4

@@ -172,7 +172,7 @@ class TaskCalendar extends Component {
   		<div>
   			<CommandBar { ...this.props.commandBar } />
   			<div className="full-width scroll-visible fit-with-header-and-commandbar task-container p-20">
-  				<ListHeader { ...this.props.commandBar } listName={ this.props.listName } />
+  				<ListHeader { ...this.props.commandBar } listName={ this.props.listName } statuses={this.props.statuses} setStatuses={this.props.setStatuses} allStatuses={this.props.allStatuses} />
   				<DnDCalendar
   					events = { data }
             defaultDate = { new Date() }

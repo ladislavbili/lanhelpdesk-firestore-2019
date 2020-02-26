@@ -10,6 +10,7 @@ import config from '../../../firebase';
 import { connect } from "react-redux";
 import {storageCompaniesStart} from '../../../redux/actions';
 import {sameStringForms, toSelArr} from '../../../helperFunctions';
+import Checkbox from '../../../components/checkbox';
 
 let roles=[
   {label:'User',value:0},
@@ -101,12 +102,14 @@ class UserAdd extends Component{
             <Input type="password" name="password" id="password" placeholder="Enter password" value={this.state.password} onChange={(e)=>this.setState({password:e.target.value})} />
           </FormGroup>
 
-          <FormGroup check className="m-b-5 p-l-0">
-            <Input type="checkbox" id="notificationCheck" checked={this.state.mailNotifications} onChange={(e)=>this.setState({mailNotifications:!this.state.mailNotifications})}/>
-            <Label htmlFor="notificationCheck" check className="p-l-15">
-              Receive e-mail notifications
-            </Label>
-          </FormGroup>
+          <Checkbox
+            className = "m-b-5 p-l-0"
+            value = { this.state.mailNotifications }
+            label = "Receive e-mail notifications"
+            onChange={()=>{
+              this.setState({mailNotifications:!this.state.mailNotifications})
+            }}
+            />
 
           <FormGroup>
             <Label for="company">Company</Label>

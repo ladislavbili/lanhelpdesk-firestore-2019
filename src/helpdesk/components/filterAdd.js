@@ -3,6 +3,7 @@ import Select from 'react-select';
 import { Button, FormGroup, Label, Input,Modal, ModalBody, ModalFooter } from 'reactstrap';
 import { storageHelpProjectsStart } from '../../redux/actions';
 import {toSelArr} from '../../helperFunctions';
+import Checkbox from '../../components/checkbox';
 import {selectStyle} from '../../scss/selectStyles';
 import {rebase} from '../../index';
 import { connect } from "react-redux";
@@ -64,16 +65,20 @@ class FilterAdd extends Component{
               </FormGroup>
 
               { this.props.currentUser.userData.role.value > 1 &&
-                <FormGroup>
-                  <Input type="checkbox" id="public" checked={this.state.public} onChange={(e)=>this.setState({public:!this.state.public })} />
-                  <Label for="public" className="p-l-15">Public (everyone see this filter)</Label>
-                </FormGroup>
+                <Checkbox
+                  className = "m-l-5 m-r-5"
+                  label = "Public (everyone see this filter)"
+                  value = { this.state.public }
+                  onChange={(e)=>this.setState({public:!this.state.public })}
+                  />
               }
 
-              <FormGroup>
-                <Input type="checkbox" id="global" checked={this.state.global} onChange={(e)=>this.setState({global:!this.state.global })} />
-                <Label for="global" className="p-l-15">Global (shown in all projects)</Label>
-              </FormGroup>
+              <Checkbox
+                className = "m-l-5 m-r-5"
+                label = "Global (shown in all projects)"
+                value = { this.state.global }
+                onChange={(e)=>this.setState({global:!this.state.global })}
+                />
 
               <div className="m-b-10">
                 <Label className="form-label">Projekt</Label>
@@ -96,12 +101,12 @@ class FilterAdd extends Component{
                     />
               </div>
 
-              <FormGroup>
-                <Input type="checkbox" id="dashboard" checked={this.state.dashboard} onChange={(e)=>this.setState({dashboard:!this.state.dashboard })} />
-                <Label for="dashboard" className="p-l-15">Dashboard (shown in dashboard)</Label>
-              </FormGroup>
-
-
+              <Checkbox
+                className = "m-l-5 m-r-5"
+                label = "Dashboard (shown in dashboard)"
+                value = { this.state.dashboard }
+                onChange={(e)=>this.setState({dashboard:!this.state.dashboard })}
+                />
 
               </ModalBody>
               <ModalFooter>

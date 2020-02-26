@@ -21,9 +21,9 @@ class List extends Component {
 		let filter = this.props.filter[this.props.filterName];
 		return (
 				<div>
-					<CommandBar {...this.props.commandBar} />
+					<CommandBar {...this.props.commandBar} listName={this.props.listName}/>
 					<div className="full-width scroll-visible fit-with-header-and-commandbar task-container">
-						<ListHeader {...this.props.commandBar} listName={this.props.listName} />
+						<ListHeader {...this.props.commandBar} listName={this.props.listName} statuses={this.props.statuses} setStatuses={this.props.setStatuses} allStatuses={this.props.allStatuses} />
 						<table className="table">
 							<thead>
 									<tr>

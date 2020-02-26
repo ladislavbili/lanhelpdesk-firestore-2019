@@ -254,37 +254,6 @@ class Filter extends Component {
           }
 
           <div className=" p-r-15 p-l-15 sidebar-filter">
-
-              <div className="sidebar-filter-row">
-                <label htmlFor="example-input-small">Status</label>
-                {
-                  this.state.statuses.map(status =>
-                    <div className="row  m-b-5" key={status.id}>
-                      <label className="custom-container">
-                        <input
-                          type="checkbox"
-                          checked={this.state.status.find(s => s.id === status.id)}
-                          onChange={(e) => {
-                            let checked = this.state.status.find(s => s.id === status.id);
-                            let newStatus = [];
-                            if (checked){
-                              newStatus = this.state.status.filter(s => s.id !== status.id);
-                            } else {
-                              newStatus = [...this.state.status, status];
-                            }
-                            this.setState({
-                              status: newStatus,
-                            })
-                          }
-                        } />
-                      <span className="checkmark" > </span>
-                    </label>
-                    <span className="m-l-30 sidebar-filter-name">{status.title}</span>
-                    </div>
-                  )
-                }
-              </div>
-
               <div className="sidebar-filter-row">
                 <label htmlFor="example-input-small">Zadal</label>
                 <div className="flex">

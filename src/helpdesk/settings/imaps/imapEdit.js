@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, Alert, InputGroup, InputGroupAddon, InputGroupText } from 'reactstrap';
+import Checkbox from '../../../components/checkbox';
 import {rebase } from '../../../index';
 import { connect } from "react-redux";
 import {storageImapsStart} from '../../../redux/actions';
@@ -83,12 +84,14 @@ class ImapEdit extends Component{
           </Alert>
         }
 
-        <FormGroup check className="m-b-5 p-l-0">
-          <Input type="checkbox" id="defCheck" checked={this.state.def} onChange={(e)=>this.setState({def:!this.state.def})}/>
-          <Label htmlFor="defCheck" check className="p-l-15">
-            Default
-          </Label>
-        </FormGroup>
+        <Checkbox
+          className = "m-b-5 p-l-0"
+          value = { this.state.def }
+          onChange={()=>{
+            this.setState({def:!this.state.def})
+          }}
+          label = "Default"
+          />
 
         <FormGroup>
           <Label for="name">Title</Label>
@@ -117,18 +120,24 @@ class ImapEdit extends Component{
             </InputGroupAddon>
           </InputGroup>
         </FormGroup>
-        <FormGroup check className="m-b-5 p-l-0">
-          <Input type="checkbox" id="checkTls" checked={this.state.tls} onChange={(e)=>this.setState({tls:!this.state.tls})}/>
-          <Label htmlFor="checkTls" check className="p-l-15">
-            TLS
-          </Label>
-        </FormGroup>
-        <FormGroup check className="m-b-5 p-l-0">
-          <Input type="checkbox" id="checkAuth" checked={this.state.rejectUnauthorized} onChange={(e)=>this.setState({rejectUnauthorized:!this.state.rejectUnauthorized})}/>
-          <Label htmlFor="checkAuth" check className="p-l-15">
-            Reject unauthorized
-          </Label>
-        </FormGroup>
+
+        <Checkbox
+          className = "m-b-5 p-l-0"
+          value = { this.state.tls }
+          onChange={()=>{
+            this.setState({tls:!this.state.tls})
+          }}
+          label = "TLS"
+          />
+
+        <Checkbox
+          className = "m-b-5 p-l-0"
+          value = { this.state.rejectUnauthorized }
+          onChange={()=>{
+            this.setState({rejectUnauthorized:!this.state.rejectUnauthorized})
+          }}
+          label = "Reject unauthorized"
+          />
 
         <div className="row">
             <Button className="btn" disabled={this.state.saving || !this.canSave()} onClick={()=>{

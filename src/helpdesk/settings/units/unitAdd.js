@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input } from 'reactstrap';
 import {rebase} from '../../../index';
+import Checkbox from '../../../components/checkbox';
 
 export default class UnitAdd extends Component{
   constructor(props){
@@ -16,12 +17,12 @@ export default class UnitAdd extends Component{
     return (
       <div className="p-20 scroll-visible fit-with-header-and-commandbar">
 
-        <FormGroup check className="m-b-5 p-l-0">
-          <Input type="checkbox" checked={this.state.def} onChange={(e)=>this.setState({def:!this.state.def})}/>
-          <Label check className="m-l-15">
-            Default
-          </Label>
-        </FormGroup>
+        <Checkbox
+          className = "m-b-5 p-l-0"
+          value = { this.state.def }
+          onChange={ () => this.setState({def:!this.state.def}) }
+          label = "Default"
+          />
 
         <FormGroup>
           <Label for="name">Unit name</Label>

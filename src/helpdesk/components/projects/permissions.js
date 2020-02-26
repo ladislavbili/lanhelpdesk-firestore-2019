@@ -5,6 +5,7 @@ import {storageUsersStart} from '../../../redux/actions';
 import Select from "react-select";
 import {selectStyle} from "../../../scss/selectStyles";
 import {toSelArr} from '../../../helperFunctions';
+import Checkbox from '../../../components/checkbox';
 
 class Permissions extends Component {
 	constructor(props) {
@@ -72,11 +73,13 @@ class Permissions extends Component {
 								this.props.permissions.map(permission =>
 								<tr key={permission.user.id}>
 									<td> {permission.user.email} </td>
-										<td className="table-checkbox t-a-c">
-											<input
-												type="checkbox"
-												disabled={this.props.userID===permission.user.id && !this.props.isAdmin}
-												checked={permission.read}
+										<td>
+											<Checkbox
+				                className = "m-l-5 m-r-5"
+												centerVer
+												centerHor
+												disabled = {this.props.userID===permission.user.id && !this.props.isAdmin}
+												value = { permission.read }
 												onChange={()=>{
 													let permissions = null;
 													if(permission.read){
@@ -86,14 +89,16 @@ class Permissions extends Component {
 													}
 													this.props.givePermission(permission.user,permissions);
 												}}
-											/>
+				                />
 										</td>
 
-										<td className="table-checkbox t-a-c">
-											<input
-												type="checkbox"
-												disabled={this.props.userID===permission.user.id && !this.props.isAdmin}
-												checked={permission.write}
+										<td>
+											<Checkbox
+				                className = "m-l-5 m-r-5"
+												centerVer
+												centerHor
+				                value = { permission.write }
+												disabled={ this.props.userID===permission.user.id && !this.props.isAdmin }
 												onChange={()=>{
 													let permissions = null;
 													if(permission.write){
@@ -103,14 +108,16 @@ class Permissions extends Component {
 													}
 													this.props.givePermission(permission.user,permissions);
 												}}
-											/>
+				                />
 										</td>
 
-										<td className="table-checkbox t-a-c">
-											<input
-												type="checkbox"
-												disabled={this.props.userID===permission.user.id && !this.props.isAdmin}
-												checked={permission.delete}
+										<td>
+											<Checkbox
+				                className = "m-l-5 m-r-5"
+												centerVer
+												centerHor
+				                value = { permission.delete }
+				                disabled={this.props.userID===permission.user.id && !this.props.isAdmin}
 												onChange={()=>{
 													let permissions = null;
 													if(permission.delete){
@@ -120,13 +127,15 @@ class Permissions extends Component {
 													}
 													this.props.givePermission(permission.user,permissions);
 												}}
-											/>
+				                />
 										</td>
-										<td className="table-checkbox t-a-c">
-											<input
-												type="checkbox"
+										<td>
+											<Checkbox
+				                className = "m-l-5 m-r-5"
+												centerVer
+												centerHor
+				                value = { permission.isAdmin }
 												disabled={this.props.userID===permission.user.id && !this.props.isAdmin}
-												checked={permission.isAdmin}
 												onChange={()=>{
 													let permissions = null;
 													if(permission.isAdmin){
@@ -136,20 +145,22 @@ class Permissions extends Component {
 													}
 													this.props.givePermission(permission.user,permissions);
 												}}
-											/>
+				                />
 										</td>
-										<td className="table-checkbox t-a-c">
-											<input
-												type="checkbox"
+										<td>
+											<Checkbox
+				                className = "m-l-5 m-r-5"
+												centerVer
+												centerHor
 												disabled={this.props.userID===permission.user.id && !this.props.isAdmin}
-												checked={permission.internal}
+				                value = { permission.internal }
 												onChange={()=>{
 													let permissions = {read:permission.read, write:permission.write, delete:permission.delete, isAdmin:permission.isAdmin, internal: !permission.internal };
 													this.props.givePermission(permission.user,permissions);
 												}}
-											/>
+				                />
 										</td>
-										<td className="table-checkbox t-a-c">
+										<td>
 											<button className="btn btn-link waves-effect" disabled={(this.props.userID===permission.user.id && !this.props.isAdmin) || this.props.disabled} onClick={()=>{
 													if(window.confirm('Are you sure?')){
 														this.props.givePermission(permission.user,{read:false, write:false, delete:false, isAdmin:false, internal:false});

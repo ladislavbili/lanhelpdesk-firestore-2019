@@ -3,6 +3,7 @@ import { Input, Label, Button, FormGroup, Dropdown, DropdownMenu, DropdownToggle
 import firebase from 'firebase';
 import { connect } from "react-redux";
 import {rebase,database} from '../../index';
+import Checkbox from '../../components/checkbox';
 import {snapshotToArray, timestampToString} from '../../helperFunctions';
 //import {} from '../../redux/actions'
 import { Creatable } from 'react-select';
@@ -182,49 +183,39 @@ submitEmail(){
 
           <div className="row m-b-30">
 
-            <Button className="btn waves-effect m-t-5 p-l-20 p-r-20"
+            <Button className="btn waves-effect m-t-5 p-l-20 p-r-20 center-hor"
               disabled={(!this.state.isEmail && this.state.newComment==='')||
                 (this.state.isEmail&&(this.state.tos.length < 1 ||this.state.subject===''||this.state.emailBody===''))||this.state.saving}
                 onClick={this.state.isEmail ? this.submitEmail.bind(this) : this.submitComment.bind(this)}>
                 Submit
               </Button>
-              <div>
-                <div className="m-l-10">
-                  <label className="custom-container">
-                    <Input type="checkbox"
-                      checked={this.state.isEmail}
-                      onChange={()=>{
-                        this.setState({isEmail:!this.state.isEmail})
-                        }}  />
-                      <span className="checkmark">  </span>
-                  </label>
-                </div>
-                <span className="m-l-35">
-                  {'E-mail'}
-                </span>
-              </div>
+              <Checkbox
+                className = "m-l-10 center-hor"
+                centerHor
+                label = "E-mail"
+                value = { this.state.isEmail }
+                onChange={()=>{
+                  this.setState({isEmail:!this.state.isEmail})
+                }}
+                />
 
-              {this.props.showInternal && !this.state.isEmail && <div>
-                <div className="m-l-10">
-                  <label className="custom-container">
-                    <Input type="checkbox"
-                      checked={this.state.isInternal}
-                      onChange={()=>{
-                        this.setState({isInternal:!this.state.isInternal})
-                        }}  />
-                      <span className="checkmark">  </span>
-                  </label>
-                </div>
-                <span className="m-l-35">
-                  {'Internal'}
-                </span>
-              </div>}
+              {this.props.showInternal && !this.state.isEmail &&
+                <Checkbox
+                  className = "m-l-10 center-hor"
+                  centerHor
+                  label = "Internal"
+                  value = { this.state.isInternal }
+                  onChange={()=>{
+                    this.setState({isInternal:!this.state.isInternal})
+                  }}
+                  />
+            }
 
 
             { !this.state.isEmail &&
-              <span>
+              <div className='center-hor'>
                 <label
-                  className="btn btn-table-add-item m-t-8 m-l-5"
+                  className="btn btn-table-add-item m-l-5"
                   style={{fontFamily:"Segoe UI"}}
                   htmlFor="uploadCommentAttachments">
                   Add Attachement
@@ -237,7 +228,7 @@ submitEmail(){
                     }
                   }}
                   />
-              </span>
+              </div>
             }
             {!this.state.isEmail &&
               this.state.attachments.map((attachment,index)=>

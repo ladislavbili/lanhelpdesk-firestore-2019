@@ -117,6 +117,10 @@ class ShowDataContainer extends Component {
 									itemID={this.props.itemID}
 									link={this.props.link}
 									displayCol={this.props.displayCol}
+									isTask={this.props.isTask}
+									setStatuses={this.props.setStatuses}
+									statuses={this.props.statuses}
+									allStatuses={this.props.allStatuses}
 									edit={this.props.edit}
 									/>
 							</div>
@@ -137,7 +141,12 @@ class ShowDataContainer extends Component {
 										data={this.filterData()}
 										displayValues={this.props.displayValues}
 										filterName={this.props.filterName}
-										link={this.props.link}/>}
+										isTask={this.props.isTask}
+										setStatuses={this.props.setStatuses}
+										statuses={this.props.statuses}
+										allStatuses={this.props.allStatuses}
+										link={this.props.link}
+										/>}
 							</div>
 						)}
 
@@ -158,6 +167,10 @@ class ShowDataContainer extends Component {
 										link={this.props.link}
 										groupBy={this.props.dndGroupAttribute}
 										groupData={this.props.dndGroupData}
+										isTask={this.props.isTask}
+										setStatuses={this.props.setStatuses}
+										statuses={this.props.statuses}
+										allStatuses={this.props.allStatuses}
 										status={this.props.status}
 										/>
 								}
@@ -181,6 +194,10 @@ class ShowDataContainer extends Component {
 									groupBy={this.props.dndGroupAttribute}
 									groupData={this.props.dndGroupData}
 									status={this.props.status}
+									isTask={this.props.isTask}
+									setStatuses={this.props.setStatuses}
+									statuses={this.props.statuses}
+									allStatuses={this.props.allStatuses}
 									edit={this.props.edit}
 									/>
 							</div>

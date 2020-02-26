@@ -105,8 +105,6 @@ export default class ItemEdit extends Component{
       }
       status=null
     }
-    console.log("hiiiiiiiiiiiiiiiiii");
-    console.log(item);
     this.setState({
       statuses,
       companies,
@@ -280,7 +278,6 @@ export default class ItemEdit extends Component{
   }
 
   render(){
-    console.log(this.state);
     return (
           <div className="card-box fit-with-header-and-commandbar scrollable p-t-15">
 
