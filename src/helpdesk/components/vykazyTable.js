@@ -9,8 +9,9 @@ import Checkbox from '../../components/checkbox';
 export default class Rozpocet extends Component {
 	constructor(props){
 		super(props);
-		const newMargin= this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMargin : 0;
-		const newUnit= this.props.units.find((item)=>item.id===this.props.defaultUnit);
+		const newMaterialMargin= this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMargin : 0;
+		const newMaterialUnit= this.props.units.find((item)=>item.id===this.props.defaultUnit);
+		const newCustomItemUnit= this.props.units.find((item)=>item.id===this.props.defaultUnit);
 
 		this.state={
 			toggleTab: "1",
@@ -45,25 +46,42 @@ export default class Rozpocet extends Component {
 
 			//Materials
 			showAddMaterial: false,
+			marginChanged:false,
+			focusedMaterial: null,
 
 			editedMaterialTitle: "",
-			editedMaterialQuantity: "0",
+			editedMaterialQuantity: 0,
 			editedMaterialUnit:null,
 			editedMaterialMargin:null,
 			editedMaterialPrice:null,
-			focusedMaterial: null,
-			//	selectedIDs:[],
 
-			newTitle:'',
-			newQuantity:1,
-			newUnit:newUnit?newUnit:null,
-			newMargin,
-			newPrice:0,
-			marginChanged:false,
+			newMaterialTitle:'',
+			newMaterialQuantity:1,
+			newMaterialUnit:newMaterialUnit?newMaterialUnit:null,
+			newMaterialMargin,
+			newMaterialPrice:0,
+
+			// Custom items
+			showAddCustomItem: false,
+			focusedCustomItem: null,
+
+			editedCustomItemTitle: "",
+			editedCustomItemQuantity: 0,
+			editedCustomItemUnit:null,
+			editedCustomItemPrice:null,
+			editedCustomItemBuyPrice:null,
+
+			newCustomItemTitle:'',
+			newCustomItemQuantity:1,
+			newCustomItemUnit:newCustomItemUnit?newCustomItemUnit:null,
+			newCustomItemBuyPrice:0,
+			newCustomItemPrice:0,
 		}
 		this.getCreationError.bind(this);
 		this.onFocusWorkTrip.bind(this);
 		this.onFocusSubtask.bind(this);
+		this.onFocusMaterial.bind(this);
+		this.onFocusCustomItem.bind(this);
 		this.getPrice.bind(this);
 		this.getTotalPrice.bind(this);
 		this.getTotalDiscountedPrice.bind(this);
@@ -72,9 +90,13 @@ export default class Rozpocet extends Component {
 
 	componentWillReceiveProps(props){
 		if(this.props.taskID!==props.taskID){
-			let newUnit= props.units[0];
+			let newMaterialUnit= props.units[0];
 			if(props.defaultUnit!==null){
-				newUnit=props.units.find((item)=>item.id===props.defaultUnit)
+				newMaterialUnit=props.units.find((item)=>item.id===props.defaultUnit)
+			}
+			let newCustomItemUnit= props.units[0];
+			if(props.defaultUnit!==null){
+				newCustomItemUnit=props.units.find((item)=>item.id===props.defaultUnit)
 			}
 			this.setState({
 				focusedSubtask:null,
@@ -92,12 +114,18 @@ export default class Rozpocet extends Component {
 				newTripQuantity:1,
 				newTripDiscount:0,
 
-				newTitle:'',
-				newQuantity:1,
-				newUnit,
-				newMargin: props.company && props.company.pricelist ? props.company.pricelist.materialMargin : 0,
-				newPrice:0,
+				newMaterialTitle:'',
+				newMaterialQuantity:1,
+				newMaterialUnit,
+				newMaterialMargin: props.company && props.company.pricelist ? props.company.pricelist.materialMargin : 0,
+				newMaterialPrice:0,
 				marginChanged:false,
+
+				newCustomItemTitle:'',
+				newCustomItemQuantity:1,
+				newCustomItemBuyPrice:0,
+				newCustomItemUnit,
+				newCustomItemPrice:0,
 			})
 		}else if(!sameStringForms(this.props.defaultType,props.defaultType)){
 			this.setState({
@@ -117,7 +145,7 @@ export default class Rozpocet extends Component {
 
 		if((this.props.company===null && props.company!==null) ||
 		(this.props.company && props.company && props.company.id!==this.props.company.id)){
-			this.setState({newMargin: (props.company && props.company.pricelist ? props.company.pricelist.materialMargin : 0)});
+			this.setState({newMaterialMargin: (props.company && props.company.pricelist ? props.company.pricelist.materialMargin : 0)});
 		}
 
 		if(this.props.units && props.units && this.props.units.length!==props.units.length){
@@ -125,7 +153,7 @@ export default class Rozpocet extends Component {
 			if(props.defaultUnit!==null){
 				newUnit=props.units.find((item)=>item.id===props.defaultUnit)
 			}
-			this.setState({newUnit});
+			this.setState({newMaterialUnit: newUnit, newCustomItemUnit: newUnit});
 		}
 	}
 
@@ -177,6 +205,28 @@ export default class Rozpocet extends Component {
 		});
 	}
 
+	onFocusMaterial(material){
+		this.setState({
+			editedMaterialTitle:material.title,
+			editedMaterialQuantity:material.quantity,
+			editedMaterialUnit:material.unit,
+			editedMaterialMargin:material.margin,
+			editedMaterialPrice:material.price,
+			focusedMaterial: material.id
+		});
+	}
+
+	onFocusCustomItem(customItem){
+		this.setState({
+			editedCustomItemTitle:customItem.title,
+			editedCustomItemQuantity:customItem.quantity,
+			editedCustomItemUnit:customItem.unit,
+			editedCustomItemPrice:customItem.price,
+			editedCustomItemBuyPrice:customItem.buyPrice,
+			focusedCustomItem: customItem.id
+		});
+	}
+
 	getPrice(type){
 		if(!type){
 			return NaN;
@@ -196,6 +246,14 @@ export default class Rozpocet extends Component {
 
 	getTotalDiscountedPrice(item){
 		return parseFloat(parseFloat(this.getTotalPrice(item)*(100-parseInt(item.discount))/100).toFixed(2))
+	}
+
+	getDiscountedMaterialPrice(material){
+		return parseFloat( material.price * ( 1 + material.margin / 100 ))
+	}
+
+	calculateMargin(buyPrice,price){
+		return (price-buyPrice)/buyPrice*100;
 	}
 
 	getDPH(){
@@ -246,7 +304,7 @@ export default class Rozpocet extends Component {
 							{this.props.showColumns.includes(4) && this.state.toggleTab === "2" && <th width="70" className="table-highlight-background t-a-r">Cenník/Nákup</th> }
 							{this.props.showColumns.includes(5) && this.state.toggleTab === "2" && <th width="70" className="table-highlight-background t-a-r">Zľava/Marža</th> }
 							{this.props.showColumns.includes(6) && <th width="70" className="table-highlight-background t-a-r">Cena</th> }
-							{this.props.showColumns.includes(7) && <th width={this.props.materials.length === 0 ? "90" : "120"}></th> }
+							{this.props.showColumns.includes(7) && <th width="120"></th> }
 						</tr>
 					</thead>
 					<tbody>
@@ -605,16 +663,7 @@ export default class Rozpocet extends Component {
 												this.props.updateMaterial(material.id,{title:this.state.editedMaterialTitle})
 												this.setState({ focusedMaterial: null });
 											}}
-											onFocus={() => {
-												this.setState({
-													editedMaterialTitle:material.title,
-													editedMaterialQuantity:material.quantity,
-													editedMaterialUnit:material.unit,
-													editedMaterialMargin:material.margin,
-													editedMaterialPrice:material.price,
-													focusedMaterial: material.id
-												});
-											}}
+											onFocus={() => this.onFocusMaterial(material)}
 											onChange={e =>{
 												this.setState({ editedMaterialTitle: e.target.value })
 											}}
@@ -648,16 +697,7 @@ export default class Rozpocet extends Component {
 												this.props.updateMaterial(material.id,{quantity:this.state.editedMaterialQuantity})
 												this.setState({ focusedMaterial: null });
 											}}
-											onFocus={() => {
-												this.setState({
-													editedMaterialTitle:material.title,
-													editedMaterialQuantity:material.quantity,
-													editedMaterialUnit:material.unit,
-													editedMaterialMargin:material.margin,
-													editedMaterialPrice:material.price,
-													focusedMaterial: material.id
-												});
-											}}
+											onFocus={() => this.onFocusMaterial(material)}
 											onChange={e =>{
 												this.setState({ editedMaterialQuantity: e.target.value })
 											}}
@@ -686,16 +726,7 @@ export default class Rozpocet extends Component {
 													this.props.updateMaterial(material.id,{price:this.state.editedMaterialPrice})
 													this.setState({ focusedMaterial: null });
 												}}
-												onFocus={() => {
-													this.setState({
-														editedMaterialTitle:material.title,
-														editedMaterialQuantity:material.quantity,
-														editedMaterialUnit:material.unit,
-														editedMaterialMargin:material.margin,
-														editedMaterialPrice:material.price,
-														focusedMaterial: material.id
-													});
-												}}
+												onFocus={() => this.onFocusMaterial(material)}
 												onChange={e =>{
 													this.setState({ editedMaterialPrice: e.target.value })}
 												}
@@ -722,16 +753,7 @@ export default class Rozpocet extends Component {
 													this.props.updateMaterial(material.id,{margin:this.state.editedMaterialMargin})
 													this.setState({ focusedMaterial: null });
 												}}
-												onFocus={() => {
-													this.setState({
-														editedMaterialTitle:material.title,
-														editedMaterialQuantity:material.quantity,
-														editedMaterialUnit:material.unit,
-														editedMaterialMargin:material.margin,
-														editedMaterialPrice:material.price,
-														focusedMaterial: material.id
-													});
-												}}
+												onFocus={() => this.onFocusMaterial(material)}
 												onChange={e =>{
 													this.setState({ editedMaterialMargin: e.target.value })
 												}}
@@ -744,11 +766,9 @@ export default class Rozpocet extends Component {
 								{this.props.showColumns.includes(7) &&
 									<td className="table-highlight-background p-l-8 p-t-15 p-r-8 t-a-r">
 										{
-											parseFloat(
-												material.id === this.state.focusedMaterial ?
-												( this.state.editedMaterialPrice * ( 1 + this.state.editedMaterialMargin / 100 ) ) :
-												( material.price * ( 1 + material.margin / 100 ) )
-											).toFixed(2) + " €"
+											material.id === this.state.focusedMaterial ?
+											(  this.getDiscountedMaterialPrice({price:this.state.editedMaterialPrice, margin:this.state.editedMaterialMargin}).toFixed(2) + " €" ) :
+											( this.getDiscountedMaterialPrice(material) ).toFixed(2) + " €"
 										}
 									</td>
 								}
@@ -778,6 +798,202 @@ export default class Rozpocet extends Component {
 											onClick={()=>{
 												if(window.confirm('Are you sure?')){
 													this.props.removeMaterial(material.id);
+												}
+											}}>
+											<i className="fa fa-times" />
+										</button>
+									</td>
+								}
+							</tr>
+						)}
+						{/* Custom Items */}
+						{ this.props.customItems.map((customItem)=>
+							<tr key={customItem.id}>
+								{/*Checkbox done*/}
+								{this.props.showColumns.includes(0) &&
+									<td width="10">
+										<Checkbox
+											className="m-t-5"
+											disabled= { this.props.disabled }
+											value={ customItem.done }
+											onChange={()=>{
+												this.props.updateCustomItem(customItem.id,{done:!customItem.done})
+											}}
+											/>
+									</td>
+								}
+								{/*Name*/}
+								{this.props.showColumns.includes(1) &&
+									<td className="">
+										<input
+											disabled={this.props.disabled}
+											className="form-control hidden-input"
+											value={
+												customItem.id === this.state.focusedCustomItem
+												? this.state.editedCustomItemTitle
+												: customItem.title
+											}
+											onBlur={() => {
+												this.props.updateCustomItem(customItem.id,{title:this.state.editedCustomItemTitle})
+												this.setState({ focusedCustomItem: null });
+											}}
+											onFocus={() => this.onFocusCustomItem(customItem)}
+											onChange={e =>{
+												this.setState({ editedCustomItemTitle: e.target.value })
+											}}
+											/>
+									</td>
+								}
+								{/*Riesi*/}
+								{this.props.showColumns.includes(2) &&
+									<td></td>
+								}
+								{/*Type*/}
+								{this.props.showColumns.includes(3) &&
+									<td className="p-l-8 p-t-15">
+										Voľná položka
+									</td>
+								}
+								{/*Mnozstvo*/}
+								{this.props.showColumns.includes(4) &&
+									<td>
+										<input
+											disabled={this.props.disabled}
+											type="number"
+											className="form-control hidden-input h-30"
+											value={
+												customItem.id === this.state.focusedCustomItem
+												? this.state.editedCustomItemQuantity
+												: customItem.quantity
+											}
+											onBlur={() => {
+												//submit
+												this.props.updateCustomItem(customItem.id,{quantity:this.state.editedCustomItemQuantity})
+												this.setState({ focusedCustomItem: null });
+											}}
+											onFocus={() => this.onFocusCustomItem(customItem)}
+											onChange={e =>{
+												this.setState({ editedCustomItemQuantity: e.target.value })
+											}}
+											/>
+									</td>
+								}
+								{/*Cennik/Nakup*/}
+								{this.props.showColumns.includes(5) && this.state.toggleTab === "2" &&
+									<td className="table-highlight-background p-l-8">
+										<span className="text" style={{float: "right"}}>
+											<div style={{float: "right"}} className="p-t-8 p-r-8">
+												€
+											</div>
+											<input
+												disabled={this.props.disabled}
+												type="number"
+												style={{display: "inline", width: "70%", float: "right"}}
+												className="form-control hidden-input h-30"
+												value={
+													customItem.id === this.state.focusedCustomItem
+													? this.state.editedCustomItemBuyPrice
+													: customItem.buyPrice
+												}
+												onBlur={() => {
+													if(parseFloat(this.state.editedCustomItemBuyPrice) > parseFloat(this.state.editedCustomItemPrice)){
+														this.props.updateCustomItem(customItem.id,{buyPrice:this.state.editedCustomItemBuyPrice, price:this.state.editedCustomItemBuyPrice})
+													}else{
+														this.props.updateCustomItem(customItem.id,{buyPrice:this.state.editedCustomItemBuyPrice})
+													}
+													this.setState({ focusedCustomItem: null });
+												}}
+												onFocus={() => this.onFocusCustomItem(customItem)}
+												onChange={e =>{
+													this.setState({ editedCustomItemBuyPrice: e.target.value })}
+												}
+												/>
+										</span>
+									</td>
+								}
+								{/*Zlava/Marža*/}
+								{this.props.showColumns.includes(6) && this.state.toggleTab === "2" &&
+									<td className="table-highlight-background p-l-8">
+										<span className="text">
+											+
+											<input
+												disabled={true}
+												type="number"
+												style={{display: "inline", width: "60%"}}
+												className="form-control hidden-input h-30"
+												value={
+													customItem.id === this.state.focusedCustomItem ?
+													this.calculateMargin(this.state.editedCustomItemBuyPrice,this.state.editedCustomItemPrice) :
+													this.calculateMargin(customItem.buyPrice, customItem.price)
+												}
+												/>
+											%
+										</span>
+									</td>
+								}
+								{/*Cena*/}
+								{this.props.showColumns.includes(7) &&
+									<td className="table-highlight-background p-l-8">
+										{this.state.toggleTab === "1" &&
+											<span className="text" style={{float: "right"}}>
+												<div style={{float: "right"}} className="p-t-8 p-r-8">
+													€
+												</div>
+											<input
+												disabled={true}
+												type="number"
+												style={{display: "inline", width: "70%", float: "right"}}
+												className="form-control hidden-input h-30"
+												value={customItem.buyPrice}
+												/>
+										</span>
+										}
+										{ this.state.toggleTab === "2" &&
+											<span className="text" style={{float: "right"}}>
+												<div style={{float: "right"}} className="p-t-8 p-r-8">
+													€
+												</div>
+												<input
+													disabled={this.props.disabled}
+													type="number"
+													style={{display: "inline", width: "70%", float: "right"}}
+													className="form-control hidden-input h-30"
+													value={
+														customItem.id === this.state.focusedCustomItem
+														? this.state.editedCustomItemPrice
+														: customItem.price
+													}
+													onBlur={() => {
+														if(parseFloat(this.state.editedCustomItemBuyPrice) > parseFloat(this.state.editedCustomItemPrice)){
+															this.props.updateCustomItem(customItem.id,{price:this.state.editedCustomItemPrice,buyPrice:this.state.editedCustomItemPrice})
+														}else{
+															this.props.updateCustomItem(customItem.id,{price:this.state.editedCustomItemPrice})
+														}
+														this.setState({ focusedCustomItem: null });
+													}}
+													onFocus={() => this.onFocusCustomItem(customItem)}
+													onChange={e =>{
+														this.setState({ editedCustomItemPrice: e.target.value })}
+													}
+													/>
+											</span>
+										}
+									</td>
+								}
+								{/*Toolbar*/}
+								{this.props.showColumns.includes(8) &&
+									<td className="t-a-r">
+										<button className="btn waves-effect" disabled={this.props.disabled}>
+											<i className="fa fa-arrow-up"  />
+										</button>
+										<button className="btn waves-effect" disabled={this.props.disabled}>
+											<i className="fa fa-arrow-down"  />
+										</button>
+										<button className="btn waves-effect"
+											disabled={this.props.disabled}
+											onClick={()=>{
+												if(window.confirm('Are you sure?')){
+													this.props.removeCustomItem(customItem.id);
 												}
 											}}>
 											<i className="fa fa-times" />
@@ -1038,8 +1254,8 @@ export default class Rozpocet extends Component {
 											className="form-control h-30"
 											id="inlineFormInput"
 											placeholder=""
-											value={this.state.newTitle}
-											onChange={(e)=>this.setState({newTitle:e.target.value})}
+											value={this.state.newMaterialTitle}
+											onChange={(e)=>this.setState({newMaterialTitle:e.target.value})}
 											/>
 									</td>
 								}
@@ -1057,8 +1273,8 @@ export default class Rozpocet extends Component {
 										<input
 											disabled={this.props.disabled}
 											type="number"
-											value={this.state.newQuantity}
-											onChange={(e)=>this.setState({newQuantity:e.target.value})}
+											value={this.state.newMaterialQuantity}
+											onChange={(e)=>this.setState({newMaterialQuantity:e.target.value})}
 											className="form-control h-30"
 											id="inlineFormInput"
 											placeholder=""
@@ -1067,22 +1283,21 @@ export default class Rozpocet extends Component {
 								}
 								{/*Cennik/Nakup*/}
 								{this.props.showColumns.includes(5) &&
-									this.state.toggleTab === "1" &&
 									<td className="table-highlight-background p-l-8 p-r-8">
 										<input
 											disabled={this.props.disabled}
 											type="number"
-											value={this.state.newPrice}
+											value={this.state.newMaterialPrice}
 											onChange={(e)=>{
-												let newPrice = e.target.value;
+												let newMaterialPrice = e.target.value;
 												if(!this.state.marginChanged){
-													if(newPrice==='' || parseFloat(newPrice) < 50 ){
-														this.setState({newPrice,newMargin:(this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMargin : 0)});
+													if(newMaterialPrice==='' || parseFloat(newMaterialPrice) < 50 ){
+														this.setState({newMaterialPrice,newMaterialMargin:(this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMargin : 0)});
 													}else{
-														this.setState({newPrice,newMargin:(this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMarginExtra : 0)});
+														this.setState({newMaterialPrice,newMaterialMargin:(this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMarginExtra : 0)});
 													}
 												}else{
-													this.setState({newPrice});
+													this.setState({newMaterialPrice});
 												}
 											}}
 											className="form-control h-30"
@@ -1097,8 +1312,8 @@ export default class Rozpocet extends Component {
 										<input
 											disabled={this.props.disabled}
 											type="number"
-											value={this.state.newMargin}
-											onChange={(e)=>this.setState({newMargin:e.target.value,marginChanged:true})}
+											value={this.state.newMaterialMargin}
+											onChange={(e)=>this.setState({newMaterialMargin:e.target.value,marginChanged:true})}
 											className="form-control h-30"
 											id="inlineFormInput"
 											placeholder=""
@@ -1109,9 +1324,9 @@ export default class Rozpocet extends Component {
 								{this.props.showColumns.includes(7) && this.state.toggleTab === "2" &&
 									<td className="table-highlight-background p-t-15 p-l-8 p-r-8 t-a-r">
 										{
-											isNaN(this.state.newPrice*(1+this.state.newMargin/100))
+											isNaN(this.getDiscountedMaterialPrice({price:this.state.newMaterialPrice,margin:this.state.newMaterialMargin}))
 											?'No price'
-											:this.state.newPrice*(1+this.state.newMargin/100) + " €"
+											:this.getDiscountedMaterialPrice({price:this.state.newMaterialPrice,margin:this.state.newMaterialMargin}) + " €"
 										}
 									</td>
 								}
@@ -1119,22 +1334,22 @@ export default class Rozpocet extends Component {
 								{this.props.showColumns.includes(8) &&
 									<td className="t-a-r">
 										<button className="btn waves-effect"
-											disabled={this.state.newUnit===null||this.props.disabled}
+											disabled={this.state.newMaterialUnit===null||this.props.disabled}
 											onClick={()=>{
 												let body={
-													margin:this.state.newMargin!==''?this.state.newMargin:0,
-													price:this.state.newPrice!==''?this.state.newPrice:0,
-													quantity:this.state.newQuantity!==''?this.state.newQuantity:0,
-													title:this.state.newTitle,
-													unit:this.state.newUnit.id,
+													margin:this.state.newMaterialMargin!==''?this.state.newMaterialMargin:0,
+													price:this.state.newMaterialPrice!==''?this.state.newMaterialPrice:0,
+													quantity:this.state.newMaterialQuantity!==''?this.state.newMaterialQuantity:0,
+													title:this.state.newMaterialTitle,
+													unit:this.state.newMaterialUnit.id,
 													done:false,
 												}
 												this.setState({
 													showAddMaterial: false,
-													newTitle:'',
-													newQuantity:1,
-													newMargin:0,
-													newPrice:0,
+													newMaterialTitle:'',
+													newMaterialQuantity:1,
+													newMaterialMargin:0,
+													newMaterialPrice:0,
 													marginChanged:false
 												});
 												this.props.submitMaterial(body);
@@ -1153,8 +1368,157 @@ export default class Rozpocet extends Component {
 								}
 							</tr>
 						}
+						{/* ADD Custom item */}
+						{this.state.showAddCustomItem && !this.props.disabled &&
+							<tr>
+								{/*Name*/}
+								{this.props.showColumns.includes(1) &&
+									<td  colSpan={2} className="p-r-8">
+										<input
+											disabled={this.props.disabled}
+											type="text"
+											className="form-control h-30"
+											id="inlineFormInput"
+											placeholder=""
+											value={this.state.newCustomItemTitle}
+											onChange={(e)=>this.setState({newCustomItemTitle:e.target.value})}
+											/>
+									</td>
+								}
+								{/*Text Nakupna cena */}
+								{this.props.showColumns.includes(2) &&
+									<td className="p-t-15 p-l-8">
+										{this.state.toggleTab === "1" ? 'Nákupná cena' : '' }
+									</td>
+								}
+								{/*Input Nakupna cena*/}
+								{this.props.showColumns.includes(3) &&
+									<td className="p-r-8 p-l-8">
+										{this.state.toggleTab === "1" &&
+											<input
+												disabled={this.props.disabled}
+												type="text"
+												className="form-control h-30"
+												id="inlineFormInput"
+												placeholder=""
+												value={this.state.newCustomItemBuyPrice}
+												onChange={(e)=>{
+													if(isNaN(parseFloat(e.target.value))|| parseFloat(e.target.value) <= parseFloat(this.state.newCustomItemPrice) ){
+														this.setState({newCustomItemBuyPrice:e.target.value})
+													}else{
+														this.setState({newCustomItemBuyPrice:e.target.value, newCustomItemPrice: e.target.value })
+													}
+												}}
+												/>
+										}
+										{
+											this.state.toggleTab === "2" && "Voľná položka"
+										}
+									</td>
+								}
+								{/*Mnozstvo*/}
+								{this.props.showColumns.includes(4) &&
+									<td className="p-r-8 p-l-8">
+										<input
+											disabled={this.props.disabled}
+											type="number"
+											value={this.state.newCustomItemQuantity}
+											onChange={(e)=>this.setState({newCustomItemQuantity:e.target.value})}
+											className="form-control h-30"
+											id="inlineFormInput"
+											placeholder=""
+											/>
+									</td>
+								}
+								{/*Cennik/Nakup*/}
+								{this.props.showColumns.includes(5) && this.state.toggleTab === "2" &&
+									<td className="table-highlight-background p-l-8 p-r-8">
+										<input
+											disabled={this.props.disabled}
+											type="text"
+											className="form-control h-30"
+											id="inlineFormInput"
+											placeholder=""
+											value={this.state.newCustomItemBuyPrice}
+											onChange={(e)=>{
+												if(isNaN(parseFloat(e.target.value))|| parseFloat(e.target.value) <= parseFloat(this.state.newCustomItemPrice) ){
+													this.setState({newCustomItemBuyPrice:e.target.value})
+												}else{
+													this.setState({newCustomItemBuyPrice:e.target.value, newCustomItemPrice: e.target.value })
+												}
+											}}
+											/>
+									</td>
+								}
+								{/*Zlava/Marža*/}
+								{this.props.showColumns.includes(6) && this.state.toggleTab === "2" &&
+									<td className="table-highlight-background p-r-8">
+										<input
+											disabled={true}
+											type="number"
+											value={this.calculateMargin(this.state.newCustomItemBuyPrice,this.state.newCustomItemPrice)}
+											className="form-control h-30"
+											id="inlineFormInput"
+											placeholder=""
+											/>
+									</td>
+								}
+								{/*Cena*/}
+								{this.props.showColumns.includes(7) &&
+									<td className="table-highlight-background p-l-8 p-r-8 t-a-r">
+										<input
+											disabled={this.props.disabled}
+											type="number"
+											value={this.state.newCustomItemPrice}
+											onChange={(e)=>{
+												let newCustomItemPrice = e.target.value;
+												this.setState({newCustomItemPrice});
+											}}
+											className="form-control h-30"
+											id="inlineFormInput"
+											placeholder=""
+											/>
+									</td>
+								}
+								{/*Toolbar*/}
+								{this.props.showColumns.includes(8) &&
+									<td className="t-a-r">
+										<button className="btn waves-effect"
+											disabled={this.state.newCustomItemUnit===null||this.props.disabled || parseFloat(this.state.newCustomItemBuyPrice) > parseFloat(this.state.newCustomItemPrice)}
+											onClick={()=>{
+												let body={
+													buyPrice:this.state.newCustomItemBuyPrice!==''?this.state.newCustomItemBuyPrice:0,
+													price:this.state.newCustomItemPrice!==''?this.state.newCustomItemPrice:0,
+													quantity:this.state.newCustomItemQuantity!==''?this.state.newCustomItemQuantity:0,
+													title:this.state.newCustomItemTitle,
+													unit:this.state.newCustomItemUnit.id,
+													done:false,
+												}
+												this.setState({
+													newCustomItemBuyPrice:0,
+													newCustomItemPrice:0,
+													newCustomItemQuantity:1,
+													newCustomItemTitle:'',
+													showAddCustomItem: false,
+												});
+												this.props.submitCustomItem(body);
+											}}
+											>
+											<i className="fa fa-plus" />
+										</button>
+										<button className="btn waves-effect"
+											disabled={this.props.disabled}
+											onClick={()=>{
+												this.setState({showAddCustomItem: false})
+											}}>
+											<i className="fa fa-times"  />
+										</button>
+									</td>
+								}
+							</tr>
+						}
 						{/* ADD Buttons */}
-						{!this.state.showAddSubtask && !this.state.showAddTrip && !this.state.showAddMaterial && !this.props.disabled &&
+						{!this.state.showAddSubtask && !this.state.showAddTrip && !this.state.showAddMaterial && !this.state.showAddCustomItem && !this.props.disabled &&
 							<tr>
 								<td colSpan={(this.state.toggleTab === 1 ? 8 : 10)}>
 									{!this.state.showAddSubtask &&
@@ -1186,31 +1550,48 @@ export default class Rozpocet extends Component {
 											+ Materiál
 										</button>
 									}
+									{!this.state.showAddCustomItem &&
+										<button className="btn"
+											onClick={()=>{
+												this.setState({showAddCustomItem: true});
+											}}
+											>
+											+ Vlastná položka
+										</button>
+									}
 								</td>
 							</tr>
 						}
 					</tbody>
 				</table>
 				{/* Statistics */}
-				{(this.props.workTrips.length + this.props.subtasks.length + this.props.materials.length > 0) &&
+				{(this.props.workTrips.length + this.props.subtasks.length + this.props.materials.length + this.props.customItems.length > 0) &&
 					<div className="row">
 						<div className="text-right ml-auto m-r-5">
 							<b>Cena bez DPH: </b>
 							{
-								(this.props.subtasks.concat(this.props.workTrips).reduce((acc, cur)=> acc+(isNaN(this.getTotalPrice(cur))?0:this.getTotalPrice(cur)),0)
-								+ this.props.materials.reduce((acc, cur)=> acc+(isNaN(parseInt(cur.totalPrice))? 0 : parseInt(cur.totalPrice)),0)).toFixed(2)
+								(
+									this.props.subtasks.concat(this.props.workTrips).reduce((acc, cur)=> acc+(isNaN(this.getTotalPrice(cur))?0:this.getTotalPrice(cur)),0)
+									+ this.props.materials.reduce((acc, cur)=> acc+(isNaN(parseFloat(this.getDiscountedMaterialPrice(cur))) || isNaN(parseInt(cur.quantity)) ? 0 : parseFloat(this.getDiscountedMaterialPrice(cur))*parseInt(cur.quantity)),0)
+									+ this.props.customItems.reduce((acc, cur)=> acc+(isNaN(parseFloat(cur.price))||isNaN(parseInt(cur.quantity)) ? 0 : parseFloat(cur.price) * parseInt(cur.quantity)),0)
+								).toFixed(2)
 							}
 						</div>
 						<div className="text-right m-r-5">
 							<b>DPH: </b>
-							{this.getDPH()}
+							{((this.getDPH()-1)*100).toFixed(2) + ' %' }
 						</div>
 						<div className="text-right">
 							<b>Cena s DPH: </b>
-							{
-								(this.props.subtasks.concat(this.props.workTrips).reduce((acc, cur)=> acc+(isNaN(this.getTotalPrice(cur))?0:this.getTotalPrice(cur)*this.getDPH()),0)
-								+ this.props.materials.reduce((acc, cur)=> acc+(isNaN(parseInt(cur.totalPrice))? 0 : (parseInt(cur.totalPrice)*this.getDPH())),0)).toFixed(2)
-							}
+								{
+									(
+										(
+											this.props.subtasks.concat(this.props.workTrips).reduce((acc, cur)=> acc+(isNaN(this.getTotalPrice(cur))?0:this.getTotalPrice(cur)),0)
+											+ this.props.materials.reduce((acc, cur)=> acc+(isNaN(parseFloat(this.getDiscountedMaterialPrice(cur))) || isNaN(parseInt(cur.quantity)) ? 0 : parseFloat(this.getDiscountedMaterialPrice(cur))*parseInt(cur.quantity)),0)
+											+ this.props.customItems.reduce((acc, cur)=> acc+(isNaN(parseFloat(cur.price))||isNaN(parseInt(cur.quantity)) ? 0 : parseFloat(cur.price) * parseInt(cur.quantity)),0)
+										)*this.getDPH()
+									).toFixed(2)
+								}
 						</div>
 					</div>
 				}

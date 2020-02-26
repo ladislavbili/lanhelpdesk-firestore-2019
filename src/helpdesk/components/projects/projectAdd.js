@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
-import Select from 'react-select';
 import { connect } from "react-redux";
-import {invisibleSelectStyle} from '../../../scss/selectStyles';
 import {storageHelpStatusesStart, storageHelpTagsStart, storageUsersStart, storageHelpTaskTypesStart, storageCompaniesStart} from '../../../redux/actions';
 import { Button, FormGroup, Label,Input, Modal, ModalHeader, ModalBody, ModalFooter  } from 'reactstrap';
 import {toSelArr, sameStringForms, testing} from '../../../helperFunctions';
 import {rebase} from '../../../index';
-import Checkbox from '../../../components/checkbox';
 import Permissions from "./permissions";
 import ProjectDefaultValues from './defaultValues';
 

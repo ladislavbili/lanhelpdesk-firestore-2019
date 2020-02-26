@@ -1,11 +1,5 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import { Modal, ModalBody, ModalFooter, Button, FormGroup, Label, Input } from 'reactstrap';
-import { connect } from "react-redux";
-import {storageHelpStatusesStart, storageHelpTagsStart, storageUsersStart, storageHelpTaskTypesStart, storageCompaniesStart, storageHelpProjectsStart, setProject, storageHelpTasksStart} from '../../../redux/actions';
-import {rebase, database} from '../../../index';
-import firebase from 'firebase';
-import {toSelArr, sameStringForms, snapshotToArray,testing} from '../../../helperFunctions';
 import {invisibleSelectStyle} from '../../../scss/selectStyles';
 import Checkbox from '../../../components/checkbox';
 const booleanSelects = [{value:false,label:'No'},{value:true,label:'Yes'}];

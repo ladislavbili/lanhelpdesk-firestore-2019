@@ -481,6 +481,17 @@ export default class CompanyInvoice extends Component {
 																<td key={material.id+ '-totalPrice'} style={{width:'100px'}}>{material.totalPrice}</td>
 															</tr>
 														)}
+
+														{(task.customItems?task.customItems:[]).map((customItem)=>
+															<tr key={customItem.id}>
+																<td key={customItem.id+ '-title'} style={{width:'150px',paddingLeft:0}}>{customItem.title}</td>
+																<td key={customItem.id+ '-quantity'} style={{width:'50px'}}>{customItem.quantity}</td>
+																<td key={customItem.id+ '-unit'} style={{width:'100px'}}>{customItem.unit}</td>
+																<td key={customItem.id+ '-unitPrice'} style={{width:'100px'}}>{customItem.unitPrice}</td>
+																<td key={customItem.id+ '-totalPrice'} style={{width:'100px'}}>{customItem.totalPrice}</td>
+															</tr>
+														)}
+
 													</tbody>
 												</table>
 											</td>

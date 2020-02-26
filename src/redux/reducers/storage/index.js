@@ -10,6 +10,7 @@ import storageHelpStoredItems from './help-stored_itemsReducer';
 import storageHelpSupplierInvoices from './help-supplier_invoicesReducer';
 import storageHelpSuppliers from './help-suppliersReducer';
 import storageHelpTags from './help-tagsReducer';
+import storageHelpTaskCustomItems from './help-task_custom_itemsReducer';
 import storageHelpTaskMaterials from './help-task_materialsReducer';
 import storageHelpTaskTypes from './help-task_typesReducer';
 import storageHelpTaskWorkTrips from './help-task_work_tripsReducer';
@@ -39,6 +40,7 @@ export default {
   storageHelpSupplierInvoices,
   storageHelpSuppliers,
   storageHelpTags,
+  storageHelpTaskCustomItems,
   storageHelpTaskMaterials,
   storageHelpTaskTypes,
   storageHelpTaskWorkTrips,

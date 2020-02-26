@@ -57,6 +57,7 @@ class TaskEdit extends Component {
 			task:null,
 
 			taskMaterials:[],
+			customItems:[],
 			taskWorks:[],
 			workTrips:[],
 			pricelists:[],
@@ -121,6 +122,7 @@ class TaskEdit extends Component {
 		};
     this.submitTask.bind(this);
     this.submitMaterial.bind(this);
+    this.submitCustomItem.bind(this);
     this.submitWorkTrip.bind(this);
     this.submitService.bind(this);
 		this.canSave.bind(this);
@@ -173,6 +175,7 @@ class TaskEdit extends Component {
 
 			rebase.removeDoc('/help-tasks/'+taskID);
 			this.state.taskMaterials.forEach((material)=>rebase.removeDoc('/help-task_materials/'+material.id))
+			this.state.customItems.forEach((item)=>rebase.removeDoc('/help-task_custom_items/'+item.id))
 			this.state.taskWorks.forEach((work)=>rebase.removeDoc('/help-task_works/'+work.id))
 			this.state.workTrips.forEach((workTrip)=>rebase.removeDoc('/help-task_work_trips/'+workTrip.id))
 			if(this.state.repeat!==null){
@@ -315,15 +318,17 @@ class TaskEdit extends Component {
       [
 				database.collection('help-task_work_trips').where("task", "==", taskID).get(),
         database.collection('help-task_materials').where("task", "==", taskID).get(),
+        database.collection('help-task_custom_items').where("task", "==", taskID).get(),
         database.collection('help-task_works').where("task", "==", taskID).get(),
         database.collection('help-repeats').doc(taskID).get(),
 				database.collection('help-task_history').where("task", "==", taskID).get(),
-    ]).then(([workTrips,taskMaterials, taskWorks,repeat,history])=>{
+    ]).then(([workTrips,taskMaterials,customItems, taskWorks,repeat,history])=>{
 				this.setState({
 					extraData:{
+						taskWorks:snapshotToArray(taskWorks),
 						workTrips:snapshotToArray(workTrips),
 						taskMaterials:snapshotToArray(taskMaterials),
-						taskWorks:snapshotToArray(taskWorks),
+						customItems:snapshotToArray(customItems),
 						repeat:repeat.exists ? {id:repeat.id,...repeat.data()} : null,
 					},
 					history:snapshotToArray(history).sort((item1,item2)=>item1.createdAt > item2.createdAt ? -1 : 1 ),
@@ -418,6 +423,7 @@ class TaskEdit extends Component {
 
 		let workTrips = this.state.extraData.workTrips;
 		let taskMaterials = this.state.extraData.taskMaterials;
+		let customItems = this.state.extraData.customItems;
 		let taskWorks = this.state.extraData.taskWorks.map((work)=>{
 			return {
 				id:work.id,
@@ -494,6 +500,7 @@ class TaskEdit extends Component {
 		let newState = {
 			workTrips,
 			taskMaterials,
+			customItems,
 			toggleTab: "1", //viewOnly?"1":"3",
 			taskWorks,
 			repeat,
@@ -590,16 +597,18 @@ class TaskEdit extends Component {
 			}
 		});
 		let taskMaterials= this.state.taskMaterials.map((material)=>{
-			let finalUnitPrice=(parseFloat(material.price)*(1+parseFloat(material.margin)/100));
-			let totalPrice=(finalUnitPrice*parseFloat(material.quantity)).toFixed(3);
-			finalUnitPrice=finalUnitPrice.toFixed(3);
 			return {
 				...material,
-				unit:this.state.units.find((unit)=>unit.id===material.unit),
-				finalUnitPrice,
-				totalPrice
+				unit:this.state.units.find((unit)=>unit.id===material.unit)
 			}
 		});
+
+		let customItems = this.state.customItems.map((item)=>(
+			{
+				...item,
+				unit:this.state.units.find((unit)=>unit.id===item.unit),
+			}
+		));
 
 		let createdBy=null;
 		if(this.state.task&& this.state.task.createdBy){
@@ -613,7 +622,7 @@ class TaskEdit extends Component {
 					</div>
 				}
 
-				{ this.renderCommandbar(taskID, createdBy, canCopy, canDelete, taskWorks, workTrips, taskMaterials) }
+				{ this.renderCommandbar(taskID, createdBy, canCopy, canDelete, taskWorks, workTrips, taskMaterials, customItems) }
 
 				<div className={classnames("fit-with-header-and-commandbar", "scroll-visible", "bkg-F2F1F1", { "row": this.state.layout === '2'})}>
 					<div className={classnames("card-box", { "max-width-1660": this.state.layout === '1'}, { "task-edit-left": this.state.layout === '2'})}>
@@ -636,7 +645,7 @@ class TaskEdit extends Component {
 
 						{ this.renderPendingPicker() }
 
-						{ this.renderVykazyTable(taskWorks, workTrips, taskMaterials) }
+						{ this.renderVykazyTable(taskWorks, workTrips, taskMaterials, customItems) }
 
 						{ this.renderComments(taskID) }
 
@@ -649,7 +658,7 @@ class TaskEdit extends Component {
 		);
 	}
 
-	renderCommandbar(taskID, createdBy, canCopy, canDelete, taskWorks, workTrips, taskMaterials){
+	renderCommandbar(taskID, createdBy, canCopy, canDelete, taskWorks, workTrips, taskMaterials, customItems){
 		return(
 			<div className="commandbar p-l-25"> {/*Commandbar*/}
 				<div className="d-flex flex-row center-hor p-2 ">
@@ -681,6 +690,7 @@ class TaskEdit extends Component {
 							taskWorks={taskWorks}
 							workTrips={workTrips}
 							taskMaterials={taskMaterials}
+							customItems={customItems}
 							{...this.state}
 							isLoaded={this.state.extraDataLoaded && this.storageLoaded(this.props) && !this.state.loading} />
 						{canDelete && <button type="button" disabled={!canDelete} className="btn btn-link-reversed waves-effect" onClick={this.deleteTask.bind(this)}>
@@ -1454,7 +1464,7 @@ class TaskEdit extends Component {
 		)
 	}
 
-	renderVykazyTable(taskWorks, workTrips, taskMaterials){
+	renderVykazyTable(taskWorks, workTrips, taskMaterials, customItems){
 		return(
 			<VykazyTable
 				showColumns={ (this.state.viewOnly ? [0,1,2,3,4,5,6,7] : [0,1,2,3,4,5,6,7,8]) }
@@ -1524,6 +1534,25 @@ class TaskEdit extends Component {
 						let newTaskMaterials=[...this.state.taskMaterials];
 						newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
 						this.setState({taskMaterials:newTaskMaterials, extraData});
+					});
+				}}
+				customItems={customItems}
+				submitCustomItem={this.submitCustomItem.bind(this)}
+				updateCustomItem={(id,newData)=>{
+					let extraData = {...this.state.extraData};
+					extraData.customItems[extraData.customItems.findIndex((item)=>item.id === id)] = {...extraData.customItems.find((item)=>item.id === id),...newData};
+					let newCustomItems=[...this.state.customItems];
+					newCustomItems[newCustomItems.findIndex((taskWork)=>taskWork.id===id)]={...newCustomItems.find((taskWork)=>taskWork.id===id),...newData};
+					rebase.updateDoc('help-task_custom_items/'+id,newData);
+					this.setState({customItems:newCustomItems, extraData});
+				}}
+				removeCustomItem={(id)=>{
+					rebase.removeDoc('help-task_custom_items/'+id).then(()=>{
+						let extraData = {...this.state.extraData};
+						extraData.customItems.splice(extraData.customItems.findIndex((item)=>item.id === id),1);
+						let newCustomItems=[...this.state.customItems];
+						newCustomItems.splice(newCustomItems.findIndex((item)=>item.id===id),1);
+						this.setState({customItems:newCustomItems, extraData});
 					});
 				}}
 				units={this.state.units}
@@ -1618,6 +1647,14 @@ class TaskEdit extends Component {
       this.setState({taskMaterials:[...this.state.taskMaterials, {task:this.props.match.params.taskID,...body,id:result.id}],extraData})
     });
   }
+
+	submitCustomItem(body){
+		rebase.addToCollection('help-task_custom_items',{task:this.props.match.params.taskID,...body}).then((result)=>{
+			let extraData = {...this.state.extraData};
+			extraData.customItems = [{task:this.props.match.params.taskID,...body,id:result.id}, ...extraData.customItems];
+			this.setState({customItems:[...this.state.customItems, {task:this.props.match.params.taskID,...body,id:result.id}],extraData})
+		});
+	}
 
   submitService(body){
     rebase.addToCollection('help-task_works',{task:this.props.match.params.taskID,...body}).then((result)=>{

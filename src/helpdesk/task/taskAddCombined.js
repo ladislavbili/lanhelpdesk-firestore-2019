@@ -47,6 +47,7 @@ export default class TaskAdd extends Component{
 			taskWorks:[],
 			subtasks:[],
 			taskMaterials:[],
+			customItems:[],
 			workTrips:[],
 			milestones:[noMilestone],
 			allTags:[],
@@ -146,6 +147,12 @@ export default class TaskAdd extends Component{
 				delete item['id'];
 				rebase.addToCollection('help-task_materials',{task:newID,...item});
 			})
+
+			this.state.customItems.forEach((item)=>{
+				delete item['id'];
+				rebase.addToCollection('help-task_custom_items',{task:newID,...item});
+			})
+
 			this.state.workTrips.forEach((item)=>{
 				delete item['id'];
 				rebase.addToCollection('help-task_work_trips',{task:newID,...item});
@@ -213,6 +220,7 @@ export default class TaskAdd extends Component{
 								overtime:booleanSelects[0],
 								taskWorks:[],
 								taskMaterials:[],
+								customItems:[],
 								workTrips:[],
 								subtasks:[],
 								repeat:null,
@@ -324,6 +332,11 @@ export default class TaskAdd extends Component{
 						delete m['task'];
 						return {...m, id:this.getNewID()};})
 					: [],
+				customItems: this.props.task ? this.props.task.customItems.map(m => {
+						delete m['fake'];
+						delete m['task'];
+						return {...m, id:this.getNewID()};}) :
+					 	[],
 				workTrips: this.props.task ? this.props.task.workTrips.map(m => {
 						delete m['fake'];
 						delete m['task'];
@@ -356,14 +369,16 @@ export default class TaskAdd extends Component{
 		});
 
 		let taskMaterials= this.state.taskMaterials.map((material)=>{
-			let finalUnitPrice=(parseFloat(material.price)*(1+parseFloat(material.margin)/100));
-			let totalPrice=(finalUnitPrice*parseFloat(material.quantity)).toFixed(2);
-			finalUnitPrice=finalUnitPrice.toFixed(2);
 			return {
 				...material,
-				unit:this.state.units.find((unit)=>unit.id===material.unit),
-				finalUnitPrice,
-				totalPrice
+				unit:this.state.units.find((unit)=>unit.id===material.unit)
+			}
+		});
+
+		let customItems= this.state.customItems.map((customItem)=>{
+			return {
+				...customItem,
+				unit:this.state.units.find((unit)=>unit.id===customItem.unit)
 			}
 		});
 		return (
@@ -385,7 +400,7 @@ export default class TaskAdd extends Component{
 
 					{ !this.state.viewOnly && !this.state.hidden && false && this.renderSubtasks() }
 
-					{ !this.state.viewOnly && this.renderVykazyTable(taskWorks, workTrips, taskMaterials) }
+					{ !this.state.viewOnly && this.renderVykazyTable(taskWorks, workTrips, taskMaterials, customItems) }
 
 					{ this.renderButtons() }
 
@@ -478,6 +493,7 @@ export default class TaskAdd extends Component{
 												taskWorks:[],
 												subtasks:[],
 												taskMaterials:[],
+												customItems:[],
 												workTrips:[],
 												allTags:[],
 												deadline:null,
@@ -528,6 +544,7 @@ export default class TaskAdd extends Component{
 													subtasks:[],
 													workTrips:[],
 													taskMaterials:[],
+													customItems:[],
 													allTags:[],
 													deadline:null,
 													closeDate:null,
@@ -771,6 +788,7 @@ export default class TaskAdd extends Component{
 													taskWorks:[],
 													subtasks:[],
 													taskMaterials:[],
+													customItems:[],
 													workTrips:[],
 													allTags:[],
 													deadline:null,
@@ -820,6 +838,7 @@ export default class TaskAdd extends Component{
 													subtasks:[],
 													workTrips:[],
 													taskMaterials:[],
+													customItems:[],
 													allTags:[],
 													deadline:null,
 													closeDate:null,
@@ -1173,10 +1192,10 @@ export default class TaskAdd extends Component{
 			)
 		}
 
-		renderVykazyTable(taskWorks, workTrips, taskMaterials){
+		renderVykazyTable(taskWorks, workTrips, taskMaterials, customItems){
 			return(
 						<VykazyTable
-							showColumns={ [0,1,2,3,4,5,6,7,8,9] }
+							showColumns={ [0,1,2,3,4,5,6,7,8] }
 
 							showTotals={false}
 							disabled={this.state.viewOnly}
@@ -1231,6 +1250,22 @@ export default class TaskAdd extends Component{
 								newTaskMaterials.splice(newTaskMaterials.findIndex((taskMaterial)=>taskMaterial.id===id),1);
 								this.setState({taskMaterials:newTaskMaterials});
 							}}
+
+							customItems={customItems}
+							submitCustomItem={(customItem)=>{
+								this.setState({customItems:[...this.state.customItems,{id:this.getNewID(),...customItem}]});
+							}}
+							updateCustomItem={(id,newData)=>{
+								let newCustomItems=[...this.state.customItems];
+								newCustomItems[newCustomItems.findIndex((customItem)=>customItem.id===id)]={...newCustomItems.find((customItem)=>customItem.id===id),...newData};
+								this.setState({customItems:newCustomItems});
+							}}
+							removeCustomItem={(id)=>{
+								let newCustomItems=[...this.state.customItems];
+								newCustomItems.splice(newCustomItems.findIndex((customItem)=>customItem.id===id),1);
+								this.setState({customItems:newCustomItems});
+							}}
+
 							units={this.state.units}
 							defaultUnit={this.state.defaultUnit}
 							/>

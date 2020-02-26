@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import { Button, FormGroup, Label, Input,Modal, ModalBody, ModalFooter } from 'reactstrap';
+import { Button, FormGroup, Label, Modal, ModalBody, ModalFooter } from 'reactstrap';
 import DatePicker from 'react-datepicker';
 import {invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
 import Checkbox from '../../components/checkbox';

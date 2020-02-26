@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import Select from 'react-select';
 import { Modal, ModalBody, ModalFooter, Button, FormGroup, Label, Input } from 'reactstrap';
 import { connect } from "react-redux";
 import {storageHelpStatusesStart, storageHelpTagsStart, storageUsersStart, storageHelpTaskTypesStart, storageCompaniesStart, storageHelpProjectsStart, setProject, storageHelpTasksStart} from '../../../redux/actions';
 import {rebase, database} from '../../../index';
 import firebase from 'firebase';
 import {toSelArr, sameStringForms, snapshotToArray,testing} from '../../../helperFunctions';
-import {invisibleSelectStyle} from '../../../scss/selectStyles';
 import Permissions from "./permissions";
 import ProjectDefaultValues from './defaultValues';
 const booleanSelects = [{value:false,label:'No'},{value:true,label:'Yes'}];
@@ -188,16 +186,18 @@ class ProjectEdit extends Component{
 		Promise.all(
 			[
 				database.collection('help-task_materials').where("task", "==", taskID).get(),
+				database.collection('help-task_custom_items').where("task", "==", taskID).get(),
 				database.collection('help-task_works').where("task", "==", taskID).get(),
 				database.collection('help-repeats').doc(taskID).get(),
 				database.collection('help-comments').where("task", "==", taskID).get()
-		]).then(([taskMaterials, taskWorks,repeat,comments])=>{
+		]).then(([taskMaterials,customItems, taskWorks,repeat,comments])=>{
 
 			let storageRef = firebase.storage().ref();
 			task.attachments.map((attachment)=>storageRef.child(attachment.path).delete());
 
 			rebase.removeDoc('/help-tasks/'+taskID);
 			snapshotToArray(taskMaterials).forEach((material)=>rebase.removeDoc('/help-task_materials/'+material.id))
+			snapshotToArray(customItems).forEach((item)=>rebase.removeDoc('/help-task_custom_items/'+item.id))
 			snapshotToArray(taskWorks).forEach((work)=>rebase.removeDoc('/help-task_works/'+work.id))
 			if(repeat.exists){
 				rebase.removeDoc('/help-repeats/'+taskID);

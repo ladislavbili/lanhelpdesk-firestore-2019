@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Button, Input, Modal, ModalBody, ModalHeader, FormGroup, Label } from 'reactstrap';
 import Select from 'react-select';
 import {storageCompaniesStart,storageHelpTasksStart, storageHelpStatusesStart, storageHelpTaskTypesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart,
-	storageHelpTaskWorksStart, storageHelpTaskWorkTripsStart, storageHelpTripTypesStart, storageHelpPricelistsStart, storageHelpPricesStart, storageHelpCompanyInvoicesStart } from '../../redux/actions';
+	storageHelpTaskWorksStart, storageHelpTaskWorkTripsStart, storageHelpTripTypesStart, storageHelpPricelistsStart, storageHelpPricesStart, storageHelpCompanyInvoicesStart, storageHelpTaskCustomItemsStart } from '../../redux/actions';
 import { timestampToString, timestampToDate, sameStringForms, toSelArr, toFloat} from '../../helperFunctions';
 import {rebase} from '../../index';
 import TaskEdit from '../../helpdesk/task/taskEdit';
@@ -36,6 +36,7 @@ class MothlyReportsCompany extends Component {
 		props.unitsLoaded &&
 		props.usersLoaded &&
 		props.materialsLoaded &&
+		props.customItemsLoaded &&
 		props.taskWorksLoaded &&
 		props.tripTypesLoaded &&
 		props.workTripsLoaded &&
@@ -53,6 +54,7 @@ class MothlyReportsCompany extends Component {
 			!sameStringForms(props.units,this.props.units)||
 			!sameStringForms(props.users,this.props.users)||
 			!sameStringForms(props.materials,this.props.materials)||
+			!sameStringForms(props.customItems,this.props.customItems)||
 			!sameStringForms(props.taskWorks,this.props.taskWorks)||
 			!sameStringForms(props.tripTypes,this.props.tripTypes)||
 			!sameStringForms(props.workTrips,this.props.workTrips)||
@@ -101,6 +103,9 @@ class MothlyReportsCompany extends Component {
 		if(!this.props.materialsActive){
 			this.props.storageHelpTaskMaterialsStart();
 		}
+		if(!this.props.customItemsActive){
+			this.props.storageHelpTaskCustomItemsStart();
+		}
 		if(!this.props.taskWorksActive){
 			this.props.storageHelpTaskWorksStart();
 		}
@@ -129,8 +134,10 @@ class MothlyReportsCompany extends Component {
 		let works = this.newProcessWorks(props);
 		let trips = this.newProcessTrips(props);
 		let materials = this.processMaterials(props);
-		let allTasks = this.processTasks(props, materials, works, trips).sort((task1,task2)=> task1.closeDate > task2.closeDate ? 1 : -1 );
-		let monthsTasks = this.processThisMonthTasks(props, materials, works, trips).sort((task1,task2)=> task1.closeDate > task2.closeDate ? 1 : -1 );
+		let customItems = this.processCustomItems(props);
+		console.log(customItems);
+		let allTasks = this.processTasks(props, materials, customItems, works, trips).sort((task1,task2)=> task1.closeDate > task2.closeDate ? 1 : -1 );
+		let monthsTasks = this.processThisMonthTasks(props, materials, customItems, works, trips).sort((task1,task2)=> task1.closeDate > task2.closeDate ? 1 : -1 );
 		let tasks = this.separateTasks(allTasks, monthsTasks);
 		let companies = this.processCompanies(allTasks,props.pricelists);
 
@@ -254,7 +261,19 @@ class MothlyReportsCompany extends Component {
 		})
 	}
 
-	processTasks(props, materials, works, trips){
+	processCustomItems(props){
+		return props.customItems.map((item)=>{
+			let finalUnitPrice=(parseFloat(item.price)).toFixed(2);
+			let totalPrice=(finalUnitPrice*parseFloat(item.quantity)).toFixed(2);
+			return{...item,
+				unit:props.units.find((unit)=>unit.id===item.unit),
+				finalUnitPrice,
+				totalPrice
+			}
+		})
+	}
+
+	processTasks(props, materials, customItems, works, trips){
 		let tasks=props.tasks.map((task)=>{
 			let company = task.company === null ? null : props.companies.find((company)=>company.id===task.company);
 			return {
@@ -266,12 +285,13 @@ class MothlyReportsCompany extends Component {
 				works: works.filter((work)=>work.task===task.id),
 				trips: trips.filter((trip)=>trip.task===task.id),
 				materials: materials.filter((material)=>material.task===task.id),
+				customItems: customItems.filter((item)=>item.task===task.id),
 			}
-		}).filter((task)=> (task.works.length > 0 || task.materials.length > 0 || task.trips.length > 0) && task.status && ['close','invoiced'].includes(task.status.action) && task.closeDate && task.closeDate >= props.from && task.closeDate <= props.to);
+		}).filter((task)=> (task.works.length > 0 || task.materials.length > 0 || task.customItems.length > 0 || task.trips.length > 0) && task.status && ['close','invoiced'].includes(task.status.action) && task.closeDate && task.closeDate >= props.from && task.closeDate <= props.to);
 		return tasks;
 	}
 
-	processThisMonthTasks(props, materials, works, trips){
+	processThisMonthTasks(props, materials, customItems, works, trips){
 		let tasks=props.tasks.map((task)=>{
 			let company = task.company === null ? null : props.companies.find((company)=>company.id===task.company);
 			if(company===undefined){
@@ -286,9 +306,10 @@ class MothlyReportsCompany extends Component {
 				works: works.filter((work)=>work.task===task.id),
 				trips: trips.filter((trip)=>trip.task===task.id),
 				materials: materials.filter((material)=>material.task===task.id),
+				customItems: customItems.filter((item)=>item.task===task.id),
 			}
 		}).filter((task)=>
-		(task.works.length > 0 || task.materials.length > 0 || task.trips.length > 0) &&
+		(task.works.length > 0 || task.materials.length > 0 || task.customItems.length > 0 || task.trips.length > 0) &&
 		task.status &&
 		['close','invoiced'].includes(task.status.action) &&
 		task.closeDate &&
@@ -305,7 +326,7 @@ class MothlyReportsCompany extends Component {
 		tasks.forEach((task)=>{
 			let company = companies.find((company)=>company.id===task.company.id);
 			if(company===undefined){
-				companies.push({...task.company,materials:[],works:[],trips:[]});
+				companies.push({...task.company,materials:[],customItems:[],works:[],trips:[]});
 				company = companies.find((company)=>company.id===task.company.id);
 			}
 			company.works.push(...(task.works.map((work)=>{
@@ -326,6 +347,12 @@ class MothlyReportsCompany extends Component {
 					statusID:task.status.id,
 				}
 			})));
+			company.customItems.push(...(task.customItems.map((item)=>{
+				return {
+					...item,
+					statusID:task.status.id,
+				}
+			})));
 		})
 
 		companies = companies.map((company)=>{
@@ -337,7 +364,7 @@ class MothlyReportsCompany extends Component {
 			pricelist:pricelists.find((pricelist)=>company.pricelist===pricelist.id)
 			}
 		})
-		return companies.filter((company)=>company.works.length > 0 || company.materials.length > 0 || company.trips.length > 0 || company.rentedCount);
+		return companies.filter((company)=>company.works.length > 0 || company.materials.length > 0 || company.customItems.length > 0 || company.trips.length > 0 || company.rentedCount);
 	}
 
 	//Unit prices
@@ -710,7 +737,7 @@ class MothlyReportsCompany extends Component {
 					},0).toFixed(2)),
 				},
 
-				materialTasks:this.state.allTasks.filter((task)=>this.filterTask(task,statusIDs) && task.materials.length > 0 && this.state.pickedTasks.includes(task.id)).map((task)=>{
+				materialTasks:this.state.allTasks.filter((task)=>this.filterTask(task,statusIDs) && (task.materials.length > 0 || task.customStatuses.length > 0) && this.state.pickedTasks.includes(task.id)).map((task)=>{
 					return {
 						id:task.id,
 						title:task.title,
@@ -727,15 +754,25 @@ class MothlyReportsCompany extends Component {
 								unitPrice:toFloat(material.finalUnitPrice),
 								totalPrice:toFloat(material.totalPrice),
 							}
+						}),
+						customItems:task.customItems.map((item)=>{
+							return {
+								id:item.id,
+								title:item.title,
+								quantity:item.quantity,
+								unit:item.unit.title,
+								unitPrice:toFloat(item.finalUnitPrice),
+								totalPrice:toFloat(item.totalPrice),
+							}
 						})
 					}
 				}),
 				materialInfo:{
 					priceWithoutDPH:toFloat(this.state.allTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id)).reduce((acc,task)=>{
-						return acc+task.materials.reduce((acc,material)=>acc+=isNaN(parseFloat(material.totalPrice))?0:parseFloat(material.totalPrice),0)
+						return acc+[...task.materials,...task.customItems].reduce((acc,material)=>acc+=isNaN(parseFloat(material.totalPrice))?0:parseFloat(material.totalPrice),0)
 					},0)),
 					priceWithDPH:toFloat(this.state.allTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id)).reduce((acc,task)=>{
-						return acc+task.materials.reduce((acc,material)=>acc+=isNaN(parseFloat(material.totalPrice))?0:parseFloat(material.totalPrice),0)
+						return acc+[...task.materials,...task.customItems].reduce((acc,material)=>acc+=isNaN(parseFloat(material.totalPrice))?0:parseFloat(material.totalPrice),0)
 					},0)*(1+(isNaN(parseInt(this.state.showCompany.dph))?0:parseInt(this.state.showCompany.dph))/100))
 				},
 
@@ -788,6 +825,7 @@ class MothlyReportsCompany extends Component {
 									<th>Company name</th>
 									<th>Work hours</th>
 									<th>Materials</th>
+									<th>Vlastné položky</th>
 									<th>Trips</th>
 									<th>Rented items</th>
 								</tr>
@@ -802,8 +840,9 @@ class MothlyReportsCompany extends Component {
 										}}>
 										<td>{company.title}</td>
 										<td>{company.works.reduce((acc,work)=>acc+((isNaN(parseInt(work.quantity))||!statusIDs.includes(work.statusID))?0:parseInt(work.quantity)),0)}</td>
-										<td>{company.materials.reduce((acc,materials)=>acc+((isNaN(parseInt(materials.quantity))||!statusIDs.includes(materials.statusID))?0:parseInt(materials.quantity)),0)}</td>
-										<td>{company.trips.reduce((acc,trips)=>acc+((isNaN(parseInt(trips.quantity))||!statusIDs.includes(trips.statusID))?0:parseInt(trips.quantity)),0)}</td>
+											<td>{company.materials.reduce((acc,materials)=>acc+((isNaN(parseInt(materials.quantity))||!statusIDs.includes(materials.statusID))?0:parseInt(materials.quantity)),0)}</td>
+											<td>{company.customItems.reduce((acc,customItems)=>acc+((isNaN(parseInt(customItems.quantity))||!statusIDs.includes(customItems.statusID))?0:parseInt(customItems.quantity)),0)}</td>
+											<td>{company.trips.reduce((acc,trips)=>acc+((isNaN(parseInt(trips.quantity))||!statusIDs.includes(trips.statusID))?0:parseInt(trips.quantity)),0)}</td>
 										<td>{company.rentedCount}</td>
 									</tr>
 								)}
@@ -1624,6 +1663,15 @@ class MothlyReportsCompany extends Component {
 																<td key={material.id+ '-totalPrice'} style={{width:'100px'}}>{material.totalPrice}</td>
 															</tr>
 														)}
+														{task.customItems.map((item)=>
+															<tr key={item.id}>
+																<td key={item.id+ '-title'} style={{width:'150px',paddingLeft:0}}>{item.title}</td>
+																<td key={item.id+ '-quantity'} style={{width:'50px'}}>{item.quantity}</td>
+																<td key={item.id+ '-unit'} style={{width:'100px'}}>{item.unit.title}</td>
+																<td key={item.id+ '-unitPrice'} style={{width:'100px'}}>{item.finalUnitPrice}</td>
+																<td key={item.id+ '-totalPrice'} style={{width:'100px'}}>{item.totalPrice}</td>
+															</tr>
+														)}
 													</tbody>
 												</table>
 											</td>
@@ -1633,11 +1681,11 @@ class MothlyReportsCompany extends Component {
 							</table>
 							<p className="m-0">Spolu cena bez DPH: {
 									(this.state.allTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id)).reduce((acc,task)=>{
-									return acc+task.materials.reduce((acc,material)=>acc+=isNaN(parseFloat(material.totalPrice))?0:parseFloat(material.totalPrice),0)
+									return acc+[...task.materials,...task.customItems].reduce((acc,material)=>acc+=isNaN(parseFloat(material.totalPrice))?0:parseFloat(material.totalPrice),0)
 								},0)).toFixed(2)} EUR</p>
 							<p className="m-0">Spolu cena s DPH: {
 									(this.state.allTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id)).reduce((acc,task)=>{
-									return acc+task.materials.reduce((acc,material)=>acc+=isNaN(parseFloat(material.totalPrice))?0:parseFloat(material.totalPrice),0)
+									return acc+[...task.materials,...task.customItems].reduce((acc,material)=>acc+=isNaN(parseFloat(material.totalPrice))?0:parseFloat(material.totalPrice),0)
 								},0)*(1+(isNaN(parseInt(this.state.showCompany.dph))?0:parseInt(this.state.showCompany.dph))/100)).toFixed(2)} EUR</p>
 						</div>
 						<div className="m-b-30">
@@ -1820,7 +1868,7 @@ class MothlyReportsCompany extends Component {
 }
 
 const mapStateToProps = ({ reportReducer, storageCompanies, storageHelpTasks, storageHelpStatuses, storageHelpTaskTypes, storageHelpUnits, storageUsers, storageHelpTaskMaterials,
-	storageHelpTaskWorks, storageHelpTaskWorkTrips, storageHelpTripTypes, storageHelpPricelists, storageHelpPrices, storageHelpCompanyInvoices }) => {
+	storageHelpTaskWorks, storageHelpTaskWorkTrips, storageHelpTripTypes, storageHelpPricelists, storageHelpPrices, storageHelpCompanyInvoices, storageHelpTaskCustomItems, }) => {
 	const { from, to } = reportReducer;
 
 	const { companiesActive, companies, companiesLoaded } = storageCompanies;
@@ -1830,6 +1878,7 @@ const mapStateToProps = ({ reportReducer, storageCompanies, storageHelpTasks, st
 	const { unitsActive, units, unitsLoaded } = storageHelpUnits;
 	const { usersActive, users, usersLoaded } = storageUsers;
 	const { materialsActive, materials, materialsLoaded } = storageHelpTaskMaterials;
+	const { customItemsActive, customItems, customItemsLoaded } = storageHelpTaskCustomItems;
 	const { taskWorksActive, taskWorks, taskWorksLoaded } = storageHelpTaskWorks;
 	const { workTripsActive, workTrips, workTripsLoaded } = storageHelpTaskWorkTrips;
 	const { tripTypesActive, tripTypes, tripTypesLoaded } = storageHelpTripTypes;
@@ -1846,6 +1895,7 @@ const mapStateToProps = ({ reportReducer, storageCompanies, storageHelpTasks, st
 		unitsActive, units,unitsLoaded,
 		usersActive, users,usersLoaded,
 		materialsActive, materials,materialsLoaded,
+		customItemsActive, customItems, customItemsLoaded,
 		taskWorksActive, taskWorks,taskWorksLoaded,
 		workTripsActive, workTrips, workTripsLoaded,
 		tripTypesActive, tripTypes, tripTypesLoaded,
@@ -1856,4 +1906,4 @@ const mapStateToProps = ({ reportReducer, storageCompanies, storageHelpTasks, st
 };
 
 export default connect(mapStateToProps, { storageCompaniesStart, storageHelpTasksStart, storageHelpStatusesStart, storageHelpTaskTypesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart,
-	storageHelpTaskWorksStart, storageHelpTaskWorkTripsStart, storageHelpTripTypesStart, storageHelpPricelistsStart, storageHelpPricesStart, storageHelpCompanyInvoicesStart })(MothlyReportsCompany);
+	storageHelpTaskWorksStart, storageHelpTaskWorkTripsStart, storageHelpTripTypesStart, storageHelpPricelistsStart, storageHelpPricesStart, storageHelpCompanyInvoicesStart, storageHelpTaskCustomItemsStart })(MothlyReportsCompany);
