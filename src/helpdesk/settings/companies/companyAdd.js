@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
 import Select from 'react-select';
+import Switch from "react-switch";
 import {toSelArr} from '../../../helperFunctions';
 import {rebase} from '../../../index';
 import {selectStyle} from "../../../scss/selectStyles";
@@ -10,7 +11,6 @@ import {storageHelpPricelistsStart } from '../../../redux/actions';
 import {sameStringForms, isEmail} from '../../../helperFunctions';
 import CompanyRents from './companyRents';
 import PriceEdit from "../prices/priceEdit";
-import Checkbox from '../../../components/checkbox';
 
 import classnames from "classnames";
 
@@ -18,7 +18,7 @@ class CompanyAdd extends Component{
   constructor(props){
     super(props);
     this.state={
-      pricelists:[{label: "Vlastný", value: "0"}],
+      pricelists:[{label: "Nový cenník", value: "0"}],
       pricelist: {},
       oldPricelist: {},
       priceName: "",
@@ -81,7 +81,7 @@ class CompanyAdd extends Component{
 
   componentWillReceiveProps(props){
     if(!sameStringForms(props.pricelists,this.props.pricelists) && this.storageLoaded(this.props) ){
-      this.setState({pricelists: [{label: "Vlastný", value: "0"}, ...toSelArr(props.pricelists)]})
+      this.setState({pricelists: [{label: "Nový cenník", value: "0"}, ...toSelArr(props.pricelists)]})
     }
     if(!this.storageLoaded(this.props) && this.storageLoaded(props)){
       this.setData(props);
@@ -98,7 +98,7 @@ class CompanyAdd extends Component{
   }
 
   setData(props){
-    let pricelists = [{label: "Vlastný", value: "0"}, ...toSelArr(props.pricelists)];
+    let pricelists = [{label: "Nový cenník", value: "0"}, ...toSelArr(props.pricelists)];
     //  let meta = props.metadata;
     let pricelist = pricelists.find((pricelist)=>pricelist.def);
     if(pricelist === undefined){
@@ -227,7 +227,6 @@ class CompanyAdd extends Component{
   }
 
   render(){
-
   return (
     <div className="fit-with-header-and-commandbar">
       {this.state.newData &&
@@ -444,13 +443,18 @@ class CompanyAdd extends Component{
             <span className="m-r-5">
               <h3>Mesačný paušál</h3>
             </span>
-            <Checkbox
-              className = "m-l-5"
-              value = { this.state.monthlyPausal }
-              onChange={()=>{
-                this.setState({monthlyPausal:!this.state.monthlyPausal})
-              }}
-              />
+            <label>
+              <Switch
+                checked={this.state.monthlyPausal}
+                onChange={()=>{
+                  this.setState({monthlyPausal:!this.state.monthlyPausal })
+                }}
+                height={22}
+                checkedIcon={<span className="switchLabel">YES</span>}
+                uncheckedIcon={<span className="switchLabel">NO</span>}
+                onColor={"#0078D4"} />
+              <span className="m-l-10"></span>
+            </label>
           </div>
             { this.state.monthlyPausal && <div>
               <FormGroup className="row m-b-10 m-t-20">
@@ -540,7 +544,7 @@ class CompanyAdd extends Component{
                   styles={selectStyle}
                   options={this.state.pricelists}
                   value={this.state.pricelist}
-                  onChange={e =>{ this.setState({pricelist: e, newData: true  }) }}
+                  onChange={e =>{ this.setState({oldPricelist: {...this.state.pricelist},pricelist: e, newData: true  }) }}
                   />
               </div>
             </FormGroup>
@@ -565,8 +569,9 @@ class CompanyAdd extends Component{
               </FormGroup>
             }
 
-            { this.state.pricelist !== [] &&
+            { Object.keys(this.state.pricelist).length &&
               this.state.pricelist.value !== "0" &&
+              !this.state.pricelist.def &&
               <PriceEdit {...this.props}
                 listId={this.state.pricelist.id}
                 changedName={ (e) => this.setState({pricelist: {...this.state.pricelist, label: e} }) }

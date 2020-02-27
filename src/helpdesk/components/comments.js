@@ -147,19 +147,20 @@ submitEmail(){
     return (
       <div>
         <div>
-          {this.state.isEmail &&<FormGroup>
-            <Label className="">To:</Label>
+          {this.state.isEmail &&<FormGroup className="row m-b-10">
+            <Label className="m-r-10 center-hor">To:</Label>
+            <div className="flex">
               <Creatable
                 isMulti
                 value={this.state.tos}
                 onChange={(newData)=>this.setState({tos:newData})}
                 options={this.props.users}
-                styles={selectStyle}
-              />
+                styles={selectStyle}/>
+            </div>
           </FormGroup>}
-          {this.state.isEmail && <FormGroup>
-            <Label className="">Subject</Label>
-            <Input type="text" placeholder="Enter subject" value={this.state.subject} onChange={(e)=>this.setState({subject:e.target.value})}/>
+          {this.state.isEmail && <FormGroup className="row m-b-10">
+            <Label className="m-r-10 center-hor">Subject:</Label>
+            <Input className="flex" type="text" placeholder="Enter subject" value={this.state.subject} onChange={(e)=>this.setState({subject:e.target.value})}/>
           </FormGroup>}
           {this.state.isEmail &&
             <FormGroup>

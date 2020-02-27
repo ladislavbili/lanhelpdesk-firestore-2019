@@ -30,6 +30,7 @@
     "react-rte": "^0.16.1",
     "react-scripts": "^2.1.1",
     "react-select": "^2.3.0",
+    "react-switch": "^5.0.1",
     "react-table": "^6.8.6",
     "react-timeago": "^4.4.0",
     "react-to-print": "^2.3.0",

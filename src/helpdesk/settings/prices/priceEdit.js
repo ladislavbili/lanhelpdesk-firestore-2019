@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { Button, FormGroup, Label,Input, Alert, Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import Select from 'react-select';
-import Checkbox from '../../../components/checkbox';
+import Switch from "react-switch";
+//import Checkbox from '../../../components/checkbox';
 
 import { rebase, database } from '../../../index';
 import { snapshotToArray, toSelArr } from '../../../helperFunctions';
@@ -156,14 +157,18 @@ class PriceEdit extends Component{
             </Alert>
           }
 
-          <Checkbox
-            className = "m-b-5 p-l-0"
-            value = { this.state.def }
-            onChange={()=>{
-              this.setState({def:!this.state.def})
-            }}
-            label = "Default"
-            />
+          <label>
+            <Switch
+              checked={this.state.def}
+              onChange={()=>{
+                this.setState({def:!this.state.def})
+              }}
+              height={22}
+              checkedIcon={<span className="switchLabel">YES</span>}
+              uncheckedIcon={<span className="switchLabel">NO</span>}
+              onColor={"#0078D4"} />
+            <span className="m-l-10">Default</span>
+          </label>
 
           <FormGroup className="row m-b-10">
             <div className="m-r-10 w-20">

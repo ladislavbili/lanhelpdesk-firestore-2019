@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
 import Select from 'react-select';
+import Switch from "react-switch";
 import {rebase} from '../../../index';
 import {toSelArr} from '../../../helperFunctions';
 import {selectStyle} from "../../../scss/selectStyles";
@@ -10,13 +11,12 @@ import {storageHelpPricelistsStart,storageMetadataStart, storageCompaniesStart, 
 import {sameStringForms, isEmail} from '../../../helperFunctions';
 import CompanyRents from './companyRents';
 import PriceEdit from "../prices/priceEdit";
-import Checkbox from '../../../components/checkbox';
 
 class CompanyEdit extends Component{
   constructor(props){
     super(props);
     this.state={
-      pricelists:[{label: "Vlastný", value: "0"}],
+      pricelists:[{label: "Nový cenník", value: "0"}],
       pricelist:{},
       oldPricelist: {},
       priceName: "",
@@ -81,7 +81,7 @@ class CompanyEdit extends Component{
   }
   componentWillReceiveProps(props){
     if(!sameStringForms(props.pricelists,this.props.pricelists)){
-      this.setState({pricelists: [{label: "Vlastný", value: "0"}, ...toSelArr(props.pricelists)]})
+      this.setState({pricelists: [{label: "Nový cenník", value: "0"}, ...toSelArr(props.pricelists)]})
     }
     if(!this.storageLoaded(this.props) && this.storageLoaded(props)){
       this.setData(props);
@@ -116,7 +116,7 @@ class CompanyEdit extends Component{
   }
 
   setData(props){
-    let pricelists = [{label: "Vlastný", value: "0"}, ...toSelArr(props.pricelists)];
+    let pricelists = [{label: "Nový cenník", value: "0"}, ...toSelArr(props.pricelists)];
     let meta = props.metadata;
     let company = props.companies.find((company)=>company.id===props.match.params.id);
     let pricelist=pricelists.find((item)=>item.id===company.pricelist);
@@ -309,7 +309,6 @@ class CompanyEdit extends Component{
   }
 
   render(){
-
     return (
       <div className="fit-with-header-and-commandbar">
         {this.state.newData &&
@@ -524,17 +523,23 @@ class CompanyEdit extends Component{
           </div>
 
           { this.props.role > 1 && <div className="p-20 table-highlight-background">
-            <div className="row">
-              <span className="m-r-5">
-                <h3>Mesačný paušál</h3>
+            <div className="">
+              <span>
+                <h3 className="m-r-5 m-b-10">Mesačný paušál</h3>
               </span>
-              <Checkbox
-                className = "m-l-5"
-                value = { this.state.monthlyPausal }
-                onChange={()=>{
-                  this.setState({monthlyPausal:!this.state.monthlyPausal, newData: true })
-                }}
-                />
+
+              <label>
+                <Switch
+                  checked={this.state.monthlyPausal}
+                  onChange={()=>{
+                    this.setState({monthlyPausal:!this.state.monthlyPausal, newData: true })
+                  }}
+                  height={22}
+                  checkedIcon={<span className="switchLabel">YES</span>}
+                  uncheckedIcon={<span className="switchLabel">NO</span>}
+                  onColor={"#0078D4"} />
+                <span className="m-l-10"></span>
+              </label>
             </div>
             { this.state.monthlyPausal && <div>
               <FormGroup className="row m-b-10 m-t-20">
@@ -623,7 +628,7 @@ class CompanyEdit extends Component{
               styles={selectStyle}
               options={this.state.pricelists}
               value={this.state.pricelist}
-              onChange={e =>{ this.setState({pricelist: e, newData: true}) }}
+              onChange={e =>{ this.setState({oldPricelist: {...this.state.pricelist}, pricelist: e, newData: true}) }}
               />
           </div>
           </FormGroup>
@@ -636,23 +641,37 @@ class CompanyEdit extends Component{
               <Label for="priceName">Price list name</Label>
               </div>
                 <div className="flex">
-              <Input
-                name="priceName"
-                id="priceName"
-                type="text"
-                placeholder="Enter price list nema"
-                value={this.state.priceName}
-                onChange={(e)=>this.setState({priceName: e.target.value, newData: true})}
-                />
-            </div>
+                  <Input
+                    name="priceName"
+                    id="priceName"
+                    type="text"
+                    placeholder="Enter price list nema"
+                    value={this.state.priceName}
+                    onChange={(e)=>this.setState({priceName: e.target.value, newData: true})}/>
+                </div>
             </FormGroup>
           }
-          { this.state.pricelist !== [] &&
+          { Object.keys(this.state.pricelist).length &&
             this.state.pricelist.value !== "0" &&
+            !this.state.pricelist.def &&
             <PriceEdit {...this.props}
               listId={this.state.pricelist.id}
               changedName={ (e) => this.setState({pricelist: {...this.state.pricelist, label: e} }) }
               deletedList={ () => this.setState({pricelist: [], priceName: ""}) }/>
+          }
+          { Object.keys(this.state.pricelist).length &&
+            this.state.pricelist.value !== "0" &&
+            this.state.pricelist.def &&
+            <div>
+              <Button
+                className="btn-link-reversed p-l-0"
+                onClick={()=>{
+                  if (window.confirm("You will be redirected to a page where you can edit this pricelist. All unsaved progress will be lost, are you sure you want to proceed?")){
+                    this.cancel();
+                    this.props.history.push(`/helpdesk/settings/pricelists/${this.state.pricelist.id}`)
+                  }
+              }}>Edit here</Button>
+            </div>
           }
         </div>}
       </div>
