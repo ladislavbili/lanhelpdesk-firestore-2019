@@ -575,9 +575,22 @@ class CompanyAdd extends Component{
               <PriceEdit {...this.props}
                 listId={this.state.pricelist.id}
                 changedName={ (e) => this.setState({pricelist: {...this.state.pricelist, label: e} }) }
-                deletedList={() => this.setState({pricelist: [], priceName: ""})}/>
+                deletedList={() => this.setState({pricelist: {}, priceName: ""})}/>
             }
-
+            { Object.keys(this.state.pricelist).length &&
+              this.state.pricelist.value !== "0" &&
+              this.state.pricelist.def &&
+              <div>
+                <Button
+                  className="btn-link-reversed p-l-0"
+                  onClick={()=>{
+                    if (window.confirm("You will be redirected to a page where you can edit this pricelist. All unsaved progress will be lost, are you sure you want to proceed?")){
+                      this.cancel();
+                      this.props.history.push(`/helpdesk/settings/pricelists/${this.state.pricelist.id}`)
+                    }
+                }}>Edit here</Button>
+              </div>
+            }
           </div>}
         </div>
 
