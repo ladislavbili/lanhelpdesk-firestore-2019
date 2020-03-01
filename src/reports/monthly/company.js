@@ -1602,7 +1602,7 @@ class MothlyReportsCompany extends Component {
 							</div>
 
 						<div className="m-b-30">
-							<h3>Materiále</h3>
+							<h3>Materiále a voľné položky</h3>
 							<hr />
 							<table className="table m-b-10">
 								<thead>

@@ -875,6 +875,7 @@ class TaskEdit extends Component {
 										}else if(status.action==='close'||status.action==='invalid'){
 											this.setState({
 												status,
+												important:false,
 												statusChange:(new Date().getTime()),
 												closeDate: moment(),
 												newHistoryEntery

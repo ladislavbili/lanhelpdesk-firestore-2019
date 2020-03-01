@@ -69,12 +69,10 @@ export default class Rozpocet extends Component {
 			editedCustomItemQuantity: 0,
 			editedCustomItemUnit:null,
 			editedCustomItemPrice:null,
-			editedCustomItemBuyPrice:null,
 
 			newCustomItemTitle:'',
 			newCustomItemQuantity:1,
 			newCustomItemUnit:newCustomItemUnit?newCustomItemUnit:null,
-			newCustomItemBuyPrice:0,
 			newCustomItemPrice:0,
 		}
 		this.getCreationError.bind(this);
@@ -123,7 +121,6 @@ export default class Rozpocet extends Component {
 
 				newCustomItemTitle:'',
 				newCustomItemQuantity:1,
-				newCustomItemBuyPrice:0,
 				newCustomItemUnit,
 				newCustomItemPrice:0,
 			})
@@ -222,7 +219,6 @@ export default class Rozpocet extends Component {
 			editedCustomItemQuantity:customItem.quantity,
 			editedCustomItemUnit:customItem.unit,
 			editedCustomItemPrice:customItem.price,
-			editedCustomItemBuyPrice:customItem.buyPrice,
 			focusedCustomItem: customItem.id
 		});
 	}
@@ -250,10 +246,6 @@ export default class Rozpocet extends Component {
 
 	getDiscountedMaterialPrice(material){
 		return parseFloat( material.price * ( 1 + material.margin / 100 ))
-	}
-
-	calculateMargin(buyPrice,price){
-		return (price-buyPrice)/buyPrice*100;
 	}
 
 	getDPH(){
@@ -303,8 +295,8 @@ export default class Rozpocet extends Component {
 							{this.props.showColumns.includes(3) && <th width="50" className="t-a-r">Mn.</th> }
 							{this.props.showColumns.includes(4) && this.state.toggleTab === "2" && <th width="70" className="table-highlight-background t-a-r">Cenník/Nákup</th> }
 							{this.props.showColumns.includes(5) && this.state.toggleTab === "2" && <th width="70" className="table-highlight-background t-a-r">Zľava/Marža</th> }
-							{this.props.showColumns.includes(6) && <th width="70" className="table-highlight-background t-a-r">Cena</th> }
-							{this.props.showColumns.includes(7) && <th width="120"></th> }
+							{this.props.showColumns.includes(6) && <th width="70" className="t-a-r">Cena</th> }
+							{this.props.showColumns.includes(7) && <th width="120" className="t-a-c">Akcie</th> }
 						</tr>
 					</thead>
 					<tbody>
@@ -450,7 +442,7 @@ export default class Rozpocet extends Component {
 								}
 								{/*Cena*/}
 								{this.props.showColumns.includes(7) &&
-									<td className="table-highlight-background p-t-15 p-l-8 p-r-8 t-a-r">
+									<td className="p-t-15 p-l-8 p-r-8 t-a-r">
 										{
 											isNaN(this.getTotalDiscountedPrice(subtask)) ?
 											'No price' :
@@ -525,7 +517,7 @@ export default class Rozpocet extends Component {
 								}
 								{/*Type*/}
 								{this.props.showColumns.includes(3) &&
-									<td className="p-l-8 p-t-15">Výjazd</td>
+									<td className="p-t-15 p-l-8">Výjazd</td>
 								}
 								{/*Mnozstvo*/}
 								{this.props.showColumns.includes(4) &&
@@ -601,7 +593,7 @@ export default class Rozpocet extends Component {
 								}
 								{/*Cena*/}
 								{this.props.showColumns.includes(7) &&
-									<td className="table-highlight-background p-t-15 p-l-8 p-r-8 t-a-r">
+									<td className="p-t-15 p-l-8 p-r-8 t-a-r">
 										{isNaN(this.getTotalDiscountedPrice(trip)) ?
 											'No price' :
 											this.getTotalDiscountedPrice(trip) + " €"
@@ -764,7 +756,7 @@ export default class Rozpocet extends Component {
 								}
 								{/*Cena*/}
 								{this.props.showColumns.includes(7) &&
-									<td className="table-highlight-background p-l-8 p-t-15 p-r-8 t-a-r">
+									<td className="p-l-8 p-t-15 p-r-8 t-a-r">
 										{
 											material.id === this.state.focusedMaterial ?
 											(  this.getDiscountedMaterialPrice({price:this.state.editedMaterialPrice, margin:this.state.editedMaterialMargin}).toFixed(2) + " €" ) :
@@ -881,6 +873,16 @@ export default class Rozpocet extends Component {
 								{/*Cennik/Nakup*/}
 								{this.props.showColumns.includes(5) && this.state.toggleTab === "2" &&
 									<td className="table-highlight-background p-l-8">
+									</td>
+								}
+								{/*Zlava/Marža*/}
+								{this.props.showColumns.includes(6) && this.state.toggleTab === "2" &&
+									<td className="table-highlight-background p-l-8">
+									</td>
+								}
+								{/*Cena*/}
+								{this.props.showColumns.includes(7) &&
+									<td className="p-l-8">
 										<span className="text" style={{float: "right"}}>
 											<div style={{float: "right"}} className="p-t-8 p-r-8">
 												€
@@ -892,92 +894,19 @@ export default class Rozpocet extends Component {
 												className="form-control hidden-input h-30"
 												value={
 													customItem.id === this.state.focusedCustomItem
-													? this.state.editedCustomItemBuyPrice
-													: customItem.buyPrice
+													? this.state.editedCustomItemPrice
+													: customItem.price
 												}
 												onBlur={() => {
-													if(parseFloat(this.state.editedCustomItemBuyPrice) > parseFloat(this.state.editedCustomItemPrice)){
-														this.props.updateCustomItem(customItem.id,{buyPrice:this.state.editedCustomItemBuyPrice, price:this.state.editedCustomItemBuyPrice})
-													}else{
-														this.props.updateCustomItem(customItem.id,{buyPrice:this.state.editedCustomItemBuyPrice})
-													}
+													this.props.updateCustomItem(customItem.id,{price:this.state.editedCustomItemPrice})
 													this.setState({ focusedCustomItem: null });
 												}}
 												onFocus={() => this.onFocusCustomItem(customItem)}
 												onChange={e =>{
-													this.setState({ editedCustomItemBuyPrice: e.target.value })}
+													this.setState({ editedCustomItemPrice: e.target.value })}
 												}
 												/>
 										</span>
-									</td>
-								}
-								{/*Zlava/Marža*/}
-								{this.props.showColumns.includes(6) && this.state.toggleTab === "2" &&
-									<td className="table-highlight-background p-l-8">
-										<span className="text">
-											+
-											<input
-												disabled={true}
-												type="number"
-												style={{display: "inline", width: "60%"}}
-												className="form-control hidden-input h-30"
-												value={
-													customItem.id === this.state.focusedCustomItem ?
-													this.calculateMargin(this.state.editedCustomItemBuyPrice,this.state.editedCustomItemPrice) :
-													this.calculateMargin(customItem.buyPrice, customItem.price)
-												}
-												/>
-											%
-										</span>
-									</td>
-								}
-								{/*Cena*/}
-								{this.props.showColumns.includes(7) &&
-									<td className="table-highlight-background p-l-8">
-										{this.state.toggleTab === "1" &&
-											<span className="text" style={{float: "right"}}>
-												<div style={{float: "right"}} className="p-t-8 p-r-8">
-													€
-												</div>
-											<input
-												disabled={true}
-												type="number"
-												style={{display: "inline", width: "70%", float: "right"}}
-												className="form-control hidden-input h-30"
-												value={customItem.buyPrice}
-												/>
-										</span>
-										}
-										{ this.state.toggleTab === "2" &&
-											<span className="text" style={{float: "right"}}>
-												<div style={{float: "right"}} className="p-t-8 p-r-8">
-													€
-												</div>
-												<input
-													disabled={this.props.disabled}
-													type="number"
-													style={{display: "inline", width: "70%", float: "right"}}
-													className="form-control hidden-input h-30"
-													value={
-														customItem.id === this.state.focusedCustomItem
-														? this.state.editedCustomItemPrice
-														: customItem.price
-													}
-													onBlur={() => {
-														if(parseFloat(this.state.editedCustomItemBuyPrice) > parseFloat(this.state.editedCustomItemPrice)){
-															this.props.updateCustomItem(customItem.id,{price:this.state.editedCustomItemPrice,buyPrice:this.state.editedCustomItemPrice})
-														}else{
-															this.props.updateCustomItem(customItem.id,{price:this.state.editedCustomItemPrice})
-														}
-														this.setState({ focusedCustomItem: null });
-													}}
-													onFocus={() => this.onFocusCustomItem(customItem)}
-													onChange={e =>{
-														this.setState({ editedCustomItemPrice: e.target.value })}
-													}
-													/>
-											</span>
-										}
 									</td>
 								}
 								{/*Toolbar*/}
@@ -1082,7 +1011,7 @@ export default class Rozpocet extends Component {
 								}
 								{/*Cena*/}
 								{this.props.showColumns.includes(7) &&
-									<td className="table-highlight-background p-t-15 p-l-8 p-r-8 t-a-r">
+									<td className="p-t-15 p-l-8 p-r-8 t-a-r">
 										{
 											isNaN(this.getTotalDiscountedPrice({discount: this.state.newSubtaskDiscount, type: this.state.newSubtaskType, quantity: this.state.newSubtaskQuantity }))
 											?'No price'
@@ -1147,7 +1076,7 @@ export default class Rozpocet extends Component {
 								}
 								{/*Riesi*/}
 								{this.props.showColumns.includes(2) &&
-									<td>
+									<td className="p-l-8">
 										<Select
 											isDisabled={this.props.disabled}
 											value={this.state.newTripAssignedTo}
@@ -1197,7 +1126,7 @@ export default class Rozpocet extends Component {
 								}
 								{/*Cena*/}
 								{this.props.showColumns.includes(7) &&
-									<td className="table-highlight-background p-t-15 p-l-8 p-r-8 t-a-r">
+									<td className="p-t-15 p-l-8 p-r-8 t-a-r">
 										{
 											isNaN(this.getTotalDiscountedPrice({discount:this.state.newTripDiscount,quantity:this.state.newTripQuantity,type:this.state.newTripType})) ?
 											'No price' :
@@ -1239,7 +1168,6 @@ export default class Rozpocet extends Component {
 										</button>
 									</td>
 								}
-
 							</tr>
 						}
 						{/* ADD Material */}
@@ -1259,13 +1187,39 @@ export default class Rozpocet extends Component {
 											/>
 									</td>
 								}
-								{/*Riesi*/}
+								{/*Text Nakupna cena*/}
 								{this.props.showColumns.includes(2) &&
-									<td></td>
+									<td className="p-r-8 p-l-8 table-highlight-background">
+										{
+											this.state.toggleTab === '1' &&
+											<input
+												disabled={this.props.disabled}
+												type="number"
+												value={this.state.newMaterialPrice}
+												onChange={(e)=>{
+													let newMaterialPrice = e.target.value;
+													if(!this.state.marginChanged){
+														if(newMaterialPrice==='' || parseFloat(newMaterialPrice) < 50 ){
+															this.setState({newMaterialPrice,newMaterialMargin:(this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMargin : 0)});
+														}else{
+															this.setState({newMaterialPrice,newMaterialMargin:(this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMarginExtra : 0)});
+														}
+													}else{
+														this.setState({newMaterialPrice});
+													}
+												}}
+												className="form-control h-30"
+												id="inlineFormInput"
+												placeholder="Nákupná cena"
+												/>
+										}
+									</td>
 								}
-								{/*Type*/}
+								{/*Input Nakupna cena*/}
 								{this.props.showColumns.includes(3) &&
-									<td className="p-t-15 p-l-8">Material</td>
+									<td className="p-t-15 p-l-8">
+										Materiál
+									</td>
 								}
 								{/*Mnozstvo*/}
 								{this.props.showColumns.includes(4) &&
@@ -1282,7 +1236,7 @@ export default class Rozpocet extends Component {
 									</td>
 								}
 								{/*Cennik/Nakup*/}
-								{this.props.showColumns.includes(5) &&
+								{this.props.showColumns.includes(5) && this.state.toggleTab === "2" &&
 									<td className="table-highlight-background p-l-8 p-r-8">
 										<input
 											disabled={this.props.disabled}
@@ -1321,8 +1275,8 @@ export default class Rozpocet extends Component {
 									</td>
 								}
 								{/*Cena*/}
-								{this.props.showColumns.includes(7) && this.state.toggleTab === "2" &&
-									<td className="table-highlight-background p-t-15 p-l-8 p-r-8 t-a-r">
+								{this.props.showColumns.includes(7) &&
+									<td className="p-t-15 p-l-8 p-r-8 t-a-r">
 										{
 											isNaN(this.getDiscountedMaterialPrice({price:this.state.newMaterialPrice,margin:this.state.newMaterialMargin}))
 											?'No price'
@@ -1385,35 +1339,14 @@ export default class Rozpocet extends Component {
 											/>
 									</td>
 								}
-								{/*Text Nakupna cena */}
+								{/*Riesi */}
 								{this.props.showColumns.includes(2) &&
-									<td className="p-t-15 p-l-8">
-										{this.state.toggleTab === "1" ? 'Nákupná cena' : '' }
-									</td>
+									<td></td>
 								}
-								{/*Input Nakupna cena*/}
+								{/*Type*/}
 								{this.props.showColumns.includes(3) &&
-									<td className="p-r-8 p-l-8">
-										{this.state.toggleTab === "1" &&
-											<input
-												disabled={this.props.disabled}
-												type="text"
-												className="form-control h-30"
-												id="inlineFormInput"
-												placeholder=""
-												value={this.state.newCustomItemBuyPrice}
-												onChange={(e)=>{
-													if(isNaN(parseFloat(e.target.value))|| parseFloat(e.target.value) <= parseFloat(this.state.newCustomItemPrice) ){
-														this.setState({newCustomItemBuyPrice:e.target.value})
-													}else{
-														this.setState({newCustomItemBuyPrice:e.target.value, newCustomItemPrice: e.target.value })
-													}
-												}}
-												/>
-										}
-										{
-											this.state.toggleTab === "2" && "Voľná položka"
-										}
+									<td className="p-t-15 p-l-8">
+										Voľná položka
 									</td>
 								}
 								{/*Mnozstvo*/}
@@ -1433,39 +1366,16 @@ export default class Rozpocet extends Component {
 								{/*Cennik/Nakup*/}
 								{this.props.showColumns.includes(5) && this.state.toggleTab === "2" &&
 									<td className="table-highlight-background p-l-8 p-r-8">
-										<input
-											disabled={this.props.disabled}
-											type="text"
-											className="form-control h-30"
-											id="inlineFormInput"
-											placeholder=""
-											value={this.state.newCustomItemBuyPrice}
-											onChange={(e)=>{
-												if(isNaN(parseFloat(e.target.value))|| parseFloat(e.target.value) <= parseFloat(this.state.newCustomItemPrice) ){
-													this.setState({newCustomItemBuyPrice:e.target.value})
-												}else{
-													this.setState({newCustomItemBuyPrice:e.target.value, newCustomItemPrice: e.target.value })
-												}
-											}}
-											/>
 									</td>
 								}
 								{/*Zlava/Marža*/}
 								{this.props.showColumns.includes(6) && this.state.toggleTab === "2" &&
-									<td className="table-highlight-background p-r-8">
-										<input
-											disabled={true}
-											type="number"
-											value={this.calculateMargin(this.state.newCustomItemBuyPrice,this.state.newCustomItemPrice)}
-											className="form-control h-30"
-											id="inlineFormInput"
-											placeholder=""
-											/>
+									<td className="table-highlight-background">
 									</td>
 								}
 								{/*Cena*/}
 								{this.props.showColumns.includes(7) &&
-									<td className="table-highlight-background p-l-8 p-r-8 t-a-r">
+									<td className="p-l-8 p-r-8 t-a-r">
 										<input
 											disabled={this.props.disabled}
 											type="number"
@@ -1484,10 +1394,9 @@ export default class Rozpocet extends Component {
 								{this.props.showColumns.includes(8) &&
 									<td className="t-a-r">
 										<button className="btn waves-effect"
-											disabled={this.state.newCustomItemUnit===null||this.props.disabled || parseFloat(this.state.newCustomItemBuyPrice) > parseFloat(this.state.newCustomItemPrice)}
+											disabled={this.state.newCustomItemUnit===null||this.props.disabled}
 											onClick={()=>{
 												let body={
-													buyPrice:this.state.newCustomItemBuyPrice!==''?this.state.newCustomItemBuyPrice:0,
 													price:this.state.newCustomItemPrice!==''?this.state.newCustomItemPrice:0,
 													quantity:this.state.newCustomItemQuantity!==''?this.state.newCustomItemQuantity:0,
 													title:this.state.newCustomItemTitle,
@@ -1495,7 +1404,6 @@ export default class Rozpocet extends Component {
 													done:false,
 												}
 												this.setState({
-													newCustomItemBuyPrice:0,
 													newCustomItemPrice:0,
 													newCustomItemQuantity:1,
 													newCustomItemTitle:'',
@@ -1543,6 +1451,7 @@ export default class Rozpocet extends Component {
 									}
 									{!this.state.showAddMaterial &&
 										<button className="btn"
+											disabled={this.props.disabled}
 											onClick={()=>{
 												this.setState({showAddMaterial: true});
 											}}
@@ -1552,6 +1461,7 @@ export default class Rozpocet extends Component {
 									}
 									{!this.state.showAddCustomItem &&
 										<button className="btn"
+											disabled={this.props.disabled}
 											onClick={()=>{
 												this.setState({showAddCustomItem: true});
 											}}
@@ -1583,15 +1493,15 @@ export default class Rozpocet extends Component {
 						</div>
 						<div className="text-right">
 							<b>Cena s DPH: </b>
-								{
+							{
+								(
 									(
-										(
-											this.props.subtasks.concat(this.props.workTrips).reduce((acc, cur)=> acc+(isNaN(this.getTotalPrice(cur))?0:this.getTotalPrice(cur)),0)
-											+ this.props.materials.reduce((acc, cur)=> acc+(isNaN(parseFloat(this.getDiscountedMaterialPrice(cur))) || isNaN(parseInt(cur.quantity)) ? 0 : parseFloat(this.getDiscountedMaterialPrice(cur))*parseInt(cur.quantity)),0)
-											+ this.props.customItems.reduce((acc, cur)=> acc+(isNaN(parseFloat(cur.price))||isNaN(parseInt(cur.quantity)) ? 0 : parseFloat(cur.price) * parseInt(cur.quantity)),0)
-										)*this.getDPH()
-									).toFixed(2)
-								}
+										this.props.subtasks.concat(this.props.workTrips).reduce((acc, cur)=> acc+(isNaN(this.getTotalPrice(cur))?0:this.getTotalPrice(cur)),0)
+										+ this.props.materials.reduce((acc, cur)=> acc+(isNaN(parseFloat(this.getDiscountedMaterialPrice(cur))) || isNaN(parseInt(cur.quantity)) ? 0 : parseFloat(this.getDiscountedMaterialPrice(cur))*parseInt(cur.quantity)),0)
+										+ this.props.customItems.reduce((acc, cur)=> acc+(isNaN(parseFloat(cur.price))||isNaN(parseInt(cur.quantity)) ? 0 : parseFloat(cur.price) * parseInt(cur.quantity)),0)
+									)*this.getDPH()
+								).toFixed(2)
+							}
 						</div>
 					</div>
 				}
