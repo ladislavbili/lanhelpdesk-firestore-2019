@@ -4,7 +4,6 @@ import { NavLink as Link } from 'react-router-dom';
 import Select from "react-select";
 import { connect } from "react-redux";
 
-import SelectPage from '../components/SelectPage';
 import TaskAdd from './task/taskAddContainer';
 import Filter from './components/filter';
 import ProjectEdit from './components/projects/projectEdit';
@@ -157,7 +156,6 @@ class Sidebar extends Component {
 		}
 		return (
 			<div className="sidebar">
-					<SelectPage />
 				<div className="scrollable fit-with-header">
 					{!showSettings &&
 						<div>

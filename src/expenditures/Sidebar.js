@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {Modal, Button, NavItem, Nav} from 'reactstrap';
 import { NavLink as Link } from 'react-router-dom';
-import SelectPage from '../components/SelectPage';
 import {rebase} from '../index';
 import FolderAdd from './folders/folderAdd';
 import FolderEdit from './folders/folderEdit';
@@ -47,7 +46,6 @@ export default class Sidebar extends Component {
 	render() {
 		return (
 			<div className="sidebar">
-				<SelectPage />
 				<div className="scrollable fit-with-header">
 					<div>
 						<Button

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {NavItem, Nav, Modal } from 'reactstrap';
 import { NavLink as Link } from 'react-router-dom';
 
-import SelectPage from '../components/SelectPage';
 import MailServersEdit from './mailServers/settings';
 import NotificationServersEdit from './notificationServers/settings';
 
@@ -36,7 +35,6 @@ export default class Sidebar extends Component {
 	render() {
 		return (
 			<div className="sidebar">
-				<SelectPage />
 				<div className="scrollable fit-with-header">
 					<Nav vertical>
 						<NavItem key={0}  className="row">

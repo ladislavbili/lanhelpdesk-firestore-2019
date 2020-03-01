@@ -3,7 +3,6 @@ import {NavItem, Nav } from 'reactstrap';
 import { NavLink as Link } from 'react-router-dom';
 import { connect } from "react-redux";
 
-import SelectPage from '../components/SelectPage';
 import {toSelArr, sameStringForms} from '../helperFunctions';
 import {setProject, setMilestone, setFilter, storageHelpFiltersStart, storageHelpProjectsStart, storageHelpMilestonesStart} from '../redux/actions';
 
@@ -106,7 +105,6 @@ class Sidebar extends Component {
 		let showSettings= this.props.history.location.pathname.includes('settings');
 		return (
 			<div className="sidebar">
-					<SelectPage />
 				<div className="scrollable fit-with-header">
 					{!showSettings && <div>
 						<div>

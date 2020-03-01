@@ -7,6 +7,7 @@ import {rebase} from '../index';
 
 import Sidebar from './Sidebar';
 import PageHeader from '../components/PageHeader';
+import SelectPage from '../components/SelectPage';
 
 import TaskList from './task';
 
@@ -57,17 +58,22 @@ class Navigation extends Component {
 	render() {
 		return (
 			<div>
-				<div className="row">
+				<div className="page-header">
+					<div className="center-ver row center flex">
+						<SelectPage />
+						<PageHeader {...this.props}
+							showLayoutSwitch={true}
+							setLayout={this.setLayout.bind(this)}
+							layout={this.props.layout}
+							dndLayout={true}
+							calendarLayout={true}
+							settings={settings} />
+					</div>
+				</div>
+
+				<div className="row center center-ver">
 						<Sidebar {...this.props} settings={settings} />
 					<div className="main">
-
-					<PageHeader {...this.props}
-						showLayoutSwitch={true}
-						setLayout={this.setLayout.bind(this)}
-						layout={this.props.layout}
-						dndLayout={true}
-						calendarLayout={true}
-						settings={settings} />
 
 					<Route exact path="/helpdesk" component={TaskList} />
 					<Route exact path="/helpdesk/taskList" component={TaskList} />

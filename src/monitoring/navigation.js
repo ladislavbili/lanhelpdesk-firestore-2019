@@ -7,6 +7,7 @@ import {setLayout} from '../redux/actions';
 import {testing} from '../helperFunctions';
 import Sidebar from './Sidebar';
 import PageHeader from '../components/PageHeader';
+import SelectPage from '../components/SelectPage';
 import MailServersList from './mailServers';
 import MailServerAdd from './mailServers/add';
 import NotificationServersList from './notificationServers';
@@ -27,13 +28,18 @@ class Navigation extends Component {
 		if((this.props.currentUser.userData===null||this.props.currentUser.userData.role.value < 1 )&&!testing){
 			return (
 				<div>
-				<div className="row">
+					<div className="page-header">
+						<div className="center-ver row center flex">
+							<SelectPage />
+							<PageHeader {...this.props}
+								setLayout={this.setLayout.bind(this)}
+								layout={this.props.layout}
+								showLayoutSwitch={true} />
+						</div>
+					</div>
+
+					<div className="row center center-ver">
 					<div className="main">
-						<PageHeader {...this.props}
-							setLayout={this.setLayout.bind(this)}
-							layout={this.props.layout}
-							showLayoutSwitch={true}
-							/>
 					</div>
 				</div>
 			</div>
@@ -41,18 +47,22 @@ class Navigation extends Component {
 		}
 		return (
 			<div>
-				<div className="row">
-						<Sidebar {...this.props} />
-					<div className="main">
+				<div className="page-header">
+					<div className="center-ver row center flex">
+						<SelectPage />
 						<PageHeader {...this.props}
 							setLayout={this.setLayout.bind(this)}
 							layout={this.props.layout}
 							showLayoutSwitch={true} />
+					</div>
+				</div>
 
+				<div className="row center center-ver">
+						<Sidebar {...this.props} />
+					<div className="main">
 						<Route exact path='/monitoring/mail-servers' component={MailServersList} />
 						<Route exact path='/monitoring/mail-servers/edit/:itemID' component={MailServersList} />
 						<Route exact path='/monitoring/mail-servers/add' component={MailServerAdd} />
-
 
 							<Route exact path='/monitoring/mail-notifications' component={NotificationServersList} />
 							<Route exact path='/monitoring/mail-notifications/edit/:itemID' component={NotificationServersList} />

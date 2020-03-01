@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {NavItem, Nav, Modal } from 'reactstrap';
 import { NavLink as Link } from 'react-router-dom';
 
-import SelectPage from '../components/SelectPage';
 import {rebase} from '../index';
 import ProjectAdd from './projects/projectAdd';
 import ProjectEdit from './projects/projectEdit';
@@ -61,7 +60,6 @@ export default class Sidebar extends Component {
 	render() {
 		return (
 			<div className="sidebar">
-				<SelectPage />
 				<div className="scrollable fit-with-header">
 					<ProjectAdd />
 					<Nav vertical>

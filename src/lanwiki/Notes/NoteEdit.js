@@ -139,7 +139,7 @@ export default class Note extends Component{
     return (
       <div className="flex" >
         {this.state.editBodyOpen &&
-					<div style={{backgroundColor: "transparent", width: "100%", height: "100%", position: "absolute"}} onClick={()=>this.setState({editBodyOpen:false})}>
+					<div style={{position: "fixed", zIndex: "99", backgroundColor: "rgba(255,255,255,0.5)", top: "0", left: "0", width: "100%", height: "100vh"}} onClick={()=>this.setState({editBodyOpen:false})}>
 					</div>
 				}
 				<div className="commandbar p-2 p-l-20">
@@ -168,7 +168,7 @@ export default class Note extends Component{
 					</div>
 				</div>
 
-        <div className={"card-box-lanwiki scrollable fit-with-header-and-commandbar p-20" + (!this.props.columns ? " center-ver w-50" : "")}>
+        <div className={"card-box-lanwiki scrollable fit-with-header-and-commandbar p-20" + (!this.props.columns ? " center-ver w-50" : "")} >
             <div className="row">
               <h2 className="center-hor">#</h2>
               <span className="center-hor flex">
@@ -206,7 +206,7 @@ export default class Note extends Component{
                 }
 
               { this.state.editBodyOpen &&
-              <FormGroup className="" style={{zIndex: "9999"}}>
+              <FormGroup className=""  style={{position: "relative",zIndex:"9999"}}>
                   <Button className="btn-link-reversed p-l-0" onClick={this.toggleModal.bind(this)}>Pridať obrázok z uložiska</Button>
 
                   <Modal isOpen={this.state.modalOpen} toggle={this.toggleModal.bind(this)} >

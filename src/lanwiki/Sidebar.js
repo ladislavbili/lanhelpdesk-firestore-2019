@@ -3,7 +3,6 @@ import {Button, NavItem, Nav, Modal} from 'reactstrap';
 import { NavLink as Link } from 'react-router-dom';
 import { connect } from "react-redux";
 
-import SelectPage from '../components/SelectPage';
 import TagAdd from './Tags/TagAdd';
 import TagEdit from './Tags/TagEdit';
 import {rebase} from '../index';
@@ -68,7 +67,6 @@ class Sidebar extends Component {
 	render() {
 		return (
 			<div className="sidebar">
-				<SelectPage />
 				<div className="scrollable fit-with-header">
 					<Button
 						block

@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import {testing} from '../helperFunctions';
 import Sidebar from './Sidebar';
 import PageHeader from '../components/PageHeader';
+import SelectPage from '../components/SelectPage';
 
 import SidebarItemAdd from './settings/sidebarItemAdd';
 import SidebarItemEdit from './settings/sidebarItemEdit';
@@ -28,10 +29,16 @@ class Navigation extends Component {
 		}
 		return (
 			<div>
-				<div className="row">
+				<div className="page-header">
+					<div className="center-ver row center flex">
+						<SelectPage />
+						<PageHeader {...this.props} settings={[{link:'statuses', title:'Statuses'}]} />
+					</div>
+				</div>
+
+				<div className="row center center-ver">
 						<Sidebar {...this.props} />
 					<div className="main">
-						<PageHeader {...this.props} settings={[{link:'statuses', title:'Statuses'}]} />
 
 						<Route exact path='/cmdb/add' component={SidebarItemAdd} />
 						<Route exact path='/cmdb/edit/:sidebarID' component={SidebarItemEdit} />

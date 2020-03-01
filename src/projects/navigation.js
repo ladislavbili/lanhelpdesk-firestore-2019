@@ -7,6 +7,7 @@ import {testing} from '../helperFunctions';
 
 import Sidebar from './Sidebar';
 import PageHeader from '../components/PageHeader';
+import SelectPage from '../components/SelectPage';
 import List from './list';
 import TagList from './tags'
 
@@ -25,30 +26,41 @@ class Navigation extends Component {
 		if((this.props.currentUser.userData===null||this.props.currentUser.userData.role.value < 1)&&!testing){
 			return (
 				<div>
-				<div className="row">
-					<div className="main">
-						<PageHeader {...this.props}
-							setLayout={this.setLayout.bind(this)}
-							layout={this.props.layout}
-							showLayoutSwitch={true}
-							settings={[{title:'Tags',link:'tags'}]}
-							/>
+					<div className="page-header">
+						<div className="center-ver row center flex">
+							<SelectPage />
+								<PageHeader {...this.props}
+									setLayout={this.setLayout.bind(this)}
+									layout={this.props.layout}
+									showLayoutSwitch={true}
+									settings={[{title:'Tags',link:'tags'}]}
+									/>
+						</div>
 					</div>
+					<div className="row center center-ver">
+						<div className="main">
+						</div>
 				</div>
 			</div>
 		)
 		}
 		return (
 			<div>
-				<div className="row">
+				<div className="page-header">
+					<div className="center-ver row center flex">
+						<SelectPage />
+							<PageHeader {...this.props}
+								setLayout={this.setLayout.bind(this)}
+								layout={this.props.layout}
+								showLayoutSwitch={true}
+								settings={[{title:'Tags',link:'tags'}]}
+								/>
+					</div>
+				</div>
+
+				<div className="row center center-ver">
 						<Sidebar {...this.props} />
 					<div className="main">
-						<PageHeader {...this.props}
-							setLayout={this.setLayout.bind(this)} 
-							layout={this.props.layout}
-							showLayoutSwitch={true}
-							settings={[{title:'Tags',link:'tags'}]}
-							/>
 						<Route exact path='/projects/:projectID/:milestoneID' component={List} />
 						<Route exact path='/projects/:projectID/:milestoneID/edit/:taskID' component={List} />
 						<Route exact path='/projects/settings/tags' component={TagList} />

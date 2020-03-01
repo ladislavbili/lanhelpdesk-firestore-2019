@@ -8,6 +8,7 @@ import {testing} from '../helperFunctions';
 
 import Sidebar from './Sidebar';
 import PageHeader from '../components/PageHeader';
+import SelectPage from '../components/SelectPage';
 import List from './list';
 import AddExpenditure from './list/addExpenditure';
 
@@ -26,13 +27,18 @@ class Navigation extends Component {
 		if((this.props.currentUser.userData===null||this.props.currentUser.userData.role.value < 2 )&&!testing){
 			return (
 				<div>
-				<div className="row">
+					<div className="page-header">
+						<div className="center-ver row center flex">
+							<SelectPage />
+							<PageHeader {...this.props}
+								setLayout={this.setLayout.bind(this)}
+								layout={this.props.layout}
+								showLayoutSwitch={true}
+								/>
+						</div>
+					</div>
+				<div className="row center center-ver">
 					<div className="main">
-						<PageHeader {...this.props}
-							setLayout={this.setLayout.bind(this)}
-							layout={this.props.layout}
-							showLayoutSwitch={true}
-							/>
 					</div>
 				</div>
 			</div>
@@ -41,14 +47,20 @@ class Navigation extends Component {
 
 		return (
 			<div>
-				<div className="row">
-						<Sidebar {...this.props} />
-					<div className="main">
+				<div className="page-header">
+					<div className="center-ver row center flex">
+						<SelectPage />
 						<PageHeader {...this.props}
 							setLayout={this.setLayout.bind(this)}
 							layout={this.props.layout}
 							showLayoutSwitch={true}
 							/>
+					</div>
+				</div>
+
+				<div className="row center center-ver">
+						<Sidebar {...this.props} />
+					<div className="main">
 						<Route exact path='/expenditures/add' component={AddExpenditure} />
 						<Route exact path='/expenditures/i/:listID' component={List} />
 						<Route exact path='/expenditures/i/:listID/:expID' component={List} />

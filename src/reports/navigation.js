@@ -6,6 +6,7 @@ import {testing} from '../helperFunctions';
 
 import Sidebar from './Sidebar';
 import PageHeader from '../components/PageHeader';
+import SelectPage from '../components/SelectPage';
 import GeneralReports from './general';
 import CompanyMonthlyReport from './monthly/company';
 import AssignedMonthlyReport from './monthly/assigned';
@@ -30,24 +31,29 @@ class Navigation extends Component {
 		if((this.props.currentUser.userData===null||this.props.currentUser.userData.role.value < 2 )&&!testing){
 			return (
 				<div>
-					<div className="row">
-						<div className="main">
+					<div className="page-header">
+						<div className="center-ver row center flex">
+							<SelectPage />
 							<PageHeader {...this.props}
 								settings={
-								[{title:'Projects',link:'projects'},
-								{title:'Statuses',link:'statuses'},
-								{title:'Units',link:'units'},
-								{title:'Companies',link:'companies'},
-								{title:'Work Type',link:'workTypes'},
-								{title:'Users',link:'users'},
-								{title:'Prices',link:'pricelists'},
-								{title:'Supplier',link:'suppliers'},
-								{title:'Tags',link:'tags'},
-								{title:'Invoices',link:'supplierInvoices'},
-								{title:'Task types',link:'taskTypes'},
-								{title:'Imaps',link:'imaps'},
-								{title:'SMTPs',link:'smtps'},
-							]} />
+									[{title:'Projects',link:'projects'},
+									{title:'Statuses',link:'statuses'},
+									{title:'Units',link:'units'},
+									{title:'Companies',link:'companies'},
+									{title:'Work Type',link:'workTypes'},
+									{title:'Users',link:'users'},
+									{title:'Prices',link:'pricelists'},
+									{title:'Supplier',link:'suppliers'},
+									{title:'Tags',link:'tags'},
+									{title:'Invoices',link:'supplierInvoices'},
+									{title:'Task types',link:'taskTypes'},
+									{title:'Imaps',link:'imaps'},
+									{title:'SMTPs',link:'smtps'},
+								]} />
+						</div>
+					</div>
+					<div className="row  center center-ver">
+						<div className="main">
 						</div>
 					</div>
 				</div>
@@ -55,26 +61,31 @@ class Navigation extends Component {
 		}
 		return (
 			<div>
-				<div className="row">
+				<div className="page-header">
+					<div className="center-ver row center flex">
+						<SelectPage />
+						<PageHeader {...this.props}
+							settings={
+							[{title:'Projects',link:'projects'},
+							{title:'Statuses',link:'statuses'},
+							{title:'Units',link:'units'},
+							{title:'Companies',link:'companies'},
+							{title:'Work Type',link:'workTypes'},
+							{title:'Users',link:'users'},
+							{title:'Prices',link:'pricelists'},
+							{title:'Supplier',link:'suppliers'},
+							{title:'Tags',link:'tags'},
+							{title:'Invoices',link:'supplierInvoices'},
+							{title:'Task types',link:'taskTypes'},
+							{title:'Imaps',link:'imaps'},
+							{title:'SMTPs',link:'smtps'},
+						]} />
+					</div>
+				</div>
+
+				<div className="row center center-ver">
 						<Sidebar {...this.props} />
 					<div className="main">
-					<PageHeader {...this.props}
-						settings={
-						[{title:'Projects',link:'projects'},
-						{title:'Statuses',link:'statuses'},
-						{title:'Units',link:'units'},
-						{title:'Companies',link:'companies'},
-						{title:'Work Type',link:'workTypes'},
-						{title:'Users',link:'users'},
-						{title:'Prices',link:'pricelists'},
-						{title:'Supplier',link:'suppliers'},
-						{title:'Tags',link:'tags'},
-						{title:'Invoices',link:'supplierInvoices'},
-						{title:'Task types',link:'taskTypes'},
-						{title:'Imaps',link:'imaps'},
-						{title:'SMTPs',link:'smtps'},
-					]} />
-
 					<Route exact path="/reports" component={GeneralReports} />
 					<Route exact path="/reports/i/:id" component={GeneralReports} />
 					<Route exact path="/reports/monthly/companies" component={CompanyMonthlyReport} />

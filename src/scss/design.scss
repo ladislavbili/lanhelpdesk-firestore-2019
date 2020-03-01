@@ -20,7 +20,9 @@
 - input-group-append
 */
 
-
+.center{
+  max-width: 1920px;
+}
 
 .testSonka{
   color: red;
@@ -140,12 +142,12 @@ html{
   font-size: 24px;
 }
 .center-ver{
-	margin-left: auto;
-	margin-right: auto;
+	margin-left: auto !important;
+	margin-right: auto !important;
 }
 .center-hor{
-	margin-top: auto;
-	margin-bottom: auto;
+	margin-top: auto !important;
+	margin-bottom: auto !important;
 }
 .full-width{
   width: 100%;
@@ -183,6 +185,9 @@ html{
 .w-20px{
   width: 20px;
 }
+.w-30px{
+  width: 30px;
+}
 .w-40px{
   width: 40px;
 }
@@ -193,7 +198,7 @@ html{
   width: 200px;
 }
 .w-300px{
-  width: 300px;
+  width: 300px !important;
 }
 .w-1660px{
   width: 1660px;
@@ -932,13 +937,13 @@ tr:last-child{
 
 //---------------------header---------------------
 .page-header{
-	background-color: $header-color;
+	background-color: $header-color !important;
   height: $header-height;
   margin: 0px;
   padding: 0px;
   border: 0px;
   border-right: 2px solid $header-color;
-  margin-right: -2px;
+  //margin-right: -2px;
   z-index: 10000;
 
   .lansystems-title{
@@ -970,13 +975,14 @@ tr:last-child{
   background-color: inherit;
   border-width: 0px;
   padding: 0px;
+  width: 30px;
 }
 
 .header-icon{
   font-size:15px;
   background-color: inherit;
   border-width: 0;
-  margin-right: 15px;
+  margin-right: 10px;
   color: white;
 }
 
@@ -984,7 +990,7 @@ tr:last-child{
   font-size:15px;
   background-color: inherit;
   border-width: 0;
-  margin-right: 5px;
+  margin-right: -4px;
   color: white;
 }
 
