@@ -139,7 +139,7 @@ export default class Note extends Component{
     return (
       <div className="flex" >
         {this.state.editBodyOpen &&
-					<div style={{position: "fixed", zIndex: "99", backgroundColor: "rgba(255,255,255,0.5)", top: "0", left: "0", width: "100%", height: "100vh"}} onClick={()=>this.setState({editBodyOpen:false})}>
+					<div style={{position: "fixed", zIndex: "99", backgroundColor: "transparent", top: "0", left: "0", width: "100%", height: "100vh"}} onClick={()=>this.setState({editBodyOpen:false})}>
 					</div>
 				}
 				<div className="commandbar p-2 p-l-20">
