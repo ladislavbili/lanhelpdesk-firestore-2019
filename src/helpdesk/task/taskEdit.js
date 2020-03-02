@@ -625,7 +625,7 @@ class TaskEdit extends Component {
 				{ this.renderCommandbar(taskID, createdBy, canCopy, canDelete, taskWorks, workTrips, taskMaterials, customItems) }
 
 				<div className={classnames("fit-with-header-and-commandbar", "scroll-visible", "bkg-F2F1F1", { "row": this.state.layout === '2'})}>
-					<div className={classnames("card-box", { "max-width-1660": this.state.layout === '1'}, { "task-edit-left": this.state.layout === '2'})}>
+					<div className={classnames("card-box", { "task-edit-left": this.state.layout === '2'})}>
 
 						{ this.renderTitle(taskID, createdBy) }
 
