@@ -46,6 +46,8 @@ class CompanyAdd extends Component{
       oldDescription: "",
       workPausal:0,
       oldWorkPausal:0,
+      pausalPrice:0,
+      oldPausalPrice:0,
       drivePausal:0,
       oldDrivePausal:0,
       pausal:0,
@@ -134,6 +136,7 @@ class CompanyAdd extends Component{
           }
         }),
         workPausal:this.state.workPausal,
+        pausalPrice:this.state.pausalPrice,
         drivePausal:this.state.drivePausal,
         monthlyPausal:this.state.monthlyPausal,
         pricelist:this.state.pricelist.id,
@@ -215,6 +218,7 @@ class CompanyAdd extends Component{
       description: this.state.oldDescription,
       pausal: this.state.oldPausal,
       workPausal: this.state.oldWorkPausal,
+      pausalPrice: this.state.oldPausalPrice,
       drivePausal: this.state.oldDrivePausal,
       rented:this.state.oldRented,
       dph:this.state.oldDph,
@@ -467,8 +471,8 @@ class CompanyAdd extends Component{
                     id="pausal"
                     type="number"
                     placeholder="Enter work pausal"
-                    value={this.state.workPausal}
-                    onChange={(e)=>this.setState({workPausal:e.target.value, newData: true,})}
+                    value={this.state.pausalPrice}
+                    onChange={(e)=>this.setState({pausalPrice:e.target.value, newData: true,})}
                     />
                 </div>
                 <div className="m-l-10">

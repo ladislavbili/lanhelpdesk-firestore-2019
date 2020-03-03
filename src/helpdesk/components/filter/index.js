@@ -3,14 +3,14 @@ import { Input } from 'reactstrap';
 import Select from 'react-select';
 import { connect } from "react-redux";
 
-import {database, rebase} from '../../index';
+import {database, rebase} from '../../../index';
 import DatePicker from 'react-datepicker';
-import {setFilter, storageHelpTaskTypesStart, storageUsersStart, storageCompaniesStart, storageHelpStatusesStart} from '../../redux/actions';
-import {toSelArr, snapshotToArray, sameStringForms, toMomentInput, fromMomentToUnix } from '../../helperFunctions';
+import {setFilter, storageHelpTaskTypesStart, storageUsersStart, storageCompaniesStart, storageHelpStatusesStart} from '../../../redux/actions';
+import {toSelArr, snapshotToArray, sameStringForms, toMomentInput, fromMomentToUnix } from '../../../helperFunctions';
 import AddFilter from './filterAdd';
 
-import datePickerConfig from '../../scss/datePickerConfig';
-import {invisibleSelectStyleOtherFont} from '../../scss/selectStyles';
+import datePickerConfig from '../../../scss/datePickerConfig';
+import {invisibleSelectStyleOtherFont} from '../../../scss/selectStyles';
 
 const emptyFilter = {
   status:[],
@@ -81,8 +81,8 @@ class Filter extends Component {
       });
     }
     if(!sameStringForms(props.statuses,this.props.statuses)){
-			this.setState({statuses:toSelArr(props.statuses)})
-		}
+      this.setState({statuses:toSelArr(props.statuses)})
+    }
     if(!sameStringForms(props.users,this.props.users)){
       this.setState({users:toSelArr(props.users,'email')})
     }
@@ -95,15 +95,15 @@ class Filter extends Component {
   }
 
   componentWillMount(){
-		if(!this.props.statusesActive){
-			this.props.storageHelpStatusesStart();
-		}
-		this.setState({statuses:toSelArr(this.props.statuses)});
+    if(!this.props.statusesActive){
+      this.props.storageHelpStatusesStart();
+    }
+    this.setState({statuses:toSelArr(this.props.statuses)});
 
     if(!this.props.usersActive){
-			this.props.storageUsersStart();
-		}
-		this.setState({users:toSelArr(this.props.users,'email')});
+      this.props.storageUsersStart();
+    }
+    this.setState({users:toSelArr(this.props.users,'email')});
 
     if(!this.props.companiesActive){
       this.props.storageCompaniesStart();
@@ -197,63 +197,63 @@ class Filter extends Component {
   }
 
 
-    render() {
-      return (
-        <div>
-            <div className="d-flex m-l-15 m-t-5">
-              <button type="button" className="btn-link-reversed" onClick={this.applyFilter.bind(this)}><i className="fa fa-check icon-M"/></button>
-              {this.canSaveFilter() &&
-                <AddFilter
-                  filter={{
-                    requester:this.state.requester.id,
-                    company:this.state.company.id,
-                    assigned:this.state.assigned.id,
-                    workType:this.state.workType.id,
-                    status:this.state.status.map((item)=>item.id),
-                    statusDateFrom: fromMomentToUnix(this.state.statusDateFrom),
-                    statusDateTo: fromMomentToUnix(this.state.statusDateTo),
-                    pendingDateFrom: fromMomentToUnix(this.state.pendingDateFrom),
-                    pendingDateTo: fromMomentToUnix(this.state.pendingDateTo),
-                    closeDateFrom: fromMomentToUnix(this.state.closeDateFrom),
-                    closeDateTo: fromMomentToUnix(this.state.closeDateTo),
-                  }}
-                  filterID={this.props.filterID}
-                  filterData={this.props.filterData}
-                  />}
+  render() {
+    return (
+      <div>
+        <div className="d-flex m-l-15 m-t-5">
+          <button type="button" className="btn-link-reversed" onClick={this.applyFilter.bind(this)}><i className="fa fa-check icon-M"/></button>
+          {this.canSaveFilter() &&
+            <AddFilter
+              filter={{
+                requester:this.state.requester.id,
+                company:this.state.company.id,
+                assigned:this.state.assigned.id,
+                workType:this.state.workType.id,
+                status:this.state.status.map((item)=>item.id),
+                statusDateFrom: fromMomentToUnix(this.state.statusDateFrom),
+                statusDateTo: fromMomentToUnix(this.state.statusDateTo),
+                pendingDateFrom: fromMomentToUnix(this.state.pendingDateFrom),
+                pendingDateTo: fromMomentToUnix(this.state.pendingDateTo),
+                closeDateFrom: fromMomentToUnix(this.state.closeDateFrom),
+                closeDateTo: fromMomentToUnix(this.state.closeDateTo),
+              }}
+              filterID={this.props.filterID}
+              filterData={this.props.filterData}
+              />}
               <button type="button" className="btn-link-reversed m-2" onClick={this.resetFilter.bind(this)}><i className="fa fa-sync icon-M"/></button>
               {this.canSaveFilter() && <button type="button" className="btn-link-reversed m-2" disabled={this.props.filterID===null} onClick={this.deleteFilter.bind(this)}><i className="far fa-trash-alt icon-M"/></button>}
               <button type="button" className="btn-link-reversed m-2" onClick={() => this.props.close()}><i className="fa fa-times icon-M"/></button>
             </div>
 
 
-          { this.props.filterID!==null  &&
-            <div>
-              <div className="sidebar-filter-label">
-                Filter name
+            { this.props.filterID!==null  &&
+              <div>
+                <div className="sidebar-filter-label">
+                  Filter name
+                </div>
+                <div
+                  className=""
+                  onClick={() => this.setState({openEditName: (this.props.filterID ? true : false)})}
+                  >
+                  {(!this.state.openEditName || !this.canSaveFilter()) &&
+                    <h5 className="sidebar-filter-name">{this.props.filterID?' '+ (this.state.newFilterName ? this.state.newFilterName : this.props.filterData.title):' Všetky'}</h5>
+                  }
+                  {this.state.openEditName && this.canSaveFilter() &&
+                    <Input
+                      type="text"
+                      className="from-control sidebar-filter-input"
+                      placeholder="Enter filter name"
+                      autoFocus
+                      value={this.state.newFilterName ? this.state.newFilterName : this.props.filterData.title}
+                      onChange={(e)=>this.setState({newFilterName: e.target.value})}
+                      onBlur={() => this.setState({openEditName: false}, () => this.renameFilter())}
+                      />
+                  }
+                </div>
               </div>
-              <div
-                   className=""
-                   onClick={() => this.setState({openEditName: (this.props.filterID ? true : false)})}
-                   >
-                   {(!this.state.openEditName || !this.canSaveFilter()) &&
-                     <h5 className="sidebar-filter-name">{this.props.filterID?' '+ (this.state.newFilterName ? this.state.newFilterName : this.props.filterData.title):' Všetky'}</h5>
-                   }
-                   {this.state.openEditName && this.canSaveFilter() &&
-                       <Input
-                         type="text"
-                         className="from-control sidebar-filter-input"
-                         placeholder="Enter filter name"
-                         autoFocus
-                         value={this.state.newFilterName ? this.state.newFilterName : this.props.filterData.title}
-                         onChange={(e)=>this.setState({newFilterName: e.target.value})}
-                         onBlur={() => this.setState({openEditName: false}, () => this.renameFilter())}
-                     />
-                 }
-               </div>
-            </div>
-          }
+            }
 
-          <div className=" p-r-15 p-l-15 sidebar-filter">
+            <div className=" p-r-15 p-l-15 sidebar-filter">
               <div className="sidebar-filter-row">
                 <label htmlFor="example-input-small">Zadal</label>
                 <div className="flex">
@@ -285,9 +285,9 @@ class Filter extends Component {
                     styles={invisibleSelectStyleOtherFont} />
                 </div>
               </div>
-            <div className="sidebar-filter-row">
-              <label>Status change</label>
-              <div className="row">
+              <div className="sidebar-filter-row">
+                <label>Status change</label>
+                <div className="row">
                   <DatePicker
                     className="form-control hidden-input"
                     isClearable
@@ -308,93 +308,93 @@ class Filter extends Component {
                     placeholderText="No date"
                     {...datePickerConfig}
                     />
+                </div>
               </div>
-            </div>
-            <div className="sidebar-filter-row">
-              <label>Pending date</label>
-              <div className="row">
-                <DatePicker
-                  className="form-control hidden-input"
-                  isClearable
-                  selected={this.state.pendingDateFrom}
-                  onChange={(e)=>{
-                    this.setState({pendingDateFrom:e})}
-                  }
-                  placeholderText="No date"
-                  {...datePickerConfig}
-                  />
-                <DatePicker
-                  className="form-control hidden-input"
-                  isClearable
-                  selected={this.state.pendingDateTo}
-                  onChange={(e)=>{
-                    this.setState({pendingDateTo:e})}
-                  }
-                  placeholderText="No date"
-                  {...datePickerConfig}
-                  />
+              <div className="sidebar-filter-row">
+                <label>Pending date</label>
+                <div className="row">
+                  <DatePicker
+                    className="form-control hidden-input"
+                    isClearable
+                    selected={this.state.pendingDateFrom}
+                    onChange={(e)=>{
+                      this.setState({pendingDateFrom:e})}
+                    }
+                    placeholderText="No date"
+                    {...datePickerConfig}
+                    />
+                  <DatePicker
+                    className="form-control hidden-input"
+                    isClearable
+                    selected={this.state.pendingDateTo}
+                    onChange={(e)=>{
+                      this.setState({pendingDateTo:e})}
+                    }
+                    placeholderText="No date"
+                    {...datePickerConfig}
+                    />
+                </div>
               </div>
-            </div>
-            <div className="sidebar-filter-row">
-              <label>Close date</label>
-              <div className="row">
-                <DatePicker
-                  className="form-control hidden-input"
-                  isClearable
-                  selected={this.state.closeDateFrom}
-                  onChange={(e)=>{
-                    this.setState({closeDateFrom:e})}
-                  }
-                  placeholderText="No date"
-                  {...datePickerConfig}
-                  />
-                <DatePicker
-                  className="form-control hidden-input"
-                  isClearable
-                  selected={this.state.closeDateTo}
-                  onChange={(e)=>{
-                    this.setState({closeDateTo:e})}
-                  }
-                  placeholderText="No date"
-                  {...datePickerConfig}
-                  />
+              <div className="sidebar-filter-row">
+                <label>Close date</label>
+                <div className="row">
+                  <DatePicker
+                    className="form-control hidden-input"
+                    isClearable
+                    selected={this.state.closeDateFrom}
+                    onChange={(e)=>{
+                      this.setState({closeDateFrom:e})}
+                    }
+                    placeholderText="No date"
+                    {...datePickerConfig}
+                    />
+                  <DatePicker
+                    className="form-control hidden-input"
+                    isClearable
+                    selected={this.state.closeDateTo}
+                    onChange={(e)=>{
+                      this.setState({closeDateTo:e})}
+                    }
+                    placeholderText="No date"
+                    {...datePickerConfig}
+                    />
+                </div>
+              </div>
+
+              <div className="sidebar-filter-row">
+                <label htmlFor="example-input-small">Typ práce</label>
+                <div className="flex">
+                  <Select
+                    options={[{label:'Žiadny',value:null,id:null}].concat(this.state.workTypes)}
+                    onChange={(newValue)=>this.setState({workType:newValue})}
+                    value={this.state.workType}
+                    styles={invisibleSelectStyleOtherFont} />
+                </div>
               </div>
             </div>
 
-            <div className="sidebar-filter-row">
-              <label htmlFor="example-input-small">Typ práce</label>
-              <div className="flex">
-                <Select
-                  options={[{label:'Žiadny',value:null,id:null}].concat(this.state.workTypes)}
-                  onChange={(newValue)=>this.setState({workType:newValue})}
-                  value={this.state.workType}
-                  styles={invisibleSelectStyleOtherFont} />
-              </div>
-            </div>
-        </div>
-
-      </div>
-      )
+          </div>
+        )
+      }
     }
-  }
 
 
-  const mapStateToProps = ({ filterReducer, storageHelpFilters, storageHelpTaskTypes, storageUsers, storageCompanies, storageHelpStatuses, userReducer }) => {
-    const { filter } = filterReducer;
-    const { filters,filtersLoaded } = storageHelpFilters;
-    const { taskTypesActive, taskTypes } = storageHelpTaskTypes;
-    const { usersActive, users } = storageUsers;
-    const { companiesActive, companies } = storageCompanies;
-    const { statusesActive, statuses } = storageHelpStatuses;
+    const mapStateToProps = ({ filterReducer, storageHelpFilters, storageHelpTaskTypes, storageUsers, storageCompanies, storageHelpStatuses, userReducer }) => {
+      const { filter } = filterReducer;
+      const { filters,filtersLoaded } = storageHelpFilters;
+      const { taskTypesActive, taskTypes } = storageHelpTaskTypes;
+      const { usersActive, users } = storageUsers;
+      const { companiesActive, companies } = storageCompanies;
+      const { statusesActive, statuses } = storageHelpStatuses;
 
-    return { filter,
-      filters,filtersLoaded,
-      taskTypesActive, taskTypes,
-      usersActive, users,
-      companiesActive, companies,
-      statusesActive, statuses,
-      currentUser:userReducer
-     };
-  };
+      return { filter,
+        filters,filtersLoaded,
+        taskTypesActive, taskTypes,
+        usersActive, users,
+        companiesActive, companies,
+        statusesActive, statuses,
+        currentUser:userReducer
+      };
+    };
 
-  export default connect(mapStateToProps, { setFilter, storageHelpTaskTypesStart,storageUsersStart, storageCompaniesStart, storageHelpStatusesStart })(Filter);
+    export default connect(mapStateToProps, { setFilter, storageHelpTaskTypesStart,storageUsersStart, storageCompaniesStart, storageHelpStatusesStart })(Filter);

@@ -1215,6 +1215,13 @@ export default class TaskAdd extends Component{
 								newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
 								this.setState({taskWorks:newTaskWorks});
 							}}
+							updateSubtasks={(multipleSubtasks)=>{
+								let newTaskWorks=[...this.state.taskWorks];
+								multipleSubtasks.forEach(({id, newData})=>{
+									newTaskWorks[newTaskWorks.findIndex((taskWork)=>taskWork.id===id)]={...newTaskWorks.find((taskWork)=>taskWork.id===id),...newData};
+								})
+								this.setState({taskWorks:newTaskWorks});
+							}}
 							removeSubtask={(id)=>{
 								let newTaskWorks=[...this.state.taskWorks];
 								newTaskWorks.splice(newTaskWorks.findIndex((taskWork)=>taskWork.id===id),1);
@@ -1230,6 +1237,13 @@ export default class TaskAdd extends Component{
 								newTrips[newTrips.findIndex((trip)=>trip.id===id)]={...newTrips.find((trip)=>trip.id===id),...newData};
 								this.setState({workTrips:newTrips});
 							}}
+							updateTrips={(multipleTrips)=>{
+								let newTrips=[...this.state.workTrips];
+								multipleTrips.forEach(({id, newData})=>{
+									newTrips[newTrips.findIndex((trip)=>trip.id===id)]={...newTrips.find((trip)=>trip.id===id),...newData};
+								})
+								this.setState({workTrips:newTrips});
+							}}
 							removeTrip={(id)=>{
 								let newTrips=[...this.state.workTrips];
 								newTrips.splice(newTrips.findIndex((trip)=>trip.id===id),1);
@@ -1242,7 +1256,14 @@ export default class TaskAdd extends Component{
 							}}
 							updateMaterial={(id,newData)=>{
 								let newTaskMaterials=[...this.state.taskMaterials];
-								newTaskMaterials[newTaskMaterials.findIndex((taskWork)=>taskWork.id===id)]={...newTaskMaterials.find((taskWork)=>taskWork.id===id),...newData};
+								newTaskMaterials[newTaskMaterials.findIndex((material)=>material.id===id)]={...newTaskMaterials.find((material)=>material.id===id),...newData};
+								this.setState({taskMaterials:newTaskMaterials});
+							}}
+							updateMaterials={(multipleMaterials)=>{
+								let newTaskMaterials=[...this.state.taskMaterials];
+								multipleMaterials.forEach(({id, newData})=>{
+									newTaskMaterials[newTaskMaterials.findIndex((material)=>material.id===id)]={...newTaskMaterials.find((material)=>material.id===id),...newData};
+								})
 								this.setState({taskMaterials:newTaskMaterials});
 							}}
 							removeMaterial={(id)=>{
@@ -1258,6 +1279,13 @@ export default class TaskAdd extends Component{
 							updateCustomItem={(id,newData)=>{
 								let newCustomItems=[...this.state.customItems];
 								newCustomItems[newCustomItems.findIndex((customItem)=>customItem.id===id)]={...newCustomItems.find((customItem)=>customItem.id===id),...newData};
+								this.setState({customItems:newCustomItems});
+							}}
+							updateCustomItems={(multipleCustomItems)=>{
+								let newCustomItems=[...this.state.customItems];
+								multipleCustomItems.forEach(({id, newData})=>{
+									newCustomItems[newCustomItems.findIndex((customItem)=>customItem.id===id)]={...newCustomItems.find((customItem)=>customItem.id===id),...newData};
+								})
 								this.setState({customItems:newCustomItems});
 							}}
 							removeCustomItem={(id)=>{

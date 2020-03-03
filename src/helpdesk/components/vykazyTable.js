@@ -257,6 +257,10 @@ export default class Rozpocet extends Component {
 	}
 
 	render() {
+		let sortedWorks = this.props.subtasks.sort((work1,work2) => work1.order - work2.order);
+		let sortedTrips = this.props.workTrips.sort((trip1,trip2) => trip1.order - trip2.order);
+		let sortedMaterials = this.props.materials.sort((material1,material2) => material1.order - material2.order);
+		let sortedCustomItems = this.props.customItems.sort((customItem1,customItem2) => customItem1.order - customItem2.order);
 		return (
 			<div className="vykazyTable">
 				<div className="" style={{color: "#FF4500", height: "20px"}}>
@@ -301,7 +305,7 @@ export default class Rozpocet extends Component {
 					</thead>
 					<tbody>
 						{/* Works */}
-						{ this.props.subtasks.map((subtask)=>
+						{ sortedWorks.map((subtask, index) =>
 							<tr key={subtask.id}>
 								{/*Checkbox done*/}
 								{this.props.showColumns.includes(0) &&
@@ -453,10 +457,32 @@ export default class Rozpocet extends Component {
 								{/*Toolbar*/}
 								{this.props.showColumns.includes(8) &&
 									<td className="t-a-r">	{/* //akcie*/}
-										<button className="btn waves-effect" disabled={this.props.disabled}>
+										<button
+											className="btn waves-effect"
+											disabled={ this.props.disabled || index === 0 }
+											onClick={()=>{
+												this.props.updateSubtasks([
+													//update below
+													{ id: sortedWorks[ index - 1 ].id, newData: { order: index } },
+													//update current
+													{ id: subtask.id, newData: { order: index - 1 } }
+												]);
+											}}
+											>
 											<i className="fa fa-arrow-up"  />
 										</button>
-										<button className="btn waves-effect" disabled={this.props.disabled}>
+										<button
+											className="btn waves-effect"
+											disabled={ this.props.disabled || index === sortedWorks.length - 1 }
+											onClick={()=>{
+												this.props.updateSubtasks([
+													//update below
+													{ id: sortedWorks[ index + 1 ].id, newData: { order: index } },
+													//update current
+													{ id: subtask.id, newData: { order: index + 1 } }
+												]);
+											}}
+											>
 											<i className="fa fa-arrow-down"  />
 										</button>
 										<button className="btn waves-effect" disabled={this.props.disabled}
@@ -472,7 +498,7 @@ export default class Rozpocet extends Component {
 							</tr>
 						)}
 						{/* Trips */}
-						{ this.props.workTrips.map((trip)=>
+						{ sortedTrips.map((trip, index) =>
 							<tr key={trip.id}>
 								{/*Checkbox done*/}
 								{this.props.showColumns.includes(0) &&
@@ -603,10 +629,32 @@ export default class Rozpocet extends Component {
 								{/*Toolbar*/}
 								{this.props.showColumns.includes(8) &&
 									<td className="t-a-r">
-										<button className="btn waves-effect" disabled={this.props.disabled}>
+										<button
+											className="btn waves-effect"
+											disabled={ this.props.disabled || index === 0 }
+											onClick={()=>{
+												this.props.updateTrips([
+													//update below
+													{ id: sortedTrips[ index - 1 ].id, newData: { order: index } },
+													//update current
+													{ id: trip.id, newData: { order: index - 1 } }
+												]);
+											}}
+											>
 											<i className="fa fa-arrow-up"  />
 										</button>
-										<button className="btn waves-effect" disabled={this.props.disabled}>
+										<button
+											className="btn waves-effect"
+											disabled={ this.props.disabled || index === sortedTrips.length - 1 }
+											onClick={()=>{
+												this.props.updateTrips([
+													//update below
+													{ id: sortedTrips[ index + 1 ].id, newData: { order: index } },
+													//update current
+													{ id: trip.id, newData: { order: index + 1 } }
+												]);
+											}}
+											>
 											<i className="fa fa-arrow-down"  />
 										</button>
 										<button
@@ -625,7 +673,7 @@ export default class Rozpocet extends Component {
 							</tr>
 						)}
 						{/* Materials */}
-						{ this.props.materials.map((material)=>
+						{ sortedMaterials.map((material,index) =>
 							<tr key={material.id}>
 								{/*Checkbox done*/}
 								{this.props.showColumns.includes(0) &&
@@ -779,10 +827,32 @@ export default class Rozpocet extends Component {
 												}}
 												/>
 										</button>
-										<button className="btn waves-effect" disabled={this.props.disabled}>
+										<button
+											className="btn waves-effect"
+											disabled={ this.props.disabled || index === 0 }
+											onClick={()=>{
+												this.props.updateMaterials([
+													//update below
+													{ id: sortedMaterials[ index - 1 ].id, newData: { order: index } },
+													//update current
+													{ id: material.id, newData: { order: index - 1 } }
+												]);
+											}}
+											>
 											<i className="fa fa-arrow-up"  />
 										</button>
-										<button className="btn waves-effect" disabled={this.props.disabled}>
+										<button
+											className="btn waves-effect"
+											disabled={ this.props.disabled || index === sortedMaterials.length - 1 }
+											onClick={()=>{
+												this.props.updateMaterials([
+													//update below
+													{ id: sortedMaterials[ index + 1 ].id, newData: { order: index } },
+													//update current
+													{ id: material.id, newData: { order: index + 1 } }
+												]);
+											}}
+											>
 											<i className="fa fa-arrow-down"  />
 										</button>
 										<button className="btn waves-effect"
@@ -799,7 +869,7 @@ export default class Rozpocet extends Component {
 							</tr>
 						)}
 						{/* Custom Items */}
-						{ this.props.customItems.map((customItem)=>
+						{ sortedCustomItems.map((customItem, index)=>
 							<tr key={customItem.id}>
 								{/*Checkbox done*/}
 								{this.props.showColumns.includes(0) &&
@@ -912,10 +982,32 @@ export default class Rozpocet extends Component {
 								{/*Toolbar*/}
 								{this.props.showColumns.includes(8) &&
 									<td className="t-a-r">
-										<button className="btn waves-effect" disabled={this.props.disabled}>
+										<button
+											className="btn waves-effect"
+											disabled={ this.props.disabled || index === 0 }
+											onClick={()=>{
+												this.props.updateCustomItems([
+													//update below
+													{ id: sortedCustomItems[ index - 1 ].id, newData: { order: index } },
+													//update current
+													{ id: customItem.id, newData: { order: index - 1 } }
+												]);
+											}}
+											>
 											<i className="fa fa-arrow-up"  />
 										</button>
-										<button className="btn waves-effect" disabled={this.props.disabled}>
+										<button
+											className="btn waves-effect"
+											disabled={ this.props.disabled || index === sortedCustomItems.length - 1 }
+											onClick={()=>{
+												this.props.updateCustomItems([
+													//update below
+													{ id: sortedCustomItems[ index + 1 ].id, newData: { order: index } },
+													//update current
+													{ id: customItem.id, newData: { order: index + 1 } }
+												]);
+											}}
+											>
 											<i className="fa fa-arrow-down"  />
 										</button>
 										<button className="btn waves-effect"
@@ -1031,7 +1123,8 @@ export default class Rozpocet extends Component {
 													type: this.state.newSubtaskType.id,
 													quantity:this.state.newSubtaskQuantity!==''?parseInt(this.state.newSubtaskQuantity):0,
 													discount:this.state.newSubtaskDiscount!==''?parseInt(this.state.newSubtaskDiscount):0,
-													assignedTo:this.state.newSubtaskAssigned?this.state.newSubtaskAssigned.id:null
+													assignedTo:this.state.newSubtaskAssigned?this.state.newSubtaskAssigned.id:null,
+													order:this.props.subtasks.length,
 												}
 												this.setState({
 													newSubtaskTitle:'',
@@ -1146,6 +1239,7 @@ export default class Rozpocet extends Component {
 													quantity: this.state.newTripQuantity!==''?this.state.newTripQuantity:0,
 													discount: this.state.newTripDiscount!==''?this.state.newTripDiscount:0,
 													done: false,
+													order: this.props.workTrips.length,
 												}
 
 												this.setState({
@@ -1297,6 +1391,7 @@ export default class Rozpocet extends Component {
 													title:this.state.newMaterialTitle,
 													unit:this.state.newMaterialUnit.id,
 													done:false,
+													order: this.props.materials,
 												}
 												this.setState({
 													showAddMaterial: false,
@@ -1402,6 +1497,7 @@ export default class Rozpocet extends Component {
 													title:this.state.newCustomItemTitle,
 													unit:this.state.newCustomItemUnit.id,
 													done:false,
+													order:this.props.customItems,
 												}
 												this.setState({
 													newCustomItemPrice:0,

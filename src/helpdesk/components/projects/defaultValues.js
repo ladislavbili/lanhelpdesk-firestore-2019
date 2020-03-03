@@ -229,8 +229,6 @@ export default class ProjectDefaultValues extends Component {
                   />
               </td>
             </tr>
-            {console.log(this.props.state)}
-            {console.log('AAAA')}
             <tr>
               <td>
                 <div className="row">
