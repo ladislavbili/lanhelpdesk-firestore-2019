@@ -615,6 +615,10 @@ class TaskEdit extends Component {
 			createdBy = this.state.users.find((user)=>user.id===this.state.task.createdBy);
 		}
 
+		console.log(this.props.columns);
+		console.log(this.state.layout === '2' && !this.props.colums);
+		console.log(this.state.layout === '2' && this.props.columns);
+
 		return (
 			<div className="flex">
 				{this.state.showDescription &&
@@ -625,7 +629,7 @@ class TaskEdit extends Component {
 				{ this.renderCommandbar(taskID, createdBy, canCopy, canDelete, taskWorks, workTrips, taskMaterials, customItems) }
 
 				<div className={classnames("fit-with-header-and-commandbar", "scroll-visible", "bkg-F2F1F1", { "row": this.state.layout === '2'})}>
-					<div className={classnames("card-box", { "task-edit-left": this.state.layout === '2'})}>
+					<div className={classnames("card-box", { "task-edit-left": this.state.layout === '2' && !this.props.columns}, { "task-edit-left-columns": this.state.layout === '2' && this.props.columns})}>
 
 						{ this.renderTitle(taskID, createdBy) }
 
@@ -1045,7 +1049,7 @@ class TaskEdit extends Component {
 
 	renderSelectsLayout2(taskID, canAdd){
 		return(
-			<div className="task-edit-right">
+			<div className={"task-edit-right" + (this.props.columns ? " w-250px" : "")} >
 				<div className="">
 					<Label className="col-form-label-2">Projekt</Label>
 					<div className="col-form-value-2">

@@ -197,6 +197,9 @@ html{
 .w-200px{
   width: 200px;
 }
+.w-250px{
+  width: 250px !important;
+}
 .w-300px{
   width: 300px !important;
 }
@@ -808,6 +811,11 @@ tr:last-child{
 .task-edit-left{
   max-width: 1620px;
   width: calc(100% - 300px) !important;
+}
+
+.task-edit-left-columns{
+  max-width: 1670px;
+  width: calc(100% - 250px) !important;
 }
 
 .task-edit-popis{
