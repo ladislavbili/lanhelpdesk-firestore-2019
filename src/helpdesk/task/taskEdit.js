@@ -448,7 +448,7 @@ class TaskEdit extends Component {
 		let customItems = this.state.extraData.customItems.map((customItem, index) => {
 			return {
 				...customItem,
-				order: !isNaN(parseInt(customItem.order)) ? parseInt(customItem.order) : index,			
+				order: !isNaN(parseInt(customItem.order)) ? parseInt(customItem.order) : index,
 			}
 		});
 		let repeat = this.state.extraData.repeat;
@@ -631,10 +631,6 @@ class TaskEdit extends Component {
 		if(this.state.task&& this.state.task.createdBy){
 			createdBy = this.state.users.find((user)=>user.id===this.state.task.createdBy);
 		}
-
-		console.log(this.props.columns);
-		console.log(this.state.layout === '2' && !this.props.colums);
-		console.log(this.state.layout === '2' && this.props.columns);
 
 		return (
 			<div className="flex">
