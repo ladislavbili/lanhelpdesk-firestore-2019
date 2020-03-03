@@ -135,7 +135,6 @@ class MothlyReportsCompany extends Component {
 		let trips = this.newProcessTrips(props);
 		let materials = this.processMaterials(props);
 		let customItems = this.processCustomItems(props);
-		console.log(customItems);
 		let allTasks = this.processTasks(props, materials, customItems, works, trips).sort((task1,task2)=> task1.closeDate > task2.closeDate ? 1 : -1 );
 		let monthsTasks = this.processThisMonthTasks(props, materials, customItems, works, trips).sort((task1,task2)=> task1.closeDate > task2.closeDate ? 1 : -1 );
 		let tasks = this.separateTasks(allTasks, monthsTasks);
@@ -192,9 +191,11 @@ class MothlyReportsCompany extends Component {
 		return parseFloat(parseFloat(price).toFixed(2));
 	}
 
+	// Vykazy table
+
 	newProcessWorks(props){
 		let workTypes = this.processWorkTypes(props);
-		return props.taskWorks.map((work)=>{
+		return props.taskWorks.map((work, index)=>{
 			let company = this.getCompany(work,props);
 			let type = workTypes.find((item)=>item.id===work.type||item.id===work.workType);
 			let price = this.getPrice(type,company);
@@ -215,6 +216,7 @@ class MothlyReportsCompany extends Component {
 				price:work.finished?work.price:price,
 				dph: work.finished?work.dph:dph,
 				afterHours: work.finished?work.afterHours:afterHours,
+				order: !isNaN(parseInt(work.order)) ? parseInt(work.order) : index,
 				type
 			}
 		})
@@ -222,7 +224,7 @@ class MothlyReportsCompany extends Component {
 
 	newProcessTrips(props){
 		let tripTypes = this.processTripTypes(props);
-		return props.workTrips.map((trip)=>{
+		return props.workTrips.map((trip, index)=>{
 			let company = this.getCompany(trip,props);
 			let type = tripTypes.find((item)=>item.id===trip.type);
 			let price = this.getPrice(type,company);
@@ -244,55 +246,42 @@ class MothlyReportsCompany extends Component {
 				price:trip.finished?trip.price:price,
 				dph: trip.finished?trip.dph:dph,
 				afterHours: trip.finished?trip.afterHours:afterHours,
+				order: !isNaN(parseInt(trip.order)) ? parseInt(trip.order) : index,
 				type
 			}
 		})
 	}
 
 	processMaterials(props){
-		return props.materials.map((material)=>{
+		return props.materials.map((material, index)=>{
 			let finalUnitPrice=(parseFloat(material.price)*(1+parseFloat(material.margin)/100)).toFixed(2);
 			let totalPrice=(finalUnitPrice*parseFloat(material.quantity)).toFixed(2);
 			return{...material,
 				unit:props.units.find((unit)=>unit.id===material.unit),
 				finalUnitPrice,
-				totalPrice
+				totalPrice,
+				order: !isNaN(parseInt(material.order)) ? parseInt(material.order) : index,
 			}
 		})
 	}
 
 	processCustomItems(props){
-		return props.customItems.map((item)=>{
+		return props.customItems.map((item, index)=>{
 			let finalUnitPrice=(parseFloat(item.price)).toFixed(2);
 			let totalPrice=(finalUnitPrice*parseFloat(item.quantity)).toFixed(2);
 			return{...item,
 				unit:props.units.find((unit)=>unit.id===item.unit),
 				finalUnitPrice,
-				totalPrice
+				totalPrice,
+				order: !isNaN(parseInt(item.order)) ? parseInt(item.order) : index,
 			}
 		})
 	}
 
-	processTasks(props, materials, customItems, works, trips){
-		let tasks=props.tasks.map((task)=>{
-			let company = task.company === null ? null : props.companies.find((company)=>company.id===task.company);
-			return {
-				...task,
-				company,
-				requester: task.requester===null ? null:props.users.find((user)=>user.id===task.requester),
-				assignedTo: task.assignedTo===null ? null:props.users.filter((user)=>task.assignedTo.includes(user.id)),
-				status: task.status===null ? null: props.statuses.find((status)=>status.id===task.status),
-				works: works.filter((work)=>work.task===task.id),
-				trips: trips.filter((trip)=>trip.task===task.id),
-				materials: materials.filter((material)=>material.task===task.id),
-				customItems: customItems.filter((item)=>item.task===task.id),
-			}
-		}).filter((task)=> (task.works.length > 0 || task.materials.length > 0 || task.customItems.length > 0 || task.trips.length > 0) && task.status && ['close','invoiced'].includes(task.status.action) && task.closeDate && task.closeDate >= props.from && task.closeDate <= props.to);
-		return tasks;
-	}
+	// KONIEC Vykazy table
 
-	processThisMonthTasks(props, materials, customItems, works, trips){
-		let tasks=props.tasks.map((task)=>{
+	giveTasksInfo(props, materials, customItems, works, trips){
+		return props.tasks.map((task)=>{
 			let company = task.company === null ? null : props.companies.find((company)=>company.id===task.company);
 			if(company===undefined){
 				company=null;
@@ -303,20 +292,34 @@ class MothlyReportsCompany extends Component {
 				requester: task.requester===null ? null:props.users.find((user)=>user.id===task.requester),
 				assignedTo: task.assignedTo===null ? null:props.users.filter((user)=>task.assignedTo.includes(user.id)),
 				status: task.status===null ? null: props.statuses.find((status)=>status.id===task.status),
-				works: works.filter((work)=>work.task===task.id),
-				trips: trips.filter((trip)=>trip.task===task.id),
-				materials: materials.filter((material)=>material.task===task.id),
-				customItems: customItems.filter((item)=>item.task===task.id),
+				works: works.filter((work)=>work.task===task.id).sort((work1,work2) => work1.order - work2.order ),
+				trips: trips.filter((trip)=>trip.task===task.id).sort((trip1,trip2) => trip1.order - trip2.order ),
+				materials: materials.filter((material)=>material.task===task.id).sort((material1,material2) => material1.order - material2.order ),
+				customItems: customItems.filter((item)=>item.task===task.id).sort((customItem1,customItem2) => customItem1.order - customItem2.order ),
 			}
-		}).filter((task)=>
-		(task.works.length > 0 || task.materials.length > 0 || task.customItems.length > 0 || task.trips.length > 0) &&
-		task.status &&
-		['close','invoiced'].includes(task.status.action) &&
-		task.closeDate &&
-		(new Date(task.closeDate)).getFullYear() >= (new Date(props.from)).getFullYear()  &&
-		(new Date(task.closeDate)).getFullYear() <= (new Date(props.to)).getFullYear()  &&
-		((new Date(task.closeDate)).getMonth() >= (new Date(props.from)).getMonth() || (new Date(props.from)).getFullYear() < (new Date(task.closeDate)).getFullYear())  &&
-		((new Date(task.closeDate)).getMonth() <= (new Date(props.to)).getMonth() || (new Date(props.to)).getFullYear() > (new Date(task.closeDate)).getFullYear())
+		})
+	}
+
+	processTasks(props, materials, customItems, works, trips){
+		let tasks=this.giveTasksInfo(props, materials, customItems, works, trips).filter((task)=>
+			(task.works.length > 0 || task.materials.length > 0 || task.customItems.length > 0 || task.trips.length > 0) &&
+			task.status && ['close','invoiced'].includes(task.status.action)
+			&& task.closeDate && task.closeDate >= props.from && task.closeDate <= props.to
+		);
+		return tasks;
+	}
+
+
+	processThisMonthTasks(props, materials, customItems, works, trips){
+		let tasks=this.giveTasksInfo(props, materials, customItems, works, trips).filter((task)=>
+			(task.works.length > 0 || task.materials.length > 0 || task.customItems.length > 0 || task.trips.length > 0) &&
+			task.status &&
+			['close','invoiced'].includes(task.status.action) &&
+			task.closeDate &&
+			(new Date(task.closeDate)).getFullYear() >= (new Date(props.from)).getFullYear()  &&
+			(new Date(task.closeDate)).getFullYear() <= (new Date(props.to)).getFullYear()  &&
+			((new Date(task.closeDate)).getMonth() >= (new Date(props.from)).getMonth() || (new Date(props.from)).getFullYear() < (new Date(task.closeDate)).getFullYear())  &&
+			((new Date(task.closeDate)).getMonth() <= (new Date(props.to)).getMonth() || (new Date(props.to)).getFullYear() > (new Date(task.closeDate)).getFullYear())
 		);
 		return tasks;
 	}

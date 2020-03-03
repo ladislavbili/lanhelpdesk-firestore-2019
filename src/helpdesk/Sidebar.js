@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 
 import TaskAdd from './task/taskAddContainer';
 import Filter from './components/filter';
+import FilterOrder from './components/filter/filterOrder';
 import ProjectEdit from './components/projects/projectEdit';
 import ProjectAdd from './components/projects/projectAdd';
 import MilestoneEdit from './components/milestones/milestoneEdit';
@@ -48,7 +49,7 @@ class Sidebar extends Component {
 	componentWillReceiveProps(props){
 		if(!sameStringForms(props.filters,this.props.filters)){
 			this.setState({
-				filters:props.filters.filter((filter)=>filter.createdBy===props.currentUser.id||filter.public).sort((item1,item2)=>item1.title> item2.title?1:-1),
+				filters:props.filters.filter((filter)=>filter.createdBy===props.currentUser.id||filter.public),
 			})
 			this.props.setHelpSidebarFilter((this.props.filterState && props.filters.length>0) ? props.filters.find((filter)=>filter.id===this.props.filterState.id):null);
 		}
@@ -132,7 +133,7 @@ class Sidebar extends Component {
 		if(!this.props.filtersActive){
 			this.props.storageHelpFiltersStart();
 		}
-		this.setState({filters:this.props.filters.filter((filter)=>filter.createdBy===this.props.currentUser.id||filter.public).sort((item1,item2)=>item1.title> item2.title?1:-1)});
+		this.setState({filters:this.props.filters.filter((filter)=>filter.createdBy===this.props.currentUser.id||filter.public)});
 
 		this.readFilterFromURL(this.props);
 	}
@@ -375,6 +376,7 @@ class Sidebar extends Component {
 								this.state.milestones.map((item)=>item.id).includes(this.props.milestoneState.id) &&
 								<MilestoneEdit item={this.props.milestoneState}/>
 							}
+							<FilterOrder />
 					</div>}
 					{showSettings &&
 						<Nav vertical>

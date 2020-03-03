@@ -403,8 +403,8 @@ export default class CompanyInvoice extends Component {
 																<tr key={trip.id}>
 																	<td key={trip.id+ '-title'} style={{width:'150px',paddingLeft:0}}>{trip.title}</td>
 																	<td key={trip.id+ '-time'} style={{width:'50px'}}>{trip.quantity}</td>
-																	<td key={trip.id+ '-unitPrice'} style={{width:'50px'}}>{task.unitPrice}</td>
-																	<td key={trip.id+ '-totalPrice'} style={{width:'50px'}}>{task.totalPrice}</td>
+																	<td key={trip.id+ '-unitPrice'} style={{width:'50px'}}>{trip.unitPrice}</td>
+																	<td key={trip.id+ '-totalPrice'} style={{width:'50px'}}>{trip.totalPrice}</td>
 																</tr>
 															)}
 														</tbody>

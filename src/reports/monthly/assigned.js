@@ -113,7 +113,7 @@ class MothlyReportsAssigned extends Component {
 	}
 
 	processWorks(props){
-		return props.taskWorks.map((work)=>{
+		return props.taskWorks.map((work,index)=>{
 			let type = props.taskTypes.find((item)=>item.id===work.type||item.id===work.workType);
 			if(type===undefined){
 				type={title:'Unknown',id:Math.random()}
@@ -126,13 +126,14 @@ class MothlyReportsAssigned extends Component {
 				quantity:isNaN(parseInt(work.quantity))? 0 : parseInt(work.quantity),
 				assignedTo:work.assignedTo,
 				task:work.task,
-				type
+				type,
+				order: !isNaN(parseInt(work.order)) ? parseInt(work.order) : index,
 			}
 		})
 	}
 
 	processTrips(props){
-		return props.workTrips.map((trip)=>{
+		return props.workTrips.map((trip, index)=>{
 			let type = props.tripTypes.find((item)=>item.id===trip.type);
 			if(type===undefined){
 				type={title:'Unknown',id:Math.random(),prices:[]}
@@ -144,7 +145,8 @@ class MothlyReportsAssigned extends Component {
 				quantity:isNaN(parseInt(trip.quantity))? 0 : parseInt(trip.quantity),
 				task:trip.task,
 				assignedTo:trip.assignedTo,
-				type
+				type,
+				order: !isNaN(parseInt(trip.order)) ? parseInt(trip.order) : index,
 			}
 		})
 	}
@@ -158,8 +160,8 @@ class MothlyReportsAssigned extends Component {
 				requester: task.requester===null ? null:props.users.find((user)=>user.id===task.requester),
 				assignedTo: task.assignedTo===null ? null:props.users.filter((user)=>task.assignedTo.includes(user.id)),
 				status: task.status===null ? null: props.statuses.find((status)=>status.id===task.status),
-				works: works.filter((work)=>work.task===task.id),
-				trips: trips.filter((trip)=>trip.task===task.id),
+				works: works.filter((work)=>work.task===task.id).sort((work1,work2) => work1.order - work2.order ),
+				trips: trips.filter((trip)=>trip.task===task.id).sort((trip1,trip2) => trip1.order - trip2.order ),
 			}
 		})
 	}

@@ -46,6 +46,8 @@ class CompanyEdit extends Component{
       oldDescription: "",
       workPausal:0,
       oldWorkPausal:0,
+      pausalPrice:0,
+      oldPausalPrice:0,
       drivePausal:0,
       oldDrivePausal:0,
       pausal:0,
@@ -147,6 +149,7 @@ class CompanyEdit extends Component{
       title: company.title,
       pausal: company.pausal || 0,
       workPausal: company.workPausal || 0,
+      pausalPrice: company.pausalPrice || 0,
       drivePausal: company.drivePausal || 0,
       rented,
       fakeID,
@@ -169,6 +172,7 @@ class CompanyEdit extends Component{
 
       oldPausal: company.pausal || 0,
       oldWorkPausal: company.workPausal || 0,
+      oldPausalPrice: company.pausalPrice || 0,
       oldDrivePausal: company.drivePausal || 0,
       oldRented:rented,
       oldFakeID:fakeID,
@@ -196,6 +200,7 @@ class CompanyEdit extends Component{
       rebase.updateDoc('/companies/'+this.props.match.params.id,
       { title:this.state.title,
         workPausal:this.state.workPausal,
+        pausalPrice: this.state.pausalPrice,
         drivePausal:this.state.drivePausal,
         rented:this.state.rented.map((rent)=>{
           return{
@@ -237,6 +242,7 @@ class CompanyEdit extends Component{
           }),
 
           oldWorkPausal:this.state.workPausal,
+          oldPausalPrice: this.state.pausalPrice,
           oldDrivePausal:this.state.drivePausal,
           oldRented:this.state.rented,
           oldFakeID:this.state.fakeID,
@@ -298,6 +304,7 @@ class CompanyEdit extends Component{
       description: this.state.oldDescription,
       pausal: this.state.oldPausal,
       workPausal: this.state.oldWorkPausal,
+      pausalPrice: this.state.oldPausalPrice,
       drivePausal: this.state.oldDrivePausal,
       rented:this.state.oldRented,
       dph:this.state.oldDph,
@@ -552,8 +559,8 @@ class CompanyEdit extends Component{
                     id="pausal"
                     type="number"
                     placeholder="Enter work pausal"
-                    value={this.state.workPausal}
-                    onChange={(e)=>this.setState({workPausal:e.target.value, newData: true,})}
+                    value={this.state.pausalPrice}
+                    onChange={(e)=>this.setState({pausalPrice:e.target.value, newData: true,})}
                     />
                 </div>
                 <div className="m-l-10">
