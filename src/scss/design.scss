@@ -293,6 +293,7 @@ html{
 h2{
   color: $main-font-color;
   font-size: 2.5rem;
+  font-weight: 400;
 }
 
 h2.clickable:hover{
@@ -820,7 +821,7 @@ tr:last-child{
 
 .task-edit-popis{
   background-color: #f4f8fb;
-  padding-left: 5px;
+  padding: 20px;
 }
 
 .task-add-right-half{
@@ -1196,7 +1197,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   display: flex;
   width: 100%;
   background-color: #F6F6F6;
-  padding: 0px 0px 0px 0px;
+  padding: 0px 1px 0px 1px;
   height: 50px;
 }
 
@@ -1243,6 +1244,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     -webkit-transform: scaleX(-1);
     -ms-transform: scaleX(-1);
 }
+
 //------------------END-commandbar----------------------
 
 
@@ -1276,6 +1278,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   color: #333 !important;
   font-weight: 600;
   border-bottom: 1px solid $basic-button-color !important;
+  background-color: transparent !important;
 }
 
 
@@ -1616,6 +1619,11 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   color: #A0A0A0;
 }
 
+.comments{
+  background-color: #F6F6F6;
+  padding: 10px 30px 10px 30px;
+}
+
 //-------------------END-taskEdit-------------------------
 //-----------NEW CHECKBOX -------------
 .checkbox-mark {
@@ -1670,8 +1678,12 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 .switchLabel{
     color: white;
     margin-left: 5px;
+  }
 
-}
+.switchLabel-right{
+      color: white;
+      margin-left: -20px;
+    }
 
 //--------CUSTOM-CHECKBOX
 

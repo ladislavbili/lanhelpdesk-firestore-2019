@@ -530,7 +530,7 @@ class CompanyEdit extends Component{
           </div>
 
           { this.props.role > 1 && <div className="p-20 table-highlight-background">
-            <div className="">
+            <div className="row">
               <span>
                 <h3 className="m-r-5 m-b-10">Mesačný paušál</h3>
               </span>
@@ -622,8 +622,27 @@ class CompanyEdit extends Component{
             />
         </div>
       </div>}
-        <h3 className="m-b-20">Cenník</h3>
-          {this.state.pricelist !== null &&
+      <div className="row">
+        <h3 className="m-b-20 m-r-10">Cenník</h3>
+          <label>
+            <Switch
+              checked={this.state.pricelist.def}
+              onChange={(checked)=>{
+                if (checked){
+                  this.setState({oldPricelist: {...this.state.pricelist}, pricelist: this.state.pricelists.find(list => list.def), newData: true})
+                } else {
+                  this.setState({oldPricelist: {...this.state.pricelist}, pricelist: (this.state.pricelists.length > 1 ? this.state.pricelists.slice(1, this.state.pricelists.length).find(list => !list.def) : {}), newData: true})
+                }
+              }}
+              height={22}
+              width={80}
+              checkedIcon={<span className="switchLabel">Default</span>}
+              uncheckedIcon={<span className="switchLabel-right">Vlastný</span>}
+              onColor={"#0078D4"} />
+            <span className="m-l-10"></span>
+          </label>
+      </div>
+      {!this.state.pricelist.def && this.state.pricelist !== null &&
           <FormGroup className="row m-b-10">
             <div className="m-r-10 w-20">
             <Label for="pricelist">Pricelist</Label>
@@ -640,7 +659,8 @@ class CompanyEdit extends Component{
           </div>
           </FormGroup>
         }
-          {this.state.pricelist.value === "0" &&
+          {!this.state.pricelist.def &&
+            this.state.pricelist.value === "0" &&
             (this.state.priceName === "" ||
             this.state.newData) &&
             <FormGroup className="row m-b-10">
@@ -659,6 +679,7 @@ class CompanyEdit extends Component{
             </FormGroup>
           }
           { Object.keys(this.state.pricelist).length &&
+            this.state.pricelist !== {} &&
             this.state.pricelist.value !== "0" &&
             !this.state.pricelist.def &&
             <PriceEdit {...this.props}
@@ -682,7 +703,6 @@ class CompanyEdit extends Component{
           }
         </div>}
       </div>
-
 
         <div
           className="form-footer row"

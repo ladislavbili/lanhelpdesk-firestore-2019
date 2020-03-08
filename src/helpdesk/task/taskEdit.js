@@ -642,8 +642,9 @@ class TaskEdit extends Component {
 				{ this.renderCommandbar(taskID, createdBy, canCopy, canDelete, taskWorks, workTrips, taskMaterials, customItems) }
 
 				<div className={classnames("fit-with-header-and-commandbar", "scroll-visible", "bkg-F2F1F1", { "row": this.state.layout === '2'})}>
-					<div className={classnames("card-box", { "task-edit-left": this.state.layout === '2' && !this.props.columns}, { "task-edit-left-columns": this.state.layout === '2' && this.props.columns})}>
+					<div className={classnames("card-box-lanwiki", { "task-edit-left": this.state.layout === '2' && !this.props.columns}, { "task-edit-left-columns": this.state.layout === '2' && this.props.columns})}>
 
+						<div className="p-t-20 p-l-30 p-r-30">
 						{ this.renderTitle(taskID, createdBy) }
 
 						<hr className="m-t-5 m-b-5"/>
@@ -663,6 +664,7 @@ class TaskEdit extends Component {
 						{ this.renderPendingPicker() }
 
 						{ this.renderVykazyTable(taskWorks, workTrips, taskMaterials, customItems) }
+					</div>
 
 						{ this.renderComments(taskID) }
 
@@ -1374,7 +1376,7 @@ class TaskEdit extends Component {
 					(
 						<div className="clickable task-edit-popis" onClick={()=>this.setState({showDescription:true})}>
 							<div dangerouslySetInnerHTML={{__html:this.state.description }} />
-								(edit)
+								<span className="text-highlight"> (<i	className="fas fa-pen"/> edit) </span>
 						</div>
 					)
 					)
@@ -1629,7 +1631,7 @@ class TaskEdit extends Component {
 		}
 
 		return(
-			<div>
+			<div className="comments">
 				<Nav tabs className="b-0 m-b-22 m-l--10 m-t-15">
 					<NavItem>
 						<NavLink
