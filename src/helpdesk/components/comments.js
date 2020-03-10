@@ -40,23 +40,37 @@ getData(id){
     database.collection('help-comments').where("task", "==", id).get(),
     database.collection('help-mails').where("taskID", "==", parseInt(id)).get(),
   ])
-  .then(([data,mails])=>{
+  .then(([data,hmails])=>{
     let comments = snapshotToArray(data).map((item)=>{
       return {
         ...item,
         isMail:false,
         user:this.props.users.find((user)=>user.id===item.user)
       };
-  });
-  let emails = snapshotToArray(mails).map((item)=>{
-    return {
-      ...item,
-      isMail:true,
-      open:false
-    }
+    });
+    let storageRef = firebase.storage().ref();
+    let mails = snapshotToArray(hmails);
+    let attachments = mails.reduce((acc,cur)=>acc.concat(cur.attachments),[]);
+    Promise.all(
+      attachments.map( (attachment) => storageRef.child(attachment.path).getDownloadURL() )
+    ).then((urls)=>{
+      attachments = attachments.map((attachment,index)=>{
+        return {
+          ...attachment,
+          url:urls[index]
+        }
+      })
+      let emails = mails.map((mail)=>{
+        return {
+          ...mail,
+          isMail:true,
+          open:false,
+          attachments:attachments.filter((attachment1)=>mail.attachments.some((attachment2)=>attachment2.path === attachment1.path))
+        }
+      })
+      this.setState({comments:[...comments,...emails]});
+    })
   })
-    this.setState({comments:[...comments,...emails]});
-  });
 }
 
 submitComment(){
@@ -111,23 +125,28 @@ submitComment(){
 submitEmail(){
   this.setState({hasError:false});
   firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then((token)=>{
-    fetch('https://api01.lansystems.sk:8080/send-mail',{
-      //127.0.0.1:3003
-      //https://api01.lansystems.sk:8080
-      headers: {
-        'Content-Type': 'application/json'
-      },
+    let body = {
+      message: this.state.emailBody,
+      tos:this.state.tos.map((item)=>item.label),
+      subject:this.state.subject,
+      taskID:this.props.id,
+      token,
+      email:this.props.users.find((user)=>user.id===this.props.userID).email,
+      citations:this.state.comments,
+      signature:this.props.signature,
+    }
+    var formData = new FormData();
+    Object.keys(body).forEach((key)=>{
+      formData.append(key, JSON.stringify(body[key]));
+    })
+
+    this.state.attachments.forEach((attachment)=>{
+      formData.append('attachments', attachment);
+    })
+
+    fetch('http://127.0.0.1:3003/send-mail',{
       method: 'POST',
-      body:JSON.stringify({
-          message: this.state.emailBody,
-          tos:this.state.tos.map((item)=>item.label),
-          subject:this.state.subject,
-          taskID:this.props.id,
-          token,
-          email:this.props.users.find((user)=>user.id===this.props.userID).email,
-          citations:this.state.comments,
-          signature:this.props.signature,
-        }),
+      body:formData,
     }).then((response)=>response.json().then((response)=>{
       if(response.error){
         this.setState({hasError:true})
@@ -148,7 +167,7 @@ submitEmail(){
       <div>
         <div>
           {this.state.isEmail &&<FormGroup className="row m-b-10">
-            <Label className="m-r-10 center-hor">To:</Label>
+            <Label className="m-r-10 center-hor" style={{width:50}}>To:</Label>
             <div className="flex">
               <Creatable
                 isMulti
@@ -159,7 +178,7 @@ submitEmail(){
             </div>
           </FormGroup>}
           {this.state.isEmail && <FormGroup className="row m-b-10">
-            <Label className="m-r-10 center-hor">Subject:</Label>
+            <Label className="m-r-10 center-hor" style={{width:50}}>Subject:</Label>
             <Input className="flex" type="text" placeholder="Enter subject" value={this.state.subject} onChange={(e)=>this.setState({subject:e.target.value})}/>
           </FormGroup>}
           {this.state.isEmail &&
@@ -213,25 +232,23 @@ submitEmail(){
             }
 
 
-            { !this.state.isEmail &&
-              <div className='center-hor'>
-                <label
-                  className="btn btn-table-add-item m-l-5"
-                  style={{fontFamily:"Segoe UI"}}
-                  htmlFor="uploadCommentAttachments">
-                  Add Attachement
-                </label>
-                <input type="file" id="uploadCommentAttachments" multiple={true} style={{display:'none'}}
-                  onChange={(e)=>{
-                    if(e.target.files.length>0){
-                      let files = [...e.target.files];
-                      this.setState({attachments:[...this.state.attachments,...files]})
-                    }
-                  }}
-                  />
-              </div>
-            }
-            {!this.state.isEmail &&
+            <div className='center-hor'>
+              <label
+                className="btn btn-table-add-item m-l-5"
+                style={{fontFamily:"Segoe UI"}}
+                htmlFor="uploadCommentAttachments">
+                Add Attachement
+              </label>
+              <input type="file" id="uploadCommentAttachments" multiple={true} style={{display:'none'}}
+                onChange={(e)=>{
+                  if(e.target.files.length>0){
+                    let files = [...e.target.files];
+                    this.setState({attachments:[...this.state.attachments,...files]})
+                  }
+                }}
+                />
+            </div>
+            {
               this.state.attachments.map((attachment,index)=>
               <div className="comment-attachment"
                 style={{    height: "25px", marginTop: "11px", marginRight:"5px"}}
@@ -263,7 +280,7 @@ submitEmail(){
           <div key={comment.id} >
             { comment.isMail &&
               <div>
-                  <div className="media m-b-30 m-t-20">
+                <div className="media m-b-30 m-t-20">
 
                   <img
                     className="d-flex mr-3 rounded-circle thumb-sm"
@@ -275,55 +292,64 @@ submitEmail(){
                       <span className="media-meta pull-right text-muted">{timestampToString(comment.createdAt)}</span>
                       <h2 className="font-13 m-0"><Label>{comment.from.map((item)=>item.address).toString()}</Label></h2>
                     </p>
-                        <Dropdown className="center-hor pull-right"
-                          isOpen={comment.open}
-                          toggle={()=>this.setState({comments:this.state.comments.map((com)=>{
-                              if(com.id===comment.id){
-                                return {...com,open:!comment.open}
-                              }
-                              return com
-                            })
+                    <Dropdown className="center-hor pull-right"
+                      isOpen={comment.open}
+                      toggle={()=>this.setState({comments:this.state.comments.map((com)=>{
+                        if(com.id===comment.id){
+                          return {...com,open:!comment.open}
+                        }
+                        return com
+                      })
+                    })}
+                    >
+                    <DropdownToggle className="header-dropdown">
+                      <i className="fa fa-arrow-down" style={{color:'grey'}}/>
+                    </DropdownToggle>
+                    <DropdownMenu right>
+                      <label
+                        className='btn btn-link btn-outline-blue waves-effect waves-light'
+                        onClick={()=>this.setState({
+                          tos: comment.from.map((item)=>{
+                            return {
+                              label:item.address,
+                              value:item.address
+                            }
+                          }),
+                          subject:comment.subject,
+                          isEmail:true,
+                          emailBody:('<body><br><blockquote><p>'+(comment.html?comment.html:unescape(comment.text).replace(/(?:\r\n|\r|\n)/g, '<br>'))+'</p></blockquote><body>')
+                        })}
+                        >
+                        <i className="fa fa-reply" />
+                      </label>
+                      <label
+                        className='btn btn-link btn-outline-blue waves-effect waves-light'
+                        >
+                        <i className="fa fa-share-square"
+                          onClick={()=>this.setState({
+                            subject:comment.subject,
+                            isEmail:true,
+                            emailBody:comment.html?comment.html:unescape(comment.text).replace(/(?:\r\n|\r|\n)/g, '<br>')
                           })}
-                          >
-            							<DropdownToggle className="header-dropdown">
-            								<i className="fa fa-arrow-down" style={{color:'grey'}}/>
-            							</DropdownToggle>
-            							<DropdownMenu right>
-                              <label
-                                className='btn btn-link btn-outline-blue waves-effect waves-light'
-                                onClick={()=>this.setState({
-                                  tos: comment.from.map((item)=>{
-                                    return {
-                                      label:item.address,
-                                      value:item.address
-                                    }
-                                  }),
-                                  subject:comment.subject,
-                                  isEmail:true,
-                                  emailBody:('<body><br><blockquote><p>'+(comment.html?comment.html:unescape(comment.text).replace(/(?:\r\n|\r|\n)/g, '<br>'))+'</p></blockquote><body>')
-                                })}
-                              >
-                                <i className="fa fa-reply" />
-                              </label>
-                              <label
-                                className='btn btn-link btn-outline-blue waves-effect waves-light'
-                              >
-                                <i className="fa fa-share-square"
-                                  onClick={()=>this.setState({
-                                    subject:comment.subject,
-                                    isEmail:true,
-                                    emailBody:comment.html?comment.html:unescape(comment.text).replace(/(?:\r\n|\r|\n)/g, '<br>')
-                                  })}
-                                  />
-                              </label>
-            							</DropdownMenu>
-            						</Dropdown>
-                      <small className="text-muted">{comment.subject}</small>
-                      <div className="ignore-css" dangerouslySetInnerHTML={{__html: comment.html?comment.html:unescape(comment.text).replace(/(?:\r\n|\r|\n)/g, '<br>') }}>
-                      </div>
+                          />
+                      </label>
+                    </DropdownMenu>
+                  </Dropdown>
+                  <small className="text-muted">{comment.subject}</small>
+                  <div className="ignore-css" dangerouslySetInnerHTML={{__html: comment.html?comment.html:unescape(comment.text).replace(/(?:\r\n|\r|\n)/g, '<br>') }}>
+                  </div>
+                </div>
               </div>
+              <div className="m-l-40 m-b-30">
+                {comment.attachments && comment.attachments.map((attachment)=>
+                  <span key={attachment.url} className="comment-attachment m-r-5">
+                    <a target="_blank" href={attachment.url} style={{cursor:'pointer'}} rel="noopener noreferrer">
+                      {attachment.title}
+                    </a>
+                  </span>
+                )}
               </div>
-              </div>
+            </div>
             }
             { !comment.isMail &&
               <div>

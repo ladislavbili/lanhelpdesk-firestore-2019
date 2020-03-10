@@ -27,13 +27,20 @@ export default class TaskListDnD extends Component {
 	}
 
 	render() {
-		const GROUP_DATA = ( this.props.status.length === 0 ? this.groupData() : this.groupData().filter(item => this.props.status.includes(item.groupItem.id)));
-
+		const GROUP_DATA = ( this.props.statuses.length === 0 ? this.groupData() : this.groupData().filter(item => this.props.statuses.includes(item.groupItem.id)));
 		return (
 				<div>
 					<CommandBar {...this.props.commandBar} listName={this.props.listName} />
 				<div className="scroll-visible overflow-x fit-with-header-and-commandbar task-container">
-					<ListHeader {...this.props.commandBar} listName={this.props.listName}  useBreadcrums={this.props.useBreadcrums} breadcrumsData={this.props.breadcrumsData}  statuses={this.props.statuses} setStatuses={this.props.setStatuses}  allStatuses={this.props.allStatuses} />
+					<ListHeader
+						{...this.props.commandBar}
+						listName={this.props.listName}
+						useBreadcrums={this.props.useBreadcrums}
+						breadcrumsData={this.props.breadcrumsData}
+						statuses={this.props.statuses}
+						setStatuses={this.props.setStatuses}
+						allStatuses={this.props.allStatuses}
+						/>
 						<div className="flex-row">
 								{
 									GROUP_DATA.map((group)=>

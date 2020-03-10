@@ -171,7 +171,6 @@ class ShowDataContainer extends Component {
 										setStatuses={this.props.setStatuses}
 										statuses={this.props.statuses}
 										allStatuses={this.props.allStatuses}
-										status={this.props.status}
 										/>
 								}
 							</div>
@@ -193,7 +192,6 @@ class ShowDataContainer extends Component {
 									link={this.props.link}
 									groupBy={this.props.dndGroupAttribute}
 									groupData={this.props.dndGroupData}
-									status={this.props.status}
 									isTask={this.props.isTask}
 									setStatuses={this.props.setStatuses}
 									statuses={this.props.statuses}
@@ -210,7 +208,7 @@ class ShowDataContainer extends Component {
 }
 
 const mapStateToProps = ({ filterReducer, showDataReducer }) => {
-	return { search:filterReducer.search, status: filterReducer.filter.status ,filter:showDataReducer.filter };
+	return { search:filterReducer.search ,filter:showDataReducer.filter };
 };
 
 export default connect(mapStateToProps, { setSearch, setFilter, addShowDataFilter })(ShowDataContainer);

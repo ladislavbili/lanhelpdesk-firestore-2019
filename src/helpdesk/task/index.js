@@ -276,6 +276,10 @@ class TasksIndex extends Component {
 	}
 
 	filterTasks(){
+		if(!this.props.statusesLoaded){
+			return [];
+		}
+
 		let newTasks=this.state.tasks.map((task)=>{
 			return {
 				...task,
@@ -333,9 +337,15 @@ class TasksIndex extends Component {
 				...task,
 				isTask:true,
 				titleFunction:this.displayCal,
-				allDay:task.status.action!=='pendingOLD',
+				allDay: !task.status || task.status.action !== 'pendingOLD',
 			}
-
+			if(!task.status){
+				return {
+					...newTask,
+					status: this.props.statuses.find((status)=>status.action==='new'),
+					start:new Date(),
+				}
+			}
 			switch (task.status.action) {
 				case 'invoiced':{
 					return {
@@ -468,12 +478,11 @@ const mapStateToProps = ({ userReducer, filterReducer, taskReducer, storageCompa
 	const { tagsActive, tags } = storageHelpTags;
 	const { usersActive, users } = storageUsers;
 	const { projectsActive, projects } = storageHelpProjects;
-	const { statusesActive, statuses } = storageHelpStatuses;
+	const { statusesActive, statuses, statusesLoaded } = storageHelpStatuses;
 	const { tasksActive, tasks } = storageHelpTasks;
 	const { filtersActive, filters } = storageHelpFilters;
 	const { milestonesActive, milestones } = storageHelpMilestones;
 	const { calendarEventsActive, calendarEvents } = storageHelpCalendarEvents;
-
 	return {
 		project, milestone, filter,
 		orderBy,ascending,tasklistLayout, currentUser:userReducer,
@@ -481,7 +490,7 @@ const mapStateToProps = ({ userReducer, filterReducer, taskReducer, storageCompa
 		tagsActive, tags,
 		usersActive, users,
 		projectsActive, projects,
-		statusesActive, statuses,
+		statusesActive, statuses, statusesLoaded,
 		tasksActive, tasks,
 		filtersActive, filters,
 		milestonesActive, milestones,

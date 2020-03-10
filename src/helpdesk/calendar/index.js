@@ -4,11 +4,11 @@ import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 
-import { setCalendarLayout } from '../../redux/actions';
 import CommandBar from '../../components/showData/commandBar';
 import ListHeader from '../../components/showData/listHeader';
 import {rebase} from '../../index';
 import { fromMomentToUnix, timestampToDate, timestampToHoursAndMinutes } from '../../helperFunctions';
+import { setCalendarLayout, setUserFilterStatuses } from '../../redux/actions';
 
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -39,7 +39,7 @@ const DnDCalendar = withDragAndDrop(Calendar);
 
 class TaskCalendar extends Component {
 
-	onEventResize (item){
+	onEventResize(item){
 		if(this.props.currentUser.userData.role.value === 0){
 			return;
 		}
@@ -172,7 +172,13 @@ class TaskCalendar extends Component {
   		<div>
   			<CommandBar { ...this.props.commandBar } />
   			<div className="full-width scroll-visible fit-with-header-and-commandbar task-container p-20">
-  				<ListHeader { ...this.props.commandBar } listName={ this.props.listName } statuses={this.props.statuses} setStatuses={this.props.setStatuses} allStatuses={this.props.allStatuses} />
+  				<ListHeader
+            { ...this.props.commandBar }
+            listName={ this.props.listName }
+            statuses={this.props.currentUser.statuses}
+            setStatuses={this.props.setUserFilterStatuses}
+            allStatuses={this.props.statuses}
+            />
   				<DnDCalendar
   					events = { data }
             defaultDate = { new Date() }
@@ -209,4 +215,4 @@ const mapStateToProps = ({userReducer, taskReducer, storageHelpStatuses}) => {
 	return {currentUser, calendarLayout, statusesLoaded, statuses };
 };
 
-export default connect(mapStateToProps, { setCalendarLayout })(TaskCalendar);
+export default connect(mapStateToProps, { setCalendarLayout, setUserFilterStatuses })(TaskCalendar);
