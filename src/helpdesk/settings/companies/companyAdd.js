@@ -613,7 +613,7 @@ class CompanyAdd extends Component{
                       this.cancel();
                       this.props.history.push(`/helpdesk/settings/pricelists/${this.state.pricelist.id}`)
                     }
-                }}>Edit here</Button>
+                }}>Edit default pricelist</Button>
               </div>
             }
           </div>}

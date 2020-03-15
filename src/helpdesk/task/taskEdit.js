@@ -679,7 +679,7 @@ class TaskEdit extends Component {
 
 	renderCommandbar(taskID, createdBy, canCopy, canDelete, taskWorks, workTrips, taskMaterials, customItems){
 		return(
-			<div className="commandbar p-l-25"> {/*Commandbar*/}
+			<div className={classnames("commandbar", { "p-l-25": this.props.columns})}> {/*Commandbar*/}
 				<div className="d-flex flex-row center-hor p-2 ">
 						<div className="display-inline center-hor">
 						{!this.props.columns &&
@@ -1376,7 +1376,7 @@ class TaskEdit extends Component {
 					(
 						<div className="clickable task-edit-popis" onClick={()=>this.setState({showDescription:true})}>
 							<div dangerouslySetInnerHTML={{__html:this.state.description }} />
-								<span className="text-highlight"> (<i	className="fas fa-pen"/> edit) </span>
+								<span className="text-highlight"> <i	className="fas fa-pen"/> edit </span>
 						</div>
 					)
 					)
