@@ -679,11 +679,11 @@ class TaskEdit extends Component {
 
 	renderCommandbar(taskID, createdBy, canCopy, canDelete, taskWorks, workTrips, taskMaterials, customItems){
 		return(
-			<div className={classnames("commandbar", { "p-l-25": this.props.columns})}> {/*Commandbar*/}
+			<div className={classnames("commandbar", { "p-l-25": false})}> {/*Commandbar*/}
 				<div className="d-flex flex-row center-hor p-2 ">
 						<div className="display-inline center-hor">
 						{!this.props.columns &&
-							<button type="button" className="btn btn-link-reversed waves-effect" onClick={() => this.props.history.push(`/helpdesk/taskList/i/${this.props.match.params.listID}`)}>
+							<button type="button" className="btn btn-link-reversed waves-effect p-l-0" onClick={() => this.props.history.push(`/helpdesk/taskList/i/${this.props.match.params.listID}`)}>
 								<i
 									className="fas fa-arrow-left commandbar-command-icon"
 									/>
