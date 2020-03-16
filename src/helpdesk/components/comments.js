@@ -144,7 +144,9 @@ submitEmail(){
       formData.append('attachments', attachment);
     })
 
-    fetch('http://127.0.0.1:3003/send-mail',{
+    fetch('https://api01.lansystems.sk:8080/send-mail',{
+      // http://127.0.0.1:3003
+      // https://api01.lansystems.sk:8080
       method: 'POST',
       body:formData,
     }).then((response)=>response.json().then((response)=>{
