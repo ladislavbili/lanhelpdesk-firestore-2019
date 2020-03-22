@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { rebase, database } from '../../index';
-import { FormGroup, Label, Input, Modal, ModalBody } from 'reactstrap';
+import { FormGroup, Label, Input, Modal, ModalBody, ModalHeader } from 'reactstrap';
 import { toSelArr, snapshotToArray } from '../../helperFunctions';
 import Select from 'react-select';
 import { selectStyle } from '../../scss/selectStyles';
@@ -324,6 +324,9 @@ export default class TaskEditColumn extends Component {
           </div>
 
           <Modal isOpen={this.state.milestoneAddOpen} >
+            <ModalHeader>
+              Add milestone
+            </ModalHeader>
             <ModalBody>
               <MilestoneAdd
                 project={this.state.project}

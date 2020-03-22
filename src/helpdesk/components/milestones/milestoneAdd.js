@@ -34,8 +34,8 @@ class MilestoneAdd extends Component{
   render(){
     return (
       <div>
-          <Modal isOpen={this.state.opened} style={{width: "1000px"}} toggle={this.toggle.bind(this)} >
-            <ModalHeader toggle={this.toggle.bind(this)}> <h2> Add milestone </h2></ModalHeader>
+          <Modal isOpen={this.state.opened} >
+            <ModalHeader> Add milestone </ModalHeader>
             <ModalBody>
               <FormGroup>
                 <Label for="title">Milestone title</Label>
@@ -85,7 +85,7 @@ class MilestoneAdd extends Component{
                 Close
               </Button>
 
-              <Button className="btn"
+              <Button className="btn-link"
                 disabled={this.state.saving||this.state.title===""}
                 onClick={()=>{
                   this.setState({saving:true});

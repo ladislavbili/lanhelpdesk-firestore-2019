@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import { Modal, ModalBody, ModalFooter, Button, FormGroup, Label, Input } from 'reactstrap';
+import { Modal, ModalBody, ModalFooter, ModalHeader, Button, FormGroup, Label, Input } from 'reactstrap';
 import { connect } from "react-redux";
 import {storageHelpStatusesStart, storageHelpTagsStart, storageUsersStart, storageHelpTaskTypesStart, storageCompaniesStart, storageHelpProjectsStart, setProject, storageHelpTasksStart} from '../../../redux/actions';
 import {rebase, database} from '../../../index';
@@ -190,7 +190,10 @@ class ProjectEdit extends Component{
           <i className="fa fa-cog m-r-5 m-l-5 "/> Project settings
         </Button>
 
-        <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
+        <Modal isOpen={this.state.opened}>
+						<ModalHeader>
+							Edit project
+						</ModalHeader>
             <ModalBody>
               <FormGroup>
                 <Label>Project name</Label>

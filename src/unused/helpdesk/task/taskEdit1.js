@@ -623,7 +623,7 @@ class TaskEdit extends Component {
 					</div>
 				</div>
 
-				<div className="fit-with-header-and-commandbar scroll-visible bkg-F2F1F1">
+				<div className="fit-with-header-and-commandbar scroll-visible bkg-F6F6F6">
 					<div className="max-width-1660 card-box ">
 						<div className="d-flex p-2">{/* Task name row */}
 							<div className="row flex">

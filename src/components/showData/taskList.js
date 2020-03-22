@@ -19,6 +19,9 @@ class List extends Component {
 
 	render() {
 		let filter = this.props.filter[this.props.filterName];
+
+		console.log(this.props);
+
 		return (
 				<div>
 					<CommandBar {...this.props.commandBar} listName={this.props.listName}/>
@@ -34,7 +37,8 @@ class List extends Component {
 												}
 												return (
 													<th
-														colSpan={(index===0 || this.props.displayValues[index-1].type!=='important')?'1':'2'}
+														style={(display.value === "createdAt" || display.value === "deadline" ? {textAlign: "right"} : {})}
+														colSpan={((index===0 || this.props.displayValues[index-1].type!=='important') && display.value !== "deadline")?'1':'2'}
 														key={display.value}
 														width={display.value === 'title' ? "30%" : ((display.value === "id") ? "50px" : '')}>
 														{display.label}
@@ -42,7 +46,6 @@ class List extends Component {
 												)
 											}
 										)}
-										<th></th>
 									</tr>
 								</thead>
 
@@ -53,28 +56,34 @@ class List extends Component {
 												if(display.type==='important'){
 													return null;
 												}else{
-													return <th key={display.value} colSpan={(index===0 || this.props.displayValues[index-1].type!=='important')?'1':'2'}>
-														<input
-															type="text"
-															value={filter[display.value]}
-															className="form-control hidden-input"
-															style={{fontSize: "12px", marginRight: "10px"}}
-															onChange={(e) => {
-																let newFilterData={};
-																newFilterData[display.value]=e.target.value;
-																this.props.setShowDataFilter(this.props.filterName,newFilterData);
-															}}/>
+													return <th key={display.value} colSpan={(index===0 || this.props.displayValues[index-1].type!=='important')?'1':'2'} >
+														<div className={(display.value === "deadline" ? "row" : "")}>
+															<div style={{width: "80%"}}>
+																<input
+																	type="text"
+																	value={filter[display.value]}
+																	className="form-control hidden-input"
+																	style={{fontSize: "12px", marginRight: "10px"}}
+																	onChange={(e) => {
+																		let newFilterData={};
+																		newFilterData[display.value]=e.target.value;
+																		this.props.setShowDataFilter(this.props.filterName,newFilterData);
+																	}}/>
+																</div>
+														{display.value === "deadline" &&
+															<div>
+																<button type="button" className="btn btn-link waves-effect" onClick={this.clearFilter.bind(this)}>
+																	<i
+																		className="fas fa-times commandbar-command-icon m-l-8 text-highlight"
+																		/>
+																</button>
+															</div>
+														}
+													</div>
 														</th>
 												}
 											}
 										)}
-										<th>
-											<button type="button" className="btn btn-link waves-effect" onClick={this.clearFilter.bind(this)}>
-												<i
-													className="fas fa-times commandbar-command-icon m-l-8 text-highlight"
-													/>
-											</button>
-										</th>
 									</tr>
 									{
 										this.props.data
@@ -114,6 +123,7 @@ class List extends Component {
 													.map((display,index)=>
 													<td
 														colSpan={(index===this.props.displayValues.length-1)?"2":"1"}
+														style={(display.value === "createdAt" || display.value === "deadline" ? {textAlign: "right"} : {})}
 														key={display.value}
 														className={display.value}
 														>

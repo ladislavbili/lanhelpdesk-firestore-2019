@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import { connect } from "react-redux";
-import { Label, TabContent, TabPane, Nav, NavItem, NavLink, Modal, ModalBody, ListGroup, ListGroupItem} from 'reactstrap';
+import { Label, TabContent, TabPane, Nav, NavItem, NavLink, Modal, ModalBody, ModalHeader, ListGroup, ListGroupItem} from 'reactstrap';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 //import CKEditor4 from 'ckeditor4-react';
@@ -641,7 +641,7 @@ class TaskEdit extends Component {
 
 				{ this.renderCommandbar(taskID, createdBy, canCopy, canDelete, taskWorks, workTrips, taskMaterials, customItems) }
 
-				<div className={classnames("fit-with-header-and-commandbar", "scroll-visible", "bkg-F2F1F1", { "row": this.state.layout === '2'})}>
+				<div className={classnames("fit-with-header-and-commandbar", "scroll-visible", "bkg-F6F6F6", { "row": this.state.layout === '2'})}>
 					<div className={classnames("card-box-lanwiki", { "task-edit-left": this.state.layout === '2' && !this.props.columns}, { "task-edit-left-columns": this.state.layout === '2' && this.props.columns})}>
 
 						<div className="p-t-20 p-l-30 p-r-30">
@@ -743,7 +743,7 @@ class TaskEdit extends Component {
 						<input type="text"
 							disabled={this.state.viewOnly}
 							value={this.state.title}
-							className="task-title-input text-extra-slim hidden-input"
+							className="task-title-input text-extra-slim hidden-input m-l-10"
 							onChange={(e)=>this.setState({title:e.target.value},this.submitTask.bind(this))}
 							placeholder="Enter task name" />
 					</span>
@@ -1429,7 +1429,10 @@ class TaskEdit extends Component {
 
 	renderModalUserAdd(){
 		return(
-				<Modal isOpen={this.state.openUserAdd}  toggle={() => this.setState({openUserAdd: !this.state.openUserAdd})} >
+				<Modal isOpen={this.state.openUserAdd} >
+					<ModalHeader>
+						Add user
+					</ModalHeader>
           <ModalBody>
 						<UserAdd close={() => this.setState({openUserAdd: false,})} addUser={(user) => {
 								let newUsers = this.state.users.concat([user]);
@@ -1444,7 +1447,10 @@ class TaskEdit extends Component {
 
 	renderModalCompanyAdd(){
 		return(
-				<Modal isOpen={this.state.openCompanyAdd}  toggle={() => this.setState({openCompanyAdd: !this.state.openCompanyAdd})} >
+				<Modal isOpen={this.state.openCompanyAdd}>
+					<ModalHeader>
+						Add company
+					</ModalHeader>
 					<ModalBody>
 						<CompanyAdd close={() => this.setState({openCompanyAdd: false,})} addCompany={(company) => {
 								let newCompanies = this.state.companies.concat([company]);

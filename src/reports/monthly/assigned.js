@@ -599,8 +599,8 @@ class MothlyReportsAssigned extends Component {
 							</table>
 
 					</div>}
-					<Modal isOpen={this.state.taskOpened!==null} className="modal-width-1000 modal-without-borders" toggle={()=>this.setState({taskOpened:null})} >
-						<ModalHeader toggle={()=>this.setState({taskOpened:null})}>{this.state.taskOpened!==null?('Editing: '+this.state.taskOpened.title):''}</ModalHeader>
+					<Modal isOpen={this.state.taskOpened!==null}>
+						<ModalHeader>{this.state.taskOpened!==null?('Editing: '+this.state.taskOpened.title):''}</ModalHeader>
 						<ModalBody>
 							{ this.state.taskOpened!==null &&
 								<TaskEdit inModal={true} columns={true} match={{params:{taskID:this.state.taskOpened.id}}} closeModal={()=>this.setState({taskOpened:null})}/>

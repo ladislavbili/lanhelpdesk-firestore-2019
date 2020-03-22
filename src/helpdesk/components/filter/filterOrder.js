@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, ModalBody, ModalFooter, Button } from 'reactstrap';
+import { Modal, ModalBody, ModalFooter, ModalHeader, Button } from 'reactstrap';
 import { connect } from "react-redux";
 import { storageHelpFiltersStart } from '../../../redux/actions';
 import { rebase } from '../../../index';
@@ -45,7 +45,10 @@ class FilterOrder extends Component{
 	          >
 	          Filter order
 	        </Button>
-        <Modal isOpen={this.state.opened} size="width-1000" toggle={this.toggle.bind(this)} >
+        <Modal isOpen={this.state.opened} size="width-1000">
+            <ModalHeader>
+              Order filter
+            </ModalHeader>
             <ModalBody>
 							<h2  className='m-t-20'>Public filters order</h2>
 							<hr className='m-t-10 m-b-10' />

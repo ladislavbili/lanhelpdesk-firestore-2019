@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, ModalBody, ModalFooter, Button, FormGroup, Label, Input } from 'reactstrap';
+import { Modal, ModalBody, ModalFooter, ModalHeader, Button, FormGroup, Label, Input } from 'reactstrap';
 import { connect } from "react-redux";
 import {storageHelpStatusesStart, storageHelpTagsStart, storageUsersStart, storageHelpTaskTypesStart, storageCompaniesStart, storageHelpProjectsStart, setProject, storageHelpTasksStart} from '../../../redux/actions';
 import {rebase, database} from '../../../index';
@@ -223,10 +223,11 @@ class ProjectEdit extends Component{
 	          >
 	          Project settings
 	        </Button>
-        <Modal isOpen={this.state.opened} size="width-1000" toggle={this.toggle.bind(this)} >
+        <Modal isOpen={this.state.opened}>
+						<ModalHeader>
+							Edit project
+						</ModalHeader>
             <ModalBody>
-							<h2  className='m-t-20'>Project edit</h2>
-							<hr className='m-t-10 m-b-10' />
               <FormGroup>
                 <Label>Project name</Label>
                 <Input type="text" className="from-control" placeholder="Enter project name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />

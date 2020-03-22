@@ -4,6 +4,7 @@ import classnames from 'classnames';
 export default class CommandBar extends Component {
 
 	render() {
+
 		const FILTERED_BREADCRUMBS = ( this.props.breadcrumsData ? this.props.breadcrumsData.filter((breadcrum)=>breadcrum.show) : [] );
 		let fontsize = "2.5rem";
 		if (this.props.useBreadcrums){

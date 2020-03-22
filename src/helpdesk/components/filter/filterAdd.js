@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import { Button, FormGroup, Label, Input,Modal, ModalBody, ModalFooter } from 'reactstrap';
+import { Button, FormGroup, Label, Input,Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import { storageHelpProjectsStart, storageHelpFiltersStart } from '../../../redux/actions';
 import {toSelArr} from '../../../helperFunctions';
 import Checkbox from '../../../components/checkbox';
@@ -60,7 +60,10 @@ class FilterAdd extends Component{
           <i className="far fa-save icon-M"/>
         </Button>
 
-        <Modal style={{width: "800px"}} isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
+        <Modal style={{width: "800px"}} isOpen={this.state.opened}>
+          <ModalHeader>
+            Add filter
+          </ModalHeader>
           <ModalBody>
             <FormGroup className="m-t-15">
               <Label>Filter name</Label>

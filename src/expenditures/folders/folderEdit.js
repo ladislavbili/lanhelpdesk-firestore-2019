@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ModalBody, ModalFooter,  Button, FormGroup, Label, Input } from 'reactstrap';
+import { ModalBody, ModalFooter, ModalHeader, Button, FormGroup, Label, Input } from 'reactstrap';
 import {rebase} from '../../index';
 import Permits from "../../components/permissions";
 
@@ -21,6 +21,9 @@ export default class FolderEdit extends Component{
   render(){
     return (
       <div>
+            <ModalHeader>
+              Edit folder
+            </ModalHeader>
             <ModalBody>
               <FormGroup>
                 <Label>Title</Label>

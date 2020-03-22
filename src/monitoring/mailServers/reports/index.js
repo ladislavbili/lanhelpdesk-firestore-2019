@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, Button, ModalBody, ModalFooter, FormGroup, Label, Input } from 'reactstrap';
+import { Modal, Button, ModalBody, ModalFooter, ModalHeader, FormGroup, Label, Input } from 'reactstrap';
 import {database} from "../../../index";
 import {fromMillisec, snapshotToArray} from "../../../helperFunctions";
 
@@ -116,7 +116,10 @@ export default class Reports extends Component{
 							</tbody>
 						</table>
 
-						<Modal className="w-50" isOpen={this.state.openedModal} toggle={() => this.setState({openedModal:!this.state.openedModal})} >
+						<Modal isOpen={this.state.openedModal}>
+              <ModalHeader>
+                Reports
+              </ModalHeader>
 			        <ModalBody>
 			          <ReportDetail id={this.state.reportID} isModal={true} />
 			        </ModalBody>

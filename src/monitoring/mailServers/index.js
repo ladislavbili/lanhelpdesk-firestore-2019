@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Modal, ModalBody, ModalFooter } from 'reactstrap';
+import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import { connect } from "react-redux";
 
 import classnames from 'classnames';
@@ -222,7 +222,10 @@ class MailServerList extends Component {
 					{this.props.match.params.itemID && this.props.layout === 0 && <Container id={this.props.match.params.itemID} isModal={false}/>}
 
 					</div>
-					<Modal className="w-50" isOpen={this.state.editOpened} toggle={() => this.setState({editOpened:!this.state.editOpened})} >
+					<Modal cisOpen={this.state.editOpened} >
+						<ModalHeader>
+              Edit
+            </ModalHeader>
 		        <ModalBody>
 		          <Container id={this.state.openedID} isModal={true} />
 		        </ModalBody>

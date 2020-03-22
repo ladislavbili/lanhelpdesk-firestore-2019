@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, FormGroup, Label, Input, ModalBody, ModalFooter} from 'reactstrap';
+import { Button, FormGroup, Label, Input, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
 import { rebase } from '../../index';
 
 export default class Sidebar extends Component {
@@ -48,7 +48,9 @@ export default class Sidebar extends Component {
 				{/*		<Progress value={this.state.value}>{this.state.value === 100 ? "Loaded" : "Loading"}</Progress>*/}
 
 				<ModalBody>
-
+					<ModalHeader>
+						Add tag
+					</ModalHeader>
 					<FormGroup className="m-t-10 m-b-10">
 							<Input
 								type="checkbox"

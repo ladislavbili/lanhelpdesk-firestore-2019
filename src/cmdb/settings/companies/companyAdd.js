@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { FormGroup, Button, Label, Input } from 'reactstrap';
-import { Modal, ModalBody, ModalFooter } from 'reactstrap';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import {toSelArr, snapshotToArray} from '../../../helperFunctions';
 import {rebase,database} from '../../../index';
 import Select from 'react-select';
@@ -60,7 +60,10 @@ export default class CompanyAdd extends Component{
            <i className="fa fa-plus sidebar-plus"/> Company
           </Button>
 
-        <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
+        <Modal isOpen={this.state.opened} >
+            <ModalHeader>
+              Add company
+            </ModalHeader>
             <ModalBody>
               <FormGroup>
                 <Label for="name">Company name</Label>

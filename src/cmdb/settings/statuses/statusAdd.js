@@ -27,8 +27,10 @@ export default class StatusAdd extends Component{
           <i className="fa fa-plus" /> Status
         </Button>
 
-        <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
-            <ModalHeader toggle={this.toggle.bind(this)}></ModalHeader>
+        <Modal isOpen={this.state.opened} >
+            <ModalHeader>
+              Add status
+            </ModalHeader>
             <ModalBody>
               <FormGroup>
                 <Label for="name">Status name</Label>

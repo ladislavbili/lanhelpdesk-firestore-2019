@@ -105,8 +105,8 @@ class ProjectAdd extends Component{
 
     return (
       <div>
-          <Modal isOpen={this.state.opened} size="width-1250" toggle={this.toggle.bind(this)} >
-            <ModalHeader toggle={this.toggle.bind(this)}> <h2> Add project </h2></ModalHeader>
+          <Modal isOpen={this.state.opened}  >
+            <ModalHeader>Add project</ModalHeader>
             <ModalBody>
               <FormGroup>
                 <Label for="name">Project name</Label>
@@ -153,7 +153,7 @@ class ProjectAdd extends Component{
             </ModalBody>
 
             <ModalFooter>
-              <Button className="btn mr-auto" disabled={this.state.saving} onClick={this.toggle.bind(this)}>
+              <Button className="btn-link mr-auto" disabled={this.state.saving} onClick={this.toggle.bind(this)}>
                 Close
               </Button>
 

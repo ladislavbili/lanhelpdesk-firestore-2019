@@ -94,8 +94,8 @@ class ProjectAdd extends Component{
   render(){
     return (
       <div>
-          <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
-            <ModalHeader toggle={this.toggle.bind(this)}> <h2> Add project </h2></ModalHeader>
+          <Modal isOpen={this.state.opened}>
+            <ModalHeader>  Add project </ModalHeader>
             <ModalBody>
               <FormGroup>
                 <Label for="name">Project name</Label>

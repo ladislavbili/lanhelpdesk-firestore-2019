@@ -417,13 +417,12 @@ export default class TaskAdd extends Component{
 		renderTitle(){
 			return (
 				<div className="row m-b-15">
-					<h2 className="center-hor text-extra-slim">NEW TASK </h2>
 					<span className="center-hor flex m-r-15">
 						<input type="text"
 							 value={this.state.title}
 							 className="task-title-input text-extra-slim hidden-input"
 							 onChange={(e)=>this.setState({title:e.target.value})}
-							 placeholder="Enter task name" />
+							 placeholder="ENTER NEW TASK NAME" />
 					</span>
 					{ this.state.status && (['close','pending','invalid']).includes(this.state.status.action) && <div className="ml-auto center-hor">
 						<span>

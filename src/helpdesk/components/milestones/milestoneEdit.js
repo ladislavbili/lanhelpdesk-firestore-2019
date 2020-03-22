@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, ModalBody, ModalFooter, Button, FormGroup, Label, Input } from 'reactstrap';
+import { Modal, ModalBody, ModalFooter, ModalHeader, Button, FormGroup, Label, Input } from 'reactstrap';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import { connect } from "react-redux";
@@ -87,11 +87,11 @@ class MilestoneEdit extends Component{
 					Milestone settings
 				</Button>
 
-          <Modal isOpen={this.state.opened} style={{width: "800px"}} toggle={this.toggle.bind(this)} >
+          <Modal isOpen={this.state.opened}>
+            <ModalHeader>
+              Edit milestone
+            </ModalHeader>
             <ModalBody>
-              <h2  className='m-t-20'>Milestone edit</h2>
-							<hr className='m-t-10 m-b-10' />
-
               <FormGroup>
                 <Label for="title">Milestone title</Label>
                 <Input type="text" id="title" placeholder="Enter project name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />

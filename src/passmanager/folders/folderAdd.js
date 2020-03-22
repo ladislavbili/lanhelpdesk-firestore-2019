@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, ModalBody, ModalFooter } from 'reactstrap';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import { Button, FormGroup, Label, Input } from 'reactstrap';
 import {rebase} from '../../index';
 
@@ -26,7 +26,10 @@ export default class ProjectAdd extends Component{
           <i className="fa fa-plus sidebar-plus"  /> Folder
         </Button>
 
-        <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
+        <Modal isOpen={this.state.opened}>
+            <ModalHeader>
+              Add folder
+            </ModalHeader>
             <ModalBody>
               <FormGroup>
                 <Label>Folder name</Label>

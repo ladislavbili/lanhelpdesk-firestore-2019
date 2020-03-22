@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ModalBody, ModalFooter } from 'reactstrap';
+import { ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import { Button, FormGroup, Label, Input } from 'reactstrap';
 import {rebase} from '../../index';
 import Permits from "../../components/permissions";
@@ -45,7 +45,9 @@ export default class ProjectEdit extends Component{
     return (
       <div>
             <ModalBody>
-
+              <ModalHeader>
+                Edit project
+              </ModalHeader>
               <FormGroup>
                 <Label>Project name</Label>
                 <Input type="text" placeholder="Enter project name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />

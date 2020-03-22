@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ModalBody, ModalFooter, Button, FormGroup, Label, Input  } from 'reactstrap';
+import { ModalBody, ModalFooter, ModalHeader, Button, FormGroup, Label, Input  } from 'reactstrap';
 import {rebase} from "../../index";
 import {isEmail} from "../../helperFunctions";
 
@@ -125,7 +125,9 @@ export default class AllMailServersEdit extends Component{
     return (
       <div>
             <ModalBody>
-              <h2>Mail settings</h2>
+              <ModalHeader>
+                Mail settings
+              </ModalHeader>
 
               <FormGroup>
   							<Label>Timeout (min)</Label>

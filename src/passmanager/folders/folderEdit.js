@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ModalBody, ModalFooter } from 'reactstrap';
+import { ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import { Button, FormGroup, Label, Input } from 'reactstrap';
 import {rebase} from '../../index';
 import Permits from '../../components/permissions';
@@ -24,6 +24,9 @@ export default class FolderEdit extends Component{
     return (
       <div>
             <ModalBody>
+              <ModalHeader>
+                Edit folder
+              </ModalHeader>
               <FormGroup>
                 <Label>Folder name</Label>
                 <Input type="text" className="form-control" placeholder="Enter folder name" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />

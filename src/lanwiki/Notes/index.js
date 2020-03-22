@@ -65,12 +65,12 @@ class List extends Component {
 		}
 		let tag = this.state.tags.find((item)=>item.id===id);
 		if(tag){
-			this.setState({filterName:tag.name});
+			this.setState({filterName: (tag.name ? tag.name : tag.title)});
 		}else{
 			rebase.get('lanwiki-tags/'+id, {
 				context: this,
 			}).then((result)=>{
-				this.setState({filterName:result.name});
+				this.setState({filterName: (tag.name ? tag.name : tag.title)});
 			}).catch(()=>{
 				this.setState({filterName:'Unknown tag'});
 			})
@@ -80,6 +80,7 @@ class List extends Component {
 
 
 	render() {
+
 		let link='';
 		if(this.props.match.params.hasOwnProperty('listID')){
 			link = '/lanwiki/i/'+this.props.match.params.listID;
@@ -99,11 +100,9 @@ class List extends Component {
 					.filter((item)=>item.tags.some((item)=>item.id===this.props.match.params.listID)||this.props.match.params.listID==='all'||!this.props.match.params.listID)}
 				displayCol={(note)=>
 					<li>
-						<div className="taskCol-title">
-							<span>{note.name}</span>
-						</div>
+
 						<div className="taskCol-body">
-							<p className="pull-right">
+							<p className="pull-right m-t-5">
 								<span>
 									<span className="attribute-label"> Updated: </span>
 									{note.lastUpdated&& <TimeAgo date={new Date(note.lastUpdated)} />}
@@ -111,8 +110,9 @@ class List extends Component {
 							</p>
 							<p >
 								<span>
-									<span className="attribute-label"> Start </span>
-									{note.dateCreated?timestampToString(note.dateCreated):'None'}
+									<div className="taskCol-title-wiki">
+										<span>{note.name}</span>
+									</div>
 								</span>
 							</p>
 						</div>

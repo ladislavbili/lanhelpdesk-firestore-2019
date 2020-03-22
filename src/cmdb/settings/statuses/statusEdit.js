@@ -37,7 +37,7 @@ export default class StatusEdit extends Component{
   render(){
     return (
       <Modal isOpen={this.props.opened} toggle={this.props.toggle} >
-          <ModalHeader toggle={this.props.toggle}></ModalHeader>
+          <ModalHeader>Edit status</ModalHeader>
           <ModalBody>
             <FormGroup>
                 <Label for="name">Status name</Label>

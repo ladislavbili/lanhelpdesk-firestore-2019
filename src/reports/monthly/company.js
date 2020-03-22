@@ -1727,8 +1727,8 @@ class MothlyReportsCompany extends Component {
 								},0)*this.getMonthDiff(this.props)*(1+(isNaN(parseInt(this.state.showCompany.dph))?0:parseInt(this.state.showCompany.dph))/100)).toFixed(2)} EUR</p>
 						</div>
 					</div>}
-					<Modal isOpen={this.state.newInvoice!==null} className="modal-width-1000" toggle={()=>this.setState({newInvoice:null})} >
-						<ModalHeader toggle={()=>this.setState({newInvoice:null})}>{this.state.newInvoice!==null?('Creating new invoice ('+this.state.allTasks.filter((task)=>task.company && task.company.id===this.state.showCompany.id && this.state.pickedTasks.includes(task.id)).reduce((acc,task)=>acc+task.id+',','').slice(0,-1)+')'):''}</ModalHeader>
+					<Modal isOpen={this.state.newInvoice!==null}  toggle={()=>this.setState({newInvoice:null})} >
+						<ModalHeader>{this.state.newInvoice!==null?('Creating new invoice ('+this.state.allTasks.filter((task)=>task.company && task.company.id===this.state.showCompany.id && this.state.pickedTasks.includes(task.id)).reduce((acc,task)=>acc+task.id+',','').slice(0,-1)+')'):''}</ModalHeader>
 						<ModalBody>
 							<FormGroup>
 								<Label for="name">Invoice name</Label>
@@ -1752,7 +1752,7 @@ class MothlyReportsCompany extends Component {
 						</Button>
 						</ModalBody>
 					</Modal>
-					<Modal isOpen={this.state.taskOpened!==null} className="modal-width-1000 modal-without-borders" toggle={()=>this.setState({taskOpened:null})} >
+					<Modal isOpen={this.state.taskOpened!==null} toggle={()=>this.setState({taskOpened:null})} >
 						<ModalHeader toggle={()=>this.setState({taskOpened:null})}>{this.state.taskOpened!==null?('Editing: '+this.state.taskOpened.title):''}</ModalHeader>
 						<ModalBody>
 							{ this.state.taskOpened!==null &&

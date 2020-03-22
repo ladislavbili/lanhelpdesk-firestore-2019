@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, ModalBody, ModalFooter } from 'reactstrap';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import { Button, FormGroup, Label, Input } from 'reactstrap';
 import {rebase} from '../../index';
 
@@ -27,7 +27,10 @@ export default class FilterAdd extends Component{
           <i className="far fa-save icon-M"/>
         </Button>
 
-        <Modal isOpen={this.state.opened} toggle={this.toggle.bind(this)} >
+        <Modal isOpen={this.state.opened}>
+            <ModalHeader>
+              Add filter
+            </ModalHeader>
             <ModalBody>
               <FormGroup>
                 <Label>Filter name</Label>

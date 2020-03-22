@@ -200,8 +200,8 @@ class TaskAddContainer extends Component{
 			}
 
 
-			<Modal style={{width: "1000px"}} isOpen={this.state.openAddTaskModal} toggle={()=>{}} >
-					<ModalBody className="scrollable" style={{maxHeight:'calc(100vh - 37px)', backgroundColor: "white", marginLeft: "-20px", marginRight: "-20px", padding: "0px"}}>
+			<Modal isOpen={this.state.openAddTaskModal}  >
+					<ModalBody className="scrollable" >
             {  this.state.openAddTaskModal && this.storageLoaded(this.props) &&
 						   <TaskAdd {...this.props}
                  loading={this.state.loading}

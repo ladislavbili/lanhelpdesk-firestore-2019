@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ModalBody, ModalFooter, Button, FormGroup, Label, Input  } from 'reactstrap';
+import { ModalBody, ModalFooter, ModalHeader, Button, FormGroup, Label, Input  } from 'reactstrap';
 import {rebase} from "../../index";
 import {isEmail} from "../../helperFunctions";
 
@@ -116,8 +116,10 @@ export default class ProjectEdit extends Component{
   render(){
     return (
       <div>
+            <ModalHeader>
+              Email notification settings
+            </ModalHeader>
             <ModalBody>
-              <h2>Email notification settings</h2>
 
               <h2>Send e-mail SMTP settings</h2>
                 <FormGroup>

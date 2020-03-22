@@ -66,11 +66,11 @@ export default class Sidebar extends Component {
 						</NavItem>
 					</Nav>
 
-					<Modal isOpen={this.state.openedEditServers} toggle={this.toggleEditServers.bind(this)}>
+					<Modal isOpen={this.state.openedEditServers}>
 						<MailServersEdit close={this.toggleEditServers.bind(this)}/>
 					</Modal>
 
-					<Modal isOpen={this.state.openedEditNotifications} toggle={this.toggleEditNotificationServers.bind(this)}>
+					<Modal isOpen={this.state.openedEditNotifications}>
 						<NotificationServersEdit close={this.toggleEditNotificationServers.bind(this)}/>
 					</Modal>
 

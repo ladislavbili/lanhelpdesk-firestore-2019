@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import { Button, FormGroup, Label, Modal, ModalBody, ModalFooter } from 'reactstrap';
+import { Button, FormGroup, Label, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import DatePicker from 'react-datepicker';
 import {invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
 import Checkbox from '../../components/checkbox';
@@ -29,7 +29,10 @@ export default class PendingPicker extends Component{
 
   render(){
     return (
-        <Modal className="modal-width-1000" isOpen={this.props.open} toggle={()=>{}} >
+        <Modal isOpen={this.props.open} >
+            <ModalHeader>
+              Edit company
+            </ModalHeader>
             <ModalBody>
               <FormGroup>
                 <Label>Pending until</Label>

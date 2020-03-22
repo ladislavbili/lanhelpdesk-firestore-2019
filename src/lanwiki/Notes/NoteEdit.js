@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, FormGroup, Modal, ModalBody, ModalFooter, Label } from 'reactstrap';
+import { Button, FormGroup, Modal, ModalBody, ModalFooter, ModalHeader, Label } from 'reactstrap';
 
 import TimeAgo from 'react-timeago'
 import Select from 'react-select';
@@ -205,18 +205,22 @@ export default class Note extends Component{
                   </div>
                 }
 
+                <Modal isOpen={this.state.modalOpen}>
+                  <ModalHeader>
+                    Picture upload
+                  </ModalHeader>
+                  <ModalBody className="m-t-15">
+                    <PictureUpload appendImage={this.appendImage.bind(this)}/>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button className="btn-link mr-auto" onClick={this.toggleModal.bind(this)}>Close</Button>{'  '}
+                  </ModalFooter>
+                </Modal>
+
               { this.state.editBodyOpen &&
-              <FormGroup className=""  style={{position: "relative",zIndex:"9999"}}>
+              <FormGroup className=""  style={{position: "relative",zIndex:(this.state.modalOpen ? "1" : "9999")}}>
                   <Button className="btn-link-reversed p-l-0" onClick={this.toggleModal.bind(this)}>Pridať obrázok z uložiska</Button>
 
-                  <Modal isOpen={this.state.modalOpen} toggle={this.toggleModal.bind(this)} >
-                    <ModalBody className="m-t-15">
-                      <PictureUpload appendImage={this.appendImage.bind(this)}/>
-                    </ModalBody>
-                    <ModalFooter>
-                      <Button className="btn-link mr-auto" onClick={this.toggleModal.bind(this)}>Close</Button>{'  '}
-                    </ModalFooter>
-                  </Modal>
                   <CKEditor
                     data={this.state.body}
                     onChange={this.onEditorChange.bind(this)}

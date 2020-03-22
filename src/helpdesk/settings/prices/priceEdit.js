@@ -311,9 +311,9 @@ class PriceEdit extends Component{
 
               <Button className="btn-red ml-auto" disabled={this.state.saving || this.props.deletedList} onClick={this.deletePricelistPopup.bind(this)}>Delete price list</Button>
           </div>
-          <Modal isOpen={this.state.openEditCompanies} style={{width: "1000px"}} toggle={()=>this.setState({openEditCompanies:false})}>
-            <ModalHeader toggle={()=>this.setState({openEditCompanies:false})}>Edit companies</ModalHeader>
-            <ModalBody style={{maxHeight:'calc(100vh - 37px)', backgroundColor: "white"}}>
+          <Modal isOpen={this.state.openEditCompanies} >
+            <ModalHeader>Edit companies</ModalHeader>
+            <ModalBody>
               <h4 style={{color:'#FF4500'}}>Please update these companies, they use this pricelist</h4>
               <table className="table">
 								<thead>
@@ -359,7 +359,7 @@ class PriceEdit extends Component{
                 }}>
                 Save companies and delete pricelist
               </Button>
-              <Button className="btn-red" onClick={()=>this.setState({openEditCompanies:false})}>Cancel</Button>
+              <Button className="btn-link" onClick={()=>this.setState({openEditCompanies:false})}>Cancel</Button>
             </ModalFooter>
           </Modal>
       </div>

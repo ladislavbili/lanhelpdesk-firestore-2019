@@ -76,11 +76,11 @@ export default class Sidebar extends Component {
 						)}
 					</Nav>
 
-					<Modal isOpen={this.state.openedAdd} toggle={this.toggleAdd.bind(this)}>
+					<Modal isOpen={this.state.openedAdd}>
 						<FolderAdd close={this.toggleAdd.bind(this)}/>
 					</Modal>
 
-					<Modal isOpen={this.state.openedEdit} toggle={this.toggleEdit.bind(this)}>
+					<Modal isOpen={this.state.openedEdit}>
 						<FolderEdit folder={this.state.folderEdit} close={this.toggleEdit.bind(this)}/>
 					</Modal>
 				</div>

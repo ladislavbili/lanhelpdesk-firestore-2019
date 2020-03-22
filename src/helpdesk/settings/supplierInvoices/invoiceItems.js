@@ -69,8 +69,8 @@ export default class InvoiceItems extends Component{
 
           <Button className="btn t-a-l" onClick={()=>this.setState({addOpened:!this.state.addOpened})} >Add invoice item</Button>
 
-          <Modal isOpen={this.state.addOpened} toggle={()=>this.setState({addOpened:!this.state.addOpened})} >
-              <ModalHeader toggle={()=>this.setState({addOpened:!this.state.addOpened})}></ModalHeader>
+          <Modal isOpen={this.state.addOpened}>
+              <ModalHeader>Add invoice item</ModalHeader>
               <ModalBody>
               <div>
                 <FormGroup>
@@ -119,8 +119,8 @@ export default class InvoiceItems extends Component{
               </ModalFooter>
             </Modal>
 
-            <Modal isOpen={this.state.editOpened} toggle={()=>this.setState({editOpened:!this.state.editOpened})} >
-              <ModalHeader toggle={()=>this.setState({editOpened:!this.state.editOpened})}></ModalHeader>
+            <Modal isOpen={this.state.editOpened}>
+              <ModalHeader>Edit invoices</ModalHeader>
               <ModalBody>
               <div>
                 <FormGroup>

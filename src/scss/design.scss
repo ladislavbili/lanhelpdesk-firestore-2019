@@ -33,9 +33,13 @@
   font-family: $main-font;
 }
 
+.modal-dialog {
+  margin-top: 20px;
+}
+
 @media (min-width: 769px) {
   .modal-dialog {
-    max-width: none;
+    width: 1000px !important;
   }
 }
 
@@ -44,6 +48,23 @@
     width: 600px;
     margin: 30px auto;
   }
+}
+
+@media (min-width: 576px){
+  .modal-dialog {
+      max-width: inherit;
+  }
+}
+
+.modal-header{
+  justify-content: normal;
+}
+
+.modal-title{
+  color: $main-font-color;
+  font-size: 2.5rem;
+  font-weight: 400;
+  align-self: left;
 }
 
 .modal-without-borders{
@@ -58,7 +79,7 @@
 .list-group-item+.list-group-item {
     border-top-width: 1px;
 }
-
+/*
 .modal-width-1000{
   width: 1000px;
 }
@@ -69,11 +90,11 @@
 
 .modal-width-1023{
   width: 1023px;
-}
+}*/
 
 body{
   font-family: $main-font;
-  background: $main-background-color;
+  background: #F6F6F6;
   font-size: $main-font-size;
   color: $main-font-color;
 }
@@ -672,6 +693,7 @@ th {
 th:last-child{
   margin-left: auto;
 }
+
 td {
   color: $contrasting-font-color;
 }
@@ -953,7 +975,6 @@ tr:last-child{
   border: 0px;
   border-right: 2px solid $header-color;
   //margin-right: -2px;
-  z-index: 10000;
 
   .lansystems-title{
     display: flex!important;
@@ -1466,6 +1487,10 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   font-weight: bold;
 }
 
+.taskCol-title-wiki{
+  font-size: 15px;
+}
+
 .taskCol-body{
   margin-top: 0px;
   font-size: 12px;
@@ -1510,7 +1535,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   line-height: 1.5;
   color: $main-font-color;
   box-shadow: none;
-  margin-left: 10px;
+//  margin-left: 10px;
 }
 
 .task-title-input-add{
