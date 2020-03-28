@@ -110,7 +110,7 @@ class List extends Component {
 							</p>
 							<p >
 								<span>
-									<div className="taskCol-title-wiki">
+									<div className="taskCol-title">
 										<span>{note.name}</span>
 									</div>
 								</span>

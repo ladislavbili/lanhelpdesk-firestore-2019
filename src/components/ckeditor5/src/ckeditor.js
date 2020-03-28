@@ -7,7 +7,7 @@ import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment.js';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter.js';
-import Code from '@ckeditor/ckeditor5-basic-styles/src/code.js';
+/*import Code from '@ckeditor/ckeditor5-basic-styles/src/code.js';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
 import FontSize from '@ckeditor/ckeditor5-font/src/fontsize.js';
 import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily.js';
@@ -36,7 +36,7 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
 import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';*/
 
 export default class Editor extends ClassicEditor {}
 
@@ -46,7 +46,7 @@ Editor.builtinPlugins = [
 	BlockQuote,
 	Bold,
 	CKFinderUploadAdapter,
-	Code,
+	/*Code,
 	CodeBlock,
 	FontSize,
 	FontFamily,
@@ -75,6 +75,5 @@ Editor.builtinPlugins = [
 	TodoList,
 	Underline,
 	Essentials,
-	Paragraph
+	Paragraph*/
 ];
-

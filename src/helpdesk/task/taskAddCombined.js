@@ -14,7 +14,13 @@ import Attachments from '../components/attachments';
 import VykazyTable from '../components/vykazyTable';
 
 import classnames from "classnames";
+
 import ck4config from '../../scss/ck4config';
+
+import CKEditor5 from '@ckeditor/ckeditor5-react';
+import ck5config from '../../scss/ck5config';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
 import datePickerConfig from '../../scss/datePickerConfig';
 import {invisibleSelectStyleNoArrow, invisibleSelectStyleNoArrowColored,invisibleSelectStyleNoArrowColoredRequired, invisibleSelectStyleNoArrowRequired} from '../../scss/selectStyles';
 
@@ -1119,16 +1125,17 @@ export default class TaskAdd extends Component{
 								Napíšte krátky popis úlohy
 							</span>}
 						{this.state.descriptionVisible &&
-							<CKEditor
-							data={this.state.description}
-							onChange={(e)=>{
-								this.setState({description:e.editor.getData()})
-							}}
-							readOnly={this.state.viewOnly}
-							config={{
-								...ck4config
-							}}
-							/>
+							<CKEditor5
+								editor={ ClassicEditor }
+								data={this.state.description}
+								onInit={(editor)=>{
+								}}
+								onChange={(e, editor)=>{
+										this.setState({description: editor.getData()})
+								}}
+								readOnly={this.state.viewOnly}
+								config={ck5config}
+								/>
 						}
 			</div>
 			)

@@ -3,7 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ckeditor/ckeditor5-adapter-ckfinder": "^18.0.0",
+    "@ckeditor/ckeditor5-alignment": "^18.0.0",
+    "@ckeditor/ckeditor5-basic-styles": "^18.0.0",
+    "@ckeditor/ckeditor5-block-quote": "^18.0.0",
     "@ckeditor/ckeditor5-build-classic": "^16.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^18.0.0",
     "@ckeditor/ckeditor5-react": "^2.1.0",
     "bootstrap": "^4.3.0",
     "chroma-js": "^2.1.0",
@@ -40,8 +45,8 @@
     "redux-thunk": "^2.3.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "react-scripts --max_old_space_size=8192 start",
+    "build": "react-scripts --max_old_space_size=8192 build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },

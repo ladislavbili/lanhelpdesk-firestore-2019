@@ -20,8 +20,6 @@ class List extends Component {
 	render() {
 		let filter = this.props.filter[this.props.filterName];
 
-		console.log(this.props);
-
 		return (
 				<div>
 					<CommandBar {...this.props.commandBar} listName={this.props.listName}/>

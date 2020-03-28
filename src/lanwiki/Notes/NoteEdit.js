@@ -7,7 +7,12 @@ import {timestampToString, toSelArr} from '../../helperFunctions';
 import { rebase } from '../../index';
 import {invisibleSelectStyle} from '../../scss/selectStyles';
 
-import CKEditor from 'ckeditor4-react';
+//import CKEditor from 'ckeditor5-custom-build/build/ckeditor';
+//import CKEditor from '../../CKEditor5/build/ckeditor';
+
+import CKEditor from '@ckeditor/ckeditor5-react';
+import ck5config from '../../scss/ck5config';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 import PictureUpload from './PictureUpload';
 
@@ -36,7 +41,6 @@ export default class Note extends Component{
 
       timeout: null,
     }
-
     this.onEditorChange.bind(this);
     this.appendImage.bind(this);
     this.toggleModal.bind(this);
@@ -114,15 +118,15 @@ export default class Note extends Component{
       });
   }
 
-  onEditorChange( evt ) {
+  onEditorChange( editor ) {
     if(this.state.newLoad){
       this.setState( {
-        body: evt.editor.getData(),
+        body: editor.getData(),
         newLoad:false
       });
     }else{
       this.setState( {
-        body: evt.editor.getData()
+        body: editor.getData()
       }, this.submit.bind(this) );
     }
 
@@ -136,14 +140,15 @@ export default class Note extends Component{
   }
 
   render(){
+
     return (
       <div className="flex" >
         {this.state.editBodyOpen &&
 					<div style={{position: "fixed", zIndex: "99", backgroundColor: "transparent", top: "0", left: "0", width: "100%", height: "100vh"}} onClick={()=>this.setState({editBodyOpen:false})}>
 					</div>
 				}
-				<div className="commandbar p-2 p-l-20">
-					<div className={"d-flex flex-row" + (!this.props.columns ? " w-50  ml-auto mr-auto" : "") }>
+				<div className="commandbar p-2 ">
+					<div className={"d-flex flex-row" + (!this.props.columns ? " w-50" : "") }>
 						<div className="center-hor">
 							{!this.props.columns &&
 								<button type="button" className="btn btn-link-reversed waves-effect" onClick={()=>this.props.history.goBack()}>
@@ -168,7 +173,7 @@ export default class Note extends Component{
 					</div>
 				</div>
 
-        <div className={"card-box-lanwiki scrollable fit-with-header-and-commandbar p-20" + (!this.props.columns ? " center-ver w-50" : "")} >
+        <div className={"card-box-lanwiki scrollable fit-with-header-and-commandbar p-20"} >
             <div className="row">
               <h2 className="center-hor">#</h2>
               <span className="center-hor flex">
@@ -221,52 +226,42 @@ export default class Note extends Component{
               <FormGroup className=""  style={{position: "relative",zIndex:(this.state.modalOpen ? "1" : "9999")}}>
                   <Button className="btn-link-reversed p-l-0" onClick={this.toggleModal.bind(this)}>Pridať obrázok z uložiska</Button>
 
-                  <CKEditor
-                    data={this.state.body}
-                    onChange={this.onEditorChange.bind(this)}
-                    config={ {
-                        height: [ '60vh' ],
-                        codeSnippet_languages: {
-                          javascript: 'JavaScript',
-                          php: 'PHP'
-                        },
-                        contentsCss: [ `` ],
-                        format_tags:  'p;h1;h2;h3;pre' ,
-                        format_h1: {
-                          element: 'h1',
-                          attributes: {
-                            'style' : 'color: #0078D4; font-size: 24px; font-family: Segoe UI;'
-                          }
-                        },
-                        format_h2: {
-                          element: 'h2',
-                          attributes: {
-                            'style' : 'color: #0078D4; font-size: 20px; font-family: Segoe UI;'
-                          }
-                        },
-                        format_h3: {
-                          element: 'h3',
-                          attributes: {
-                            'style' : 'color: #0078D4; font-size: 16px; font-family: Segoe UI;'
-                          }
-                        },
-                        format_p: {
-                          element: 'p',
-                          attributes: {
-                            'style' : 'font-family: Segoe UI; margin-bottom: 0px; padding-bottom: 0px; margin-top: 0px; padding-top: 0px;'
-                          }
-                        },
-                        format_pre: {
-                          element: 'pre',
-                          attributes: {
-                            'style' : 'color: red; font-family: Segoe UI;'
-                          }
-                        }
-                    } }
-                    />
+                    <CKEditor
+                      data={this.state.body}
+                      onInit={(editor)=>{
+                  //      console.log(Array.from( editor.ui.componentFactory.names() ));
+                      }}
+                      onChange={(e,editor) => this.onEditorChange(editor)}
+                      />
               </FormGroup>}
           </div>
       </div>
     );
   }
 }
+
+/*
+<CKEditor
+  editor={ ClassicEditor }
+  data={this.state.body}
+  onInit={(editor)=>{
+//      console.log(Array.from( editor.ui.componentFactory.names() ));
+  }}
+  onChange={(e,editor) => this.onEditorChange(editor)}
+  config={ck5config}
+  />
+
+config={ {
+    height: [ '60vh' ],
+    codeSnippet_languages: {
+      javascript: 'JavaScript',
+      php: 'PHP'
+    },
+    format_h2: {
+      element: 'h2',
+      attributes: {
+        'style' : 'color: #0078D4; font-size: 20px; font-family: Segoe UI;'
+      }
+    },
+} }
+*/
