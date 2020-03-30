@@ -7,11 +7,9 @@ import {timestampToString, toSelArr} from '../../helperFunctions';
 import { rebase } from '../../index';
 import {invisibleSelectStyle} from '../../scss/selectStyles';
 
-//import CKEditor from 'ckeditor5-custom-build/build/ckeditor';
-//import CKEditor from '../../CKEditor5/build/ckeditor';
 
-import CKEditor from '@ckeditor/ckeditor5-react';
 import ck5config from '../../scss/ck5config';
+import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 import PictureUpload from './PictureUpload';
@@ -225,14 +223,15 @@ export default class Note extends Component{
               { this.state.editBodyOpen &&
               <FormGroup className=""  style={{position: "relative",zIndex:(this.state.modalOpen ? "1" : "9999")}}>
                   <Button className="btn-link-reversed p-l-0" onClick={this.toggleModal.bind(this)}>Pridať obrázok z uložiska</Button>
-
                     <CKEditor
-                      data={this.state.body}
+                      editor={ ClassicEditor }
+                    data={this.state.body}
                       onInit={(editor)=>{
-                  //      console.log(Array.from( editor.ui.componentFactory.names() ));
                       }}
                       onChange={(e,editor) => this.onEditorChange(editor)}
+                      config={ck5config}
                       />
+
               </FormGroup>}
           </div>
       </div>
