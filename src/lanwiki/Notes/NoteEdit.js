@@ -7,10 +7,7 @@ import {timestampToString, toSelArr} from '../../helperFunctions';
 import { rebase } from '../../index';
 import {invisibleSelectStyle} from '../../scss/selectStyles';
 
-
-import ck5config from '../../scss/ck5config';
-import CKEditor from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import CKEditor from 'ckeditor4-react';
 
 import PictureUpload from './PictureUpload';
 
@@ -116,17 +113,18 @@ export default class Note extends Component{
       });
   }
 
-  onEditorChange( editor ) {
+  onEditorChange( evt ) {
     if(this.state.newLoad){
       this.setState( {
-        body: editor.getData(),
+        body: evt.editor.getData(),
         newLoad:false
       });
     }else{
       this.setState( {
-        body: editor.getData()
+        body: evt.editor.getData()
       }, this.submit.bind(this) );
     }
+
 
   }
 
@@ -224,12 +222,47 @@ export default class Note extends Component{
               <FormGroup className=""  style={{position: "relative",zIndex:(this.state.modalOpen ? "1" : "9999")}}>
                   <Button className="btn-link-reversed p-l-0" onClick={this.toggleModal.bind(this)}>Pridať obrázok z uložiska</Button>
                     <CKEditor
-                      editor={ ClassicEditor }
-                    data={this.state.body}
-                      onInit={(editor)=>{
-                      }}
-                      onChange={(e,editor) => this.onEditorChange(editor)}
-                      config={ck5config}
+                      data={this.state.body}
+                      onChange={this.onEditorChange.bind(this)}
+                      config={ {
+                          height: [ '60vh' ],
+                          codeSnippet_languages: {
+                            javascript: 'JavaScript',
+                            php: 'PHP'
+                          },
+                          contentsCss: [ `` ],
+                          format_tags:  'p;h1;h2;h3;pre' ,
+                          format_h1: {
+                            element: 'h1',
+                            attributes: {
+                              'style' : 'color: #0078D4; font-size: 24px; font-family: Segoe UI;'
+                            }
+                          },
+                          format_h2: {
+                            element: 'h2',
+                            attributes: {
+                              'style' : 'color: #0078D4; font-size: 20px; font-family: Segoe UI;'
+                            }
+                          },
+                          format_h3: {
+                            element: 'h3',
+                            attributes: {
+                              'style' : 'color: #0078D4; font-size: 16px; font-family: Segoe UI;'
+                            }
+                          },
+                          format_p: {
+                            element: 'p',
+                            attributes: {
+                              'style' : 'font-family: Segoe UI; margin-bottom: 0px; padding-bottom: 0px; margin-top: 0px; padding-top: 0px;'
+                            }
+                          },
+                          format_pre: {
+                            element: 'pre',
+                            attributes: {
+                              'style' : 'color: red; background-color: #F6F6F6 !important, line-height: 0.8 !important, padding: 10px;'
+                            }
+                          }
+                      } }
                       />
 
               </FormGroup>}
@@ -238,29 +271,3 @@ export default class Note extends Component{
     );
   }
 }
-
-/*
-<CKEditor
-  editor={ ClassicEditor }
-  data={this.state.body}
-  onInit={(editor)=>{
-//      console.log(Array.from( editor.ui.componentFactory.names() ));
-  }}
-  onChange={(e,editor) => this.onEditorChange(editor)}
-  config={ck5config}
-  />
-
-config={ {
-    height: [ '60vh' ],
-    codeSnippet_languages: {
-      javascript: 'JavaScript',
-      php: 'PHP'
-    },
-    format_h2: {
-      element: 'h2',
-      attributes: {
-        'style' : 'color: #0078D4; font-size: 20px; font-family: Segoe UI;'
-      }
-    },
-} }
-*/
