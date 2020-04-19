@@ -659,6 +659,20 @@ Label{
   padding: 0px;
 }
 
+.breadcrum-bar{
+  width: 68%;
+}
+
+.breadcrum-bar>div{
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.breadcrum-bar>div>h2:last-child{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 
 .modal-content{

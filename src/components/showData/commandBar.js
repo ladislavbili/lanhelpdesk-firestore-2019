@@ -7,20 +7,21 @@ export default class CommandBar extends Component {
 
 		const FILTERED_BREADCRUMBS = ( this.props.breadcrumsData ? this.props.breadcrumsData.filter((breadcrum)=>breadcrum.show) : [] );
 		let fontsize = "2.5rem";
+		let text = "";
 		if (this.props.useBreadcrums){
-			let text = FILTERED_BREADCRUMBS.map(crumb => crumb.label).join(" \\ ");
-			if (text.length > 35){
+			text = FILTERED_BREADCRUMBS.map(crumb => crumb.label).join(" \\ ");
+		/*	if (text.length > 35){
 				fontsize = "2rem";
 			} else if (text.length > 50){
 				fontsize = "1.5rem";
 			} else if (text.length > 60){
 				fontsize = "1rem";
-			}
+			}*/
 		}
 		return (
 			<div className={"commandbar " + (this.props.layout !== 0 ? "p-l-20" : "p-l-0")}>
 
-				<div className="center-hor">
+				<div className="breadcrum-bar center-hor">
 					{
 						this.props.useBreadcrums !== true &&
 						<div className="breadcrumbs">
@@ -30,8 +31,7 @@ export default class CommandBar extends Component {
 						</div>
 					}
 					{this.props.useBreadcrums  &&
-						<div className="flex-row breadcrumbs"
-							>
+						<div className="flex-row breadcrumbs">
 							{
 								FILTERED_BREADCRUMBS.map((breadcrum, index)=>
 									<h2
@@ -43,6 +43,7 @@ export default class CommandBar extends Component {
 							}
 						</div>
 					}
+
 				</div>
 
 					<div className="ml-auto p-2 align-self-center">
