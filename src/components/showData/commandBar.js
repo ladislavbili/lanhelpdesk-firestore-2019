@@ -6,18 +6,6 @@ export default class CommandBar extends Component {
 	render() {
 
 		const FILTERED_BREADCRUMBS = ( this.props.breadcrumsData ? this.props.breadcrumsData.filter((breadcrum)=>breadcrum.show) : [] );
-		let fontsize = "2.5rem";
-		let text = "";
-		if (this.props.useBreadcrums){
-			text = FILTERED_BREADCRUMBS.map(crumb => crumb.label).join(" \\ ");
-		/*	if (text.length > 35){
-				fontsize = "2rem";
-			} else if (text.length > 50){
-				fontsize = "1.5rem";
-			} else if (text.length > 60){
-				fontsize = "1rem";
-			}*/
-		}
 		return (
 			<div className={"commandbar " + (this.props.layout !== 0 ? "p-l-20" : "p-l-0")}>
 
@@ -37,7 +25,6 @@ export default class CommandBar extends Component {
 									<h2
 										className="clickable"
 										key={breadcrum.label}
-										style={{fontSize: fontsize}}
 										onClick={breadcrum.onClick}>{breadcrum.label + ((FILTERED_BREADCRUMBS.length - 1 !== index) ? ` \\ ` : "")}</h2>
 								)
 							}
