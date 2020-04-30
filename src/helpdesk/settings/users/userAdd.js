@@ -13,6 +13,7 @@ import {sameStringForms, toSelArr} from '../../../helperFunctions';
 import Checkbox from '../../../components/checkbox';
 
 let roles=[
+  {label:'Guest',value:-1},
   {label:'User',value:0},
   {label:'Agent',value:1},
   {label:'Manager',value:2},
@@ -142,7 +143,7 @@ class UserAdd extends Component{
                       name:this.state.name,
                       surname:this.state.surname,
                       email:this.state.email,
-                      company:this.state.company.id,
+                      company: this.state.company.id,
                       role:this.state.role,
                       mailNotifications:this.state.mailNotifications,
                       signature:this.state.signature,

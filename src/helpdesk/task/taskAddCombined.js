@@ -476,6 +476,9 @@ export default class TaskAdd extends Component{
 		}
 
 		renderSelectsLayout1(){
+			const USERS_WITH_PERMISSIONS = this.state.users.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id));
+			const REQUESTERS =  (this.state.project && this.state.project.lockedRequester ? USERS_WITH_PERMISSIONS : this.state.users);
+
 			return(
 				<div className="row">
 						{this.state.viewOnly &&
@@ -582,7 +585,7 @@ export default class TaskAdd extends Component{
 										isDisabled={this.state.defaults.assignedTo.fixed||this.state.viewOnly}
 										isMulti
 										onChange={(users)=>this.setState({assignedTo:users})}
-										options={this.state.users.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id))}
+										options={USERS_WITH_PERMISSIONS}
 										styles={invisibleSelectStyleNoArrowRequired}
 										/>
 									</div>
@@ -671,7 +674,7 @@ export default class TaskAdd extends Component{
 										placeholder="Select required"
 										isDisabled={this.state.defaults.requester.fixed||this.state.viewOnly}
 										onChange={(requester)=>this.setState({requester})}
-										options={this.state.users}
+										options={REQUESTERS}
 										styles={invisibleSelectStyleNoArrowRequired}
 										/>
 								</div>
@@ -771,6 +774,9 @@ export default class TaskAdd extends Component{
 		)}
 
 		renderSelectsLayout2(){
+			const USERS_WITH_PERMISSIONS = this.state.users.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id));
+			const REQUESTERS =  (this.state.project && this.state.project.lockedRequester ? USERS_WITH_PERMISSIONS : this.state.users);
+
 			return(
 				<div className="task-edit-right">
 						{this.state.viewOnly &&
@@ -877,7 +883,7 @@ export default class TaskAdd extends Component{
 										isDisabled={this.state.defaults.assignedTo.fixed||this.state.viewOnly}
 										isMulti
 										onChange={(users)=>this.setState({assignedTo:users})}
-										options={this.state.users.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id))}
+										options={USERS_WITH_PERMISSIONS}
 										styles={invisibleSelectStyleNoArrowRequired}
 										/>
 									</div>
@@ -985,7 +991,7 @@ export default class TaskAdd extends Component{
 											placeholder="Select required"
 											isDisabled={this.state.defaults.requester.fixed||this.state.viewOnly}
 											onChange={(requester)=>this.setState({requester})}
-											options={this.state.users}
+											options={REQUESTERS}
 											styles={invisibleSelectStyleNoArrowRequired}
 											/>
 									</div>

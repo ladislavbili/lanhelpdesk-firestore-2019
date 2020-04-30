@@ -45,7 +45,7 @@ class Permissions extends Component {
 							value={this.state.chosenUser}
 							styles={selectStyle}
 							onChange={(e)=> this.setState({chosenUser: e})}
-							options={this.state.users.filter((user)=>!this.props.permissions.map((permission)=>permission.user.id).includes(user.id))}
+							options={this.state.users.filter((user)=> user.role.value > -1 && !this.props.permissions.map((permission)=>permission.user.id).includes(user.id))}
 							/>
 					</div>
 					<div>
@@ -175,6 +175,15 @@ class Permissions extends Component {
 						</tbody>
 					</table>
 				}
+				<div className="row">
+					<Checkbox
+						className = "m-l-5 m-r-5"
+						centerHor
+						disabled={false}
+						value = { this.props.lockedRequester}
+						onChange={()=> this.props.lockRequester()}
+						/> A requester can be only a user with rights to this project.
+				</div>
 
 			</div>
 		);

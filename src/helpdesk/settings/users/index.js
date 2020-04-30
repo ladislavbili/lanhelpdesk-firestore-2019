@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import {Button } from 'reactstrap';
 import UserAdd from './userAdd';
 import UserEdit from './userEdit';
+import {rebase} from '../../../index';
 
 import { connect } from "react-redux";
-import {storageUsersStart} from '../../../redux/actions';
+import {storageUsersStart, storageCompaniesStart} from '../../../redux/actions';
 import {sameStringForms} from '../../../helperFunctions';
 
 class UsersList extends Component{
@@ -12,13 +13,17 @@ class UsersList extends Component{
     super(props);
     this.state={
       users:[],
+      companies: [],
       userFilter:''
     }
   }
 
   componentWillReceiveProps(props){
-    if(!sameStringForms(props.users,this.props.users)){
-      this.setState({users:props.users})
+    if (!sameStringForms(props.users, this.props.users)){
+      this.setState({users: props.users})
+    }
+    if (!sameStringForms(props.companies, this.props.companies)){
+      this.setState({companies: props.companies})
     }
   }
 
@@ -26,7 +31,10 @@ class UsersList extends Component{
     if(!this.props.usersActive){
       this.props.storageUsersStart();
     }
-    this.setState({users:this.props.users});
+    if(!this.props.companiesActive){
+      this.props.storageCompaniesStart();
+    }
+    this.setState({users:this.props.users, companies: this.props.companies});
   }
 
   render(){
@@ -51,7 +59,7 @@ class UsersList extends Component{
               </div>
               <Button
                 className="btn-link center-hor"
-                onClick={()=>this.props.history.push('/helpdesk/settings/users/add')}>
+                onClick={()=> this.props.history.push('/helpdesk/settings/users/add')}>
                 <i className="fa fa-plus p-l-5 p-r-5"/> User
               </Button>
             </div>
@@ -65,9 +73,16 @@ class UsersList extends Component{
                     <tr
                       key={user.id}
                       className={"clickable" + (this.props.match.params.id === user.id ? " sidebar-item-active":"")}
+                      style={{whiteSpace: "nowrap",  overflow: "hidden"}}
                       onClick={()=>this.props.history.push('/helpdesk/settings/users/'+user.id)}>
-                      <td className={(this.props.match.params.id === user.id ? "text-highlight":"")}>
+                      <td
+                        className={(this.props.match.params.id === user.id ? "text-highlight":"")}
+                        style={{maxWidth: "300px", whiteSpace: "nowrap",  overflow: "hidden", textOverflow: "ellipsis"  }}  >
                         {user.email}
+                      </td>
+                      <td  className={(this.props.match.params.id === user.id ? " sidebar-item-active":"") }
+                        style={{maxWidth: "200px", whiteSpace: "nowrap",  overflow: "hidden", textOverflow: "ellipsis"  }} >
+                        {(this.state.companies.filter(company => company.id === user.company)[0] ? this.state.companies.filter(company => company.id === user.company)[0].title  : "NEZARADENÉ")}
                       </td>
                     </tr>
                   )}
@@ -90,9 +105,10 @@ class UsersList extends Component{
   }
 }
 
-const mapStateToProps = ({ storageUsers}) => {
+const mapStateToProps = ({ storageUsers, storageCompanies}) => {
   const { usersActive, users } = storageUsers;
-  return { usersActive, users };
+  const { companiesActive, companies } = storageCompanies;
+  return { usersActive, users, companiesActive, companies };
 };
 
-export default connect(mapStateToProps, { storageUsersStart })(UsersList);
+export default connect(mapStateToProps, { storageUsersStart, storageCompaniesStart })(UsersList);

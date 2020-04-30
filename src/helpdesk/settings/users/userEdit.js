@@ -13,6 +13,7 @@ import {toSelArr} from '../../../helperFunctions';
 import Checkbox from '../../../components/checkbox';
 
 let roles=[
+  {label:'Guest',value:-1},
   {label:'User',value:0},
   {label:'Agent',value:1},
   {label:'Manager',value:2},
@@ -78,7 +79,7 @@ class UserEdit extends Component{
     }else{
       company=companies.find((item)=>item.id===user.company);
       if(!company){
-        company=companies[0];
+        company=companies.filter(comp => comp.title === "NEZARADENÉ")[0];
       }
     }
     let role = user.role;

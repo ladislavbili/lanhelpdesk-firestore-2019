@@ -202,7 +202,7 @@ class ProjectEdit extends Component{
 		});
 	}
 
-  render(){
+  render(){		
 		let canReadUserIDs = this.state.permissions.map((permission)=>permission.user.id);
 		let canBeAssigned = this.state.users.filter((user)=>canReadUserIDs.includes(user.id));
 

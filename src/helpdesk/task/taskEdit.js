@@ -814,6 +814,9 @@ class TaskEdit extends Component {
 	}
 
 	renderSelectsLayout1(taskID, canAdd){
+		const USERS_WITH_PERMISSIONS = this.state.users.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id));
+		const REQUESTERS =  (this.state.project && this.state.project.lockedRequester ? USERS_WITH_PERMISSIONS : this.state.users);
+
 		return(
 			<div>
 				<div className="col-lg-12"> {/*Project, Assigned*/}
@@ -860,7 +863,7 @@ class TaskEdit extends Component {
 									onChange={(users)=>this.setState({assignedTo:users},this.submitTask.bind(this))}
 									options={
 										(canAdd?[{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}]:[])
-										.concat(this.state.users.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id)))
+										.concat(USERS_WITH_PERMISSIONS)
 									}
 									styles={invisibleSelectStyleNoArrowRequired}
 									/>
@@ -968,7 +971,7 @@ class TaskEdit extends Component {
 											}
 										}
 									}
-									options={(canAdd?[{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}]:[]).concat(this.state.users)}
+									options={(canAdd?[{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}]:[]).concat(REQUESTERS)}
 									styles={invisibleSelectStyleNoArrowRequired}
 									/>
 							</div>
@@ -1063,6 +1066,9 @@ class TaskEdit extends Component {
 	}
 
 	renderSelectsLayout2(taskID, canAdd){
+		const USERS_WITH_PERMISSIONS = this.state.users.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id));
+		const REQUESTERS =  (this.state.project && this.state.project.lockedRequester ? USERS_WITH_PERMISSIONS : this.state.users);
+
 		return(
 			<div className={"task-edit-right" + (this.props.columns ? " w-250px" : "")} >
 				<div className="">
@@ -1107,7 +1113,7 @@ class TaskEdit extends Component {
 							onChange={(users)=>this.setState({assignedTo:users},this.submitTask.bind(this))}
 							options={
 								(canAdd?[{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}]:[])
-								.concat(this.state.users.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id)))
+								.concat(USERS_WITH_PERMISSIONS)
 							}
 							styles={invisibleSelectStyleNoArrowRequired}
 							/>
@@ -1233,7 +1239,7 @@ class TaskEdit extends Component {
 									}
 								}
 							}
-							options={(canAdd?[{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}]:[]).concat(this.state.users)}
+							options={(canAdd?[{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}]:[]).concat(REQUESTERS)}
 							styles={invisibleSelectStyleNoArrowRequired}
 							/>
 					</div>
