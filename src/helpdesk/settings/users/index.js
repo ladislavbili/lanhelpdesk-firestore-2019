@@ -4,6 +4,8 @@ import UserAdd from './userAdd';
 import UserEdit from './userEdit';
 import {rebase} from '../../../index';
 
+import Multiselect from '../../../components/multiselect';
+
 import { connect } from "react-redux";
 import {storageUsersStart, storageCompaniesStart} from '../../../redux/actions';
 import {sameStringForms} from '../../../helperFunctions';
@@ -14,7 +16,13 @@ class UsersList extends Component{
     this.state={
       users:[],
       companies: [],
-      userFilter:''
+      userFilter:'',
+      roles: [{ id:'All', label: 'All', on: true },
+                  {id: "Guest", label:'Guest', on: false, value: -1},
+                  {id: "User", label:'User', on: false, value: 0},
+                  {id: "Agent", label:'Agent', on: false, value: 1},
+                  {id: "Manager", label:'Manager', on: false, value: 2},
+                  {id: "Admin", label:'Admin', on: false, value: 3}]
     }
   }
 
@@ -38,6 +46,7 @@ class UsersList extends Component{
   }
 
   render(){
+    const FILTERED_USERS = this.state.users.filter(user => this.state.roles.find(r => r.id === "All").on || this.state.roles.find(r => r.id === user.role.label).on );
     return (
 			<div className="content">
         <div className="row m-0 p-0 taskList-container">
@@ -64,12 +73,30 @@ class UsersList extends Component{
               </Button>
             </div>
             <div className="p-t-9 p-r-10 p-l-10 scroll-visible fit-with-header-and-commandbar">
-              <h2 className=" p-l-10 p-b-10">
-  							Users
-  						</h2>
+              <div className="row p-l-10 p-b-10">
+                <h2 className="">
+    							Users
+    						</h2>
+                <div className="ml-auto">
+                  <Multiselect
+                    className="ml-auto m-r-10"
+                    options={ this.state.roles }
+                    value={
+                      this.state.roles.filter(role => role.on)
+                    }
+                    label={ "Filter users by roles" }
+                    onChange={ (data) => {
+                        let newRoles = this.state.roles.map(role => role.id !== data.id ? role : {...role, on: !role.on})
+                        this.setState({
+                          roles: newRoles,
+                        })
+                    } }
+                    />
+                </div>
+              </div>
               <table className="table table-hover">
                 <tbody>
-                  {this.state.users.filter((item)=>item.email.toLowerCase().includes(this.state.userFilter.toLowerCase())).sort((user1,user2)=>user1.email>user2.email?1:-1).map((user)=>
+                  {FILTERED_USERS.filter((item)=>item.email.toLowerCase().includes(this.state.userFilter.toLowerCase())).sort((user1,user2)=>user1.email>user2.email?1:-1).map((user)=>
                     <tr
                       key={user.id}
                       className={"clickable" + (this.props.match.params.id === user.id ? " sidebar-item-active":"")}
