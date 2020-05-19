@@ -33,6 +33,7 @@ class ProjectEdit extends Component{
 			types:[],
 			companies:[],
 			permissions:[],
+			lockedRequester: false,
 
 			...noDef,
 			saving: false,
@@ -136,6 +137,7 @@ class ProjectEdit extends Component{
 		this.setState({
 			title:project.title,
 			description:project.description?project.description:'',
+			lockedRequester: project.lockedRequester ? project.lockedRequester : false,
 			permissions,
 
 			status:status?				{...def.status,value:status}					:{def:false, fixed:false, value: null, show:true },
@@ -202,7 +204,7 @@ class ProjectEdit extends Component{
 		});
 	}
 
-  render(){		
+  render(){
 		let canReadUserIDs = this.state.permissions.map((permission)=>permission.user.id);
 		let canBeAssigned = this.state.users.filter((user)=>canReadUserIDs.includes(user.id));
 
@@ -242,6 +244,8 @@ class ProjectEdit extends Component{
 					permissions={this.state.permissions}
 					userID={this.props.currentUser.id}
 					isAdmin={this.props.currentUser.userData.role.value===3||testing}
+					lockedRequester={this.state.lockedRequester}
+					lockRequester={() => this.setState({lockedRequester: !this.state.lockedRequester})}
 					/>
 
 					<ProjectDefaultValues
@@ -263,6 +267,7 @@ class ProjectEdit extends Component{
 							let body = {
 								title: this.state.title,
 								description: this.state.description,
+								lockedRequester: this.state.lockedRequester,
 								def:{
 									status:this.state.status.value?{...this.state.status,value:this.state.status.value.id}:{def:false,fixed:false, value: null, show:true },
 									tags:this.state.tags.value?{...this.state.tags,value:this.state.tags.value.map(item=>item.id)}:{def:false,fixed:false, value: [], show:true },

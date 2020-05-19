@@ -32,6 +32,7 @@ class ProjectAdd extends Component{
       types:[],
       companies:[],
 			permissions:[],
+			lockedRequester: true,
 
       ...noDef,
       saving: false,
@@ -128,6 +129,8 @@ class ProjectAdd extends Component{
 					permissions={this.state.permissions}
 					userID={this.props.currentUser.id}
 					isAdmin={this.props.currentUser.userData.role.value===3||testing}
+					lockedRequester={this.state.lockedRequester}
+					lockRequester={() => this.setState({lockedRequester: !this.state.lockedRequester})}
 					/>
 
 
@@ -150,6 +153,7 @@ class ProjectAdd extends Component{
 										user:permission.user.id,
 									}
 								}),
+								lockedRequester: this.state.lockedRequester,
 								def:{
 									status:this.state.status.value?{...this.state.status,value:this.state.status.value.id}:{def:false,fixed:false, value: null, show:true},
 									tags:this.state.tags.value?{...this.state.tags,value:this.state.tags.value.map(item=>item.id)}:{def:false,fixed:false, value: [], show:true},
