@@ -1391,7 +1391,7 @@ export default class Rozpocet extends Component {
 													title:this.state.newMaterialTitle,
 													unit:this.state.newMaterialUnit.id,
 													done:false,
-													order: this.props.materials,
+													order: this.props.materials.length,
 												}
 												this.setState({
 													showAddMaterial: false,
@@ -1497,7 +1497,7 @@ export default class Rozpocet extends Component {
 													title:this.state.newCustomItemTitle,
 													unit:this.state.newCustomItemUnit.id,
 													done:false,
-													order:this.props.customItems,
+													order:this.props.customItems.length,
 												}
 												this.setState({
 													newCustomItemPrice:0,

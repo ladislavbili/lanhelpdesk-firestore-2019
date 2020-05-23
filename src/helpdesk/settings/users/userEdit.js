@@ -37,6 +37,10 @@ class UserEdit extends Component{
       role:roles[0],
       mailNotifications:false,
       signature:'',
+      deactivated: false,
+
+      deletingUser:false,
+      deactivatingUser: false,
     }
     this.setData.bind(this);
   }
@@ -70,6 +74,58 @@ class UserEdit extends Component{
     };
   }
 
+  deleteUser(){
+    if(!window.confirm("Are you sure you want to delete the user?")){
+      return;
+    }
+
+    this.setState({ deletingUser: true })
+    firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then((token)=>{
+      fetch('https://api01.lansystems.sk:8080/delete-user',{
+        // http://127.0.0.1:3003
+        // https://api01.lansystems.sk:8080
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          token,
+          userID: this.props.match.params.id,
+        }),
+      }).then((response)=>response.json().then((response)=>{
+        this.setState({ deletingUser: false })
+        console.log(response);
+      })).catch((error)=>{
+        this.setState({ deletingUser: false })
+        console.log(error);
+      })
+    })
+  }
+
+  deactivateUser(){
+    this.setState({ deletingUser: true })
+    firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then((token)=>{
+      fetch('https://api01.lansystems.sk:8080/deactivate-user',{
+        // http://127.0.0.1:3003
+        // https://api01.lansystems.sk:8080
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          token,
+          userID: this.props.match.params.id,
+        }),
+      }).then((response)=>response.json().then((response)=>{
+        this.setState({ deletingUser: false, deactivated: response.deactivated })
+        console.log(response);
+      })).catch((error)=>{
+        this.setState({ deletingUser: false })
+        console.log(error);
+      })
+    })
+  }
+
   setData(props){
     let user = props.users.find((item)=>item.id===props.match.params.id);
     let companies = toSelArr(props.companies);
@@ -101,7 +157,8 @@ class UserEdit extends Component{
       role,
       mailNotifications: user.mailNotifications === true,
       signature,
-      loading:false
+      loading:false,
+      deactivated: user.deactivated || false,
     })
   }
 
@@ -185,14 +242,24 @@ class UserEdit extends Component{
                   }
                   this.setState({saving:false})});
                 }}>{this.state.saving?'Saving user...':'Save user'}</Button>
-              <Button className="btn-red ml-auto" disabled={true} onClick={()=>{
-                  if(window.confirm("Are you sure?")){
-                    rebase.removeDoc('/users/'+this.props.match.params.id).then(()=>{
-                      this.props.history.goBack();
-                    });
-                  }
-                }}
-                >Delete</Button>
+                { this.props.role === 3 &&
+                  <Button
+                    className={ this.state.deactivated ? "btn-green ml-auto" : "btn-grey ml-auto"}
+                    disabled={this.props.role !== 3 || this.state.deactivatingUser}
+                    onClick={this.deactivateUser.bind(this)}
+                    >
+                    {this.state.deactivated ? 'Activate user':'Deactivate user'}
+                  </Button>
+                }
+                { this.props.role === 3 &&
+                  <Button
+                    className="btn-red ml-3"
+                    disabled={this.props.role !== 3 || this.state.deletingUser}
+                    onClick={this.deleteUser.bind(this)}
+                    >
+                    Delete
+                  </Button>
+                }
 
               <Button className="btn-link"  disabled={this.state.saving||this.state.passReseted} onClick={()=>{
                   this.setState({passReseted:true,passResetEnded:false})

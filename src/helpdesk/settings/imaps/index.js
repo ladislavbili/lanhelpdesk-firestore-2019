@@ -64,7 +64,7 @@ class ImapsList extends Component{
                       <th>Host</th>
                       <th>Port</th>
                       <th>Username</th>
-                      <th>Default</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -91,7 +91,16 @@ class ImapsList extends Component{
                           {imap.user}
                         </td>
                         <td className={(this.props.match.params.id === imap.id ? "text-highlight":"")}>
-                          {imap.def.toString()}
+                          {
+                            imap.working === false ?
+                            <i style={{color:'red'}}
+                              className="far fa-times-circle"
+                              />
+                            :
+                            <i style={{color:'green'}}
+                              className="far fa-check-circle"
+                              />
+                          }
                         </td>
                       </tr>
                       )}

@@ -1,17 +1,22 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, InputGroup, InputGroupAddon, InputGroupText } from 'reactstrap';
 import Checkbox from '../../../components/checkbox';
+import Select from 'react-select';
 
-import {rebase } from '../../../index';
+import {selectStyle} from "scss/selectStyles";
+import {toSelArr} from 'helperFunctions';
+import {rebase } from 'index';
 import { connect } from "react-redux";
-import {storageImapsStart} from '../../../redux/actions';
+import { storageImapsStart, storageHelpProjectsStart } from 'redux/actions';
 
+const noProject = { id: null, title: 'No project', value: null, label: 'No project' }
 
 class ImapAdd extends Component{
   constructor(props){
     super(props);
     this.state={
       title:'',
+      project: noProject,
       host: "",
       port: 993,
       user: '',
@@ -29,14 +34,18 @@ class ImapAdd extends Component{
     if(!this.props.imapsActive){
       this.props.storageImapsStart();
     }
+    if(!this.props.projectsActive){
+      this.props.storageHelpProjectsStart();
+    }
   }
 
   canSave(){
     return this.state.title!=='' &&
-      this.state.host!=='' &&
-      this.state.port!=='' &&
-      this.state.user!=='' &&
-      this.props.imapsLoaded
+    this.state.host!=='' &&
+    this.state.port!=='' &&
+    this.state.user!=='' &&
+    this.props.imapsLoaded &&
+    this.props.projectsLoaded
   }
 
 
@@ -55,6 +64,17 @@ class ImapAdd extends Component{
         <FormGroup>
           <Label for="name">Title</Label>
           <Input type="text" name="name" id="name" placeholder="Enter title" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
+        </FormGroup>
+        <FormGroup>
+          <Label for="project">Default project</Label>
+          <Select
+            id="project"
+            name="project"
+            styles={selectStyle}
+            options={toSelArr([noProject, ...this.props.projects])}
+            value={this.state.project}
+            onChange={ project => this.setState({ project }) }
+            />
         </FormGroup>
         <FormGroup>
           <Label for="name">Host</Label>
@@ -102,6 +122,7 @@ class ImapAdd extends Component{
             this.setState({saving:true});
             rebase.addToCollection('/imaps', {
               title:this.state.title ,
+              project: this.state.project !== null ? this.state.project.id : null,
               host:this.state.host ,
               port:this.state.port ,
               user:this.state.user ,
@@ -110,32 +131,37 @@ class ImapAdd extends Component{
               rejectUnauthorized:this.state.rejectUnauthorized ,
               def:this.state.def,
             }).then((response)=>{
-                if(this.state.def){
-                  this.props.imaps.filter((imap)=>imap.id!==response.id && imap.def).forEach((item)=>{
-                    rebase.updateDoc('/imaps/'+item.id,{def:false})
-                  })
-                }
-                this.setState({
-                  title:'',
-                  host: "",
-                  port: 993,
-                  user: '',
-                  password: '',
-                  tls: true,
-                  rejectUnauthorized: false,
-                  def:false,
-                  saving:false,
+              if(this.state.def){
+                this.props.imaps.filter((imap)=>imap.id!==response.id && imap.def).forEach((item)=>{
+                  rebase.updateDoc('/imaps/'+item.id,{def:false})
                 })
-              });
+              }
+              this.setState({
+                title:'',
+                host: "",
+                port: 993,
+                user: '',
+                password: '',
+                tls: true,
+                rejectUnauthorized: false,
+                def:false,
+                saving:false,
+                project: null,
+              })
+            });
           }}>{this.state.saving?'Adding...':'Add Imap'}</Button>
-    </div>
-    );
+        </div>
+      );
+    }
   }
-}
 
-const mapStateToProps = ({ storageImaps }) => {
-  const { imapsLoaded,imapsActive, imaps } = storageImaps;
-  return { imapsLoaded,imapsActive, imaps };
-};
+  const mapStateToProps = ({ storageImaps, storageHelpProjects }) => {
+    const { imapsLoaded,imapsActive, imaps } = storageImaps;
+    const { projectsLoaded, projectsActive, projects } = storageHelpProjects;
+    return {
+      imapsLoaded, imapsActive, imaps,
+      projectsLoaded, projectsActive, projects,
+    };
+  };
 
-export default connect(mapStateToProps, { storageImapsStart })(ImapAdd);
+  export default connect(mapStateToProps, { storageImapsStart, storageHelpProjectsStart })(ImapAdd);

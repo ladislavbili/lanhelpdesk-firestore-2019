@@ -33,7 +33,7 @@ class UserAdd extends Component{
       password:'',
       companies:[],
       mailNotifications: true,
-      role:roles[0],
+      role:roles[1],
 
       signature:'',
       signatureChanged:false,

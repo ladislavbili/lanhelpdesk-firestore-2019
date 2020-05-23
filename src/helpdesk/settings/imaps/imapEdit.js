@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, Alert, InputGroup, InputGroupAddon, InputGroupText } from 'reactstrap';
-import Checkbox from '../../../components/checkbox';
-import {rebase } from '../../../index';
+import Select from 'react-select';
+
+import {selectStyle} from "scss/selectStyles";
+import Checkbox from 'components/checkbox';
+import { toSelArr } from 'helperFunctions';
+import { rebase } from 'index';
 import { connect } from "react-redux";
-import {storageImapsStart} from '../../../redux/actions';
+import { storageImapsStart, storageHelpProjectsStart } from 'redux/actions';
+
+const noProject = { id: null, title: 'No project', value: null, label: 'No project' }
 
 class ImapEdit extends Component{
   constructor(props){
@@ -16,6 +22,7 @@ class ImapEdit extends Component{
       showPass:false,
 
       title:'',
+      project: noProject,
       host: "",
       port: 993,
       user: '',
@@ -31,11 +38,23 @@ class ImapEdit extends Component{
     return this.state.title!=='' &&
       this.state.host!=='' &&
       this.state.port!=='' &&
-      this.state.user!==''
+      this.state.user!=='' &&
+      this.props.imapsLoaded &&
+      this.props.projectsLoaded
   }
 
-  setData(imaps,id){
-    let imap=imaps.find((item)=>item.id===id);
+  setData(props){
+    if(!props.imapsLoaded || !props.projectsLoaded) return;
+    const imaps = props.imaps;
+    const id = props.match.params.id;
+    const imap = imaps.find((item)=>item.id===id);
+    let project = null;
+    if( imap.project !== undefined ){
+      project = toSelArr([noProject, ...this.props.projects]).find((project) => project.id === imap.project)
+    }
+    if( !project ){
+      project = noProject;
+    }
     this.setState({
       loading:false,
       imaps,
@@ -43,6 +62,7 @@ class ImapEdit extends Component{
       showPass:false,
 
       title: imap.title,
+      project,
       host: imap.host,
       port: imap.port,
       user: imap.user,
@@ -57,20 +77,21 @@ class ImapEdit extends Component{
     if(!this.props.imapsActive){
       this.props.storageImapsStart();
     }
-    if(this.props.imapsLoaded){
-      this.setData(this.props.imaps,this.props.match.params.id);
+    if(!this.props.projectsActive){
+      this.props.storageHelpProjectsStart();
     }
+    this.setData(this.props);
   }
 
   componentWillReceiveProps(props){
     if(this.props.match.params.id!==props.match.params.id){
       this.setState({loading:true})
       if(props.imapsLoaded){
-        this.setData(props.imaps,props.match.params.id);
+        this.setData(props);
       }
     }
-    if(props.imapsLoaded && !this.props.imapsLoaded){
-      this.setData(props.imaps,props.match.params.id);
+    if( (props.imapsLoaded && !this.props.imapsLoaded) || (props.projectsLoaded && !this.props.projectsLoaded) ){
+      this.setData(props);
     }
   }
 
@@ -96,6 +117,17 @@ class ImapEdit extends Component{
         <FormGroup>
           <Label for="name">Title</Label>
           <Input type="text" name="name" id="name" placeholder="Enter title" value={this.state.title} onChange={(e)=>this.setState({title:e.target.value})} />
+        </FormGroup>
+        <FormGroup>
+          <Label for="project">Default project</Label>
+        <Select
+          id="project"
+          name="project"
+          styles={selectStyle}
+          options={toSelArr([noProject, ...this.props.projects])}
+          value={this.state.project}
+          onChange={ project => this.setState({ project }) }
+          />
         </FormGroup>
         <FormGroup>
           <Label for="name">Host</Label>
@@ -144,6 +176,7 @@ class ImapEdit extends Component{
               this.setState({saving:true});
               rebase.updateDoc('/imaps/'+this.props.match.params.id, {
                 title:this.state.title ,
+                project: this.state.project !== null ? this.state.project.id : null,
                 host:this.state.host ,
                 port:this.state.port ,
                 user:this.state.user ,
@@ -174,9 +207,13 @@ class ImapEdit extends Component{
   }
 }
 
-const mapStateToProps = ({ storageImaps }) => {
+const mapStateToProps = ({ storageImaps, storageHelpProjects }) => {
   const { imapsLoaded,imapsActive, imaps } = storageImaps;
-  return { imapsLoaded,imapsActive, imaps };
+	const { projectsLoaded, projectsActive, projects } = storageHelpProjects;
+  return {
+    imapsLoaded, imapsActive, imaps,
+    projectsLoaded, projectsActive, projects,
+  };
 };
 
-export default connect(mapStateToProps, { storageImapsStart })(ImapEdit);
+export default connect(mapStateToProps, { storageImapsStart, storageHelpProjectsStart })(ImapEdit);

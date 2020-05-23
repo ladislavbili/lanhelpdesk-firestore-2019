@@ -473,6 +473,11 @@ export const selectStyle = {
 		...base,
 		width: 0,
 	}),
+	menu: base => ({
+		...base,
+		zIndex: 50,
+	}),
+
 
 };
 

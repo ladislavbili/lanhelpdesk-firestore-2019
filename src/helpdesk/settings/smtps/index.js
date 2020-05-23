@@ -3,16 +3,18 @@ import {Button } from 'reactstrap';
 import SMTPAdd from './smtpAdd';
 import SMTPEdit from './smtpEdit';
 
+import firebase from 'firebase';
 import { connect } from "react-redux";
-import {storageSmtpsStart} from '../../../redux/actions';
-import {sameStringForms} from '../../../helperFunctions';
+import {storageSmtpsStart} from 'redux/actions';
+import {sameStringForms} from 'helperFunctions';
 
 class SMTPsList extends Component{
   constructor(props){
     super(props);
     this.state={
       smtps:[],
-      smtpFilter:''
+      smtpFilter:'',
+      smtpTesting: false,
     }
   }
 
@@ -27,6 +29,23 @@ class SMTPsList extends Component{
       this.props.storageSmtpsStart();
     }
     this.setState({smtps:this.props.smtps});
+  }
+
+  testSMTPs(){
+    this.setState({ smtpTesting: true })
+    firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then((token)=>{
+      fetch('https://api01.lansystems.sk:8080/deactivate-user',{
+        // http://127.0.0.1:3003
+        // https://api01.lansystems.sk:8080
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          token
+        }),
+      })
+    })
   }
 
   render(){
@@ -56,9 +75,25 @@ class SMTPsList extends Component{
               </Button>
             </div>
             <div className="p-t-9 p-r-10 p-l-10 scroll-visible fit-with-header-and-commandbar">
-              <h2 className=" p-l-10 p-b-10">
-  							SMTPs
-  						</h2>
+              <div className="row">
+                <h2 className=" p-l-10 p-b-10">
+                  SMTPs
+                </h2>
+                { this.props.role === 3 && !this.state.smtpTesting &&
+                  <Button
+                    disabled={ this.props.role !== 3 || this.state.smtpTesting }
+                    className="btn-primary center-hor ml-auto"
+                    onClick={this.testSMTPs.bind(this)}
+                    >
+                    Test SMTPs
+                  </Button>
+                }
+                { this.props.role === 3 && this.state.smtpTesting &&
+                  <div className="center-hor ml-auto">
+                    Testing SMTPs...
+                  </div>
+                }
+              </div>
               <table className="table table-hover">
                 <thead>
                   <tr className="clickable">
@@ -67,6 +102,7 @@ class SMTPsList extends Component{
                     <th>Port</th>
                     <th>Username</th>
                     <th>Default</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -95,6 +131,18 @@ class SMTPsList extends Component{
                       <td className={(this.props.match.params.id === smtp.id ? "text-highlight":"")}>
                         {smtp.def.toString()}
                       </td>
+                      <td className={(this.props.match.params.id === smtp.id ? "text-highlight":"")}>
+                        {
+                          smtp.working === false ?
+                          <i style={{color:'red'}}
+                            className="far fa-times-circle"
+                            />
+                          :
+                          <i style={{color:'green'}}
+                            className="far fa-check-circle"
+                            />
+                        }
+                      </td>
                     </tr>
                     )}
                 </tbody>
@@ -116,9 +164,10 @@ class SMTPsList extends Component{
   }
 }
 
-const mapStateToProps = ({ storageSmtps }) => {
+const mapStateToProps = ({ storageSmtps, userReducer }) => {
   const { smtpsActive, smtps } = storageSmtps;
-  return { smtpsActive, smtps };
+  const role = userReducer.userData ? userReducer.userData.role.value : 0;
+  return { smtpsActive, smtps, role };
 };
 
 export default connect(mapStateToProps, { storageSmtpsStart })(SMTPsList);

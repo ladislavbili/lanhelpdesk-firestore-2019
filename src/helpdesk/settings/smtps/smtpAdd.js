@@ -4,7 +4,7 @@ import {rebase } from '../../../index';
 import Checkbox from '../../../components/checkbox';
 
 import { connect } from "react-redux";
-import {storageSmtpsStart} from '../../../redux/actions';
+import { storageSmtpsStart } from '../../../redux/actions';
 
 class SMTPAdd extends Component{
   constructor(props){
@@ -17,7 +17,7 @@ class SMTPAdd extends Component{
       user: '',
       pass: '',
       rejectUnauthorized: false,
-      def:false,
+      def: false,
 
       saving:false,
       showPass:false
@@ -131,7 +131,9 @@ class SMTPAdd extends Component{
 
 const mapStateToProps = ({ storageSmtps }) => {
   const { smtpsActive, smtps, smtpsLoaded } = storageSmtps;
-  return { smtpsActive, smtps, smtpsLoaded };
+  return {
+    smtpsActive, smtps, smtpsLoaded,
+  };
 };
 
 export default connect(mapStateToProps, { storageSmtpsStart })(SMTPAdd);
