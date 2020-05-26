@@ -154,6 +154,9 @@ class MothlyReportsAssigned extends Component {
 	giveTasksInfo(props, works, trips){
 		return props.tasks.map((task)=>{
 			let company = task.company === null ? null : props.companies.find((company)=>company.id===task.company);
+			if(company === undefined){
+				company = null;
+			}
 			return {
 				...task,
 				company,
@@ -665,8 +668,13 @@ class MothlyReportsAssigned extends Component {
 		return tasks.map((group)=>{
 			let companies = [];
 			group.tasks.forEach((task)=>{
-				let group = companies.find((group)=>group.company.id===task.company.id);
-				if(group===undefined){
+				let group = null;
+				if(task.company === null ){
+					 group = companies.find( (group) => group.company === null );
+				}else{
+					 group = companies.find( (group) => group.company !== null && group.company.id === task.company.id );
+				}
+				if(group === undefined){
 					companies.push({company:task.company,tasks:[task]})
 				}else{
 					group.tasks=[...group.tasks,task];
@@ -682,8 +690,8 @@ class MothlyReportsAssigned extends Component {
 			let newCompanies = period.companies.map((group)=>{
 				//iba ponechat tasky a pridat im pausalWorks a extraWorks
 				let newCompany = {company:group.company,tasks:[]};
-				let pausal = parseInt(group.company.workPausal);
-				let tripPausal = parseInt(group.company.drivePausal);
+				let pausal = parseInt(group.company !== null ? group.company.workPausal : 0);
+				let tripPausal = parseInt(group.company !== null ? group.company.drivePausal : 0);
 				group.tasks.forEach((task)=>{
 					let works = [];
 					let trips = [];

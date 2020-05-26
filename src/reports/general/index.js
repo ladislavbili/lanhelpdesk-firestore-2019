@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import {storageHelpTasksStart, storageHelpStatusesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart, storageHelpTaskWorksStart, storageHelpTaskTypesStart} from '../../redux/actions';
-import { timestampToString, sameStringForms} from '../../helperFunctions';
+import {
+	storageHelpTasksStart,
+	storageHelpStatusesStart,
+	storageHelpUnitsStart,
+	storageUsersStart,
+	storageHelpTaskMaterialsStart,
+	storageHelpTaskWorksStart,
+	storageHelpTaskTypesStart,
+	storageHelpProjectsStart
+} from 'redux/actions';
+import { timestampToString, sameStringForms, applyTaskFilter } from '../../helperFunctions';
 import { Link } from 'react-router-dom';
 
 class Reports extends Component {
@@ -25,6 +34,7 @@ class Reports extends Component {
 		props.unitsLoaded &&
 		props.usersLoaded &&
 		props.materialsLoaded &&
+		props.projectsLoaded &&
 		props.taskWorksLoaded
 	}
 
@@ -35,6 +45,7 @@ class Reports extends Component {
 			!sameStringForms(props.units,this.props.units)||
 			!sameStringForms(props.users,this.props.users)||
 			!sameStringForms(props.materials,this.props.materials)||
+			!sameStringForms(props.projects,this.props.projects)||
 			!sameStringForms(props.taskWorks,this.props.taskWorks)){
 			this.setData(props);
 		}
@@ -65,6 +76,9 @@ class Reports extends Component {
 		if(!this.props.taskWorksActive){
 			this.props.storageHelpTaskWorksStart();
 		}
+		if(!this.props.projectsActive){
+			this.props.storageHelpProjectsStart();
+		}
 		this.setData(this.props);
   }
 
@@ -78,9 +92,11 @@ class Reports extends Component {
 		let units = props.units;
 		let taskMaterials = props.materials;
 		let taskWorks = props.taskWorks;
+		const projectsIDs = props.projects.map( (project) => project.id )
 		let newTasks=tasks.map((task)=>{
 			return {
 				...task,
+				project: projectsIDs.includes(task.project) ? props.projects.find( (project) => project.id === task.project ) : null,
 				requester:task.requester===null ? null:users.find((user)=>user.id===task.requester),
 				assigned:task.assigned===null ? null:users.find((user)=>user.id===task.assigned),
 				status:task.status===null ? null: statuses.find((status)=>status.id===task.status),
@@ -118,22 +134,8 @@ class Reports extends Component {
 
 			}
 		});
-		let filter = this.props.filter;
-		newWorks = newWorks.filter((work)=>
-			(filter.status.length===0||(work.task.status && filter.status.includes(work.task.status.id))) &&
-			(filter.requester===null||(work.task.requester && work.task.requester.id===filter.requester)||(work.task.requester && filter.requester==='cur' && work.task.requester.id === this.props.currentUser.id)) &&
-			(filter.company===null||(work.task.company && work.task.company.id===filter.company) ||(work.task.company && filter.company==='cur' && work.task.company.id===this.props.currentUser.userData.company)) &&
-			(filter.assigned===null||(work.task.assignedTo && work.task.assignedTo.map((item)=>item.id).includes(filter.assigned))||(work.task.assignedTo && filter.requester==='cur' && work.task.assignedTo.map((item)=>item.id).includes(this.props.currentUser.id))) &&
-			(filter.workType===null||(work.workType.id===filter.workType)) &&
-			(this.props.project===null || (work.task.project && work.task.project===this.props.project)) &&
-			(filter.statusDateFrom===''||work.task.statusChange >= filter.statusDateFrom) &&
-			(filter.statusDateTo===''||work.task.statusChange <= filter.statusDateTo) &&
-			(filter.closeDateFrom===undefined || filter.closeDateFrom===''||(work.task.closeDate && work.task.closeDate >= filter.closeDateFrom)) &&
-			(filter.closeDateTo===undefined || filter.closeDateTo===''||(work.task.closeDate && work.task.closeDate <= filter.closeDateTo)) &&
-			(filter.pendingDateFrom===undefined || filter.pendingDateFrom===''||(work.task.pendingDate && work.task.pendingDate >= filter.pendingDateFrom)) &&
-			(filter.pendingDateTo===undefined || filter.pendingDateTo===''||(work.task.pendingDate && work.task.pendingDate <= filter.pendingDateTo))&&
-			(this.props.milestone===null||(work.task.milestone && work.task.milestone === this.props.milestone))
-			);
+		const filter = this.props.filter;
+		newWorks = newWorks.filter((work)=> work.task && applyTaskFilter( work.task, filter, this.props.currentUser, this.props.project, this.props.milestone ) );
 
 		let groupedWorks = newWorks.filter((item, index)=>{
 			return newWorks.findIndex((item2)=>item2.task.id===item.task.id)===index
@@ -163,21 +165,8 @@ class Reports extends Component {
 				totalPrice
 			}
 		})
-		let filter = this.props.filter;
-		newMaterials = newMaterials.filter((material)=>
-			(filter.status.length===0||(material.task.status && filter.status.includes(material.task.status.id))) &&
-			(filter.requester===null||(material.task.requester && material.task.requester.id===filter.requester)||(material.task.requester && filter.requester==='cur' && material.task.requester.id === this.props.currentUser.id)) &&
-			(filter.company===null||(material.task.company && material.task.company.id===filter.company) ||(material.task.company && filter.company==='cur' && material.task.company.id===this.props.currentUser.userData.company)) &&
-			(filter.assigned===null||(material.task.assignedTo && material.task.assignedTo.map((item)=>item.id).includes(filter.assigned))||(material.task.assignedTo && filter.requester==='cur' && material.task.assignedTo.map((item)=>item.id).includes(this.props.currentUser.id))) &&
-			(this.props.project===null || (material.task.project && material.task.project===this.props.project)) &&
-			(filter.statusDateFrom===''||material.task.statusChange >= filter.statusDateFrom) &&
-			(filter.statusDateTo===''||material.task.statusChange <= filter.statusDateTo) &&
-			(filter.closeDateFrom===undefined || filter.closeDateFrom===''||(material.task.closeDate && material.task.closeDate >= filter.closeDateFrom)) &&
-			(filter.closeDateTo===undefined || filter.closeDateTo===''||(material.task.closeDate && material.task.closeDate <= filter.closeDateTo)) &&
-			(filter.pendingDateFrom===undefined || filter.pendingDateFrom===''||(material.task.pendingDate && material.task.pendingDate >= filter.pendingDateFrom)) &&
-			(filter.pendingDateTo===undefined || filter.pendingDateTo===''||(material.task.pendingDate && material.task.pendingDate <= filter.pendingDateTo))&&
-			(this.props.milestone===null||(material.task.milestone&& material.task.milestone === this.props.milestone))
-		);
+		const filter = this.props.filter;
+		newMaterials = newMaterials.filter((material)=> material.task && applyTaskFilter( material.task, filter, this.props.currentUser, this.props.project, this.props.milestone ) )
 
 		let groupedMaterials = newMaterials.filter((item, index)=>{
 			return newMaterials.findIndex((item2)=>item2.task.id===item.task.id)===index
@@ -365,7 +354,18 @@ class Reports extends Component {
 		}
 	}
 
-const mapStateToProps = ({ filterReducer,userReducer, storageHelpTaskTypes, storageHelpTasks, storageHelpStatuses, storageHelpUnits, storageUsers, storageHelpTaskMaterials, storageHelpTaskWorks }) => {
+const mapStateToProps = ({
+	filterReducer,
+	userReducer,
+	storageHelpTaskTypes,
+	storageHelpTasks,
+	storageHelpStatuses,
+	storageHelpUnits,
+	storageUsers,
+	storageHelpTaskMaterials,
+	storageHelpTaskWorks,
+	storageHelpProjects
+}) => {
 	const { filter, project, milestone } = filterReducer;
 
 	const { tasksActive, tasks, tasksLoaded } = storageHelpTasks;
@@ -375,6 +375,7 @@ const mapStateToProps = ({ filterReducer,userReducer, storageHelpTaskTypes, stor
 	const { usersActive, users, usersLoaded } = storageUsers;
 	const { materialsActive, materials, materialsLoaded } = storageHelpTaskMaterials;
 	const { taskWorksActive, taskWorks, taskWorksLoaded } = storageHelpTaskWorks;
+	const { projectsActive, projectsLoaded, projects } = storageHelpProjects;
 
 	return { filter, project, milestone,
 		currentUser:userReducer,
@@ -384,8 +385,9 @@ const mapStateToProps = ({ filterReducer,userReducer, storageHelpTaskTypes, stor
 		unitsActive, units,unitsLoaded,
 		usersActive, users,usersLoaded,
 		materialsActive, materials,materialsLoaded,
-		taskWorksActive, taskWorks,taskWorksLoaded
+		taskWorksActive, taskWorks,taskWorksLoaded,
+		projectsActive, projectsLoaded, projects
 	};
 };
 
-export default connect(mapStateToProps, { storageHelpTasksStart, storageHelpStatusesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart, storageHelpTaskWorksStart, storageHelpTaskTypesStart })(Reports);
+export default connect(mapStateToProps, { storageHelpTasksStart, storageHelpStatusesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart, storageHelpTaskWorksStart, storageHelpTaskTypesStart, storageHelpProjectsStart })(Reports);

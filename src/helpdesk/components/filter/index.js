@@ -5,15 +5,29 @@ import { connect } from "react-redux";
 
 import {database, rebase} from '../../../index';
 import DatePicker from 'react-datepicker';
-import {setFilter, storageHelpTaskTypesStart, storageUsersStart, storageCompaniesStart, storageHelpStatusesStart} from '../../../redux/actions';
+import {setFilter, storageHelpTaskTypesStart, storageUsersStart, storageCompaniesStart } from '../../../redux/actions';
 import {toSelArr, snapshotToArray, sameStringForms, toMomentInput, fromMomentToUnix } from '../../../helperFunctions';
 import AddFilter from './filterAdd';
 
 import datePickerConfig from '../../../scss/datePickerConfig';
 import {invisibleSelectStyleOtherFont} from '../../../scss/selectStyles';
 
+const oneOfOptions = [
+  {
+    value: 'requester',
+    label: 'Requester'
+  },
+  {
+    value: 'assigned',
+    label: 'Assigned'
+  },
+  {
+    value: 'company',
+    label: 'Company'
+  }
+]
+
 const emptyFilter = {
-  status:[],
   requester:{id:null,label:'Žiadny',value:null},
   company:{id:null,label:'Žiadny',value:null},
   assigned:{id:null,label:'Žiadny',value:null},
@@ -24,19 +38,16 @@ const emptyFilter = {
   closeDateTo: null,
   pendingDateFrom: null,
   pendingDateTo: null,
+  deadlineFrom: null,
+  deadlineTo: null,
   public:false,
+  oneOf: []
 }
 
 class Filter extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      statuses:[],
-      users:[],
-      companies:[],
-      workTypes:[],
-      loading:true,
-
       ...emptyFilter,
 
       newFilterName: "",
@@ -46,8 +57,9 @@ class Filter extends Component {
     this.canSaveFilter.bind(this);
   }
 
-  getItemValue(sourceKey,state,id){
-    let value = state[sourceKey].find((item)=>item.id===id);
+  getItemValue(sourceKey,props,id){
+    const source = toSelArr( props[sourceKey], ['users'].includes(sourceKey) ? 'email' : 'title' )
+    let value = source.find((item)=>item.id === id);
     if(value===undefined){
       if(id==='cur'){
         value={label:'Current',value:'cur',id:'cur'};
@@ -59,72 +71,62 @@ class Filter extends Component {
   }
 
   componentWillReceiveProps(props){
-    let oldFilter = this.props.filters.find((filter)=>filter.id===props.filterID);
-    let newFilter = props.filters.find((filter)=>filter.id===props.filterID);
-    if(this.props.filter.updatedAt!==props.filter.updatedAt||!sameStringForms(oldFilter,newFilter)){
-      let filter = props.filter;
-      this.setState({
-        status:this.state.statuses.filter((status)=>filter.status.includes(status.id)),
-        requester:this.getItemValue('users',this.state,filter.requester),
-        company:this.getItemValue('companies',this.state,filter.company),
-        assigned:this.getItemValue('users',this.state,filter.assigned),
-        workType:this.getItemValue('workTypes',this.state,filter.workType),
-
-        statusDateFrom: toMomentInput(filter.statusDateFrom),
-        statusDateTo: toMomentInput(filter.statusDateTo),
-        pendingDateFrom: toMomentInput(filter.pendingDateFrom),
-        pendingDateTo: toMomentInput(filter.pendingDateTo),
-        closeDateFrom: toMomentInput(filter.closeDateFrom),
-        closeDateTo: toMomentInput(filter.closeDateTo),
-
-        public:newFilter?newFilter.public:false,
-      });
+    if(!sameStringForms( props.filter,this.props.filter )){
+      this.setFilter(props);
     }
-    if(!sameStringForms(props.statuses,this.props.statuses)){
-      this.setState({statuses:toSelArr(props.statuses)})
-    }
-    if(!sameStringForms(props.users,this.props.users)){
-      this.setState({users:toSelArr(props.users,'email')})
-    }
-    if(!sameStringForms(props.companies,this.props.companies)){
-      this.setState({companies:toSelArr(props.companies)})
-    }
-    if(!sameStringForms(props.taskTypes,this.props.taskTypes)){
-      this.setState({taskTypes:toSelArr(props.taskTypes)})
+    if(!this.storageLoaded(this.props) && this.storageLoaded(props) ){
+      this.setFilter(props);
     }
   }
 
-  componentWillMount(){
-    if(!this.props.statusesActive){
-      this.props.storageHelpStatusesStart();
+  setFilter(props){
+    if(!this.storageLoaded(props)){
+      return;
     }
-    this.setState({statuses:toSelArr(this.props.statuses)});
+    const filterData = props.filters.find( (filter) => filter.id === props.filter.id );
+    const filter = props.filter;
+    this.setState({
+      requester: this.getItemValue( 'users', props, filter.requester ),
+      company: this.getItemValue( 'companies', props, filter.company ),
+      assigned: this.getItemValue( 'users', props, filter.assigned ),
+      workType: this.getItemValue( 'taskTypes', props, filter.workType ),
+      oneOf: oneOfOptions.filter( (option) => filter.oneOf.includes(option.value) ),
+
+      statusDateFrom: toMomentInput(filter.statusDateFrom),
+      statusDateTo: toMomentInput(filter.statusDateTo),
+      pendingDateFrom: toMomentInput(filter.pendingDateFrom),
+      pendingDateTo: toMomentInput(filter.pendingDateTo),
+      closeDateFrom: toMomentInput(filter.closeDateFrom),
+      closeDateTo: toMomentInput(filter.closeDateTo),
+      deadlineFrom: toMomentInput(filter.deadlineFrom),
+      deadlineTo: toMomentInput(filter.deadlineTo),
+
+      public:filterData ? filterData.public : false,
+    });
+  }
+
+  componentWillMount(){
 
     if(!this.props.usersActive){
       this.props.storageUsersStart();
     }
-    this.setState({users:toSelArr(this.props.users,'email')});
 
     if(!this.props.companiesActive){
       this.props.storageCompaniesStart();
     }
-    this.setState({companies:toSelArr(this.props.companies)});
 
     if(!this.props.taskTypesActive){
       this.props.storageHelpTaskTypesStart();
     }
-    this.setState({workTypes:toSelArr(this.props.taskTypes)});
   }
 
-  fetchData(){
-    Promise.all([
-      database.collection('help-statuses').get(),
-      database.collection('users').get(),
-      database.collection('companies').get(),
-      database.collection('help-task_types').get(),
-    ]).then(([statuses,users, companies, workTypes])=>{
-      this.setData(toSelArr(snapshotToArray(statuses)),toSelArr(snapshotToArray(users),'email'),toSelArr(snapshotToArray(companies)),toSelArr(snapshotToArray(workTypes)));
-    });
+  storageLoaded(props){
+    return (
+      props.filtersLoaded &&
+      props.taskTypesLoaded &&
+      props.usersLoaded &&
+      props.companiesLoaded
+    )
   }
 
   deleteFilter(){
@@ -142,22 +144,7 @@ class Filter extends Component {
     if(this.props.filterID===null){
       this.setState({...emptyFilter})
     }
-    let filter = this.props.filterData.filter;
-
-    this.setState({
-      status:this.state.statuses.filter((status)=>filter.status.includes(status.id)),
-      requester:this.getItemValue('users',this.state,filter.requester),
-      company:this.getItemValue('companies',this.state,filter.company),
-      assigned:this.getItemValue('users',this.state,filter.assigned),
-      workType:this.getItemValue('workTypes',this.state,filter.workType),
-
-      statusDateFrom: toMomentInput(filter.statusDateFrom),
-      statusDateTo: toMomentInput(filter.statusDateTo),
-      pendingDateFrom: toMomentInput(filter.pendingDateFrom),
-      pendingDateTo: toMomentInput(filter.pendingDateTo),
-      closeDateFrom: toMomentInput(filter.closeDateFrom),
-      closeDateTo: toMomentInput(filter.closeDateTo),
-    });
+    this.setFilter(this.props);
   }
 
   applyFilter(){
@@ -166,7 +153,7 @@ class Filter extends Component {
       company:this.state.company.id,
       assigned:this.state.assigned.id,
       workType:this.state.workType.id,
-      status:this.state.status.map((item)=>item.id),
+      oneOf: this.state.oneOf.map( (item) => item.value ),
 
       statusDateFrom: fromMomentToUnix(this.state.statusDateFrom),
       statusDateTo: fromMomentToUnix(this.state.statusDateTo),
@@ -174,6 +161,8 @@ class Filter extends Component {
       closeDateTo: fromMomentToUnix(this.state.closeDateTo),
       pendingDateFrom: fromMomentToUnix(this.state.pendingDateFrom),
       pendingDateTo: fromMomentToUnix(this.state.pendingDateTo),
+      deadlineFrom: fromMomentToUnix(this.state.deadlineFrom),
+      deadlineTo: fromMomentToUnix(this.state.deadlineTo),
 
       updatedAt:(new Date()).getTime()
     }
@@ -205,17 +194,20 @@ class Filter extends Component {
           {this.canSaveFilter() &&
             <AddFilter
               filter={{
-                requester:this.state.requester.id,
-                company:this.state.company.id,
-                assigned:this.state.assigned.id,
-                workType:this.state.workType.id,
-                status:this.state.status.map((item)=>item.id),
+                requester: this.state.requester.id,
+                company: this.state.company.id,
+                assigned: this.state.assigned.id,
+                workType: this.state.workType.id,
+                oneOf: this.state.oneOf.map( (item) => item.value ),
+
                 statusDateFrom: fromMomentToUnix(this.state.statusDateFrom),
                 statusDateTo: fromMomentToUnix(this.state.statusDateTo),
                 pendingDateFrom: fromMomentToUnix(this.state.pendingDateFrom),
                 pendingDateTo: fromMomentToUnix(this.state.pendingDateTo),
                 closeDateFrom: fromMomentToUnix(this.state.closeDateFrom),
                 closeDateTo: fromMomentToUnix(this.state.closeDateTo),
+                deadlineFrom: fromMomentToUnix(this.state.deadlineFrom),
+                deadlineTo: fromMomentToUnix(this.state.deadlineTo),
               }}
               filterID={this.props.filterID}
               filterData={this.props.filterData}
@@ -258,7 +250,7 @@ class Filter extends Component {
                 <label htmlFor="example-input-small">Zadal</label>
                 <div className="flex">
                   <Select
-                    options={[{label:'Žiadny',value:null,id:null},{label:'Current',value:'cur',id:'cur'}].concat(this.state.users)}
+                    options={[{label:'Žiadny',value:null,id:null},{label:'Current',value:'cur',id:'cur'}].concat(toSelArr(this.props.users, 'email'))}
                     onChange={(newValue)=>this.setState({requester:newValue})}
                     value={this.state.requester}
                     styles={invisibleSelectStyleOtherFont} />
@@ -268,8 +260,8 @@ class Filter extends Component {
                 <label htmlFor="example-input-small">Firma</label>
                 <div className="flex">
                   <Select
-                    options={[{label:'Žiadny',value:null,id:null},{label:'Current',value:'cur',id:'cur'}].concat(this.state.companies)}
-                    onChange={(newValue)=>this.setState({company:newValue})}
+                    options={[{label:'Žiadny',value:null,id:null},{label:'Current',value:'cur',id:'cur'}].concat(toSelArr(this.props.companies))}
+                    onChange={(company)=>this.setState({company})}
                     value={this.state.company}
                     styles={invisibleSelectStyleOtherFont} />
                 </div>
@@ -279,7 +271,7 @@ class Filter extends Component {
                 <label htmlFor="example-input-small">Riesi</label>
                 <div className="flex">
                   <Select
-                    options={[{label:'Žiadny',value:null,id:null},{label:'Current',value:'cur',id:'cur'}].concat(this.state.users)}
+                    options={[{label:'Žiadny',value:null,id:null},{label:'Current',value:'cur',id:'cur'}].concat(toSelArr(this.props.users, 'email'))}
                     onChange={(newValue)=>this.setState({assigned:newValue})}
                     value={this.state.assigned}
                     styles={invisibleSelectStyleOtherFont} />
@@ -362,12 +354,50 @@ class Filter extends Component {
               </div>
 
               <div className="sidebar-filter-row">
+                <label>Deadline</label>
+                <div className="row">
+                  <DatePicker
+                    className="form-control hidden-input"
+                    isClearable
+                    selected={this.state.deadlineFrom}
+                    onChange={(e)=>{
+                      this.setState({deadlineFrom:e})}
+                    }
+                    placeholderText="No date"
+                    {...datePickerConfig}
+                    />
+                  <DatePicker
+                    className="form-control hidden-input"
+                    isClearable
+                    selected={this.state.deadlineTo}
+                    onChange={(e)=>{
+                      this.setState({deadlineTo:e})}
+                    }
+                    placeholderText="No date"
+                    {...datePickerConfig}
+                    />
+                </div>
+              </div>
+
+              <div className="sidebar-filter-row">
                 <label htmlFor="example-input-small">Typ práce</label>
                 <div className="flex">
                   <Select
-                    options={[{label:'Žiadny',value:null,id:null}].concat(this.state.workTypes)}
+                    options={[{label:'Žiadny',value:null,id:null}].concat(toSelArr(this.props.taskTypes))}
                     onChange={(newValue)=>this.setState({workType:newValue})}
                     value={this.state.workType}
+                    styles={invisibleSelectStyleOtherFont} />
+                </div>
+              </div>
+
+              <div className="sidebar-filter-row">
+                <label htmlFor="example-input-small">Alebo - jedna splnená stačí</label>
+                <div className="flex">
+                  <Select
+                    options={oneOfOptions}
+                    onChange={(oneOf)=>this.setState({oneOf})}
+                    value={this.state.oneOf}
+                    isMulti
                     styles={invisibleSelectStyleOtherFont} />
                 </div>
               </div>
@@ -379,22 +409,21 @@ class Filter extends Component {
     }
 
 
-    const mapStateToProps = ({ filterReducer, storageHelpFilters, storageHelpTaskTypes, storageUsers, storageCompanies, storageHelpStatuses, userReducer }) => {
+    const mapStateToProps = ({ filterReducer, storageHelpFilters, storageHelpTaskTypes, storageUsers, storageCompanies, userReducer }) => {
       const { filter } = filterReducer;
-      const { filters,filtersLoaded } = storageHelpFilters;
-      const { taskTypesActive, taskTypes } = storageHelpTaskTypes;
-      const { usersActive, users } = storageUsers;
-      const { companiesActive, companies } = storageCompanies;
-      const { statusesActive, statuses } = storageHelpStatuses;
+      const { filtersActive, filtersLoaded, filters } = storageHelpFilters;
+      const { taskTypesActive, taskTypesLoaded, taskTypes } = storageHelpTaskTypes;
+      const { usersActive, usersLoaded, users } = storageUsers;
+      const { companiesActive, companiesLoaded, companies } = storageCompanies;
 
-      return { filter,
-        filters,filtersLoaded,
-        taskTypesActive, taskTypes,
-        usersActive, users,
-        companiesActive, companies,
-        statusesActive, statuses,
+      return {
+        filter,
+        filtersActive, filtersLoaded, filters,
+        taskTypesActive, taskTypesLoaded, taskTypes,
+        usersActive, usersLoaded, users,
+        companiesActive, companiesLoaded, companies,
         currentUser:userReducer
       };
     };
 
-    export default connect(mapStateToProps, { setFilter, storageHelpTaskTypesStart,storageUsersStart, storageCompaniesStart, storageHelpStatusesStart })(Filter);
+    export default connect(mapStateToProps, { setFilter, storageHelpTaskTypesStart,storageUsersStart, storageCompaniesStart })(Filter);

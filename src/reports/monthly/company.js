@@ -283,8 +283,8 @@ class MothlyReportsCompany extends Component {
 	giveTasksInfo(props, materials, customItems, works, trips){
 		return props.tasks.map((task)=>{
 			let company = task.company === null ? null : props.companies.find((company)=>company.id===task.company);
-			if(company===undefined){
-				company=null;
+			if(company === undefined){
+				company = null;
 			}
 			return {
 				...task,
@@ -297,7 +297,7 @@ class MothlyReportsCompany extends Component {
 				materials: materials.filter((material)=>material.task===task.id).sort((material1,material2) => material1.order - material2.order ),
 				customItems: customItems.filter((item)=>item.task===task.id).sort((customItem1,customItem2) => customItem1.order - customItem2.order ),
 			}
-		})
+		}).filter( (task) => task.company !== null )
 	}
 
 	processTasks(props, materials, customItems, works, trips){
@@ -1793,7 +1793,7 @@ class MothlyReportsCompany extends Component {
 		return tasks.map((group)=>{
 			let companies = [];
 			group.tasks.forEach((task)=>{
-				let group = companies.find((group)=>group.company.id===task.company.id);
+				let group = companies.find((group)=>task.company && group.company.id===task.company.id);
 				if(group===undefined){
 					companies.push({company:task.company,tasks:[task]})
 				}else{

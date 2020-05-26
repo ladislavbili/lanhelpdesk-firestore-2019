@@ -5,7 +5,7 @@ import {testing} from '../helperFunctions';
 import {setTasklistLayout} from '../redux/actions';
 import {rebase} from '../index';
 
-import Sidebar from './Sidebar';
+import Sidebar from './components/sidebar';
 import ErrorMessages from 'components/errorMessages';
 
 import PageHeader from '../components/PageHeader';

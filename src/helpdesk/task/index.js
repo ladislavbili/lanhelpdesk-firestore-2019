@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import ShowData from '../../components/showData';
-import { timestampToString, sameStringForms } from '../../helperFunctions';
+import { timestampToString, sameStringForms, applyTaskFilter } from 'helperFunctions';
+import { getEmptyFilter, getFixedFilters } from '../components/sidebar/fixedFilters';
 import TaskEdit from './taskEdit';
 import TaskEmpty from './taskEmpty';
 import TaskCalendar from '../calendar';
@@ -11,8 +12,9 @@ import {setTasksOrderBy, setTasksAscending,storageCompaniesStart,storageHelpTags
 	storageHelpProjectsStart,storageHelpStatusesStart,storageHelpTasksStart, storageHelpFiltersStart,
 	setTasklistLayout, storageHelpMilestonesStart, storageHelpCalendarEventsStart,
 	setHelpSidebarProject, setHelpSidebarMilestone, setHelpSidebarFilter, setFilter, setMilestone,setProject,
-} from '../../redux/actions';
-const allMilestones = {id:null,title:'Any', label:'Any',value:null};
+} from 'redux/actions';
+const allMilestones = {id:null,title:'Any milestone', label:'Any milestone',value:null};
+const fixedFilters = getFixedFilters();
 
 class TasksIndex extends Component {
 
@@ -107,14 +109,15 @@ class TasksIndex extends Component {
 
 	getFilterName(props){
 		let id = props.match.params.listID;
+		let filter = fixedFilters.find( (filter) => filter.id === id )
 		if(!id){
 			this.setState({filterName:''});
 			return;
-		}else if(id==='all'){
-			this.setState({filterName:'All'});
+		}else if( filter !== undefined ){
+			this.setState({filterName: filter.title });
 			return;
 		}
-		let filter = props.filters.find((filter)=>filter.id===id);
+		filter = props.filters.find((filter)=>filter.id===id);
 		if(filter){
 			this.setState({filterName:filter.title});
 		}
@@ -124,7 +127,6 @@ class TasksIndex extends Component {
 		let project = this.props.projectState;
 		let milestone = this.props.milestoneState;
 		let filter = this.props.filterState;
-
 		return [
 			{
 				type:'project',
@@ -135,48 +137,26 @@ class TasksIndex extends Component {
 					this.props.setHelpSidebarMilestone(allMilestones);
 					this.props.setMilestone(null);
 					this.props.setHelpSidebarFilter(null);
-					this.props.setFilter({
-						status:[],
-						requester:null,
-						company:null,
-						assigned:null,
-						workType:null,
-						statusDateFrom: null,
-						statusDateTo: null,
-						updatedAt:(new Date()).getTime()
-					});
+					this.props.setFilter(getEmptyFilter());
 					this.props.history.push('/helpdesk/taskList/i/all');
 				}
 			},
 			{
 				type:'milestone',
-				show:project!==null && (filter!==null||milestone.id!==null),
+				show:project!==null,
 				data:milestone,
 				label:milestone?milestone.title:'Invalid milestone',
 				onClick:()=>{
 					this.props.setHelpSidebarFilter(null);
-					this.props.setFilter({
-						status:[],
-						requester:null,
-						company:null,
-						assigned:null,
-						workType:null,
-						statusDateFrom: null,
-						statusDateTo: null,
-						closeDateFrom: null,
-			      closeDateTo: null,
-			      pendingDateFrom: null,
-			      pendingDateTo: null,
-						updatedAt:(new Date()).getTime()
-					});
+					this.props.setFilter(getEmptyFilter());
 					this.props.history.push('/helpdesk/taskList/i/all');
 				}
 			},
 			{
 				type:'filter',
-				show: filter!==null,
-				data:filter,
-				label:filter?filter.title:'Invalid filter',
+				show: true,
+				data: filter,
+				label: this.state.filterName,
 				onClick:()=>{
 				}
 			}
@@ -279,7 +259,6 @@ class TasksIndex extends Component {
 		if(!this.props.statusesLoaded){
 			return [];
 		}
-
 		let newTasks=this.state.tasks.map((task)=>{
 			return {
 				...task,
@@ -292,28 +271,9 @@ class TasksIndex extends Component {
 				id:parseInt(task.id)
 			}
 		});
-		let filter = this.props.filter;
 
-		return newTasks.filter((task)=>{
-			let currentPermissions = null;
-			if(task.project){
-				currentPermissions = task.project.permissions.find((permission)=>permission.user === this.props.currentUser.id);
-			}
-			return (this.props.currentUser.statuses.length===0||(task.status && this.props.currentUser.statuses.includes(task.status.id))) &&
-			(filter.requester===null||(task.requester && task.requester.id===filter.requester)||(task.requester && filter.requester==='cur' && task.requester.id === this.props.currentUser.id)) &&
-			(filter.workType===null||(task.type===filter.workType)) &&
-			(filter.company===null||(task.company && task.company.id===filter.company) ||(task.company && filter.company==='cur' && task.company.id===this.props.currentUser.userData.company)) &&
-			(filter.assigned===null||(task.assignedTo && task.assignedTo.map((item)=>item.id).includes(filter.assigned))||(task.assignedTo && filter.requester==='cur' && task.assignedTo.map((item)=>item.id).includes(this.props.currentUser.id))) &&
-			(filter.statusDateFrom === null || task.statusChange >= filter.statusDateFrom) &&
-			(filter.statusDateTo === null || task.statusChange <= filter.statusDateTo) &&
-			(filter.closeDateFrom === null || task.closeDate >= filter.closeDateFrom) &&
-			(filter.closeDateTo === null || task.closeDate <= filter.closeDateTo) &&
-			(filter.pendingDateFrom === null || task.pendingDate >= filter.pendingDateFrom) &&
-			(filter.pendingDateTo === null || task.pendingDate <= filter.pendingDateTo) &&
-			(this.props.project===null||(task.project && task.project.id===this.props.project))&&
-			(this.props.currentUser.userData.role.value===3||(currentPermissions && currentPermissions.read)) &&
-			(this.props.milestone===null||((task.milestone)&& task.milestone === this.props.milestone))
-		})
+		const filter = this.props.filter;
+		return newTasks.filter( ( task ) => applyTaskFilter( task, filter, this.props.currentUser, this.props.project, this.props.milestone ) )
 	}
 
 	getCalendarEventsData(tasks){

@@ -12,7 +12,9 @@ const initialState = {
     pendingDateTo: null,
     closeDateFrom: null,
     closeDateTo: null,
-    status:[],
+    deadlineFrom: null,
+    deadlineTo: null,
+    oneOf: [],
     updatedAt:(new Date()).getTime()
   },
   search:'',

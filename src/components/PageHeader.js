@@ -184,7 +184,7 @@ class PageHeader extends Component {
               <DropdownToggle className="header-dropdown">
                 <i className={"header-icon fa " + this.getLayoutIcon()}/>
               </DropdownToggle>
-              <DropdownMenu right="right">
+              <DropdownMenu right>
                 <div className="btn-group-vertical" data-toggle="buttons">
                   <label className={classnames({'active':this.props.layout === 0}, "btn btn-link btn-outline-blue waves-effect waves-light")}>
                     <input type="radio" name="options" onChange={() => this.props.setLayout(0)} checked={this.props.layout === 0}/>
@@ -218,9 +218,9 @@ class PageHeader extends Component {
             <DropdownToggle className="header-dropdown">
               <i className="header-icon-with-text fa fa fa-envelope"/>
             </DropdownToggle>
-            <DropdownMenu right="right">
-              <DropdownItem header="header">Notifications</DropdownItem>
-              <DropdownItem divider="divider"/> {this.props.currentUser.notifications.length === 0 && <DropdownItem>You have no notifications!</DropdownItem>}
+            <DropdownMenu right>
+              <DropdownItem header={true}>Notifications</DropdownItem>
+              <DropdownItem divider={true}/> {this.props.currentUser.notifications.length === 0 && <DropdownItem>You have no notifications!</DropdownItem>}
               {
                 this.processNotifications().splice(0, 5).map((notification) => <DropdownItem key={notification.id} onClick={() => {
                     this.props.history.push('/helpdesk/notifications/' + notification.id + '/' + notification.task.id)
@@ -244,7 +244,7 @@ class PageHeader extends Component {
                   </div>
                 </DropdownItem>)
               }
-              <DropdownItem divider="divider"/>
+              <DropdownItem divider={true}/>
               <DropdownItem onClick={() => this.props.history.push('/helpdesk/notifications/')}>
                 <span style={{
                     fontWeight: 'bold'
@@ -266,9 +266,9 @@ class PageHeader extends Component {
                 <DropdownToggle className="header-dropdown">
                   <i className="header-icon fa fa-cog"/>
                 </DropdownToggle>
-                <DropdownMenu right="right">
-                  <DropdownItem header="header">Settings</DropdownItem>
-                  <DropdownItem divider="divider"/> {this.props.settings.filter((setting) => setting.minimalRole <= this.props.currentUser.userData.role.value).map((item, index) => <DropdownItem key={index} onClick={() => this.props.history.push(this.getLocation() + '/settings/' + item.link)}>{item.title}</DropdownItem>)}
+                <DropdownMenu right>
+                  <DropdownItem header={true}>Settings</DropdownItem>
+                  <DropdownItem divider={true} /> {this.props.settings.filter((setting) => setting.minimalRole <= this.props.currentUser.userData.role.value).map((item, index) => <DropdownItem key={index} onClick={() => this.props.history.push(this.getLocation() + '/settings/' + item.link)}>{item.title}</DropdownItem>)}
                 </DropdownMenu>
               </Dropdown>
           }

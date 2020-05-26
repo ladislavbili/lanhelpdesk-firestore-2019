@@ -16,7 +16,7 @@ export const snapshotToArray = (snapshot) => {
   })
 }
 
-export const toMomentInput = (unix) => unix !== null ? moment(unix) : null;
+export const toMomentInput = (unix) => ( unix !== null && unix !== undefined ) ? moment(unix) : null;
 
 export const fromMomentToUnix = (moment) => moment !== null ? moment.unix()*1000 : null;
 
@@ -163,4 +163,65 @@ export const inputToTimestamp = (input)=>{
 
 export const changeCKEData = (input)=>{
   return input.replace(/<p>/g, "<p style='margin-bottom: 0px; padding-bottom: 0px;'>");
+}
+
+export const applyTaskFilter = ( task, filter, user, projectID, milestoneID ) => {
+  let currentPermissions = null;
+  if(task.project){
+    currentPermissions = task.project.permissions.find((permission)=>permission.user === user.id);
+  }
+  return filterOneOf( task, filter, user ) &&
+  ( user.statuses.length === 0 || ( task.status && user.statuses.includes( task.status.id ) ) ) &&
+  ( filter.workType === null || ( task.type === filter.workType ) ) &&
+  ( filter.statusDateFrom === null || task.statusChange >= filter.statusDateFrom ) &&
+  ( filter.statusDateTo === null || task.statusChange <= filter.statusDateTo ) &&
+  ( filter.closeDateFrom === null || ( task.closeDate !== null && task.closeDate >= filter.closeDateFrom ) ) &&
+  ( filter.closeDateTo === null || ( task.closeDate !== null && task.closeDate <= filter.closeDateTo ) ) &&
+  ( filter.pendingDateFrom === null || ( task.pendingDate !== null && task.pendingDate >= filter.pendingDateFrom ) ) &&
+  ( filter.pendingDateTo === null || ( task.pendingDate !== null && task.pendingDate <= filter.pendingDateTo ) ) &&
+  ( filter.deadlineFrom === null || ( task.deadline !== null && task.deadline >= filter.deadlineFrom ) ) &&
+  ( filter.deadlineTo === null || (task.deadline !== null && task.deadline <= filter.deadlineTo) ) &&
+  ( projectID === null || ( task.project && task.project.id === projectID ) ) &&
+  ( user.userData.role.value === 3 || ( currentPermissions && currentPermissions.read ) ) &&
+  ( milestoneID===null || ( task.milestone && task.milestone === milestoneID ) )
+}
+
+export const filterOneOf = ( task, filter, user ) => {
+  const requesterSatisfied = (
+    filter.requester === null ||
+    ( task.requester && task.requester.id === filter.requester ) ||
+    ( task.requester && filter.requester==='cur' && task.requester.id === user.id)
+  )
+  const assignedSatisfied = (
+    filter.assigned === null ||
+    ( task.assignedTo && task.assignedTo.map( (item) => item.id ).includes( filter.assigned ) ) ||
+    ( task.assignedTo && filter.assigned === 'cur' && task.assignedTo.map( (item) => item.id ).includes(user.id) )
+  )
+
+  const companySatisfied = (
+    filter.company === null ||
+    ( task.company && task.company.id === filter.company ) ||
+    ( task.company && filter.company==='cur' && task.company.id === user.userData.company )
+  )
+
+  const oneOf = [];
+  const all = [];
+  if(filter.oneOf.includes('requester')){
+    oneOf.push(requesterSatisfied)
+  }else{
+    all.push(requesterSatisfied)
+  }
+
+  if(filter.oneOf.includes('assigned')){
+    oneOf.push(assignedSatisfied)
+  }else{
+    all.push(assignedSatisfied)
+  }
+
+  if(filter.oneOf.includes('company')){
+    oneOf.push(companySatisfied)
+  }else{
+    all.push(companySatisfied)
+  }
+  return all.every( (bool) => bool ) && ( oneOf.length === 0 || oneOf.some( (bool) => bool ) )
 }
