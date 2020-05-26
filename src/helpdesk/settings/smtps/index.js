@@ -7,6 +7,7 @@ import firebase from 'firebase';
 import { connect } from "react-redux";
 import {storageSmtpsStart} from 'redux/actions';
 import {sameStringForms} from 'helperFunctions';
+import { REST_URL } from 'config';
 
 class SMTPsList extends Component{
   constructor(props){
@@ -34,9 +35,7 @@ class SMTPsList extends Component{
   testSMTPs(){
     this.setState({ smtpTesting: true })
     firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then((token)=>{
-      fetch('https://api01.lansystems.sk:8080/deactivate-user',{
-        // http://127.0.0.1:3003
-        // https://api01.lansystems.sk:8080
+      fetch(`${REST_URL}/test-smtps`,{
         headers: {
           'Content-Type': 'application/json'
         },

@@ -4,6 +4,7 @@ import { Route } from 'react-router-dom';
 import { connect } from "react-redux";
 import {testing} from '../helperFunctions';
 import Sidebar from './Sidebar';
+import ErrorMessages from 'components/errorMessages';
 import PageHeader from '../components/PageHeader';
 import SelectPage from '../components/SelectPage';
 
@@ -39,7 +40,7 @@ class Navigation extends Component {
 				<div className="row center center-ver">
 						<Sidebar {...this.props} />
 					<div className="main">
-
+						<Route exact path="/cmdb/errorMessages" component={ErrorMessages} />
 						<Route exact path='/cmdb/add' component={SidebarItemAdd} />
 						<Route exact path='/cmdb/edit/:sidebarID' component={SidebarItemEdit} />
 						<Route exact path='/cmdb/i/:sidebarID' component={ItemList} />

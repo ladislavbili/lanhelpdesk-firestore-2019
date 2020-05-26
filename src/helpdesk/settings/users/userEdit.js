@@ -11,6 +11,7 @@ import { connect } from "react-redux";
 import {storageCompaniesStart,storageUsersStart, setUserData} from '../../../redux/actions';
 import {toSelArr} from '../../../helperFunctions';
 import Checkbox from '../../../components/checkbox';
+import { REST_URL } from 'config';
 
 let roles=[
   {label:'Guest',value:-1},
@@ -81,9 +82,7 @@ class UserEdit extends Component{
 
     this.setState({ deletingUser: true })
     firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then((token)=>{
-      fetch('https://api01.lansystems.sk:8080/delete-user',{
-        // http://127.0.0.1:3003
-        // https://api01.lansystems.sk:8080
+      fetch(`${REST_URL}/delete-user`,{
         headers: {
           'Content-Type': 'application/json'
         },
@@ -105,9 +104,7 @@ class UserEdit extends Component{
   deactivateUser(){
     this.setState({ deletingUser: true })
     firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then((token)=>{
-      fetch('https://api01.lansystems.sk:8080/deactivate-user',{
-        // http://127.0.0.1:3003
-        // https://api01.lansystems.sk:8080
+      fetch(`${REST_URL}/deactivate-user`,{
         headers: {
           'Content-Type': 'application/json'
         },

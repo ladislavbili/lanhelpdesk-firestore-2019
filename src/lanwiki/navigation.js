@@ -7,6 +7,7 @@ import {setLayout} from '../redux/actions';
 import {testing} from '../helperFunctions';
 
 import Sidebar from './Sidebar';
+import ErrorMessages from 'components/errorMessages';
 import PageHeader from '../components/PageHeader';
 import SelectPage from '../components/SelectPage';
 import ListNotes from './Notes';
@@ -60,6 +61,7 @@ class Navigation extends Component {
 				<div className="row center center-ver">
 						<Sidebar {...this.props} />
 					<div className="main">
+						<Route exact path="/lanwiki/errorMessages" component={ErrorMessages} />
 						<Route exact path='/lanwiki' component={ListNotes} />
             <Route exact path='/lanwiki/i/:listID' component={ListNotes} />
 						<Route exact path='/lanwiki/i/:listID/:noteID' component={ListNotes} />

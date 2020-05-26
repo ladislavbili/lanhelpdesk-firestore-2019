@@ -9,6 +9,7 @@ import {snapshotToArray, timestampToString} from '../../helperFunctions';
 import { Creatable } from 'react-select';
 import CKEditor from 'ckeditor4-react';
 import {selectStyle} from '../../scss/selectStyles';
+import { REST_URL } from 'config';
 
 class Comments extends Component{
 
@@ -144,9 +145,7 @@ submitEmail(){
       formData.append('attachments', attachment);
     })
 
-    fetch('https://api01.lansystems.sk:8080/send-mail',{
-      // http://127.0.0.1:3003
-      // https://api01.lansystems.sk:8080
+    fetch(`${REST_URL}/send-mail`,{
       method: 'POST',
       body:formData,
     }).then((response)=>response.json().then((response)=>{

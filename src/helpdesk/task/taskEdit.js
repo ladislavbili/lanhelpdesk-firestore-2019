@@ -30,6 +30,7 @@ import PendingPicker from '../components/pendingPicker';
 import {toSelArr, snapshotToArray, timestampToString, sameStringForms} from '../../helperFunctions';
 import { storageCompaniesStart, storageHelpPricelistsStart, storageHelpPricesStart,storageHelpProjectsStart, storageHelpStatusesStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageHelpTasksStart, storageHelpUnitsStart,storageHelpWorkTypesStart, storageMetadataStart, storageUsersStart, storageHelpMilestonesStart, storageHelpTripTypesStart } from '../../redux/actions';
 import {invisibleSelectStyleNoArrow, invisibleSelectStyleNoArrowColored,invisibleSelectStyleNoArrowColoredRequired, invisibleSelectStyleNoArrowRequired} from '../../scss/selectStyles';
+import { REST_URL } from 'config';
 
 const noMilestone = {id:null,value:null,title:'None',label:'None',startsAt:null};
 const booleanSelects = [{value:false,label:'No'},{value:true,label:'Yes'}];
@@ -357,7 +358,7 @@ class TaskEdit extends Component {
 			rebase.addToCollection('user_notifications',{ ...event, user: user.id }).then((newNotification)=>{
 				if(user.mailNotifications){
 					firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then((token)=>{
-						fetch('https://api01.lansystems.sk:8080/send-notification',{ //127.0.0.1 https://api01.lansystems.sk:8080
+						fetch(`${REST_URL}/send-notification`,{
 						headers: {
 							'Content-Type': 'application/json'
 						},

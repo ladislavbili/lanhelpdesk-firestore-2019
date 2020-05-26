@@ -53,6 +53,10 @@ export const invisibleSelectStyleNoArrow = {
 		...base,
 		width: 0,
 	}),
+	menu: base => ({
+		...base,
+		zIndex: 50,
+	}),
 
 };
 
@@ -137,9 +141,13 @@ export const invisibleSelectStyleNoArrowColored = {
 		...base,
 		width: 0,
 	}),
-	singleValue: (styles, { data }) =>{
+	singleValue: (styles, { data }) => {
 		return ({ ...styles, color:'#FFF',padding:'0px 5px', backgroundColor: data.color });
-	}
+	},
+	menu: base => ({
+		...base,
+		zIndex: 50,
+	}),
 };
 
 export const invisibleSelectStyleNoArrowRequired = {
@@ -198,7 +206,11 @@ export const invisibleSelectStyleNoArrowRequired = {
 	placeholder: base=>({
 		...base,
 		color:'#FF4500'
-	})
+	}),
+	menu: base => ({
+		...base,
+		zIndex: 50,
+	}),
 
 };
 
@@ -289,6 +301,10 @@ export const invisibleSelectStyleNoArrowColoredRequired = {
 	placeholder: base=>({
 		...base,
 		color:'#FF4500'
+	}),
+	menu: base => ({
+		...base,
+		zIndex: 50,
 	}),
 };
 
@@ -518,7 +534,10 @@ export const invisibleSelectStyle = {
 		...base,
 		width: 0,
 	}),
-
+	menu: base => ({
+		...base,
+		zIndex: 50,
+	}),
 };
 
 export const disabledSelectStyle = {

@@ -6,6 +6,7 @@ import {rebase} from '../index';
 import {setLayout} from '../redux/actions';
 import {testing} from '../helperFunctions';
 import Sidebar from './Sidebar';
+import ErrorMessages from 'components/errorMessages';
 import PageHeader from '../components/PageHeader';
 import SelectPage from '../components/SelectPage';
 import MailServersList from './mailServers';
@@ -60,6 +61,7 @@ class Navigation extends Component {
 				<div className="row center center-ver">
 						<Sidebar {...this.props} />
 					<div className="main">
+						<Route exact path="/monitoring/errorMessages" component={ErrorMessages} />
 						<Route exact path='/monitoring/mail-servers' component={MailServersList} />
 						<Route exact path='/monitoring/mail-servers/edit/:itemID' component={MailServersList} />
 						<Route exact path='/monitoring/mail-servers/add' component={MailServerAdd} />

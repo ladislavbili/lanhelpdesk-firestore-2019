@@ -21,8 +21,7 @@ export const toMomentInput = (unix) => unix !== null ? moment(unix) : null;
 export const fromMomentToUnix = (moment) => moment !== null ? moment.unix()*1000 : null;
 
 export const timestampToString = (timestamp) => {
-  let date = (new Date(timestamp));
-  return date.getHours()+":"+(date.getMinutes() < 10 ? '0' : '') + date.getMinutes()+" "+date.getDate()+"."+(date.getMonth()+1)+"."+date.getFullYear();
+  return moment.unix(timestamp/1000).format('HH:mm DD.MM.YYYY');
 }
 
 export const timestampToDate = (timestamp) => {

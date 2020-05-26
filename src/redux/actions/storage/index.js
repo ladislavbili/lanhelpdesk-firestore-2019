@@ -22,6 +22,7 @@ export * from './help-company_invoices';
 export * from './help-calendar_events';
 
 export * from './companies';
+export * from './error_messages';
 export * from './imaps';
 export * from './metadata';
 export * from './smtps';

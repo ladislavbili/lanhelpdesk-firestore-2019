@@ -22,6 +22,7 @@ import storageHelpWorkTypes from './help-work_typesReducer';
 import storageHelpCompanyInvoices from './help-company_invoicesReducer';
 
 import storageCompanies from './companiesReducer';
+import storageErrorMessages from './error_messagesReducer';
 import storageImaps from './imapsReducer';
 import storageMetadata from './metadataReducer';
 import storageSmtps from './smtpsReducer';
@@ -52,6 +53,7 @@ export default {
   storageHelpCompanyInvoices,
 
   storageCompanies,
+  storageErrorMessages,
   storageImaps,
   storageMetadata,
   storageSmtps,

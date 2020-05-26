@@ -7,10 +7,20 @@ import {toSelArr} from '../../../helperFunctions';
 import {selectStyle} from "../../../scss/selectStyles";
 
 import { connect } from "react-redux";
-import {storageHelpPricelistsStart,storageMetadataStart, storageCompaniesStart, storageHelpTaskTypesStart, storageHelpTripTypesStart} from '../../../redux/actions';
+import {
+  storageHelpPricelistsStart,
+  storageMetadataStart,
+  storageCompaniesStart,
+  storageHelpTaskTypesStart,
+  storageHelpTripTypesStart,
+  storageHelpProjectsStart,
+  storageHelpTasksStart,
+} from '../../../redux/actions';
 import {sameStringForms, isEmail} from '../../../helperFunctions';
 import CompanyRents from './companyRents';
 import PriceEdit from "../prices/priceEdit";
+
+const projectNoCompany = {def:false, fixed:false, value: null, show: true };
 
 class CompanyEdit extends Component{
   constructor(props){
@@ -64,6 +74,7 @@ class CompanyEdit extends Component{
       loading:true,
       saving:false,
       clearCompanyRents:false,
+      deletingCompany: false,
     }
     this.getFakeID.bind(this);
     this.savePriceList.bind(this);
@@ -79,7 +90,13 @@ class CompanyEdit extends Component{
   }
 
   storageLoaded(props){
-    return props.pricelistsLoaded && props.metadataLoaded && props.companiesLoaded && props.tripTypesLoaded && props.taskTypesLoaded;
+    return props.pricelistsLoaded &&
+      props.metadataLoaded &&
+      props.companiesLoaded &&
+      props.tripTypesLoaded &&
+      props.taskTypesLoaded &&
+      props.projectsLoaded &&
+      props.tasksLoaded
   }
   componentWillReceiveProps(props){
     if(!sameStringForms(props.pricelists,this.props.pricelists)){
@@ -114,6 +131,12 @@ class CompanyEdit extends Component{
     }
     if(!this.props.taskTypesActive){
       this.props.storageHelpTaskTypesStart();
+    }
+    if(!this.props.projectsActive){
+      this.props.storageHelpProjectsStart();
+    }
+    if(!this.props.tasksActive){
+      this.props.storageHelpTasksStart();
     }
   }
 
@@ -263,6 +286,34 @@ class CompanyEdit extends Component{
           oldMonthlyPausal: this.state.monthlyPausal,
         })});
   }
+
+  deleteCompany(){
+    const companyID = this.props.match.params.id;
+    const tasks = this.props.tasks.filter( (task) => task.company === companyID );
+    const projects = this.props.projects.filter( (project) => project.def && project.def.company && project.def.company.value === companyID );
+    const message = `There are ${tasks.length > 0 ? `some (${tasks.length})` : 'no'} tasks and ${projects.length > 0 ? `some (${projects.length})` : 'no'} projects depended on this company.
+    Are you sure you want to delete it?
+
+    This will reset projects settings and tasks to no company.`
+      if(window.confirm(message)){
+        this.setState({deletingCompany: true })
+        Promise.all([
+          ...projects.map( (project) => rebase.updateDoc(`/help-projects/${project.id}`,{
+            def: {
+              ...project.def,
+              company: {
+                ...projectNoCompany
+              }
+            }
+          })),
+          ...tasks.map((task) => rebase.updateDoc(`/help-tasks/${task.id}`, { company: null }) ),
+          rebase.removeDoc('/companies/'+ companyID)
+        ])
+        .then(()=>{
+          this.props.history.goBack();
+        });
+      }
+    }
 
   savePriceList(){
     this.setState({saving:true});
@@ -721,13 +772,7 @@ class CompanyEdit extends Component{
             }}>{this.state.saving?'Saving...':'Save changes'}</Button>
           }
 
-           <Button className="btn-red ml-auto" disabled={this.state.saving} onClick={()=>{
-               if(window.confirm("Are you sure?")){
-                 rebase.removeDoc('/companies/'+this.props.match.params.id).then(()=>{
-                   this.props.history.goBack();
-                 });
-               }
-              }}>Delete</Button>
+           <Button className="btn-red ml-auto" disabled={this.state.saving || this.state.deletingCompany} onClick={this.deleteCompany.bind(this)}>Delete</Button>
 
 
           {this.state.newData &&
@@ -745,14 +790,42 @@ class CompanyEdit extends Component{
 }
 
 
-const mapStateToProps = ({ storageMetadata, storageHelpPricelists, storageCompanies, storageHelpTaskTypes, storageHelpTripTypes, userReducer }) => {
+const mapStateToProps = ({
+  storageMetadata,
+  storageHelpPricelists,
+  storageCompanies,
+  storageHelpTaskTypes,
+  storageHelpTripTypes,
+  userReducer,
+  storageHelpTasks,
+  storageHelpProjects,
+ }) => {
   const { taskTypesLoaded, taskTypesActive, taskTypes } = storageHelpTaskTypes;
   const { tripTypesActive, tripTypes, tripTypesLoaded } = storageHelpTripTypes;
   const { metadataActive, metadata, metadataLoaded } = storageMetadata;
   const { pricelistsActive, pricelists, pricelistsLoaded } = storageHelpPricelists;
   const { companiesActive, companies, companiesLoaded } = storageCompanies;
+	const { tasksActive, tasksLoaded, tasks } = storageHelpTasks;
+	const { projectsActive, projectsLoaded, projects } = storageHelpProjects;
   const role = userReducer.userData ? userReducer.userData.role.value : 0;
-  return { taskTypesLoaded, taskTypesActive, taskTypes, tripTypesActive, tripTypes, tripTypesLoaded, metadataActive, metadata, metadataLoaded, pricelistsActive, pricelists, pricelistsLoaded, companiesActive, companies, companiesLoaded, role };
+  return {
+    taskTypesLoaded, taskTypesActive, taskTypes,
+    tripTypesActive, tripTypes, tripTypesLoaded,
+    metadataActive, metadata, metadataLoaded,
+    pricelistsActive, pricelists, pricelistsLoaded,
+    companiesActive, companies, companiesLoaded,
+    tasksActive, tasksLoaded, tasks,
+    projectsActive, projectsLoaded, projects,
+    role,
+  };
 };
 
-export default connect(mapStateToProps, { storageHelpPricelistsStart,storageMetadataStart, storageCompaniesStart, storageHelpTaskTypesStart, storageHelpTripTypesStart })(CompanyEdit);
+export default connect(mapStateToProps, {
+  storageHelpPricelistsStart,
+  storageMetadataStart,
+  storageCompaniesStart,
+  storageHelpTaskTypesStart,
+  storageHelpTripTypesStart,
+  storageHelpProjectsStart,
+  storageHelpTasksStart,
+})(CompanyEdit);

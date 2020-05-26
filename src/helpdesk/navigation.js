@@ -6,6 +6,8 @@ import {setTasklistLayout} from '../redux/actions';
 import {rebase} from '../index';
 
 import Sidebar from './Sidebar';
+import ErrorMessages from 'components/errorMessages';
+
 import PageHeader from '../components/PageHeader';
 import SelectPage from '../components/SelectPage';
 
@@ -74,6 +76,7 @@ class Navigation extends Component {
 				<div className="row center center-ver">
 						<Sidebar {...this.props} settings={settings} />
 					<div className="main">
+					<Route exact path="/helpdesk/errorMessages" component={ErrorMessages} />
 
 					<Route exact path="/helpdesk" component={TaskList} />
 					<Route exact path="/helpdesk/taskList" component={TaskList} />

@@ -6,6 +6,7 @@ import {setLayout} from '../redux/actions';
 import {testing} from '../helperFunctions';
 
 import Sidebar from './Sidebar';
+import ErrorMessages from 'components/errorMessages';
 import PageHeader from '../components/PageHeader';
 import SelectPage from '../components/SelectPage';
 import List from './list';
@@ -58,6 +59,7 @@ class Navigation extends Component {
 				<div className="row center center-ver">
 						<Sidebar {...this.props} />
 					<div className="main">
+						<Route exact path="/passmanager/errorMessages" component={ErrorMessages} />
 						<Route exact path='/passmanager/i/:listID' component={List} />
 						<Route exact path='/passmanager/add' component={AddPassword} />
 						<Route exact path='/passmanager/i/:listID/:passID' component={List} />

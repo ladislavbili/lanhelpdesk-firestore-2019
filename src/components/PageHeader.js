@@ -4,9 +4,9 @@ import {Link} from 'react-router-dom';
 import {connect} from "react-redux";
 import firebase from 'firebase';
 import classnames from 'classnames';
-import {rebase} from '../index';
-import {deleteUserData, storageHelpTasksStart} from '../redux/actions';
-import {testing} from '../helperFunctions';
+import {rebase} from 'index';
+import { deleteUserData, storageHelpTasksStart, storageErrorMessagesStart } from 'redux/actions';
+import {testing} from 'helperFunctions';
 
 class PageHeader extends Component {
   constructor() {
@@ -23,6 +23,9 @@ class PageHeader extends Component {
   componentWillMount() {
     if (!this.props.tasksActive) {
       this.props.storageHelpTasksStart();
+    }
+    if (!this.props.errorMessagesActive) {
+      this.props.storageErrorMessagesStart();
     }
   }
 
@@ -78,6 +81,7 @@ class PageHeader extends Component {
   }
 
   render() {
+    const errorMessages = this.props.errorMessages.filter((message) => !message.read )
     let unreadNotifications = [...this.props.currentUser.notifications].splice(5, this.props.currentUser.notifications.length - 1).filter((notification) => !notification.read);
     const URL = this.props.history.location.pathname;
     return (<div className="page-header flex">
@@ -164,55 +168,49 @@ class PageHeader extends Component {
           }
         </div>
         <div className="ml-auto center-hor row">
-          {
-            this.props.showLayoutSwitch && <Dropdown className="center-hor" isOpen={this.state.layoutOpen} toggle={() => this.setState({
-                  layoutOpen: !this.state.layoutOpen
-                })}>
-                <DropdownToggle className="header-dropdown">
-                  <i className={"header-icon fa " + this.getLayoutIcon()}/>
-                </DropdownToggle>
-                <DropdownMenu right="right">
-                  <div className="btn-group-vertical" data-toggle="buttons">
-                    <label className={'btn btn-link btn-outline-blue waves-effect waves-light' + (
-                        this.props.layout === 0
-                        ? ' active'
-                        : '')}>
-                      <input type="radio" name="options" onChange={() => this.props.setLayout(0)} checked={this.props.layout === 0}/>
-                      <i className="fa fa-columns"/>
-                    </label>
-                    <label className={'btn btn-link btn-outline-blue waves-effect waves-light' + (
-                        this.props.layout === 1
-                        ? ' active'
-                        : '')}>
-                      <input type="radio" name="options" checked={this.props.layout === 1} onChange={() => this.props.setLayout(1)}/>
-                      <i className="fa fa-list"/>
-                    </label>
-                    {
-                      this.props.dndLayout && <label className={'btn btn-link btn-outline-blue waves-effect waves-light' + (
-                            this.props.layout === 2
-                            ? ' active'
-                            : '')}>
-                          <input type="radio" name="options" onChange={() => this.props.setLayout(2)} checked={this.props.layout === 2}/>
-                          <i className="fa fa-map"/>
-                        </label>
-                    }
+          <i
+            className={classnames({ "danger-color": errorMessages.length > 0 }, "header-icon fas fa-exclamation-triangle center-hor clickable")}
+            style={{marginRight: 6}}
+            onClick={() => this.props.history.push(`${this.getLocation()}/errorMessages/`)}
+            />
+          <span className={classnames({ "danger-color": errorMessages.length > 0 },"header-icon-text clickable")}>{errorMessages.length}</span>
 
-                    {
-                      this.props.calendarLayout && <label className={'btn btn-link btn-outline-blue waves-effect waves-light' + (
-                            this.props.layout === 3
-                            ? ' active'
-                            : '')}>
-                          <input type="radio" name="options" onChange={() => this.props.setLayout(3)} checked={this.props.layout === 3}/>
-                          <i className="fa fa-calendar-alt"/>
-                        </label>
-                    }
+          { this.props.showLayoutSwitch &&
+            <Dropdown className="center-hor"
+              isOpen={this.state.layoutOpen}
+              toggle={() => this.setState({
+                layoutOpen: !this.state.layoutOpen
+              })}>
+              <DropdownToggle className="header-dropdown">
+                <i className={"header-icon fa " + this.getLayoutIcon()}/>
+              </DropdownToggle>
+              <DropdownMenu right="right">
+                <div className="btn-group-vertical" data-toggle="buttons">
+                  <label className={classnames({'active':this.props.layout === 0}, "btn btn-link btn-outline-blue waves-effect waves-light")}>
+                    <input type="radio" name="options" onChange={() => this.props.setLayout(0)} checked={this.props.layout === 0}/>
+                    <i className="fa fa-columns"/>
+                  </label>
+                  <label className={classnames({'active':this.props.layout === 1}, "btn btn-link btn-outline-blue waves-effect waves-light")}>
+                    <input type="radio" name="options" checked={this.props.layout === 1} onChange={() => this.props.setLayout(1)}/>
+                    <i className="fa fa-list"/>
+                  </label>
+                  { this.props.dndLayout &&
+                    <label className={classnames({'active':this.props.layout === 2}, "btn btn-link btn-outline-blue waves-effect waves-light")}>
+                      <input type="radio" name="options" onChange={() => this.props.setLayout(2)} checked={this.props.layout === 2}/>
+                      <i className="fa fa-map"/>
+                    </label>
+                  }
 
-                  </div>
-                </DropdownMenu>
-              </Dropdown>
+                  { this.props.calendarLayout &&
+                    <label className={classnames({'active':this.props.layout === 3}, "btn btn-link btn-outline-blue waves-effect waves-light")}>
+                      <input type="radio" name="options" onChange={() => this.props.setLayout(3)} checked={this.props.layout === 3}/>
+                      <i className="fa fa-calendar-alt"/>
+                    </label>
+                  }
+                </div>
+              </DropdownMenu>
+            </Dropdown>
           }
-
-          <i className="header-icon m-l-5 m-r-8 fa fa-exclamation-triangle center-hor"/>
 
           <Dropdown className="center-hor" isOpen={this.state.notificationsOpen} toggle={() => this.setState({
               notificationsOpen: !this.state.notificationsOpen
@@ -286,9 +284,14 @@ class PageHeader extends Component {
   }
 }
 
-const mapStateToProps = ({userReducer, storageHelpTasks}) => {
+const mapStateToProps = ({userReducer, storageHelpTasks, storageErrorMessages}) => {
   const {tasksActive, tasks} = storageHelpTasks;
-  return {currentUser: userReducer, tasksActive, tasks};
+  const { errorMessagesActive, errorMessages } = storageErrorMessages;
+  return {
+    currentUser: userReducer,
+    tasksActive, tasks,
+    errorMessagesActive, errorMessages,
+  };
 };
 
-export default connect(mapStateToProps, {deleteUserData, storageHelpTasksStart})(PageHeader);
+export default connect(mapStateToProps, {deleteUserData, storageHelpTasksStart, storageErrorMessagesStart})(PageHeader);

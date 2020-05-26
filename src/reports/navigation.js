@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import {testing} from '../helperFunctions';
 
 import Sidebar from './Sidebar';
+import ErrorMessages from 'components/errorMessages';
 import PageHeader from '../components/PageHeader';
 import SelectPage from '../components/SelectPage';
 import GeneralReports from './general';
@@ -87,6 +88,7 @@ class Navigation extends Component {
 						<Sidebar {...this.props} />
 					<div className="main">
 					<Route exact path="/reports" component={GeneralReports} />
+					<Route exact path="/reports/errorMessages" component={ErrorMessages} />
 					<Route exact path="/reports/i/:id" component={GeneralReports} />
 					<Route exact path="/reports/monthly/companies" component={CompanyMonthlyReport} />
 					<Route exact path="/reports/monthly/requester" component={AssignedMonthlyReport} />
