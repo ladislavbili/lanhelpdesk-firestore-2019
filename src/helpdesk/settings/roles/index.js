@@ -19,21 +19,15 @@ class RolesList extends Component{
   constructor(props){
     super(props);
     this.state={
-      users:[],
+      roles:[],
+      roleFilter: "",
     }
   }
 
   componentWillReceiveProps(props){
-    if (!sameStringForms(props.users, this.props.users)){
-      this.setState({users: props.users})
-    }
   }
 
   componentWillMount(){
-    if(!this.props.usersActive){
-      this.props.storageUsersStart();
-    }
-    this.setState({users:this.props.users});
   }
 
   render(){
@@ -44,7 +38,16 @@ class RolesList extends Component{
             <div className="commandbar">
               <div className="search-row">
                 <div className="search">
-
+                  <button className="search-btn" type="button">
+                    <i className="fa fa-search" />
+                  </button>
+                  <input
+                    type="text"
+                    className="form-control search-text"
+                    value={this.state.roleFilter}
+                    onChange={(e)=>this.setState({roleFilter:e.target.value})}
+                    placeholder="Search"
+                    />
                 </div>
               </div>
               <Button
@@ -93,9 +96,8 @@ class RolesList extends Component{
   }
 }
 
-const mapStateToProps = ({ storageUsers}) => {
-  const { usersActive, users } = storageUsers;
-  return { usersActive, users };
+const mapStateToProps = ({}) => {
+  return {};
 };
 
-export default connect(mapStateToProps, { storageUsersStart })(RolesList);
+export default connect(mapStateToProps, {})(RolesList);

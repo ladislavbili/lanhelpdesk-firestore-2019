@@ -1673,7 +1673,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   background-color: white;
 }
 
-.checkbox-mark:hover {
+.checkbox-mark:hover, .checkbox-highlighted:hover {
   background-color: #ccc;
 }
 
@@ -1681,7 +1681,16 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   display:none;
 }
 
-.checkbox-container .checkbox-mark:after {
+.checkbox-highlighted {
+  cursor: pointer;
+  height: 20px;
+  width: 20px;
+  border: 1px solid #7ea7c5;
+  border-radius: 0px;
+  background-color: white;
+}
+
+.checkbox-container .checkbox-mark:after, .checkbox-container .checkbox-highlighted:after{
   width: 8px;
   height: 12px;
   border: solid white;
@@ -1691,7 +1700,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   transform: rotate(45deg);
 }
 
-.checkbox-mark:after {
+.checkbox-mark:after, .checkbox-highlighted:after {
     content: "";
     position:relative;
     left: 5px;
@@ -1703,11 +1712,11 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   background-color: $muted-gray !important;
 }
 
-.checkbox-container input:checked ~ .checkbox-mark:after {
+.checkbox-container input:checked ~ .checkbox-mark:after, .checkbox-container input:checked ~ .checkbox-highlighted:after {
   display: block;
 }
 
-.checkbox-container input:checked ~ .checkbox-mark {
+.checkbox-container input:checked ~ .checkbox-mark, .checkbox-container input:checked ~ .checkbox-highlighted {
   background-color: $basic-button-color;
   border-color: $basic-button-color;
 }
