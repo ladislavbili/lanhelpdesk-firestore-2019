@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import CKEditor from 'ckeditor4-react';
 import {rebase} from '../../index';
 import firebase from 'firebase';
 import { Label, Button } from 'reactstrap';
@@ -15,7 +14,6 @@ import VykazyTable from '../components/vykazyTable';
 
 import classnames from "classnames";
 
-import ck4config from '../../scss/ck4config';
 
 import CKEditor5 from '@ckeditor/ckeditor5-react';
 import ck5config from '../../scss/ck5config';

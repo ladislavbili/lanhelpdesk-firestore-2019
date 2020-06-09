@@ -284,7 +284,7 @@ class TasksIndex extends Component {
 			return ;
 		}
 		let newTasks = this.state.tasks.map((task)=>{
-			if (task.id == id){
+			if (task.id.toString() === id.toString()){
 				return { ...task, checked: check}
 			} else  if (id === 'all'){
 				return { ...task, checked: check}

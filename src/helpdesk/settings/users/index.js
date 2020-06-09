@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {Button } from 'reactstrap';
 import UserAdd from './userAdd';
 import UserEdit from './userEdit';
-import {rebase} from '../../../index';
 
 import Multiselect from '../../../components/multiselect';
 

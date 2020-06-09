@@ -3,10 +3,10 @@ import { Input } from 'reactstrap';
 import Select from 'react-select';
 import { connect } from "react-redux";
 
-import {database, rebase} from '../../../index';
+import {rebase} from '../../../index';
 import DatePicker from 'react-datepicker';
 import {setFilter, storageHelpTaskTypesStart, storageUsersStart, storageCompaniesStart } from '../../../redux/actions';
-import {toSelArr, snapshotToArray, sameStringForms, toMomentInput, fromMomentToUnix } from '../../../helperFunctions';
+import {toSelArr, sameStringForms, toMomentInput, fromMomentToUnix } from '../../../helperFunctions';
 import AddFilter from './filterAdd';
 
 import datePickerConfig from '../../../scss/datePickerConfig';

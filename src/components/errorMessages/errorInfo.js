@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Label, FormGroup } from 'reactstrap';
+import { Label } from 'reactstrap';
 import { timestampToString } from 'helperFunctions';
 
 export default class Attachments extends Component {

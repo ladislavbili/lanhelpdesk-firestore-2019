@@ -4,8 +4,6 @@ import RoleAdd from './roleAdd';
 import RoleEdit from './roleEdit';
 
 import { connect } from "react-redux";
-import {storageUsersStart} from '../../../redux/actions';
-import {sameStringForms, toSelArr} from '../../../helperFunctions';
 
 const ROLES = [
   {label:'Guest',value:-1},
@@ -96,8 +94,5 @@ class RolesList extends Component{
   }
 }
 
-const mapStateToProps = ({}) => {
-  return {};
-};
 
-export default connect(mapStateToProps, {})(RolesList);
+export default connect()(RolesList);

@@ -1,15 +1,7 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input } from 'reactstrap';
-import Select from 'react-select';
-import firebase from 'firebase';
-import {rebase} from '../../../index';
-import {isEmail} from '../../../helperFunctions';
-import {selectStyle} from "../../../scss/selectStyles";
-import config from '../../../firebase';
 
 import { connect } from "react-redux";
-import {storageUsersStart} from '../../../redux/actions';
-import {sameStringForms, toSelArr} from '../../../helperFunctions';
 import Checkbox from '../../../components/checkbox';
 
 class RoleEdit extends Component{
@@ -327,9 +319,4 @@ class RoleEdit extends Component{
   }
 }
 
-const mapStateToProps = ({ storageUsers}) => {
-  const { usersActive, users } = storageUsers;
-  return { usersActive, users };
-};
-
-export default connect(mapStateToProps, { storageUsersStart })(RoleEdit);
+export default connect()(RoleEdit);

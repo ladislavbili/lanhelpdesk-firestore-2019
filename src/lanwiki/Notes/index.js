@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { rebase } from '../../index';
 import { connect } from "react-redux";
 import TimeAgo from 'react-timeago';
-import {timestampToString} from '../../helperFunctions';
 import {setWikiOrderBy, setWikiAscending, setLayout} from '../../redux/actions';
 import ShowData from '../../components/showData';
 import NoteEdit from './NoteEdit';
