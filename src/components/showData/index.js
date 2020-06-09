@@ -146,6 +146,8 @@ class ShowDataContainer extends Component {
 										statuses={this.props.statuses}
 										allStatuses={this.props.allStatuses}
 										link={this.props.link}
+										checkTask={this.props.checkTask}
+										deleteTask={this.props.deleteTask}
 										/>}
 							</div>
 						)}

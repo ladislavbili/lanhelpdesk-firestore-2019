@@ -1402,7 +1402,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 }
 
 .task-container>.table>tbody>tr>th{
-  padding: 4px 10px 1px 0px !important;
+  padding: 4px 0px 1px 0px !important;
   background-color: #FFF;
   font-family: $main-font;
   font-style: normal;
@@ -1671,6 +1671,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   border: 1px solid #eee;
   border-radius: 0px;
   background-color: white;
+  margin-bottom: 0px;
 }
 
 .checkbox-mark:hover, .checkbox-highlighted:hover {
@@ -1688,6 +1689,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   border: 1px solid #7ea7c5;
   border-radius: 0px;
   background-color: white;
+  margin-bottom: 0px;
 }
 
 .checkbox-container .checkbox-mark:after, .checkbox-container .checkbox-highlighted:after{

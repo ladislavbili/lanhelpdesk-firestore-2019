@@ -4,8 +4,18 @@ import CommandBar from './commandBar';
 import ListHeader from './listHeader';
 import { connect } from "react-redux";
 import {setShowDataFilter } from '../../redux/actions';
+import Checkbox from '../checkbox';
 
 class List extends Component {
+
+	constructor(props) {
+		super(props);
+		this.state = {
+			checkedAll: false,
+			editOpen: false,
+		};
+		this.clearFilter.bind(this);
+	}
 
 	clearFilter(){
 		if(window.confirm("Are you sure you want to clear the filter?")){
@@ -30,13 +40,33 @@ class List extends Component {
 									<tr>
 										{
 											this.props.displayValues.map((display,index)=> {
-												if(display.type==='important'){
+												if(display.type==='important') {
 													return null;
+												}else if (display.type === 'checkbox'){
+													return <th key={display.value} className="row" colSpan={'1'} style={{color: '#0078D4', paddingLeft: "1px", paddingRight: "1px"}}>
+														 <div
+															 onClick={() => {
+																 if (window.confirm("Are you sure you want to delete checked tasks?")){
+																	 this.props.deleteTask()
+																 }
+															 }}>
+																<i className="far fa-trash-alt"	/>
+															</div>
+															<div
+																className="ml-auto"
+																onClick={() => {
+																	this.setState({
+																		editOpen: true,
+																	})
+																}}>
+																<i	className="fas fa-pen"/>
+															</div>
+													 	</th>
 												}
 												return (
 													<th
 														style={(display.value === "createdAt" || display.value === "deadline" ? {textAlign: "right"} : {})}
-														colSpan={((index===0 || this.props.displayValues[index-1].type!=='important') && display.value !== "deadline")?'1':'2'}
+														colSpan={((index===0 || index ===1 || this.props.displayValues[index-1].type!=='important') && display.value !== "deadline")?'1':'2'}
 														key={display.value}
 														width={display.value === 'title' ? "30%" : ((display.value === "id") ? "50px" : '')}>
 														{display.label}
@@ -53,9 +83,20 @@ class List extends Component {
 											this.props.displayValues.map((display,index)=>{
 												if(display.type==='important'){
 													return null;
-												}else{
-													return <th key={display.value} colSpan={(index===0 || this.props.displayValues[index-1].type!=='important')?'1':'2'} >
+												}else if (display.type === 'checkbox'){
+													return <th key={display.value} colSpan={'1'} >
+														<Checkbox
+															className = "m-l-7 m-t-3 p-l-0"
+															value = { this.state.checkedAll }
+															label = ""
+															onChange={(e)=> {this.props.checkTask('all', e.target.checked); this.setState({ checkedAll: !this.state.checkedAll })}}
+															highlighted={false}
+															/>
+													</th>
+												}else {
+													return <th key={display.value} colSpan={((index===0 || index ===1 || this.props.displayValues[index-1].type!=='important') )?'1':'2'} >
 														<div className={(display.value === "deadline" ? "row" : "")}>
+
 															<div style={{width: "80%"}}>
 																<input
 																	type="text"
@@ -108,14 +149,14 @@ class List extends Component {
 															if(display.value === 'important'){
 																return true;
 															}
+												/*			if(display.value === 'checked'){
+																return item["checked"];
+															}*/
 															return value.toString().toLowerCase().includes(filter[display.value].toLowerCase());
 														});
 										}).map((item)=>
 											<tr
 												key={item.id}
-												onClick={(e)=>{
-													this.props.history.push(this.props.link+'/'+item.id);
-												}}
 												className="clickable">
 												{ this.props.displayValues
 													.map((display,index)=>
@@ -124,8 +165,22 @@ class List extends Component {
 														style={(display.value === "createdAt" || display.value === "deadline" ? {textAlign: "right"} : {})}
 														key={display.value}
 														className={display.value}
+														onClick={(e)=>{
+															if (display.type !== 'checkbox'){
+																this.props.history.push(this.props.link+'/'+item.id);
+															}
+														}}
 														>
-														{getItemDisplayValue(item,display)}
+														{display.type !== 'checkbox' &&
+															 getItemDisplayValue(item,display)}
+														{display.type === 'checkbox' &&
+															<Checkbox
+				                        className = "p-l-0"
+				                        value = { item.checked }
+				                        label = ""
+				                        onChange={(e)=> this.props.checkTask(item.id, e.target.checked)}
+				                        highlighted={false}
+				                        />}
 													</td>
 												)}
 											</tr>

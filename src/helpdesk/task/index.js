@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import ShowData from '../../components/showData';
-import { timestampToString, sameStringForms, applyTaskFilter } from 'helperFunctions';
+import { timestampToString, sameStringForms, applyTaskFilter, snapshotToArray } from 'helperFunctions';
 import { getEmptyFilter, getFixedFilters } from '../components/sidebar/fixedFilters';
 import TaskEdit from './taskEdit';
 import TaskEmpty from './taskEmpty';
 import TaskCalendar from '../calendar';
+import {rebase, database} from '../../index';
+import firebase from 'firebase';
 
 
 import {setTasksOrderBy, setTasksAscending,storageCompaniesStart,storageHelpTagsStart,storageUsersStart, setUserFilterStatuses,
 	storageHelpProjectsStart,storageHelpStatusesStart,storageHelpTasksStart, storageHelpFiltersStart,
 	setTasklistLayout, storageHelpMilestonesStart, storageHelpCalendarEventsStart,
-	setHelpSidebarProject, setHelpSidebarMilestone, setHelpSidebarFilter, setFilter, setMilestone,setProject,
-} from 'redux/actions';
+	setHelpSidebarProject, setHelpSidebarMilestone, setHelpSidebarFilter, setFilter, setMilestone,setProject} from 'redux/actions';
 const allMilestones = {id:null,title:'Any milestone', label:'Any milestone',value:null};
 const fixedFilters = getFixedFilters();
 
@@ -30,6 +31,8 @@ class TasksIndex extends Component {
 			filterName:''
 		}
 		this.filterTasks.bind(this);
+		this.checkTask.bind(this);
+		this.deleteTask.bind(this);
 		this.getCalendarAllDayData.bind(this);
 		this.getBreadcrumsData.bind(this);
 	}
@@ -268,12 +271,86 @@ class TasksIndex extends Component {
 				requester:this.state.users.find((user)=>user.id===task.requester),
 				tags:this.state.tags.filter((tag)=>task.tags && task.tags.includes(tag.id)),
 				assignedTo:this.state.users.filter((user)=>task.assignedTo && task.assignedTo.includes(user.id)),
-				id:parseInt(task.id)
+				id:parseInt(task.id),
 			}
 		});
 
 		const filter = this.props.filter;
 		return newTasks.filter( ( task ) => applyTaskFilter( task, filter, this.props.currentUser, this.props.project, this.props.milestone ) )
+	}
+
+	checkTask(id, check){
+		if(!this.props.statusesLoaded){
+			return ;
+		}
+		let newTasks = this.state.tasks.map((task)=>{
+			if (task.id == id){
+				return { ...task, checked: check}
+			} else  if (id === 'all'){
+				return { ...task, checked: check}
+			}
+			return {...task}
+		});
+
+		this.setState({
+			tasks: newTasks,
+		})
+	}
+
+	deleteTask(){
+		if(!this.props.statusesLoaded){
+			return ;
+		}
+
+		let newTasks = this.state.tasks.filter(task => !task.checked);
+		let tasksToDelete = this.state.tasks.filter(task => task.checked);
+
+		tasksToDelete.forEach(task => {
+			let taskID = task.id;
+			let storageRef = firebase.storage().ref();
+			if (task.attachments){
+				task.attachments.map((attachment)=>storageRef.child(attachment.path).delete());
+			}
+			rebase.removeDoc('/help-tasks/'+taskID);
+
+			database.collection('help-task_materials').where("task", "==", taskID).get()
+			.then((data)=>{
+				snapshotToArray(data).forEach((item)=>rebase.removeDoc('/help-task_materials/'+item.id));
+			});
+
+			database.collection('help-task_custom_items').where("task", "==", taskID).get()
+			.then((data)=>{
+				snapshotToArray(data).forEach((item)=>rebase.removeDoc('/help-task_custom_items/'+item.id));
+			});
+
+			database.collection('help-task_works').where("task", "==", taskID).get()
+			.then((data)=>{
+				snapshotToArray(data).forEach((item)=>rebase.removeDoc('/help-task_works/'+item.id));
+			});
+
+			database.collection('help-task_work_trips').where("task", "==", taskID).get()
+			.then((data)=>{
+				snapshotToArray(data).forEach((item)=>rebase.removeDoc('/help-task_work_trips/'+item.id));
+			});
+
+			if(task.repeat!==null){
+				rebase.removeDoc('/help-repeats/'+taskID);
+			}
+
+			database.collection('help-comments').where("task", "==", taskID).get()
+			.then((data)=>{
+				snapshotToArray(data).forEach((item)=>rebase.removeDoc('/help-comments/'+item.id));
+			});
+
+			database.collection('help-calendar_events').where("taskID", "==", taskID).get()
+			.then((data)=>{
+				snapshotToArray(data).forEach((item)=>rebase.removeDoc('/help-calendar_events/'+item.id));
+			});
+		});
+
+		this.setState({
+			tasks: newTasks,
+		})
 	}
 
 	getCalendarEventsData(tasks){
@@ -369,6 +446,7 @@ class TasksIndex extends Component {
 				displayCol={this.displayCol}
 				filterName="help-tasks"
 				displayValues={[
+					{value:'checked', label: '', type:'checkbox'},
 					{value:'important',label:'',type:'important'},
 					{value:'title',label:'Title',type:'text'},
 					{value:'id',label:'ID',type:'int'},
@@ -425,6 +503,8 @@ class TasksIndex extends Component {
 				setStatuses={this.props.setUserFilterStatuses}
 				statuses={this.props.currentUser.statuses}
 				allStatuses={this.props.statuses}
+				checkTask={this.checkTask.bind(this)}
+				deleteTask={this.deleteTask.bind(this)}
 			 />
 		);
 	}

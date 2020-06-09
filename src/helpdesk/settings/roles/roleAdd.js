@@ -311,7 +311,7 @@ class RoleAdd extends Component{
             </table>
           </div>
 
-          <Button className="btn" onClick={()=>{}}>{this.state.saving?'Editing...':'Edit user'}</Button>
+          <Button className="btn" disabled={true} onClick={()=>{}}>{this.state.saving?'Adding...':'Add role'}</Button>
 
           {this.props.close &&
           <Button className="btn-link"
