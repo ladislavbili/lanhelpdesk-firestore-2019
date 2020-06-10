@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
+import { Modal, ModalBody, Button } from 'reactstrap';
 import {getItemDisplayValue} from '../../helperFunctions';
 import CommandBar from './commandBar';
 import ListHeader from './listHeader';
 import { connect } from "react-redux";
 import {setShowDataFilter } from '../../redux/actions';
 import Checkbox from '../checkbox';
+
+import MultipleTaskEdit from '../../helpdesk/task/multipleTaskEdit';
 
 class List extends Component {
 
@@ -149,9 +152,6 @@ class List extends Component {
 															if(display.value === 'important'){
 																return true;
 															}
-												/*			if(display.value === 'checked'){
-																return item["checked"];
-															}*/
 															return value.toString().toLowerCase().includes(filter[display.value].toLowerCase());
 														});
 										}).map((item)=>
@@ -188,6 +188,14 @@ class List extends Component {
 								</tbody>
 							</table>
 					</div>
+
+
+					<Modal isOpen={this.state.editOpen}  >
+							<ModalBody className="scrollable" >
+		            <MultipleTaskEdit close={() => this.setState({editOpen: false})} />
+							</ModalBody>
+						</Modal>
+
 				</div>
 		);
 	}
