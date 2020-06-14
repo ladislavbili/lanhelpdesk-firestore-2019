@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, ModalBody, Button } from 'reactstrap';
+import { Modal, ModalBody } from 'reactstrap';
 import {getItemDisplayValue} from '../../helperFunctions';
 import CommandBar from './commandBar';
 import ListHeader from './listHeader';
@@ -32,7 +32,7 @@ class List extends Component {
 
 	render() {
 		let filter = this.props.filter[this.props.filterName];
-		
+
 		return (
 				<div>
 					<CommandBar {...this.props.commandBar} listName={this.props.listName}/>

@@ -1,34 +1,21 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import { connect } from "react-redux";
-import { Label, TabContent, TabPane, Nav, NavItem, NavLink, Modal, ModalBody, ModalHeader, ListGroup, ListGroupItem, Button} from 'reactstrap';
+import { Label, TabContent, TabPane, Nav, NavItem, NavLink, Button} from 'reactstrap';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
-//import CKEditor4 from 'ckeditor4-react';
-import CKEditor from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 import Attachments from '../components/attachments.js';
 import Comments from '../components/comments.js';
-//import Subtasks from '../components/subtasks';
 import Repeat from '../components/repeat';
 
-import VykazyTable from '../components/vykazyTable';
-
-import UserAdd from '../settings/users/userAdd';
-import CompanyAdd from '../settings/companies/companyAdd';
-
-import TaskAdd from './taskAddContainer';
 import classnames from "classnames";
-import {rebase, database} from '../../index';
+import {rebase} from '../../index';
 import firebase from 'firebase';
-import ck5config from '../../scss/ck5config';
-//import ck4config from '../../scss/ck4config';
 import datePickerConfig from '../../scss/datePickerConfig';
-import PendingPicker from '../components/pendingPicker';
-import {toSelArr, snapshotToArray, timestampToString, sameStringForms} from '../../helperFunctions';
-import { storageCompaniesStart, storageHelpPricelistsStart, storageHelpPricesStart,storageHelpProjectsStart, storageHelpStatusesStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageHelpTasksStart, storageHelpUnitsStart,storageHelpWorkTypesStart, storageMetadataStart, storageUsersStart, storageHelpMilestonesStart, storageHelpTripTypesStart } from '../../redux/actions';
-import {invisibleSelectStyleNoArrow, invisibleSelectStyleNoArrowColored,invisibleSelectStyleNoArrowColoredRequired, invisibleSelectStyleNoArrowRequired} from '../../scss/selectStyles';
+import {toSelArr, sameStringForms} from '../../helperFunctions';
+import { storageCompaniesStart, storageHelpPricelistsStart, storageHelpPricesStart,storageHelpProjectsStart, storageHelpStatusesStart, storageHelpTaskTypesStart, storageUsersStart, storageHelpMilestonesStart } from '../../redux/actions';
+import {invisibleSelectStyleNoArrow, invisibleSelectStyleNoArrowColoredRequired, invisibleSelectStyleNoArrowRequired} from '../../scss/selectStyles';
 import { REST_URL } from 'config';
 
 const noMilestone = {id:null,value:null,title:'None',label:'None',startsAt:null};
@@ -114,7 +101,6 @@ class MultipleTaskEdit extends Component {
 		if(!sameStringForms(props.companies,this.props.companies)||
 			!sameStringForms(props.projects,this.props.projects)||
 			!sameStringForms(props.statuses,this.props.statuses)||
-			!sameStringForms(props.tags,this.props.tags)||
 			!sameStringForms(props.taskTypes,this.props.taskTypes)||
 			!sameStringForms(props.users,this.props.users)||
 			!sameStringForms(props.milestones,this.props.milestones)||
@@ -134,9 +120,6 @@ class MultipleTaskEdit extends Component {
 		if(!this.props.statusesActive){
 			this.props.storageHelpStatusesStart();
 		}
-		if(!this.props.tagsActive){
-			this.props.storageHelpTagsStart();
-		}
 		if(!this.props.taskTypesActive){
 			this.props.storageHelpTaskTypesStart();
 		}
@@ -153,7 +136,6 @@ storageLoaded(props){
 	return props.companiesLoaded &&
 		props.projectsLoaded &&
 		props.statusesLoaded &&
-		props.tagsLoaded &&
 		props.taskTypesLoaded &&
 		props.usersLoaded &&
 		props.milestonesLoaded
@@ -169,7 +151,6 @@ setData(props){
 			statuses: toSelArr(this.props.statuses),
 			projects: toSelArr(this.props.projects),
 			users: toSelArr(this.props.users,'email'),
-			tags: toSelArr(this.props.tags),
 			companies: toSelArr(this.props.companies),
 			taskTypes,
 			milestones: [noMilestone,...toSelArr(props.milestones)],
@@ -620,20 +601,15 @@ setData(props){
 
 }
 
-const mapStateToProps = ({ userReducer, storageCompanies, storageHelpPricelists, storageHelpPrices, storageHelpProjects, storageHelpStatuses, storageHelpTags, storageHelpTaskTypes, storageHelpUnits, storageHelpWorkTypes, storageMetadata, storageUsers, storageHelpMilestones, storageHelpTripTypes }) => {
+const mapStateToProps = ({ userReducer, storageCompanies, storageHelpPricelists, storageHelpPrices, storageHelpProjects, storageHelpStatuses, storageHelpTaskTypes, storageUsers, storageHelpMilestones }) => {
 	const { companiesLoaded, companiesActive, companies } = storageCompanies;
 	const { pricelistsLoaded, pricelistsActive, pricelists } = storageHelpPricelists;
 	const { pricesLoaded, pricesActive, prices } = storageHelpPrices;
 	const { projectsLoaded, projectsActive, projects } = storageHelpProjects;
 	const { statusesLoaded, statusesActive, statuses } = storageHelpStatuses;
-	const { tagsLoaded, tagsActive, tags } = storageHelpTags;
 	const { taskTypesLoaded, taskTypesActive, taskTypes } = storageHelpTaskTypes;
-	const { unitsLoaded, unitsActive, units } = storageHelpUnits;
-	const { workTypesLoaded, workTypesActive, workTypes } = storageHelpWorkTypes;
-	const { metadataLoaded, metadataActive, metadata } = storageMetadata;
 	const { usersLoaded, usersActive, users } = storageUsers;
 	const { milestonesLoaded, milestonesActive, milestones } = storageHelpMilestones;
-  const { tripTypesActive, tripTypes, tripTypesLoaded } = storageHelpTripTypes;
 
 	return {
 		currentUser:userReducer,
@@ -642,15 +618,10 @@ const mapStateToProps = ({ userReducer, storageCompanies, storageHelpPricelists,
 		pricesLoaded, pricesActive, prices,
 		projectsLoaded, projectsActive, projects,
 		statusesLoaded, statusesActive, statuses,
-		tagsLoaded, tagsActive, tags,
 		taskTypesLoaded, taskTypesActive, taskTypes,
-		unitsLoaded, unitsActive, units,
-		workTypesLoaded, workTypesActive, workTypes,
-		metadataLoaded, metadataActive, metadata,
 		usersLoaded, usersActive, users,
 		milestonesLoaded, milestonesActive, milestones,
-		tripTypesActive, tripTypes, tripTypesLoaded,
 	 };
 };
 
-export default connect(mapStateToProps, { storageCompaniesStart, storageHelpPricelistsStart, storageHelpPricesStart,storageHelpProjectsStart, storageHelpStatusesStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageHelpUnitsStart,storageHelpWorkTypesStart, storageMetadataStart, storageUsersStart, storageHelpMilestonesStart, storageHelpTripTypesStart })(MultipleTaskEdit);
+export default connect(mapStateToProps, { storageCompaniesStart, storageHelpPricelistsStart, storageHelpPricesStart,storageHelpProjectsStart, storageHelpStatusesStart, storageHelpTaskTypesStart, storageUsersStart, storageHelpMilestonesStart })(MultipleTaskEdit);
