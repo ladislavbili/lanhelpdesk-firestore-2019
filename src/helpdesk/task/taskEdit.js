@@ -455,6 +455,7 @@ class TaskEdit extends Component {
 		let repeat = this.state.extraData.repeat;
 
 		let taskID = props.match.params.taskID;
+		console.log(taskID);
 		let task = props.tasks.find((task)=>task.id===taskID);
 		let statuses = toSelArr(props.statuses);
 		let projects = toSelArr(props.projects);

@@ -77,90 +77,186 @@ getData(id){
 submitComment(){
   this.setState({saving:true});
 
-  let time = (new Date()).getTime();
-  let storageRef = firebase.storage().ref();
-  Promise.all([
-    ...this.state.attachments.map((attachment)=>{
-      return storageRef.child(`help-comments/${this.props.id}/${time}-${attachment.size}-${attachment.name}`).put(attachment)
-    })
-  ]).then((resp)=>{
+  if (!this.props.isMulti) {
+    let time = (new Date()).getTime();
+    let storageRef = firebase.storage().ref();
+    Promise.all([
+      ...this.state.attachments.map((attachment)=>{
+        return storageRef.child(`help-comments/${this.props.id}/${time}-${attachment.size}-${attachment.name}`).put(attachment)
+      })
+    ]).then((resp)=>{
+        Promise.all([
+          ...this.state.attachments.map((attachment)=>{
+            return storageRef.child(`help-comments/${this.props.id}/${time}-${attachment.size}-${attachment.name}`).getDownloadURL()
+          })
+        ]).then((urls)=>{
+            let newAttachments = this.state.attachments.map((attachment,index)=>{
+              return {
+                title:attachment.name,
+                size:attachment.size,
+                path:`help-comments/${this.props.id}/${time}-${attachment.size}-${attachment.name}`,
+                url:urls[index]
+              }
+            });
+            //mame ulozene attachmenty
+            let body={
+              user:this.props.userID,
+              comment:this.state.isEmail?this.state.emailBody: this.state.newComment,
+              subject:this.state.subject,
+              isEmail: this.state.isEmail,
+              isInternal:this.state.isInternal && this.props.showInternal && !this.state.isEmail,
+              tos:this.state.tos.map((item)=>item.value),
+                createdAt: (new Date()).getTime(),
+              task:this.props.id,
+              attachments:newAttachments
+            }
+            rebase.addToCollection('/help-comments',body).then(()=>{
+              this.getData(this.props.id);
+              this.props.addToHistory(this.state.isInternal);
+              this.setState({saving:false,newComment:'',attachments:[],isInternal:false});
+            })
+            if(this.state.isEmail){
+              this.setState({subject:'',tos:[], emailBody:''})
+            }
+          })
+      })
+  } else {
+    console.log("------");
+    console.log(this.state.newComment);
+    let time = (new Date()).getTime();
+    let storageRef = firebase.storage().ref();
+    this.props.id.forEach((i, index) => {
+      let id = i.toString();
       Promise.all([
         ...this.state.attachments.map((attachment)=>{
-          return storageRef.child(`help-comments/${this.props.id}/${time}-${attachment.size}-${attachment.name}`).getDownloadURL()
+          return storageRef.child(`help-comments/${id}/${time}-${attachment.size}-${attachment.name}`).put(attachment)
         })
-      ]).then((urls)=>{
-          let newAttachments = this.state.attachments.map((attachment,index)=>{
-            return {
-              title:attachment.name,
-              size:attachment.size,
-              path:`help-comments/${this.props.id}/${time}-${attachment.size}-${attachment.name}`,
-              url:urls[index]
-            }
-          });
-          //mame ulozene attachmenty
-          let body={
-            user:this.props.userID,
-            comment:this.state.isEmail?this.state.emailBody: this.state.newComment,
-            subject:this.state.subject,
-            isEmail: this.state.isEmail,
-            isInternal:this.state.isInternal && this.props.showInternal && !this.state.isEmail,
-            tos:this.state.tos.map((item)=>item.value),
-              createdAt: (new Date()).getTime(),
-            task:this.props.id,
-            attachments:newAttachments
-          }
-          rebase.addToCollection('/help-comments',body).then(()=>{
-            this.getData(this.props.id);
-            this.props.addToHistory(this.state.isInternal);
-            this.setState({saving:false,newComment:'',attachments:[],isInternal:false});
-          })
-          if(this.state.isEmail){
-            this.setState({subject:'',tos:[], emailBody:''})
-          }
+      ]).then((resp)=>{
+          Promise.all([
+            ...this.state.attachments.map((attachment)=>{
+              return storageRef.child(`help-comments/${id}/${time}-${attachment.size}-${attachment.name}`).getDownloadURL()
+            })
+          ]).then((urls)=>{
+              let newAttachments = this.state.attachments.map((attachment,index)=>{
+                return {
+                  title:attachment.name,
+                  size:attachment.size,
+                  path:`help-comments/${id}/${time}-${attachment.size}-${attachment.name}`,
+                  url:urls[index]
+                }
+              });
+              //mame ulozene attachmenty
+              console.log(this.state.newComment);
+              let body={
+                user:this.props.userID,
+                comment:this.state.isEmail?this.state.emailBody: this.state.newComment,
+                subject:this.state.subject,
+                isEmail: this.state.isEmail,
+                isInternal:this.state.isInternal && this.props.showInternal && !this.state.isEmail,
+                tos:this.state.tos.map((item)=>item.value),
+                  createdAt: (new Date()).getTime(),
+                task: id,
+                attachments:newAttachments
+              }
+              rebase.addToCollection('/help-comments',body).then(()=>{
+                this.getData(id);
+                this.props.addToHistory(this.state.isInternal);
+                if (index === this.props.id.length - 1){
+                  this.setState({saving:false, newComment: "", attachments:[],isInternal:false});
+                }
+              })
+              if(this.state.isEmail && index === this.props.id.length - 1){
+                this.setState({subject:'',tos:[], emailBody:''})
+              }
+            })
         })
     })
-
-
+  }
 }
 
 submitEmail(){
-  this.setState({hasError:false});
-  firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then((token)=>{
-    let body = {
-      message: this.state.emailBody,
-      tos:this.state.tos.map((item)=>item.label),
-      subject:this.state.subject,
-      taskID:this.props.id,
-      token,
-      email:this.props.users.find((user)=>user.id===this.props.userID).email,
-      citations:this.state.comments,
-      signature:this.props.signature,
-    }
-    var formData = new FormData();
-    Object.keys(body).forEach((key)=>{
-      formData.append(key, JSON.stringify(body[key]));
-    })
-
-    this.state.attachments.forEach((attachment)=>{
-      formData.append('attachments', attachment);
-    })
-
-    fetch(`${REST_URL}/send-mail`,{
-      method: 'POST',
-      body:formData,
-    }).then((response)=>response.json().then((response)=>{
-      if(response.error){
-        this.setState({hasError:true})
-        console.log(response);
-      }else{
-        this.submitComment();
-        console.log(response);
+  if (!this.props.isMulti){
+    this.setState({hasError:false});
+    firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then((token)=>{
+      let body = {
+        message: this.state.emailBody,
+        tos:this.state.tos.map((item)=>item.label),
+        subject:this.state.subject,
+        taskID:this.props.id,
+        token,
+        email:this.props.users.find((user)=>user.id===this.props.userID).email,
+        citations:this.state.comments,
+        signature:this.props.signature,
       }
-    })).catch((error)=>{
-      this.setState({hasError:true})
-      console.log(error);
-    })
-  });
+      var formData = new FormData();
+      Object.keys(body).forEach((key)=>{
+        formData.append(key, JSON.stringify(body[key]));
+      })
+
+      this.state.attachments.forEach((attachment)=>{
+        formData.append('attachments', attachment);
+      })
+
+      fetch(`${REST_URL}/send-mail`,{
+        method: 'POST',
+        body:formData,
+      }).then((response)=>response.json().then((response)=>{
+        if(response.error){
+          this.setState({hasError:true})
+          console.log(response);
+        }else{
+          this.submitComment();
+          console.log(response);
+        }
+      })).catch((error)=>{
+        this.setState({hasError:true})
+        console.log(error);
+      })
+    });
+  } else {
+    this.props.id.forEach((i) => {
+      let id = i.toString();
+      this.setState({hasError:false});
+      firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then((token)=>{
+        let body = {
+          message: this.state.emailBody,
+          tos:this.state.tos.map((item)=>item.label),
+          subject:this.state.subject,
+          taskID: id,
+          token,
+          email:this.props.users.find((user)=>user.id===this.props.userID).email,
+          citations:this.state.comments,
+          signature:this.props.signature,
+        }
+        var formData = new FormData();
+        Object.keys(body).forEach((key)=>{
+          formData.append(key, JSON.stringify(body[key]));
+        })
+
+        this.state.attachments.forEach((attachment)=>{
+          formData.append('attachments', attachment);
+        })
+
+        fetch(`${REST_URL}/send-mail`,{
+          method: 'POST',
+          body:formData,
+        }).then((response)=>response.json().then((response)=>{
+          if(response.error){
+            this.setState({hasError:true})
+            console.log(response);
+          }else{
+            this.submitComment();
+            console.log(response);
+          }
+        })).catch((error)=>{
+          this.setState({hasError:true})
+          console.log(error);
+        })
+      });
+    });
+
+  }
+
 }
 
   render(){
@@ -277,7 +373,7 @@ submitEmail(){
           </div>
         </div>
 
-        {this.state.comments.filter((comment)=>this.props.showInternal || !comment.isInternal).sort((item1,item2)=>item2.createdAt-item1.createdAt).map((comment)=>
+        { !this.props.isMulti && this.state.comments.filter((comment)=>this.props.showInternal || !comment.isInternal).sort((item1,item2)=>item2.createdAt-item1.createdAt).map((comment)=>
           <div key={comment.id} >
             { comment.isMail &&
               <div>
@@ -352,7 +448,7 @@ submitEmail(){
               </div>
             </div>
             }
-            { !comment.isMail &&
+            { !this.props.isMulti && !comment.isMail &&
               <div>
                   <div className="media m-b-30 m-t-30">
                   <img

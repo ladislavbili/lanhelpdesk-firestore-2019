@@ -32,7 +32,7 @@ class List extends Component {
 
 	render() {
 		let filter = this.props.filter[this.props.filterName];
-
+		
 		return (
 				<div>
 					<CommandBar {...this.props.commandBar} listName={this.props.listName}/>
@@ -192,7 +192,7 @@ class List extends Component {
 
 					<Modal isOpen={this.state.editOpen}  >
 							<ModalBody className="scrollable" >
-		            <MultipleTaskEdit close={() => this.setState({editOpen: false})} />
+		            <MultipleTaskEdit tasks={this.props.data.filter(d => d.checked)} close={() => this.setState({editOpen: false})} />
 							</ModalBody>
 						</Modal>
 
