@@ -9,71 +9,34 @@ class RoleAdd extends Component{
     super(props);
     this.state={
       label: "",
-      roles: [
-        {label:'Guest',value:-1},
-        {label:'User',value:0},
-        {label:'Agent',value:1},
-        {label:'Manager',value:2},
-        {label:'Admin',value:3}
-      ],
-      rules: [
-        {
-          title: "Task",
-          view: false,
-          add: false,
-          edit: false,
-          delete: false,
-        },
-        {
-          title: "Filter",
-          view: false,
-          add: false,
-          edit: false,
-          delete: false,
-        },
-        {
-          title: "Filter (global)",
-          view: false,
-          add: false,
-          edit: false,
-          delete: false,
-        },
-        {
-          title: "Tag",
-          view: false,
-          add: false,
-          edit: false,
-          delete: false,
-        },
-        {
-          title: "Attachment",
-          view: false,
-          add: false,
-          edit: false,
-          delete: false,
-        },
-        {
-          title: "Attribute",
-          view: false,
-          add: false,
-          edit: false,
-          delete: false,
-        },
-        {
-          title: "Vykazy",
-          view: false,
-          add: false,
-          edit: false,
-          delete: false,
-        },
-        {
-          title: "Settings",
-          view: false,
-          add: false,
-          edit: false,
-          delete: false,
-        },
-      ]
+
+      //general rules
+      login: false,
+      testSections: false,
+      mailViaComment: false,
+      vykazy: false,
+      publicFilters: false,
+      addProjects: false,
+      viewVykaz: false,
+      viewRozpocet: false,
+
+      //settings access
+      users: false,
+      companies: false,
+      pausals: false,
+      projects: false,
+      statuses: false,
+      units: false,
+      prices: false,
+      suppliers: false,
+      tags: false,
+      invoices: false,
+      roles: false,
+      types: false,
+      tripTypes: false,
+      imaps: false,
+      smtps: false,
+
     }
   }
 
@@ -103,65 +66,179 @@ class RoleAdd extends Component{
           </FormGroup>
 
           <div className="">
-            <h2>General rules</h2>
+            <h2>General rights</h2>
             <table className="table">
               <thead>
                 <tr>
-                    <th key={1}>
-                      Rule
+                    <th  width={"90%"} key={1}>
+                      Name
                     </th>
-                    <th key={2}>
+                    <th className="t-a-c" key={2}>
                       Granted
                     </th>
                 </tr>
               </thead>
               <tbody>
-                  <tr>
-                    <td>Send mails via comments</td>
+                <tr
+                  onClick={() =>
+                    this.setState({
+                      login: !this.state.login})
+                    }
+                  >
+                  <td>Login to system</td>
+                  <td>
+                    <Checkbox
+                      className = "m-b-5 p-l-0"
+                      centerVer
+                      centerHor
+                      value = { this.state.login }
+                      label = ""
+                      onChange={()=>{}}
+                      highlighted={true}
+                      />
+                  </td>
+                </tr>
+
+                <tr
+                  onClick={() =>
+                    this.setState({
+                     testSections: !this.state.testSections})
+                  }
+                  >
+                  <td>Test sections - Navoody, CMDB, Hesla, Naklady, Projekty, Monitoring</td>
+                  <td>
+                    <Checkbox
+                      className = "m-b-5 p-l-0"
+                      centerVer
+                      centerHor
+                      value = { this.state.testSections }
+                      label = ""
+                      onChange={()=>{}}
+                      highlighted={true}
+                      />
+                  </td>
+                </tr>
+
+                <tr
+                  onClick={() =>
+                    this.setState({
+                      mailViaComment: !this.state.mailViaComment})
+                    }
+                  >
+                  <td>Send mails via comments</td>
+                  <td>
+                    <Checkbox
+                      className = "m-b-5 p-l-0"
+                      centerVer
+                      centerHor
+                      value = { this.state.mailViaComment }
+                      label = ""
+                      onChange={()=>{}}
+                      highlighted={true}
+                      />
+                  </td>
+                </tr>
+
+                <tr
+                  onClick={() =>
+                    this.setState({
+                      vykazy: !this.state.vykazy})
+                    }
+                  >
+                    <td>Výkazy</td>
                     <td>
                       <Checkbox
                         className = "m-b-5 p-l-0"
-                        value = { this.state.mailViaComment }
+                        centerVer
+                        centerHor
+                        value = { this.state.vykazy }
                         label = ""
-                        onChange={()=>
-                          this.setState({
-                            mailViaComment: !this.state.mailViaComment})
-                        }
+                        onChange={()=>{}}
                         highlighted={true}
                         />
                     </td>
                   </tr>
 
-                  <tr>
-                    <td>Can login to system</td>
+                  <tr
+                    onClick={() =>
+                      this.setState({
+                        publicFilters: !this.state.publicFilters})
+                      }
+                    >
+                    <td>Public Filters</td>
                     <td>
                       <Checkbox
                         className = "m-b-5 p-l-0"
-                        value = { this.state.login }
+                        centerVer
+                        centerHor
+                        value = { this.state.publicFilters }
                         label = ""
-                        onChange={()=>
-                          this.setState({
-                            login: !this.state.login})
-                        }
+                        onChange={()=>{}}
                         highlighted={true}
                         />
                     </td>
                   </tr>
-                  <tr>
-                    <td>Can view test sections</td>
+
+                  <tr
+                    onClick={() =>
+                      this.setState({
+                        addProjects: !this.state.addProjects})
+                      }
+                    >
+                    <td>Add projects</td>
                     <td>
                       <Checkbox
                         className = "m-b-5 p-l-0"
-                        value = { this.state.testSections }
+                        centerVer
+                        centerHor
+                        value = { this.state.addProjects }
                         label = ""
-                        onChange={()=>
-                          this.setState({
-                           testSections: !this.state.testSections})
-                        }
+                        onChange={()=>{}}
                         highlighted={true}
                         />
                     </td>
                   </tr>
+
+                  <tr
+                    onClick={() =>
+                      this.setState({
+                        viewVykaz: !this.state.viewVykaz})
+                    }
+                    >
+                    <td>View vykaz</td>
+                    <td>
+                      <Checkbox
+                        className = "m-b-5 p-l-0"
+                        centerVer
+                        centerHor
+                        value = { this.state.viewVykaz }
+                        label = ""
+                        onChange={()=>{}}
+                        highlighted={true}
+                        />
+                    </td>
+                  </tr>
+
+                  <tr
+                    onClick={() =>
+                      this.setState({
+                        viewRozpocet: !this.state.viewRozpocet})
+                      }
+                    >
+                    <td>View rozpocet</td>
+                    <td>
+                      <Checkbox
+                        className = "m-b-5 p-l-0"
+                        centerVer
+                        centerHor
+                        value = { this.state.viewRozpocet }
+                        label = ""
+                        onChange={() => {}}
+                        highlighted={true}
+                        />
+                    </td>
+                  </tr>
+
                 </tbody>
               </table>
             </div>
@@ -171,134 +248,314 @@ class RoleAdd extends Component{
               <table className="table">
                 <thead>
                   <tr>
-                      <th key={1}>
-
+                      <th width={"90%"} key={1}>
+                        Access
                       </th>
-                      <th key={2}>
-                        View
-                      </th>
-                      <th key={2}>
-                        Add
-                      </th>
-                      <th key={2}>
-                        Edit
-                      </th>
-                      <th key={2}>
-                        Delete
+                      <th className="t-a-c" key={2}>
+                        View & Edit
                       </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {
-                    this.state.rules.map(rule =>
-                      <tr>
-                        <td>{rule.title}</td>
-                        <td>
-                          <Checkbox
-                            className = "m-b-5 p-l-0"
-                            value = { rule.view }
-                            label = ""
-                            onChange={(e)=>{
-                              let newRules = this.state.rules.map(r => {
-                                if (r.title !== rule.title){
-                                  return r
-                                }
-                                if (e.target.checked){
-                                  return {...r, view: true}
-                                }
-                                return {
-                                  ...r,
-                                  view: false,
-                                  add: false,
-                                  edit: false,
-                                  delete: false,
-                                }
-                              });
-                              this.setState({
-                                rules: newRules})
-                            }}
-                            highlighted={true}
-                            />
-                        </td>
-                        <td>
-                          <Checkbox
-                            className = "m-b-5 p-l-0"
-                            value = { rule.add }
-                            label = ""
-                            onChange={(e)=>{
-                              let newRules = this.state.rules.map(r => {
-                                if (r.title !== rule.title){
-                                  return r
-                                }
-                                if (e.target.checked){
-                                  return {...r, view: true, add: true}
-                                }
-                                return {...r, add:false}
-                              });
-                              this.setState({
-                                rules: newRules})
-                            }}
-                            highlighted={true}
-                            />
-                        </td>
-                        <td>
-                          <Checkbox
-                            className = "m-b-5 p-l-0"
-                            value = { rule.edit }
-                            label = ""
-                            onChange={(e)=>{
-                              let newRules = this.state.rules.map(r => {
-                                if (r.title !== rule.title){
-                                  return r
-                                }
-                                if (e.target.checked){
-                                  return {...r, view: true, edit: true}
-                                }
-                                return {
-                                  ...r,
-                                  view: r.view,
-                                  add: r.add,
-                                  edit: false,
-                                  delete: false,
-                                }
-                              });
-                              this.setState({
-                                rules: newRules})
-                            }}
-                            highlighted={true}
-                            />
-                        </td>
-                        <td>
-                          <Checkbox
-                            className = "m-b-5 p-l-0"
-                            value = { rule.delete }
-                            label = ""
-                            onChange={(e)=>{
-                              let newRules = this.state.rules.map(r => {
-                                if (r.title !== rule.title){
-                                  return r
-                                }
-                                if (e.target.checked){
-                                  return {...r, view: true, edit: true, delete: true}
-                                }
-                                return {
-                                  ...r,
-                                  view: r.view,
-                                  add: r.add,
-                                  edit: r.edit,
-                                  delete: false,
-                                }
-                              });
-                              this.setState({
-                                rules: newRules})
-                            }}
-                            highlighted={true}
-                            />
-                        </td>
-                      </tr>
-                    )
-                  }
+                  <tr
+                    onClick={() =>
+                      this.setState({
+                        users: !this.state.users})
+                      }
+                    >
+                    <td>Users</td>
+                    <td>
+                      <Checkbox
+                        className = "m-b-5 p-l-0"
+                        centerVer
+                        centerHor
+                        value = { this.state.users }
+                        label = ""
+                        onChange={()=>{}}
+                        highlighted={true}
+                        />
+                    </td>
+                  </tr>
 
+                  <tr
+                    onClick={() =>
+                      this.setState({
+                        companies: !this.state.companies})
+                      }
+                    >
+                    <td>Companies</td>
+                    <td>
+                      <Checkbox
+                        className = "m-b-5 p-l-0"
+                        centerVer
+                        centerHor
+                        value = { this.state.companies }
+                        label = ""
+                        onChange={()=>{}}
+                        highlighted={true}
+                        />
+                    </td>
+                  </tr>
+
+                  <tr
+                    onClick={() =>
+                      this.setState({
+                        pausals: !this.state.pausals})
+                      }
+                    >
+                    <td>Mesačné paušály firiem</td>
+                    <td>
+                      <Checkbox
+                        className = "m-b-5 p-l-0"
+                        centerVer
+                        centerHor
+                        value = { this.state.pausals }
+                        label = ""
+                        onChange={()=>{}}
+                        highlighted={true}
+                        />
+                    </td>
+                  </tr>
+
+                  <tr
+                    onClick={() =>
+                      this.setState({
+                        projects: !this.state.projects})
+                      }
+                    >
+                    <td>Projects</td>
+                    <td>
+                      <Checkbox
+                        className = "m-b-5 p-l-0"
+                        centerVer
+                        centerHor
+                        value = { this.state.projects }
+                        label = ""
+                        onChange={()=>{}}
+                        highlighted={true}
+                        />
+                    </td>
+                  </tr>
+
+                  <tr
+                    onClick={() =>
+                      this.setState({
+                        statuses: !this.state.statuses})
+                      }
+                    >
+                    <td>Statuses</td>
+                    <td>
+                      <Checkbox
+                        className = "m-b-5 p-l-0"
+                        centerVer
+                        centerHor
+                        value = { this.state.statuses }
+                        label = ""
+                        onChange={()=>{}}
+                        highlighted={true}
+                        />
+                    </td>
+                  </tr>
+
+                  <tr
+                    onClick={() =>
+                      this.setState({
+                        units: !this.state.units})
+                      }
+                    >
+                    <td>Units</td>
+                    <td>
+                      <Checkbox
+                        className = "m-b-5 p-l-0"
+                        centerVer
+                        centerHor
+                        value = { this.state.units }
+                        label = ""
+                        onChange={()=>{}}
+                        highlighted={true}
+                        />
+                    </td>
+                  </tr>
+
+                  <tr
+                    onClick={() =>
+                      this.setState({
+                        prices: !this.state.prices})
+                      }
+                    >
+                    <td>Prices</td>
+                    <td>
+                      <Checkbox
+                        className = "m-b-5 p-l-0"
+                        centerVer
+                        centerHor
+                        value = { this.state.prices }
+                        label = ""
+                        onChange={()=>{}}
+                        highlighted={true}
+                        />
+                    </td>
+                  </tr>
+
+                  <tr
+                    onClick={() =>
+                      this.setState({
+                        suppliers: !this.state.suppliers})
+                      }
+                    >
+                    <td>Suppliers</td>
+                    <td>
+                      <Checkbox
+                        className = "m-b-5 p-l-0"
+                        centerVer
+                        centerHor
+                        value = { this.state.suppliers }
+                        label = ""
+                        onChange={()=>{}}
+                        highlighted={true}
+                        />
+                    </td>
+                  </tr>
+
+                  <tr
+                    onClick={() =>
+                      this.setState({
+                        tags: !this.state.tags})
+                      }
+                    >
+                    <td>Tags</td>
+                    <td>
+                      <Checkbox
+                        className = "m-b-5 p-l-0"
+                        centerVer
+                        centerHor
+                        value = { this.state.tags }
+                        label = ""
+                        onChange={()=>{}}
+                        highlighted={true}
+                        />
+                    </td>
+                  </tr>
+
+                  <tr
+                    onClick={() =>
+                      this.setState({
+                        invoices: !this.state.invoices})
+                      }
+                    >
+                    <td>Invoices</td>
+                    <td>
+                      <Checkbox
+                        className = "m-b-5 p-l-0"
+                        centerVer
+                        centerHor
+                        value = { this.state.invoices }
+                        label = ""
+                        onChange={()=>{}}
+                        highlighted={true}
+                        />
+                    </td>
+                  </tr>
+
+                  <tr
+                    onClick={() =>
+                      this.setState({
+                        roles: !this.state.roles})
+                      }
+                    >
+                    <td>Roles</td>
+                    <td>
+                      <Checkbox
+                        className = "m-b-5 p-l-0"
+                        centerVer
+                        centerHor
+                        value = { this.state.roles }
+                        label = ""
+                        onChange={()=>{}}
+                        highlighted={true}
+                        />
+                    </td>
+                  </tr>
+
+                  <tr
+                    onClick={() =>
+                      this.setState({
+                        types: !this.state.types})
+                      }
+                    >
+                    <td>Types</td>
+                    <td>
+                      <Checkbox
+                        className = "m-b-5 p-l-0"
+                        centerVer
+                        centerHor
+                        value = { this.state.types }
+                        label = ""
+                        onChange={()=>{}}
+                        highlighted={true}
+                        />
+                    </td>
+                  </tr>
+
+                  <tr
+                    onClick={() =>
+                      this.setState({
+                        tripTypes: !this.state.tripTypes})
+                      }
+                    >
+                    <td>Trip types</td>
+                    <td>
+                      <Checkbox
+                        className = "m-b-5 p-l-0"
+                        centerVer
+                        centerHor
+                        value = { this.state.tripTypes }
+                        label = ""
+                        onChange={()=>{}}
+                        highlighted={true}
+                        />
+                    </td>
+                  </tr>
+
+                  <tr
+                    onClick={() =>
+                      this.setState({
+                        imaps: !this.state.imaps})
+                      }
+                    >
+                    <td>Imaps</td>
+                    <td>
+                      <Checkbox
+                        className = "m-b-5 p-l-0"
+                        centerVer
+                        centerHor
+                        value = { this.state.imaps }
+                        label = ""
+                        onChange={()=>{}}
+                        highlighted={true}
+                        />
+                    </td>
+                  </tr>
+
+                  <tr
+                    onClick={() =>
+                      this.setState({
+                        smtps: !this.state.smtps})
+                      }
+                    >
+                    <td>SMTPs</td>
+                    <td>
+                      <Checkbox
+                        className = "m-b-5 p-l-0"
+                        centerVer
+                        centerHor
+                        value = { this.state.smtps }
+                        label = ""
+                        onChange={()=>{}}
+                        highlighted={true}
+                        />
+                    </td>
+                  </tr>
               </tbody>
             </table>
           </div>
