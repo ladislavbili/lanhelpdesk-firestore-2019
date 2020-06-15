@@ -121,8 +121,6 @@ submitComment(){
           })
       })
   } else {
-    console.log("------");
-    console.log(this.state.newComment);
     let time = (new Date()).getTime();
     let storageRef = firebase.storage().ref();
     this.props.id.forEach((i, index) => {
@@ -146,7 +144,6 @@ submitComment(){
                 }
               });
               //mame ulozene attachmenty
-              console.log(this.state.newComment);
               let body={
                 user:this.props.userID,
                 comment:this.state.isEmail?this.state.emailBody: this.state.newComment,

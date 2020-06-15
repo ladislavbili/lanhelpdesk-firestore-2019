@@ -629,7 +629,6 @@ class MultipleTaskEdit extends Component {
 
 	renderComments(){
 		let permission = null;
-		console.log(this.state.project);
 		if(this.state.project && this.state.project.permissions){
 			permission = this.state.project.permissions.find((permission)=>permission.user===this.props.currentUser.id);
 		}
