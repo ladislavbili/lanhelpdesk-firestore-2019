@@ -22,6 +22,7 @@ import TripTypeList from './settings/tripTypes';
 import RoleList from './settings/roles';
 import UserList from './settings/users';
 import PriceList from './settings/prices';
+import PublicFiltersList from './settings/publicFilters';
 import SupplierList from './settings/suppliers';
 import SupplierInvoiceList from './settings/supplierInvoices';
 import TagList from './settings/tags';
@@ -33,6 +34,7 @@ import NotificationList from './notifications';
 let settings = [
 	{title:'Users',link:'users',minimalRole:1},
 	{title:'Companies',link:'companies',minimalRole:1},
+	{title:'Public filters',link:'publicFilters',minimalRole:1},
 	{title:'Mesačné paušály firiem',link:'pausals',minimalRole:3},
 	{title:'Projects',link:'projects',minimalRole:2},
 	{title:'Statuses',link:'statuses',minimalRole:3},
@@ -92,6 +94,8 @@ class Navigation extends Component {
 						<Route exact path='/helpdesk/settings/companies/:id' component={CompanyList} />
 						<Route exact path='/helpdesk/settings/users' component={UserList} />
 						<Route exact path='/helpdesk/settings/users/:id' component={UserList} />
+						<Route exact path='/helpdesk/settings/publicFilters' component={PublicFiltersList} />
+						<Route exact path='/helpdesk/settings/publicFilters/:id' component={PublicFiltersList} />
 					</div>}
 					{((this.props.currentUser.userData && this.props.currentUser.userData.role.value > 	1) || testing) && <div>
 						<Route exact path='/helpdesk/settings/projects' component={ProjectList} />
