@@ -507,13 +507,13 @@ class TaskEdit extends Component {
 		}
 		let permission = undefined;
 		if(project.permissions){
-			let permission = project.permissions.find((permission)=>permission.user===props.currentUser.id);
+			permission = project.permissions.find((permission)=>permission.user===props.currentUser.id);
 		}
 		let viewOnly = false;
 		if(status && status.action==='invoiced' && props.inModal && (props.currentUser.userData.role.value===3 || permission.isAdmin)){
 			viewOnly = false;
 		}else{
-			viewOnly = ((permission===undefined || !permission.write) && props.currentUser.userData.role.value===0)||(status && status.action==='invoiced');
+			viewOnly = ((permission === undefined || !permission.write) && props.currentUser.userData.role.value===0)||(status && status.action==='invoiced');
 		}
 
 		let newState = {
@@ -1383,7 +1383,7 @@ class TaskEdit extends Component {
 								data={this.state.description}
 								onInit={(editor)=>{
 									editor.editing.view.document.on( 'keydown', ( evt, data ) => {
-										if ( data.keyCode == 27 ) {
+										if ( data.keyCode === 27 ) {
 											this.setState({ showDescription: false })
 											data.preventDefault();
 											evt.stop();

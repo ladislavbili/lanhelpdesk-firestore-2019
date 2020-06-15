@@ -301,6 +301,15 @@ class MultipleTaskEdit extends Component {
 				checked: false,
 			}
 			allEdits.push(rebase.updateDoc('/help-tasks/'+taskID, body));
+			if(this.state.repeat !==null){
+				allEdits.push(
+					rebase.addToCollection('/help-repeats', {
+						...this.state.repeat,
+						task:taskID,
+						startAt:(new Date(this.state.repeat.startAt).getTime()),
+					},taskID)
+				);
+			}
 		});
 		Promise.all(allEdits).then((responses)=>{
 			this.setState({saving:false}, () => this.props.close());
