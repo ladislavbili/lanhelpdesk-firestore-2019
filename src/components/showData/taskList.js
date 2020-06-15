@@ -49,20 +49,28 @@ class List extends Component {
 													return <th key={display.value} className="row" colSpan={'1'} style={{color: '#0078D4', paddingLeft: "1px", paddingRight: "1px"}}>
 														 <div
 															 onClick={() => {
+																 if( !this.props.data.some( (item) => item.checked ) ){
+																	 window.alert('Please first pick tasks to delete!');
+																	 return;
+																 }
 																 if (window.confirm("Are you sure you want to delete checked tasks?")){
 																	 this.props.deleteTask()
 																 }
 															 }}>
-																<i className="far fa-trash-alt"	/>
+																<i className="far fa-trash-alt clickable"	/>
 															</div>
 															<div
 																className="ml-auto"
 																onClick={() => {
+																	if( !this.props.data.some( (item) => item.checked ) ){
+ 																	 window.alert('Please first pick tasks to edit!');
+ 																	 return;
+ 																 }
 																	this.setState({
 																		editOpen: true,
 																	})
 																}}>
-																<i	className="fas fa-pen"/>
+																<i	className="fas fa-pen clickable"/>
 															</div>
 													 	</th>
 												}
@@ -171,16 +179,19 @@ class List extends Component {
 															}
 														}}
 														>
-														{display.type !== 'checkbox' &&
-															 getItemDisplayValue(item,display)}
-														{display.type === 'checkbox' &&
+														{	display.type !== 'checkbox' &&
+															getItemDisplayValue(item,display)
+														}
+														{ display.type === 'checkbox' &&
 															<Checkbox
-				                        className = "p-l-0"
-				                        value = { item.checked }
-				                        label = ""
-				                        onChange={(e)=> this.props.checkTask(item.id, e.target.checked)}
-				                        highlighted={false}
-				                        />}
+																className = "p-l-0"
+																value = { item.checked }
+																label = ""
+																disabled = { false && item.viewOnly === true }
+																onChange={(e)=> this.props.checkTask(item.id, e.target.checked)}
+																highlighted={false}
+																/>
+														}
 													</td>
 												)}
 											</tr>

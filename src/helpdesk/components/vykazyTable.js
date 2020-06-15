@@ -1037,6 +1037,32 @@ export default class Rozpocet extends Component {
 											id="inlineFormInput"
 											placeholder=""
 											value={this.state.newSubtaskTitle}
+											onKeyPress={(e)=>{
+												if(
+													e.key === 'Enter' &&
+													this.state.newSubtaskType !== null &&
+													this.state.newSubtaskAssigned !== null &&
+													this.state.newSubtaskTitle.length > 0
+												){
+													let body={
+														done:false,
+														title:this.state.newSubtaskTitle,
+														type: this.state.newSubtaskType.id,
+														quantity:this.state.newSubtaskQuantity!==''?parseInt(this.state.newSubtaskQuantity):0,
+														discount:this.state.newSubtaskDiscount!==''?parseInt(this.state.newSubtaskDiscount):0,
+														assignedTo:this.state.newSubtaskAssigned?this.state.newSubtaskAssigned.id:null,
+														order:this.props.subtasks.length,
+													}
+													this.setState({
+														newSubtaskTitle:'',
+														newSubtaskQuantity:0,
+														newSubtaskDiscount:0,
+														assignedTo:this.props.taskAssigned.length>0?this.props.taskAssigned[0]:null,
+														showAddSubtask: false,
+													});
+													this.props.submitService(body);
+												}
+											}}
 											onChange={(e)=>this.setState({newSubtaskTitle:e.target.value})}
 											/>
 									</td>

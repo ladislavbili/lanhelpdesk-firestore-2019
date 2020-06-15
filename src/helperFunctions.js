@@ -169,7 +169,7 @@ export const changeCKEData = (input)=>{
 
 export const applyTaskFilter = ( task, filter, user, projectID, milestoneID ) => {
   let currentPermissions = null;
-  if(task.project){
+  if(task.project && task.project.permissions){
     currentPermissions = task.project.permissions.find((permission)=>permission.user === user.id);
   }
   return filterOneOf( task, filter, user ) &&

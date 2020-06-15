@@ -263,20 +263,34 @@ class TasksIndex extends Component {
 			return [];
 		}
 		let newTasks=this.state.tasks.map((task)=>{
+			const status = this.state.statuses.find( (status) => status.id === task.status );
+			const project = this.state.projects.find( (project) => project.id === task.project );
 			return {
 				...task,
-				company:this.state.companies.find((company)=>company.id===task.company),
-				status:this.state.statuses.find((status)=>status.id===task.status),
-				project:this.state.projects.find((project)=>project.id===task.project),
-				requester:this.state.users.find((user)=>user.id===task.requester),
-				tags:this.state.tags.filter((tag)=>task.tags && task.tags.includes(tag.id)),
-				assignedTo:this.state.users.filter((user)=>task.assignedTo && task.assignedTo.includes(user.id)),
-				id:parseInt(task.id),
+				company: this.state.companies.find( (company) => company.id === task.company ),
+				status,
+				project,
+				requester: this.state.users.find( (user) => user.id === task.requester ),
+				tags: this.state.tags.filter( (tag) => task.tags && task.tags.includes(tag.id) ),
+				assignedTo: this.state.users.filter( (user) => task.assignedTo && task.assignedTo.includes(user.id) ),
+				id: parseInt(task.id),
+				viewOnly: this.getViewOnly(task, status, project),
 			}
 		});
 
 		const filter = this.props.filter;
 		return newTasks.filter( ( task ) => applyTaskFilter( task, filter, this.props.currentUser, this.props.project, this.props.milestone ) )
+	}
+
+	getViewOnly( task, status, project ){
+		if( project === undefined ){
+			return true;
+		}
+		let permission = []
+		if(project.permissions){
+			permission = project.permissions.find((permission) => permission.user === this.props.currentUser.id );
+		}
+		return ( (permission === undefined || !permission.write ) && this.props.currentUser.userData.role.value === 0 ) || ( status && status.action === 'invoiced' );
 	}
 
 	checkTask(id, check){
@@ -299,12 +313,13 @@ class TasksIndex extends Component {
 
 	deleteTask(){
 		if(!this.props.statusesLoaded){
-			return ;
+			return;
 		}
-
-		let newTasks = this.state.tasks.filter(task => !task.checked);
-		let tasksToDelete = this.state.tasks.filter(task => task.checked);
-
+		let filteredTasks = this.filterTasks();
+		let tasksToDelete = filteredTasks.filter( task => task.checked );
+		let failedTasks = tasksToDelete.filter( (task) => task.viewOnly );
+		tasksToDelete = tasksToDelete.filter( task => !task.viewOnly );
+		let newTasks = this.state.tasks.filter(task1 => !tasksToDelete.some( (task2) => task1.id === task2.id ));
 		tasksToDelete.forEach(task => {
 			let taskID = task.id;
 			let storageRef = firebase.storage().ref();
@@ -347,10 +362,12 @@ class TasksIndex extends Component {
 				snapshotToArray(data).forEach((item)=>rebase.removeDoc('/help-calendar_events/'+item.id));
 			});
 		});
-
 		this.setState({
 			tasks: newTasks,
 		})
+		if( failedTasks.length > 0 ) {
+			window.alert(`${tasksToDelete.length} were deleted. Some tasks couln't be deleted. This includes: \n` + failedTasks.reduce( (acc, task) => acc + `${task.id} ${task.title} \n` , '' ) )
+		}
 	}
 
 	getCalendarEventsData(tasks){

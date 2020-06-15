@@ -58,7 +58,7 @@ export default class TaskAdd extends Component{
 			taskTypes:[],
 			tripTypes:[],
 			hidden:true,
-			defaults:noDef,
+			defaultFields:noDef,
 
 			title:'',
 			company:this.props.companies && requester ? this.props.companies.find((company)=>company.id===this.props.currentUser.userData.company) : null,
@@ -240,19 +240,19 @@ export default class TaskAdd extends Component{
 
 	setDefaults(projectID, forced){
 		if(projectID===null){
-			this.setState({defaults:noDef});
+			this.setState({defaultFields:noDef});
 			return;
 		}
 		let project = this.props.projects.find((proj)=>proj.id===projectID);
 		let def = project.def;
 			if(!def){
-				this.setState({defaults:noDef});
+				this.setState({defaultFields:noDef});
 				return;
 			}
 
 			if (this.props.task && !forced) {
 				this.setState({
-					defaults: def,
+					defaultFields: def,
 				});
 				return;
 			}
@@ -275,7 +275,7 @@ export default class TaskAdd extends Component{
 				pausal: def.pausal&& (def.pausal.fixed||def.pausal.def)? booleanSelects.find((item)=> def.pausal.value === item.value):this.state.pausal,
 				project,
 				viewOnly: this.props.currentUser.userData.role.value===0 && !permission.write,
-				defaults: def
+				defaultFields: def
 			});
 	}
 
@@ -346,7 +346,7 @@ export default class TaskAdd extends Component{
 						delete m['task'];
 						return {...m, id:this.getNewID()};})
 					: [],
-				defaults:noDef,
+				defaultFields:noDef,
 
 				hidden: false,
 			},() => this.setDefaults(this.props.project, false));
@@ -398,7 +398,7 @@ export default class TaskAdd extends Component{
 
 					{ this.renderPopis() }
 
-					{ this.state.layout === "1" && this.state.defaults.tags.show && this.renderTags() }
+					{ this.state.layout === "1" && this.state.defaultFields.tags.show && this.renderTags() }
 
 					{ this.renderAttachments() }
 
@@ -573,14 +573,14 @@ export default class TaskAdd extends Component{
 								</div>
 							</div>
 						</div>
-						{this.state.defaults.assignedTo.show && <div className="col-lg-8">
+						{this.state.defaultFields.assignedTo.show && <div className="col-lg-8">
 							<div className="row p-r-10">
 								<Label className="col-1-5 col-form-label">Assigned</Label>
 								<div className="col-10-5">
 									<Select
 										placeholder="Select required"
 										value={this.state.assignedTo}
-										isDisabled={this.state.defaults.assignedTo.fixed||this.state.viewOnly}
+										isDisabled={this.state.defaultFields.assignedTo.fixed||this.state.viewOnly}
 										isMulti
 										onChange={(users)=>this.setState({assignedTo:users})}
 										options={USERS_WITH_PERMISSIONS}
@@ -592,13 +592,13 @@ export default class TaskAdd extends Component{
 					</div>
 
 					<div className="col-lg-4">
-						{this.state.defaults.status.show && <div className="row p-r-10">
+						{this.state.defaultFields.status.show && <div className="row p-r-10">
 							<Label className="col-3 col-form-label">Status</Label>
 							<div className="col-9">
 								<Select
 									placeholder="Select required"
 									value={this.state.status}
-									isDisabled={this.state.defaults.status.fixed||this.state.viewOnly}
+									isDisabled={this.state.defaultFields.status.fixed||this.state.viewOnly}
 									styles={invisibleSelectStyleNoArrowColoredRequired}
 									onChange={(status)=>{
 										if(status.action==='pending'){
@@ -625,13 +625,13 @@ export default class TaskAdd extends Component{
 									/>
 							</div>
 						</div>}
-							{this.state.defaults.type.show && <div className="row p-r-10">
+							{this.state.defaultFields.type.show && <div className="row p-r-10">
 								<Label className="col-3 col-form-label">Typ</Label>
 								<div className="col-9">
 									<Select
 										placeholder="Select required"
 										value={this.state.type}
-										isDisabled={this.state.defaults.type.fixed||this.state.viewOnly}
+										isDisabled={this.state.defaultFields.type.fixed||this.state.viewOnly}
 										styles={invisibleSelectStyleNoArrowRequired}
 										onChange={(type)=>this.setState({type})}
 										options={this.state.taskTypes}
@@ -664,39 +664,39 @@ export default class TaskAdd extends Component{
 					</div>
 
 					<div className="col-lg-4">
-							{this.state.defaults.requester.show && <div className="row p-r-10">
+							{this.state.defaultFields.requester.show && <div className="row p-r-10">
 								<Label className="col-3 col-form-label">Zadal</Label>
 								<div className="col-9">
 									<Select
 										value={this.state.requester}
 										placeholder="Select required"
-										isDisabled={this.state.defaults.requester.fixed||this.state.viewOnly}
+										isDisabled={this.state.defaultFields.requester.fixed||this.state.viewOnly}
 										onChange={(requester)=>this.setState({requester})}
 										options={REQUESTERS}
 										styles={invisibleSelectStyleNoArrowRequired}
 										/>
 								</div>
 							</div>}
-							{this.state.defaults.company.show && <div className="row p-r-10">
+							{this.state.defaultFields.company.show && <div className="row p-r-10">
 								<Label className="col-3 col-form-label">Firma</Label>
 								<div className="col-9">
 									<Select
 										value={this.state.company}
 										placeholder="Select required"
-										isDisabled={this.state.defaults.company.fixed||this.state.viewOnly}
+										isDisabled={this.state.defaultFields.company.fixed||this.state.viewOnly}
 										onChange={(company)=>this.setState({company, pausal:parseInt(company.workPausal)>0?booleanSelects[1]:booleanSelects[0]})}
 										options={this.state.companies}
 										styles={invisibleSelectStyleNoArrowRequired}
 										/>
 								</div>
 							</div>}
-							{this.state.defaults.pausal.show && <div className="row p-r-10">
+							{this.state.defaultFields.pausal.show && <div className="row p-r-10">
 									<Label className="col-3 col-form-label">Paušál</Label>
 									<div className="col-9">
 										<Select
 											value={this.state.pausal}
 											placeholder="Select required"
-											isDisabled={this.state.viewOnly||!this.state.company || parseInt(this.state.company.workPausal)===0||this.state.defaults.pausal.fixed}
+											isDisabled={this.state.viewOnly||!this.state.company || parseInt(this.state.company.workPausal)===0||this.state.defaultFields.pausal.fixed}
 											styles={invisibleSelectStyleNoArrowRequired}
 											onChange={(pausal)=>this.setState({pausal})}
 											options={booleanSelects}
@@ -753,13 +753,13 @@ export default class TaskAdd extends Component{
 							}}
 							columns={true}
 							/>
-							{this.state.defaults.overtime.show && <div className="row p-r-10">
+							{this.state.defaultFields.overtime.show && <div className="row p-r-10">
 								<Label className="col-3 col-form-label">Mimo PH</Label>
 								<div className="col-9">
 									<Select
 										placeholder="Select required"
 										value={this.state.overtime}
-										isDisabled={this.state.viewOnly||this.state.defaults.overtime.fixed}
+										isDisabled={this.state.viewOnly||this.state.defaultFields.overtime.fixed}
 										styles={invisibleSelectStyleNoArrowRequired}
 										onChange={(overtime)=>this.setState({overtime})}
 										options={booleanSelects}
@@ -871,14 +871,14 @@ export default class TaskAdd extends Component{
 							</div>
 						}
 						{!this.state.viewOnly &&
-							this.state.defaults.assignedTo.show &&
+							this.state.defaultFields.assignedTo.show &&
 							<div className="">
 								<Label className="col-form-label-2">Assigned</Label>
 								<div className="col-form-value-2">
 									<Select
 										placeholder="Select required"
 										value={this.state.assignedTo}
-										isDisabled={this.state.defaults.assignedTo.fixed||this.state.viewOnly}
+										isDisabled={this.state.defaultFields.assignedTo.fixed||this.state.viewOnly}
 										isMulti
 										onChange={(users)=>this.setState({assignedTo:users})}
 										options={USERS_WITH_PERMISSIONS}
@@ -888,14 +888,14 @@ export default class TaskAdd extends Component{
 							</div>}
 
 						{!this.state.viewOnly &&
-							this.state.defaults.status.show &&
+							this.state.defaultFields.status.show &&
 							<div className="">
 							<Label className="col-form-label-2">Status</Label>
 							<div className="col-form-value-2">
 								<Select
 									placeholder="Select required"
 									value={this.state.status}
-									isDisabled={this.state.defaults.status.fixed||this.state.viewOnly}
+									isDisabled={this.state.defaultFields.status.fixed||this.state.viewOnly}
 									styles={invisibleSelectStyleNoArrowColoredRequired}
 									onChange={(status)=>{
 										if(status.action==='pending'){
@@ -924,14 +924,14 @@ export default class TaskAdd extends Component{
 						</div>}
 
 							{!this.state.viewOnly &&
-								this.state.defaults.type.show &&
+								this.state.defaultFields.type.show &&
 								<div className="">
 								<Label className="col-form-label-2">Typ</Label>
 								<div className="col-form-value-2">
 									<Select
 										placeholder="Select required"
 										value={this.state.type}
-										isDisabled={this.state.defaults.type.fixed||this.state.viewOnly}
+										isDisabled={this.state.defaultFields.type.fixed||this.state.viewOnly}
 										styles={invisibleSelectStyleNoArrowRequired}
 										onChange={(type)=>this.setState({type})}
 										options={this.state.taskTypes}
@@ -963,14 +963,14 @@ export default class TaskAdd extends Component{
 								</div>
 							</div>}
 
-							{this.state.defaults.tags.show &&
+							{this.state.defaultFields.tags.show &&
 								<div className=""> {/*Tags*/}
 									<Label className="col-form-label-2">Tagy: </Label>
 									<div className="col-form-value-2">
 										<Select
 											value={this.state.tags}
 											placeholder="None"
-											isDisabled={this.state.defaults.tags.fixed||this.state.viewOnly}
+											isDisabled={this.state.defaultFields.tags.fixed||this.state.viewOnly}
 											isMulti
 											onChange={(tags)=>this.setState({tags})}
 											options={this.state.allTags}
@@ -980,14 +980,14 @@ export default class TaskAdd extends Component{
 								</div>}
 
 							{!this.state.viewOnly &&
-								this.state.defaults.requester.show &&
+								this.state.defaultFields.requester.show &&
 								<div className="">
 									<Label className="col-form-label-2">Zadal</Label>
 									<div className="col-form-value-2">
 										<Select
 											value={this.state.requester}
 											placeholder="Select required"
-											isDisabled={this.state.defaults.requester.fixed||this.state.viewOnly}
+											isDisabled={this.state.defaultFields.requester.fixed||this.state.viewOnly}
 											onChange={(requester)=>this.setState({requester})}
 											options={REQUESTERS}
 											styles={invisibleSelectStyleNoArrowRequired}
@@ -996,14 +996,14 @@ export default class TaskAdd extends Component{
 								</div>}
 
 							{!this.state.viewOnly &&
-								this.state.defaults.company.show &&
+								this.state.defaultFields.company.show &&
 								<div className="">
 									<Label className="col-form-label-2">Firma</Label>
 									<div className="col-form-value-2">
 										<Select
 											value={this.state.company}
 											placeholder="Select required"
-											isDisabled={this.state.defaults.company.fixed||this.state.viewOnly}
+											isDisabled={this.state.defaultFields.company.fixed||this.state.viewOnly}
 											onChange={(company)=>this.setState({company, pausal:parseInt(company.workPausal)>0?booleanSelects[1]:booleanSelects[0]})}
 											options={this.state.companies}
 											styles={invisibleSelectStyleNoArrowRequired}
@@ -1012,14 +1012,14 @@ export default class TaskAdd extends Component{
 								</div>}
 
 							{!this.state.viewOnly &&
-								this.state.defaults.pausal.show &&
+								this.state.defaultFields.pausal.show &&
 								<div className="">
 									<Label className="col-form-label-2">Paušál</Label>
 									<div className="col-form-value-2">
 										<Select
 											value={this.state.pausal}
 											placeholder="Select required"
-											isDisabled={this.state.viewOnly||!this.state.company || parseInt(this.state.company.workPausal)===0||this.state.defaults.pausal.fixed}
+											isDisabled={this.state.viewOnly||!this.state.company || parseInt(this.state.company.workPausal)===0||this.state.defaultFields.pausal.fixed}
 											styles={invisibleSelectStyleNoArrowRequired}
 											onChange={(pausal)=>this.setState({pausal})}
 											options={booleanSelects}
@@ -1080,14 +1080,14 @@ export default class TaskAdd extends Component{
 							/>}
 
 					{!this.state.viewOnly &&
-						this.state.defaults.overtime.show &&
+						this.state.defaultFields.overtime.show &&
 						<div className="">
 						<Label className="col-form-label-2">Mimo PH</Label>
 						<div className="col-form-value-2">
 							<Select
 								placeholder="Select required"
 								value={this.state.overtime}
-								isDisabled={this.state.viewOnly||this.state.defaults.overtime.fixed}
+								isDisabled={this.state.viewOnly||this.state.defaultFields.overtime.fixed}
 								styles={invisibleSelectStyleNoArrowRequired}
 								onChange={(overtime)=>this.setState({overtime})}
 								options={booleanSelects}
@@ -1109,7 +1109,7 @@ export default class TaskAdd extends Component{
 						<Select
 							value={this.state.tags}
 							placeholder="None"
-							isDisabled={this.state.defaults.tags.fixed||this.state.viewOnly}
+							isDisabled={this.state.defaultFields.tags.fixed||this.state.viewOnly}
 							isMulti
 							onChange={(tags)=>this.setState({tags})}
 							options={this.state.allTags}

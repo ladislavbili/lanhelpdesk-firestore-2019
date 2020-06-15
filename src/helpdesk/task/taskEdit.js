@@ -455,7 +455,6 @@ class TaskEdit extends Component {
 		let repeat = this.state.extraData.repeat;
 
 		let taskID = props.match.params.taskID;
-		console.log(taskID);
 		let task = props.tasks.find((task)=>task.id===taskID);
 		let statuses = toSelArr(props.statuses);
 		let projects = toSelArr(props.projects);
@@ -506,8 +505,10 @@ class TaskEdit extends Component {
 		if(task.tags){
 			taskTags=tags.filter((tag)=>task.tags.includes(tag.id));
 		}
-
-		let permission = project.permissions.find((permission)=>permission.user===props.currentUser.id);
+		let permission = undefined;
+		if(project.permissions){
+			let permission = project.permissions.find((permission)=>permission.user===props.currentUser.id);
+		}
 		let viewOnly = false;
 		if(status && status.action==='invoiced' && props.inModal && (props.currentUser.userData.role.value===3 || permission.isAdmin)){
 			viewOnly = false;
@@ -584,7 +585,7 @@ class TaskEdit extends Component {
 	//Renders
 	render() {
 		let permission = null;
-		if(this.state.project){
+		if(this.state.project && this.state.project.permissions){
 			permission = this.state.project.permissions.find((permission)=>permission.user===this.props.currentUser.id);
 		}
 		if(permission===undefined){
@@ -637,8 +638,10 @@ class TaskEdit extends Component {
 		return (
 			<div className="flex">
 				{this.state.showDescription &&
-					<div style={{backgroundColor: "transparent", width: "100%", height: "100%", position: "absolute"}} onClick={()=>this.setState({showDescription:false})}>
-					</div>
+					<div
+						style={{backgroundColor: "transparent", width: "100%", height: "100%", position: "absolute"}}
+						onClick={()=>this.setState({showDescription:false})}
+						/>
 				}
 
 				{ this.renderCommandbar(taskID, createdBy, canCopy, canDelete, taskWorks, workTrips, taskMaterials, customItems) }
@@ -816,7 +819,7 @@ class TaskEdit extends Component {
 	}
 
 	renderSelectsLayout1(taskID, canAdd){
-		const USERS_WITH_PERMISSIONS = this.state.users.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id));
+		const USERS_WITH_PERMISSIONS = this.state.users.filter((user)=>this.state.project && this.state.project.permissions && this.state.project.permissions.some((permission)=>permission.user===user.id));
 		const REQUESTERS =  (this.state.project && this.state.project.lockedRequester ? USERS_WITH_PERMISSIONS : this.state.users);
 
 		return(
@@ -831,7 +834,10 @@ class TaskEdit extends Component {
 									isDisabled={this.state.viewOnly}
 									value={this.state.project}
 									onChange={(project)=>{
-										let permissionIDs = project.permissions.map((permission) => permission.user);
+										let permissionIDs = [];
+										if(project.permissions){
+											project.permissions.map((permission) => permission.user);
+										}
 										let assignedTo=this.state.assignedTo.filter((user)=>permissionIDs.includes(user.id));
 
 										this.setState({project,
@@ -844,6 +850,9 @@ class TaskEdit extends Component {
 										let curr = this.props.currentUser;
 										if((curr.userData && curr.userData.role.value===3)||(project.id===-1||project.id===null)){
 											return true;
+										}
+										if(!project.permissions){
+											return false;
 										}
 										let permission = project.permissions.find((permission)=>permission.user===curr.id);
 										return permission && permission.read;
@@ -1373,6 +1382,13 @@ class TaskEdit extends Component {
 								editor={ ClassicEditor }
 								data={this.state.description}
 								onInit={(editor)=>{
+									editor.editing.view.document.on( 'keydown', ( evt, data ) => {
+										if ( data.keyCode == 27 ) {
+											this.setState({ showDescription: false })
+											data.preventDefault();
+											evt.stop();
+										}
+									});
 								}}
 								onChange={(e,editor)=>{
 									this.setState({description: editor.getData()},this.submitTask.bind(this))
@@ -1637,7 +1653,7 @@ class TaskEdit extends Component {
 
 	renderComments(taskID){
 		let permission = null;
-		if(this.state.project){
+		if(this.state.project && this.state.project.permissions){
 			permission = this.state.project.permissions.find((permission)=>permission.user===this.props.currentUser.id);
 		}
 		if( !permission ){

@@ -186,7 +186,7 @@ class Sidebar extends Component {
 						} else {
 							if(this.props.filterState!== null && !this.props.filterState.global && this.props.filterState.project!==project.id){
 								this.props.setHelpSidebarFilter(null);
-								this.props.setFilter(this.getEmptyFilter());
+								this.props.setFilter(getEmptyFilter());
 								this.props.history.push('/helpdesk/taskList/i/all');
 							}
 							this.props.setHelpSidebarProject(project);

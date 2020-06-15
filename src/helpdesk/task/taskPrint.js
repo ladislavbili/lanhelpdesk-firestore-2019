@@ -184,7 +184,7 @@ class TaskInfo extends Component {
 
 
 					<label className="m-t-5  text-slim">Popis</label>
-					{(this.props.description.length!==0 ?
+					{(this.props.description && this.props.description.length !== 0 ?
 						<div className="" dangerouslySetInnerHTML={{__html:this.props.description }} /> :
 							<div className="">Úloha nemá popis</div>
 					)}
