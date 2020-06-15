@@ -2,21 +2,18 @@ import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input } from 'reactstrap';
 
 import { connect } from "react-redux";
-import Checkbox from 'components/checkbox';
 import DatePicker from 'react-datepicker';
-import {setFilter, storageHelpTaskTypesStart, storageUsersStart, storageCompaniesStart } from 'redux/actions';
-import {toSelArr, sameStringForms, toMomentInput, fromMomentToUnix } from 'helperFunctions';
 import datePickerConfig from 'scss/datePickerConfig';
 
 import Select from 'react-select';
 import {selectStyle} from 'scss/selectStyles';
 
-
+/*
 const FILTERS = [
   {label:'My tasks',value:1},
   {label:'All tasks',value:2},
   {label:'Assigned tasks',value:3},
-];
+];*/
 
 const ROLES = [
   {label:'Guest',value:-1},

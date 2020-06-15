@@ -2,10 +2,7 @@ import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input } from 'reactstrap';
 
 import { connect } from "react-redux";
-import Checkbox from 'components/checkbox';
 import DatePicker from 'react-datepicker';
-import {setFilter, storageHelpTaskTypesStart, storageUsersStart, storageCompaniesStart } from 'redux/actions';
-import {toSelArr, sameStringForms, toMomentInput, fromMomentToUnix } from 'helperFunctions';
 import datePickerConfig from 'scss/datePickerConfig';
 
 import Select from 'react-select';
