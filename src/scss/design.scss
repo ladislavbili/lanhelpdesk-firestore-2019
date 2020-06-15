@@ -904,6 +904,18 @@ tr:last-child{
   display: inline-block;
 }
 
+.public-filters>.react-datepicker-wrapper{
+  width: 50% !important;
+}
+
+.public-filters>.react-datepicker-wrapper:nth-child(1)>.react-datepicker__input-container{
+  width: 98% !important;
+}
+
+.public-filters>.react-datepicker-wrapper:nth-child(2)>.react-datepicker__input-container{
+  width: 100% !important;
+}
+
 //----------------END-všeobecné-elementy----------------
 
 //--------------------CMDB-------------------------

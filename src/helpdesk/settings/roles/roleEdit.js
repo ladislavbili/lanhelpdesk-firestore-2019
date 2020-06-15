@@ -60,7 +60,7 @@ class RoleEdit extends Component{
                 value={this.state.label}
                 onChange={(e)=>{
                   this.setState({
-                    label: e.target.label})
+                    label: e.target.value})
               }}
               />
           </FormGroup>
