@@ -3,15 +3,8 @@ import {Button } from 'reactstrap';
 import RoleAdd from './roleAdd';
 import RoleEdit from './roleEdit';
 
+import roles from './roles';
 import { connect } from "react-redux";
-
-const ROLES = [
-  {label:'Guest',value:-1},
-  {label:'User',value:0},
-  {label:'Agent',value:1},
-  {label:'Manager',value:2},
-  {label:'Admin',value:3},
-];
 
 class RolesList extends Component{
   constructor(props){
@@ -59,19 +52,22 @@ class RolesList extends Component{
                 <h2 className="">
     							Roles
     						</h2>
+                <span className="center-hor ml-auto bolder info">
+                  This list is just informational
+                </span>
               </div>
               <table className="table table-hover">
                 <tbody>
-                  {ROLES.map((role)=>
+                  {roles.map((role)=>
                     <tr
-                      key={role.value}
-                      className={"clickable" + (this.props.match.params.id === role.label ? " sidebar-item-active":"")}
+                      key={role.id}
+                      className={"clickable" + (this.props.match.params.id === role.id ? " sidebar-item-active":"")}
                       style={{whiteSpace: "nowrap",  overflow: "hidden"}}
-                      onClick={()=>this.props.history.push('/helpdesk/settings/roles/'+role.label)}>
+                      onClick={()=>this.props.history.push('/helpdesk/settings/roles/'+role.id)}>
                       <td
-                        className={(this.props.match.params.id === role.label ? "text-highlight":"")}
+                        className={(this.props.match.params.id === role.id ? "text-highlight":"")}
                         style={{maxWidth: "300px", whiteSpace: "nowrap",  overflow: "hidden", textOverflow: "ellipsis"  }}  >
-                        {role.label}
+                        {role.title}
                       </td>
                     </tr>
                   )}
@@ -85,8 +81,11 @@ class RolesList extends Component{
               this.props.match.params.id && this.props.match.params.id==='add' && <RoleAdd />
             }
             {
-              this.props.match.params.id && this.props.match.params.id!=='add' && ROLES.some((item)=>item.label===this.props.match.params.id) && <RoleEdit match={this.props.match} history={this.props.history}/>
-              }
+              this.props.match.params.id &&
+              this.props.match.params.id!=='add' &&
+              roles.some( (role) => role.id === this.props.match.params.id ) &&
+              <RoleEdit match={this.props.match} history={this.props.history}/>
+            }
           </div>
         </div>
       </div>

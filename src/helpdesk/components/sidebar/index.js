@@ -24,7 +24,7 @@ import {
 	setHelpSidebarFilter
 } from 'redux/actions';
 
-import { getEmptyFilter, getFixedFilters } from './fixedFilters';
+import { getEmptyFilter } from './fixedFilters';
 import {sidebarSelectStyle} from 'scss/selectStyles';
 
 import classnames from "classnames";
@@ -33,7 +33,6 @@ const dashboard = {id:null,title:'Any project', label:'Any project',value:null};
 const addProject = {id:-1,title:'+ Add project', label:'+ Add project',value:-1};
 const allMilestones = {id:null,title:'Any milestone', label:'Any milestone',value:null};
 const addMilestone = {id:-1,title:'+ Add milestone', label:'+ Add milestone',value:-1};
-const fixedFilters = getFixedFilters();
 
 class Sidebar extends Component {
 	constructor(props) {
@@ -93,13 +92,14 @@ class Sidebar extends Component {
 			url = url.substring(0,url.indexOf('/'));
 		}
 		let filterID = url;
+		/*
 		let filter = fixedFilters.find( ( filter ) => filter.id === filterID )
 		if(filter !== undefined ){
 			this.props.setHelpSidebarFilter(null);
 			props.setFilter( filter.filter );
 		}
-
-		filter = props.filters.find((filter)=>filter.id===filterID);
+		*/
+		let filter = props.filters.find((filter)=>filter.id===filterID);
 		if( filter !== undefined ){
 			props.setHelpSidebarFilter(filter);
 			props.setFilter({
@@ -275,21 +275,6 @@ class Sidebar extends Component {
 				<TabContent activeTab={this.state.activeTab}>
 					<TabPane tabId={0} >
 						<Nav vertical>
-							{
-								fixedFilters.map((filter) =>
-								<NavItem key={filter.id}>
-									<Link
-										className="sidebar-menu-item"
-										to={{ pathname: `/helpdesk/taskList/i/${filter.id}` }}
-										onClick={()=>{
-											this.props.setHelpSidebarFilter(null);
-											this.props.setFilter(filter.filter);
-										}}
-										>
-										{filter.title}
-									</Link>
-								</NavItem>
-							)}
 							{ filters.map((item)=>
 								<NavItem key={item.id} className="row">
 									<Link
@@ -356,7 +341,7 @@ class Sidebar extends Component {
 					this.state.milestones.map((item)=>item.id).includes(this.props.milestoneState.id) &&
 					<MilestoneEdit item={this.props.milestoneState}/>
 				}
-				<FilterOrder />
+				{/*<FilterOrder />*/}
 			</div>
 		)
 	}

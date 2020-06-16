@@ -3,6 +3,7 @@ import {Button } from 'reactstrap';
 import PublicFilterAdd from './publicFilterAdd';
 import PublicFilterEdit from './publicFilterEdit';
 
+import { storageHelpFiltersStart } from 'redux/actions';
 import { connect } from "react-redux";
 
 const FILTERS = [
@@ -19,13 +20,15 @@ class PublicFiltersList extends Component{
     }
   }
 
-  componentWillReceiveProps(props){
-  }
-
   componentWillMount(){
-  }
+		if(!this.props.filtersActive){
+			this.props.storageHelpFiltersStart();
+		}
+	}
 
   render(){
+    let publicFilters = this.props.filters.filter((filter)=>filter.public)
+    .sort((item1,item2)=> item1.order - item2.order);
     return (
 			<div className="content">
         <div className="row m-0 p-0 taskList-container">
@@ -59,16 +62,21 @@ class PublicFiltersList extends Component{
               </div>
               <table className="table table-hover">
                 <tbody>
-                  {FILTERS.map((filter)=>
+                  {publicFilters.map((filter)=>
                     <tr
-                      key={filter.value}
-                      className={"clickable" + (this.props.match.params.id === filter.label ? " sidebar-item-active":"")}
+                      key={filter.id}
+                      className={"clickable" + (this.props.match.params.id === filter.id ? " sidebar-item-active":"")}
                       style={{whiteSpace: "nowrap",  overflow: "hidden"}}
-                      onClick={()=>this.props.history.push('/helpdesk/settings/publicFilters/'+filter.value.toString())}>
+                      onClick={()=>this.props.history.push('/helpdesk/settings/publicFilters/'+filter.id.toString())}>
                       <td
-                        className={(this.props.match.params.id === filter.label ? "text-highlight":"")}
+                        className={(this.props.match.params.id === filter.id ? "text-highlight":"")}
                         style={{maxWidth: "300px", whiteSpace: "nowrap",  overflow: "hidden", textOverflow: "ellipsis"  }}  >
-                        {filter.label + ", " + filter.value}
+                        {filter.title}
+                      </td>
+                      <td
+                        className={(this.props.match.params.id === filter.id ? "text-highlight":"")}
+                        style={{maxWidth: "300px", whiteSpace: "nowrap",  overflow: "hidden", textOverflow: "ellipsis"  }}  >
+                        {filter.order}
                       </td>
                     </tr>
                   )}
@@ -82,7 +90,10 @@ class PublicFiltersList extends Component{
               this.props.match.params.id && this.props.match.params.id==='add' && <PublicFilterAdd />
             }
             {
-              this.props.match.params.id && this.props.match.params.id!=='add' && FILTERS.some((item)=>item.value.toString()===this.props.match.params.id) && <PublicFilterEdit match={this.props.match} history={this.props.history}/>
+              this.props.match.params.id &&
+              this.props.match.params.id!=='add' &&
+              publicFilters.some((item)=>item.id.toString()===this.props.match.params.id) &&
+              <PublicFilterEdit match={this.props.match} history={this.props.history}/>
               }
           </div>
         </div>
@@ -92,4 +103,11 @@ class PublicFiltersList extends Component{
 }
 
 
-export default connect()(PublicFiltersList);
+const mapStateToProps = ({ storageHelpFilters }) => {
+  const { filtersActive, filters, filtersLoaded } = storageHelpFilters;
+  return {
+    filtersActive, filters, filtersLoaded,
+  };
+};
+
+export default connect(mapStateToProps, { storageHelpFiltersStart })(PublicFiltersList);

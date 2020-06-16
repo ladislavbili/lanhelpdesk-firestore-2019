@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { Label, TabContent, TabPane, Nav, NavItem, NavLink, Button} from 'reactstrap';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
+import lodash from 'lodash';
 
 import Attachments from '../components/attachments.js';
 import Comments from '../components/comments.js';
@@ -17,6 +18,7 @@ import {toSelArr, sameStringForms} from '../../helperFunctions';
 import { storageCompaniesStart, storageHelpPricelistsStart, storageHelpPricesStart,storageHelpProjectsStart, storageHelpStatusesStart, storageHelpTaskTypesStart, storageUsersStart, storageHelpMilestonesStart } from '../../redux/actions';
 import {invisibleSelectStyleNoArrow, invisibleSelectStyleNoArrowColoredRequired, invisibleSelectStyleNoArrowRequired} from '../../scss/selectStyles';
 import { REST_URL } from 'config';
+
 
 const noMilestone = {id:null,value:null,title:'None',label:'None',startsAt:null};
 const booleanSelects = [{value:false,label:'No'},{value:true,label:'Yes'}];
@@ -272,7 +274,14 @@ class MultipleTaskEdit extends Component {
 			this.setState({saving:true});
 
 			let statusAction = this.state.status ? this.state.status.action : "";
-			let assignedTo = task.assignedTo ? task.assignedTo.map(a => a.id).concat(this.state.assignedTo.map((item)=>item.id)) : this.state.assignedTo.map((item)=>item.id)
+			let assignedTo = (
+				this.state.assignedTo.length > 0 ?
+				lodash.union( this.state.assignedTo.map((item)=>item.id), task.assignedTo.map(a => a.id) ) :
+				task.assignedTo.map(a => a.id)
+			)
+			if( this.state.project && this.state.project.permissions ){
+				assignedTo = assignedTo.filter( (user) => this.state.project.permissions.some( (perm) => perm.user === user ) )
+			}
 
 			let body = {
 				company: this.state.company?this.state.company.id: task.company.id,

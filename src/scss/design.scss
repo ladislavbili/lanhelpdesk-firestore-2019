@@ -28,6 +28,14 @@
   max-width: 1920px;
 }
 
+.bolder{
+  font-weight: bolder;
+}
+
+.info-text{
+  @extend .text-muted;
+}
+
 .testSonka{
   color: red;
   font-size: 10px;

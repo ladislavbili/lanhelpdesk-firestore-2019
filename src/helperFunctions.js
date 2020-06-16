@@ -227,3 +227,14 @@ export const filterOneOf = ( task, filter, user ) => {
   }
   return all.every( (bool) => bool ) && ( oneOf.length === 0 || oneOf.some( (bool) => bool ) )
 }
+
+export const filterProjectsByPermissions = ( projects, currentUser ) => {
+  return toSelArr(projects).filter((project)=>{
+    if(currentUser.userData && currentUser.userData.role.value===3){
+      return true;
+    }
+    if( project.permissions === undefined ) return false;
+    let permission = project.permissions.find((permission)=>permission.user===currentUser.id);
+    return permission && permission.read;
+  })
+}

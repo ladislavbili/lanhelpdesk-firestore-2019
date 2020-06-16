@@ -100,6 +100,7 @@ class FilterAdd extends Component{
                   if(curr.userData && curr.userData.role.value===3){
                     return true;
                   }
+                  if( project.permissions === undefined ) return false;
                   let permission = project.permissions.find((permission)=>permission.user===curr.id);
                   return permission && permission.read;
                 })}
