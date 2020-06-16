@@ -30,6 +30,7 @@ import TaskTypeList from './settings/taskTypes';
 import ImapList from './settings/imaps';
 import SMTPList from './settings/smtps';
 import NotificationList from './notifications';
+import AttributesList from './settings/attributes';
 
 let settings = [
 	{title:'Users',link:'users',minimalRole:1},
@@ -46,6 +47,7 @@ let settings = [
 	{title:'Roles',link:'roles',minimalRole:2},
 	{title:'Types',link:'taskTypes',minimalRole:2},
 	{title:'Trip types',link:'tripTypes',minimalRole:2},
+	{title:'Attributes',link:'attributes',minimalRole:2},
 	{title:'Imaps',link:'imaps',minimalRole:3},
 	{title:'SMTPs',link:'smtps',minimalRole:3},
 ]
@@ -118,6 +120,8 @@ class Navigation extends Component {
 						<Route exact path='/helpdesk/settings/taskTypes/:id' component={TaskTypeList} />
 						<Route exact path='/helpdesk/settings/roles' component={RoleList} />
 						<Route exact path='/helpdesk/settings/roles/:id' component={RoleList} />
+						<Route exact path='/helpdesk/settings/attributes' component={AttributesList} />
+						<Route exact path='/helpdesk/settings/attributes/:id' component={AttributesList} />
 					</div>}
 					{((this.props.currentUser.userData && this.props.currentUser.userData.role.value > 	2) || testing) && <div>
 						<Route exact path='/helpdesk/settings/statuses' component={StatusList} />

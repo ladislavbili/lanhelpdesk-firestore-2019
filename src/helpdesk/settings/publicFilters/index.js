@@ -6,12 +6,6 @@ import PublicFilterEdit from './publicFilterEdit';
 import { storageHelpFiltersStart } from 'redux/actions';
 import { connect } from "react-redux";
 
-const FILTERS = [
-  {label:'My tasks',value:1},
-  {label:'All tasks',value:2},
-  {label:'Assigned tasks',value:3},
-];
-
 class PublicFiltersList extends Component{
   constructor(props){
     super(props);

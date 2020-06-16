@@ -16,7 +16,7 @@ import {
   storageHelpProjectsStart,
 } from 'redux/actions';
 import roles from '../roles/roles';
-import { toMomentInput, toSelArr, filterProjectsByPermissions, fromMomentToUnix } from 'helperFunctions';
+import { toSelArr, filterProjectsByPermissions, fromMomentToUnix } from 'helperFunctions';
 
 const oneOfOptions = [
   {

@@ -6,7 +6,6 @@ import { connect } from "react-redux";
 
 import TaskAdd from '../../task/taskAddContainer';
 import Filter from '../filter';
-import FilterOrder from '../filter/filterOrder';
 import ProjectEdit from '../projects/projectEdit';
 import ProjectAdd from '../projects/projectAdd';
 import MilestoneEdit from '../milestones/milestoneEdit';
