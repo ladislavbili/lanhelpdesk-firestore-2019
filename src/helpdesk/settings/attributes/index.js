@@ -115,7 +115,7 @@ class AttributesList extends Component{
           </div>
           </div>
           <div className="col-lg-8">
-            <div className="commandbar"></div>
+            <div className="commandbar"><h2>DEMO</h2>  </div>
             {
               this.props.match.params.id && this.props.match.params.id==='add' && <AttributeAdd />
             }
