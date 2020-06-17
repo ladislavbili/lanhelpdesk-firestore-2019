@@ -257,7 +257,7 @@ class PageHeader extends Component {
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
-          <span className="header-icon-text clickable">{this.props.currentUser.notifications.length}</span>
+          <span className="header-icon-text clickable">{unreadNotifications.length}</span>
 
           {
             ((this.props.currentUser.userData && this.props.currentUser.userData.role.value > 0) || testing) && this.props.settings && this.props.settings.length > 0 && <Dropdown className="center-hor" isOpen={this.state.settingsOpen} toggle={() => this.setState({

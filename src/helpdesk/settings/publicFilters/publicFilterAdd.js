@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { Button, FormGroup, Label, Input, Alert } from 'reactstrap';
 
 import { connect } from "react-redux";
-import DatePicker from 'react-datepicker';
 import datePickerConfig from 'scss/datePickerConfig';
 import Checkbox from 'components/checkbox';
 import {rebase} from 'index';
 
+import FilterDatePickerInCalendar from 'components/filterDatePickerInCalendar';
 import Select from 'react-select';
 import {selectStyle} from 'scss/selectStyles';
 import {
@@ -17,38 +17,7 @@ import {
 } from 'redux/actions';
 import roles from '../roles/roles';
 import { toSelArr, filterProjectsByPermissions, fromMomentToUnix } from 'helperFunctions';
-
-const oneOfOptions = [
-  {
-    value: 'requester',
-    label: 'Requester'
-  },
-  {
-    value: 'assigned',
-    label: 'Assigned'
-  },
-  {
-    value: 'company',
-    label: 'Company'
-  }
-]
-
-const emptyFilter = {
-  requester:{id:null,label:'Žiadny',value:null},
-  company:{id:null,label:'Žiadny',value:null},
-  assigned:{id:null,label:'Žiadny',value:null},
-  workType:{id:null,label:'Žiadny',value:null},
-  statusDateFrom: null,
-  statusDateTo: null,
-  closeDateFrom: null,
-  closeDateTo: null,
-  pendingDateFrom: null,
-  pendingDateTo: null,
-  deadlineFrom: null,
-  deadlineTo: null,
-  public:false,
-  oneOf: []
-}
+import { oneOfOptions, emptyFilter } from 'helpdesk/components/filter';
 
 class PublicFilterAdd extends Component{
   constructor(props){
@@ -107,6 +76,7 @@ class PublicFilterAdd extends Component{
       global: this.state.global,
       dashboard: this.state.dashboard,
       project: this.state.project !==null ? this.state.project.id : null,
+      roles: this.state.roles.map( (role) => role.id ),
       filter: {
         requester: this.state.requester.id,
         company: this.state.company.id,
@@ -114,14 +84,25 @@ class PublicFilterAdd extends Component{
         workType: this.state.workType.id,
         oneOf: this.state.oneOf.map( (item) => item.value ),
 
-        statusDateFrom: fromMomentToUnix(this.state.statusDateFrom),
-        statusDateTo: fromMomentToUnix(this.state.statusDateTo),
-        pendingDateFrom: fromMomentToUnix(this.state.pendingDateFrom),
-        pendingDateTo: fromMomentToUnix(this.state.pendingDateTo),
-        closeDateFrom: fromMomentToUnix(this.state.closeDateFrom),
-        closeDateTo: fromMomentToUnix(this.state.closeDateTo),
-        deadlineFrom: fromMomentToUnix(this.state.deadlineFrom),
-        deadlineTo: fromMomentToUnix(this.state.deadlineTo),
+        statusDateFrom: this.state.statusDateFromNow ? null :  fromMomentToUnix(this.state.statusDateFrom),
+        statusDateFromNow: this.state.statusDateFromNow,
+        statusDateTo: this.state.statusDateToNow ? null :  fromMomentToUnix(this.state.statusDateTo),
+        statusDateToNow: this.state.statusDateToNow,
+
+        closeDateFrom: this.state.closeDateFromNow ? null :  fromMomentToUnix(this.state.closeDateFrom),
+        closeDateFromNow: this.state.closeDateFromNow,
+        closeDateTo: this.state.closeDateToNow ? null :  fromMomentToUnix(this.state.closeDateTo),
+        closeDateToNow: this.state.closeDateToNow,
+
+        pendingDateFrom: this.state.pendingDateFromNow ? null :  fromMomentToUnix(this.state.pendingDateFrom),
+        pendingDateFromNow: this.state.pendingDateFromNow,
+        pendingDateTo: this.state.pendingDateToNow ? null :  fromMomentToUnix(this.state.pendingDateTo),
+        pendingDateToNow: this.state.pendingDateToNow,
+
+        deadlineFrom: this.state.deadlineFromNow ? null :  fromMomentToUnix(this.state.deadlineFrom),
+        deadlineFromNow: this.state.deadlineFromNow,
+        deadlineTo: this.state.deadlineToNow ? null :  fromMomentToUnix(this.state.deadlineTo),
+        deadlineToNow: this.state.deadlineToNow,
       },
     }
     rebase.addToCollection('/help-filters', body).then(()=> {
@@ -260,109 +241,89 @@ class PublicFilterAdd extends Component{
               />
           </FormGroup>
 
-          <FormGroup>{/* Status Date */}
-            <label>Status change</label>
-            <div className="row public-filters">
-              <DatePicker
-                className="form-control"
-                isClearable
-                selected={this.state.statusDateFrom}
-                onChange={(e)=>{
-                  this.setState({statusDateFrom: e})}
-                }
-                placeholderText="No date"
-                {...datePickerConfig}
-                />
-              <DatePicker
-                className="form-control"
-                isClearable
-                selected={this.state.statusDateTo}
-                onChange={(e)=>{
-                  this.setState({statusDateTo:e})}
-                }
-                placeholderText="No date"
-                {...datePickerConfig}
-                />
-            </div>
-          </FormGroup>
+          {/* Status Date */}
+          <FilterDatePickerInCalendar
+            label="Status date"
+            showNowFrom={this.state.statusDateFromNow}
+            dateFrom={this.state.statusDateFrom}
+            setShowNowFrom={(statusDateFromNow)=>{
+              this.setState({ statusDateFromNow })
+            }}
+            setDateFrom={(statusDateFrom)=>{
+              this.setState({statusDateFrom})
+            }}
+            showNowTo={this.state.statusDateToNow}
+            dateTo={this.state.statusDateTo}
+            setShowNowTo={(statusDateToNow)=>{
+              this.setState({ statusDateToNow })
+            }}
+            setDateTo={(statusDateTo)=>{
+              this.setState({statusDateTo})
+            }}
+            />
 
-          <FormGroup>{/* Pending Date */}
-            <label>Pending date</label>
-            <div className="row public-filters">
-              <DatePicker
-                className="form-control"
-                isClearable
-                selected={this.state.pendingDateFrom}
-                onChange={(e)=>{
-                  this.setState({pendingDateFrom:e})}
-                }
-                placeholderText="No date"
-                {...datePickerConfig}
-                />
-              <DatePicker
-                className="form-control"
-                isClearable
-                selected={this.state.pendingDateTo}
-                onChange={(e)=>{
-                  this.setState({pendingDateTo:e})}
-                }
-                placeholderText="No date"
-                {...datePickerConfig}
-                />
-            </div>
-          </FormGroup>
+          {/* Pending Date */}
+          <FilterDatePickerInCalendar
+            label="Pending date"
+            showNowFrom={this.state.pendingDateFromNow}
+            dateFrom={this.state.pendingDateFrom}
+            setShowNowFrom={(pendingDateFromNow)=>{
+              this.setState({ pendingDateFromNow })
+            }}
+            setDateFrom={(pendingDateFrom)=>{
+              this.setState({pendingDateFrom})
+            }}
+            showNowTo={this.state.pendingDateToNow}
+            dateTo={this.state.pendingDateTo}
+            setShowNowTo={(pendingDateToNow)=>{
+              this.setState({ pendingDateToNow })
+            }}
+            setDateTo={(pendingDateTo)=>{
+              this.setState({pendingDateTo})
+            }}
+            />
 
-          <FormGroup>{/* Close Date */}
-            <label>Close date</label>
-            <div className="row public-filters">
-              <DatePicker
-                className="form-control"
-                isClearable
-                selected={this.state.closeDateFrom}
-                onChange={(e)=>{
-                  this.setState({closeDateFrom:e})}
-                }
-                placeholderText="No date"
-                {...datePickerConfig}
-                />
-              <DatePicker
-                className="form-control"
-                isClearable
-                selected={this.state.closeDateTo}
-                onChange={(e)=>{
-                  this.setState({closeDateTo:e})}
-                }
-                placeholderText="No date"
-                {...datePickerConfig}
-                />
-            </div>
-          </FormGroup>
+          {/* Close Date */}
+          <FilterDatePickerInCalendar
+            label="Close date"
+            showNowFrom={this.state.closeDateFromNow}
+            dateFrom={this.state.closeDateFrom}
+            setShowNowFrom={(closeDateFromNow)=>{
+              this.setState({ closeDateFromNow })
+            }}
+            setDateFrom={(closeDateFrom)=>{
+              this.setState({closeDateFrom})
+            }}
+            showNowTo={this.state.closeDateToNow}
+            dateTo={this.state.closeDateTo}
+            setShowNowTo={(closeDateToNow)=>{
+              this.setState({ closeDateToNow })
+            }}
+            setDateTo={(closeDateTo)=>{
+              this.setState({closeDateTo})
+            }}
+            />
 
-          <FormGroup>{/* Deadline */}
-            <label>Deadline</label>
-            <div className="row public-filters">
-              <DatePicker
-                className="form-control m-r-5"
-                isClearable
-                selected={this.state.deadlineFrom}
-                onChange={(e)=>{
-                  this.setState({deadlineFrom:e})}
-                }
-                placeholderText="No date"
-                {...datePickerConfig}
-                />
-              <DatePicker
-                className="form-control"
-                isClearable
-                selected={this.state.deadlineTo}
-                onChange={(e)=>{
-                  this.setState({deadlineTo:e})}
-                }
-                placeholderText="No date"
-                {...datePickerConfig}
-                />
-            </div>
-          </FormGroup>
+          {/* Deadline */}
+          <FilterDatePickerInCalendar
+            label="Deadline"
+            showNowFrom={this.state.deadlineFromNow}
+            dateFrom={this.state.deadlineFrom}
+            setShowNowFrom={(deadlineFromNow)=>{
+              this.setState({ deadlineFromNow })
+            }}
+            setDateFrom={(deadlineFrom)=>{
+              this.setState({deadlineFrom})
+            }}
+            showNowTo={this.state.deadlineToNow}
+            dateTo={this.state.deadlineTo}
+            setShowNowTo={(deadlineToNow)=>{
+              this.setState({ deadlineToNow })
+            }}
+            setDateTo={(deadlineTo)=>{
+              this.setState({deadlineTo})
+            }}
+            />
 
           <FormGroup>{/* Work Type */}
             <label htmlFor="example-input-small">Typ práce</label>

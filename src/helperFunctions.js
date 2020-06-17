@@ -175,17 +175,31 @@ export const applyTaskFilter = ( task, filter, user, projectID, milestoneID ) =>
   return filterOneOf( task, filter, user ) &&
   ( user.statuses.length === 0 || ( task.status && user.statuses.includes( task.status.id ) ) ) &&
   ( filter.workType === null || ( task.type === filter.workType ) ) &&
-  ( filter.statusDateFrom === null || task.statusChange >= filter.statusDateFrom ) &&
-  ( filter.statusDateTo === null || task.statusChange <= filter.statusDateTo ) &&
-  ( filter.closeDateFrom === null || ( task.closeDate !== null && task.closeDate >= filter.closeDateFrom ) ) &&
-  ( filter.closeDateTo === null || ( task.closeDate !== null && task.closeDate <= filter.closeDateTo ) ) &&
-  ( filter.pendingDateFrom === null || ( task.pendingDate !== null && task.pendingDate >= filter.pendingDateFrom ) ) &&
-  ( filter.pendingDateTo === null || ( task.pendingDate !== null && task.pendingDate <= filter.pendingDateTo ) ) &&
-  ( filter.deadlineFrom === null || ( task.deadline !== null && task.deadline >= filter.deadlineFrom ) ) &&
-  ( filter.deadlineTo === null || (task.deadline !== null && task.deadline <= filter.deadlineTo) ) &&
+  filterDateSatisfied( task, filter, 'statusDate' ) &&
+  filterDateSatisfied( task, filter, 'closeDate' ) &&
+  filterDateSatisfied( task, filter, 'pendingDate' ) &&
+  filterDateSatisfied( task, filter, 'deadline' ) &&
   ( projectID === null || ( task.project && task.project.id === projectID ) ) &&
   ( user.userData.role.value === 3 || ( currentPermissions && currentPermissions.read ) ) &&
   ( milestoneID===null || ( task.milestone && task.milestone === milestoneID ) )
+}
+
+export const filterDateSatisfied = ( task, filter, type ) => {
+  let fromTime = filter[`${type}From`];
+  let fromNow = filter[`${type}FromNow`] || false;
+  let toTime = filter[`${type}To`];
+  let toNow = filter[`${type}ToNow`] || false;
+  if( fromNow ){
+    fromTime = moment().unix()*1000;
+  }
+  if( toNow ){
+    toTime = moment().unix()*1000;
+  }
+  return (
+    fromTime === null || ( task[type] !== null && task[type] >= fromTime )
+  ) && (
+    toTime === null || ( task[type] !== null && task[type] <= toTime )
+  )
 }
 
 export const filterOneOf = ( task, filter, user ) => {
@@ -237,4 +251,8 @@ export const filterProjectsByPermissions = ( projects, currentUser ) => {
     let permission = project.permissions.find((permission)=>permission.user===currentUser.id);
     return permission && permission.read;
   })
+}
+
+export const filterIncludesText = ( source, text ) => {
+  return source.toLowerCase().includes( text.toLowerCase() )
 }

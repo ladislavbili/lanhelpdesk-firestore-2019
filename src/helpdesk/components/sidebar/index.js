@@ -56,7 +56,7 @@ class Sidebar extends Component {
 	componentWillReceiveProps(props){
 		if(!sameStringForms(props.filters,this.props.filters)){
 			this.setState({
-				filters:props.filters.filter((filter)=>filter.createdBy===props.currentUser.id||filter.public),
+				filters: props.filters.filter((filter) => (filter.createdBy === props.currentUser.id || filter.public) && filter.roles && filter.roles.includes(`${props.currentUser.userData.role.value}`) ),
 			})
 			this.props.setHelpSidebarFilter((this.props.filterState && props.filters.length>0) ? props.filters.find((filter)=>filter.id===this.props.filterState.id):null);
 		}
@@ -98,7 +98,7 @@ class Sidebar extends Component {
 			props.setFilter( filter.filter );
 		}
 		*/
-		let filter = props.filters.find((filter)=>filter.id===filterID);
+		let filter = props.filters.find((filter)=>filter.id === filterID);
 		if( filter !== undefined ){
 			props.setHelpSidebarFilter(filter);
 			props.setFilter({
@@ -129,7 +129,12 @@ class Sidebar extends Component {
 		if(!this.props.filtersActive){
 			this.props.storageHelpFiltersStart();
 		}
-		this.setState({filters:this.props.filters.filter((filter)=>filter.createdBy===this.props.currentUser.id||filter.public)});
+		this.setState({
+			filters: this.props.filters.filter(
+				(filter) => (filter.createdBy === this.props.currentUser.id || filter.public)
+				&& filter.roles && filter.roles.includes(`${this.props.currentUser.userData.role.value}`)
+			)
+		});
 
 		this.readFilterFromURL(this.props);
 	}
@@ -162,9 +167,13 @@ class Sidebar extends Component {
 		);
 		let filters = [...this.state.filters];
 		if(this.props.projectState.id===null){
-			filters = filters.filter((filter)=>filter.dashboard);
+			filters = filters.filter((filter) => filter.dashboard  && filter.roles && filter.roles.includes(`${this.props.currentUser.userData.role.value}`));
 		}else{
-			filters = filters.filter((filter)=>filter.global || (filter.project!==null && filter.project===this.props.projectState.id))
+			filters =(
+				filters.filter((filter) => filter.global ||
+				(filter.project!==null && filter.project===this.props.projectState.id)
+				&& filter.roles && filter.roles.includes(`${this.props.currentUser.userData.role.value}`) )
+			)
 		}
 		return (
 			<div>

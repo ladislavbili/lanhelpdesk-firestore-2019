@@ -8,11 +8,12 @@ import DatePicker from 'react-datepicker';
 import {setFilter, storageHelpTaskTypesStart, storageUsersStart, storageCompaniesStart } from '../../../redux/actions';
 import {toSelArr, sameStringForms, toMomentInput, fromMomentToUnix } from '../../../helperFunctions';
 import AddFilter from './filterAdd';
+import FilterDatePickerInCalendar from 'components/filterDatePickerInCalendar';
 
 import datePickerConfig from '../../../scss/datePickerConfig';
 import {invisibleSelectStyleOtherFont} from '../../../scss/selectStyles';
 
-const oneOfOptions = [
+export const oneOfOptions = [
   {
     value: 'requester',
     label: 'Requester'
@@ -27,19 +28,34 @@ const oneOfOptions = [
   }
 ]
 
-const emptyFilter = {
+export const emptyFilter = {
   requester:{id:null,label:'Žiadny',value:null},
   company:{id:null,label:'Žiadny',value:null},
   assigned:{id:null,label:'Žiadny',value:null},
   workType:{id:null,label:'Žiadny',value:null},
+
   statusDateFrom: null,
+  statusDateFromNow: false,
+  statusDateFromShowCalendar: false,
   statusDateTo: null,
+  statusDateToNow: false,
+  statusDateToShowCalendar: false,
+
   closeDateFrom: null,
+  closeDateFromNow: false,
   closeDateTo: null,
+  closeDateToNow: false,
+
   pendingDateFrom: null,
+  pendingDateFromNow: false,
   pendingDateTo: null,
+  pendingDateToNow: false,
+
   deadlineFrom: null,
+  deadlineFromNow: false,
   deadlineTo: null,
+  deadlineToNow: false,
+
   public:false,
   oneOf: []
 }
@@ -93,13 +109,24 @@ class Filter extends Component {
       oneOf: oneOfOptions.filter( (option) => filter.oneOf.includes(option.value) ),
 
       statusDateFrom: toMomentInput(filter.statusDateFrom),
+      statusDateFromNow: filter.statusDateFromNow === true,
       statusDateTo: toMomentInput(filter.statusDateTo),
+      statusDateToNow: filter.statusDateToNow === true,
+
       pendingDateFrom: toMomentInput(filter.pendingDateFrom),
+      pendingDateFromNow: filter.pendingDateFromNow === true,
       pendingDateTo: toMomentInput(filter.pendingDateTo),
+      pendingDateToNow: filter.pendingDateToNow === true,
+
       closeDateFrom: toMomentInput(filter.closeDateFrom),
+      closeDateFromNow: filter.closeDateFromNow === true,
       closeDateTo: toMomentInput(filter.closeDateTo),
+      closeDateToNow: filter.closeDateToNow === true,
+
       deadlineFrom: toMomentInput(filter.deadlineFrom),
+      deadlineFromNow: filter.deadlineFromNow === true,
       deadlineTo: toMomentInput(filter.deadlineTo),
+      deadlineToNow: filter.deadlineToNow === true,
 
       public:filterData ? filterData.public : false,
     });
@@ -155,14 +182,25 @@ class Filter extends Component {
       workType:this.state.workType.id,
       oneOf: this.state.oneOf.map( (item) => item.value ),
 
-      statusDateFrom: fromMomentToUnix(this.state.statusDateFrom),
-      statusDateTo: fromMomentToUnix(this.state.statusDateTo),
-      closeDateFrom: fromMomentToUnix(this.state.closeDateFrom),
-      closeDateTo: fromMomentToUnix(this.state.closeDateTo),
-      pendingDateFrom: fromMomentToUnix(this.state.pendingDateFrom),
-      pendingDateTo: fromMomentToUnix(this.state.pendingDateTo),
-      deadlineFrom: fromMomentToUnix(this.state.deadlineFrom),
-      deadlineTo: fromMomentToUnix(this.state.deadlineTo),
+      statusDateFrom: toMomentInput(this.state.statusDateFrom),
+      statusDateFromNow: this.state.statusDateFromNow === true,
+      statusDateTo: toMomentInput(this.state.statusDateTo),
+      statusDateToNow: this.state.statusDateToNow === true,
+
+      pendingDateFrom: toMomentInput(this.state.pendingDateFrom),
+      pendingDateFromNow: this.state.pendingDateFromNow === true,
+      pendingDateTo: toMomentInput(this.state.pendingDateTo),
+      pendingDateToNow: this.state.pendingDateToNow === true,
+
+      closeDateFrom: toMomentInput(this.state.closeDateFrom),
+      closeDateFromNow: this.state.closeDateFromNow === true,
+      closeDateTo: toMomentInput(this.state.closeDateTo),
+      closeDateToNow: this.state.closeDateToNow === true,
+
+      deadlineFrom: toMomentInput(this.state.deadlineFrom),
+      deadlineFromNow: this.state.deadlineFromNow === true,
+      deadlineTo: toMomentInput(this.state.deadlineTo),
+      deadlineToNow: this.state.deadlineToNow === true,
 
       updatedAt:(new Date()).getTime()
     }
@@ -200,14 +238,25 @@ class Filter extends Component {
                 workType: this.state.workType.id,
                 oneOf: this.state.oneOf.map( (item) => item.value ),
 
-                statusDateFrom: fromMomentToUnix(this.state.statusDateFrom),
-                statusDateTo: fromMomentToUnix(this.state.statusDateTo),
-                pendingDateFrom: fromMomentToUnix(this.state.pendingDateFrom),
-                pendingDateTo: fromMomentToUnix(this.state.pendingDateTo),
-                closeDateFrom: fromMomentToUnix(this.state.closeDateFrom),
-                closeDateTo: fromMomentToUnix(this.state.closeDateTo),
-                deadlineFrom: fromMomentToUnix(this.state.deadlineFrom),
-                deadlineTo: fromMomentToUnix(this.state.deadlineTo),
+                statusDateFrom: toMomentInput(this.state.statusDateFrom),
+                statusDateFromNow: this.state.statusDateFromNow === true,
+                statusDateTo: toMomentInput(this.state.statusDateTo),
+                statusDateToNow: this.state.statusDateToNow === true,
+
+                pendingDateFrom: toMomentInput(this.state.pendingDateFrom),
+                pendingDateFromNow: this.state.pendingDateFromNow === true,
+                pendingDateTo: toMomentInput(this.state.pendingDateTo),
+                pendingDateToNow: this.state.pendingDateToNow === true,
+
+                closeDateFrom: toMomentInput(this.state.closeDateFrom),
+                closeDateFromNow: this.state.closeDateFromNow === true,
+                closeDateTo: toMomentInput(this.state.closeDateTo),
+                closeDateToNow: this.state.closeDateToNow === true,
+
+                deadlineFrom: toMomentInput(this.state.deadlineFrom),
+                deadlineFromNow: this.state.deadlineFromNow === true,
+                deadlineTo: toMomentInput(this.state.deadlineTo),
+                deadlineToNow: this.state.deadlineToNow === true,
               }}
               filterID={this.props.filterID}
               filterData={this.props.filterData}
@@ -277,107 +326,93 @@ class Filter extends Component {
                     styles={invisibleSelectStyleOtherFont} />
                 </div>
               </div>
-              <div className="sidebar-filter-row">
-                <label>Status change</label>
-                <div className="row">
-                  <DatePicker
-                    className="form-control hidden-input"
-                    isClearable
-                    selected={this.state.statusDateFrom}
-                    onChange={(e)=>{
-                      this.setState({statusDateFrom: e})}
-                    }
-                    placeholderText="No date"
-                    {...datePickerConfig}
-                    />
-                  <DatePicker
-                    className="form-control hidden-input"
-                    isClearable
-                    selected={this.state.statusDateTo}
-                    onChange={(e)=>{
-                      this.setState({statusDateTo:e})}
-                    }
-                    placeholderText="No date"
-                    {...datePickerConfig}
-                    />
-                </div>
-              </div>
-              <div className="sidebar-filter-row">
-                <label>Pending date</label>
-                <div className="row">
-                  <DatePicker
-                    className="form-control hidden-input"
-                    isClearable
-                    selected={this.state.pendingDateFrom}
-                    onChange={(e)=>{
-                      this.setState({pendingDateFrom:e})}
-                    }
-                    placeholderText="No date"
-                    {...datePickerConfig}
-                    />
-                  <DatePicker
-                    className="form-control hidden-input"
-                    isClearable
-                    selected={this.state.pendingDateTo}
-                    onChange={(e)=>{
-                      this.setState({pendingDateTo:e})}
-                    }
-                    placeholderText="No date"
-                    {...datePickerConfig}
-                    />
-                </div>
-              </div>
-              <div className="sidebar-filter-row">
-                <label>Close date</label>
-                <div className="row">
-                  <DatePicker
-                    className="form-control hidden-input"
-                    isClearable
-                    selected={this.state.closeDateFrom}
-                    onChange={(e)=>{
-                      this.setState({closeDateFrom:e})}
-                    }
-                    placeholderText="No date"
-                    {...datePickerConfig}
-                    />
-                  <DatePicker
-                    className="form-control hidden-input"
-                    isClearable
-                    selected={this.state.closeDateTo}
-                    onChange={(e)=>{
-                      this.setState({closeDateTo:e})}
-                    }
-                    placeholderText="No date"
-                    {...datePickerConfig}
-                    />
-                </div>
-              </div>
 
-              <div className="sidebar-filter-row">
-                <label>Deadline</label>
-                <div className="row">
-                  <DatePicker
-                    className="form-control hidden-input"
-                    isClearable
-                    selected={this.state.deadlineFrom}
-                    onChange={(e)=>{
-                      this.setState({deadlineFrom:e})}
-                    }
-                    placeholderText="No date"
-                    {...datePickerConfig}
-                    />
-                  <DatePicker
-                    className="form-control hidden-input"
-                    isClearable
-                    selected={this.state.deadlineTo}
-                    onChange={(e)=>{
-                      this.setState({deadlineTo:e})}
-                    }
-                    placeholderText="No date"
-                    {...datePickerConfig}
-                    />
-                </div>
-              </div>
+              <FilterDatePickerInCalendar
+                label="Status date"
+                minimal
+                showNowFrom={this.state.statusDateFromNow}
+                dateFrom={this.state.statusDateFrom}
+                setShowNowFrom={(statusDateFromNow)=>{
+                  this.setState({ statusDateFromNow })
+                }}
+                setDateFrom={(statusDateFrom)=>{
+                  this.setState({statusDateFrom})
+                }}
+                showNowTo={this.state.statusDateToNow}
+                dateTo={this.state.statusDateTo}
+                setShowNowTo={(statusDateToNow)=>{
+                  this.setState({ statusDateToNow })
+                }}
+                setDateTo={(statusDateTo)=>{
+                  this.setState({statusDateTo})
+                }}
+                />
+
+                {/* Pending Date */}
+                <FilterDatePickerInCalendar
+                  label="Pending date"
+                  minimal
+                  showNowFrom={this.state.pendingDateFromNow}
+                  dateFrom={this.state.pendingDateFrom}
+                  setShowNowFrom={(pendingDateFromNow)=>{
+                    this.setState({ pendingDateFromNow })
+                  }}
+                  setDateFrom={(pendingDateFrom)=>{
+                    this.setState({pendingDateFrom})
+                  }}
+                  showNowTo={this.state.pendingDateToNow}
+                  dateTo={this.state.pendingDateTo}
+                  setShowNowTo={(pendingDateToNow)=>{
+                    this.setState({ pendingDateToNow })
+                  }}
+                  setDateTo={(pendingDateTo)=>{
+                    this.setState({pendingDateTo})
+                  }}
+                  />
+
+                {/* Close Date */}
+                <FilterDatePickerInCalendar
+                  label="Close date"
+                  minimal
+                  showNowFrom={this.state.closeDateFromNow}
+                  dateFrom={this.state.closeDateFrom}
+                  setShowNowFrom={(closeDateFromNow)=>{
+                    this.setState({ closeDateFromNow })
+                  }}
+                  setDateFrom={(closeDateFrom)=>{
+                    this.setState({closeDateFrom})
+                  }}
+                  showNowTo={this.state.closeDateToNow}
+                  dateTo={this.state.closeDateTo}
+                  setShowNowTo={(closeDateToNow)=>{
+                    this.setState({ closeDateToNow })
+                  }}
+                  setDateTo={(closeDateTo)=>{
+                    this.setState({closeDateTo})
+                  }}
+                  />
+
+                {/* Deadline */}
+                <FilterDatePickerInCalendar
+                  label="Deadline"
+                  minimal
+                  showNowFrom={this.state.deadlineFromNow}
+                  dateFrom={this.state.deadlineFrom}
+                  setShowNowFrom={(deadlineFromNow)=>{
+                    this.setState({ deadlineFromNow })
+                  }}
+                  setDateFrom={(deadlineFrom)=>{
+                    this.setState({deadlineFrom})
+                  }}
+                  showNowTo={this.state.deadlineToNow}
+                  dateTo={this.state.deadlineTo}
+                  setShowNowTo={(deadlineToNow)=>{
+                    this.setState({ deadlineToNow })
+                  }}
+                  setDateTo={(deadlineTo)=>{
+                    this.setState({deadlineTo})
+                  }}
+                  />
 
               <div className="sidebar-filter-row">
                 <label htmlFor="example-input-small">Typ práce</label>

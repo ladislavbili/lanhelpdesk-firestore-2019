@@ -4,13 +4,16 @@ import PublicFilterAdd from './publicFilterAdd';
 import PublicFilterEdit from './publicFilterEdit';
 
 import { storageHelpFiltersStart } from 'redux/actions';
+import { filterIncludesText } from 'helperFunctions';
 import { connect } from "react-redux";
+import roles from '../roles/roles';
 
 class PublicFiltersList extends Component{
   constructor(props){
     super(props);
     this.state={
-      publicFiltersFilter: "",
+      search: "",
+      roleFilter: 'all'
     }
   }
 
@@ -20,9 +23,19 @@ class PublicFiltersList extends Component{
 		}
 	}
 
+  getFilteredFilters(){
+    const roleFilter = this.state.roleFilter;
+    return this.props.filters.filter((filter) => (
+      filter.public &&
+      filterIncludesText( filter.title, this.state.search ) && (
+        roleFilter === 'all' ||
+        ( roleFilter === 'none' && (filter.roles === undefined || filter.roles.length === 0 ) ) ||
+        ( filter.roles !== undefined && filter.roles.includes( roleFilter ) )
+      )
+    )).sort((item1,item2)=> item1.order - item2.order);
+  }
+
   render(){
-    let publicFilters = this.props.filters.filter((filter)=>filter.public)
-    .sort((item1,item2)=> item1.order - item2.order);
     return (
 			<div className="content">
         <div className="row m-0 p-0 taskList-container">
@@ -36,8 +49,8 @@ class PublicFiltersList extends Component{
                   <input
                     type="text"
                     className="form-control search-text"
-                    value={this.state.publicFiltersFilter}
-                    onChange={(e)=>this.setState({publicFiltersFilter:e.target.value})}
+                    value={this.state.search}
+                    onChange={(e)=>this.setState({search:e.target.value})}
                     placeholder="Search"
                     />
                 </div>
@@ -53,10 +66,25 @@ class PublicFiltersList extends Component{
                 <h2 className="">
     							Public Filters
     						</h2>
+                <div className="d-flex flex-row align-items-center ml-auto">
+                  <div className="text-basic m-r-5 m-l-5">
+      							Sort by
+      						</div>
+                  <select
+    								value={this.state.roleFilter}
+    								className="invisible-select text-bold text-highlight"
+    								onChange={(e)=> this.setState({ roleFilter: e.target.value})}>
+    									<option value='all'>All filters</option>
+                      { roles.map((role) =>
+                        <option value={role.id} key={role.id}>{role.title}</option>
+                      )}
+                      <option value='none'>Without role</option>
+    							</select>
+                </div>
               </div>
               <table className="table table-hover">
                 <tbody>
-                  {publicFilters.map((filter)=>
+                  {this.getFilteredFilters().map((filter)=>
                     <tr
                       key={filter.id}
                       className={"clickable" + (this.props.match.params.id === filter.id ? " sidebar-item-active":"")}
@@ -86,7 +114,7 @@ class PublicFiltersList extends Component{
             {
               this.props.match.params.id &&
               this.props.match.params.id!=='add' &&
-              publicFilters.some((item)=>item.id.toString()===this.props.match.params.id) &&
+              this.getFilteredFilters().some((item)=>item.id.toString()===this.props.match.params.id) &&
               <PublicFilterEdit match={this.props.match} history={this.props.history}/>
               }
           </div>
