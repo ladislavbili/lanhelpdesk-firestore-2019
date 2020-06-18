@@ -6,17 +6,8 @@ import Select from 'react-select';
 import {selectStyle} from 'configs/components/select';
 import { toSelArr } from 'helperFunctions';
 
-const ATTRIBUTES = [
-  {label: 'Status', value:'1', static: true, title: 'Status', id: '1'},
-  {label: 'Projekt', value:'2', static: true, title: 'Projekt', id: '2'},
-  {label: 'Zadal', value:'3', static: true, title: 'Zadal', id: '3'},
-  {label: 'Deadline', value:'4', static: true, title: 'Deadline', id: '4'},
-  {label: 'Milestone', value:'5', static: true, title: 'Milestone', id: '5'},
-  {label: 'Repeat', value:'6', static: true, title: 'Repeat', id: '6'},
-  {label: 'Typ', value:'7', static: true, title: 'Typ', id: '7'},
-  {label: 'Paušál', value:'8', static: false, title: 'Paušál', id: '8'},
-  {label: 'Mimo PH', value:'9', static: false, title: 'Mimo PH', id: '9'},
-];
+import {storageUsersStart, storageHelpStatusesStart, storageHelpProjectsStart, storageHelpTaskTypesStart} from '../../../redux/actions';
+
 
 const ROLES = [
   {id: '0',
@@ -50,6 +41,18 @@ const ROLES = [
   }
 ];
 
+const ATTRIBUTES = [
+  {label: 'Status', value:'1', static: true, title: 'Status', id: '1', view: [...ROLES], edit: [...ROLES], type: { id: '3', title: 'Select', value: '3', label: 'Select'}, selectValuesType: 'statuses'},
+  {label: 'Projekt', value:'2', static: true, title: 'Projekt', id: '2', view: [...ROLES], edit: [...ROLES], type: { id: '3', title: 'Select', value: '3', label: 'Select'}, selectValuesType: 'projects'},
+  {label: 'Zadal', value:'3', static: true, title: 'Zadal', id: '3', view: [...ROLES], edit: [...ROLES], type: { id: '3', title: 'Select', value: '3', label: 'Select'}, selectValuesType: 'users'},
+  {label: 'Deadline', value:'4', static: true, title: 'Deadline', id: '4', view: [...ROLES], edit: [...ROLES], type: {id: '2',  title: 'Number', value: '2',  label: 'Number'}, defaultNumberValue: 0},
+  {label: 'Milestone', value:'5', static: true, title: 'Milestone', id: '5', view: [...ROLES], edit: [...ROLES], type: { id: '3', title: 'Select', value: '3', label: 'Select'}},
+  {label: 'Repeat', value:'6', static: true, title: 'Repeat', id: '6', view: [...ROLES], edit: [...ROLES], type: { id: '5', title: 'Date', value: '5', label: 'Date'}},
+  {label: 'Typ', value:'7', static: false, title: 'Typ', id: '7', view: [...ROLES], edit: [...ROLES], type: { id: '3', title: 'Select', value: '3', label: 'Select'}, selectValuesType: 'taskTypes'},
+  {label: 'Paušál', value:'8', static: false, title: 'Paušál', id: '8', view: [...ROLES], edit: [...ROLES], type: { id: '3', title: 'Select', value: '3', label: 'Select'}, selectValuesType: 'yesNo', selectValues: [{id: 1, title: "Yes"}, {id: 0, title: "No"}]},
+  {label: 'Mimo PH', value:'9', static: false, title: 'Mimo PH', id: '9', view: [...ROLES], edit: [...ROLES], type: { id: '3', title: 'Select', value: '3', label: 'Select'}, selectValuesType: 'yesNo', selectValues: [{id: 1, title: "Yes"}, {id: 0, title: "No"}]},
+];
+
 const TYPES = [
   {id: '0',
     title: 'Text',
@@ -79,7 +82,13 @@ const TYPES = [
     title: 'Multiselect',
     value: '4',
     label: 'Multiselect',
-  }
+  },
+  {
+    id: '5',
+    title: 'Date',
+    value: '5',
+    label: 'Date',
+  },
 ];
 
 class AttributeEdit extends Component{
@@ -89,7 +98,10 @@ class AttributeEdit extends Component{
       title: "",
       view: [],
       edit: [],
+      created: null,
       type: null,
+
+      selectValuesType: "",
 
       newValue: "",
       selectValues: [],
@@ -101,6 +113,8 @@ class AttributeEdit extends Component{
       loading: true,
       saving: false,
       deleting: false,
+
+      users: [],
     }
     this.fakeID = 0;
 
@@ -111,15 +125,41 @@ class AttributeEdit extends Component{
     this.submit.bind(this);
   }
 
+  storageLoaded(props){
+    return props.usersLoaded &&
+    props.statusesLoaded &&
+    props.projectsLoaded &&
+    props.taskTypesLoaded;
+  }
+
   componentWillReceiveProps(props){
-    if ( this.props.match.params.id !== props.match.params.id ){
-      this.setState({ loading: true })
+    if(this.storageLoaded(props) && !this.storageLoaded(this.props)){
       this.setData(props);
+    }
+    if(this.props.match.params.id!==props.match.params.id){
+      this.setState({loading:true})
+      if(this.storageLoaded(props)){
+        this.setData(props);
+      }
     }
   }
 
   componentWillMount(){
-    this.setData(this.props);
+    if(!this.props.usersActive){
+      this.props.storageUsersStart();
+    }
+    if(!this.props.statusesActive){
+      this.props.storageHelpStatusesStart();
+    }
+		if(!this.props.projectsActive){
+			this.props.storageHelpProjectsStart();
+		}
+    if(!this.props.taskTypesActive){
+      this.props.storageHelpTaskTypesStart();
+    }
+    if(this.storageLoaded(this.props)){
+      this.setData(this.props);
+    };
   }
 
   storageLoaded(props){
@@ -133,19 +173,35 @@ class AttributeEdit extends Component{
 
     let attribute = ATTRIBUTES.find(attr => attr.id === props.match.params.id);
 
+    let selectValues = [];
+    if (attribute.selectValues){
+      selectValues = toSelArr(attribute.selectValues);
+    } else if (attribute.selectValuesType === 'users') {
+      selectValues = props.users.map((item)=>{return {...item, value: item.id, label: item.username}});
+    } else if (attribute.selectValuesType === 'statuses') {
+      selectValues = toSelArr(props.statuses);
+    } else if (attribute.selectValuesType === 'projects') {
+      selectValues = toSelArr(props.projects);
+    } else if (attribute.selectValuesType === 'taskTypes') {
+      selectValues = toSelArr(props.taskTypes);
+    }
+
     this.setState({
       title: attribute.title ? attribute.title : "",
       view: attribute.view ? attribute.view : [],
       edit: attribute.edit ? attribute.edit : [],
+      created: attribute.created ? attribute.created : null,
       type: attribute.type ? attribute.type : null,
 
-      selectValues: attribute.selectValues ? attribute.selectValues : [],
+      selectValues,
 
       defaultSelectValue: attribute.defaultSelectValue ? attribute.defaultSelectValue : null,
       defaultMultiselectValue: attribute.defaultMultiselectValue ? attribute.defaultMultiselectValue : [],
       defaultNumberValue: attribute.defaultNumberValue ? attribute.defaultNumberValue :  0,
 
       loading: false,
+
+      users: props.users.map((item)=>{return {...item, value: item.id, label: item.username}}),
     });
   }
 
@@ -163,12 +219,15 @@ class AttributeEdit extends Component{
     this.setState({ saving: true })
   }
 
+
+
   render(){
     if( !this.storageLoaded(this.props) ){
       return <Alert color="success">
         Loading data...
       </Alert>
     }
+
     return (
       <div className="p-20 scroll-visible fit-with-header-and-commandbar">
         <FormGroup> {/* Title */}
@@ -210,6 +269,19 @@ class AttributeEdit extends Component{
               this.setState({ edit });
             }}
             options={ROLES}
+            styles={selectStyle}
+            />
+        </div>
+
+        <div className="m-b-10">{/* Created */}
+          <Label className="form-label">Created</Label>
+          <Select
+            placeholder="Choose user"
+            value={this.state.created}
+            onChange={(created)=> {
+              this.setState({ created });
+            }}
+            options={this.state.users}
             styles={selectStyle}
             />
         </div>
@@ -277,7 +349,7 @@ class AttributeEdit extends Component{
                       style={{whiteSpace: "nowrap",  overflow: "hidden"}}>
                       <td
                         style={{maxWidth: "300px", whiteSpace: "nowrap",  overflow: "hidden", textOverflow: "ellipsis"  }}  >
-                        {value.title}
+                        {value.title ? value.title : value.username}
                       </td>
                       <td
                         style={{maxWidth: "300px", whiteSpace: "nowrap",  overflow: "hidden", textOverflow: "ellipsis"  }}  >
@@ -303,7 +375,7 @@ class AttributeEdit extends Component{
               <FormGroup>{/* Default value */}
                 <label htmlFor="example-input-small">Default Value</label>
                 <Select
-                  options={toSelArr(this.state.selectValues)}
+                  options={this.state.selectValues}
                   onChange={(defaultSelectValue) => this.setState({defaultSelectValue})}
                   value={this.state.defaultSelectValue}
                   styles={selectStyle} />
@@ -313,7 +385,7 @@ class AttributeEdit extends Component{
               <FormGroup>{/* Default values */}
                 <label htmlFor="example-input-small">Default Values</label>
                 <Select
-                  options={toSelArr(this.state.selectValues)}
+                  options={this.state.selectValues}
                   isMulti
                   onChange={(defaultMultiselectValue) => this.setState({defaultMultiselectValue})}
                   value={this.state.defaultMultiselectValue}
@@ -351,5 +423,15 @@ class AttributeEdit extends Component{
   }
 }
 
+const mapStateToProps = ({ storageUsers, storageHelpStatuses, storageHelpProjects, storageHelpTaskTypes}) => {
+  const { usersActive, users, usersLoaded } = storageUsers;
+    const { statusesActive, statuses, statusesLoaded } = storageHelpStatuses;
+  	const { projectsActive, projects, projectsLoaded } = storageHelpProjects;
+      const { taskTypesActive, taskTypes, taskTypesLoaded } = storageHelpTaskTypes;
+  return { usersActive, users, usersLoaded,
+    statusesActive, statuses, statusesLoaded,
+    projectsActive, projects, projectsLoaded,
+    taskTypesActive, taskTypes, taskTypesLoaded};
+};
 
-export default connect()(AttributeEdit);
+export default connect(mapStateToProps, { storageUsersStart, storageHelpStatusesStart, storageHelpProjectsStart, storageHelpTaskTypesStart})(AttributeEdit);

@@ -12,7 +12,7 @@ const ATTRIBUTES = [
   {label: 'Deadline', value:'4', static: true, title: 'Deadline', id: '4'},
   {label: 'Milestone', value:'5', static: true, title: 'Milestone', id: '5'},
   {label: 'Repeat', value:'6', static: true, title: 'Repeat', id: '6'},
-  {label: 'Typ', value:'7', static: true, title: 'Typ', id: '7'},
+  {label: 'Typ', value:'7', static: false, title: 'Typ', id: '7'},
   {label: 'Paušál', value:'8', static: false, title: 'Paušál', id: '8'},
   {label: 'Mimo PH', value:'9', static: false, title: 'Mimo PH', id: '9'},
 ];
