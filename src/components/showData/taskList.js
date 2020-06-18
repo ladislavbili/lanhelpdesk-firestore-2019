@@ -187,7 +187,7 @@ class List extends Component {
 																className = "p-l-0"
 																value = { item.checked }
 																label = ""
-																disabled = { false && item.viewOnly === true }
+																disabled = { item.viewOnly === true }
 																onChange={(e)=> this.props.checkTask(item.id, e.target.checked)}
 																highlighted={false}
 																/>

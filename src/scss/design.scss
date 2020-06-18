@@ -1510,6 +1510,17 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   margin-right: 3px;
 }
 
+.item-in-column{
+	border-left: none;
+	border-right: none;
+	padding:5px;
+}
+
+.item-in-column:hover{
+	background-color: #20a8d8;
+	color:white;
+}
+
 .taskCol {
   background-color: #FFFFFF;
   min-height: 40px;
