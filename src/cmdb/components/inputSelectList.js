@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, Input } from 'reactstrap';
 import { } from '../../helperFunctions';
 import Select from 'react-select';
-import {selectStyle} from "../../scss/selectStyles";
+import {selectStyle} from "configs/components/select";
 
 export default class InputSelectList extends Component{
   constructor(props){

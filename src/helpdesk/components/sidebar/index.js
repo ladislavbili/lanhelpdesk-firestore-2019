@@ -23,15 +23,11 @@ import {
 	setHelpSidebarFilter
 } from 'redux/actions';
 
-import { getEmptyFilter } from './fixedFilters';
-import {sidebarSelectStyle} from 'scss/selectStyles';
-
+import { getEmptyFilter } from 'configs/fixedFilters';
+import {sidebarSelectStyle} from 'configs/components/select';
+import { dashboard, addProject, allMilestones, addMilestone } from 'configs/constants/sidebar';
+import settings from 'configs/constants/settings';
 import classnames from "classnames";
-
-const dashboard = {id:null,title:'Any project', label:'Any project',value:null};
-const addProject = {id:-1,title:'+ Add project', label:'+ Add project',value:-1};
-const allMilestones = {id:null,title:'Any milestone', label:'Any milestone',value:null};
-const addMilestone = {id:-1,title:'+ Add milestone', label:'+ Add milestone',value:-1};
 
 class Sidebar extends Component {
 	constructor(props) {
@@ -170,9 +166,9 @@ class Sidebar extends Component {
 			filters = filters.filter((filter) => filter.dashboard  && filter.roles && filter.roles.includes(`${this.props.currentUser.userData.role.value}`));
 		}else{
 			filters =(
-				filters.filter((filter) => filter.global ||
-				(filter.project!==null && filter.project===this.props.projectState.id)
-				&& filter.roles && filter.roles.includes(`${this.props.currentUser.userData.role.value}`) )
+				filters.filter((filter) => (filter.global ||
+				(filter.project!==null && filter.project===this.props.projectState.id)) &&
+				filter.roles && filter.roles.includes(`${this.props.currentUser.userData.role.value}`) )
 			)
 		}
 		return (
@@ -357,7 +353,7 @@ class Sidebar extends Component {
 	getSettingsSidebar(){
 		return (
 			<Nav vertical>
-				{this.props.settings.filter((setting)=>setting.minimalRole <= this.props.currentUser.userData.role.value).map((setting)=>
+				{settings.filter((setting)=>setting.minimalRole <= this.props.currentUser.userData.role.value).map((setting)=>
 					<NavItem key={setting.link}>
 						<Link className="sidebar-align sidebar-menu-item"
 							to={{ pathname:'/helpdesk/settings/'+setting.link }}>{setting.title}</Link>

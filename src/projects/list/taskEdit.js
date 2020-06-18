@@ -3,12 +3,12 @@ import { rebase, database } from '../../index';
 import { FormGroup, Label, Input } from 'reactstrap';
 import { toSelArr, snapshotToArray } from '../../helperFunctions';
 import Select from 'react-select';
-import { CRMMertelSelectStyle } from '../../scss/selectStyles';
+import { CRMMertelSelectStyle } from 'configs/components/select';
 import Subtasks from './newDesign/subtasks';
 import Comments from './newDesign/comments';
 import Attachements from './newDesign/attachements';
 
-import "../../scss/CRMMertel.scss";
+import "../../scss/unused/CRMMertel.scss";
 
 
 const statuses = [{ id: 0, title: 'New', color: '#1087e2' }, { id: 1, title: 'Open', color: '#155724' }, { id: 2, title: 'Pending', color: '#f3ba0d' }, { id: 3, title: 'Closed', color: '#e2e3e5' }, { id: 4, title: 'Invalid', color: 'red' }]

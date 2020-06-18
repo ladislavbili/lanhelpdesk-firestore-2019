@@ -17,22 +17,12 @@ import PraceWorkTrips from '../components/praceWorkTrips';
 
 import classnames from "classnames";
 import ck4config from '../../scss/ck4config';
-import datePickerConfig from '../../scss/datePickerConfig';
-import {invisibleSelectStyleNoArrow, invisibleSelectStyleNoArrowColored,invisibleSelectStyleNoArrowColoredRequired, invisibleSelectStyleNoArrowRequired} from '../../scss/selectStyles';
+import datePickerConfig from 'configs/components/datepicker';
+import {invisibleSelectStyleNoArrow, invisibleSelectStyleNoArrowColored,invisibleSelectStyleNoArrowColoredRequired, invisibleSelectStyleNoArrowRequired} from 'configs/components/select';
+import booleanSelects from 'configs/constants/boolSelect'
+import { noMilestone } from 'configs/constants/sidebar';
+import { noDef } from 'configs/constants/projects';
 
-const noMilestone = {id:null,value:null,title:'None',label:'None'};
-const booleanSelects = [{value:false,label:'No'},{value:true,label:'Yes'}];
-
-const noDef={
-	status:{def:false, fixed:false, value: null, show: true },
-	tags:{def:false, fixed:false, value: [], show: true },
-	assignedTo:{def:false, fixed:false, value: [], show: true },
-	type:{def:false, fixed:false, value: null, show: true },
-	requester:{def:false, fixed:false, value: null, show: true },
-	company:{def:false, fixed:false, value: null, show: true },
-	pausal:{def:false, fixed:false, value: booleanSelects[0], show: true },
-	overtime:{def:false, fixed:false, value: booleanSelects[0], show: true },
-}
 
 export default class TaskAdd extends Component{
 	constructor(props){

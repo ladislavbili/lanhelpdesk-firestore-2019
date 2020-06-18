@@ -4,7 +4,7 @@ import Select from 'react-select';
 import firebase from 'firebase';
 import {rebase} from '../../../index';
 import {isEmail} from '../../../helperFunctions';
-import {selectStyle} from "../../../scss/selectStyles";
+import {selectStyle} from "configs/components/select";
 import config from '../../../firebase';
 
 import { connect } from "react-redux";

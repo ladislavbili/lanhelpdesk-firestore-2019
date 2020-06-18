@@ -7,7 +7,7 @@ import Switch from "react-switch";
 
 import { rebase, database } from '../../../index';
 import { snapshotToArray, toSelArr } from '../../../helperFunctions';
-import { selectStyle } from "../../../scss/selectStyles";
+import { selectStyle } from "configs/components/select";
 import {storageHelpPricelistsStart,storageHelpPricesStart,storageHelpTaskTypesStart, storageHelpTripTypesStart} from '../../../redux/actions';
 
 class PriceEdit extends Component{

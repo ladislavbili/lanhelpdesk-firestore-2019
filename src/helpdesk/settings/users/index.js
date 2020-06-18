@@ -16,12 +16,14 @@ class UsersList extends Component{
       users:[],
       companies: [],
       userFilter:'',
-      roles: [{ id:'All', label: 'All', on: true },
-                  {id: "Guest", label:'Guest', on: false, value: -1},
-                  {id: "User", label:'User', on: false, value: 0},
-                  {id: "Agent", label:'Agent', on: false, value: 1},
-                  {id: "Manager", label:'Manager', on: false, value: 2},
-                  {id: "Admin", label:'Admin', on: false, value: 3}]
+      roles: [
+        { id:'All', label: 'All', on: true },
+        { id: "Guest", label:'Guest', on: false, value: -1},
+        { id: "User", label:'User', on: false, value: 0},
+        { id: "Agent", label:'Agent', on: false, value: 1},
+        { id: "Manager", label:'Manager', on: false, value: 2},
+        { id: "Admin", label:'Admin', on: false, value: 3}
+      ]
     }
   }
 

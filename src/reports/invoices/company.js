@@ -4,7 +4,7 @@ import { FormGroup, Label } from 'reactstrap';
 import Select from 'react-select';
 import {storageCompaniesStart, storageHelpCompanyInvoicesStart } from '../../redux/actions';
 import { timestampToDate, toSelArr} from '../../helperFunctions';
-import {selectStyle} from '../../scss/selectStyles';
+import {selectStyle} from 'configs/components/select';
 import CompanyInvoice from './companyInvoice';
 import CompanyInvoicePrint from './companyInvoicePrint';
 

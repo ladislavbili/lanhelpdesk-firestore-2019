@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import ReactToPrint from 'react-to-print';
 import VykazyTablePrint from '../components/vykazyTablePrint';
-
-import {timestampToString} from '../../helperFunctions';
-
-var intervals = [{title:null,value:null,label:'Žiadny'},{title:'Deň',value:86400000,label:'Deň'},{title:'Týždeň',value:604800000,label:'Týždeň'},{title:'Mesiac',value:2629800000,label:'Mesiac'}];
-
+import { intervals } from 'configs/constants/repeat';
+import { timestampToString } from '../../helperFunctions';
 
 export default class TaskPrint extends Component {
 	constructor(props) {

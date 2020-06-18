@@ -7,19 +7,8 @@ import firebase from 'firebase';
 import {toSelArr, sameStringForms, snapshotToArray,testing} from '../../../helperFunctions';
 import Permissions from "./permissions";
 import ProjectDefaultValues from './defaultValues';
-
-const booleanSelects = [{value:false,label:'No'},{value:true,label:'Yes'}];
-
-const noDef={
-	status:{def:false, fixed:false, value: null, show: true },
-	tags:{def:false, fixed:false, value: [], show: true },
-	assignedTo:{def:false, fixed:false, value: [], show: true },
-	type:{def:false, fixed:false, value: null, show: true },
-	requester:{def:false, fixed:false, value: null, show: true },
-	company:{def:false, fixed:false, value: null, show: true },
-	pausal:{def:false, fixed:false, value: booleanSelects[0], show: true },
-	overtime:{def:false, fixed:false, value: booleanSelects[0], show: true },
-}
+import booleanSelects from 'configs/constants/boolSelect'
+import { noDef } from 'configs/constants/projects';
 
 class ProjectEdit extends Component{
   constructor(props){

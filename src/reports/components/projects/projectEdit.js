@@ -6,17 +6,9 @@ import {storageHelpStatusesStart, storageHelpTagsStart, storageUsersStart, stora
 import {rebase, database} from '../../../index';
 import firebase from 'firebase';
 import {toSelArr, sameStringForms, snapshotToArray} from '../../../helperFunctions';
-import {invisibleSelectStyle} from '../../../scss/selectStyles';
+import {invisibleSelectStyle} from 'configs/components/select';
 import Permits from "../../../components/permissions";
-
-const noDef={
-	status:{def:false,fixed:false, value: null},
-	tags:{def:false,fixed:false, value: []},
-	assignedTo:{def:false,fixed:false, value: []},
-	type:{def:false,fixed:false, value: null},
-	requester:{def:false,fixed:false, value: null},
-	company:{def:false,fixed:false, value: null}
-}
+import { noDef } from 'configs/constants/projects';
 
 class ProjectEdit extends Component{
   constructor(props){

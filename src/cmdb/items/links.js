@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Input } from 'reactstrap';
 import Select from 'react-select';
-import {selectStyle, invisibleSelectStyleNoArrow} from "../../scss/selectStyles";
+import {selectStyle, invisibleSelectStyleNoArrow} from "configs/components/select";
 import { calculateTextAreaHeight, htmlFixNewLines} from '../../helperFunctions';
 
 export default class Links extends Component{

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input } from 'reactstrap';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import Select from 'react-select';
-import {selectStyle} from "../../../scss/selectStyles";
+import {selectStyle} from "configs/components/select";
 
 export default class InvoiceItems extends Component{
   constructor(props){

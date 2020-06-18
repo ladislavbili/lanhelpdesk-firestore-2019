@@ -3,7 +3,7 @@ import { Input} from 'reactstrap';
 import {rebase,database} from '../../../index';
 import {snapshotToArray} from '../../../helperFunctions';
 
-import "../../../scss/CRMMertel.scss";
+import "../../../scss/unused/CRMMertel.scss";
 
 export default class Subtasks extends Component{
   constructor(props){

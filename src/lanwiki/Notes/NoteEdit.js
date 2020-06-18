@@ -5,7 +5,7 @@ import TimeAgo from 'react-timeago'
 import Select from 'react-select';
 import {timestampToString, toSelArr} from '../../helperFunctions';
 import { rebase } from '../../index';
-import {invisibleSelectStyle} from '../../scss/selectStyles';
+import {invisibleSelectStyle} from 'configs/components/select';
 
 import CKEditor from 'ckeditor4-react';
 

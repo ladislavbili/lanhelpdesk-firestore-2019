@@ -16,25 +16,14 @@ import classnames from "classnames";
 
 
 import CKEditor5 from '@ckeditor/ckeditor5-react';
-import ck5config from '../../scss/ck5config';
+import ck5config from 'configs/components/ck5config';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
-import datePickerConfig from '../../scss/datePickerConfig';
-import {invisibleSelectStyleNoArrow, invisibleSelectStyleNoArrowColored,invisibleSelectStyleNoArrowColoredRequired, invisibleSelectStyleNoArrowRequired} from '../../scss/selectStyles';
-
-const noMilestone = {id:null,value:null,title:'None',label:'None'};
-const booleanSelects = [{value:false,label:'No'},{value:true,label:'Yes'}];
-
-const noDef={
-	status:{def:false, fixed:false, value: null, show: true },
-	tags:{def:false, fixed:false, value: [], show: true },
-	assignedTo:{def:false, fixed:false, value: [], show: true },
-	type:{def:false, fixed:false, value: null, show: true },
-	requester:{def:false, fixed:false, value: null, show: true },
-	company:{def:false, fixed:false, value: null, show: true },
-	pausal:{def:false, fixed:false, value: booleanSelects[0], show: true },
-	overtime:{def:false, fixed:false, value: booleanSelects[0], show: true },
-}
+import datePickerConfig from 'configs/components/datepicker';
+import {invisibleSelectStyleNoArrow, invisibleSelectStyleNoArrowColored,invisibleSelectStyleNoArrowColoredRequired, invisibleSelectStyleNoArrowRequired} from 'configs/components/select';
+import booleanSelects from 'configs/constants/boolSelect'
+import { noMilestone } from 'configs/constants/sidebar';
+import { noDef } from 'configs/constants/projects';
 
 export default class TaskAdd extends Component{
 	constructor(props){

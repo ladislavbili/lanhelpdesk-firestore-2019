@@ -4,8 +4,8 @@ import Select, { Creatable }  from 'react-select';
 import DatePicker from 'react-datepicker';
 
 import {rebase} from "../../index";
-import {selectStyle, disabledSelectStyle} from '../../scss/selectStyles';
-import datePickerConfig from '../../scss/datePickerConfig';
+import {selectStyle, disabledSelectStyle} from 'configs/components/select';
+import datePickerConfig from 'configs/components/datepicker';
 import {isEmail, toMillisec, fromMillisec, toMomentInput, fromMomentToUnix} from "../../helperFunctions";
 
 

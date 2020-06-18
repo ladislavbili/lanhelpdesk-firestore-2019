@@ -8,8 +8,8 @@ import {snapshotToArray, timestampToString} from '../../helperFunctions';
 //import {} from '../../redux/actions'
 import { Creatable } from 'react-select';
 import CKEditor from 'ckeditor4-react';
-import {selectStyle} from '../../scss/selectStyles';
-import { REST_URL } from 'config';
+import {selectStyle} from 'configs/components/select';
+import { REST_URL } from 'configs/restAPI';
 
 class Comments extends Component{
 

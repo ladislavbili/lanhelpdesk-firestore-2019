@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import {invisibleSelectStyle} from '../../../scss/selectStyles';
+import {invisibleSelectStyle} from 'configs/components/select';
 import Checkbox from '../../../components/checkbox';
-const booleanSelects = [{value:false,label:'No'},{value:true,label:'Yes'}];
+import booleanSelects from 'configs/constants/boolSelect'
 
 export default class ProjectDefaultValues extends Component {
 

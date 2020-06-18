@@ -5,22 +5,8 @@ import {rebase, database} from '../../index';
 import { Button } from 'reactstrap';
 import Materials from '../components/materials';
 import Subtasks from '../components/subtasks';
-import {selectStyle} from '../../scss/selectStyles';
-
-const noDef={
-	status:{def:false,fixed:false, value: null},
-	tags:{def:false,fixed:false, value: []},
-	assignedTo:{def:false,fixed:false, value: []},
-	type:{def:false,fixed:false, value: null},
-	requester:{def:false,fixed:false, value: null},
-	company:{def:false,fixed:false, value: null}
-}
-
-const repeat = [
-	{ value: 'none', label: 'none' },
-	{ value: 'every day', label: 'every day' },
-
-];
+import {selectStyle} from 'configs/components/select';
+import { noDef } from 'configs/constants/projects';
 
 export default class TaskAdd extends Component{
 	constructor(props){
@@ -380,7 +366,7 @@ export default class TaskAdd extends Component{
 										<div className="row">
 											<label className="col-5 col-form-label">Opakovanie</label>
 											<div className="col-7">
-												<Select options={repeat} styles={selectStyle} />
+												<Select options={[]} styles={selectStyle} />
 											</div>
 										</div>
 									</div>

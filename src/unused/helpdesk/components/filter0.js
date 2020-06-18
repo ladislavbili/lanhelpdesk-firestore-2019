@@ -8,7 +8,7 @@ import {setFilter, storageHelpTaskTypesStart,storageUsersStart, storageCompanies
 import {toSelArr, snapshotToArray, sameStringForms, timestampToInput, inputToTimestamp} from '../../helperFunctions';
 import AddFilter from './filterAdd';
 
-import {invisibleSelectStyle} from '../../scss/selectStyles';
+import {invisibleSelectStyle} from 'configs/components/select';
 
 class Filter extends Component {
   constructor(props) {

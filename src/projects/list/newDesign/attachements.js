@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import firebase from 'firebase';
 import { Button } from 'reactstrap';
 
-import "../../../scss/CRMMertel.scss";
+import "../../../scss/unused/CRMMertel.scss";
 
 export default class Attachements extends Component{
 

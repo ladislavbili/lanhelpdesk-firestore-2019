@@ -3,7 +3,7 @@ import { Button, FormGroup, Label,Input, InputGroup, InputGroupAddon, InputGroup
 import Checkbox from '../../../components/checkbox';
 import Select from 'react-select';
 
-import {selectStyle} from "scss/selectStyles";
+import {selectStyle} from "configs/components/select";
 import {toSelArr} from 'helperFunctions';
 import {rebase } from 'index';
 import { connect } from "react-redux";

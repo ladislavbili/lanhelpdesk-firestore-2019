@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import classnames from "classnames";
 import { Nav, NavItem, NavLink} from 'reactstrap';
 import Select from 'react-select';
-import {selectStyle, invisibleSelectStyle} from '../../scss/selectStyles';
+import {selectStyle, invisibleSelectStyle} from 'configs/components/select';
 import {sameStringForms} from '../../helperFunctions';
 import Checkbox from '../../components/checkbox';
 

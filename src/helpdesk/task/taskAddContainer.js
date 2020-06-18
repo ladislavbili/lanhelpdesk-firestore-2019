@@ -4,8 +4,7 @@ import {toSelArr, sameStringForms } from '../../helperFunctions';
 import { Modal, ModalBody, Button } from 'reactstrap';
 import TaskAdd from './taskAddCombined';
 import {storageHelpStatusesStart, storageHelpProjectsStart, storageUsersStart, storageCompaniesStart, storageHelpWorkTypesStart, storageHelpUnitsStart, storageHelpPricesStart, storageHelpPricelistsStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageMetadataStart, storageHelpMilestonesStart, storageHelpTripTypesStart} from '../../redux/actions';
-
-const noMilestone = {id:null,value:null,title:'None',label:'None'};
+import { noMilestone } from 'configs/constants/sidebar';
 
 class TaskAddContainer extends Component{
   constructor(props){

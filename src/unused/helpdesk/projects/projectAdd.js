@@ -1,19 +1,11 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import {invisibleSelectStyle} from '../../scss/selectStyles';
+import {invisibleSelectStyle} from 'configs/components/select';
 import { Button, FormGroup, Label,Input, Modal, ModalHeader, ModalBody, ModalFooter  } from 'reactstrap';
 import {toSelArr, snapshotToArray} from '../../helperFunctions';
 import {rebase, database} from '../../index';
+import { noDef } from 'configs/constants/projects';
 
-
-const noDef={
-	status:{def:false,fixed:false, value: null},
-	tags:{def:false,fixed:false, value: []},
-	assignedTo:{def:false,fixed:false, value: []},
-	type:{def:false,fixed:false, value: null},
-	requester:{def:false,fixed:false, value: null},
-	company:{def:false,fixed:false, value: null}
-}
 
 export default class ProjectAdd extends Component{
   constructor(props){

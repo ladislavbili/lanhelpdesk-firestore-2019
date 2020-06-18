@@ -8,7 +8,7 @@ import { timestampToString, timestampToDate, sameStringForms, toSelArr, toFloat}
 import {rebase} from '../../index';
 import TaskEdit from '../../helpdesk/task/taskEdit';
 import MonthSelector from '../components/monthSelector';
-import {selectStyleColored} from '../../scss/selectStyles';
+import {selectStyleColored} from 'configs/components/select';
 
 class MothlyReportsCompany extends Component {
 	constructor(props){

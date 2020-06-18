@@ -4,7 +4,7 @@ import Select from 'react-select';
 import InvoiceItems from './invoiceItems';
 import {rebase, database} from '../../../index';
 import {toSelArr, snapshotToArray} from '../../../helperFunctions';
-import {selectStyle} from "../../../scss/selectStyles";
+import {selectStyle} from "configs/components/select";
 
 export default class SupplierInvoiceAdd extends Component{
   constructor(props){

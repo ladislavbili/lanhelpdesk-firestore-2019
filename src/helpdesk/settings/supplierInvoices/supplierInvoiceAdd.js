@@ -4,7 +4,7 @@ import Select from 'react-select';
 import InvoiceItems from './invoiceItems';
 import {rebase} from '../../../index';
 import {toSelArr, sameStringForms} from '../../../helperFunctions';
-import {selectStyle} from "../../../scss/selectStyles";
+import {selectStyle} from "configs/components/select";
 
 import { connect } from "react-redux";
 import {storageHelpSuppliersStart, storageHelpUnitsStart} from '../../../redux/actions';

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Input, Label } from 'reactstrap';
 import Select from 'react-select';
-import {selectStyle} from "../../scss/selectStyles";
+import {selectStyle} from "configs/components/select";
 
 export default class AttributesHandler extends Component{
   constructor(props){

@@ -6,7 +6,7 @@ import PublicFilterEdit from './publicFilterEdit';
 import { storageHelpFiltersStart } from 'redux/actions';
 import { filterIncludesText } from 'helperFunctions';
 import { connect } from "react-redux";
-import roles from '../roles/roles';
+import { roles } from 'configs/constants/roles';
 
 class PublicFiltersList extends Component{
   constructor(props){

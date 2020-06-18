@@ -27,19 +27,12 @@ import { storageCompaniesStart, storageHelpPricelistsStart, storageHelpPricesSta
 import firebase from 'firebase';
 import ck4config from '../../scss/ck4config';
 import {toSelArr, snapshotToArray, timestampToString, sameStringForms} from '../../helperFunctions';
-import {invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
+import {invisibleSelectStyleNoArrow} from 'configs/components/select';
+import { noMilestone } from 'configs/constants/sidebar';
+import { noDef } from 'configs/constants/projects';
 
 const oneDay = 24*60*60*1000;
-const noMilestone = {id:null,value:null,title:'None',label:'None'};
 
-const noDef={
-	status:{def:false,fixed:false, value: null},
-	tags:{def:false,fixed:false, value: []},
-	assignedTo:{def:false,fixed:false, value: []},
-	type:{def:false,fixed:false, value: null},
-	requester:{def:false,fixed:false, value: null},
-	company:{def:false,fixed:false, value: null}
-}
 
 class TaskEditList extends Component {
 	constructor(props) {

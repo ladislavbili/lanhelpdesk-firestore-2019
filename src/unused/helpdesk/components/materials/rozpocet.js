@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-import { selectStyle, invisibleSelectStyle} from '../../../scss/selectStyles';
+import { selectStyle, invisibleSelectStyle} from 'configs/components/select';
 
 export default class Rozpocet extends Component {
 	constructor(props){

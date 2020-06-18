@@ -24,22 +24,14 @@ import classnames from "classnames";
 import {rebase, database} from '../../index';
 import firebase from 'firebase';
 import ck4config from '../../scss/ck4config';
-import datePickerConfig from '../../scss/datePickerConfig';
+import datePickerConfig from 'configs/components/datepicker';
 import PendingPicker from '../components/pendingPicker';
 import {toSelArr, snapshotToArray, timestampToString, sameStringForms} from '../../helperFunctions';
 import { storageCompaniesStart, storageHelpPricelistsStart, storageHelpPricesStart,storageHelpProjectsStart, storageHelpStatusesStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageHelpTasksStart, storageHelpUnitsStart,storageHelpWorkTypesStart, storageMetadataStart, storageUsersStart, storageHelpMilestonesStart, storageHelpTripTypesStart } from '../../redux/actions';
-import {invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
-
-const noMilestone = {id:null,value:null,title:'None',label:'None',startsAt:null};
-const booleanSelects = [{value:false,label:'No'},{value:true,label:'Yes'}];
-const noDef={
-	status:{def:false,fixed:false, value: null},
-	tags:{def:false,fixed:false, value: []},
-	assignedTo:{def:false,fixed:false, value: []},
-	type:{def:false,fixed:false, value: null},
-	requester:{def:false,fixed:false, value: null},
-	company:{def:false,fixed:false, value: null}
-}
+import {invisibleSelectStyleNoArrow} from 'configs/components/select';
+import booleanSelects from 'configs/constants/boolSelect'
+import { noMilestone } from 'configs/constants/sidebar';
+import { noDef } from 'configs/constants/projects';
 
 class TaskEdit extends Component {
 	constructor(props) {

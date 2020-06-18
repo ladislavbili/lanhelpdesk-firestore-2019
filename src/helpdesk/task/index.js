@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import ShowData from '../../components/showData';
 import { timestampToString, sameStringForms, applyTaskFilter, snapshotToArray } from 'helperFunctions';
-import { getEmptyFilter, getFixedFilters } from '../components/sidebar/fixedFilters';
+import { getEmptyFilter, getFixedFilters } from 'configs/fixedFilters';
+import { allMilestones } from 'configs/constants/sidebar';
 import TaskEdit from './taskEdit';
 import TaskEmpty from './taskEmpty';
 import TaskCalendar from '../calendar';
@@ -14,7 +15,6 @@ import {setTasksOrderBy, setTasksAscending,storageCompaniesStart,storageHelpTags
 	storageHelpProjectsStart,storageHelpStatusesStart,storageHelpTasksStart, storageHelpFiltersStart,
 	setTasklistLayout, storageHelpMilestonesStart, storageHelpCalendarEventsStart,
 	setHelpSidebarProject, setHelpSidebarMilestone, setHelpSidebarFilter, setFilter, setMilestone,setProject} from 'redux/actions';
-const allMilestones = {id:null,title:'Any milestone', label:'Any milestone',value:null};
 const fixedFilters = getFixedFilters();
 
 class TasksIndex extends Component {

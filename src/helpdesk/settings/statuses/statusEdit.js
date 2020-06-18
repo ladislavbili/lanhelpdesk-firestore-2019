@@ -3,19 +3,11 @@ import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
 import {rebase} from '../../../index';
 import { SketchPicker } from "react-color";
 import Select from 'react-select';
-import {selectStyle} from "../../../scss/selectStyles";
+import {selectStyle} from "configs/components/select";
 
 import { connect } from "react-redux";
 import {storageHelpStatusesStart} from '../../../redux/actions';
-
-let actions = [
-  {label:'None (nothing happens when status is selected)',value:'none'},
-  {label:'None (is open)',value:'open'},
-  {label:'None (is new)',value:'new'},
-  {label:'Set close date (sets close date as current)',value:'close'},
-  {label:'Set close invalid (sets close date as current)',value:'invalid'},
-  {label:'Set pending date (sets pending date as 1 day from now)',value:'pending'}
-]
+import { actions } from 'configs/constants/statuses';
 
 class StatusEdit extends Component{
   constructor(props){

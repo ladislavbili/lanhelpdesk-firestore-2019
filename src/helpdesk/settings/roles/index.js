@@ -3,7 +3,7 @@ import {Button } from 'reactstrap';
 import RoleAdd from './roleAdd';
 import RoleEdit from './roleEdit';
 
-import roles from './roles';
+import { roles } from 'configs/constants/roles';
 import { connect } from "react-redux";
 
 class RolesList extends Component{

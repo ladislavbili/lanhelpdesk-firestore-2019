@@ -2,22 +2,21 @@ import React, { Component } from 'react';
 import { Button, FormGroup, Label, Input, Alert } from 'reactstrap';
 
 import { connect } from "react-redux";
-import datePickerConfig from 'scss/datePickerConfig';
 import Checkbox from 'components/checkbox';
 import {rebase} from 'index';
 
 import FilterDatePickerInCalendar from 'components/filterDatePickerInCalendar';
 import Select from 'react-select';
-import {selectStyle} from 'scss/selectStyles';
+import {selectStyle} from 'configs/components/select';
 import {
   storageUsersStart,
   storageCompaniesStart,
   storageHelpTaskTypesStart,
   storageHelpProjectsStart,
 } from 'redux/actions';
-import roles from '../roles/roles';
+import { roles } from 'configs/constants/roles';
 import { toSelArr, filterProjectsByPermissions, fromMomentToUnix } from 'helperFunctions';
-import { oneOfOptions, emptyFilter } from 'helpdesk/components/filter';
+import { oneOfOptions, emptyFilter } from 'configs/constants/filter';
 
 class PublicFilterAdd extends Component{
   constructor(props){

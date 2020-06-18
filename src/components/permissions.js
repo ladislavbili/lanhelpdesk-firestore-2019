@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button } from 'reactstrap';
 
 import Select from "react-select";
-import {selectStyle} from "../scss/selectStyles";
+import {selectStyle} from "configs/components/select";
 
 import {rebase} from '../index';
 

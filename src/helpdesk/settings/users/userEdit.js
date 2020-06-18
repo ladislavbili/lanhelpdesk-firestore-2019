@@ -5,13 +5,13 @@ import firebase from 'firebase';
 
 import {rebase} from '../../../index';
 import { isEmail} from '../../../helperFunctions';
-import {selectStyle} from "../../../scss/selectStyles";
+import {selectStyle} from "configs/components/select";
 
 import { connect } from "react-redux";
 import {storageCompaniesStart,storageUsersStart, setUserData} from '../../../redux/actions';
 import {toSelArr} from '../../../helperFunctions';
 import Checkbox from '../../../components/checkbox';
-import { REST_URL } from 'config';
+import { REST_URL } from 'configs/restAPI';
 
 let roles=[
   {label:'Guest',value:-1},

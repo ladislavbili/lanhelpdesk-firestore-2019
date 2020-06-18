@@ -3,7 +3,7 @@ import { Button, FormGroup, Label, Input, Alert } from 'reactstrap';
 
 import { connect } from "react-redux";
 import Select from 'react-select';
-import {selectStyle} from 'scss/selectStyles';
+import {selectStyle} from 'configs/components/select';
 import { toSelArr } from 'helperFunctions';
 
 const ATTRIBUTES = [

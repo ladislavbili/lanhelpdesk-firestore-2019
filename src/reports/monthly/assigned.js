@@ -5,7 +5,7 @@ import Select from 'react-select';
 import TaskEdit from '../../helpdesk/task/taskEdit';
 import MonthSelector from '../components/monthSelector';
 
-import {selectStyleColored} from '../../scss/selectStyles';
+import {selectStyleColored} from 'configs/components/select';
 import { timestampToString, sameStringForms, toSelArr } from '../../helperFunctions';
 import {storageCompaniesStart, storageHelpTasksStart, storageHelpStatusesStart, storageHelpTaskTypesStart, storageUsersStart,
 	storageHelpTaskWorksStart, storageHelpTaskWorkTripsStart, storageHelpTripTypesStart} from '../../redux/actions';

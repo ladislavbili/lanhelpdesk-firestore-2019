@@ -7,7 +7,7 @@ import firebase from 'firebase';
 import { connect } from "react-redux";
 import {storageSmtpsStart} from 'redux/actions';
 import {sameStringForms} from 'helperFunctions';
-import { REST_URL } from 'config';
+import { REST_URL } from 'configs/restAPI';
 
 class SMTPsList extends Component{
   constructor(props){

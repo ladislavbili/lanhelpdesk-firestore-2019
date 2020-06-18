@@ -5,26 +5,8 @@ import { connect } from "react-redux";
 
 import {toSelArr, sameStringForms} from '../helperFunctions';
 import {setProject, setMilestone, setFilter, storageHelpFiltersStart, storageHelpProjectsStart, storageHelpMilestonesStart} from '../redux/actions';
-
-let settings=[{title:'Projects',link:'projects'},
-{title:'Statuses',link:'statuses'},
-{title:'Units',link:'units'},
-{title:'Companies',link:'companies'},
-{title:'Work Type',link:'workTypes'},
-{title:'Users',link:'users'},
-{title:'Prices',link:'pricelists'},
-{title:'Supplier',link:'suppliers'},
-{title:'Tags',link:'tags'},
-{title:'Invoices',link:'supplierInvoices'},
-{title:'Task types',link:'taskTypes'},
-{title:'Imaps',link:'imaps'},
-{title:'SMTPs',link:'smtps'},
-]
-
-const dashboard = {id:null,title:'Dashboard', label:'Dashboard',value:null};
-const addProject = {id:-1,title:'+ Add project', label:'+ Add project',value:null};
-const allMilestones = {id:null,title:'Any', label:'Any',value:null};
-const addMilestone = {id:-1,title:'+ Add milestone', label:'+ Add milestone',value:null};
+import { dashboard, addProject, allMilestones, addMilestone } from 'configs/constants/sidebar';
+import settings from 'configs/constants/settings'
 
 class Sidebar extends Component {
 	constructor(props) {

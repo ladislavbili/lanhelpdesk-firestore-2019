@@ -23,28 +23,17 @@ import TaskPrint from './taskPrint';
 import classnames from "classnames";
 import {rebase, database} from '../../index';
 import firebase from 'firebase';
-import ck5config from '../../scss/ck5config';
+import ck5config from 'configs/components/ck5config';
 //import ck4config from '../../scss/ck4config';
-import datePickerConfig from '../../scss/datePickerConfig';
+import datePickerConfig from 'configs/components/datepicker';
 import PendingPicker from '../components/pendingPicker';
 import {toSelArr, snapshotToArray, timestampToString, sameStringForms} from '../../helperFunctions';
 import { storageCompaniesStart, storageHelpPricelistsStart, storageHelpPricesStart,storageHelpProjectsStart, storageHelpStatusesStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageHelpTasksStart, storageHelpUnitsStart,storageHelpWorkTypesStart, storageMetadataStart, storageUsersStart, storageHelpMilestonesStart, storageHelpTripTypesStart } from '../../redux/actions';
-import {invisibleSelectStyleNoArrow, invisibleSelectStyleNoArrowColored,invisibleSelectStyleNoArrowColoredRequired, invisibleSelectStyleNoArrowRequired} from '../../scss/selectStyles';
-import { REST_URL } from 'config';
-
-const noMilestone = {id:null,value:null,title:'None',label:'None',startsAt:null};
-const booleanSelects = [{value:false,label:'No'},{value:true,label:'Yes'}];
-
-const noDef={
-	status:{def:false, fixed:false, value: null, show: true },
-	tags:{def:false, fixed:false, value: [], show: true },
-	assignedTo:{def:false, fixed:false, value: [], show: true },
-	type:{def:false, fixed:false, value: null, show: true },
-	requester:{def:false, fixed:false, value: null, show: true },
-	company:{def:false, fixed:false, value: null, show: true },
-	pausal:{def:false, fixed:false, value: booleanSelects[0], show: true },
-	overtime:{def:false, fixed:false, value: booleanSelects[0], show: true },
-}
+import {invisibleSelectStyleNoArrow, invisibleSelectStyleNoArrowColored,invisibleSelectStyleNoArrowColoredRequired, invisibleSelectStyleNoArrowRequired} from 'configs/components/select';
+import { REST_URL } from 'configs/restAPI';
+import booleanSelects from 'configs/constants/boolSelect';
+import { noMilestone } from 'configs/constants/sidebar';
+import { noDef } from 'configs/constants/projects';
 
 class TaskEdit extends Component {
 	constructor(props) {

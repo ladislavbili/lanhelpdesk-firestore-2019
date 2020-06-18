@@ -4,7 +4,7 @@ import Select from 'react-select';
 import firebase from 'firebase';
 import {rebase, database} from '../../../index';
 import {snapshotToArray, isEmail} from '../../../helperFunctions';
-import {selectStyle} from "../../../scss/selectStyles";
+import {selectStyle} from "configs/components/select";
 
 export default class UserAdd extends Component{
   constructor(props){

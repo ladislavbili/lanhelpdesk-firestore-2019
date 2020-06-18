@@ -1,21 +1,12 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import { connect } from "react-redux";
-import {invisibleSelectStyle} from '../../../scss/selectStyles';
+import {invisibleSelectStyle} from 'configs/components/select';
 import {storageHelpStatusesStart, storageHelpTagsStart, storageUsersStart, storageHelpTaskTypesStart, storageCompaniesStart} from '../../../redux/actions';
 import { Button, FormGroup, Label,Input, Modal, ModalHeader, ModalBody, ModalFooter  } from 'reactstrap';
 import {toSelArr, sameStringForms} from '../../../helperFunctions';
 import {rebase} from '../../../index';
-
-
-const noDef={
-	status:{def:false,fixed:false, value: null},
-	tags:{def:false,fixed:false, value: []},
-	assignedTo:{def:false,fixed:false, value: []},
-	type:{def:false,fixed:false, value: null},
-	requester:{def:false,fixed:false, value: null},
-	company:{def:false,fixed:false, value: null}
-}
+import { noDef } from 'configs/constants/projects';
 
 class ProjectAdd extends Component{
   constructor(props){

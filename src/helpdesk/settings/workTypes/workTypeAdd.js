@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input } from 'reactstrap';
 import Select from 'react-select';
-import {selectStyle} from "../../../scss/selectStyles";
+import {selectStyle} from "configs/components/select";
 import {rebase} from '../../../index';
 
 let typeOptions = [{label:'Paušál hodín',value:'work'},{label:'Paušál výjazdov',value:'trip'}]

@@ -14,7 +14,7 @@ import {rebase} from '../index';
 import {toSelArr} from '../helperFunctions';
 import {setProject, setFilter} from '../redux/actions';
 
-import {sidebarSelectStyle} from '../scss/selectStyles';
+import {sidebarSelectStyle} from 'configs/components/select';
 
 let settings=[{title:'Projects',link:'projects'},
 {title:'Statuses',link:'statuses'},

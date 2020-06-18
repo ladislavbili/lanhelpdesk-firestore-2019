@@ -10,21 +10,8 @@ import TaskPrint from './taskPrint';
 
 import {rebase, database} from '../../index';
 import {toSelArr, snapshotToArray, timestampToString} from '../../helperFunctions';
-import {selectStyle, invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
-
-const noDef={
-	status:{def:false,fixed:false, value: null},
-	tags:{def:false,fixed:false, value: []},
-	assignedTo:{def:false,fixed:false, value: []},
-	type:{def:false,fixed:false, value: null},
-	requester:{def:false,fixed:false, value: null},
-	company:{def:false,fixed:false, value: null}
-}
-
-const repeat = [
-	{ value: 'none', label: 'none' },
-	{ value: 'every day', label: 'every day' },
-];
+import {selectStyle, invisibleSelectStyleNoArrow} from 'configs/components/select';
+import { noDef } from 'configs/constants/projects';
 
 export default class TasksTwoEdit extends Component {
 	constructor(props) {
@@ -492,7 +479,7 @@ export default class TasksTwoEdit extends Component {
 											<div className="row">
 												<label className="col-5 col-form-label text-slim">Opakovanie</label>
 												<div className="col-7">
-													<Select options={repeat} styles={selectStyle} />
+													<Select options={[]} styles={selectStyle} />
 												</div>
 											</div>
 										</div>

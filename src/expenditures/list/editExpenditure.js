@@ -3,7 +3,7 @@ import {rebase,database} from '../../index';
 import { Button,  FormGroup, Label, Input } from 'reactstrap';
 import {toSelArr,snapshotToArray} from '../../helperFunctions';
 import Select from 'react-select';
-import {selectStyle} from '../../scss/selectStyles';
+import {selectStyle} from 'configs/components/select';
 
 const REPEAT = [
   {label: "Nie", value: 1},

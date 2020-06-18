@@ -9,7 +9,7 @@ import {toSelArr} from '../helperFunctions';
 import {setCompany, setFilter} from '../redux/actions';
 import CompanyAdd from './settings/companies/companyAdd';
 import CompanyEdit from './settings/companies/companyEdit';
-import {sidebarSelectStyle} from '../scss/selectStyles';
+import {sidebarSelectStyle} from 'configs/components/select';
 
 import classnames from "classnames";
 

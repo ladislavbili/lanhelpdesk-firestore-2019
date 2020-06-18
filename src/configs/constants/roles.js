@@ -8,6 +8,7 @@ export const acl = {
   addProjects: false,
   viewVykaz: false,
   viewRozpocet: false,
+  viewErrors: false,
 
   //settings access
   users: false,
@@ -27,7 +28,7 @@ export const acl = {
   smtps: false,
 }
 
-export default [
+export const roles = [
   {
     id: '0',
     title: 'Guest',
@@ -70,6 +71,7 @@ export default [
       mailViaComment: true,
       addProjects: true,
       vykazy: true,
+      viewErrors: true,
 
       tags: true,
       users: true,
@@ -88,6 +90,7 @@ export default [
       addProjects: true,
       viewVykaz: true,
       viewRozpocet: true,
+      viewErrors: true,
 
       //settings access
       users: true,
@@ -108,3 +111,105 @@ export default [
     },
   },
 ];
+
+export const generalRights = [
+  {
+    name: 'Login to system',
+    value: 'login',
+  },
+  {
+    name: 'Test sections - Navoody, CMDB, Hesla, Naklady, Projekty, Monitoring',
+    value: 'testSections',
+  },
+  {
+    name: 'Send mails via comments',
+    value: 'mailViaComment',
+  },
+  {
+    name: 'Výkazy',
+    value: 'vykazy',
+  },
+  {
+    name: 'Public Filters',
+    value: 'publicFilters',
+  },
+  {
+    name: 'Add projects',
+    value: 'addProjects',
+  },
+  {
+    name: 'View vykaz',
+    value: 'viewVykaz',
+  },
+  {
+    name: 'View rozpocet',
+    value: 'viewRozpocet',
+  },
+  {
+    name: 'View errors',
+    value: 'viewErrors',
+  },
+]
+
+export const specificRules = [
+  {
+    name: 'Users',
+    value: 'users',
+  },
+  {
+    name: 'Companies',
+    value: 'companies',
+  },
+  {
+    name: 'Mesačné paušály firiem',
+    value: 'pausals',
+  },
+  {
+    name: 'Projects',
+    value: 'projects',
+  },
+  {
+    name: 'Statuses',
+    value: 'statuses',
+  },
+  {
+    name: 'Units',
+    value: 'units',
+  },
+  {
+    name: 'Prices',
+    value: 'prices',
+  },
+  {
+    name: 'Suppliers',
+    value: 'suppliers',
+  },
+  {
+    name: 'Tags',
+    value: 'tags',
+  },
+  {
+    name: 'Invoices',
+    value: 'invoices',
+  },
+  {
+    name: 'Roles',
+    value: 'roles',
+  },
+  {
+    name: 'Types',
+    value: 'types',
+  },
+  {
+    name: 'Trip types',
+    value: 'tripTypes',
+  },
+  {
+    name: 'Imaps',
+    value: 'imaps',
+  },
+  {
+    name: 'SMTPs',
+    value: 'smtps',
+  },
+]

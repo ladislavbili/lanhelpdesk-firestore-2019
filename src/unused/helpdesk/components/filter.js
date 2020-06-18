@@ -8,7 +8,7 @@ import {setFilter} from '../../redux/actions';
 import {toSelArr, snapshotToArray} from '../../helperFunctions';
 import AddFilter from './filterAdd';
 
-import {selectStyle} from '../../scss/selectStyles';
+import {selectStyle} from 'configs/components/select';
 
 class Filter extends Component {
   constructor(props) {

@@ -2,28 +2,14 @@ import React, { Component } from 'react';
 import { Button, FormGroup } from 'reactstrap';
 
 import DatePicker from 'react-datepicker';
-import datePickerConfig from 'scss/datePickerConfig';
-import Checkbox from 'components/checkbox';
+import datePickerConfig from 'configs/components/datepicker';
 import classnames from 'classnames';
-import {rebase} from 'index';
 
 
 export default class FilterDatePickerInCalendar extends Component{
-  constructor(props){
-    super(props);
-    this.state={
-      showCalendarFrom: false,
-      showCalendarTo: false,
-
-      startDateFrom: new Date(),
-      startDateTo: new Date(),
-    }
-  }
-
   render(){
     const { label, showNowFrom, dateFrom, showNowTo, dateTo } = this.props;
     const { setShowNowFrom, setDateFrom, setShowNowTo, setDateTo, minimal } = this.props;
-    const { showCalendarFrom, showCalendarTo } = this.state;
     const DateInputFrom = ({ value, onClick }) => {
       let text = '';
       if(minimal){

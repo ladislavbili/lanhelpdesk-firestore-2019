@@ -4,11 +4,11 @@ import { Button, Popover, PopoverHeader, PopoverBody } from 'reactstrap';
 import { FormGroup, Label, Input } from 'reactstrap';
 import DatePicker from 'react-datepicker';
 
-import {selectStyle} from '../../scss/selectStyles';
-import datePickerConfig from '../../scss/datePickerConfig';
+import {selectStyle} from 'configs/components/select';
+import datePickerConfig from 'configs/components/datepicker';
 import {toMomentInput, fromMomentToUnix } from '../../helperFunctions';
-var intervals = [{title:null,value:null,label:'Žiadny'},{title:'Deň',value:86400000,label:'Deň'},{title:'Týždeň',value:604800000,label:'Týždeň'},{title:'Mesiac',value:2629800000,label:'Mesiac'}];
-
+import { intervals } from 'configs/constants/repeat';
+ 
 export default class Repeat extends Component{
 constructor(props) {
   super(props);

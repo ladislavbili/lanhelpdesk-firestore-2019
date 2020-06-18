@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import { toSelArr } from 'helperFunctions';
 
 import Select from 'react-select';
-import {selectStyle} from 'scss/selectStyles';
+import {selectStyle} from 'configs/components/select';
 
 const ROLES = [
   {id: '0',

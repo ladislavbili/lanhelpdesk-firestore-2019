@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Input, Nav, NavItem, NavLink} from 'reactstrap';
 import Select from 'react-select';
-import {invisibleSelectStyle} from '../../scss/selectStyles';
+import {invisibleSelectStyle} from 'configs/components/select';
 import {sameStringForms} from '../../helperFunctions';
 
 export default class Rozpocet extends Component {

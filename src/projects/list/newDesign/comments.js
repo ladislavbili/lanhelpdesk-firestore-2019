@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import {rebase,database} from '../../../index';
 import {snapshotToArray, timestampToString} from '../../../helperFunctions';
 
-import "../../../scss/CRMMertel.scss";
+import "../../../scss/unused/CRMMertel.scss";
 
 class Comments extends Component{
 

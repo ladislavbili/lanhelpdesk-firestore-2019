@@ -3,7 +3,7 @@ import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
 import Select from 'react-select';
 import {toSelArr, snapshotToArray} from '../../../helperFunctions';
 import {rebase,database} from '../../../index';
-import {selectStyle} from "../../../scss/selectStyles";
+import {selectStyle} from "configs/components/select";
 
 export default class CompanyAdd extends Component{
   constructor(props){

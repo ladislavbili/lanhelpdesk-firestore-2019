@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
 import {rebase} from '../../../index';
 import Select from 'react-select';
-import {selectStyle} from "../../../scss/selectStyles";
+import {selectStyle} from "configs/components/select";
 
 import { connect } from "react-redux";
 import {storageHelpWorkTypesStart} from '../../../redux/actions';

@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 import { Button, FormGroup, Label, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import DatePicker from 'react-datepicker';
-import {invisibleSelectStyleNoArrow} from '../../scss/selectStyles';
+import {invisibleSelectStyleNoArrow} from 'configs/components/select';
 import Checkbox from '../../components/checkbox';
-import datePickerConfig from '../../scss/datePickerConfig';
+import datePickerConfig from 'configs/components/datepicker';
 import moment from 'moment';
 
 export default class PendingPicker extends Component{

@@ -5,8 +5,8 @@ import { connect } from "react-redux";
 import { FormGroup, Label, Button } from 'reactstrap';
 import moment from 'moment';
 
-import datePickerConfig from '../../scss/datePickerConfig';
-import {selectStyle} from '../../scss/selectStyles';
+import datePickerConfig from 'configs/components/datepicker';
+import {selectStyle} from 'configs/components/select';
 import { setReportMonth, setReportYear, setReportFrom, setReportTo } from '../../redux/actions';
 
 var months = [{value:1,label:'January'},{value:2,label:'February'},{value:3,label:'March'},{value:4,label:'April'},{value:5,label:'May'},{value:6,label:'June'},

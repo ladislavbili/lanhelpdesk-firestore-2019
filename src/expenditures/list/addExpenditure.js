@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {rebase} from '../../index';
 import { Button,  FormGroup, Label, Input } from 'reactstrap';
 import Select from 'react-select';
-import {selectStyle} from "../../scss/selectStyles";
+import {selectStyle} from "configs/components/select";
 
 const REPEAT = [
   {label: "Nie", value: 1},

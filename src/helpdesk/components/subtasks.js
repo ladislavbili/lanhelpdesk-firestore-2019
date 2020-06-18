@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import { TabContent, TabPane, Input } from 'reactstrap';
-import { selectStyle, invisibleSelectStyle} from '../../scss/selectStyles';
+import { selectStyle, invisibleSelectStyle} from 'configs/components/select';
 
 
 export default class Subtasks extends Component {

@@ -4,7 +4,7 @@ import Select from 'react-select';
 import Switch from "react-switch";
 import {rebase} from '../../../index';
 import {toSelArr} from '../../../helperFunctions';
-import {selectStyle} from "../../../scss/selectStyles";
+import {selectStyle} from "configs/components/select";
 
 import { connect } from "react-redux";
 import {
@@ -19,8 +19,8 @@ import {
 import {sameStringForms, isEmail} from '../../../helperFunctions';
 import CompanyRents from './companyRents';
 import PriceEdit from "../prices/priceEdit";
-
-const projectNoCompany = {def:false, fixed:false, value: null, show: true };
+import { noDef } from 'configs/constants/projects';
+const projectNoCompany = noDef.company;
 
 class CompanyEdit extends Component{
   constructor(props){

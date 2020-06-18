@@ -4,61 +4,13 @@ import Select from 'react-select';
 import { connect } from "react-redux";
 
 import {rebase} from '../../../index';
-import DatePicker from 'react-datepicker';
 import {setFilter, storageHelpTaskTypesStart, storageUsersStart, storageCompaniesStart } from '../../../redux/actions';
-import {toSelArr, sameStringForms, toMomentInput, fromMomentToUnix } from '../../../helperFunctions';
+import {toSelArr, sameStringForms, toMomentInput } from '../../../helperFunctions';
 import AddFilter from './filterAdd';
 import FilterDatePickerInCalendar from 'components/filterDatePickerInCalendar';
 
-import datePickerConfig from '../../../scss/datePickerConfig';
-import {invisibleSelectStyleOtherFont} from '../../../scss/selectStyles';
-
-export const oneOfOptions = [
-  {
-    value: 'requester',
-    label: 'Requester'
-  },
-  {
-    value: 'assigned',
-    label: 'Assigned'
-  },
-  {
-    value: 'company',
-    label: 'Company'
-  }
-]
-
-export const emptyFilter = {
-  requester:{id:null,label:'Žiadny',value:null},
-  company:{id:null,label:'Žiadny',value:null},
-  assigned:{id:null,label:'Žiadny',value:null},
-  workType:{id:null,label:'Žiadny',value:null},
-
-  statusDateFrom: null,
-  statusDateFromNow: false,
-  statusDateFromShowCalendar: false,
-  statusDateTo: null,
-  statusDateToNow: false,
-  statusDateToShowCalendar: false,
-
-  closeDateFrom: null,
-  closeDateFromNow: false,
-  closeDateTo: null,
-  closeDateToNow: false,
-
-  pendingDateFrom: null,
-  pendingDateFromNow: false,
-  pendingDateTo: null,
-  pendingDateToNow: false,
-
-  deadlineFrom: null,
-  deadlineFromNow: false,
-  deadlineTo: null,
-  deadlineToNow: false,
-
-  public:false,
-  oneOf: []
-}
+import {invisibleSelectStyleOtherFont} from 'configs/components/select';
+import { oneOfOptions, emptyFilter } from 'configs/constants/filter';
 
 class Filter extends Component {
   constructor(props) {

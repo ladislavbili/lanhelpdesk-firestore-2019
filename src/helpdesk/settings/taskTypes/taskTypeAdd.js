@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input } from 'reactstrap';
 import {rebase} from '../../../index';
 import Select from 'react-select';
-import {selectStyle} from "../../../scss/selectStyles";
+import {selectStyle} from "configs/components/select";
 let typeOptions = [{label:'Z paušálu',value:'prepaid'},{label:'Samostatný projekt',value:'project'}]
 
 export default class TaskTypeAdd extends Component{

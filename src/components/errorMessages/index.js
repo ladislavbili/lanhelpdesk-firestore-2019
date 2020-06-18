@@ -3,7 +3,7 @@ import { ListGroupItem, Label } from 'reactstrap';
 import Select from 'react-select';
 import classnames from 'classnames';
 import { rebase } from 'index';
-import { invisibleSelectStyleNoArrow } from 'scss/selectStyles';
+import { invisibleSelectStyleNoArrow } from 'configs/components/select';
 import ErrorInfo from './errorInfo';
 
 import { timestampToString } from 'helperFunctions';

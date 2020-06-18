@@ -3,7 +3,7 @@ import {rebase,database} from '../../index';
 import { Button,  FormGroup, Label, Input, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 import {toSelArr, snapshotToArray, getAttributeDefaultValue, htmlFixNewLines} from '../../helperFunctions';
 import Select from 'react-select';
-import {selectStyle} from "../../scss/selectStyles";
+import {selectStyle} from "configs/components/select";
 import IPList from './ipList';
 import Links from './links';
 import Passwords from './passwords';

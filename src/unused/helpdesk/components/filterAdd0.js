@@ -4,7 +4,7 @@ import { Button, FormGroup, Label, Input,Modal, ModalBody, ModalFooter } from 'r
 import { storageHelpProjectsStart, storageHelpFiltersStart } from '../../redux/actions';
 import { toSelArr, sameStringForms } from '../../helperFunctions';
 import Checkbox from '../../components/checkbox';
-import {selectStyle} from '../../scss/selectStyles';
+import {selectStyle} from 'configs/components/select';
 import {rebase} from '../../index';
 import { connect } from "react-redux";
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, FormGroup } from 'reactstrap';
 
 import DatePicker from 'react-datepicker';
-import datePickerConfig from 'scss/datePickerConfig';
+import datePickerConfig from 'configs/components/datepicker';
 import Checkbox from 'components/checkbox';
 import {rebase} from 'index';
 

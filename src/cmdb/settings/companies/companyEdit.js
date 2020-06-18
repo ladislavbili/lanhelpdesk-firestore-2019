@@ -4,7 +4,7 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 //import {toSelArr, snapshotToArray} from '../../../helperFunctions';
 import {rebase/*,database*/} from '../../../index';
 //import Select from 'react-select';
-//import {selectStyle} from "../../../scss/selectStyles";
+//import {selectStyle} from "configs/components/select";
 import Permits from "../../../components/permissions";
 
 export default class CompanyEdit extends Component{

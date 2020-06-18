@@ -4,7 +4,7 @@ import Select from 'react-select';
 import Switch from "react-switch";
 import {toSelArr} from '../../../helperFunctions';
 import {rebase} from '../../../index';
-import {selectStyle} from "../../../scss/selectStyles";
+import {selectStyle} from "configs/components/select";
 
 import { connect } from "react-redux";
 import {storageHelpPricelistsStart } from '../../../redux/actions';
