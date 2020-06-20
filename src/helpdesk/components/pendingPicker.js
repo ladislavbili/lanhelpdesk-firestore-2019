@@ -3,7 +3,6 @@ import Select from 'react-select';
 import { Button, FormGroup, Label, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import DatePicker from 'react-datepicker';
 import {invisibleSelectStyleNoArrow} from 'configs/components/select';
-import Checkbox from '../../components/checkbox';
 import datePickerConfig from 'configs/components/datepicker';
 import moment from 'moment';
 
@@ -31,44 +30,45 @@ export default class PendingPicker extends Component{
     return (
         <Modal isOpen={this.props.open} >
             <ModalHeader>
-              Edit company
+              Pending until
             </ModalHeader>
             <ModalBody>
               <FormGroup>
-                <Label>Pending until</Label>
+                <Label className="p-r-5 center-hor">Date</Label>
                 <DatePicker
                   selected={this.state.pendingDate}
-                  disabled={this.state.milestoneActive}
+                  disabled={this.state.milestone !== null}
                   onChange={date => {
                     this.setState({ pendingDate: date });
                   }}
                   placeholderText="No pending date"
                   {...datePickerConfig}
                 />
+              { this.state.pendingDate !== null &&
+                <i className="fa fa-times center-hor m-l-10 m-r-10 clickable" onClick={ () => { this.setState({ pendingDate: null }) } } />
+              }
               </FormGroup>
 
-              <Checkbox
-                className = "m-l-5 m-r-5"
-                label = "From milestone"
-                value = { this.state.milestoneActive }
-                onChange={(e)=>this.setState({milestoneActive:!this.state.milestoneActive })}
-                />
+              <h3>OR</h3>
 
-              <div className="row p-r-10">
-                <Label className="col-3 col-form-label">Milestone</Label>
-                <div className="col-9">
-                  <Select
-                    placeholder="Vyberte milestone"
-                    value={this.state.milestone}
-                    isDisabled={!this.state.milestoneActive}
-                    onChange={(milestone)=> {
-                      this.setState({milestone});
-                    }}
-                    options={this.props.milestones}
-                    styles={invisibleSelectStyleNoArrow}
-                    />
+              <FormGroup className="flex row">
+                <Label className="p-r-5 center-hor">Milestone</Label>
+                <div className="flex">
+                <Select
+                  placeholder="Vyberte milestone"
+                  value={ this.state.milestone }
+                  isDisabled={ this.state.pendingDate !== null }
+                  onChange={(milestone)=> {
+                    this.setState( { milestone } );
+                  }}
+                  options={this.props.milestones}
+                  styles={invisibleSelectStyleNoArrow}
+                  />
                 </div>
-              </div>
+                  { this.state.milestone !== null &&
+                    <i className="fa fa-times center-hor m-l-10 m-r-10 clickable" onClick={ () => { this.setState({ milestone: null }) } } />
+                  }
+              </FormGroup>
 
               </ModalBody>
               <ModalFooter>

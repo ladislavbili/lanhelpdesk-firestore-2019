@@ -110,11 +110,11 @@ class TaskEdit extends Component {
 			showDescription:false,
 			newHistoryEntery:null,
 		};
-    this.submitTask.bind(this);
-    this.submitMaterial.bind(this);
-    this.submitCustomItem.bind(this);
-    this.submitWorkTrip.bind(this);
-    this.submitService.bind(this);
+		this.submitTask.bind(this);
+		this.submitMaterial.bind(this);
+		this.submitCustomItem.bind(this);
+		this.submitWorkTrip.bind(this);
+		this.submitService.bind(this);
 		this.canSave.bind(this);
 		this.deleteTask.bind(this);
 		this.addToHistory.bind(this);
@@ -134,7 +134,7 @@ class TaskEdit extends Component {
 		this.renderComments.bind(this);
 		this.getPermissions.bind(this);
 
-    this.fetchData(this.props.match.params.taskID);
+		this.fetchData(this.props.match.params.taskID);
 	}
 
 	canSave(){
@@ -143,18 +143,18 @@ class TaskEdit extends Component {
 
 	storageLoaded(props){
 		return props.companiesLoaded &&
-			props.pricelistsLoaded &&
-			props.pricesLoaded &&
-			props.projectsLoaded &&
-			props.statusesLoaded &&
-			props.tagsLoaded &&
-			props.taskTypesLoaded &&
-			props.tasksLoaded &&
-			props.unitsLoaded &&
-			props.metadataLoaded &&
-			props.usersLoaded &&
-			props.tripTypesLoaded &&
-			props.milestonesLoaded
+		props.pricelistsLoaded &&
+		props.pricesLoaded &&
+		props.projectsLoaded &&
+		props.statusesLoaded &&
+		props.tagsLoaded &&
+		props.taskTypesLoaded &&
+		props.tasksLoaded &&
+		props.unitsLoaded &&
+		props.metadataLoaded &&
+		props.usersLoaded &&
+		props.tripTypesLoaded &&
+		props.milestonesLoaded
 	}
 
 	deleteTask(){
@@ -193,7 +193,7 @@ class TaskEdit extends Component {
 			return;
 		}
 		let taskID = this.props.match.params.taskID;
-    this.setState({saving:true});
+		this.setState({saving:true});
 
 		let statusAction = this.state.status.action;
 		let invoicedDate = null;
@@ -202,18 +202,18 @@ class TaskEdit extends Component {
 		}
 
 
-    let body = {
-      title: this.state.title,
-      company: this.state.company?this.state.company.id:null,
-      workHours: this.state.workHours,
-      requester: this.state.requester?this.state.requester.id:null,
+		let body = {
+			title: this.state.title,
+			company: this.state.company?this.state.company.id:null,
+			workHours: this.state.workHours,
+			requester: this.state.requester?this.state.requester.id:null,
 			assignedTo: this.state.assignedTo.map((item)=>item.id),
-      description: this.state.description,
-      status: this.state.status?this.state.status.id:null,
-      statusChange: this.state.statusChange,
-      project: this.state.project?this.state.project.id:null,
-      pausal: this.state.pausal.value,
-      overtime: this.state.overtime.value,
+			description: this.state.description,
+			status: this.state.status?this.state.status.id:null,
+			statusChange: this.state.statusChange,
+			project: this.state.project?this.state.project.id:null,
+			pausal: this.state.pausal.value,
+			overtime: this.state.overtime.value,
 			tags: this.state.tags.map((item)=>item.id),
 			type: this.state.type?this.state.type.id:null,
 			repeat: this.state.repeat!==null?taskID:null,
@@ -225,23 +225,24 @@ class TaskEdit extends Component {
 			pendingChangable: this.state.pendingChangable,
 			invoicedDate,
 			important:this.state.important,
-    }
+		}
 
-    rebase.updateDoc('/help-tasks/'+taskID, body).then(()=>{
+		rebase.updateDoc('/help-tasks/'+taskID, body).then(()=>{
 			if(this.state.newHistoryEntery!==null){
 				this.addToHistory(this.state.newHistoryEntery);
 				this.addNotification(this.state.newHistoryEntery,false);
 			}
-      this.setState({saving:false, newHistoryEntery:null});
-    });
-  }
+			this.setState({saving:false, newHistoryEntery:null});
+		});
+	}
 
-  componentWillReceiveProps(props){
-    if(this.props.match.params.taskID!==props.match.params.taskID){
-      this.setState({loading:true, extraDataLoaded:false, showDescription:false});
-      this.fetchData(props.match.params.taskID);
-    }
-		if(!sameStringForms(props.companies,this.props.companies)||
+	componentWillReceiveProps(props){
+		if(this.props.match.params.taskID!==props.match.params.taskID){
+			this.setState({loading:true, extraDataLoaded:false, showDescription:false});
+			this.fetchData(props.match.params.taskID);
+		}
+		if(
+			!sameStringForms(props.companies,this.props.companies)||
 			!sameStringForms(props.pricelists,this.props.pricelists)||
 			!sameStringForms(props.prices,this.props.prices)||
 			!sameStringForms(props.projects,this.props.projects)||
@@ -258,7 +259,7 @@ class TaskEdit extends Component {
 		){
 			this.setData(props);
 		}
-  }
+	}
 
 	componentWillMount(){
 		if(!this.props.companiesActive){
@@ -301,36 +302,35 @@ class TaskEdit extends Component {
 			this.props.storageHelpTripTypesStart();
 		}
 		this.setData(this.props);
-  }
+	}
 
-  fetchData(taskID){
-    Promise.all(
-      [
-				database.collection('help-task_work_trips').where("task", "==", taskID).get(),
-        database.collection('help-task_materials').where("task", "==", taskID).get(),
-        database.collection('help-task_custom_items').where("task", "==", taskID).get(),
-        database.collection('help-task_works').where("task", "==", taskID).get(),
-        database.collection('help-repeats').doc(taskID).get(),
-				database.collection('help-task_history').where("task", "==", taskID).get(),
-    ]).then(([workTrips,taskMaterials,customItems, taskWorks,repeat,history])=>{
-				this.setState({
-					extraData:{
-						taskWorks:snapshotToArray(taskWorks),
-						workTrips:snapshotToArray(workTrips),
-						taskMaterials:snapshotToArray(taskMaterials),
-						customItems:snapshotToArray(customItems),
-						repeat:repeat.exists ? {id:repeat.id,...repeat.data()} : null,
-					},
-					history:snapshotToArray(history).sort((item1,item2)=>item1.createdAt > item2.createdAt ? -1 : 1 ),
-					extraDataLoaded:true
-				},()=>this.setData(this.props));
-    });
-  }
+	fetchData(taskID){
+		Promise.all([
+			database.collection('help-task_work_trips').where("task", "==", taskID).get(),
+			database.collection('help-task_materials').where("task", "==", taskID).get(),
+			database.collection('help-task_custom_items').where("task", "==", taskID).get(),
+			database.collection('help-task_works').where("task", "==", taskID).get(),
+			database.collection('help-repeats').doc(taskID).get(),
+			database.collection('help-task_history').where("task", "==", taskID).get(),
+		]).then(([workTrips,taskMaterials,customItems, taskWorks,repeat,history])=>{
+			this.setState({
+				extraData:{
+					taskWorks:snapshotToArray(taskWorks),
+					workTrips:snapshotToArray(workTrips),
+					taskMaterials:snapshotToArray(taskMaterials),
+					customItems:snapshotToArray(customItems),
+					repeat:repeat.exists ? {id:repeat.id,...repeat.data()} : null,
+				},
+				history:snapshotToArray(history).sort((item1,item2)=>item1.createdAt > item2.createdAt ? -1 : 1 ),
+				extraDataLoaded:true
+			},()=>this.setData(this.props));
+		});
+	}
 
 	addToHistory(event){
 		rebase.addToCollection('help-task_history',event).then((result)=>{
-      this.setState({history: [ {...event, id: Math.random() } , ...this.state.history]});
-    });
+			this.setState({history: [ {...event, id: Math.random() } , ...this.state.history]});
+		});
 	}
 
 	addNotification(originalEvent,internal){
@@ -348,32 +348,34 @@ class TaskEdit extends Component {
 				if(user.mailNotifications){
 					firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then((token)=>{
 						fetch(`${REST_URL}/send-notification`,{
-						headers: {
-							'Content-Type': 'application/json'
-						},
-						method: 'POST',
-						body:JSON.stringify({
-							message:`<div>
-							<h4>Nové upozornenie</h4>
-							<p>Zmena: ${event.message}</p>
-							<p>V úlohe: ${event.task}: ${this.state.title}</p>
-							<p>Odkaz: https://lanhelpdesk2019.lansystems.sk/helpdesk/notifications/${newNotification.id}/${event.task}</p>
-						</div>`,
-						tos:[user.email],
-						subject:`Upozornenie na zmenu: ${event.message}`,
-						token,
-					}),
-				}).then((response)=>response.json().then((response)=>{
-					if(response.error){
-					}
-				})).catch((error)=>{
-					console.log(error);
-				});
+							headers: {
+								'Content-Type': 'application/json'
+							},
+							method: 'POST',
+							body:JSON.stringify({
+								message:`
+								<div>
+									<h4>Nové upozornenie</h4>
+									<p>Zmena: ${event.message}</p>
+									<p>V úlohe: ${event.task}: ${this.state.title}</p>
+									<p>Odkaz: https://lanhelpdesk2019.lansystems.sk/helpdesk/notifications/${newNotification.id}/${event.task}</p>
+								</div>
+								`,
+								tos:[user.email],
+								subject:`Upozornenie na zmenu: ${event.message}`,
+								token,
+							}),
+						}).then((response)=>response.json().then((response)=>{
+							if(response.error){
+							}
+						})).catch((error)=>{
+							console.log(error);
+						});
+					});
+					//end of sending mail
+				}
 			});
-			//end of sending mail
-		}
-			});
-	 })
+		})
 	}
 
 	getHistoryMessage(type, data){
@@ -465,8 +467,8 @@ class TaskEdit extends Component {
 		let companies = toSelArr(props.companies).map((company)=>{
 			let newCompany={...company,pricelist:pricelists.find((item)=>item.id===company.pricelist)};
 			if(newCompany.pricelist===undefined){
-					 newCompany.pricelist=pricelists[0];
-			 }
+				newCompany.pricelist=pricelists[0];
+			}
 			return newCompany;
 		});;
 
@@ -480,14 +482,14 @@ class TaskEdit extends Component {
 				milestone=noMilestone;
 			}
 		}
-    let project = projects.find((item)=>item.id===task.project);
-    let status = statuses.find((item)=>item.id===task.status);
-    let company = companies.find((item)=>item.id===task.company);
+		let project = projects.find((item)=>item.id===task.project);
+		let status = statuses.find((item)=>item.id===task.status);
+		let company = companies.find((item)=>item.id===task.company);
 		if(company===undefined){
 			company=companies[0];
 		}
-    let requester = users.find((item)=>item.id===task.requester);
-    let assignedTo = users.filter((user)=>task.assignedTo.includes(user.id));
+		let requester = users.find((item)=>item.id===task.requester);
+		let assignedTo = users.filter((user)=>task.assignedTo.includes(user.id));
 
 		let type = taskTypes.find((item)=>item.id===task.type);
 		let taskTags=[];
@@ -557,8 +559,8 @@ class TaskEdit extends Component {
 			newState.description=task.description;
 		}
 
-    this.setState(newState);
-  }
+		this.setState(newState);
+	}
 
 	getPermissions(id){
 		let permission = null;
@@ -571,13 +573,12 @@ class TaskEdit extends Component {
 		return permission;
 	}
 
-	//Renders
-	render() {
+	getRenderAttributes(){
 		let permission = null;
 		if(this.state.project && this.state.project.permissions){
 			permission = this.state.project.permissions.find((permission)=>permission.user===this.props.currentUser.id);
 		}
-		if(permission===undefined){
+		if(!permission){
 			permission = {user:{id:this.props.currentUser.id},read:false,write:false,delete:false,internal:false,isAdmin:false};
 		}
 
@@ -624,9 +625,59 @@ class TaskEdit extends Component {
 			createdBy = this.state.users.find((user)=>user.id===this.state.task.createdBy);
 		}
 
+		let availableProjects = this.state.projects.filter((project)=>{
+			let curr = this.props.currentUser;
+			if((curr.userData && curr.userData.role.value===3)||(project.id===-1||project.id===null)){
+				return true;
+			}
+			if(!project.permissions){
+				return false;
+			}
+			let permission = project.permissions.find((permission)=>permission.user===curr.id);
+			return permission && permission.read;
+		})
+
+		const USERS_WITH_PERMISSIONS = this.state.users.filter((user)=>this.state.project && this.state.project.permissions && this.state.project.permissions.some((permission)=>permission.user===user.id));
+		const REQUESTERS =  (this.state.project && this.state.project.lockedRequester ? USERS_WITH_PERMISSIONS : this.state.users);
+
+		return {
+			permission,
+			canAdd,
+			canDelete,
+			canCopy,
+			taskID,
+			workTrips,
+			taskWorks,
+			taskMaterials,
+			customItems,
+			createdBy,
+			availableProjects,
+			USERS_WITH_PERMISSIONS,
+			REQUESTERS,
+		}
+	}
+
+	//Renders
+	render() {
+		const {
+			permission,
+			canAdd,
+			canDelete,
+			canCopy,
+			taskID,
+			workTrips,
+			taskWorks,
+			taskMaterials,
+			customItems,
+			createdBy,
+			availableProjects,
+			USERS_WITH_PERMISSIONS,
+			REQUESTERS,
+		} = this.getRenderAttributes();
+
 		return (
 			<div className="flex">
-				{this.state.showDescription &&
+				{ this.state.showDescription &&
 					<div
 						style={{backgroundColor: "transparent", width: "100%", height: "100%", position: "absolute"}}
 						onClick={()=>this.setState({showDescription:false})}
@@ -636,46 +687,46 @@ class TaskEdit extends Component {
 				{ this.renderCommandbar(taskID, createdBy, canCopy, canDelete, taskWorks, workTrips, taskMaterials, customItems) }
 
 				<div className={classnames("fit-with-header-and-commandbar", "scroll-visible", "bkg-F6F6F6", { "row": this.state.layout === '2'})}>
-					<div className={classnames("card-box-lanwiki", { "task-edit-left": this.state.layout === '2' && !this.props.columns}, { "task-edit-left-columns": this.state.layout === '2' && this.props.columns})}>
+					<div className={classnames( "card-box-lanwiki", { "task-edit-left": this.state.layout === '2' && !this.props.columns, "task-edit-left-columns": this.state.layout === '2' && this.props.columns})}>
 
 						<div className="p-t-20 p-l-30 p-r-30">
-						{ this.renderTitle(taskID, createdBy) }
+							{ this.renderTitle(taskID, createdBy) }
 
-						<hr className="m-t-5 m-b-5"/>
+							<hr className="m-t-5 m-b-5"/>
 
-						{ this.state.layout === "1" && this.renderSelectsLayout1(taskID, canAdd) }
+							{ this.state.layout === "1" && this.renderSelectsLayout1(taskID, canAdd, USERS_WITH_PERMISSIONS, REQUESTERS, availableProjects) }
 
-						{ this.renderPopis() }
+							{ this.renderPopis() }
 
-						{ this.state.layout === "1" && this.state.defaultFields.tags.show && this.renderTags() }
+							{ this.state.layout === "1" && this.state.defaultFields.tags.show && this.renderTags() }
 
-						{ this.renderAttachments(taskID) }
+							{ this.renderAttachments(taskID) }
 
-						{ this.renderModalUserAdd() }
+							{ this.renderModalUserAdd() }
 
-						{ this.renderModalCompanyAdd() }
+							{ this.renderModalCompanyAdd() }
 
-						{ this.renderPendingPicker() }
+							{ this.renderPendingPicker() }
 
-						{ this.renderVykazyTable(taskWorks, workTrips, taskMaterials, customItems) }
+							{ this.renderVykazyTable(taskWorks, workTrips, taskMaterials, customItems) }
+						</div>
+
+						{ this.renderComments(taskID, permission) }
+
 					</div>
 
-						{ this.renderComments(taskID) }
+					{ this.state.layout === "2" && this.renderSelectsLayout2(taskID, canAdd, USERS_WITH_PERMISSIONS, REQUESTERS, availableProjects) }
 
-					</div>
-
-					{ this.state.layout === "2" && this.renderSelectsLayout2() }
-
-		    </div>
+				</div>
 			</div>
 		);
 	}
 
 	renderCommandbar(taskID, createdBy, canCopy, canDelete, taskWorks, workTrips, taskMaterials, customItems){
-		return(
+		return (
 			<div className={classnames("commandbar", { "p-l-25": false})}> {/*Commandbar*/}
 				<div className="d-flex flex-row center-hor p-2 ">
-						<div className="display-inline center-hor">
+					<div className="display-inline center-hor">
 						{!this.props.columns &&
 							<button type="button" className="btn btn-link-reversed waves-effect p-l-0" onClick={() => this.props.history.push(`/helpdesk/taskList/i/${this.props.match.params.listID}`)}>
 								<i
@@ -683,8 +734,7 @@ class TaskEdit extends Component {
 									/>
 							</button>
 						}
-						{this.state.project
-							&&
+						{ this.state.project &&
 							<TaskAdd
 								history={this.props.history}
 								project={this.state.project.id}
@@ -706,30 +756,30 @@ class TaskEdit extends Component {
 							customItems={customItems}
 							{...this.state}
 							isLoaded={this.state.extraDataLoaded && this.storageLoaded(this.props) && !this.state.loading} />
-						{canDelete && <button type="button" disabled={!canDelete} className="btn btn-link-reversed waves-effect" onClick={this.deleteTask.bind(this)}>
-							<i
-								className="far fa-trash-alt"
-								/> Delete
-							</button>}
-							<button type="button" style={{color:this.state.important ? '#ffc107' : '#0078D4'}} disabled={this.state.viewOnly} className="btn btn-link-reversed waves-effect" onClick={()=>this.setState({important:!this.state.important},this.submitTask.bind(this))}>
-								<i
-									className="far fa-star"
-									/> Important
-								</button>
-						</div>
-						<button
-							type="button"
-							className="btn btn-link-reversed waves-effect"
-							onClick={() => this.setState({layout: this.state.layout === "1" ? "2" : "1"})}>
-							Switch layout
+						{ canDelete &&
+							<button type="button" disabled={!canDelete} className="btn btn-link-reversed waves-effect" onClick={this.deleteTask.bind(this)}>
+								<i className="far fa-trash-alt" />
+								Delete
+							</button>
+						}
+						<button type="button" style={{color:this.state.important ? '#ffc107' : '#0078D4'}} disabled={this.state.viewOnly} className="btn btn-link-reversed waves-effect" onClick={()=>this.setState({important:!this.state.important},this.submitTask.bind(this))}>
+							<i className="far fa-star" />
+							Important
 						</button>
+					</div>
+					<button
+						type="button"
+						className="btn btn-link-reversed waves-effect"
+						onClick={() => this.setState({layout: this.state.layout === "1" ? "2" : "1"})}>
+						Switch layout
+					</button>
 				</div>
 			</div>
 		)
 	}
 
 	renderTitle(taskID, createdBy){
-		return(
+		return (
 			<div className="d-flex p-2">{/* Task name row */}
 				<div className="row flex">
 					<h2 className="center-hor text-extra-slim">{taskID}: </h2>
@@ -754,52 +804,7 @@ class TaskEdit extends Component {
 							</span>
 						</p>
 						<p className="m-b-0">
-							{(()=>{
-								if(this.state.status && this.state.status.action==='pending'){
-									return (
-										<span className="text-muted task-info m-r--40">
-											<span className="center-hor">
-												Pending date:
-											</span>
-											<DatePicker
-												className="form-control hidden-input"
-												selected={this.state.pendingDate}
-												disabled={!this.state.status || this.state.status.action!=='pending'||this.state.viewOnly||!this.state.pendingChangable}
-												onChange={date => {
-													this.setState({ pendingDate: date },this.submitTask.bind(this));
-												}}
-												placeholderText="No pending date"
-												{...datePickerConfig}
-												/>
-										</span>)
-							}else if(this.state.status && (this.state.status.action==='close'||this.state.status.action==='invoiced'||this.state.status.action==='invalid')){
-								return (
-									<span className="text-muted task-info m-r--40">
-										<span className="center-hor">
-											Closed at:
-										</span>
-										<DatePicker
-											className="form-control hidden-input"
-											selected={this.state.closeDate}
-											disabled={!this.state.status || (this.state.status.action!=='close' && this.state.status.action!=='invalid')||this.state.viewOnly}
-											onChange={date => {
-												this.setState({ closeDate: date },this.submitTask.bind(this));
-											}}
-											placeholderText="No pending date"
-											{...datePickerConfig}
-											/>
-									</span>)
-								}else{
-									return (
-										<span className="task-info ">
-											<span className="center-hor text-muted">
-												{this.state.statusChange ? ('Status changed at ' + timestampToString(this.state.statusChange) ) : ""}
-											</span>
-										</span>
-									)
-
-								}
-							})()}
+							{ this.renderStatusDate() }
 						</p>
 					</div>
 				</div>
@@ -807,212 +812,203 @@ class TaskEdit extends Component {
 		)
 	}
 
-	renderSelectsLayout1(taskID, canAdd){
-		const USERS_WITH_PERMISSIONS = this.state.users.filter((user)=>this.state.project && this.state.project.permissions && this.state.project.permissions.some((permission)=>permission.user===user.id));
-		const REQUESTERS =  (this.state.project && this.state.project.lockedRequester ? USERS_WITH_PERMISSIONS : this.state.users);
+	renderStatusDate(){
+		if(this.state.status && this.state.status.action==='pending'){
+			return (
+				<span className="text-muted task-info m-r--40">
+					<span className="center-hor">
+						Pending date:
+					</span>
+					<DatePicker
+						className="form-control hidden-input"
+						selected={this.state.pendingDate}
+						disabled={!this.state.status || this.state.status.action!=='pending'||this.state.viewOnly||!this.state.pendingChangable}
+						onChange={ (date) => {
+							this.setState({ pendingDate: date },this.submitTask.bind(this));
+						}}
+						placeholderText="No pending date"
+						{...datePickerConfig}
+						/>
+				</span>
+			)
+		}
 
-		return(
+		if(this.state.status && (this.state.status.action==='close'||this.state.status.action==='invoiced'||this.state.status.action==='invalid')){
+			return (
+				<span className="text-muted task-info m-r--40">
+					<span className="center-hor">
+						Closed at:
+					</span>
+					<DatePicker
+						className="form-control hidden-input"
+						selected={this.state.closeDate}
+						disabled={!this.state.status || (this.state.status.action!=='close' && this.state.status.action!=='invalid')||this.state.viewOnly}
+						onChange={date => {
+							this.setState({ closeDate: date },this.submitTask.bind(this));
+						}}
+						placeholderText="No pending date"
+						{...datePickerConfig}
+						/>
+				</span>
+			)
+		}
+		return (
+			<span className="task-info ">
+				<span className="center-hor text-muted">
+					{this.state.statusChange ? ('Status changed at ' + timestampToString(this.state.statusChange) ) : ""}
+				</span>
+			</span>
+		)
+	}
+
+	renderSelectsLayout1(taskID, canAdd, usersWithPermissions, requesters, availableProjects){
+		return (
 			<div>
-				<div className="col-lg-12"> {/*Project, Assigned*/}
-					<div className="col-lg-4"> {/*Project*/}
+				{/* Project, Assigned */}
+				<div className="col-lg-12">
+					{/* Project */}
+					<div className="col-lg-4">
 						<div className="row p-r-10">
 							<Label className="col-3 col-form-label">Projekt</Label>
 							<div className="col-9">
 								<Select
 									placeholder="Zadajte projekt"
-									isDisabled={this.state.viewOnly}
-									value={this.state.project}
-									onChange={(project)=>{
-										let permissionIDs = [];
-										if(project.permissions){
-											project.permissions.map((permission) => permission.user);
-										}
-										let assignedTo=this.state.assignedTo.filter((user)=>permissionIDs.includes(user.id));
-
-										this.setState({project,
-											assignedTo,
-											projectChangeDate:(new Date()).getTime(),
-											milestone:noMilestone
-										},()=>{this.submitTask();this.setDefaults(project.id)});
-									}}
-									options={this.state.projects.filter((project)=>{
-										let curr = this.props.currentUser;
-										if((curr.userData && curr.userData.role.value===3)||(project.id===-1||project.id===null)){
-											return true;
-										}
-										if(!project.permissions){
-											return false;
-										}
-										let permission = project.permissions.find((permission)=>permission.user===curr.id);
-										return permission && permission.read;
-									})}
-									styles={invisibleSelectStyleNoArrowRequired}
+									isDisabled={ this.state.viewOnly }
+									value={ this.state.project }
+									onChange={ this.changeProject.bind(this) }
+									options={ availableProjects }
+									styles={ invisibleSelectStyleNoArrowRequired }
 									/>
 							</div>
 						</div>
 					</div>
-					{ this.state.defaultFields.assignedTo.show && <div className="col-lg-8"> {/*Assigned*/}
-						<div className="row p-r-10">
-							<Label className="col-1-5 col-form-label">Assigned</Label>
-							<div className="col-10-5">
-								<Select
-									value={this.state.assignedTo.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id))}
-									placeholder="Select"
-									isMulti
-									isDisabled={this.state.defaultFields.assignedTo.fixed||this.state.viewOnly}
-									onChange={(users)=>this.setState({assignedTo:users},this.submitTask.bind(this))}
-									options={
-										(canAdd?[{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}]:[])
-										.concat(USERS_WITH_PERMISSIONS)
-									}
-									styles={invisibleSelectStyleNoArrowRequired}
-									/>
-							</div>
-						</div>
-					</div>}
-				</div>
-
-				<div className="col-lg-12"> {/*Attributes*/}
-					<div className="col-lg-4">
-						{ this.state.defaultFields.status.show && <div className="row p-r-10"> {/*Status*/}
-							<Label className="col-3 col-form-label">Status</Label>
-							<div className="col-9">
-								<Select
-									placeholder="Status required"
-									value={this.state.status}
-									isDisabled={this.state.defaultFields.status.fixed||this.state.viewOnly}
-									styles={invisibleSelectStyleNoArrowColoredRequired}
-									onChange={(status)=>{
-										let newHistoryEntery = {
-											createdAt:(new Date()).getTime(),
-											message:this.getHistoryMessage('status', {newStatus:status,oldStatus:this.state.status}),
-											task:this.props.match.params.taskID,
-										};
-										if(status.action==='pending'){
-											this.setState({
-												pendingStatus:status,
-												pendingOpen:true,
-												newHistoryEntery
-											})
-										}else if(status.action==='close'||status.action==='invalid'){
-											this.setState({
-												status,
-												important:false,
-												statusChange:(new Date().getTime()),
-												closeDate: moment(),
-												newHistoryEntery
-											},this.submitTask.bind(this))
-										}
-										else{
-											this.setState({
-												status,
-												statusChange:(new Date().getTime()),
-												newHistoryEntery
-											},this.submitTask.bind(this))
-										}
-									}}
-									options={this.state.statuses.filter((status)=>status.action!=='invoiced')}
-									/>
-							</div>
-						</div>}
-						{ this.state.defaultFields.type.show && <div className="row p-r-10"> {/*Type*/}
-							<Label className="col-3 col-form-label">Typ</Label>
-							<div className="col-9">
-								<Select
-									placeholder="Zadajte typ"
-									value={this.state.type}
-									isDisabled={this.state.defaultFields.type.fixed||this.state.viewOnly}
-									styles={invisibleSelectStyleNoArrowRequired}
-									onChange={(type)=>this.setState({type},this.submitTask.bind(this))}
-									options={this.state.taskTypes}
-									/>
-							</div>
-						</div>}
-						<div className="row p-r-10"> {/*Milestone*/}
-								<Label className="col-3 col-form-label">Milestone</Label>
-								<div className="col-9">
+					{/* Assigned */}
+					{ this.state.defaultFields.assignedTo.show &&
+						<div className="col-lg-8">
+							<div className="row p-r-10">
+								<Label className="col-1-5 col-form-label">Assigned</Label>
+								<div className="col-10-5">
 									<Select
-										isDisabled={this.state.viewOnly}
-										value={this.state.milestone}
-										onChange={(milestone)=> {
-											if(this.state.status.action==='pending'){
-												if(milestone.startsAt!==null){
-													this.setState({milestone,pendingDate:moment(milestone.startsAt),pendingChangable:false},this.submitTask.bind(this));
-												}else{
-													this.setState({milestone, pendingChangable:true }, this.submitTask.bind(this));
-												}
-											}else{
-												this.setState({milestone},this.submitTask.bind(this));
-											}
-										}}
-										options={this.state.milestones.filter((milestone)=>milestone.id===null || (this.state.project!== null && milestone.project===this.state.project.id))}
-										styles={invisibleSelectStyleNoArrow}
+										value={this.state.assignedTo.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id))}
+										placeholder="Select"
+										isMulti
+										isDisabled={this.state.defaultFields.assignedTo.fixed||this.state.viewOnly}
+										onChange={(users)=>this.setState({assignedTo:users},this.submitTask.bind(this))}
+										options={
+											(canAdd?[{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}]:[])
+											.concat(usersWithPermissions)
+										}
+										styles={invisibleSelectStyleNoArrowRequired}
 										/>
 								</div>
 							</div>
-					</div>
-
+						</div>
+					}
+				</div>
+				{/* Attributes */}
+				<div className="col-lg-12">
+					{/* Status, Type, Milestone */}
 					<div className="col-lg-4">
-						{ this.state.defaultFields.requester.show && <div className="row p-r-10"> {/*Requester*/}
-							<Label className="col-3 col-form-label">Zadal</Label>
+						{/* Status */}
+						{ this.state.defaultFields.status.show &&
+							<div className="row p-r-10">
+								<Label className="col-3 col-form-label">Status</Label>
+								<div className="col-9">
+									<Select
+										placeholder="Status required"
+										value={this.state.status}
+										isDisabled={this.state.defaultFields.status.fixed||this.state.viewOnly}
+										styles={invisibleSelectStyleNoArrowColoredRequired}
+										onChange={this.changeStatus.bind(this)}
+										options={this.state.statuses.filter((status)=>status.action!=='invoiced')}
+										/>
+								</div>
+							</div>
+						}
+						{/* Type */}
+						{ this.state.defaultFields.type.show &&
+							<div className="row p-r-10">
+								<Label className="col-3 col-form-label">Typ</Label>
+								<div className="col-9">
+									<Select
+										placeholder="Zadajte typ"
+										value={this.state.type}
+										isDisabled={this.state.defaultFields.type.fixed||this.state.viewOnly}
+										styles={invisibleSelectStyleNoArrowRequired}
+										onChange={(type)=>this.setState({type},this.submitTask.bind(this))}
+										options={this.state.taskTypes}
+										/>
+								</div>
+							</div>
+						}
+						{/* Milestone */}
+						<div className="row p-r-10">
+							<Label className="col-3 col-form-label">Milestone</Label>
 							<div className="col-9">
 								<Select
-									placeholder="Zadajte žiadateľa"
-									value={this.state.requester}
-									isDisabled={this.state.defaultFields.requester.fixed||this.state.viewOnly}
-									onChange={(requester)=>
-										{
-											if (requester.id === -1) {
-												this.setState({
-													openUserAdd: true,
-												})
-											} else {
-												this.setState({requester},this.submitTask.bind(this))
-											}
-										}
-									}
-									options={(canAdd?[{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}]:[]).concat(REQUESTERS)}
-									styles={invisibleSelectStyleNoArrowRequired}
+									isDisabled={this.state.viewOnly}
+									value={this.state.milestone}
+									onChange={this.changeMilestone.bind(this)}
+									options={this.state.milestones.filter((milestone)=>milestone.id===null || (this.state.project!== null && milestone.project===this.state.project.id))}
+									styles={invisibleSelectStyleNoArrow}
 									/>
 							</div>
-						</div> }
-						{ this.state.defaultFields.company.show && <div className="row p-r-10"> {/*Company*/}
-							<Label className="col-3 col-form-label">Firma</Label>
-							<div className="col-9">
-								<Select
-									placeholder="Zadajte firmu"
-									value={this.state.company}
-									isDisabled={this.state.defaultFields.company.fixed||this.state.viewOnly}
-									onChange={(company)=> {
-										if (company.id === -1) {
-											this.setState({
-												openCompanyAdd: true,
-											})
-										} else {
-											this.setState({company, pausal:parseInt(company.workPausal)>0?booleanSelects[1]:booleanSelects[0]},this.submitTask.bind(this));
-										}
-									}}
-									options={(canAdd?[{id:-1,title:'+ Add company',body:'add', label:'+ Add company',value:null}]:[]).concat(this.state.companies)}
-									styles={invisibleSelectStyleNoArrowRequired}
-									/>
-							</div>
-						</div>}
-						{this.state.defaultFields.pausal.show && <div className="form-group row"> {/*Pausal*/}
-							<label className="col-3 col-form-label">Paušál</label>
-							<div className="col-9">
-								<Select
-									value={this.state.pausal}
-									isDisabled={this.state.viewOnly||!this.state.company || parseInt(this.state.company.workPausal)===0||this.state.defaultFields.pausal.fixed}
-									styles={invisibleSelectStyleNoArrowRequired}
-									onChange={(pausal)=>this.setState({pausal},this.submitTask.bind(this))}
-									options={booleanSelects}
-									/>
-							</div>
-						</div>}
+						</div>
 					</div>
-
+					{/* Requester, Company, Pausal */}
 					<div className="col-lg-4">
-						<div className="row p-r-10"> {/*Deadline*/}
+						{/* Requester */}
+						{ this.state.defaultFields.requester.show &&
+							<div className="row p-r-10">
+								<Label className="col-3 col-form-label">Zadal</Label>
+								<div className="col-9">
+									<Select
+										placeholder="Zadajte žiadateľa"
+										value={this.state.requester}
+										isDisabled={this.state.defaultFields.requester.fixed||this.state.viewOnly}
+										onChange={this.changeRequester.bind(this)}
+										options={(canAdd?[{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}]:[]).concat(requesters)}
+										styles={invisibleSelectStyleNoArrowRequired}
+										/>
+								</div>
+							</div>
+						}
+						{/* Company */}
+						{ this.state.defaultFields.company.show &&
+							<div className="row p-r-10">
+								<Label className="col-3 col-form-label">Firma</Label>
+								<div className="col-9">
+									<Select
+										placeholder="Zadajte firmu"
+										value={this.state.company}
+										isDisabled={this.state.defaultFields.company.fixed||this.state.viewOnly}
+										onChange={ this.changeCompany.bind(this) }
+										options={(canAdd?[{id:-1,title:'+ Add company',body:'add', label:'+ Add company',value:null}]:[]).concat(this.state.companies)}
+										styles={invisibleSelectStyleNoArrowRequired}
+										/>
+								</div>
+							</div>
+						}
+						{/* Pausal */}
+						{	this.state.defaultFields.pausal.show &&
+							<div className="form-group row">
+								<label className="col-3 col-form-label">Paušál</label>
+								<div className="col-9">
+									<Select
+										value={this.state.pausal}
+										isDisabled={this.state.viewOnly||!this.state.company || parseInt(this.state.company.workPausal)===0||this.state.defaultFields.pausal.fixed}
+										styles={invisibleSelectStyleNoArrowRequired}
+										onChange={(pausal)=>this.setState({pausal},this.submitTask.bind(this))}
+										options={booleanSelects}
+										/>
+								</div>
+							</div>
+						}
+					</div>
+					{/* Deadline, Repeat, Overtime */}
+					<div className="col-lg-4">
+						{/* Deadline */}
+						<div className="row p-r-10">
 							<Label className="col-3 col-form-label">Deadline</Label>
 							<div className="col-9">
 								<DatePicker
@@ -1027,19 +1023,13 @@ class TaskEdit extends Component {
 									/>
 							</div>
 						</div>
-						<div>{/*Repeat*/}
+						{/* Repeat */}
+						<div>
 							<Repeat
 								disabled={this.state.viewOnly}
 								taskID={taskID}
 								repeat={this.state.repeat}
-								submitRepeat={(repeat)=>{
-									database.collection('help-repeats').doc(taskID).set({
-										...repeat,
-										task:taskID,
-										startAt:(new Date(repeat.startAt).getTime()),
-									});
-									this.setState({repeat})
-								}}
+								submitRepeat={this.changeRepeat.bind(this)}
 								deleteRepeat={()=>{
 									rebase.removeDoc('/help-repeats/'+taskID);
 									this.setState({repeat:null})
@@ -1047,126 +1037,85 @@ class TaskEdit extends Component {
 								columns={this.props.columns}
 								/>
 						</div>
-						{this.state.defaultFields.overtime.show && <div className="form-group row"> {/*Overtime*/}
-							<label className="col-3 col-form-label">Mimo PH</label>
-							<div className="col-9">
-								<Select
-									value={this.state.overtime}
-									isDisabled={this.state.viewOnly||this.state.defaultFields.overtime.fixed}
-									styles={invisibleSelectStyleNoArrowRequired}
-									onChange={(overtime)=>this.setState({overtime},this.submitTask.bind(this))}
-									options={booleanSelects}
-									/>
+						{/* Overtime */}
+						{	this.state.defaultFields.overtime.show &&
+							<div className="form-group row">
+								<label className="col-3 col-form-label">Mimo PH</label>
+								<div className="col-9">
+									<Select
+										value={this.state.overtime}
+										isDisabled={this.state.viewOnly||this.state.defaultFields.overtime.fixed}
+										styles={invisibleSelectStyleNoArrowRequired}
+										onChange={(overtime)=>this.setState({overtime},this.submitTask.bind(this))}
+										options={booleanSelects}
+										/>
+								</div>
 							</div>
-						</div>}
+						}
 					</div>
 				</div>
 			</div>
 		)
 	}
 
-	renderSelectsLayout2(taskID, canAdd){
-		const USERS_WITH_PERMISSIONS = this.state.users.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id));
-		const REQUESTERS =  (this.state.project && this.state.project.lockedRequester ? USERS_WITH_PERMISSIONS : this.state.users);
-
-		return(
+	renderSelectsLayout2(taskID, canAdd, usersWithPermissions, requesters, availableProjects){
+		return (
 			<div className={"task-edit-right" + (this.props.columns ? " w-250px" : "")} >
-				<div className="">
+				{/* Projekt */}
+				<div>
 					<Label className="col-form-label-2">Projekt</Label>
 					<div className="col-form-value-2">
 						<Select
 							placeholder="Zadajte projekt"
 							isDisabled={this.state.viewOnly}
 							value={this.state.project}
-							onChange={(project)=>{
-								let permissionIDs = project.permissions.map((permission) => permission.user);
-								let assignedTo=this.state.assignedTo.filter((user)=>permissionIDs.includes(user.id));
-
-								this.setState({project,
-									assignedTo,
-									projectChangeDate:(new Date()).getTime(),
-									milestone:noMilestone
-								},()=>{this.submitTask();this.setDefaults(project.id)});
-							}}
-							options={this.state.projects.filter((project)=>{
-								let curr = this.props.currentUser;
-								if((curr.userData && curr.userData.role.value===3)||(project.id===-1||project.id===null)){
-									return true;
-								}
-								let permission = project.permissions.find((permission)=>permission.user===curr.id);
-								return permission && permission.read;
-							})}
+							onChange={this.changeProject.bind(this)}
+							options={availableProjects}
 							styles={invisibleSelectStyleNoArrowRequired}
 							/>
 					</div>
 				</div>
-
+				{/* Assigned */}
 				{ this.state.defaultFields.assignedTo.show &&
-				<div className="">
-					<Label className="col-form-label-2">Assigned</Label>
-					<div className="col-form-value-2" style={{marginLeft: "-5px"}}>
-						<Select
-							value={this.state.assignedTo.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id))}
-							placeholder="Select"
-							isMulti
-							isDisabled={this.state.defaultFields.assignedTo.fixed||this.state.viewOnly}
-							onChange={(users)=>this.setState({assignedTo:users},this.submitTask.bind(this))}
-							options={
-								(canAdd?[{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}]:[])
-								.concat(USERS_WITH_PERMISSIONS)
-							}
-							styles={invisibleSelectStyleNoArrowRequired}
-							/>
+					<div>
+						<Label className="col-form-label-2">Assigned</Label>
+						<div className="col-form-value-2" style={{marginLeft: "-5px"}}>
+							<Select
+								value={this.state.assignedTo.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id))}
+								placeholder="Select"
+								isMulti
+								isDisabled={this.state.defaultFields.assignedTo.fixed||this.state.viewOnly}
+								onChange={(users)=>this.setState({assignedTo:users},this.submitTask.bind(this))}
+								options={
+									(canAdd?[{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}]:[])
+									.concat(usersWithPermissions)
+								}
+								styles={invisibleSelectStyleNoArrowRequired}
+								/>
+						</div>
 					</div>
-				</div>}
+				}
 
-
+				{ /* Status */ }
 				{ this.state.defaultFields.status.show &&
-					<div className="">
+					<div>
 						<Label className="col-form-label-2">Status</Label>
 						<div className="col-form-value-2">
-								<Select
-									placeholder="Status required"
-									value={this.state.status}
-									isDisabled={this.state.defaultFields.status.fixed||this.state.viewOnly}
-									styles={invisibleSelectStyleNoArrowColoredRequired}
-									onChange={(status)=>{
-										let newHistoryEntery = {
-											createdAt:(new Date()).getTime(),
-											message:this.getHistoryMessage('status', status),
-											task:this.props.match.params.taskID,
-										};
-										if(status.action==='pending'){
-											this.setState({
-												pendingStatus:status,
-												pendingOpen:true,
-												newHistoryEntery
-											})
-										}else if(status.action==='close'||status.action==='invalid'){
-											this.setState({
-												status,
-												statusChange:(new Date().getTime()),
-												closeDate: moment(),
-												newHistoryEntery
-											},this.submitTask.bind(this))
-										}
-										else{
-											this.setState({
-												status,
-												statusChange:(new Date().getTime()),
-												newHistoryEntery
-											},this.submitTask.bind(this))
-										}
-									}}
-									options={this.state.statuses.filter((status)=>status.action!=='invoiced')}
-									/>
-							</div>
-						</div>}
+							<Select
+								placeholder="Status required"
+								value={this.state.status}
+								isDisabled={this.state.defaultFields.status.fixed||this.state.viewOnly}
+								styles={invisibleSelectStyleNoArrowColoredRequired}
+								onChange={this.changeStatus.bind(this)}
+								options={this.state.statuses.filter((status)=>status.action!=='invoiced')}
+								/>
+						</div>
+					</div>
+				}
 
-
-
+				{/* Type */}
 				{ this.state.defaultFields.type.show &&
-					<div className=""> {/*Type*/}
+					<div>
 						<Label className="col-form-label-2">Typ</Label>
 						<div className="col-form-value-2">
 							<Select
@@ -1178,164 +1127,143 @@ class TaskEdit extends Component {
 								options={this.state.taskTypes}
 								/>
 						</div>
-					</div>}
-
-					<div className=""> {/*Milestone*/}
-						<Label className="col-form-label-2">Milestone</Label>
-						<div className="col-form-value-2">
-							<Select
-								isDisabled={this.state.viewOnly}
-								value={this.state.milestone}
-								onChange={(milestone)=> {
-									if(this.state.status.action==='pending'){
-										if(milestone.startsAt!==null){
-											this.setState({milestone,pendingDate:moment(milestone.startsAt),pendingChangable:false},this.submitTask.bind(this));
-										}else{
-											this.setState({milestone, pendingChangable:true }, this.submitTask.bind(this));
-										}
-									}else{
-										this.setState({milestone},this.submitTask.bind(this));
-									}
-								}}
-								options={this.state.milestones.filter((milestone)=>milestone.id===null || (this.state.project!== null && milestone.project===this.state.project.id))}
-								styles={invisibleSelectStyleNoArrow}
-								/>
-						</div>
 					</div>
+				}
 
-					{ this.state.defaultFields.tags.show &&
-						<div style={{maxWidth:"250px"}}> {/*Tags*/}
-							<Label className="col-form-label-2">Tagy: </Label>
-							<div className="col-form-value-2">
-								<Select
-									placeholder="Zvoľte tagy"
-									value={this.state.tags}
-									isMulti
-									onChange={(tags)=>this.setState({tags},this.submitTask.bind(this))}
-									options={this.state.allTags}
-									isDisabled={this.state.defaultFields.tags.fixed||this.state.viewOnly}
-									styles={invisibleSelectStyleNoArrowColored}
-									/>
-							</div>
-					</div>}
-
-
-			{ this.state.defaultFields.requester.show &&
-				<div className=""> {/*Requester*/}
-					<Label className="col-form-label-2">Zadal</Label>
+				{/* Milestone */}
+				<div>
+					<Label className="col-form-label-2">Milestone</Label>
 					<div className="col-form-value-2">
 						<Select
-							placeholder="Zadajte žiadateľa"
-							value={this.state.requester}
-							isDisabled={this.state.defaultFields.requester.fixed||this.state.viewOnly}
-							onChange={(requester)=>
-								{
-									if (requester.id === -1) {
-										this.setState({
-											openUserAdd: true,
-										})
-									} else {
-										this.setState({requester},this.submitTask.bind(this))
-									}
-								}
-							}
-							options={(canAdd?[{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}]:[]).concat(REQUESTERS)}
-							styles={invisibleSelectStyleNoArrowRequired}
+							isDisabled={this.state.viewOnly}
+							value={this.state.milestone}
+							onChange={this.changeMilestone.bind(this)}
+							options={this.state.milestones.filter((milestone)=>milestone.id===null || (this.state.project!== null && milestone.project===this.state.project.id))}
+							styles={invisibleSelectStyleNoArrow}
 							/>
 					</div>
-				</div> }
+				</div>
 
-						{ this.state.defaultFields.company.show &&
-							<div className=""> {/*Company*/}
-								<Label className="col-form-label-2">Firma</Label>
-								<div className="col-form-value-2">
-									<Select
-										placeholder="Zadajte firmu"
-										value={this.state.company}
-										isDisabled={this.state.defaultFields.company.fixed||this.state.viewOnly}
-										onChange={(company)=> {
-														if (company.id === -1) {
-															this.setState({
-																openCompanyAdd: true,
-															})
-														} else {
-															this.setState({company, pausal:parseInt(company.workPausal)>0?booleanSelects[1]:booleanSelects[0]},this.submitTask.bind(this));
-														}
-													}}
-										options={(canAdd?[{id:-1,title:'+ Add company',body:'add', label:'+ Add company',value:null}]:[]).concat(this.state.companies)}
-										styles={invisibleSelectStyleNoArrowRequired}
-										/>
-								</div>
-							</div>}
-
-						{this.state.defaultFields.pausal.show &&
-							<div className=""> {/*Pausal*/}
-								<label className="col-form-label m-l-7">Paušál</label>
-								<div className="col-form-value-2">
-								<Select
-									value={this.state.pausal}
-									isDisabled={this.state.viewOnly||!this.state.company || parseInt(this.state.company.workPausal)===0||this.state.defaultFields.pausal.fixed}
-									styles={invisibleSelectStyleNoArrowRequired}
-									onChange={(pausal)=>this.setState({pausal},this.submitTask.bind(this))}
-									options={booleanSelects}
-									/>
-							</div>
-							</div>}
-
-						<div className=""> {/*Deadline*/}
-							<Label className="col-form-label m-l-7">Deadline</Label>
-							<div className="col-form-value-2" style={{marginLeft: "-1px"}}>
-								<DatePicker
-									className="form-control hidden-input"
-									selected={this.state.deadline}
-									disabled={this.state.viewOnly}
-									onChange={date => {
-										this.setState({ deadline: date },this.submitTask.bind(this));
-									}}
-									placeholderText="No deadline"
-									{...datePickerConfig}
-									/>
-							</div>
-						</div>
-							<Repeat
-								disabled={this.state.viewOnly}
-								taskID={taskID}
-								repeat={this.state.repeat}
-								submitRepeat={(repeat)=>{
-									database.collection('help-repeats').doc(taskID).set({
-										...repeat,
-										task:taskID,
-										startAt:(new Date(repeat.startAt).getTime()),
-									});
-									this.setState({repeat})
-								}}
-								deleteRepeat={()=>{
-									rebase.removeDoc('/help-repeats/'+taskID);
-									this.setState({repeat:null})
-								}}
-								columns={this.props.columns}
-								vertical={true}
+				{/* Tags */}
+				{ this.state.defaultFields.tags.show &&
+					<div style={{maxWidth:"250px"}}>
+						<Label className="col-form-label-2">Tagy: </Label>
+						<div className="col-form-value-2">
+							<Select
+								placeholder="Zvoľte tagy"
+								value={this.state.tags}
+								isMulti
+								onChange={(tags)=>this.setState({tags},this.submitTask.bind(this))}
+								options={this.state.allTags}
+								isDisabled={this.state.defaultFields.tags.fixed||this.state.viewOnly}
+								styles={invisibleSelectStyleNoArrowColored}
 								/>
-
-						{this.state.defaultFields.overtime.show &&
-							<div className=""> {/*Overtime*/}
-								<label className="col-form-label-2">Mimo PH</label>
-								<div className="col-form-value-2">
-								<Select
-									value={this.state.overtime}
-									isDisabled={this.state.viewOnly||this.state.defaultFields.overtime.fixed}
-									styles={invisibleSelectStyleNoArrowRequired}
-									onChange={(overtime)=>this.setState({overtime},this.submitTask.bind(this))}
-									options={booleanSelects}
-									/>
-							</div>
-							</div>}
+						</div>
 					</div>
+				}
+
+				{/* Requester */}
+				{ this.state.defaultFields.requester.show &&
+					<div>
+						<Label className="col-form-label-2">Zadal</Label>
+						<div className="col-form-value-2">
+							<Select
+								placeholder="Zadajte žiadateľa"
+								value={this.state.requester}
+								isDisabled={ this.state.defaultFields.requester.fixed || this.state.viewOnly }
+								onChange={ this.changeRequester.bind(this) }
+								options={(canAdd?[{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}]:[]).concat(requesters)}
+								styles={invisibleSelectStyleNoArrowRequired}
+								/>
+						</div>
+					</div>
+				}
+
+				{/* Company */}
+				{ this.state.defaultFields.company.show &&
+					<div>
+						<Label className="col-form-label-2">Firma</Label>
+						<div className="col-form-value-2">
+							<Select
+								placeholder="Zadajte firmu"
+								value={this.state.company}
+								isDisabled={this.state.defaultFields.company.fixed||this.state.viewOnly}
+								onChange={this.changeCompany.bind(this)}
+								options={(canAdd?[{id:-1,title:'+ Add company',body:'add', label:'+ Add company',value:null}]:[]).concat(this.state.companies)}
+								styles={invisibleSelectStyleNoArrowRequired}
+								/>
+						</div>
+					</div>
+				}
+
+				{/* Pausal */}
+				{	this.state.defaultFields.pausal.show &&
+					<div>
+						<label className="col-form-label m-l-7">Paušál</label>
+						<div className="col-form-value-2">
+							<Select
+								value={this.state.pausal}
+								isDisabled={this.state.viewOnly||!this.state.company || parseInt(this.state.company.workPausal)===0||this.state.defaultFields.pausal.fixed}
+								styles={invisibleSelectStyleNoArrowRequired}
+								onChange={(pausal)=>this.setState({pausal},this.submitTask.bind(this))}
+								options={booleanSelects}
+								/>
+						</div>
+					</div>
+				}
+
+				{/* Deadline */}
+				<div>
+					<Label className="col-form-label m-l-7">Deadline</Label>
+					<div className="col-form-value-2" style={{marginLeft: "-1px"}}>
+						<DatePicker
+							className="form-control hidden-input"
+							selected={this.state.deadline}
+							disabled={this.state.viewOnly}
+							onChange={date => {
+								this.setState({ deadline: date },this.submitTask.bind(this));
+							}}
+							placeholderText="No deadline"
+							{...datePickerConfig}
+							/>
+					</div>
+				</div>
+
+				{/* Repeat */}
+				<Repeat
+					disabled={this.state.viewOnly}
+					taskID={taskID}
+					repeat={this.state.repeat}
+					submitRepeat={this.changeRepeat.bind(this)}
+					deleteRepeat={()=>{
+						rebase.removeDoc('/help-repeats/'+taskID);
+						this.setState({repeat:null})
+					}}
+					columns={this.props.columns}
+					vertical={true}
+					/>
+
+				{/* Overtime */}
+				{	this.state.defaultFields.overtime.show &&
+					<div>
+						<label className="col-form-label-2">Mimo PH</label>
+						<div className="col-form-value-2">
+							<Select
+								value={this.state.overtime}
+								isDisabled={this.state.viewOnly||this.state.defaultFields.overtime.fixed}
+								styles={invisibleSelectStyleNoArrowRequired}
+								onChange={(overtime)=>this.setState({overtime},this.submitTask.bind(this))}
+								options={booleanSelects}
+								/>
+						</div>
+					</div>
+				}
+			</div>
 		)
 	}
 
 	renderTags(){
-		return(
+		return (
 			<div className="row m-t-10"> {/*Tags*/}
 				<div className="center-hor">
 					<Label className="center-hor">Tagy: </Label>
@@ -1356,128 +1284,135 @@ class TaskEdit extends Component {
 	}
 
 	renderPopis(){
-		return(
-			<div className="" style={{zIndex: "9999"}}>{/*Description*/}
+		let RenderDescription = null;
+		if( this.state.viewOnly ){
+			if( this.state.description.length !== 0 ){
+				RenderDescription = <div className="task-edit-popis" dangerouslySetInnerHTML={{__html:this.state.description }} />
+			}else{
+				RenderDescription = <div className="task-edit-popis">Úloha nemá popis</div>
+			}
+		}else{
+			if( this.state.showDescription ){
+				RenderDescription = <div onClick={()=>this.setState({showDescription:true})}>
+					<CKEditor
+						editor={ ClassicEditor }
+						data={this.state.description}
+						onInit={(editor) => {
+							editor.editing.view.document.on( 'keydown', ( evt, data ) => {
+								if ( data.keyCode === 27 ) {
+									this.setState({ showDescription: false })
+									data.preventDefault();
+									evt.stop();
+								}
+							});
+						}}
+						onChange={(e,editor)=>{
+							this.setState({description: editor.getData()},this.submitTask.bind(this))
+						}}
+						config={ck5config}
+						/>
+				</div>
+			}else{
+				RenderDescription = <div className="clickable task-edit-popis" onClick={()=>this.setState({showDescription:true})}>
+					<div dangerouslySetInnerHTML={{__html:this.state.description }} />
+					<span className="text-highlight"> <i	className="fas fa-pen"/> edit </span>
+				</div>
+			}
+		}
+		return (
+			<div style={{zIndex: "9999"}}>
 				<Label className="col-form-label m-b-10 m-t-10">Popis úlohy</Label>
-				{ this.state.viewOnly ?
-					(this.state.description.length!==0 ?
-						<div className="task-edit-popis" dangerouslySetInnerHTML={{__html:this.state.description }} /> :
-							<div className="task-edit-popis">Úloha nemá popis</div>
-					) :
-					(
-						this.state.showDescription ?
-						(<div onClick={()=>this.setState({showDescription:true})}>
-							<CKEditor
-								editor={ ClassicEditor }
-								data={this.state.description}
-								onInit={(editor)=>{
-									editor.editing.view.document.on( 'keydown', ( evt, data ) => {
-										if ( data.keyCode === 27 ) {
-											this.setState({ showDescription: false })
-											data.preventDefault();
-											evt.stop();
-										}
-									});
-								}}
-								onChange={(e,editor)=>{
-									this.setState({description: editor.getData()},this.submitTask.bind(this))
-								}}
-								config={ck5config}
-								/>
-						</div>
-					) :
-					(
-						<div className="clickable task-edit-popis" onClick={()=>this.setState({showDescription:true})}>
-							<div dangerouslySetInnerHTML={{__html:this.state.description }} />
-								<span className="text-highlight"> <i	className="fas fa-pen"/> edit </span>
-						</div>
-					)
-					)
-				}
+				{RenderDescription}
 			</div>
 		)
 	}
 
 	renderAttachments(taskID){
-		return(
-				<Attachments
-					disabled={this.state.viewOnly}
-					taskID={this.props.match.params.taskID}
-					attachments={this.state.attachments}
-					addAttachments={(newAttachments)=>{
-						let time = (new Date()).getTime();
-						let storageRef = firebase.storage().ref();
+		return (
+			<Attachments
+				disabled={this.state.viewOnly}
+				taskID={this.props.match.params.taskID}
+				attachments={this.state.attachments}
+				addAttachments={(newAttachments)=>{
+					let time = (new Date()).getTime();
+					let storageRef = firebase.storage().ref();
+					Promise.all([
+						...newAttachments.map((attachment)=>{
+							return storageRef.child(`help-tasks/${taskID}/${time}-${attachment.size}-${attachment.name}`).put(attachment)
+						})
+					]).then((resp)=>{
 						Promise.all([
 							...newAttachments.map((attachment)=>{
-								return storageRef.child(`help-tasks/${taskID}/${time}-${attachment.size}-${attachment.name}`).put(attachment)
+								return storageRef.child(`help-tasks/${taskID}/${time}-${attachment.size}-${attachment.name}`).getDownloadURL()
 							})
-						]).then((resp)=>{
-								Promise.all([
-									...newAttachments.map((attachment)=>{
-										return storageRef.child(`help-tasks/${taskID}/${time}-${attachment.size}-${attachment.name}`).getDownloadURL()
-									})
-								]).then((urls)=>{
-										newAttachments=newAttachments.map((attachment,index)=>{
-											return {
-												title:attachment.name,
-												size:attachment.size,
-												path:`help-tasks/${taskID}/${time}-${attachment.size}-${attachment.name}`,
-												url:urls[index]
-											}
-										});
-										this.setState({attachments:[...this.state.attachments,...newAttachments]},this.submitTask.bind(this));
-									})
-							})
-					}}
-					removeAttachment={(attachment)=>{
-						let storageRef = firebase.storage().ref();
-						let newAttachments = [...this.state.attachments];
-						newAttachments.splice(newAttachments.findIndex((item)=>item.path===attachment.path),1);
-						storageRef.child(attachment.path).delete();
-						this.setState({attachments:newAttachments},this.submitTask.bind(this));
-					}}
+						]).then((urls)=>{
+							newAttachments=newAttachments.map((attachment,index)=>{
+								return {
+									title:attachment.name,
+									size:attachment.size,
+									path:`help-tasks/${taskID}/${time}-${attachment.size}-${attachment.name}`,
+									url:urls[index]
+								}
+							});
+							this.setState({attachments:[...this.state.attachments,...newAttachments]},this.submitTask.bind(this));
+						})
+					})
+				}}
+				removeAttachment={(attachment)=>{
+					let storageRef = firebase.storage().ref();
+					let newAttachments = [...this.state.attachments];
+					newAttachments.splice(newAttachments.findIndex((item)=>item.path===attachment.path),1);
+					storageRef.child(attachment.path).delete();
+					this.setState({attachments:newAttachments},this.submitTask.bind(this));
+				}}
 				/>
 		)
 	}
 
 	renderModalUserAdd(){
-		return(
-				<Modal isOpen={this.state.openUserAdd} >
-					<ModalHeader>
-						Add user
-					</ModalHeader>
-          <ModalBody>
-						<UserAdd close={() => this.setState({openUserAdd: false,})} addUser={(user) => {
-								let newUsers = this.state.users.concat([user]);
-								this.setState({
-									users: newUsers,
-								})
-							}}/>
-          </ModalBody>
-        </Modal>
+		return (
+			<Modal isOpen={this.state.openUserAdd} >
+				<ModalHeader>
+					Add user
+				</ModalHeader>
+				<ModalBody>
+					<UserAdd
+						close={() => this.setState({openUserAdd: false,})}
+						addUser={(user) => {
+							let newUsers = this.state.users.concat([user]);
+							this.setState({
+								users: newUsers,
+							})
+						}}
+						/>
+				</ModalBody>
+			</Modal>
 		)
 	}
 
 	renderModalCompanyAdd(){
-		return(
-				<Modal isOpen={this.state.openCompanyAdd}>
-					<ModalHeader>
-						Add company
-					</ModalHeader>
-					<ModalBody>
-						<CompanyAdd close={() => this.setState({openCompanyAdd: false,})} addCompany={(company) => {
-								let newCompanies = this.state.companies.concat([company]);
-								this.setState({
-									companies: newCompanies,
-								})
-							}}/>
-					</ModalBody>
-				</Modal>
+		return (
+			<Modal isOpen={this.state.openCompanyAdd}>
+				<ModalHeader>
+					Add company
+				</ModalHeader>
+				<ModalBody>
+					<CompanyAdd
+						close={() => this.setState({openCompanyAdd: false,})}
+						addCompany={(company) => {
+							let newCompanies = this.state.companies.concat([company]);
+							this.setState({
+								companies: newCompanies,
+							})
+						}}
+						/>
+				</ModalBody>
+			</Modal>
 		)
 	}
 
 	renderPendingPicker(){
-		return(
+		return (
 			<PendingPicker
 				open={this.state.pendingOpen}
 				prefferedMilestone={this.state.milestone}
@@ -1487,7 +1422,7 @@ class TaskEdit extends Component {
 					/*
 					database.collection('help-calendar_events').where("taskID", "==", parseInt(this.props.match.params.taskID)).get()
 					.then((data)=>{
-						snapshotToArray(data).forEach((item)=>rebase.removeDoc('/help-calendar_events/'+item.id));
+					snapshotToArray(data).forEach((item)=>rebase.removeDoc('/help-calendar_events/'+item.id));
 					});*/
 					this.setState({
 						pendingOpen:false,
@@ -1499,12 +1434,12 @@ class TaskEdit extends Component {
 						statusChange:(new Date().getTime()),
 					},this.submitTask.bind(this))
 				}}
-			/>
+				/>
 		)
 	}
 
 	renderVykazyTable(taskWorks, workTrips, taskMaterials, customItems){
-		return(
+		return (
 			<VykazyTable
 				showColumns={ (this.state.viewOnly ? [0,1,2,3,4,5,6,7] : [0,1,2,3,4,5,6,7,8]) }
 				showTotals={false}
@@ -1640,23 +1575,15 @@ class TaskEdit extends Component {
 		)
 	}
 
-	renderComments(taskID){
-		let permission = null;
-		if(this.state.project && this.state.project.permissions){
-			permission = this.state.project.permissions.find((permission)=>permission.user===this.props.currentUser.id);
-		}
-		if( !permission ){
-			permission = {user:this.props.currentUser.id,read:false,write:false,delete:false,internal:false,isAdmin:false};
-		}
-
-		return(
+	renderComments(taskID, permission){
+		return (
 			<div className="comments">
 				<Nav tabs className="b-0 m-b-22 m-l--10 m-t-15">
 					<NavItem>
 						<NavLink
 							className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "")}
 							onClick={() => { this.setState({toggleTab:'1'}); }}
-						>
+							>
 							Komentáre
 						</NavLink>
 					</NavItem>
@@ -1665,68 +1592,70 @@ class TaskEdit extends Component {
 							|
 						</NavLink>
 					</NavItem>
-					{this.props.currentUser.userData.role.value > 0 &&
+					{ this.props.currentUser.userData.role.value > 0 &&
 						<NavItem>
-						<NavLink
-							className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
-							onClick={() => { this.setState({toggleTab:'2'}); }}
-						>
-							História
-						</NavLink>
-					</NavItem>}
+							<NavLink
+								className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
+								onClick={() => { this.setState({toggleTab:'2'}); }}
+								>
+								História
+							</NavLink>
+						</NavItem>
+					}
 				</Nav>
 
 				<TabContent activeTab={this.state.toggleTab}>
-						<TabPane tabId="1">
-							<Comments
-								id={taskID?taskID:null}
-								showInternal={permission.internal || this.props.currentUser.userData.role.value > 1 }
-								users={this.state.users}
-								addToHistory={(internal)=>{
-									let event = {
-										message:this.getHistoryMessage('comment'),
-										createdAt:(new Date()).getTime(),
-										task:this.props.match.params.taskID
-									}
-									this.addToHistory(event);
-									this.addNotification(event,internal);
-								}}
-								/>
-						</TabPane>
-						{this.props.currentUser.userData.role.value > 0 &&
-							<TabPane tabId="2">
+					<TabPane tabId="1">
+						<Comments
+							id={taskID?taskID:null}
+							showInternal={permission.internal || this.props.currentUser.userData.role.value > 1 }
+							users={this.state.users}
+							addToHistory={(internal)=>{
+								let event = {
+									message:this.getHistoryMessage('comment'),
+									createdAt:(new Date()).getTime(),
+									task:this.props.match.params.taskID
+								}
+								this.addToHistory(event);
+								this.addNotification(event,internal);
+							}}
+							/>
+					</TabPane>
+					{	this.props.currentUser.userData.role.value > 0 &&
+						<TabPane tabId="2">
 							<h3>História</h3>
-								<ListGroup>
-									{ this.state.history.map((event)=>
-										<ListGroupItem key={event.id}>
-											({timestampToString(event.createdAt)})
-											{' ' + event.message}
-										</ListGroupItem>
-									)}
-								</ListGroup>
-							{this.state.history.length===0 && <div>História je prázdna.</div>}
-						</TabPane>}
-					</TabContent>
+							<ListGroup>
+								{ this.state.history.map((event)=>
+									<ListGroupItem key={event.id}>
+										({timestampToString(event.createdAt)})
+										{' ' + event.message}
+									</ListGroupItem>
+								)}
+							</ListGroup>
+							{	this.state.history.length===0 && <div>História je prázdna.</div>	}
+						</TabPane>
+					}
+				</TabContent>
 			</div>
 		)
 	}
 
 	//Vykazy submits
 	submitWorkTrip(body){
-    rebase.addToCollection('help-task_work_trips',{task:this.props.match.params.taskID,...body}).then((result)=>{
+		rebase.addToCollection('help-task_work_trips',{task:this.props.match.params.taskID,...body}).then((result)=>{
 			let extraData = {...this.state.extraData};
 			extraData.workTrips = [{task:this.props.match.params.taskID,...body,id:result.id}, ...extraData.workTrips];
-      this.setState({workTrips:[...this.state.workTrips, {task:this.props.match.params.taskID,...body,id:result.id}],extraData})
-    });
-  }
+			this.setState({workTrips:[...this.state.workTrips, {task:this.props.match.params.taskID,...body,id:result.id}],extraData})
+		});
+	}
 
-  submitMaterial(body){
-    rebase.addToCollection('help-task_materials',{task:this.props.match.params.taskID,...body}).then((result)=>{
+	submitMaterial(body){
+		rebase.addToCollection('help-task_materials',{task:this.props.match.params.taskID,...body}).then((result)=>{
 			let extraData = {...this.state.extraData};
 			extraData.taskMaterials = [{task:this.props.match.params.taskID,...body,id:result.id}, ...extraData.taskMaterials];
-      this.setState({taskMaterials:[...this.state.taskMaterials, {task:this.props.match.params.taskID,...body,id:result.id}],extraData})
-    });
-  }
+			this.setState({taskMaterials:[...this.state.taskMaterials, {task:this.props.match.params.taskID,...body,id:result.id}],extraData})
+		});
+	}
 
 	submitCustomItem(body){
 		rebase.addToCollection('help-task_custom_items',{task:this.props.match.params.taskID,...body}).then((result)=>{
@@ -1736,14 +1665,107 @@ class TaskEdit extends Component {
 		});
 	}
 
-  submitService(body){
-    rebase.addToCollection('help-task_works',{task:this.props.match.params.taskID,...body}).then((result)=>{
+	submitService(body){
+		rebase.addToCollection('help-task_works',{task:this.props.match.params.taskID,...body}).then((result)=>{
 			let extraData = {...this.state.extraData};
 			extraData.taskWorks = [{task:this.props.match.params.taskID,...body,id:result.id}, ...extraData.taskWorks];
-      this.setState({taskWorks:[...this.state.taskWorks, {task:this.props.match.params.taskID,...body,id:result.id}],extraData})
-    });
-  }
+			this.setState({taskWorks:[...this.state.taskWorks, {task:this.props.match.params.taskID,...body,id:result.id}],extraData})
+		});
+	}
 
+	//Value Change
+
+	changeProject(project){
+		let permissionIDs = [];
+		if(project.permissions){
+			project.permissions.map((permission) => permission.user);
+		}
+		let assignedTo = this.state.assignedTo.filter((user)=>permissionIDs.includes(user.id));
+
+		this.setState({
+			project,
+			assignedTo,
+			projectChangeDate:(new Date()).getTime(),
+			milestone: noMilestone
+		},()=>{this.submitTask();this.setDefaults(project.id)});
+	}
+
+	changeStatus(status){
+		let newHistoryEntery = {
+			createdAt:(new Date()).getTime(),
+			message:this.getHistoryMessage('status', {newStatus:status,oldStatus:this.state.status}),
+			task:this.props.match.params.taskID,
+		};
+		if(status.action==='pending'){
+			this.setState({
+				pendingStatus:status,
+				pendingOpen:true,
+				newHistoryEntery
+			})
+		}else if(status.action==='close'||status.action==='invalid'){
+			this.setState({
+				status,
+				important:false,
+				statusChange:(new Date().getTime()),
+				closeDate: moment(),
+				newHistoryEntery
+			},this.submitTask.bind(this))
+		}
+		else{
+			this.setState({
+				status,
+				statusChange:(new Date().getTime()),
+				newHistoryEntery
+			},this.submitTask.bind(this))
+		}
+	}
+
+	changeMilestone(milestone){
+		if(this.state.status.action==='pending'){
+			if(milestone.startsAt!==null){
+				this.setState({milestone,pendingDate:moment(milestone.startsAt),pendingChangable:false},this.submitTask.bind(this));
+			}else{
+				this.setState({milestone, pendingChangable:true }, this.submitTask.bind(this));
+			}
+		}else{
+			this.setState({milestone},this.submitTask.bind(this));
+		}
+	}
+
+	changeRequester(requester){
+		if (requester.id === -1) {
+			this.setState({
+				openUserAdd: true,
+			})
+		} else {
+			this.setState({requester},this.submitTask.bind(this))
+		}
+	}
+
+	changeCompany(company){
+		if (company.id === -1) {
+			this.setState({
+				openCompanyAdd: true,
+			})
+		} else {
+			this.setState({company, pausal:parseInt(company.workPausal)>0?booleanSelects[1]:booleanSelects[0]},this.submitTask.bind(this));
+		}
+	}
+
+	changeRepeat(repeat){
+		database.collection('help-repeats').doc(this.props.match.params.taskID).set({
+			...repeat,
+			task:this.props.match.params.taskID,
+			startAt:(new Date(repeat.startAt).getTime()),
+		});
+		this.setState({repeat})
+	}
+
+	changeItemValue(item, value){
+		let change = {}
+		change[item] = value;
+		this.setState(change, this.submitTask.bind(this) )
+	}
 }
 
 const mapStateToProps = ({ userReducer, storageCompanies, storageHelpPricelists, storageHelpPrices, storageHelpProjects, storageHelpStatuses, storageHelpTags, storageHelpTaskTypes, storageHelpTasks, storageHelpUnits, storageHelpWorkTypes, storageMetadata, storageUsers, storageHelpMilestones, storageHelpTripTypes }) => {
@@ -1760,10 +1782,10 @@ const mapStateToProps = ({ userReducer, storageCompanies, storageHelpPricelists,
 	const { metadataLoaded, metadataActive, metadata } = storageMetadata;
 	const { usersLoaded, usersActive, users } = storageUsers;
 	const { milestonesLoaded, milestonesActive, milestones } = storageHelpMilestones;
-  const { tripTypesActive, tripTypes, tripTypesLoaded } = storageHelpTripTypes;
+	const { tripTypesActive, tripTypes, tripTypesLoaded } = storageHelpTripTypes;
 
 	return {
-		currentUser:userReducer,
+		currentUser: userReducer,
 		companiesLoaded, companiesActive, companies,
 		pricelistsLoaded, pricelistsActive, pricelists,
 		pricesLoaded, pricesActive, prices,
@@ -1778,7 +1800,7 @@ const mapStateToProps = ({ userReducer, storageCompanies, storageHelpPricelists,
 		usersLoaded, usersActive, users,
 		milestonesLoaded, milestonesActive, milestones,
 		tripTypesActive, tripTypes, tripTypesLoaded,
-	 };
+	};
 };
 
 export default connect(mapStateToProps, { storageCompaniesStart, storageHelpPricelistsStart, storageHelpPricesStart,storageHelpProjectsStart, storageHelpStatusesStart, storageHelpTagsStart, storageHelpTaskTypesStart, storageHelpTasksStart, storageHelpUnitsStart,storageHelpWorkTypesStart, storageMetadataStart, storageUsersStart, storageHelpMilestonesStart, storageHelpTripTypesStart })(TaskEdit);

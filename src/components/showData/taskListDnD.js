@@ -31,14 +31,13 @@ export default class TaskListDnD extends Component {
 	}
 
 	onDragEnd({ source, destination }){
-		if( source.droppableId === destination.droppableId ) return;
+		if( source !== null && destination !== null && source.droppableId === destination.droppableId ) return;
 		const groups = (
 			this.props.statuses.length === 0 ?
 			this.groupData() :
 			this.groupData().filter(item => this.props.statuses.includes(item.groupItem.id))
 		);
 
-		let sourceStatus = this.props.allStatuses.find( (status) => status.id === source.droppableId )
 		let tagetStatus = this.props.allStatuses.find( (status) => status.id === destination.droppableId )
 		let item = groups.find( (group) => group.groupItem.id === source.droppableId ).data[source.index];
 		if(tagetStatus.action==='pending'){

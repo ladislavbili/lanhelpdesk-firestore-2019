@@ -4,18 +4,7 @@ import AttributeAdd from './attributeAdd';
 import AttributeEdit from './attributeEdit';
 
 import { connect } from "react-redux";
-
-const ATTRIBUTES = [
-  {label: 'Status', value:'1', static: true, title: 'Status', id: '1'},
-  {label: 'Projekt', value:'2', static: true, title: 'Projekt', id: '2'},
-  {label: 'Zadal', value:'3', static: true, title: 'Zadal', id: '3'},
-  {label: 'Deadline', value:'4', static: true, title: 'Deadline', id: '4'},
-  {label: 'Milestone', value:'5', static: true, title: 'Milestone', id: '5'},
-  {label: 'Repeat', value:'6', static: true, title: 'Repeat', id: '6'},
-  {label: 'Typ', value:'7', static: false, title: 'Typ', id: '7'},
-  {label: 'Paušál', value:'8', static: false, title: 'Paušál', id: '8'},
-  {label: 'Mimo PH', value:'9', static: false, title: 'Mimo PH', id: '9'},
-];
+import { ATTRIBUTES } from './fakeData';
 
 class AttributesList extends Component{
   constructor(props){

@@ -9,6 +9,7 @@ export const acl = {
   viewVykaz: false,
   viewRozpocet: false,
   viewErrors: false,
+  viewInternal: false,
 
   //settings access
   users: false,
@@ -54,6 +55,8 @@ export const roles = [
       testSections: true,
       mailViaComment: true,
       addProjects: true,
+      viewInternal: true,
+
       tags: true,
       users: true,
       companies: true,
@@ -72,6 +75,7 @@ export const roles = [
       addProjects: true,
       vykazy: true,
       viewErrors: true,
+      viewInternal: true,
 
       tags: true,
       users: true,
@@ -91,6 +95,7 @@ export const roles = [
       viewVykaz: true,
       viewRozpocet: true,
       viewErrors: true,
+      viewInternal: true,
 
       //settings access
       users: true,
@@ -148,6 +153,10 @@ export const generalRights = [
   {
     name: 'View errors',
     value: 'viewErrors',
+  },
+  {
+    name: 'Internal messages',
+    value: 'viewInternal',
   },
 ]
 

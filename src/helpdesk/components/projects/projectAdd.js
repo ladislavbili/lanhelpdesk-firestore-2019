@@ -6,7 +6,6 @@ import {toSelArr, sameStringForms, testing} from '../../../helperFunctions';
 import {rebase} from '../../../index';
 import Permissions from "./permissions";
 import ProjectDefaultValues from './defaultValues';
-import booleanSelects from 'configs/constants/boolSelect'
 import { noDef } from 'configs/constants/projects';
 
 class ProjectAdd extends Component{

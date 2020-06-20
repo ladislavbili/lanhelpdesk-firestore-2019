@@ -3,7 +3,7 @@ import {Button} from 'reactstrap';
 import { connect } from "react-redux";
 import {setSearch, setFilter} from '../../redux/actions';
 import classnames from "classnames";
-
+import { getEmptyFilter } from 'configs/fixedFilters'
 
 class TaskListContainer extends Component {
 	constructor(props) {
@@ -42,19 +42,9 @@ class TaskListContainer extends Component {
 							<Button
 								className="btn-link-reversed center-hor"
 								onClick={()=>{
-									let body={
-										requester:null,
-										company:null,
-										assigned:null,
-										workType:null,
-										status:[],
-										statusDateFrom:null,
-										statusDateTo:null,
-										updatedAt:(new Date()).getTime()
-									}
 									this.props.setSearch(this.state.search);
 									this.props.history.push('/helpdesk/taskList/i/all');
-									this.props.setFilter(body);
+									this.props.setFilter(getEmptyFilter());
 								}}
 								>
 								Global

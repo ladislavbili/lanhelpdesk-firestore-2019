@@ -7,70 +7,7 @@ import { toSelArr } from 'helperFunctions';
 
 import Select from 'react-select';
 import {selectStyle} from 'configs/components/select';
-
-const ROLES = [
-  {id: '0',
-    title: 'Guest',
-    value: '0',
-    label: 'Guest',
-  },
-  {
-    id: '1',
-    title: 'User',
-    value: '1',
-    label: 'User',
-  },
-  {
-    id: '2',
-    title: 'Agent',
-    value: '2',
-    label: 'Agent',
-  },
-  {
-    id: '3',
-    title: 'Manager',
-    value: '3',
-    label: 'Manager',
-  },
-  {
-    id: '4',
-    title: 'Admin',
-    value: '4',
-    label: 'Admin',
-  }
-];
-
-const TYPES = [
-  {id: '0',
-    title: 'Text',
-    value: '0',
-    label: 'Text',
-  },
-  {
-    id: '1',
-    title: 'Textarea',
-    value: '1',
-    label: 'Textarea',
-  },
-  {
-    id: '2',
-    title: 'Number',
-    value: '2',
-    label: 'Number',
-  },
-  {
-    id: '3',
-    title: 'Select',
-    value: '3',
-    label: 'Select',
-  },
-  {
-    id: '4',
-    title: 'Multiselect',
-    value: '4',
-    label: 'Multiselect',
-  }
-];
+import { ROLES, TYPES } from './fakeData';
 
 
 

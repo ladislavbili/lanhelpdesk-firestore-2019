@@ -4,9 +4,9 @@ import { Button, Input, Modal, ModalBody, ModalHeader, FormGroup, Label } from '
 import Select from 'react-select';
 import {storageCompaniesStart,storageHelpTasksStart, storageHelpStatusesStart, storageHelpTaskTypesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart,
 	storageHelpTaskWorksStart, storageHelpTaskWorkTripsStart, storageHelpTripTypesStart, storageHelpPricelistsStart, storageHelpPricesStart, storageHelpCompanyInvoicesStart, storageHelpTaskCustomItemsStart } from '../../redux/actions';
-import { timestampToString, timestampToDate, sameStringForms, toSelArr, toFloat} from '../../helperFunctions';
-import {rebase} from '../../index';
-import TaskEdit from '../../helpdesk/task/taskEdit';
+import { timestampToString, timestampToDate, sameStringForms, toSelArr, toFloat } from '../../helperFunctions';
+import {rebase} from 'index';
+import TaskEdit from 'helpdesk/task/taskEdit';
 import MonthSelector from '../components/monthSelector';
 import {selectStyleColored} from 'configs/components/select';
 
@@ -131,8 +131,8 @@ class MothlyReportsCompany extends Component {
 		if(!this.storageLoaded(props)){
 			return;
 		}
-		let works = this.newProcessWorks(props);
-		let trips = this.newProcessTrips(props);
+		let works = this.processWorks(props);
+		let trips = this.processTrips(props);
 		let materials = this.processMaterials(props);
 		let customItems = this.processCustomItems(props);
 		let allTasks = this.processTasks(props, materials, customItems, works, trips).sort((task1,task2)=> task1.closeDate > task2.closeDate ? 1 : -1 );
@@ -172,7 +172,7 @@ class MothlyReportsCompany extends Component {
 		if(task){
 			company = props.companies.find((company)=>company.id===task.company);
 			if(company){
-				company = {...company,pricelist:this.props.pricelists.find((pricelist)=>pricelist.id===company.pricelist)}
+				company = {...company,pricelist:props.pricelists.find((pricelist)=>pricelist.id===company.pricelist)}
 			}
 		}
 		return company;
@@ -193,7 +193,7 @@ class MothlyReportsCompany extends Component {
 
 	// Vykazy table
 
-	newProcessWorks(props){
+	processWorks(props){
 		let workTypes = this.processWorkTypes(props);
 		return props.taskWorks.map((work, index)=>{
 			let company = this.getCompany(work,props);
@@ -222,7 +222,7 @@ class MothlyReportsCompany extends Component {
 		})
 	}
 
-	newProcessTrips(props){
+	processTrips(props){
 		let tripTypes = this.processTripTypes(props);
 		return props.workTrips.map((trip, index)=>{
 			let company = this.getCompany(trip,props);
@@ -1908,5 +1908,19 @@ const mapStateToProps = ({ reportReducer, storageCompanies, storageHelpTasks, st
 	};
 };
 
-export default connect(mapStateToProps, { storageCompaniesStart, storageHelpTasksStart, storageHelpStatusesStart, storageHelpTaskTypesStart, storageHelpUnitsStart, storageUsersStart, storageHelpTaskMaterialsStart,
-	storageHelpTaskWorksStart, storageHelpTaskWorkTripsStart, storageHelpTripTypesStart, storageHelpPricelistsStart, storageHelpPricesStart, storageHelpCompanyInvoicesStart, storageHelpTaskCustomItemsStart })(MothlyReportsCompany);
+export default connect(mapStateToProps, {
+	storageCompaniesStart,
+	storageHelpTasksStart,
+	storageHelpStatusesStart,
+	storageHelpTaskTypesStart,
+	storageHelpUnitsStart,
+	storageUsersStart,
+	storageHelpTaskMaterialsStart,
+	storageHelpTaskWorksStart,
+	storageHelpTaskWorkTripsStart,
+	storageHelpTripTypesStart,
+	storageHelpPricelistsStart,
+	storageHelpPricesStart,
+	storageHelpCompanyInvoicesStart,
+	storageHelpTaskCustomItemsStart
+})(MothlyReportsCompany);
