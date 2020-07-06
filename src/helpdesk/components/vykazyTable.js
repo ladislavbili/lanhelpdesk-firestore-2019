@@ -248,6 +248,10 @@ export default class Rozpocet extends Component {
 		return parseFloat( material.price * ( 1 + material.margin / 100 ))
 	}
 
+	getBasicMaterialPrice(material){
+		return parseFloat( material.price / ( 1 + material.margin / 100 ))
+	}
+
 	getDPH(){
 		let dph = 20;
 		if(this.props.company && this.props.company.dph > 0){
@@ -1325,12 +1329,25 @@ export default class Rozpocet extends Component {
 															let newMaterialPrice = e.target.value;
 															if(!this.state.marginChanged){
 																if(newMaterialPrice==='' || parseFloat(newMaterialPrice) < 50 ){
-																	this.setState({newMaterialPrice,newMaterialMargin:(this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMargin : 0)});
+																	let newMaterialMargin = (this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMargin : 0);
+																	this.setState({
+																		newMaterialPrice,
+																		newDiscountedMaterialPrice: (this.getDiscountedMaterialPrice({price: newMaterialPrice, margin: newMaterialMargin}) ).toFixed(2),
+																		newMaterialMargin,
+																	});
 																}else{
-																	this.setState({newMaterialPrice,newMaterialMargin:(this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMarginExtra : 0)});
+																	let newMaterialMargin = (this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMarginExtra : 0);
+																	this.setState({
+																		newMaterialPrice,
+																		newDiscountedMaterialPrice: (this.getDiscountedMaterialPrice({price: newMaterialPrice, margin: newMaterialMargin}) ).toFixed(2),
+																		newMaterialMargin,
+																	});
 																}
 															}else{
-																this.setState({newMaterialPrice});
+																this.setState({
+																	newMaterialPrice,
+																	newDiscountedMaterialPrice: (this.getDiscountedMaterialPrice({price: newMaterialPrice, margin: this.state.newMaterialMargin}) ).toFixed(2)
+																});
 															}
 														}}
 														className="form-control h-30"
@@ -1403,12 +1420,46 @@ export default class Rozpocet extends Component {
 								}
 								{/*Cena*/}
 								{this.props.showColumns.includes(7) &&
-									<td className="p-t-15 p-l-8 p-r-8 t-a-r">
-										{
-											isNaN(this.getDiscountedMaterialPrice({price:this.state.newMaterialPrice,margin:this.state.newMaterialMargin}))
-											?'No price'
-											: (this.getDiscountedMaterialPrice({price:this.state.newMaterialPrice,margin:this.state.newMaterialMargin}) ).toFixed(2)  + " €"
-										}
+									<td className="p-l-8 p-r-8 t-a-r">
+										<input
+											disabled={this.props.disabled}
+											type="number"
+											value={this.state.newDiscountedMaterialPrice}
+											onChange={(e)=>{
+												let newDiscountedMaterialPrice = e.target.value;
+
+												if(!this.state.marginChanged){
+													let newMaterialMargin = (this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMargin : 0);
+													let basicMaterialPrice = this.getBasicMaterialPrice({price: newDiscountedMaterialPrice, margin: newMaterialMargin});
+
+													if(newDiscountedMaterialPrice === '' || parseFloat(basicMaterialPrice) > 50 ){
+														newMaterialMargin = (this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMarginExtra : 0);
+
+														this.setState({
+															newMaterialPrice: (this.getBasicMaterialPrice({price: newDiscountedMaterialPrice, margin: newMaterialMargin}) ).toFixed(2),
+															newDiscountedMaterialPrice,
+															newMaterialMargin,
+														});
+
+													}else{
+														this.setState({
+															newMaterialPrice: (basicMaterialPrice).toFixed(2),
+															newDiscountedMaterialPrice,
+															newMaterialMargin,
+														});
+													}
+
+												}else{
+													this.setState({
+														newMaterialPrice: (this.getBasicMaterialPrice({price: newDiscountedMaterialPrice, margin:this.state.newMaterialMargin}) ).toFixed(2),
+														newDiscountedMaterialPrice,
+													});
+												}
+											}}
+											className="form-control h-30"
+											id="inlineFormInput"
+											placeholder="Cena"
+											/>
 									</td>
 								}
 								{/*Toolbar*/}
