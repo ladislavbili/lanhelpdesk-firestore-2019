@@ -19,7 +19,7 @@ export default class Multiselect extends Component {
 				isOpen={ this.state.open && !this.props.disabled }
 				toggle={()=>this.setState({open:!this.state.open})}
 				>
-				<DropdownToggle caret>
+				<DropdownToggle caret className="btn btn-link-reversed">
 					{this.props.label}
 				</DropdownToggle>
 				<DropdownMenu style={{width:'max-content'}}>

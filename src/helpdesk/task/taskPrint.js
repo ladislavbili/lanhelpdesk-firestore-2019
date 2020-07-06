@@ -18,9 +18,8 @@ export default class TaskPrint extends Component {
 						trigger={() =>
 							<button className="btn btn-link-reversed waves-effect" disabled={!this.props.isLoaded}>
 								<i
-									className="fas fa-print mr-3"
-									/>
-								Print
+									className="fas fa-print"
+									/> Print
 							</button>
 						}
 						content={() => this.componentRef}

@@ -143,6 +143,9 @@ html{
 .fit-with-header-and-commandbar{
 	height: calc(  #{$height-without-header} - 41px );
 }
+.fit-with-header-and-commandbar-2{
+	height: calc(  #{$height-without-header} - 82px );
+}
 
 .overflow-x{
   overflow-x: auto;
@@ -874,7 +877,7 @@ tr:last-child{
 
 .task-edit-popis{
   background-color: #f4f8fb;
-  padding: 20px;
+  padding: 20px 20px 0px 20px;
 }
 
 .task-add-right-half{
@@ -887,6 +890,11 @@ tr:last-child{
   flex: 1;
   padding-right: 20px;
   border-right: 1px solid #EAEAEA;
+}
+
+.attachments{
+  background-color: #f4f8fb;
+  padding: 5px 20px 20px 20px;
 }
 
 .comment-attachment{
@@ -1262,7 +1270,15 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   width: 100%;
   background-color: #F6F6F6;
   padding: 0px 1px 0px 1px;
-  height: 55px;
+  height: 70px;
+}
+
+.commandbar-small{
+  display: flex;
+  width: 100%;
+  background-color: #F6F6F6;
+  padding: 0px 1px 0px 1px;
+  height: 40px;
 }
 
 .commandbar-icon{
@@ -1524,8 +1540,9 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 .taskCol {
   background-color: #FFFFFF;
   min-height: 40px;
-  margin-bottom: 2px;
+  margin-bottom: 0px;
   border-top: 0px;
+  border-bottom: 1px solid #0000001a;
 }
 
 .taskCol:hover{
@@ -1694,7 +1711,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 }
 
 .comments{
-  background-color: #F6F6F6;
+  background-color: #FFF;
   padding: 10px 0px 10px 0px;
 }
 

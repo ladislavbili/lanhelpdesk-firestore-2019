@@ -84,7 +84,7 @@ class TaskEdit extends Component {
 			reminder:null,
 			project:null,
 			tags:[],
-			pausal:booleanSelects[0],
+			pausal: booleanSelects[0] ,
 			overtime:booleanSelects[0],
 			type:null,
 			createdAt:null,
@@ -686,7 +686,7 @@ class TaskEdit extends Component {
 
 				{ this.renderCommandbar(taskID, createdBy, canCopy, canDelete, taskWorks, workTrips, taskMaterials, customItems) }
 
-				<div className={classnames("fit-with-header-and-commandbar", "scroll-visible", "bkg-F6F6F6", { "row": this.state.layout === '2'})}>
+				<div className={classnames("fit-with-header-and-commandbar-2", "scroll-visible", "bkg-F6F6F6", { "row": this.state.layout === '2'})}>
 					<div className={classnames( "card-box-lanwiki", { "task-edit-left": this.state.layout === '2' && !this.props.columns, "task-edit-left-columns": this.state.layout === '2' && this.props.columns})}>
 
 						<div className="p-t-20 p-l-30 p-r-30">
@@ -698,9 +698,9 @@ class TaskEdit extends Component {
 
 							{ this.renderPopis() }
 
-							{ this.state.layout === "1" && this.state.defaultFields.tags.show && this.renderTags() }
-
 							{ this.renderAttachments(taskID) }
+
+							{ this.state.layout === "1" && this.state.defaultFields.tags.show && this.renderTags() }
 
 							{ this.renderModalUserAdd() }
 
@@ -709,9 +709,10 @@ class TaskEdit extends Component {
 							{ this.renderPendingPicker() }
 
 							{ this.renderVykazyTable(taskWorks, workTrips, taskMaterials, customItems) }
+
+							{ this.renderComments(taskID, permission) }
 						</div>
 
-						{ this.renderComments(taskID, permission) }
 
 					</div>
 
@@ -724,8 +725,8 @@ class TaskEdit extends Component {
 
 	renderCommandbar(taskID, createdBy, canCopy, canDelete, taskWorks, workTrips, taskMaterials, customItems){
 		return (
-			<div className={classnames("commandbar", { "p-l-25": false})}> {/*Commandbar*/}
-				<div className="d-flex flex-row center-hor p-2 ">
+			<div className={classnames({"commandbar-small": this.props.columns}, {"commandbar": !this.props.columns}, { "p-l-25": false})}> {/*Commandbar*/}
+				<div className={classnames("d-flex", "flex-row", "center-hor", {"m-b-10": this.props.columns})}>
 					<div className="display-inline center-hor">
 						{!this.props.columns &&
 							<button type="button" className="btn btn-link-reversed waves-effect p-l-0" onClick={() => this.props.history.push(`/helpdesk/taskList/i/${this.props.match.params.listID}`)}>
@@ -758,13 +759,11 @@ class TaskEdit extends Component {
 							isLoaded={this.state.extraDataLoaded && this.storageLoaded(this.props) && !this.state.loading} />
 						{ canDelete &&
 							<button type="button" disabled={!canDelete} className="btn btn-link-reversed waves-effect" onClick={this.deleteTask.bind(this)}>
-								<i className="far fa-trash-alt" />
-								Delete
+								<i className="far fa-trash-alt" /> Delete
 							</button>
 						}
 						<button type="button" style={{color:this.state.important ? '#ffc107' : '#0078D4'}} disabled={this.state.viewOnly} className="btn btn-link-reversed waves-effect" onClick={()=>this.setState({important:!this.state.important},this.submitTask.bind(this))}>
-							<i className="far fa-star" />
-							Important
+							<i className="far fa-star" /> Important
 						</button>
 					</div>
 					<button
@@ -995,7 +994,7 @@ class TaskEdit extends Component {
 								<label className="col-3 col-form-label">Paušál</label>
 								<div className="col-9">
 									<Select
-										value={this.state.pausal}
+										value={this.state.company && parseInt(this.state.company.workPausal) === 0 && this.state.pausal.value === false ? {...this.state.pausal, label: this.state.pausal.label + " (nezmluvný)"} : this.state.pausal }
 										isDisabled={this.state.viewOnly||!this.state.company || parseInt(this.state.company.workPausal)===0||this.state.defaultFields.pausal.fixed}
 										styles={invisibleSelectStyleNoArrowRequired}
 										onChange={(pausal)=>this.setState({pausal},this.submitTask.bind(this))}
@@ -1202,7 +1201,7 @@ class TaskEdit extends Component {
 						<label className="col-form-label m-l-7">Paušál</label>
 						<div className="col-form-value-2">
 							<Select
-								value={this.state.pausal}
+								value={this.state.company && parseInt(this.state.company.workPausal) === 0 && this.state.pausal.value === false ? {...this.state.pausal, label: this.state.pausal.label + " (nezmluvný)"} : this.state.pausal }
 								isDisabled={this.state.viewOnly||!this.state.company || parseInt(this.state.company.workPausal)===0||this.state.defaultFields.pausal.fixed}
 								styles={invisibleSelectStyleNoArrowRequired}
 								onChange={(pausal)=>this.setState({pausal},this.submitTask.bind(this))}
@@ -1321,7 +1320,7 @@ class TaskEdit extends Component {
 		}
 		return (
 			<div style={{zIndex: "9999"}}>
-				<Label className="col-form-label m-b-10 m-t-10">Popis úlohy</Label>
+				<Label className="col-form-label m-t-10">Popis úlohy</Label>
 				{RenderDescription}
 			</div>
 		)

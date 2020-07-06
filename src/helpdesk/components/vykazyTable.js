@@ -1133,7 +1133,7 @@ export default class Rozpocet extends Component {
 										{
 											isNaN(this.getTotalDiscountedPrice({discount: this.state.newSubtaskDiscount, type: this.state.newSubtaskType, quantity: this.state.newSubtaskQuantity }))
 											?'No price'
-											:this.getTotalDiscountedPrice({discount: this.state.newSubtaskDiscount, type: this.state.newSubtaskType, quantity: this.state.newSubtaskQuantity }) + " €"
+											: (this.getTotalDiscountedPrice({discount: this.state.newSubtaskDiscount, type: this.state.newSubtaskType, quantity: this.state.newSubtaskQuantity })  ).toFixed(2)  + " €"
 										}
 									</td>
 								}
@@ -1249,7 +1249,7 @@ export default class Rozpocet extends Component {
 										{
 											isNaN(this.getTotalDiscountedPrice({discount:this.state.newTripDiscount,quantity:this.state.newTripQuantity,type:this.state.newTripType})) ?
 											'No price' :
-											this.getTotalDiscountedPrice({discount:this.state.newTripDiscount,quantity:this.state.newTripQuantity,type:this.state.newTripType})+ " €"
+											(this.getTotalDiscountedPrice({discount:this.state.newTripDiscount,quantity:this.state.newTripQuantity,type:this.state.newTripType}) ).toFixed(2) + " €"
 										}
 									</td>
 								}
@@ -1312,26 +1312,33 @@ export default class Rozpocet extends Component {
 									<td className="p-r-8 p-l-8 table-highlight-background">
 										{
 											this.state.toggleTab === '1' &&
-											<input
-												disabled={this.props.disabled}
-												type="number"
-												value={this.state.newMaterialPrice}
-												onChange={(e)=>{
-													let newMaterialPrice = e.target.value;
-													if(!this.state.marginChanged){
-														if(newMaterialPrice==='' || parseFloat(newMaterialPrice) < 50 ){
-															this.setState({newMaterialPrice,newMaterialMargin:(this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMargin : 0)});
-														}else{
-															this.setState({newMaterialPrice,newMaterialMargin:(this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMarginExtra : 0)});
-														}
-													}else{
-														this.setState({newMaterialPrice});
-													}
-												}}
-												className="form-control h-30"
-												id="inlineFormInput"
-												placeholder="Nákupná cena"
-												/>
+											<div className="row">
+												 <div className="w-50 center-hor">
+													Nákupná cena
+												 </div>
+												 <div className="w-50">
+													<input
+														disabled={this.props.disabled}
+														type="number"
+														value={this.state.newMaterialPrice}
+														onChange={(e)=>{
+															let newMaterialPrice = e.target.value;
+															if(!this.state.marginChanged){
+																if(newMaterialPrice==='' || parseFloat(newMaterialPrice) < 50 ){
+																	this.setState({newMaterialPrice,newMaterialMargin:(this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMargin : 0)});
+																}else{
+																	this.setState({newMaterialPrice,newMaterialMargin:(this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMarginExtra : 0)});
+																}
+															}else{
+																this.setState({newMaterialPrice});
+															}
+														}}
+														className="form-control h-30"
+														id="inlineFormInput"
+														placeholder="Nákupná cena"
+														/>
+											  </div>
+										 </div>
 										}
 									</td>
 								}
@@ -1400,7 +1407,7 @@ export default class Rozpocet extends Component {
 										{
 											isNaN(this.getDiscountedMaterialPrice({price:this.state.newMaterialPrice,margin:this.state.newMaterialMargin}))
 											?'No price'
-											:this.getDiscountedMaterialPrice({price:this.state.newMaterialPrice,margin:this.state.newMaterialMargin}) + " €"
+											: (this.getDiscountedMaterialPrice({price:this.state.newMaterialPrice,margin:this.state.newMaterialMargin}) ).toFixed(2)  + " €"
 										}
 									</td>
 								}
@@ -1558,7 +1565,7 @@ export default class Rozpocet extends Component {
 												this.setState({showAddSubtask: true});
 											}}
 											>
-											+ Práca
+											<i className="fa fa-plus" /> Práca
 										</button>
 									}
 									{!this.state.showAddTrip &&
@@ -1568,7 +1575,7 @@ export default class Rozpocet extends Component {
 												this.setState({showAddTrip: true});
 											}}
 											>
-											+ Výjazd
+											<i className="fa fa-plus" /> Výjazd
 										</button>
 									}
 									{!this.state.showAddMaterial &&
@@ -1578,7 +1585,7 @@ export default class Rozpocet extends Component {
 												this.setState({showAddMaterial: true});
 											}}
 											>
-											+ Materiál
+											<i className="fa fa-plus" /> Materiál
 										</button>
 									}
 									{!this.state.showAddCustomItem &&
@@ -1588,7 +1595,7 @@ export default class Rozpocet extends Component {
 												this.setState({showAddCustomItem: true});
 											}}
 											>
-											+ Vlastná položka
+											<i className="fa fa-plus" /> Vlastná položka
 										</button>
 									}
 								</td>

@@ -8,15 +8,15 @@ export default class ColumnDisplay extends Component {
 		return (
 			<div>
 				<div className="row p-0 task-container">
+					<CommandBar {...this.props.commandBar} listName={this.props.listName} />
 					<div className="p-0 golden-ratio-382">
-						<CommandBar {...this.props.commandBar} listName={this.props.listName} />
 
 						<div className="scroll-visible fit-with-header-and-commandbar task-list">
 							<ListHeader multiselect={true} {...this.props.commandBar} listName={this.props.listName} statuses={this.props.statuses} setStatuses={this.props.setStatuses} allStatuses={this.props.allStatuses} />
 							{
 								this.props.data.map((item, index)=>
 								<ul
-									className={classnames("taskCol", "clickable", {"dnd-item": this.props.link.includes("helpdesk")}, "list-unstyled", {'selected-item': this.props.itemID === item.id.toString()})}
+									className={classnames("taskCol", "clickable", "list-unstyled", {'selected-item': this.props.itemID === item.id.toString()})}
 									id="upcoming"
 									style={{borderLeft: (this.props.link.includes("helpdesk") ? ("3px solid " + (item.status ? (item.status.color?item.status.color:'white') : "white")) : "")}}
 									onClick={()=>{
@@ -35,15 +35,15 @@ export default class ColumnDisplay extends Component {
 						}
 						</div>
 					</div>
+					{
+						this.props.itemID && this.props.itemID!=='add' && this.props.data.some((item)=>item.id+""===this.props.itemID) &&
+						<this.props.edit match={this.props.match} columns={true} history={this.props.history} />
+					}
+					{
+						(!this.props.itemID || !this.props.data.some((item)=>item.id+""===this.props.itemID)) &&
+						(this.props.empty?<this.props.empty/>:null)
+					}
 
-						{
-							this.props.itemID && this.props.itemID!=='add' && this.props.data.some((item)=>item.id+""===this.props.itemID) &&
-								<this.props.edit match={this.props.match} columns={true} history={this.props.history} />
-						}
-						{
-							(!this.props.itemID || !this.props.data.some((item)=>item.id+""===this.props.itemID)) &&
-							(this.props.empty?<this.props.empty/>:null)
-						}
 				</div>
 			</div>
 		);

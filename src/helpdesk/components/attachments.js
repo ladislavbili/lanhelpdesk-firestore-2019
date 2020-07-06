@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Label} from 'reactstrap';
+
 
 export default class Attachments extends Component {
 	constructor(props){
@@ -9,14 +11,11 @@ export default class Attachments extends Component {
 
 	render() {
 		return (
-					<div className="full-width m-t-5">
+					<div className="full-width attachments">
 							{!this.props.disabled &&
 								<div className="attachment-label">
-								<label className="m-r-5" style={{fontWeight: "400", fontFamily: "Segoe UI"}}>
-									Attachments:
-								</label>
 								<label htmlFor={"uploadAttachment"+this.props.taskID} className="btn-link-add" >
-									<i className="fa fa-plus" /> Add
+									<i className="fa fa-plus" /> Add attachment
 								</label>
 								<input type="file" id={"uploadAttachment"+this.props.taskID} multiple={true} style={{display:'none'}}
 									onChange={(e)=>{
