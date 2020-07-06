@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { Label} from 'reactstrap';
-
 
 export default class Attachments extends Component {
 	constructor(props){
