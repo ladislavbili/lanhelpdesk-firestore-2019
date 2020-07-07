@@ -60,7 +60,7 @@ class Navigation extends Component {
 					</div>
 				</div>
 
-				<div className="row center center-ver">
+				<div className="row center center-ver h-100vh">
 						<Sidebar {...this.props} />
 					<div className="main">
 					<Route exact path="/helpdesk/errorMessages" component={ErrorMessages} />

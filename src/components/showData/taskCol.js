@@ -7,12 +7,13 @@ export default class ColumnDisplay extends Component {
 	render() {
 		return (
 			<div>
-				<div className="row p-0 task-container">
-					<CommandBar {...this.props.commandBar} listName={this.props.listName} />
-					<div className="p-0 golden-ratio-382">
+				<CommandBar {...this.props.commandBar} listName={this.props.listName} />
+				<ListHeader multiselect={false} greyBackground={true} {...this.props.commandBar} listName={this.props.listName} statuses={this.props.statuses} setStatuses={this.props.setStatuses} allStatuses={this.props.allStatuses} />
 
-						<div className="scroll-visible fit-with-header-and-commandbar task-list">
-							<ListHeader multiselect={true} {...this.props.commandBar} listName={this.props.listName} statuses={this.props.statuses} setStatuses={this.props.setStatuses} allStatuses={this.props.allStatuses} />
+			<div className="row p-0 task-container">
+
+					<div className="p-0 golden-ratio-382">
+						<div className="scroll-visible fit-with-header-and-commandbar-2 task-list">
 							{
 								this.props.data.map((item, index)=>
 								<ul

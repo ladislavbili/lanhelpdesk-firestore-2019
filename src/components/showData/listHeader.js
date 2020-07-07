@@ -4,16 +4,18 @@ import { rebase } from '../../index';
 import Search from './search';
 import Checkbox from '../checkbox';
 import Multiselect from '../multiselect';
+import classnames from "classnames";
 
 class ListHeader extends Component {
 	render() {
 		return (
-				<div className="d-flex m-b-10 flex-row">
+				<div
+					className={classnames("d-flex", "p-b-10", "flex-row", {'bkg-F6F6F6': this.props.greyBackground})}>
 					<Search {...this.props}/>
 					{ !this.props.multiselect && this.props.statuses &&
 						<div className="center-hor flex-row">
 							<Checkbox
-								className="m-l-5 m-r-10"
+								className="m-l-5  m-r-10"
 								label= "All"
 								value={ this.props.statuses.length===0 || this.props.allStatuses.every((status)=>this.props.statuses.includes(status.id)) }
 								onChange={()=>{

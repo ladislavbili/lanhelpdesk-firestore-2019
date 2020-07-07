@@ -146,6 +146,9 @@ html{
 .fit-with-header-and-commandbar-2{
 	height: calc(  #{$height-without-header} - 82px );
 }
+.fit-with-header-and-commandbar-3{
+	height: calc(  #{$height-without-header} - 41*3px );
+}
 
 .overflow-x{
   overflow-x: auto;
@@ -244,6 +247,10 @@ html{
 }
 .h-100{
   height: 100%;
+}
+
+.h-100vh{
+  height: 100vh;
 }
 
 .golden-ratio-618{
