@@ -98,6 +98,12 @@ export default class ItemView extends Component{
   }
 
   render(){
+    let company = this.state.companies.find((item)=>item.id===this.state.item.company);
+    let companyTitle = "";
+    if (company){
+      companyTitle = company.title;
+    }
+
     return (
         <div className="card-box fit-with-header-and-commandbar scrollable">
             <div className="row m-b-10">
@@ -118,7 +124,7 @@ export default class ItemView extends Component{
                     <Label>Status:</Label>
                   </div>
                   <div className="">
-                    {this.state.item===null?'':this.state.statuses.find((item)=>item.id===this.state.item.status).title}
+                    {companyTitle}
                   </div>
                 </div>
                 <div className="row col-lg-6 cmdb-selects-info">
@@ -126,7 +132,7 @@ export default class ItemView extends Component{
                     <Label>Company:</Label>
                   </div>
                   <div className="">
-                    {this.state.item===null?'':this.state.companies.find((item)=>item.id===this.state.item.company).title}
+                    {companyTitle}
                   </div>
                 </div>
 

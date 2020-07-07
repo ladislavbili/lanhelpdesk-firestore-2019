@@ -53,12 +53,12 @@ class TaskTypesList extends Component{
               <Button
                 className="btn-link center-hor"
                 onClick={()=>this.props.history.push('/helpdesk/settings/taskTypes/add')}>
-                <i className="fa fa-plus p-l-5 p-r-5"/> Type
+                <i className="fa fa-plus p-l-5 p-r-5"/> Work type
               </Button>
             </div>
             <div className="p-t-9 p-r-10 p-l-10 scroll-visible fit-with-header-and-commandbar">
               <h2 className=" p-l-10 p-b-10 ">
-  							Type
+  							Work types
   						</h2>
               <table className="table table-hover">
                 <tbody>

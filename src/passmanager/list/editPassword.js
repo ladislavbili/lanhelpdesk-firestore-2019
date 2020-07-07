@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import {rebase,database} from '../../index';
+import {rebase} from '../../index';
 import { Button,  FormGroup, Label, Input,  InputGroup, InputGroupAddon, InputGroupText, Alert } from 'reactstrap';
-import {toSelArr,snapshotToArray} from '../../helperFunctions';
 import Select from 'react-select';
 import {selectStyle} from 'configs/components/select';
 
@@ -24,31 +23,13 @@ export default class UnitAdd extends Component{
       loading:true,
     }
     this.setData.bind(this);
-    this.getData.bind(this);
-    this.getData(this.props.match.params.passID);
   }
 
-  getData(id){
-    Promise.all([
-      rebase.get('pass-passwords/'+id, {
-        context: this,
-      }),
-      database.collection('pass-folders').get()
-    ])
-    .then(([pass,folders])=>{
-      this.setData(pass,toSelArr(snapshotToArray(folders)),id);
-    });
-  }
-
-  setData(pass,folders,id){
-    let folder=folders.find((item)=>item.id=== pass.folder);
-    if(folder===undefined){
-        folder=null;
-      }
+  setData(pass, folders){
     this.setState({
       folders,
       passwordConfirm:pass.password,
-      folder,
+      folder: pass.folder,
       title:pass.title,
       login:pass.login,
       URL:pass.URL,
@@ -59,20 +40,13 @@ export default class UnitAdd extends Component{
     });
   }
 
-  componentWillReceiveProps(props){
-    if(this.props.match.params.passID!==props.match.params.passID){
-      this.getData(props.match.params.passID);
-    }
+  componentDidMount(){
+    this.setData(this.props.password, this.props.folders);
   }
+
 
   render(){
     return (
-      <div className="flex">
-        <div className="commandbar p-2">
-          <div className="d-flex flex-row align-items-center p-l-18">
-          </div>
-        </div>
-
         <div className={"card-box scrollable fit-with-header-and-commandbar p-t-15 "  + (!this.props.columns ? " center-ver w-50" : "")}>
 
           <FormGroup>
@@ -138,8 +112,6 @@ export default class UnitAdd extends Component{
             <Input type="textarea" className="form-control" placeholder="Leave a note here" value={this.state.note} disabled={this.state.loading} onChange={(e)=>this.setState({note:e.target.value})} />
           </FormGroup>
 
-        <Button className="btn-link" onClick={this.props.history.goBack}>Cancel</Button>
-
         <Button className="btn" disabled={this.state.saving||this.state.loading||this.state.password!==this.state.passwordConfirm||this.state.password===""||this.state.title===""||this.state.folder===null} onClick={()=>{
             this.setState({saving:true});
             let body = {
@@ -153,11 +125,10 @@ export default class UnitAdd extends Component{
             };
             rebase.updateDoc('/pass-passwords/'+this.props.match.params.passID, body)
               .then((response)=>{
-                this.setState({saving:false});
+                this.setState({saving:false}, (() => this.props.updateData(body) ));
               });
           }}>{this.state.saving?'Saving...':'Save password'}</Button>
         </div>
-      </div>
     );
   }
 }

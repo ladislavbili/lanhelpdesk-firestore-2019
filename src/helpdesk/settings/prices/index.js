@@ -57,7 +57,7 @@ class PriceList extends Component{
                 </div>
               <div className="p-t-9 p-r-10 p-l-10 scroll-visible fit-with-header-and-commandbar">
                 <h2 className=" p-l-10 p-b-10 ">
-    							Price list
+    							Price lists
     						</h2>
                 <table className="table table-hover">
                   <tbody>

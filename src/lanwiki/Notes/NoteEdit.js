@@ -11,7 +11,7 @@ import CKEditor from 'ckeditor4-react';
 
 import PictureUpload from './PictureUpload';
 
-
+import classnames from "classnames";
 
 export default class Note extends Component{
 
@@ -143,7 +143,8 @@ export default class Note extends Component{
 					<div style={{position: "fixed", zIndex: "99", backgroundColor: "transparent", top: "0", left: "0", width: "100%", height: "100vh"}} onClick={()=>this.setState({editBodyOpen:false})}>
 					</div>
 				}
-				<div className="commandbar p-2 ">
+				<div
+          className={classnames({"commandbar": !this.props.columns}, {"commandbar-small": this.props.columns},  "p-2", "p-l-20")}>
 					<div className={"d-flex flex-row" + (!this.props.columns ? " w-50" : "") }>
 						<div className="center-hor">
 							{!this.props.columns &&

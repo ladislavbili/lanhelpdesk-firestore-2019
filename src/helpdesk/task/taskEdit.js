@@ -725,7 +725,7 @@ class TaskEdit extends Component {
 
 	renderCommandbar(taskID, createdBy, canCopy, canDelete, taskWorks, workTrips, taskMaterials, customItems){
 		return (
-			<div className={classnames({"commandbar-small": this.props.columns}, {"commandbar": !this.props.columns}, { "p-l-25": false})}> {/*Commandbar*/}
+			<div className={classnames({"commandbar-small": this.props.columns}, {"commandbar": !this.props.columns}, { "p-l-25": true})}> {/*Commandbar*/}
 				<div className={classnames("d-flex", "flex-row", "center-hor", {"m-b-10": this.props.columns})}>
 					<div className="display-inline center-hor">
 						{!this.props.columns &&

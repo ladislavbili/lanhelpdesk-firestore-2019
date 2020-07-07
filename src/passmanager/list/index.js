@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {rebase} from '../../index';
 import { connect } from "react-redux";
 import ShowData from '../../components/showData';
-import EditPassword from './editPassword';
+import ContainerViewEdit from './containerViewEdit';
 import { Button, Input } from 'reactstrap';
 import {setPasswordsOrderBy, setPasswordsAscending, setLayout} from '../../redux/actions';
 import PassEmpty from "./passEmpty";
@@ -135,7 +135,7 @@ class List extends Component {
 				listID={this.props.match.params.listID}
 				listName={this.state.filterName}
 				match={this.props.match}
-				edit={EditPassword}
+				edit={ContainerViewEdit}
 				empty={PassEmpty}
 				 />
 			);
