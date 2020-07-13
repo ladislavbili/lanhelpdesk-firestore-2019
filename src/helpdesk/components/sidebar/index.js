@@ -52,7 +52,7 @@ class Sidebar extends Component {
 	componentWillReceiveProps(props){
 		if(!sameStringForms(props.filters,this.props.filters)){
 			this.setState({
-				filters: props.filters.filter((filter) => (filter.createdBy === props.currentUser.id || filter.public) && filter.roles && filter.roles.includes(`${props.currentUser.userData.role.value}`) ),
+				filters: props.filters.filter((filter) => (filter.createdBy === props.currentUser.id || filter.public) && this.filterByRole(filter, props) ),
 			})
 			this.props.setHelpSidebarFilter((this.props.filterState && props.filters.length>0) ? props.filters.find((filter)=>filter.id===this.props.filterState.id):null);
 		}
@@ -75,6 +75,13 @@ class Sidebar extends Component {
 				milestones:toSelArr([allMilestones].concat(props.milestones)),
 			});
 		}
+	}
+
+	filterByRole(filter, props){
+		if( !filter.roles ){
+			return filter.createdBy === props.currentUser.id && !filter.public;
+		}
+		return filter.roles.includes(`${props.currentUser.userData.role.value}`)
 	}
 
 	readFilterFromURL(props){
@@ -127,8 +134,8 @@ class Sidebar extends Component {
 		}
 		this.setState({
 			filters: this.props.filters.filter(
-				(filter) => (filter.createdBy === this.props.currentUser.id || filter.public)
-				&& filter.roles && filter.roles.includes(`${this.props.currentUser.userData.role.value}`)
+				(filter) => ( filter.createdBy === this.props.currentUser.id || filter.public )
+				&& this.filterByRole( filter, this.props )
 			)
 		});
 
@@ -163,12 +170,12 @@ class Sidebar extends Component {
 		);
 		let filters = [...this.state.filters];
 		if(this.props.projectState.id===null){
-			filters = filters.filter((filter) => filter.dashboard  && filter.roles && filter.roles.includes(`${this.props.currentUser.userData.role.value}`));
+			filters = filters.filter((filter) => filter.dashboard && this.filterByRole(filter, this.props) );
 		}else{
 			filters =(
 				filters.filter((filter) => (filter.global ||
 				(filter.project!==null && filter.project===this.props.projectState.id)) &&
-				filter.roles && filter.roles.includes(`${this.props.currentUser.userData.role.value}`) )
+				this.filterByRole(filter, this.props) )
 			)
 		}
 		return (

@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import { Button, FormGroup, Label, Input,Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
-import { storageHelpProjectsStart, storageHelpFiltersStart } from '../../../redux/actions';
-import {toSelArr} from '../../../helperFunctions';
-import Checkbox from '../../../components/checkbox';
+import { storageHelpProjectsStart, storageHelpFiltersStart } from 'redux/actions';
+import {toSelArr} from 'helperFunctions';
+import Checkbox from 'components/checkbox';
 import {selectStyle} from 'configs/components/select';
-import {rebase} from '../../../index';
+import {rebase} from 'index';
 import { connect } from "react-redux";
+import { roles } from 'configs/constants/roles';
 
 class FilterAdd extends Component{
   constructor(props){
@@ -17,6 +18,7 @@ class FilterAdd extends Component{
       global:false,
       dashboard:false,
       project:null,
+      roles: [],
 
       saving:false,
       opened:false
@@ -33,12 +35,14 @@ class FilterAdd extends Component{
 
   toggle(){
     if(!this.state.opened && this.props.filterID){
+      const filterData = this.props.filterData;
       this.setState({
-        title:this.props.filterData.title,
-        public:this.props.filterData.public,
-        global:this.props.filterData.global?this.props.filterData.global:false,
-        dashboard:this.props.filterData.dashboard?this.props.filterData.dashboard:false,
-        project:this.props.filterData.project?toSelArr(this.props.projects).find((project)=>project.id===this.props.filterData.project):null,
+        title: filterData.title,
+        public: filterData.public,
+        global: filterData.global ? filterData.global : false,
+        dashboard: filterData.dashboard ? filterData.dashboard : false,
+        project: filterData.project ? toSelArr(this.props.projects).find((project) => project.id === filterData.project) : null,
+        roles: toSelArr(roles).filter( (role) => filterData.roles.includes( role.id ) )
       });
     }
     this.setState({opened:!this.state.opened})
@@ -77,6 +81,30 @@ class FilterAdd extends Component{
                 value = { this.state.public }
                 onChange={(e)=>this.setState({public:!this.state.public })}
                 />
+            }
+
+            { this.props.currentUser.userData.role.value > 1 && this.state.public &&
+              <FormGroup>{/* Roles */}
+                <Label className="">Roles</Label>
+                <Select
+                  placeholder="Choose roles"
+                  value={this.state.roles}
+                  isMulti
+                  onChange={(newRoles)=>{
+                    if(newRoles.some((role) => role.id === 'all' )){
+                      if( this.state.roles.length === roles.length ){
+                        this.setState({ roles: [] })
+                      }else{
+                        this.setState({ roles: toSelArr(roles) })
+                      }
+                    }else{
+                      this.setState({roles: newRoles})
+                    }
+                  }}
+                  options={toSelArr([{id: 'all', title: this.state.roles.length === roles.length ? 'Clear' : 'All' }].concat(roles))}
+                  styles={selectStyle}
+                  />
+              </FormGroup>
             }
 
             <Checkbox
@@ -135,6 +163,7 @@ class FilterAdd extends Component{
                     global:this.state.global,
                     dashboard:this.state.dashboard,
                     project:this.state.project!==null?this.state.project.id:null,
+                    roles: this.state.roles.map( (role) => role.id ),
                   })
                   .then(()=> {
                     this.setState({title:'',public:false,saving:false});
@@ -150,8 +179,9 @@ class FilterAdd extends Component{
                     global:this.state.global,
                     dashboard:this.state.dashboard,
                     project:this.state.project!==null?this.state.project.id:null,
+                    roles: this.state.roles.map( (role) => role.id ),
                   })
-                  .then(()=> {
+                  .then((resp) => {
                     this.setState({title:'',public:false,global:false,dashboard:false,project:null,saving:false});
                     this.toggle();
                   });
