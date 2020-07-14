@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, Label,Input, Alert } from 'reactstrap';
-import Select from 'react-select';
 import Switch from "react-switch";
 import {toSelArr} from '../../../helperFunctions';
 import {rebase} from '../../../index';
-import {selectStyle} from "configs/components/select";
 
 import { connect } from "react-redux";
 import {storageHelpPricelistsStart } from '../../../redux/actions';
 import {sameStringForms, isEmail} from '../../../helperFunctions';
 import CompanyRents from './companyRents';
-import PriceEdit from "../prices/priceEdit";
+import CompanyPriceList from './companyPriceList';
 
 import classnames from "classnames";
 
@@ -536,86 +534,22 @@ class CompanyAdd extends Component{
                 </div>
               }
             </div>}
-            <div className="row">
-              <h3 className="m-b-20 m-r-10">Cenník</h3>
-              <label>
-                <Switch
-                  checked={this.state.pricelist.def}
-                  onChange={(checked)=>{
-                    if (checked){
-                      this.setState({oldPricelist: {...this.state.pricelist}, pricelist: this.state.pricelists.find(list => list.def), newData: true})
-                    } else {
-                      this.setState({oldPricelist: {...this.state.pricelist}, pricelist: (this.state.pricelists.length > 1 ? this.state.pricelists.slice(1, this.state.pricelists.length).find(list => !list.def) : {}), newData: true})
-                    }
-                  }}
-                  height={22}
-                  width={80}
-                  checkedIcon={<span className="switchLabel">Default</span>}
-                  uncheckedIcon={<span className="switchLabel-right">Vlastný</span>}
-                  onColor={"#0078D4"} />
-                <span className="m-l-10"></span>
-              </label>
-            </div>
-            {!this.state.pricelist.def &&
-            <FormGroup className="row m-b-10">
-              <div className="m-r-10 w-20">
-                <Label for="pricelist">Pricelist</Label>
-              </div>
-              <div className="flex">
-                <Select
-                  id="pricelist"
-                  name="pricelist"
-                  styles={selectStyle}
-                  options={this.state.pricelists}
-                  value={this.state.pricelist}
-                  onChange={e =>{ this.setState({oldPricelist: {...this.state.pricelist},pricelist: e, newData: true  }) }}
-                  />
-              </div>
-            </FormGroup>
-          }
-
-            {this.state.pricelist.value === "0" &&
-              (this.state.priceName === "" ||
-              this.state.newData) &&
-              <FormGroup className="row m-b-10">
-                <div className="m-r-10 w-20">
-                  <Label for="priceName">Price list name</Label>
-                </div>
-                <div className="flex">
-                  <Input
-                    name="priceName"
-                    id="priceName"
-                    type="text"
-                    placeholder="Enter price list nema"
-                    value={this.state.priceName}
-                    onChange={(e)=>this.setState({priceName: e.target.value, newData: true})}
-                    />
-                </div>
-              </FormGroup>
-            }
-
-            { Object.keys(this.state.pricelist).length &&
-              this.state.pricelist.value !== "0" &&
-              !this.state.pricelist.def &&
-              <PriceEdit {...this.props}
-                listId={this.state.pricelist.id}
-                changedName={ (e) => this.setState({pricelist: {...this.state.pricelist, label: e} }) }
-                deletedList={() => this.setState({pricelist: {}, priceName: ""})}/>
-            }
-            { Object.keys(this.state.pricelist).length &&
-              this.state.pricelist.value !== "0" &&
-              this.state.pricelist.def &&
-              <div>
-                <Button
-                  className="btn-link-reversed p-l-0"
-                  onClick={()=>{
-                    if (window.confirm("You will be redirected to a page where you can edit this pricelist. All unsaved progress will be lost, are you sure you want to proceed?")){
-                      this.cancel();
-                      this.props.history.push(`/helpdesk/settings/pricelists/${this.state.pricelist.id}`)
-                    }
-                }}>Edit default pricelist</Button>
-              </div>
-            }
+            <CompanyPriceList
+              pricelists={this.state.pricelists}
+              pricelist={this.state.pricelist}
+              oldPricelist={this.state.oldPricelist}
+              priceName={this.state.priceName}
+              newData={this.state.newData}
+              cancel={() => this.cancel()}
+              setData={(data) => {
+                let newState = {...this.state};
+                Object.keys(data).forEach((key, i) => {
+                  newState[key] = data[key];
+                });
+                newState.newData = true;
+                this.setState({
+                  ...newState
+                })}} />
           </div>}
         </div>
 
@@ -634,7 +568,7 @@ class CompanyAdd extends Component{
                 }
               }}>{(this.state.pricelist.value === "0" && this.state.priceName !== "" ? "Save changes" : (this.state.saving?'Adding...':'Add company'))}</Button>
             }
-            
+
           { (this.state.newData  || this.props.addCompany) &&
             <Button
               className="btn-link"

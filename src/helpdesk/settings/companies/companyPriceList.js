@@ -1,24 +1,11 @@
 import React, { Component } from 'react';
+import { Button, FormGroup, Label,Input } from 'reactstrap';
+import Select from 'react-select';
+import {selectStyle} from "configs/components/select";
+import Switch from "react-switch";
+import PriceEdit from "../prices/priceEdit";
 
 export default class CompanyPriceList extends Component {
-	constructor(props){
-		super(props);
-		this.state={
-		}
-	}
-
-	componentWillReceiveProps(props){
-	/*	if(props.clearForm){
-			this.props.setClearForm();
-			this.setState({
-				title:'',
-				quantity:1,
-				unitCost:0,
-				unitPrice:0,
-				totalPrice:0,
-			})
-		}*/
-	}
 
 	render() {
 		return (
@@ -27,12 +14,12 @@ export default class CompanyPriceList extends Component {
 	        <h3 className="m-b-20 m-r-10">Cenník</h3>
 	          <label>
 	            <Switch
-	              checked={this.state.pricelist.def}
+	              checked={this.props.pricelist.def}
 	              onChange={(checked)=>{
 	                if (checked){
-	                  this.setState({oldPricelist: {...this.state.pricelist}, pricelist: this.state.pricelists.find(list => list.def), newData: true})
+										this.props.setData({oldPricelist: {...this.props.pricelist}, pricelist: this.props.pricelists.find(list => list.def)})
 	                } else {
-	                  this.setState({oldPricelist: {...this.state.pricelist}, pricelist: (this.state.pricelists.length > 1 ? this.state.pricelists.slice(1, this.state.pricelists.length).find(list => !list.def) : {}), newData: true})
+										this.props.setData({oldPricelist: {...this.props.pricelist}, pricelist: (this.props.pricelists.length > 1 ? this.props.pricelists.slice(1, this.props.pricelists.length).find(list => !list.def) : {})})
 	                }
 	              }}
 	              height={22}
@@ -43,7 +30,7 @@ export default class CompanyPriceList extends Component {
 	            <span className="m-l-10"></span>
 	          </label>
 	      </div>
-	      {!this.state.pricelist.def && this.state.pricelist !== null &&
+	      {!this.props.pricelist.def && this.props.pricelist !== null &&
 	          <FormGroup className="row m-b-10">
 	            <div className="m-r-10 w-20">
 	            <Label for="pricelist">Pricelist</Label>
@@ -53,17 +40,17 @@ export default class CompanyPriceList extends Component {
 	              id="pricelist"
 	              name="pricelist"
 	              styles={selectStyle}
-	              options={this.state.pricelists}
-	              value={this.state.pricelist}
-	              onChange={e =>{ this.setState({oldPricelist: {...this.state.pricelist}, pricelist: e, newData: true}) }}
+	              options={this.props.pricelists}
+	              value={this.props.pricelist}
+	              onChange={e =>this.props.setData({oldPricelist: {...this.props.pricelist}, pricelist: e, newData: true}) }
 	              />
 	          </div>
 	          </FormGroup>
 	        }
-	          {!this.state.pricelist.def &&
-	            this.state.pricelist.value === "0" &&
-	            (this.state.priceName === "" ||
-	            this.state.newData) &&
+	          {!this.props.pricelist.def &&
+	            this.props.pricelist.value === "0" &&
+	            (this.props.priceName === "" ||
+	            this.props.newData) &&
 	            <FormGroup className="row m-b-10">
 	              <div className="m-r-10 w-20">
 	              <Label for="priceName">Price list name</Label>
@@ -74,30 +61,30 @@ export default class CompanyPriceList extends Component {
 	                    id="priceName"
 	                    type="text"
 	                    placeholder="Enter price list nema"
-	                    value={this.state.priceName}
-	                    onChange={(e)=>this.setState({priceName: e.target.value, newData: true})}/>
+	                    value={this.props.priceName}
+	                    onChange={(e) => this.props.setData({priceName: e.target.value})}/>
 	                </div>
 	            </FormGroup>
 	          }
-	          { Object.keys(this.state.pricelist).length &&
-	            this.state.pricelist !== {} &&
-	            this.state.pricelist.value !== "0" &&
-	            !this.state.pricelist.def &&
+	          { Object.keys(this.props.pricelist).length &&
+	            this.props.pricelist !== {} &&
+	            this.props.pricelist.value !== "0" &&
+	            !this.props.pricelist.def &&
 	            <PriceEdit {...this.props}
-	              listId={this.state.pricelist.id}
-	              changedName={ (e) => this.setState({pricelist: {...this.state.pricelist, label: e} }) }
-	              deletedList={ () => this.setState({pricelist: {}, priceName: ""}) }/>
+	              listId={this.props.pricelist.id}
+	              changedName={ (e) => this.props.setData({pricelist: {...this.props.pricelist, label: e} })}
+	              deletedList={ () => this.props.setData({pricelist: {}, priceName: ""})}/>
 	          }
-	          { Object.keys(this.state.pricelist).length &&
-	            this.state.pricelist.value !== "0" &&
-	            this.state.pricelist.def &&
+	          { Object.keys(this.props.pricelist).length &&
+	            this.props.pricelist.value !== "0" &&
+	            this.props.pricelist.def &&
 	            <div>
 	              <Button
 	                className="btn-link-reversed p-l-0"
 	                onClick={()=>{
 	                  if (window.confirm("You will be redirected to a page where you can edit this pricelist. All unsaved progress will be lost, are you sure you want to proceed?")){
-	                    this.cancel();
-	                    this.props.history.push(`/helpdesk/settings/pricelists/${this.state.pricelist.id}`)
+	                    this.props.cancel();
+	                    this.props.history.push(`/helpdesk/settings/pricelists/${this.props.pricelist.id}`)
 	                  }
 	              }}>Edit default pricelist</Button>
 	            </div>
