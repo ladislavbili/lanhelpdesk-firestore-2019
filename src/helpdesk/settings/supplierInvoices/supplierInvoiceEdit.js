@@ -195,7 +195,7 @@ class SupplierInvoiceEdit extends Component{
                   });
               }}>{this.state.saving?'Saving...':'Save supplier'}</Button>
 
-            <Button className="btn-red ml-auto" disabled={this.state.saving} onClick={()=>{
+            <Button className="btn-red m-l-5" disabled={this.state.saving} onClick={()=>{
                   if(window.confirm("Are you sure?")){
                     this.state.invoiceItems.forEach((invoiceItem)=>{
                       rebase.removeDoc('/help-invoice_items/'+invoiceItem.id).then(()=>{

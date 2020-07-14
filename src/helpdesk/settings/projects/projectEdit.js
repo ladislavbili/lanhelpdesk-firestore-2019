@@ -281,7 +281,7 @@ class ProjectEdit extends Component{
 					}}>
 						{(this.state.saving?'Saving...':'Save project')}
 					</Button>
-					<Button className="ml-auto btn-danger" disabled={this.state.saving} onClick={this.deleteProject.bind(this)}>
+					<Button className="btn-red m-l-5" disabled={this.state.saving} onClick={this.deleteProject.bind(this)}>
 						Delete
 					</Button>
 				</div>

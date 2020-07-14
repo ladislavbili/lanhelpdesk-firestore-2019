@@ -622,16 +622,9 @@ class CompanyAdd extends Component{
         <div
           className={classnames({ "form-footer": this.state.newData || this.props.addCompany}, "row")}
           style={(this.state.newData ? {zIndex: "99999"} : {})}>
-          { (this.state.newData  || this.props.addCompany) &&
-            <Button
-              className="btn-link"
-              disabled={this.state.saving}
-              onClick={() => this.cancel()}>Cancel changes</Button>
-          }
-
           {(this.state.newData  || this.props.addCompany) &&
             <Button
-              className="btn ml-auto"
+              className="btn"
               disabled={this.state.saving || this.state.title.length === 0 || (this.state.pricelist.value === "0" && this.state.priceName === "") }
               onClick={()=>{
                 if (this.state.pricelist.value === "0" && this.state.priceName !== ""){
@@ -641,6 +634,14 @@ class CompanyAdd extends Component{
                 }
               }}>{(this.state.pricelist.value === "0" && this.state.priceName !== "" ? "Save changes" : (this.state.saving?'Adding...':'Add company'))}</Button>
             }
+            
+          { (this.state.newData  || this.props.addCompany) &&
+            <Button
+              className="btn-link"
+              disabled={this.state.saving}
+              onClick={() => this.cancel()}>Cancel changes</Button>
+          }
+
         </div>
 
       </div>

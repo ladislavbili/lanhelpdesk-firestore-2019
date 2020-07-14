@@ -309,7 +309,7 @@ class PriceEdit extends Component{
                     );
                 }}>{this.state.saving?'Saving prices...':'Save prices'}</Button>
 
-              <Button className="btn-red ml-auto" disabled={this.state.saving || this.props.deletedList} onClick={this.deletePricelistPopup.bind(this)}>Delete price list</Button>
+              <Button className="btn-red m-l-5" disabled={this.state.saving || this.props.deletedList} onClick={this.deletePricelistPopup.bind(this)}>Delete price list</Button>
           </div>
           <Modal isOpen={this.state.openEditCompanies} >
             <ModalHeader>Edit companies</ModalHeader>

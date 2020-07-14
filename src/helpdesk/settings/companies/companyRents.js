@@ -31,6 +31,7 @@ export default class CompanyRents extends Component {
 				<div className="row">
 					<div className="col-md-12">
 						<div>
+							<h3>Prenájom Hardware & Software </h3>
 							<table className="table m-t--30">
 								<thead>
 									<tr >

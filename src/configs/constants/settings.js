@@ -2,7 +2,7 @@ export default [
 	{title:'Users',link:'users',minimalRole:1},
 	{title:'Companies',link:'companies',minimalRole:1},
 	{title:'Public filters',link:'publicFilters',minimalRole:1},
-	{title:'Mesačné paušály firiem',link:'pausals',minimalRole:3},
+	{title:'Service level agreements',link:'pausals',minimalRole:3},
 	{title:'Projects',link:'projects',minimalRole:2},
 	{title:'Statuses',link:'statuses',minimalRole:3},
 	{title:'Units',link:'units',minimalRole:2},

@@ -194,7 +194,7 @@ class ImapEdit extends Component{
               });
             }}>{this.state.saving?'Saving Imap...':'Save Imap'}</Button>
 
-          <Button className="btn-red ml-auto" disabled={this.state.saving} onClick={()=>{
+          <Button className="btn-red m-l-5" disabled={this.state.saving} onClick={()=>{
                   if(window.confirm("Are you sure?")){
                     rebase.removeDoc('/imaps/'+this.props.match.params.id).then(()=>{
                       this.props.history.goBack();

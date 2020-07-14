@@ -80,7 +80,7 @@ class WorkTypeEdit extends Component{
                   .then(()=>{this.setState({saving:false})});
               }}>{this.state.saving?'Saving work type...':'Save work type'}</Button>
 
-            <Button className="btn-red ml-auto" disabled={this.state.saving} onClick={()=>{
+            <Button className="btn-red m-l-5" disabled={this.state.saving} onClick={()=>{
                 if(window.confirm("Are you sure?")){
                   rebase.removeDoc('/help-work_types/'+this.props.match.params.id).then(()=>{
                     this.props.history.goBack();

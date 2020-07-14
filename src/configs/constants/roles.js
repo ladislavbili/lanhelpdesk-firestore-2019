@@ -170,7 +170,7 @@ export const specificRules = [
     value: 'companies',
   },
   {
-    name: 'Mesačné paušály firiem',
+    name: 'Service level agreements',
     value: 'pausals',
   },
   {

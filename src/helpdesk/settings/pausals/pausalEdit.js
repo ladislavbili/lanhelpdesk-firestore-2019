@@ -100,7 +100,7 @@ class PausalEdit extends Component{
     return (
       <div className="fit-with-header-and-commandbar">
 
-      <h2 className="p-t-10 p-l-20 p-b-5">Paušále firmy: {this.state.title}</h2>
+      <h2 className="p-t-10 p-l-20 p-b-5">{this.state.title}</h2>
 
       <div className="p-20">
 
@@ -116,7 +116,7 @@ class PausalEdit extends Component{
             onChange={(e)=>this.setState({workPausal:e.target.value,})}
             />
         </FormGroup>
-        <FormGroup>
+        <FormGroup className="m-b-10">
           <Label for="pausal">Paušál výjazdy</Label>
           <Input
             name="pausal"

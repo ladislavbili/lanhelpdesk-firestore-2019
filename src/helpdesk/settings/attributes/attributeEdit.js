@@ -329,7 +329,7 @@ class AttributeEdit extends Component{
 
         <div className="row">
           <Button className="btn" disabled={this.cantSaveAttribute()} onClick={this.submit.bind(this)}>{this.state.saving?'Saving...':'Save attribute'}</Button>
-          <Button className="btn btn-red ml-auto" disabled={this.state.deleting} onClick={this.deleteAttribute.bind(this)}>{this.state.deleting ? 'Deleting...':'Delete attribute'}</Button>
+          <Button className="btn btn-red m-l-5" disabled={this.state.deleting} onClick={this.deleteAttribute.bind(this)}>{this.state.deleting ? 'Deleting...':'Delete attribute'}</Button>
         </div>
       </div>
     );

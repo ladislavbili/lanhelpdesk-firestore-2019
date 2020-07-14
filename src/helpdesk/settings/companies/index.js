@@ -56,6 +56,7 @@ class CompaniesList extends Component{
                 <i className="fa fa-plus p-l-5 p-r-5"/> Company
               </Button>
             </div>
+
             <div className="p-t-9 p-r-10 p-l-10 scroll-visible fit-with-header-and-commandbar">
               <div className="row">
                 <h2 className=" p-l-10 p-b-10 ">

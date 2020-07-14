@@ -25,7 +25,7 @@ export default class TagAdd extends Component{
             color={this.state.color}
             onChangeComplete={value => this.setState({ color: value.hex })}
           />
-          <Button className="btn"  disabled={this.state.saving} onClick={()=>{
+        <Button className="btn m-t-5"  disabled={this.state.saving} onClick={()=>{
               this.setState({saving:true});
               rebase.addToCollection('/help-tags', {title:this.state.title,color:this.state.color})
                 .then(()=>{this.setState({title:'',saving:false})});

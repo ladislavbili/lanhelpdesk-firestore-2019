@@ -758,9 +758,10 @@ class CompanyEdit extends Component{
         <div
           className="form-footer row"
           style={(this.state.newData ? {zIndex: "99999"} : {})}>
+
           {this.state.newData &&
             <Button
-              className="btn"
+              className="btn m-r-5"
               disabled={this.state.saving || this.state.title.length === 0 || (this.state.pricelist.value === "0" &&
                                                                               (this.state.priceName === "")) }
               onClick={()=>{
@@ -772,7 +773,7 @@ class CompanyEdit extends Component{
             }}>{this.state.saving?'Saving...':'Save changes'}</Button>
           }
 
-           <Button className="btn-red ml-auto" disabled={this.state.saving || this.state.deletingCompany} onClick={this.deleteCompany.bind(this)}>Delete</Button>
+           <Button className="btn-red" disabled={this.state.saving || this.state.deletingCompany} onClick={this.deleteCompany.bind(this)}>Delete</Button>
 
 
           {this.state.newData &&

@@ -241,7 +241,7 @@ class UserEdit extends Component{
                 }}>{this.state.saving?'Saving user...':'Save user'}</Button>
                 { this.props.role === 3 &&
                   <Button
-                    className={ this.state.deactivated ? "btn-green ml-auto" : "btn-grey ml-auto"}
+                    className={ this.state.deactivated ? "btn-green" : "btn-grey"}
                     disabled={this.props.role !== 3 || this.state.deactivatingUser}
                     onClick={this.deactivateUser.bind(this)}
                     >
@@ -250,7 +250,7 @@ class UserEdit extends Component{
                 }
                 { this.props.role === 3 &&
                   <Button
-                    className="btn-red ml-3"
+                    className="btn-red m-l-5"
                     disabled={this.props.role !== 3 || this.state.deletingUser}
                     onClick={this.deleteUser.bind(this)}
                     >

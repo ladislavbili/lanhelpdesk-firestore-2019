@@ -65,13 +65,13 @@ class TagEdit extends Component{
         />
 
       <div className="row">
-        <Button className="btn"  disabled={this.state.saving} onClick={()=>{
+        <Button className="btn m-t-5"  disabled={this.state.saving} onClick={()=>{
             this.setState({saving:true});
             rebase.updateDoc('/help-tags/'+this.props.match.params.id, {title:this.state.title,color:this.state.color})
               .then(()=>{this.setState({saving:false})});
           }}>{this.state.saving?'Saving tag...':'Save tag'}</Button>
 
-        <Button className="btn-red ml-auto"  disabled={this.state.saving} onClick={()=>{
+        <Button className="btn-red m-l-5 m-t-5"  disabled={this.state.saving} onClick={()=>{
               if(window.confirm("Are you sure?")){
                 rebase.removeDoc('/help-tags/'+this.props.match.params.id).then(()=>{
                   this.props.history.goBack();

@@ -419,7 +419,7 @@ class PublicFilterEdit extends Component{
         </FormGroup>
         <div className="row">
           <Button className="btn" disabled={this.cantSaveFilter()} onClick={this.submit.bind(this)}>{this.state.saving?'Saving...':'Save filter'}</Button>
-          <Button className="btn btn-red ml-auto" disabled={this.state.deleting} onClick={this.deleteFilter.bind(this)}>{this.state.deleting ? 'Deleting...':'Delete filter'}</Button>
+          <Button className="btn btn-red m-l-5" disabled={this.state.deleting} onClick={this.deleteFilter.bind(this)}>{this.state.deleting ? 'Deleting...':'Delete filter'}</Button>
         </div>
       </div>
     );

@@ -141,13 +141,13 @@ html{
 	height: $height-without-header;
 }
 .fit-with-header-and-commandbar{
-	height: calc(  #{$height-without-header} - 41px );
+	height: calc(  #{$height-without-header} - 70px );
 }
 .fit-with-header-and-commandbar-2{
 	height: calc(  #{$height-without-header} - 82px );
 }
 .fit-with-header-and-commandbar-3{
-	height: calc(  #{$height-without-header} - 41*3px );
+	height: calc(  #{$height-without-header} - 70px - 40px - 40px );
 }
 
 .overflow-x{
@@ -444,20 +444,20 @@ h3{
 }
 
 .form-body{
-  height: calc(  #{$height-without-header} - 41px - 40px);
+  height: calc(  #{$height-without-header} - 41px - 50px);
 }
 
 .form-body-highlighted{
   position: relative;
   z-index: 99999;
-  height: calc(  #{$height-without-header} - 41px - 96px);
+  height: calc(  100vh - 40px - 70px - 40px - 60px); //header, commandbar, nadpis, buttons
 }
 
 .form-footer{
   border-top: 1px solid $muted-gray;
-  background-color: inherit;
-  position: absolute;
-  bottom: 0;
+  background-color: white;
+  position: relative;
+  //bottom: 0;
   width: 100%;
   height: 50px;
   padding-top: 10px;

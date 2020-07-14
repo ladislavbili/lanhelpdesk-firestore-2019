@@ -28,6 +28,7 @@ class CompaniesList extends Component{
   }
 
   render(){
+    console.log(this.state.companies);
 
     return (
       <div className="content">
@@ -52,12 +53,13 @@ class CompaniesList extends Component{
 
             <div className="p-t-9 p-r-10 p-l-10 scroll-visible fit-with-header-and-commandbar">
               <h2 className=" p-b-10 p-l-10">
-                Mesačné paušály firiem
+                Service level agreements
   						</h2>
               <table className="table table-hover">
                 <tbody>
                   {
-                    this.state.companies.filter((item) => item.title.toLowerCase().includes(this.state.companyFilter.toLowerCase())||(item.drivePausal).toLowerCase().includes(this.state.companyFilter.toLowerCase())||(item.pausal+'').toLowerCase().includes(this.state.companyFilter.toLowerCase()))
+                    this.state.companies.filter(item => item.workPausal !== 0 || item.drivePausal !== 0)
+                      .filter((item) => item.title.toLowerCase().includes(this.state.companyFilter.toLowerCase())||(item.drivePausal).toLowerCase().includes(this.state.companyFilter.toLowerCase())||(item.pausal+'').toLowerCase().includes(this.state.companyFilter.toLowerCase()))
                       .map((company)=>
                         <tr
                           key={company.id}

@@ -165,7 +165,7 @@ class SMTPEdit extends Component{
               });
             }}>{this.state.saving?'Saving SMTP...':'Save SMTP'}</Button>
 
-          <Button className="btn-red ml-auto" disabled={this.state.saving} onClick={()=>{
+          <Button className="btn-red m-l-5" disabled={this.state.saving} onClick={()=>{
               if(window.confirm("Are you sure?")){
                 rebase.removeDoc('/smtps/'+this.props.match.params.id).then(()=>{
                   this.props.history.goBack();

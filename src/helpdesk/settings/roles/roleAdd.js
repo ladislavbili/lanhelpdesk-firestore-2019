@@ -303,7 +303,7 @@ class RoleAdd extends Component{
                         pausals: !this.state.pausals})
                       }
                     >
-                    <td>Mesačné paušály firiem</td>
+                    <td>Service level agreements</td>
                     <td>
                       <Checkbox
                         className = "m-b-5 p-l-0"

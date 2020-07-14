@@ -101,7 +101,7 @@ class StatusEdit extends Component{
           />
 
         <div className="row">
-          <Button className="btn m-t-5 m-r-5" disabled={this.state.saving} onClick={()=>{
+          <Button className="btn m-t-5" disabled={this.state.saving} onClick={()=>{
               this.setState({saving:true});
               let order = this.state.order!==''?parseInt(this.state.order):0;
               if(isNaN(order)){
@@ -117,7 +117,7 @@ class StatusEdit extends Component{
                 .then(()=>{this.setState({saving:false})});
             }}>{this.state.saving?'Saving status...':'Save status'}</Button>
 
-          {this.state.action.value!=='invoiced' && <Button className="btn-red ml-auto" disabled={this.state.saving} onClick={()=>{
+          {this.state.action.value!=='invoiced' && <Button className="btn-red m-l-5 m-t-5" disabled={this.state.saving} onClick={()=>{
               if(window.confirm("Are you sure?")){
                 rebase.removeDoc('/help-statuses/'+this.props.match.params.id).then(()=>{
                   this.props.history.goBack();
