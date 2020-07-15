@@ -65,9 +65,9 @@ class TagList extends Component{
                   {this.state.tags.filter((item)=>item.title.toLowerCase().includes(this.state.tagFilter.toLowerCase())).map((tag)=>
                     <tr
                       key={tag.id}
-                      className={"clickable" + (this.props.match.params.id === tag.id ? " sidebar-item-active":"")}
+                      className={"clickable" + (this.props.match.params.id === tag.id ? " active":"")}
                       onClick={()=>this.props.history.push('/helpdesk/settings/tags/'+tag.id)}>
-                      <td className={(this.props.match.params.id === tag.id ? "text-highlight":"")}>
+                      <td>
                         {tag.title}
                       </td>
                     </tr>

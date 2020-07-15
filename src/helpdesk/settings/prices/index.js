@@ -63,12 +63,12 @@ class PriceList extends Component{
                   <tbody>
                     {this.state.pricelists.filter((item)=>item.title.toLowerCase().includes(this.state.pricelistFilter.toLowerCase())).map((pricelist)=>
                       <tr key={pricelist.id}
-                        className={"clickable" + (this.props.match.params.id === pricelist.id ? " sidebar-item-active":"")}
+                        className={"clickable" + (this.props.match.params.id === pricelist.id ? " active":"")}
                         onClick={()=>{this.props.history.push('/helpdesk/settings/pricelists/'+pricelist.id)}}>
-                        <td className={(this.props.match.params.id === pricelist.id ? "text-highlight":"")}>
+                        <td>
                           {pricelist.title}
                         </td>
-                        <td width="10%" className={(this.props.match.params.id === pricelist.id ? "text-highlight":"")}>
+                        <td width="10%">
                           {pricelist.def ? "Default" : ""}
                         </td>
                       </tr>

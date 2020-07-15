@@ -1448,6 +1448,8 @@ class TaskEdit extends Component {
 				taskID={this.props.match.params.taskID}
 				taskAssigned={this.state.assignedTo}
 
+				showSubtasks={this.state.project ? this.state.project.showSubtasks : false}
+
 				submitService={this.submitService.bind(this)}
 				subtasks={taskWorks}
 				defaultType={this.state.type}

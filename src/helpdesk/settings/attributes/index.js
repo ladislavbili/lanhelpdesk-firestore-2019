@@ -57,16 +57,14 @@ class AttributesList extends Component{
                   {STATIC.map((attribute)=>
                     <tr
                       key={attribute.id}
-                      className={"clickable" + (this.props.match.params.id === attribute.id ? " sidebar-item-active":"")}
+                      className={"clickable" + (this.props.match.params.id === attribute.id ? " active":"")}
                       style={{whiteSpace: "nowrap",  overflow: "hidden"}}
                       onClick={()=>this.props.history.push('/helpdesk/settings/attributes/'+attribute.id.toString())}>
                       <td
-                        className={(this.props.match.params.id === attribute.id ? "text-highlight":"")}
                         style={{maxWidth: "300px", whiteSpace: "nowrap",  overflow: "hidden", textOverflow: "ellipsis"  }}  >
                         {attribute.title}
                       </td>
                       <td
-                        className={(this.props.match.params.id === attribute.id ? "text-highlight":"")}
                         style={{maxWidth: "300px", whiteSpace: "nowrap",  overflow: "hidden", textOverflow: "ellipsis"  }}  >
                         {attribute.order}
                       </td>
@@ -84,16 +82,14 @@ class AttributesList extends Component{
                   {OPTIONAL.map((attribute)=>
                     <tr
                       key={attribute.id}
-                      className={"clickable" + (this.props.match.params.id === attribute.id ? " sidebar-item-active":"")}
+                      className={"clickable" + (this.props.match.params.id === attribute.id ? " active":"")}
                       style={{whiteSpace: "nowrap",  overflow: "hidden"}}
                       onClick={()=>this.props.history.push('/helpdesk/settings/attributes/'+attribute.id.toString())}>
                       <td
-                        className={(this.props.match.params.id === attribute.id ? "text-highlight":"")}
                         style={{maxWidth: "300px", whiteSpace: "nowrap",  overflow: "hidden", textOverflow: "ellipsis"  }}  >
                         {attribute.title}
                       </td>
                       <td
-                        className={(this.props.match.params.id === attribute.id ? "text-highlight":"")}
                         style={{maxWidth: "300px", whiteSpace: "nowrap",  overflow: "hidden", textOverflow: "ellipsis"  }}  >
                         {attribute.order}
                       </td>

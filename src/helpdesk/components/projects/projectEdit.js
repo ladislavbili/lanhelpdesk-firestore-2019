@@ -9,6 +9,7 @@ import Permissions from "./permissions";
 import ProjectDefaultValues from './defaultValues';
 import booleanSelects from 'configs/constants/boolSelect'
 import { noDef } from 'configs/constants/projects';
+import Checkbox from '../../../components/checkbox';
 
 class ProjectEdit extends Component{
   constructor(props){
@@ -23,6 +24,7 @@ class ProjectEdit extends Component{
       companies:[],
 			permissions:[],
 			lockedRequester: false,
+      showSubtasks: false,
 
       ...noDef,
       saving: false,
@@ -129,6 +131,7 @@ class ProjectEdit extends Component{
 			description:project.description?project.description:'',
 			lockedRequester: project.lockedRequester ? project.lockedRequester : false,
 			permissions,
+      showSubtasks: project.showSubtasks ? project.showSubtasks : false,
 
 			status:status?				{...def.status,value:status}					:{def:false, fixed:false, value: null, show:true },
 			tags:def?							{...def.tags,value:tags}							:{def:false, fixed:false, value: [], show:true },
@@ -259,6 +262,16 @@ class ProjectEdit extends Component{
 								lockRequester={() => this.setState({lockedRequester: !this.state.lockedRequester})}
 								/>
 
+              <div className="row m-t-15">
+      					<Checkbox
+      						className = "m-l-5 m-r-5"
+      						centerHor
+      						disabled={false}
+      						value = { this.props.showSubtasks}
+      						onChange={()=> this.setState({showSubtasks: !this.state.showSubtasks})}
+      						/> Subtasks will be visible when editing a task from this project.
+      				</div>
+
               <ProjectDefaultValues
 								updateState={(newState)=>this.setState(newState)}
 								state={this.state}
@@ -282,6 +295,7 @@ class ProjectEdit extends Component{
                     title: this.state.title,
                     description: this.state.description,
 										lockedRequester: this.state.lockedRequester,
+                    showSubtasks: this.state.showSubtasks,
                     def:{
                       status:this.state.status.value?{...this.state.status,value:this.state.status.value.id}:{def:false,fixed:false, value: null, show:true },
                       tags:this.state.tags.value?{...this.state.tags,value:this.state.tags.value.map(item=>item.id)}:{def:false,fixed:false, value: [], show:true },

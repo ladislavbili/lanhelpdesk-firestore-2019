@@ -63,12 +63,12 @@ class StatusesList extends Component{
                 <tbody>
                   {this.state.statuses.filter((item)=>item.title.toLowerCase().includes(this.state.statusFilter.toLowerCase())).map((status)=>
                     <tr key={status.id}
-                       className={"clickable" + (this.props.match.params.id === status.id ? " sidebar-item-active":"")}
+                       className={"clickable" + (this.props.match.params.id === status.id ? " active":"")}
                        onClick={()=>this.props.history.push('/helpdesk/settings/statuses/'+status.id)}>
-                      <td className={(this.props.match.params.id === status.id ? "text-highlight":"")}>
+                      <td>
                         {status.title}
                       </td>
-                      <td className={(this.props.match.params.id === status.id ? "text-highlight":"")}>
+                      <td>
                         {status.order?status.order:0}
                       </td>
                     </tr>

@@ -275,7 +275,24 @@ export default class Rozpocet extends Component {
 						<tr>
 							<th colSpan={this.props.showColumns.includes(0) ? 2 : 1}>
 								<Nav tabs className="b-0 m-0">
-									<NavItem>
+									{ this.props.showSubtasks &&
+										<NavItem>
+										<NavLink
+											className={classnames({ active: this.state.toggleTab === '0'}, "clickable", "")}
+											onClick={() => { this.setState({toggleTab:'0'}); }}
+											>
+											Subtasks
+										</NavLink>
+									</NavItem>
+									}
+									{ this.props.showSubtasks &&
+											<NavItem>
+											<NavLink>
+												|
+											</NavLink>
+											</NavItem>
+										}
+										<NavItem>
 										<NavLink
 											className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "")}
 											onClick={() => { this.setState({toggleTab:'1'}); }}
@@ -299,7 +316,7 @@ export default class Rozpocet extends Component {
 								</Nav>
 							</th>
 							{this.props.showColumns.includes(1) && <th width="190">Rieši</th> }
-							{this.props.showColumns.includes(2) && <th width="170">Typ</th> }
+							{this.props.showColumns.includes(2) && <th width="100">Typ</th> }
 							{this.props.showColumns.includes(3) && <th width="50" className="t-a-r">Mn.</th> }
 							{this.props.showColumns.includes(4) && this.state.toggleTab === "2" && <th width="70" className="table-highlight-background t-a-r">Cenník/Nákup</th> }
 							{this.props.showColumns.includes(5) && this.state.toggleTab === "2" && <th width="70" className="table-highlight-background t-a-r">Zľava/Marža</th> }

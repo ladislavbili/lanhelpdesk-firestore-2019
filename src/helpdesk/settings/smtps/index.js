@@ -113,24 +113,24 @@ class SMTPsList extends Component{
                   ).map((smtp)=>
                     <tr
                       key={smtp.id}
-                      className={"clickable" + (this.props.match.params.id === smtp.id ? " sidebar-item-active":"")}
+                      className={"clickable" + (this.props.match.params.id === smtp.id ? " active":"")}
                       onClick={()=>this.props.history.push('/helpdesk/settings/smtps/'+smtp.id)}>
-                      <td className={(this.props.match.params.id === smtp.id ? "text-highlight":"")}>
+                      <td>
                         {smtp.title}
                       </td>
-                      <td className={(this.props.match.params.id === smtp.id ? "text-highlight":"")}>
+                      <td>
                         {smtp.host}
                       </td>
-                      <td className={(this.props.match.params.id === smtp.id ? "text-highlight":"")}>
+                      <td>
                         {smtp.port}
                       </td>
-                      <td className={(this.props.match.params.id === smtp.id ? "text-highlight":"")}>
+                      <td>
                         {smtp.user}
                       </td>
-                      <td className={(this.props.match.params.id === smtp.id ? "text-highlight":"")}>
+                      <td>
                         {smtp.def.toString()}
                       </td>
-                      <td className={(this.props.match.params.id === smtp.id ? "text-highlight":"")}>
+                      <td>
                         {
                           smtp.working === false ?
                           <i style={{color:'red'}}

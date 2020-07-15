@@ -647,28 +647,26 @@ class CompanyEdit extends Component{
             </div>
             </FormGroup>
 
-          <div className="p-20">
-            <CompanyRents
-              clearForm={this.state.clearCompanyRents}
-              setClearForm={()=>this.setState({clearCompanyRents:false})}
-              data={this.state.rented}
-              updateRent={(rent)=>{
-                let newRents=[...this.state.rented];
-                newRents[newRents.findIndex((item)=>item.id===rent.id)]={...newRents.find((item)=>item.id===rent.id),...rent};
-                this.setState({rented:newRents, newData:true });
-              }}
-              addRent={(rent)=>{
-                let newRents=[...this.state.rented];
-                newRents.push({...rent,id:this.getFakeID()})
-                this.setState({rented:newRents, newData:true });
-              }}
-              removeRent={(rent)=>{
-                let newRents=[...this.state.rented];
-                newRents.splice(newRents.findIndex((item)=>item.id===rent.id),1);
-                this.setState({rented:newRents, newData:true });
-              }}
-            />
-        </div>
+          <CompanyRents
+            clearForm={this.state.clearCompanyRents}
+            setClearForm={()=>this.setState({clearCompanyRents:false})}
+            data={this.state.rented}
+            updateRent={(rent)=>{
+              let newRents=[...this.state.rented];
+              newRents[newRents.findIndex((item)=>item.id===rent.id)]={...newRents.find((item)=>item.id===rent.id),...rent};
+              this.setState({rented:newRents, newData:true });
+            }}
+            addRent={(rent)=>{
+              let newRents=[...this.state.rented];
+              newRents.push({...rent,id:this.getFakeID()})
+              this.setState({rented:newRents, newData:true });
+            }}
+            removeRent={(rent)=>{
+              let newRents=[...this.state.rented];
+              newRents.splice(newRents.findIndex((item)=>item.id===rent.id),1);
+              this.setState({rented:newRents, newData:true });
+            }}
+          />
       </div>}
 
       <CompanyPriceList

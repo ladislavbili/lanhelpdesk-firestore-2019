@@ -60,9 +60,9 @@ class ProjectList extends Component{
 										return permission && permission.read;
 									}).filter((item)=>item.title.toLowerCase().includes(this.state.projectFilter.toLowerCase())).map((project)=>
                     <tr key={project.id}
-                      className={"clickable" + (this.props.match.params.id === project.id ? " sidebar-item-active":"")}
+                      className={"clickable" + (this.props.match.params.id === project.id ? " active":"")}
                       onClick={()=>this.props.history.push('/helpdesk/settings/projects/'+project.id)}>
-                      <td className={(this.props.match.params.id === project.id ? "text-highlight":"")}>
+                      <td>
                         {project.title}
                       </td>
                     </tr>

@@ -76,21 +76,21 @@ class ImapsList extends Component{
                     ).map((imap)=>
                       <tr
                         key={imap.id}
-                        className={"clickable" + (this.props.match.params.id === imap.id ? " sidebar-item-active":"")}
+                        className={"clickable" + (this.props.match.params.id === imap.id ? " active":"")}
                         onClick={()=>this.props.history.push('/helpdesk/settings/imaps/'+imap.id)}>
-                        <td className={(this.props.match.params.id === imap.id ? "text-highlight":"")}>
+                        <td>
                           {imap.title}
                         </td>
-                        <td className={(this.props.match.params.id === imap.id ? "text-highlight":"")}>
+                        <td>
                           {imap.host}
                         </td>
-                        <td className={(this.props.match.params.id === imap.id ? "text-highlight":"")}>
+                        <td>
                           {imap.port}
                         </td>
-                        <td className={(this.props.match.params.id === imap.id ? "text-highlight":"")}>
+                        <td>
                           {imap.user}
                         </td>
-                        <td className={(this.props.match.params.id === imap.id ? "text-highlight":"")}>
+                        <td>
                           {
                             imap.working === false ?
                             <i style={{color:'red'}}

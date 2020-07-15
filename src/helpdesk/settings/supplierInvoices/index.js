@@ -79,15 +79,15 @@ class SupplierInvoicesList extends Component{
                   {this.state.supplierInvoices.filter((item)=>item.identifier.toString().toLowerCase().includes(this.state.supplierInvoiceFilter.toLowerCase())).map((supplierInvoice)=>
                     <tr
                       key={supplierInvoice.id}
-                      className={"clickable" + (this.props.match.params.id === supplierInvoice.id ? " sidebar-item-active":"")}
+                      className={"clickable" + (this.props.match.params.id === supplierInvoice.id ? " active":"")}
                       onClick={()=>this.props.history.push('/helpdesk/settings/supplierInvoices/'+supplierInvoice.id)}>
-                      <td className={(this.props.match.params.id === supplierInvoice.id ? "text-highlight":"")}>
+                      <td>
                         {supplierInvoice.identifier}
                       </td>
-                      <td className={(this.props.match.params.id === supplierInvoice.id ? "text-highlight":"")}>
+                      <td>
                         {this.state.suppliers.some((supplier)=>supplier.id===supplierInvoice.supplier)?this.state.suppliers.find((supplier)=>supplier.id===supplierInvoice.supplier).title:'Unknown supplier'}
                       </td>
-                      <td className={(this.props.match.params.id === supplierInvoice.id ? "text-highlight":"")}>
+                      <td>
                         {timestampToString(supplierInvoice.date)}
                       </td>
                     </tr>

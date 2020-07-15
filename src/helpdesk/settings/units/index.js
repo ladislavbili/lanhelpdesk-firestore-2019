@@ -64,9 +64,9 @@ class UnitsList extends Component {
                   {this.state.units.filter((item)=>item.title.toLowerCase().includes(this.state.unitFilter.toLowerCase())).map((unit)=>
                     <tr
                       key={unit.id}
-                      className={"clickable" + (this.props.match.params.id === unit.id ? " sidebar-item-active":"")}
+                      className={"clickable" + (this.props.match.params.id === unit.id ? " active":"")}
                       onClick={()=>this.props.history.push('/helpdesk/settings/units/'+unit.id)}>
-                      <td className={(this.props.match.params.id === unit.id ? "text-highlight":"")}>
+                      <td>
                         {unit.title}
                       </td>
                     </tr>

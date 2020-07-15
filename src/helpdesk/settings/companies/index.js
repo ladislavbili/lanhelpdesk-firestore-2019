@@ -92,12 +92,12 @@ class CompaniesList extends Component{
                         .map((company)=>
                           <tr
                             key={company.id}
-                            className={"clickable" + (this.props.match.params.id === company.id ? " sidebar-item-active":"")}
+                            className={"clickable" + (this.props.match.params.id === company.id ? " active":"")}
                             onClick={()=>this.props.history.push('/helpdesk/settings/companies/'+company.id)}>
-                            <td className={(this.props.match.params.id === company.id ? "text-highlight":"")}>
+                            <td>
                               {company.title}
                             </td>
-                            <td width="10%" className={(this.props.match.params.id === company.id ? "text-highlight":"") }>
+                            <td width="10%">
                               {company.monthlyPausal  ? "Zmluvný" : "Nezmluvný"}
                             </td>
                           </tr>

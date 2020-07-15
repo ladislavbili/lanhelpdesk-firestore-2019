@@ -87,16 +87,14 @@ class PublicFiltersList extends Component{
                   {this.getFilteredFilters().map((filter)=>
                     <tr
                       key={filter.id}
-                      className={"clickable" + (this.props.match.params.id === filter.id ? " sidebar-item-active":"")}
+                      className={"clickable" + (this.props.match.params.id === filter.id ? " active":"")}
                       style={{whiteSpace: "nowrap",  overflow: "hidden"}}
                       onClick={()=>this.props.history.push('/helpdesk/settings/publicFilters/'+filter.id.toString())}>
                       <td
-                        className={(this.props.match.params.id === filter.id ? "text-highlight":"")}
                         style={{maxWidth: "300px", whiteSpace: "nowrap",  overflow: "hidden", textOverflow: "ellipsis"  }}  >
                         {filter.title}
                       </td>
                       <td
-                        className={(this.props.match.params.id === filter.id ? "text-highlight":"")}
                         style={{maxWidth: "300px", whiteSpace: "nowrap",  overflow: "hidden", textOverflow: "ellipsis"  }}  >
                         {filter.order}
                       </td>

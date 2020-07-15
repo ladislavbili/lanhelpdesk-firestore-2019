@@ -65,9 +65,9 @@ class SuppliersList extends Component{
                   {this.state.suppliers.filter((item)=>item.title.toLowerCase().includes(this.state.supplierFilter.toLowerCase())).map((supplier)=>
                     <tr
                       key={supplier.id}
-                      className={"clickable" + (this.props.match.params.id === supplier.id ? " sidebar-item-active":"")}
+                      className={"clickable" + (this.props.match.params.id === supplier.id ? " active":"")}
                       onClick={()=>this.props.history.push('/helpdesk/settings/suppliers/'+supplier.id)}>
-                      <td className={(this.props.match.params.id === supplier.id ? "text-highlight":"")}>
+                      <td>
                         {supplier.title}
                       </td>
                     </tr>

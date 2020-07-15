@@ -64,9 +64,9 @@ class WorkTypesList extends Component{
                   {this.state.workTypes.filter((item)=>item.title.toLowerCase().includes(this.state.workTypeFilter.toLowerCase())).map((workType)=>
                     <tr
                       key={workType.id}
-                      className={"clickable" + (this.props.match.params.id === workType.id ? " sidebar-item-active":"")}
+                      className={"clickable" + (this.props.match.params.id === workType.id ? " active":"")}
                       onClick={()=>this.props.history.push('/helpdesk/settings/workTypes/'+workType.id)}>
-                      <td className={(this.props.match.params.id === workType.id ? "text-highlight":"")}>
+                      <td>
                         {workType.title}
                       </td>
                     </tr>

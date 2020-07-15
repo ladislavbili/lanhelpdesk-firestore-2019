@@ -64,10 +64,9 @@ class TaskTypesList extends Component{
                 <tbody>
                   {this.state.taskTypes.filter((item)=>item.title.toLowerCase().includes(this.state.taskTypeFilter.toLowerCase())).map((taskType)=>
                     <tr key={taskType.id}
-                      className={"clickable" + (this.props.match.params.id === taskType.id ? " sidebar-item-active":"")}
+                      className={"clickable" + (this.props.match.params.id === taskType.id ? " active":"")}
                       onClick={()=>this.props.history.push('/helpdesk/settings/taskTypes/'+taskType.id)}>
-                      <td
-                        className={(this.props.match.params.id === taskType.id ? "text-highlight":"")}>
+                      <td>
                         {taskType.title}
                       </td>
                     </tr>

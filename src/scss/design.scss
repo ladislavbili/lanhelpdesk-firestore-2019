@@ -347,6 +347,10 @@ h3{
   font-family: Segoe UI Semibold;
 }
 
+h4{
+  font-family: Segoe UI Semibold;
+}
+
 .row{
   display: flex !important;
   margin: 0px;
@@ -717,7 +721,7 @@ hr{
 }
 
 .table>tbody>tr:hover {
-  background-color: $main-background-color;
+  background-color: #f4f8fb;
 }
 
 th {
@@ -767,6 +771,14 @@ tr:last-child{
 .table>tfoot>tr>td.active, .table>tfoot>tr>th.active, .table>thead>tr.active>td,
 .table>thead>tr.active>th, .table>thead>tr>td.active, .table>thead>tr>th.active {
     background-color: $sidebar-item-color;
+}
+
+.table-hover>tbody>tr.active:hover>td,
+ .table-hover>tbody>tr.active:hover>th,
+ .table-hover>tbody>tr:hover>.active,
+ .table-hover>tbody>tr>td.active:hover,
+ .table-hover>tbody>tr>th.active:hover{
+  background-color: $sidebar-item-color;
 }
 
 .table-checkbox{
@@ -1590,11 +1602,10 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   margin-top: 5px;
 }
 
-
 .selected-item {
-	background-color: #f4f8fb;
+	background-color: #d9ebf8;
 	li {
-		background-color: #f4f8fb;
+		background-color: #d9ebf8;
 	}
 }
 .small-p{

@@ -64,13 +64,12 @@ class TripTypesList extends Component{
                 <tbody>
                   {this.state.tripTypes.filter((item)=>item.title.toLowerCase().includes(this.state.tripTypeFilter.toLowerCase())).map((tripType)=>
                     <tr key={tripType.id}
-                      className={"clickable" + (this.props.match.params.id === tripType.id ? " sidebar-item-active":"")}
+                      className={"clickable" + (this.props.match.params.id === tripType.id ? " active":"")}
                       onClick={()=>this.props.history.push('/helpdesk/settings/tripTypes/'+tripType.id)}>
-                      <td
-                        className={(this.props.match.params.id === tripType.id ? "text-highlight":"")}>
+                      <td>
                         {tripType.title}
                       </td>
-                      <td className={(this.props.match.params.id === tripType.id ? "text-highlight":"")}>
+                      <td>
                         {tripType.order?tripType.order:0}
                       </td>
                     </tr>

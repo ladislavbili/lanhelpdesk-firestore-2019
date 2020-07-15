@@ -61,11 +61,10 @@ class RolesList extends Component{
                   {roles.map((role)=>
                     <tr
                       key={role.id}
-                      className={"clickable" + (this.props.match.params.id === role.id ? " sidebar-item-active":"")}
+                      className={"clickable" + (this.props.match.params.id === role.id ? " active":"")}
                       style={{whiteSpace: "nowrap",  overflow: "hidden"}}
                       onClick={()=>this.props.history.push('/helpdesk/settings/roles/'+role.id)}>
                       <td
-                        className={(this.props.match.params.id === role.id ? "text-highlight":"")}
                         style={{maxWidth: "300px", whiteSpace: "nowrap",  overflow: "hidden", textOverflow: "ellipsis"  }}  >
                         {role.title}
                       </td>

@@ -100,15 +100,14 @@ class UsersList extends Component{
                   {FILTERED_USERS.filter((item)=>item.email.toLowerCase().includes(this.state.userFilter.toLowerCase())).sort((user1,user2)=>user1.email>user2.email?1:-1).map((user)=>
                     <tr
                       key={user.id}
-                      className={"clickable" + (this.props.match.params.id === user.id ? " sidebar-item-active":"")}
+                      className={"clickable" + (this.props.match.params.id === user.id ? " active":"")}
                       style={{whiteSpace: "nowrap",  overflow: "hidden"}}
                       onClick={()=>this.props.history.push('/helpdesk/settings/users/'+user.id)}>
                       <td
-                        className={(this.props.match.params.id === user.id ? "text-highlight":"")}
                         style={{maxWidth: "300px", whiteSpace: "nowrap",  overflow: "hidden", textOverflow: "ellipsis"  }}  >
                         {user.email}
                       </td>
-                      <td  className={(this.props.match.params.id === user.id ? " sidebar-item-active":"") }
+                      <td  className={(this.props.match.params.id === user.id ? " active":"") }
                         style={{maxWidth: "200px", whiteSpace: "nowrap",  overflow: "hidden", textOverflow: "ellipsis"  }} >
                         {(this.state.companies.filter(company => company.id === user.company)[0] ? this.state.companies.filter(company => company.id === user.company)[0].title  : "NEZARADENÉ")}
                       </td>
