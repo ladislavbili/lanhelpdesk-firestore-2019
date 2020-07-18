@@ -267,7 +267,7 @@ class ProjectEdit extends Component{
       						className = "m-l-5 m-r-5"
       						centerHor
       						disabled={false}
-      						value = { this.props.showSubtasks}
+      						value = { this.state.showSubtasks}
       						onChange={()=> this.setState({showSubtasks: !this.state.showSubtasks})}
       						/> Subtasks will be visible when editing a task from this project.
       				</div>

@@ -125,6 +125,7 @@ class TaskEdit extends Component {
 		this.renderSelectsLayout1.bind(this);
 		this.renderSelectsLayout2.bind(this);
 		this.renderTags.bind(this);
+		this.renderPausalUse.bind(this);
 		this.renderPopis.bind(this);
 		this.renderModalUserAdd.bind(this);
 		this.renderModalCompanyAdd.bind(this);
@@ -675,6 +676,8 @@ class TaskEdit extends Component {
 			REQUESTERS,
 		} = this.getRenderAttributes();
 
+		console.log(this.state.company);
+
 		return (
 			<div className="flex">
 				{ this.state.showDescription &&
@@ -695,6 +698,8 @@ class TaskEdit extends Component {
 							<hr className="m-t-5 m-b-5"/>
 
 							{ this.state.layout === "1" && this.renderSelectsLayout1(taskID, canAdd, USERS_WITH_PERMISSIONS, REQUESTERS, availableProjects) }
+
+							{ this.renderPausalUse() }
 
 							{ this.renderPopis() }
 
@@ -1282,6 +1287,32 @@ class TaskEdit extends Component {
 		)
 	}
 
+	renderPausalUse(){
+		if (this.state.company && parseInt(this.state.company.workPausal) !== 0 && this.state.pausal.value === true){
+			return (
+				<div className="m-t-10">
+					<div className="center-hor">
+						<Label className="center-hor">Zostávajúci paušál: </Label>
+					</div>
+					<div className="center-hor">
+						<label className="center-hor">{`${this.state.drivePausal + this.state.workPausal} / ${this.state.pausalPrice}`}</label>
+					</div>
+				</div>
+			)
+		}
+
+	}
+
+/*				<div className="row m-t-10">
+					<div className="center-hor">
+						<Label className="center-hor">Zostávajúci paušál: </Label>
+					</div>
+					<div className="f-1 ">
+						<div className="center-hor">
+							<label className="center-hor">{`${this.state.drivePausal + this.state.workPausal} / ${this.state.pausalPrice}`}</label>
+						</div>
+					</div>
+				</div>*/
 	renderPopis(){
 		let RenderDescription = null;
 		if( this.state.viewOnly ){

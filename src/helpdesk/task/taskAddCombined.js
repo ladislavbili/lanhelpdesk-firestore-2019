@@ -1203,6 +1203,8 @@ export default class TaskAdd extends Component{
 							taskID={null}
 							taskAssigned={this.state.assignedTo}
 
+							showSubtasks={this.state.project ? this.state.project.showSubtasks : false}
+
 							submitService={(newService)=>{
 								this.setState({taskWorks:[...this.state.taskWorks,{id:this.getNewID(),...newService}]});
 							}}

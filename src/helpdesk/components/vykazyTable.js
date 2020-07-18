@@ -285,13 +285,7 @@ export default class Rozpocet extends Component {
 										</NavLink>
 									</NavItem>
 									}
-									{ this.props.showSubtasks &&
-											<NavItem>
-											<NavLink>
-												|
-											</NavLink>
-											</NavItem>
-										}
+									{ !this.props.showSubtasks &&
 										<NavItem>
 										<NavLink
 											className={classnames({ active: this.state.toggleTab === '1'}, "clickable", "")}
@@ -300,11 +294,12 @@ export default class Rozpocet extends Component {
 											Výkaz
 										</NavLink>
 									</NavItem>
+									}
 									<NavItem>
-										<NavLink>
-											|
-										</NavLink>
-									</NavItem>
+									<NavLink>
+										|
+									</NavLink>
+									</NavItem>										
 									<NavItem>
 										<NavLink
 											className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
@@ -315,12 +310,12 @@ export default class Rozpocet extends Component {
 									</NavItem>
 								</Nav>
 							</th>
-							{this.props.showColumns.includes(1) && <th width="190">Rieši</th> }
-							{this.props.showColumns.includes(2) && <th width="100">Typ</th> }
+							{this.props.showColumns.includes(1) && this.state.toggleTab !== "0" && <th width="190">Rieši</th> }
+							{this.props.showColumns.includes(2) && this.state.toggleTab !== "0" && <th width="100">Typ</th> }
 							{this.props.showColumns.includes(3) && <th width="50" className="t-a-r">Mn.</th> }
 							{this.props.showColumns.includes(4) && this.state.toggleTab === "2" && <th width="70" className="table-highlight-background t-a-r">Cenník/Nákup</th> }
 							{this.props.showColumns.includes(5) && this.state.toggleTab === "2" && <th width="70" className="table-highlight-background t-a-r">Zľava/Marža</th> }
-							{this.props.showColumns.includes(6) && <th width="70" className="t-a-r">Cena</th> }
+							{this.props.showColumns.includes(6) && this.state.toggleTab !== "0" && <th width="70" className="t-a-r">Cena</th> }
 							{this.props.showColumns.includes(7) && <th width="120" className="t-a-c">Akcie</th> }
 						</tr>
 					</thead>
@@ -366,7 +361,7 @@ export default class Rozpocet extends Component {
 									</td>
 								}
 								{/*Riesi*/}
-								{this.props.showColumns.includes(2) &&
+								{this.props.showColumns.includes(2) && this.state.toggleTab !== "0" &&
 									<td>
 										<Select
 											isDisabled={this.props.disabled}
@@ -380,7 +375,7 @@ export default class Rozpocet extends Component {
 									</td>
 								}
 								{/*Type*/}
-								{this.props.showColumns.includes(3) &&
+								{this.props.showColumns.includes(3) && this.state.toggleTab !== "0" &&
 									<td>
 										<Select
 											isDisabled={this.props.disabled}
@@ -466,7 +461,7 @@ export default class Rozpocet extends Component {
 									</td>
 								}
 								{/*Cena*/}
-								{this.props.showColumns.includes(7) &&
+								{this.props.showColumns.includes(7) && this.state.toggleTab !== "0" &&
 									<td className="p-t-15 p-l-8 p-r-8 t-a-r">
 										{
 											isNaN(this.getTotalDiscountedPrice(subtask)) ?
@@ -519,530 +514,539 @@ export default class Rozpocet extends Component {
 							</tr>
 						)}
 						{/* Trips */}
-						{ sortedTrips.map((trip, index) =>
-							<tr key={trip.id}>
-								{/*Checkbox done*/}
-								{this.props.showColumns.includes(0) &&
-									<td width="10">
-										<Checkbox
-											className="m-t-5"
-											disabled= { this.props.disabled }
-											value={ trip.done }
-											onChange={()=>{
-												this.props.updateTrip(trip.id,{done:!trip.done})
-											}}
-											/>
-									</td>
-								}
-								{/*Name*/}
-								{this.props.showColumns.includes(1) &&
-									<td>
-										<Select
-											isDisabled={this.props.disabled}
-											value={trip.type}
-											onChange={(type)=>{
-												this.props.updateTrip(trip.id,{type:type.id})
-											}}
-											options={this.props.tripTypes}
-											styles={invisibleSelectStyle}
-											/>
-									</td>
-								}
-								{/*Riesi*/}
-								{this.props.showColumns.includes(2) &&
-									<td>
-										<Select
-											isDisabled={this.props.disabled}
-											value={trip.assignedTo}
-											onChange={(assignedTo)=>{
-												this.props.updateTrip(trip.id,{assignedTo:assignedTo.id})
-											}}
-											options={this.props.taskAssigned}
-											styles={invisibleSelectStyle}
-											/>
-									</td>
-								}
-								{/*Type*/}
-								{this.props.showColumns.includes(3) &&
-									<td className="p-t-15 p-l-8">Výjazd</td>
-								}
-								{/*Mnozstvo*/}
-								{this.props.showColumns.includes(4) &&
-									<td>
-										<input
-											disabled={this.props.disabled}
-											type="number"
-											className="form-control hidden-input h-30"
-											value={
-												trip.id === this.state.focusedTrip
-												? this.state.editedTripQuantity
-												: trip.quantity
-											}
-											onBlur={() => {
-												this.props.updateTrip(trip.id,{quantity:isNaN(parseInt(this.state.editedTripQuantity))?0:parseInt(this.state.editedTripQuantity)})
-												this.setState({ focusedTrip: null });
-											}}
-											onFocus={() => {
-												this.onFocusWorkTrip(trip);
-											}}
-											onChange={e =>{
-												this.setState({ editedTripQuantity: e.target.value })
-											}}
-											/>
-									</td>
-								}
-								{/*Cennik/Nakup*/}
-								{this.props.showColumns.includes(5) && this.state.toggleTab === "2" &&
-									<td className="table-highlight-background p-l-8">
-										<span className="text" style={{float: "right"}}>
-											<div style={{float: "right"}} className="p-t-8 p-r-8">
-												€
-											</div>
-											<input
-												disabled={true}
-												type="number"
-												style={{display: "inline", width: "70%", float: "right"}}
-												className="form-control hidden-input h-30"
-												value={this.getPrice(trip.type)}
-												/>
-										</span>
-									</td>
-								}
-								{/*Zlava/Marža*/}
-								{this.props.showColumns.includes(6) && this.state.toggleTab === "2" &&
-									<td className="table-highlight-background">
-										<span className="text p-l-8">
-											-
-											<input
-												disabled={this.props.disabled}
-												type="number"
-												style={{display: "inline", width: "60%"}}
-												className="form-control hidden-input h-30"
-												value={
-													trip.id === this.state.focusedTrip ?
-													this.state.editedTripDiscount :
-													trip.discount
-												}
-												onBlur={() => {
-													this.props.updateTrip(trip.id,{discount:isNaN(parseInt(this.state.editedTripDiscount))?0:parseInt(this.state.editedTripDiscount)})
-													this.setState({ focusedTrip: null });
-												}}
-												onFocus={() => {
-													this.onFocusWorkTrip(trip);
-												}}
-												onChange={e =>{
-													this.setState({ editedTripDiscount: e.target.value })
-												}}
-												/>
-											%
-										</span>
-									</td>
-								}
-								{/*Cena*/}
-								{this.props.showColumns.includes(7) &&
-									<td className="p-t-15 p-l-8 p-r-8 t-a-r">
-										{isNaN(this.getTotalDiscountedPrice(trip)) ?
-											'No price' :
-											this.getTotalDiscountedPrice(trip) + " €"
+						{ sortedTrips.map((trip, index) => {
+								if (this.state.toggleTab !== "0"){
+									return (<tr key={trip.id}>
+										{/*Checkbox done*/}
+										{this.props.showColumns.includes(0) &&
+											<td width="10">
+												<Checkbox
+													className="m-t-5"
+													disabled= { this.props.disabled }
+													value={ trip.done }
+													onChange={()=>{
+														this.props.updateTrip(trip.id,{done:!trip.done})
+													}}
+													/>
+											</td>
 										}
-									</td>
-								}
-								{/*Toolbar*/}
-								{this.props.showColumns.includes(8) &&
-									<td className="t-a-r">
-										<button
-											className="btn waves-effect"
-											disabled={ this.props.disabled || index === 0 }
-											onClick={()=>{
-												this.props.updateTrips([
-													//update below
-													{ id: sortedTrips[ index - 1 ].id, newData: { order: index } },
-													//update current
-													{ id: trip.id, newData: { order: index - 1 } }
-												]);
-											}}
-											>
-											<i className="fa fa-arrow-up"  />
-										</button>
-										<button
-											className="btn waves-effect"
-											disabled={ this.props.disabled || index === sortedTrips.length - 1 }
-											onClick={()=>{
-												this.props.updateTrips([
-													//update below
-													{ id: sortedTrips[ index + 1 ].id, newData: { order: index } },
-													//update current
-													{ id: trip.id, newData: { order: index + 1 } }
-												]);
-											}}
-											>
-											<i className="fa fa-arrow-down"  />
-										</button>
-										<button
-											className="btn waves-effect"
-											disabled={this.props.disabled}
-											onClick={()=>{
-												if(window.confirm('Are you sure?')){
-													this.props.removeTrip(trip.id);
+										{/*Name*/}
+										{this.props.showColumns.includes(1) &&
+											<td>
+												<Select
+													isDisabled={this.props.disabled}
+													value={trip.type}
+													onChange={(type)=>{
+														this.props.updateTrip(trip.id,{type:type.id})
+													}}
+													options={this.props.tripTypes}
+													styles={invisibleSelectStyle}
+													/>
+											</td>
+										}
+										{/*Riesi*/}
+										{this.props.showColumns.includes(2) &&
+											<td>
+												<Select
+													isDisabled={this.props.disabled}
+													value={trip.assignedTo}
+													onChange={(assignedTo)=>{
+														this.props.updateTrip(trip.id,{assignedTo:assignedTo.id})
+													}}
+													options={this.props.taskAssigned}
+													styles={invisibleSelectStyle}
+													/>
+											</td>
+										}
+										{/*Type*/}
+										{this.props.showColumns.includes(3) &&
+											<td className="p-t-15 p-l-8">Výjazd</td>
+										}
+										{/*Mnozstvo*/}
+										{this.props.showColumns.includes(4) &&
+											<td>
+												<input
+													disabled={this.props.disabled}
+													type="number"
+													className="form-control hidden-input h-30"
+													value={
+														trip.id === this.state.focusedTrip
+														? this.state.editedTripQuantity
+														: trip.quantity
+													}
+													onBlur={() => {
+														this.props.updateTrip(trip.id,{quantity:isNaN(parseInt(this.state.editedTripQuantity))?0:parseInt(this.state.editedTripQuantity)})
+														this.setState({ focusedTrip: null });
+													}}
+													onFocus={() => {
+														this.onFocusWorkTrip(trip);
+													}}
+													onChange={e =>{
+														this.setState({ editedTripQuantity: e.target.value })
+													}}
+													/>
+											</td>
+										}
+										{/*Cennik/Nakup*/}
+										{this.props.showColumns.includes(5) && this.state.toggleTab === "2" &&
+											<td className="table-highlight-background p-l-8">
+												<span className="text" style={{float: "right"}}>
+													<div style={{float: "right"}} className="p-t-8 p-r-8">
+														€
+													</div>
+													<input
+														disabled={true}
+														type="number"
+														style={{display: "inline", width: "70%", float: "right"}}
+														className="form-control hidden-input h-30"
+														value={this.getPrice(trip.type)}
+														/>
+												</span>
+											</td>
+										}
+										{/*Zlava/Marža*/}
+										{this.props.showColumns.includes(6) && this.state.toggleTab === "2" &&
+											<td className="table-highlight-background">
+												<span className="text p-l-8">
+													-
+													<input
+														disabled={this.props.disabled}
+														type="number"
+														style={{display: "inline", width: "60%"}}
+														className="form-control hidden-input h-30"
+														value={
+															trip.id === this.state.focusedTrip ?
+															this.state.editedTripDiscount :
+															trip.discount
+														}
+														onBlur={() => {
+															this.props.updateTrip(trip.id,{discount:isNaN(parseInt(this.state.editedTripDiscount))?0:parseInt(this.state.editedTripDiscount)})
+															this.setState({ focusedTrip: null });
+														}}
+														onFocus={() => {
+															this.onFocusWorkTrip(trip);
+														}}
+														onChange={e =>{
+															this.setState({ editedTripDiscount: e.target.value })
+														}}
+														/>
+													%
+												</span>
+											</td>
+										}
+										{/*Cena*/}
+										{this.props.showColumns.includes(7) &&
+											<td className="p-t-15 p-l-8 p-r-8 t-a-r">
+												{isNaN(this.getTotalDiscountedPrice(trip)) ?
+													'No price' :
+													this.getTotalDiscountedPrice(trip) + " €"
 												}
-											}}
-											>
-											<i className="fa fa-times" />
-										</button>
-									</td>
+											</td>
+										}
+										{/*Toolbar*/}
+										{this.props.showColumns.includes(8) &&
+											<td className="t-a-r">
+												<button
+													className="btn waves-effect"
+													disabled={ this.props.disabled || index === 0 }
+													onClick={()=>{
+														this.props.updateTrips([
+															//update below
+															{ id: sortedTrips[ index - 1 ].id, newData: { order: index } },
+															//update current
+															{ id: trip.id, newData: { order: index - 1 } }
+														]);
+													}}
+													>
+													<i className="fa fa-arrow-up"  />
+												</button>
+												<button
+													className="btn waves-effect"
+													disabled={ this.props.disabled || index === sortedTrips.length - 1 }
+													onClick={()=>{
+														this.props.updateTrips([
+															//update below
+															{ id: sortedTrips[ index + 1 ].id, newData: { order: index } },
+															//update current
+															{ id: trip.id, newData: { order: index + 1 } }
+														]);
+													}}
+													>
+													<i className="fa fa-arrow-down"  />
+												</button>
+												<button
+													className="btn waves-effect"
+													disabled={this.props.disabled}
+													onClick={()=>{
+														if(window.confirm('Are you sure?')){
+															this.props.removeTrip(trip.id);
+														}
+													}}
+													>
+													<i className="fa fa-times" />
+												</button>
+											</td>
+										}
+									</tr>)
 								}
-							</tr>
+							}
 						)}
 						{/* Materials */}
-						{ sortedMaterials.map((material,index) =>
-							<tr key={material.id}>
-								{/*Checkbox done*/}
-								{this.props.showColumns.includes(0) &&
-									<td width="10">
-										<Checkbox
-											className="m-t-5"
-											disabled= { this.props.disabled }
-											value={ material.done }
-											onChange={()=>{
-												this.props.updateMaterial(material.id,{done:!material.done})
-											}}
-											/>
-									</td>
-								}
-								{/*Name*/}
-								{this.props.showColumns.includes(1) &&
-									<td className="">
-										<input
-											disabled={this.props.disabled}
-											className="form-control hidden-input"
-											value={
-												material.id === this.state.focusedMaterial
-												? this.state.editedMaterialTitle
-												: material.title
-											}
-											onBlur={() => {
-												this.props.updateMaterial(material.id,{title:this.state.editedMaterialTitle})
-												this.setState({ focusedMaterial: null });
-											}}
-											onFocus={() => this.onFocusMaterial(material)}
-											onChange={e =>{
-												this.setState({ editedMaterialTitle: e.target.value })
-											}}
-											/>
-									</td>
-								}
-								{/*Riesi*/}
-								{this.props.showColumns.includes(2) &&
-									<td></td>
-								}
-								{/*Type*/}
-								{this.props.showColumns.includes(3) &&
-									<td className="p-l-8 p-t-15">
-										Materiál
-									</td>
-								}
-								{/*Mnozstvo*/}
-								{this.props.showColumns.includes(4) &&
-									<td>
-										<input
-											disabled={this.props.disabled}
-											type="number"
-											className="form-control hidden-input h-30"
-											value={
-												material.id === this.state.focusedMaterial
-												? this.state.editedMaterialQuantity
-												: material.quantity
-											}
-											onBlur={() => {
-												//submit
-												this.props.updateMaterial(material.id,{quantity:this.state.editedMaterialQuantity})
-												this.setState({ focusedMaterial: null });
-											}}
-											onFocus={() => this.onFocusMaterial(material)}
-											onChange={e =>{
-												this.setState({ editedMaterialQuantity: e.target.value })
-											}}
-											/>
-									</td>
-								}
-								{/*Cennik/Nakup*/}
-								{this.props.showColumns.includes(5) && this.state.toggleTab === "2" &&
-									<td className="table-highlight-background p-l-8">
-										<span className="text" style={{float: "right"}}>
-											<div style={{float: "right"}} className="p-t-8 p-r-8">
-												€
-											</div>
-											<input
-												disabled={this.props.disabled}
-												type="number"
-												style={{display: "inline", width: "70%", float: "right"}}
-												className="form-control hidden-input h-30"
-												value={
-													material.id === this.state.focusedMaterial
-													? this.state.editedMaterialPrice
-													: material.price
-												}
-												onBlur={() => {
-													//submit
-													this.props.updateMaterial(material.id,{price:this.state.editedMaterialPrice})
-													this.setState({ focusedMaterial: null });
-												}}
-												onFocus={() => this.onFocusMaterial(material)}
-												onChange={e =>{
-													this.setState({ editedMaterialPrice: e.target.value })}
-												}
-												/>
-										</span>
-									</td>
-								}
-								{/*Zlava/Marža*/}
-								{this.props.showColumns.includes(6) && this.state.toggleTab === "2" &&
-									<td className="table-highlight-background p-l-8"> {/* //zlava/marza*/}
-										<span className="text">
-											+
-											<input
-												disabled={this.props.disabled}
-												type="number"
-												style={{display: "inline", width: "60%"}}
-												className="form-control hidden-input h-30"
-												value={parseInt(
-													material.id === this.state.focusedMaterial ?
-													this.state.editedMaterialMargin :
-													material.margin
-												)}
-												onBlur={() => {
-													this.props.updateMaterial(material.id,{margin:this.state.editedMaterialMargin})
-													this.setState({ focusedMaterial: null });
-												}}
-												onFocus={() => this.onFocusMaterial(material)}
-												onChange={e =>{
-													this.setState({ editedMaterialMargin: e.target.value })
-												}}
-												/>
-											%
-										</span>
-									</td>
-								}
-								{/*Cena*/}
-								{this.props.showColumns.includes(7) &&
-									<td className="p-l-8 p-t-15 p-r-8 t-a-r">
-										{
-											material.id === this.state.focusedMaterial ?
-											(  this.getDiscountedMaterialPrice({price:this.state.editedMaterialPrice, margin:this.state.editedMaterialMargin}).toFixed(2) + " €" ) :
-											( this.getDiscountedMaterialPrice(material) ).toFixed(2) + " €"
+						{ sortedMaterials.map((material,index) => {
+								if (this.state.toggleTab !== "0"){
+									return (<tr key={material.id}>
+										{/*Checkbox done*/}
+										{this.props.showColumns.includes(0) &&
+											<td width="10">
+												<Checkbox
+													className="m-t-5"
+													disabled= { this.props.disabled }
+													value={ material.done }
+													onChange={()=>{
+														this.props.updateMaterial(material.id,{done:!material.done})
+													}}
+													/>
+											</td>
 										}
-									</td>
-								}
-								{/*Toolbar*/}
-								{this.props.showColumns.includes(8) &&
-									<td className="t-a-r">
-										<button className="btn waves-effect" disabled={this.props.disabled}>
-											<i
-												className="fa fa-sync-alt"
-												onClick={()=>{
-													if(parseInt(material.price) <= 50){
-														this.props.updateMaterial(material.id,{margin:(this.props.company && this.props.company.pricelist)?parseInt(this.props.company.pricelist.materialMargin):material.margin})
-													}else{
-														this.props.updateMaterial(material.id,{margin:(this.props.company && this.props.company.pricelist)?parseInt(this.props.company.pricelist.materialMarginExtra):material.margin})
+										{/*Name*/}
+										{this.props.showColumns.includes(1) &&
+											<td className="">
+												<input
+													disabled={this.props.disabled}
+													className="form-control hidden-input"
+													value={
+														material.id === this.state.focusedMaterial
+														? this.state.editedMaterialTitle
+														: material.title
 													}
-												}}
-												/>
-										</button>
-										<button
-											className="btn waves-effect"
-											disabled={ this.props.disabled || index === 0 }
-											onClick={()=>{
-												this.props.updateMaterials([
-													//update below
-													{ id: sortedMaterials[ index - 1 ].id, newData: { order: index } },
-													//update current
-													{ id: material.id, newData: { order: index - 1 } }
-												]);
-											}}
-											>
-											<i className="fa fa-arrow-up"  />
-										</button>
-										<button
-											className="btn waves-effect"
-											disabled={ this.props.disabled || index === sortedMaterials.length - 1 }
-											onClick={()=>{
-												this.props.updateMaterials([
-													//update below
-													{ id: sortedMaterials[ index + 1 ].id, newData: { order: index } },
-													//update current
-													{ id: material.id, newData: { order: index + 1 } }
-												]);
-											}}
-											>
-											<i className="fa fa-arrow-down"  />
-										</button>
-										<button className="btn waves-effect"
-											disabled={this.props.disabled}
-											onClick={()=>{
-												if(window.confirm('Are you sure?')){
-													this.props.removeMaterial(material.id);
+													onBlur={() => {
+														this.props.updateMaterial(material.id,{title:this.state.editedMaterialTitle})
+														this.setState({ focusedMaterial: null });
+													}}
+													onFocus={() => this.onFocusMaterial(material)}
+													onChange={e =>{
+														this.setState({ editedMaterialTitle: e.target.value })
+													}}
+													/>
+											</td>
+										}
+										{/*Riesi*/}
+										{this.props.showColumns.includes(2) &&
+											<td></td>
+										}
+										{/*Type*/}
+										{this.props.showColumns.includes(3) &&
+											<td className="p-l-8 p-t-15">
+												Materiál
+											</td>
+										}
+										{/*Mnozstvo*/}
+										{this.props.showColumns.includes(4) &&
+											<td>
+												<input
+													disabled={this.props.disabled}
+													type="number"
+													className="form-control hidden-input h-30"
+													value={
+														material.id === this.state.focusedMaterial
+														? this.state.editedMaterialQuantity
+														: material.quantity
+													}
+													onBlur={() => {
+														//submit
+														this.props.updateMaterial(material.id,{quantity:this.state.editedMaterialQuantity})
+														this.setState({ focusedMaterial: null });
+													}}
+													onFocus={() => this.onFocusMaterial(material)}
+													onChange={e =>{
+														this.setState({ editedMaterialQuantity: e.target.value })
+													}}
+													/>
+											</td>
+										}
+										{/*Cennik/Nakup*/}
+										{this.props.showColumns.includes(5) && this.state.toggleTab === "2" &&
+											<td className="table-highlight-background p-l-8">
+												<span className="text" style={{float: "right"}}>
+													<div style={{float: "right"}} className="p-t-8 p-r-8">
+														€
+													</div>
+													<input
+														disabled={this.props.disabled}
+														type="number"
+														style={{display: "inline", width: "70%", float: "right"}}
+														className="form-control hidden-input h-30"
+														value={
+															material.id === this.state.focusedMaterial
+															? this.state.editedMaterialPrice
+															: material.price
+														}
+														onBlur={() => {
+															//submit
+															this.props.updateMaterial(material.id,{price:this.state.editedMaterialPrice})
+															this.setState({ focusedMaterial: null });
+														}}
+														onFocus={() => this.onFocusMaterial(material)}
+														onChange={e =>{
+															this.setState({ editedMaterialPrice: e.target.value })}
+														}
+														/>
+												</span>
+											</td>
+										}
+										{/*Zlava/Marža*/}
+										{this.props.showColumns.includes(6) && this.state.toggleTab === "2" &&
+											<td className="table-highlight-background p-l-8"> {/* //zlava/marza*/}
+												<span className="text">
+													+
+													<input
+														disabled={this.props.disabled}
+														type="number"
+														style={{display: "inline", width: "60%"}}
+														className="form-control hidden-input h-30"
+														value={parseInt(
+															material.id === this.state.focusedMaterial ?
+															this.state.editedMaterialMargin :
+															material.margin
+														)}
+														onBlur={() => {
+															this.props.updateMaterial(material.id,{margin:this.state.editedMaterialMargin})
+															this.setState({ focusedMaterial: null });
+														}}
+														onFocus={() => this.onFocusMaterial(material)}
+														onChange={e =>{
+															this.setState({ editedMaterialMargin: e.target.value })
+														}}
+														/>
+													%
+												</span>
+											</td>
+										}
+										{/*Cena*/}
+										{this.props.showColumns.includes(7) &&
+											<td className="p-l-8 p-t-15 p-r-8 t-a-r">
+												{
+													material.id === this.state.focusedMaterial ?
+													(  this.getDiscountedMaterialPrice({price:this.state.editedMaterialPrice, margin:this.state.editedMaterialMargin}).toFixed(2) + " €" ) :
+													( this.getDiscountedMaterialPrice(material) ).toFixed(2) + " €"
 												}
-											}}>
-											<i className="fa fa-times" />
-										</button>
-									</td>
+											</td>
+										}
+										{/*Toolbar*/}
+										{this.props.showColumns.includes(8) &&
+											<td className="t-a-r">
+												<button className="btn waves-effect" disabled={this.props.disabled}>
+													<i
+														className="fa fa-sync-alt"
+														onClick={()=>{
+															if(parseInt(material.price) <= 50){
+																this.props.updateMaterial(material.id,{margin:(this.props.company && this.props.company.pricelist)?parseInt(this.props.company.pricelist.materialMargin):material.margin})
+															}else{
+																this.props.updateMaterial(material.id,{margin:(this.props.company && this.props.company.pricelist)?parseInt(this.props.company.pricelist.materialMarginExtra):material.margin})
+															}
+														}}
+														/>
+												</button>
+												<button
+													className="btn waves-effect"
+													disabled={ this.props.disabled || index === 0 }
+													onClick={()=>{
+														this.props.updateMaterials([
+															//update below
+															{ id: sortedMaterials[ index - 1 ].id, newData: { order: index } },
+															//update current
+															{ id: material.id, newData: { order: index - 1 } }
+														]);
+													}}
+													>
+													<i className="fa fa-arrow-up"  />
+												</button>
+												<button
+													className="btn waves-effect"
+													disabled={ this.props.disabled || index === sortedMaterials.length - 1 }
+													onClick={()=>{
+														this.props.updateMaterials([
+															//update below
+															{ id: sortedMaterials[ index + 1 ].id, newData: { order: index } },
+															//update current
+															{ id: material.id, newData: { order: index + 1 } }
+														]);
+													}}
+													>
+													<i className="fa fa-arrow-down"  />
+												</button>
+												<button className="btn waves-effect"
+													disabled={this.props.disabled}
+													onClick={()=>{
+														if(window.confirm('Are you sure?')){
+															this.props.removeMaterial(material.id);
+														}
+													}}>
+													<i className="fa fa-times" />
+												</button>
+											</td>
+										}
+									</tr>)
 								}
-							</tr>
+							}
 						)}
 						{/* Custom Items */}
-						{ sortedCustomItems.map((customItem, index)=>
-							<tr key={customItem.id}>
-								{/*Checkbox done*/}
-								{this.props.showColumns.includes(0) &&
-									<td width="10">
-										<Checkbox
-											className="m-t-5"
-											disabled= { this.props.disabled }
-											value={ customItem.done }
-											onChange={()=>{
-												this.props.updateCustomItem(customItem.id,{done:!customItem.done})
-											}}
-											/>
-									</td>
+						{ sortedCustomItems.map((customItem, index)=> {
+								if (this.state.toggleTab !== "0"){
+									return (<tr key={customItem.id}>
+										{/*Checkbox done*/}
+										{this.props.showColumns.includes(0) &&
+											<td width="10">
+												<Checkbox
+													className="m-t-5"
+													disabled= { this.props.disabled }
+													value={ customItem.done }
+													onChange={()=>{
+														this.props.updateCustomItem(customItem.id,{done:!customItem.done})
+													}}
+													/>
+											</td>
+										}
+										{/*Name*/}
+										{this.props.showColumns.includes(1) &&
+											<td className="">
+												<input
+													disabled={this.props.disabled}
+													className="form-control hidden-input"
+													value={
+														customItem.id === this.state.focusedCustomItem
+														? this.state.editedCustomItemTitle
+														: customItem.title
+													}
+													onBlur={() => {
+														this.props.updateCustomItem(customItem.id,{title:this.state.editedCustomItemTitle})
+														this.setState({ focusedCustomItem: null });
+													}}
+													onFocus={() => this.onFocusCustomItem(customItem)}
+													onChange={e =>{
+														this.setState({ editedCustomItemTitle: e.target.value })
+													}}
+													/>
+											</td>
+										}
+										{/*Riesi*/}
+										{this.props.showColumns.includes(2) &&
+											<td></td>
+										}
+										{/*Type*/}
+										{this.props.showColumns.includes(3) &&
+											<td className="p-l-8 p-t-15">
+												Voľná položka
+											</td>
+										}
+										{/*Mnozstvo*/}
+										{this.props.showColumns.includes(4) &&
+											<td>
+												<input
+													disabled={this.props.disabled}
+													type="number"
+													className="form-control hidden-input h-30"
+													value={
+														customItem.id === this.state.focusedCustomItem
+														? this.state.editedCustomItemQuantity
+														: customItem.quantity
+													}
+													onBlur={() => {
+														//submit
+														this.props.updateCustomItem(customItem.id,{quantity:this.state.editedCustomItemQuantity})
+														this.setState({ focusedCustomItem: null });
+													}}
+													onFocus={() => this.onFocusCustomItem(customItem)}
+													onChange={e =>{
+														this.setState({ editedCustomItemQuantity: e.target.value })
+													}}
+													/>
+											</td>
+										}
+										{/*Cennik/Nakup*/}
+										{this.props.showColumns.includes(5) && this.state.toggleTab === "2" &&
+											<td className="table-highlight-background p-l-8">
+											</td>
+										}
+										{/*Zlava/Marža*/}
+										{this.props.showColumns.includes(6) && this.state.toggleTab === "2" &&
+											<td className="table-highlight-background p-l-8">
+											</td>
+										}
+										{/*Cena*/}
+										{this.props.showColumns.includes(7) &&
+											<td className="p-l-8">
+												<span className="text" style={{float: "right"}}>
+													<div style={{float: "right"}} className="p-t-8 p-r-8">
+														€
+													</div>
+													<input
+														disabled={this.props.disabled}
+														type="number"
+														style={{display: "inline", width: "70%", float: "right"}}
+														className="form-control hidden-input h-30"
+														value={
+															customItem.id === this.state.focusedCustomItem
+															? this.state.editedCustomItemPrice
+															: customItem.price
+														}
+														onBlur={() => {
+															this.props.updateCustomItem(customItem.id,{price:this.state.editedCustomItemPrice})
+															this.setState({ focusedCustomItem: null });
+														}}
+														onFocus={() => this.onFocusCustomItem(customItem)}
+														onChange={e =>{
+															this.setState({ editedCustomItemPrice: e.target.value })}
+														}
+														/>
+												</span>
+											</td>
+										}
+										{/*Toolbar*/}
+										{this.props.showColumns.includes(8) &&
+											<td className="t-a-r">
+												<button
+													className="btn waves-effect"
+													disabled={ this.props.disabled || index === 0 }
+													onClick={()=>{
+														this.props.updateCustomItems([
+															//update below
+															{ id: sortedCustomItems[ index - 1 ].id, newData: { order: index } },
+															//update current
+															{ id: customItem.id, newData: { order: index - 1 } }
+														]);
+													}}
+													>
+													<i className="fa fa-arrow-up"  />
+												</button>
+												<button
+													className="btn waves-effect"
+													disabled={ this.props.disabled || index === sortedCustomItems.length - 1 }
+													onClick={()=>{
+														this.props.updateCustomItems([
+															//update below
+															{ id: sortedCustomItems[ index + 1 ].id, newData: { order: index } },
+															//update current
+															{ id: customItem.id, newData: { order: index + 1 } }
+														]);
+													}}
+													>
+													<i className="fa fa-arrow-down"  />
+												</button>
+												<button className="btn waves-effect"
+													disabled={this.props.disabled}
+													onClick={()=>{
+														if(window.confirm('Are you sure?')){
+															this.props.removeCustomItem(customItem.id);
+														}
+													}}>
+													<i className="fa fa-times" />
+												</button>
+											</td>
+										}
+									</tr>)
 								}
-								{/*Name*/}
-								{this.props.showColumns.includes(1) &&
-									<td className="">
-										<input
-											disabled={this.props.disabled}
-											className="form-control hidden-input"
-											value={
-												customItem.id === this.state.focusedCustomItem
-												? this.state.editedCustomItemTitle
-												: customItem.title
-											}
-											onBlur={() => {
-												this.props.updateCustomItem(customItem.id,{title:this.state.editedCustomItemTitle})
-												this.setState({ focusedCustomItem: null });
-											}}
-											onFocus={() => this.onFocusCustomItem(customItem)}
-											onChange={e =>{
-												this.setState({ editedCustomItemTitle: e.target.value })
-											}}
-											/>
-									</td>
-								}
-								{/*Riesi*/}
-								{this.props.showColumns.includes(2) &&
-									<td></td>
-								}
-								{/*Type*/}
-								{this.props.showColumns.includes(3) &&
-									<td className="p-l-8 p-t-15">
-										Voľná položka
-									</td>
-								}
-								{/*Mnozstvo*/}
-								{this.props.showColumns.includes(4) &&
-									<td>
-										<input
-											disabled={this.props.disabled}
-											type="number"
-											className="form-control hidden-input h-30"
-											value={
-												customItem.id === this.state.focusedCustomItem
-												? this.state.editedCustomItemQuantity
-												: customItem.quantity
-											}
-											onBlur={() => {
-												//submit
-												this.props.updateCustomItem(customItem.id,{quantity:this.state.editedCustomItemQuantity})
-												this.setState({ focusedCustomItem: null });
-											}}
-											onFocus={() => this.onFocusCustomItem(customItem)}
-											onChange={e =>{
-												this.setState({ editedCustomItemQuantity: e.target.value })
-											}}
-											/>
-									</td>
-								}
-								{/*Cennik/Nakup*/}
-								{this.props.showColumns.includes(5) && this.state.toggleTab === "2" &&
-									<td className="table-highlight-background p-l-8">
-									</td>
-								}
-								{/*Zlava/Marža*/}
-								{this.props.showColumns.includes(6) && this.state.toggleTab === "2" &&
-									<td className="table-highlight-background p-l-8">
-									</td>
-								}
-								{/*Cena*/}
-								{this.props.showColumns.includes(7) &&
-									<td className="p-l-8">
-										<span className="text" style={{float: "right"}}>
-											<div style={{float: "right"}} className="p-t-8 p-r-8">
-												€
-											</div>
-											<input
-												disabled={this.props.disabled}
-												type="number"
-												style={{display: "inline", width: "70%", float: "right"}}
-												className="form-control hidden-input h-30"
-												value={
-													customItem.id === this.state.focusedCustomItem
-													? this.state.editedCustomItemPrice
-													: customItem.price
-												}
-												onBlur={() => {
-													this.props.updateCustomItem(customItem.id,{price:this.state.editedCustomItemPrice})
-													this.setState({ focusedCustomItem: null });
-												}}
-												onFocus={() => this.onFocusCustomItem(customItem)}
-												onChange={e =>{
-													this.setState({ editedCustomItemPrice: e.target.value })}
-												}
-												/>
-										</span>
-									</td>
-								}
-								{/*Toolbar*/}
-								{this.props.showColumns.includes(8) &&
-									<td className="t-a-r">
-										<button
-											className="btn waves-effect"
-											disabled={ this.props.disabled || index === 0 }
-											onClick={()=>{
-												this.props.updateCustomItems([
-													//update below
-													{ id: sortedCustomItems[ index - 1 ].id, newData: { order: index } },
-													//update current
-													{ id: customItem.id, newData: { order: index - 1 } }
-												]);
-											}}
-											>
-											<i className="fa fa-arrow-up"  />
-										</button>
-										<button
-											className="btn waves-effect"
-											disabled={ this.props.disabled || index === sortedCustomItems.length - 1 }
-											onClick={()=>{
-												this.props.updateCustomItems([
-													//update below
-													{ id: sortedCustomItems[ index + 1 ].id, newData: { order: index } },
-													//update current
-													{ id: customItem.id, newData: { order: index + 1 } }
-												]);
-											}}
-											>
-											<i className="fa fa-arrow-down"  />
-										</button>
-										<button className="btn waves-effect"
-											disabled={this.props.disabled}
-											onClick={()=>{
-												if(window.confirm('Are you sure?')){
-													this.props.removeCustomItem(customItem.id);
-												}
-											}}>
-											<i className="fa fa-times" />
-										</button>
-									</td>
-								}
-							</tr>
+							}
 						)}
 
 						{/* ADD Work */}
@@ -1089,7 +1093,7 @@ export default class Rozpocet extends Component {
 									</td>
 								}
 								{/*Riesi*/}
-								{this.props.showColumns.includes(2) &&
+								{this.props.showColumns.includes(2) && this.state.toggleTab !== "0" &&
 									<td className="p-l-8">
 										<Select
 											isDisabled={this.props.disabled}
@@ -1103,7 +1107,7 @@ export default class Rozpocet extends Component {
 									</td>
 								}
 								{/*Type*/}
-								{this.props.showColumns.includes(3) &&
+								{this.props.showColumns.includes(3) && this.state.toggleTab !== "0" &&
 									<td className="p-l-8">{/*typ*/}
 										<Select
 											isDisabled={this.props.disabled}
@@ -1636,7 +1640,7 @@ export default class Rozpocet extends Component {
 											<i className="fa fa-plus" /> Práca
 										</button>
 									}
-									{!this.state.showAddTrip &&
+									{!this.state.showAddTrip && !this.props.showSubtasks &&
 										<button className="btn"
 											disabled={this.props.disabled}
 											onClick={()=>{
@@ -1646,7 +1650,7 @@ export default class Rozpocet extends Component {
 											<i className="fa fa-plus" /> Výjazd
 										</button>
 									}
-									{!this.state.showAddMaterial &&
+									{!this.state.showAddMaterial && !this.props.showSubtasks &&
 										<button className="btn"
 											disabled={this.props.disabled}
 											onClick={()=>{
@@ -1656,7 +1660,7 @@ export default class Rozpocet extends Component {
 											<i className="fa fa-plus" /> Materiál
 										</button>
 									}
-									{!this.state.showAddCustomItem &&
+									{!this.state.showAddCustomItem && !this.props.showSubtasks &&
 										<button className="btn"
 											disabled={this.props.disabled}
 											onClick={()=>{
