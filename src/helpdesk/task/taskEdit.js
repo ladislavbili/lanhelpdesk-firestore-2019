@@ -1289,13 +1289,13 @@ class TaskEdit extends Component {
 
 	renderPausalUse(){
 		if (this.state.company && parseInt(this.state.company.workPausal) !== 0 && this.state.pausal.value === true){
+			const USED = this.state.drivePausal + this.state.workPausal;
+			const MAX = this.state.pausalPrice;
 			return (
 				<div className="m-t-10">
-					<div className="center-hor">
+					<div className="center-hor row">
 						<Label className="center-hor">Zostávajúci paušál: </Label>
-					</div>
-					<div className="center-hor">
-						<label className="center-hor">{`${this.state.drivePausal + this.state.workPausal} / ${this.state.pausalPrice}`}</label>
+						<label className="center-hor">{`${USED} / ${MAX}`}</label>
 					</div>
 				</div>
 			)
