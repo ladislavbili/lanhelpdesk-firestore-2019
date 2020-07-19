@@ -197,14 +197,23 @@ html{
 .w-5{
   width: 5%;
 }
+.w-8{
+  width: 8%;
+}
 .w-10{
   width: 10%;
 }
 .w-20{
   width: 20%;
 }
+.w-25{
+  width: 25%;
+}
 .w-30{
   width: 30%;
+}
+.w-33{
+  width: 33%;
 }
 .w-40{
   width: 40%;
@@ -286,6 +295,9 @@ html{
 
 .display-inline{
   display: inline;
+}
+.display-inline-block{
+  display: inline-block;
 }
 .waves-effect {
     position: relative;

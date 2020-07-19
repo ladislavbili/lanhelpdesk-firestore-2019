@@ -4,7 +4,7 @@ const initialState = {
   orderBy:'status',
   ascending:false,
   tasklistLayout:0,
-  calendarLayout:'month',
+  calendarLayout:'week',
 };
 
 export default function userReducer(state = initialState, action) {

@@ -39,6 +39,19 @@ const DnDCalendar = withDragAndDrop(Calendar);
 
 class TaskCalendar extends Component {
 
+  constructor(props) {
+		super(props);
+		this.state = {
+      today: new Date(),
+    }
+  }
+
+  componentWillReceiveProps(props){
+    this.setState({
+      today: new Date(),
+    })
+  }
+
 	onEventResize(item){
 		if(this.props.currentUser.userData.role.value === 0){
 			return;
@@ -191,6 +204,14 @@ class TaskCalendar extends Component {
   					popup={true}
   					formats={formats}
 
+            min={
+              new Date(
+                this.state.today.getFullYear(),
+                this.state.today.getMonth(),
+                this.state.today.getDate(),
+                8
+              )
+            }
 
   					onEventDrop = { this.onEventDrop.bind(this) }
   					onEventResize = { this.onEventResize.bind(this) }

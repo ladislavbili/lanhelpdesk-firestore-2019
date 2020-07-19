@@ -8,7 +8,7 @@ import {selectStyle} from 'configs/components/select';
 import datePickerConfig from 'configs/components/datepicker';
 import {toMomentInput, fromMomentToUnix } from '../../helperFunctions';
 import { intervals } from 'configs/constants/repeat';
- 
+
 export default class Repeat extends Component{
 constructor(props) {
   super(props);
@@ -61,7 +61,7 @@ toggleRepeat() {
 render() {
   const repeatInterval = this.props.repeat?(intervals.find((interval)=>interval.title===this.props.repeat.repeatInterval)):null;
   return (
-    <div>
+    <div  className="display-inline">
       {this.props.vertical &&
         <div className="">
           <Label className="col-form-label-2" style={{display: "block"}}>Repeat</Label>
@@ -73,9 +73,9 @@ render() {
         </div>
       }
       {!this.props.vertical &&
-        <div className="row p-r-10">
-          <Label className="col-3 col-form-label">Repeat</Label>
-          <div className="col-9">
+        <div className="display-inline">
+          <Label className="col-form-label w-8">Repeat</Label>
+          <div className="display-inline-block w-25 p-r-10">
             <Button type="button" className="repeat-btn flex" id={"openPopover"+this.props.taskID} onClick={this.toggleRepeat}>
               {this.props.repeat?("Opakovať každý "+ parseInt(this.props.repeat.repeatEvery/repeatInterval.value) + ' ' + repeatInterval.title) :"No repeat"}
             </Button>

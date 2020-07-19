@@ -125,7 +125,6 @@ class TaskEdit extends Component {
 		this.renderSelectsLayout1.bind(this);
 		this.renderSelectsLayout2.bind(this);
 		this.renderTags.bind(this);
-		this.renderPausalUse.bind(this);
 		this.renderPopis.bind(this);
 		this.renderModalUserAdd.bind(this);
 		this.renderModalCompanyAdd.bind(this);
@@ -699,8 +698,6 @@ class TaskEdit extends Component {
 
 							{ this.state.layout === "1" && this.renderSelectsLayout1(taskID, canAdd, USERS_WITH_PERMISSIONS, REQUESTERS, availableProjects) }
 
-							{ this.renderPausalUse() }
-
 							{ this.renderPopis() }
 
 							{ this.renderAttachments(taskID) }
@@ -866,6 +863,198 @@ class TaskEdit extends Component {
 	}
 
 	renderSelectsLayout1(taskID, canAdd, usersWithPermissions, requesters, availableProjects){
+		return (
+			<div>
+				{/* Project, Assigned */}
+				<div className="col-lg-12">
+					{/* Project */}
+					<div className="col-lg-4">
+						<div className="row p-r-10">
+							<Label className="col-3 col-form-label">Projekt</Label>
+							<div className="col-9">
+								<Select
+									placeholder="Zadajte projekt"
+									isDisabled={ this.state.viewOnly }
+									value={ this.state.project }
+									onChange={ this.changeProject.bind(this) }
+									options={ availableProjects }
+									styles={ invisibleSelectStyleNoArrowRequired }
+									/>
+							</div>
+						</div>
+					</div>
+					{/* Assigned */}
+					{ this.state.defaultFields.assignedTo.show &&
+						<div className="col-lg-8">
+							<div className="row p-r-10">
+								<Label className="col-1-5 col-form-label">Assigned</Label>
+								<div className="col-10-5">
+									<Select
+										value={this.state.assignedTo.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id))}
+										placeholder="Select"
+										isMulti
+										isDisabled={this.state.defaultFields.assignedTo.fixed||this.state.viewOnly}
+										onChange={(users)=>this.setState({assignedTo:users},this.submitTask.bind(this))}
+										options={
+											(canAdd?[{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}]:[])
+											.concat(usersWithPermissions)
+										}
+										styles={invisibleSelectStyleNoArrowRequired}
+										/>
+								</div>
+							</div>
+						</div>
+					}
+				</div>
+
+				{/* Attributes */}
+				<div className="hello">
+					{/* Status, Type, Milestone */}
+					{/* Status */}
+					{ this.state.defaultFields.status.show &&
+						<div className="display-inline">
+							<Label className="col-form-label w-8">Status</Label>
+								<div className="display-inline-block w-25 p-r-10">
+									<Select
+										placeholder="Status required"
+										value={this.state.status}
+										isDisabled={this.state.defaultFields.status.fixed||this.state.viewOnly}
+										styles={invisibleSelectStyleNoArrowColoredRequired}
+										onChange={this.changeStatus.bind(this)}
+										options={this.state.statuses.filter((status)=>status.action!=='invoiced')}
+										/>
+								</div>
+						</div>
+					}
+					{/* Type */}
+					{ this.state.defaultFields.type.show &&
+						<div className="display-inline">
+							<Label className="col-form-label w-8">Typ</Label>
+								<div className="display-inline-block w-25 p-r-10">
+									<Select
+										placeholder="Zadajte typ"
+										value={this.state.type}
+										isDisabled={this.state.defaultFields.type.fixed||this.state.viewOnly}
+										styles={invisibleSelectStyleNoArrowRequired}
+										onChange={(type)=>this.setState({type},this.submitTask.bind(this))}
+										options={this.state.taskTypes}
+										/>
+								</div>
+						</div>
+					}
+					{/* Milestone */}
+					<div className="display-inline">
+						<Label className="col-form-label w-8">Milestone</Label>
+						<div className="display-inline-block w-25 p-r-10">
+							<Select
+								isDisabled={this.state.viewOnly}
+								value={this.state.milestone}
+								onChange={this.changeMilestone.bind(this)}
+								options={this.state.milestones.filter((milestone)=>milestone.id===null || (this.state.project!== null && milestone.project===this.state.project.id))}
+								styles={invisibleSelectStyleNoArrow}
+								/>
+						</div>
+					</div>
+					{/* Requester, Company, Pausal */}
+					{/* Requester */}
+					{ this.state.defaultFields.requester.show &&
+						<div className="display-inline">
+							<Label className="col-form-label w-8">Zadal</Label>
+							<div className="display-inline-block w-25 p-r-10">
+								<Select
+									placeholder="Zadajte žiadateľa"
+									value={this.state.requester}
+									isDisabled={this.state.defaultFields.requester.fixed||this.state.viewOnly}
+									onChange={this.changeRequester.bind(this)}
+									options={(canAdd?[{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}]:[]).concat(requesters)}
+									styles={invisibleSelectStyleNoArrowRequired}
+									/>
+							</div>
+						</div>
+					}
+					{/* Company */}
+					{ this.state.defaultFields.company.show &&
+						<div className="display-inline">
+							<Label className="col-form-label w-8">Firma</Label>
+							<div className="display-inline-block w-25 p-r-10">
+								<Select
+									placeholder="Zadajte firmu"
+									value={this.state.company}
+									isDisabled={this.state.defaultFields.company.fixed||this.state.viewOnly}
+									onChange={ this.changeCompany.bind(this) }
+									options={(canAdd?[{id:-1,title:'+ Add company',body:'add', label:'+ Add company',value:null}]:[]).concat(this.state.companies)}
+									styles={invisibleSelectStyleNoArrowRequired}
+									/>
+							</div>
+						</div>
+					}
+					{/* Pausal */}
+					{	this.state.defaultFields.pausal.show &&
+						<div className="display-inline">
+							<Label className="col-form-label w-8">Paušál</Label>
+							<div className="display-inline-block w-25 p-r-10">
+								<Select
+									value={this.state.company && parseInt(this.state.company.workPausal) === 0 && this.state.pausal.value === false ? {...this.state.pausal, label: this.state.pausal.label + " (nezmluvný)"} : this.state.pausal }
+									isDisabled={this.state.viewOnly||!this.state.company || parseInt(this.state.company.workPausal)===0||this.state.defaultFields.pausal.fixed}
+									styles={invisibleSelectStyleNoArrowRequired}
+									onChange={(pausal)=>this.setState({pausal},this.submitTask.bind(this))}
+									options={booleanSelects}
+									/>
+							</div>
+						</div>
+					}
+					{/* Deadline, Repeat, Overtime */}
+					{/* Deadline */}
+					<div className="display-inline">
+						<Label className="col-form-label w-8">Deadline</Label>
+						<div className="display-inline-block w-25 p-r-10">
+							<DatePicker
+								className="form-control hidden-input"
+								selected={this.state.deadline}
+								disabled={this.state.viewOnly}
+								onChange={date => {
+									this.setState({ deadline: date },this.submitTask.bind(this));
+								}}
+								placeholderText="No deadline"
+								{...datePickerConfig}
+								/>
+						</div>
+					</div>
+					{/* Repeat */}
+		       <div className="display-inline">
+						<Repeat
+							disabled={this.state.viewOnly}
+							taskID={taskID}
+							repeat={this.state.repeat}
+							submitRepeat={this.changeRepeat.bind(this)}
+							deleteRepeat={()=>{
+								rebase.removeDoc('/help-repeats/'+taskID);
+								this.setState({repeat:null})
+							}}
+							columns={this.props.columns}
+							/>
+		        </div>
+					{/* Overtime */}
+					{	this.state.defaultFields.overtime.show &&
+						<div className="display-inline">
+							<Label className="col-form-label w-8">Mimo PH</Label>
+							<div className="display-inline-block w-25 p-r-10">
+								<Select
+									value={this.state.overtime}
+									isDisabled={this.state.viewOnly||this.state.defaultFields.overtime.fixed}
+									styles={invisibleSelectStyleNoArrowRequired}
+									onChange={(overtime)=>this.setState({overtime},this.submitTask.bind(this))}
+									options={booleanSelects}
+									/>
+							</div>
+						</div>
+					}
+				</div>
+			</div>
+		)
+	}
+
+	renderSelectsLayout11(taskID, canAdd, usersWithPermissions, requesters, availableProjects){
 		return (
 			<div>
 				{/* Project, Assigned */}
@@ -1287,32 +1476,6 @@ class TaskEdit extends Component {
 		)
 	}
 
-	renderPausalUse(){
-		if (this.state.company && parseInt(this.state.company.workPausal) !== 0 && this.state.pausal.value === true){
-			const USED = this.state.drivePausal + this.state.workPausal;
-			const MAX = this.state.pausalPrice;
-			return (
-				<div className="m-t-10">
-					<div className="center-hor row">
-						<Label className="center-hor">Zostávajúci paušál: </Label>
-						<label className="center-hor">{`${USED} / ${MAX}`}</label>
-					</div>
-				</div>
-			)
-		}
-
-	}
-
-/*				<div className="row m-t-10">
-					<div className="center-hor">
-						<Label className="center-hor">Zostávajúci paušál: </Label>
-					</div>
-					<div className="f-1 ">
-						<div className="center-hor">
-							<label className="center-hor">{`${this.state.drivePausal + this.state.workPausal} / ${this.state.pausalPrice}`}</label>
-						</div>
-					</div>
-				</div>*/
 	renderPopis(){
 		let RenderDescription = null;
 		if( this.state.viewOnly ){

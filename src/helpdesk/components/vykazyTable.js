@@ -299,7 +299,7 @@ export default class Rozpocet extends Component {
 									<NavLink>
 										|
 									</NavLink>
-									</NavItem>										
+									</NavItem>
 									<NavItem>
 										<NavLink
 											className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
