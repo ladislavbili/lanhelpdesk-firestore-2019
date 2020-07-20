@@ -97,6 +97,8 @@ export default class Rozpocet extends Component {
 				newCustomItemUnit=props.units.find((item)=>item.id===props.defaultUnit)
 			}
 			this.setState({
+				toggleTab: props.showSubtasks ? '0' : '1',
+
 				focusedSubtask:null,
 				showAddSubtask:false,
 				newSubtaskTitle:'',
@@ -127,6 +129,7 @@ export default class Rozpocet extends Component {
 		}else if(!sameStringForms(this.props.defaultType,props.defaultType)){
 			this.setState({
 				newSubtaskType:props.defaultType,
+				toggleTab: props.showSubtasks ? '0' : '1',
 			})
 		}
 
@@ -135,7 +138,7 @@ export default class Rozpocet extends Component {
 				if(props.taskAssigned.length>0){
 					this.setState({newSubtaskAssigned:props.taskAssigned[0],newTripAssignedTo:props.taskAssigned[0] });
 				}else{
-					this.setState({newSubtaskAssigned:null, newTripAssignedTo:null });
+					this.setState({newSubtaskAssigned:null, newTripAssignedTo:null});
 				}
 			}
 		}
@@ -151,6 +154,10 @@ export default class Rozpocet extends Component {
 				newUnit=props.units.find((item)=>item.id===props.defaultUnit)
 			}
 			this.setState({newMaterialUnit: newUnit, newCustomItemUnit: newUnit});
+		}
+
+		if (this.props.showSubtasks !== props.showSubtasks){
+			this.setState({toggleTab: props.showSubtasks ? '0' : '1'});
 		}
 	}
 
@@ -295,11 +302,14 @@ export default class Rozpocet extends Component {
 										</NavLink>
 									</NavItem>
 									}
+									{ !this.props.showSubtasks &&
 									<NavItem>
 									<NavLink>
 										|
 									</NavLink>
 									</NavItem>
+									}
+									{ !this.props.showSubtasks &&
 									<NavItem>
 										<NavLink
 											className={classnames({ active: this.state.toggleTab === '2' }, "clickable", "")}
@@ -308,6 +318,7 @@ export default class Rozpocet extends Component {
 											Rozpočet
 										</NavLink>
 									</NavItem>
+									}
 								</Nav>
 							</th>
 							{this.props.showColumns.includes(1) && this.state.toggleTab !== "0" && <th width="190">Rieši</th> }
@@ -393,22 +404,23 @@ export default class Rozpocet extends Component {
 									<td>
 										<input
 											disabled={this.props.disabled}
-											type="number"
+											type="text"
+											pattern="([0-9]+.{0,1}[0-9]*,{0,1})*[0-9]"
 											className="form-control hidden-input h-30"
 											value={
 												subtask.id === this.state.focusedSubtask
-												? this.state.editedSubtaskQuantity
-												: subtask.quantity
+												? this.state.editedSubtaskQuantity.toString()
+												: subtask.quantity.toString()
 											}
 											onBlur={() => {
-												this.props.updateSubtask(subtask.id,{quantity:isNaN(parseInt(this.state.editedSubtaskQuantity))?0:parseInt(this.state.editedSubtaskQuantity)})
+												this.props.updateSubtask(subtask.id,{quantity:isNaN(parseFloat(this.state.editedSubtaskQuantity))?0:parseFloat(this.state.editedSubtaskQuantity)})
 												this.setState({ focusedSubtask: null });
 											}}
 											onFocus={() => {
 												this.onFocusSubtask(subtask);
 											}}
 											onChange={e =>{
-												this.setState({ editedSubtaskQuantity: e.target.value })
+												this.setState({ editedSubtaskQuantity: e.target.value.replace(',', '.') })
 											}}
 											/>
 									</td>
@@ -462,7 +474,7 @@ export default class Rozpocet extends Component {
 								}
 								{/*Cena*/}
 								{this.props.showColumns.includes(7) && this.state.toggleTab !== "0" &&
-									<td className="p-t-15 p-l-8 p-r-8 t-a-r">
+									<td className="p-t-15 p-l-8 p-r-8 t-a-r font-14">
 										{
 											isNaN(this.getTotalDiscountedPrice(subtask)) ?
 											'No price' :
@@ -567,22 +579,23 @@ export default class Rozpocet extends Component {
 											<td>
 												<input
 													disabled={this.props.disabled}
-													type="number"
+													type="text"
+													pattern="([0-9]+.{0,1}[0-9]*,{0,1})*[0-9]"
 													className="form-control hidden-input h-30"
 													value={
 														trip.id === this.state.focusedTrip
-														? this.state.editedTripQuantity
-														: trip.quantity
+														? this.state.editedTripQuantity.toString()
+														: trip.quantity.toString()
 													}
 													onBlur={() => {
-														this.props.updateTrip(trip.id,{quantity:isNaN(parseInt(this.state.editedTripQuantity))?0:parseInt(this.state.editedTripQuantity)})
+														this.props.updateTrip(trip.id,{quantity:isNaN(parseFloat(this.state.editedTripQuantity))?0:parseFloat(this.state.editedTripQuantity)})
 														this.setState({ focusedTrip: null });
 													}}
 													onFocus={() => {
 														this.onFocusWorkTrip(trip);
 													}}
 													onChange={e =>{
-														this.setState({ editedTripQuantity: e.target.value })
+														this.setState({ editedTripQuantity: e.target.value.replace(',', '.') })
 													}}
 													/>
 											</td>
@@ -636,7 +649,7 @@ export default class Rozpocet extends Component {
 										}
 										{/*Cena*/}
 										{this.props.showColumns.includes(7) &&
-											<td className="p-t-15 p-l-8 p-r-8 t-a-r">
+											<td className="p-t-15 p-l-8 p-r-8 t-a-r font-14">
 												{isNaN(this.getTotalDiscountedPrice(trip)) ?
 													'No price' :
 													this.getTotalDiscountedPrice(trip) + " €"
@@ -745,21 +758,22 @@ export default class Rozpocet extends Component {
 											<td>
 												<input
 													disabled={this.props.disabled}
-													type="number"
+													type="text"
+													pattern="([0-9]+.{0,1}[0-9]*,{0,1})*[0-9]"
 													className="form-control hidden-input h-30"
 													value={
 														material.id === this.state.focusedMaterial
-														? this.state.editedMaterialQuantity
-														: material.quantity
+														? this.state.editedMaterialQuantity.toString()
+														: material.quantity.toString()
 													}
 													onBlur={() => {
 														//submit
-														this.props.updateMaterial(material.id,{quantity:this.state.editedMaterialQuantity})
+														this.props.updateMaterial(material.id,{quantity: parseFloat(this.state.editedMaterialQuantity)})
 														this.setState({ focusedMaterial: null });
 													}}
 													onFocus={() => this.onFocusMaterial(material)}
 													onChange={e =>{
-														this.setState({ editedMaterialQuantity: e.target.value })
+														this.setState({ editedMaterialQuantity: e.target.value.replace(',', '.') })
 													}}
 													/>
 											</td>
@@ -824,7 +838,7 @@ export default class Rozpocet extends Component {
 										}
 										{/*Cena*/}
 										{this.props.showColumns.includes(7) &&
-											<td className="p-l-8 p-t-15 p-r-8 t-a-r">
+											<td className="p-l-8 p-t-15 p-r-8 t-a-r font-14">
 												{
 													material.id === this.state.focusedMaterial ?
 													(  this.getDiscountedMaterialPrice({price:this.state.editedMaterialPrice, margin:this.state.editedMaterialMargin}).toFixed(2) + " €" ) :
@@ -944,21 +958,22 @@ export default class Rozpocet extends Component {
 											<td>
 												<input
 													disabled={this.props.disabled}
-													type="number"
+													type="text"
+													pattern="([0-9]+.{0,1}[0-9]*,{0,1})*[0-9]"
 													className="form-control hidden-input h-30"
 													value={
 														customItem.id === this.state.focusedCustomItem
-														? this.state.editedCustomItemQuantity
-														: customItem.quantity
+														? this.state.editedCustomItemQuantity.toString()
+														: customItem.quantity.toString()
 													}
 													onBlur={() => {
 														//submit
-														this.props.updateCustomItem(customItem.id,{quantity:this.state.editedCustomItemQuantity})
+														this.props.updateCustomItem(customItem.id,{quantity: parseFloat(this.state.editedCustomItemQuantity)})
 														this.setState({ focusedCustomItem: null });
 													}}
 													onFocus={() => this.onFocusCustomItem(customItem)}
 													onChange={e =>{
-														this.setState({ editedCustomItemQuantity: e.target.value })
+														this.setState({ editedCustomItemQuantity: e.target.value.replace(',', '.') })
 													}}
 													/>
 											</td>
@@ -1125,9 +1140,10 @@ export default class Rozpocet extends Component {
 									<td className="p-l-8 p-r-8">
 										<input
 											disabled={this.props.disabled}
-											type="number"
-											value={this.state.newSubtaskQuantity}
-											onChange={(e)=>this.setState({newSubtaskQuantity:e.target.value})}
+											type="text"
+											pattern="([0-9]+.{0,1}[0-9]*,{0,1})*[0-9]"
+											value={this.state.newSubtaskQuantity.toString()}
+											onChange={(e)=>this.setState({newSubtaskQuantity:e.target.value.replace(',', '.')})}
 											className="form-control h-30"
 											id="inlineFormInput"
 											placeholder=""
@@ -1154,7 +1170,7 @@ export default class Rozpocet extends Component {
 								}
 								{/*Cena*/}
 								{this.props.showColumns.includes(7) &&
-									<td className="p-t-15 p-l-8 p-r-8 t-a-r">
+									<td className="p-t-15 p-l-8 p-r-8 t-a-r font-14">
 										{
 											isNaN(this.getTotalDiscountedPrice({discount: this.state.newSubtaskDiscount, type: this.state.newSubtaskType, quantity: this.state.newSubtaskQuantity }))
 											?'No price'
@@ -1172,8 +1188,8 @@ export default class Rozpocet extends Component {
 													done:false,
 													title:this.state.newSubtaskTitle,
 													type: this.state.newSubtaskType.id,
-													quantity:this.state.newSubtaskQuantity!==''?parseInt(this.state.newSubtaskQuantity):0,
-													discount:this.state.newSubtaskDiscount!==''?parseInt(this.state.newSubtaskDiscount):0,
+													quantity: this.state.newSubtaskQuantity !== '' ? parseFloat(this.state.newSubtaskQuantity) : 0,
+													discount:this.state.newSubtaskDiscount!==''?this.state.newSubtaskDiscount:0,
 													assignedTo:this.state.newSubtaskAssigned?this.state.newSubtaskAssigned.id:null,
 													order:this.props.subtasks.length,
 												}
@@ -1241,9 +1257,10 @@ export default class Rozpocet extends Component {
 									<td className="p-l-8 p-r-8">
 										<input
 											disabled={this.props.disabled}
-											type="number"
-											value={this.state.newTripQuantity}
-											onChange={(e)=>this.setState({newTripQuantity:e.target.value})}
+											type="text"
+											pattern="([0-9]+.{0,1}[0-9]*,{0,1})*[0-9]"
+											value={this.state.newTripQuantity.toString()}
+											onChange={(e)=>this.setState({newTripQuantity: e.target.value.replace(',', '.')})}
 											className="form-control h-30"
 											id="inlineFormInput"
 											placeholder="Quantity"
@@ -1270,7 +1287,7 @@ export default class Rozpocet extends Component {
 								}
 								{/*Cena*/}
 								{this.props.showColumns.includes(7) &&
-									<td className="p-t-15 p-l-8 p-r-8 t-a-r">
+									<td className="p-t-15 p-l-8 p-r-8 t-a-r font-14">
 										{
 											isNaN(this.getTotalDiscountedPrice({discount:this.state.newTripDiscount,quantity:this.state.newTripQuantity,type:this.state.newTripType})) ?
 											'No price' :
@@ -1287,7 +1304,7 @@ export default class Rozpocet extends Component {
 												let body={
 													type:this.state.newTripType?this.state.newTripType.id:null,
 													assignedTo: this.state.newTripAssignedTo?this.state.newTripAssignedTo.id:null,
-													quantity: this.state.newTripQuantity!==''?this.state.newTripQuantity:0,
+													quantity: this.state.newTripQuantity !== '' ? parseFloat(this.state.newTripQuantity) : 0,
 													discount: this.state.newTripDiscount!==''?this.state.newTripDiscount:0,
 													done: false,
 													order: this.props.workTrips.length,
@@ -1353,21 +1370,21 @@ export default class Rozpocet extends Component {
 																	let newMaterialMargin = (this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMargin : 0);
 																	this.setState({
 																		newMaterialPrice,
-																		newDiscountedMaterialPrice: (this.getDiscountedMaterialPrice({price: newMaterialPrice, margin: newMaterialMargin}) ).toFixed(2),
+																		newDiscountedMaterialPrice: (this.getDiscountedMaterialPrice({price: newMaterialPrice, margin: newMaterialMargin}).toFixed(2)),
 																		newMaterialMargin,
 																	});
 																}else{
 																	let newMaterialMargin = (this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMarginExtra : 0);
 																	this.setState({
 																		newMaterialPrice,
-																		newDiscountedMaterialPrice: (this.getDiscountedMaterialPrice({price: newMaterialPrice, margin: newMaterialMargin}) ).toFixed(2),
+																		newDiscountedMaterialPrice: ( this.getDiscountedMaterialPrice({price: newMaterialPrice, margin: newMaterialMargin}) ).toFixed(2),
 																		newMaterialMargin,
 																	});
 																}
 															}else{
 																this.setState({
 																	newMaterialPrice,
-																	newDiscountedMaterialPrice: (this.getDiscountedMaterialPrice({price: newMaterialPrice, margin: this.state.newMaterialMargin}) ).toFixed(2)
+																	newDiscountedMaterialPrice: ( this.getDiscountedMaterialPrice({price: newMaterialPrice, margin: this.state.newMaterialMargin}) ).toFixed(2)
 																});
 															}
 														}}
@@ -1391,9 +1408,10 @@ export default class Rozpocet extends Component {
 									<td className="p-r-8 p-l-8">
 										<input
 											disabled={this.props.disabled}
-											type="number"
-											value={this.state.newMaterialQuantity}
-											onChange={(e)=>this.setState({newMaterialQuantity:e.target.value})}
+											type="text"
+											pattern="([0-9]+.{0,1}[0-9]*,{0,1})*[0-9]"
+											value={this.state.newMaterialQuantity.toString()}
+											onChange={(e)=>this.setState({newMaterialQuantity: e.target.value.replace(',', '.') })}
 											className="form-control h-30"
 											id="inlineFormInput"
 											placeholder=""
@@ -1455,16 +1473,15 @@ export default class Rozpocet extends Component {
 
 													if(newDiscountedMaterialPrice === '' || parseFloat(basicMaterialPrice) > 50 ){
 														newMaterialMargin = (this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMarginExtra : 0);
-
 														this.setState({
-															newMaterialPrice: (this.getBasicMaterialPrice({price: newDiscountedMaterialPrice, margin: newMaterialMargin}) ).toFixed(2),
+															newMaterialPrice: this.getBasicMaterialPrice({price: newDiscountedMaterialPrice, margin: newMaterialMargin}),
 															newDiscountedMaterialPrice,
 															newMaterialMargin,
 														});
 
 													}else{
 														this.setState({
-															newMaterialPrice: (basicMaterialPrice).toFixed(2),
+															newMaterialPrice:basicMaterialPrice,
 															newDiscountedMaterialPrice,
 															newMaterialMargin,
 														});
@@ -1472,7 +1489,7 @@ export default class Rozpocet extends Component {
 
 												}else{
 													this.setState({
-														newMaterialPrice: (this.getBasicMaterialPrice({price: newDiscountedMaterialPrice, margin:this.state.newMaterialMargin}) ).toFixed(2),
+														newMaterialPrice: (this.getBasicMaterialPrice({price: newDiscountedMaterialPrice, margin:this.state.newMaterialMargin}) ),
 														newDiscountedMaterialPrice,
 													});
 												}
@@ -1492,7 +1509,7 @@ export default class Rozpocet extends Component {
 												let body={
 													margin:this.state.newMaterialMargin!==''?this.state.newMaterialMargin:0,
 													price:this.state.newMaterialPrice!==''?this.state.newMaterialPrice:0,
-													quantity:this.state.newMaterialQuantity!==''?this.state.newMaterialQuantity:0,
+													quantity:this.state.newMaterialQuantity!==''? parseFloat(this.state.newMaterialQuantity) :0,
 													title:this.state.newMaterialTitle,
 													unit:this.state.newMaterialUnit.id,
 													done:false,
@@ -1554,9 +1571,10 @@ export default class Rozpocet extends Component {
 									<td className="p-r-8 p-l-8">
 										<input
 											disabled={this.props.disabled}
-											type="number"
-											value={this.state.newCustomItemQuantity}
-											onChange={(e)=>this.setState({newCustomItemQuantity:e.target.value})}
+											type="text"
+											pattern="([0-9]+.{0,1}[0-9]*,{0,1})*[0-9]"
+											value={this.state.newCustomItemQuantity.toString()}
+											onChange={(e)=>this.setState({newCustomItemQuantity: e.target.value.replace(',', '.')})}
 											className="form-control h-30"
 											id="inlineFormInput"
 											placeholder=""
@@ -1598,7 +1616,7 @@ export default class Rozpocet extends Component {
 											onClick={()=>{
 												let body={
 													price:this.state.newCustomItemPrice!==''?this.state.newCustomItemPrice:0,
-													quantity:this.state.newCustomItemQuantity!==''?this.state.newCustomItemQuantity:0,
+													quantity:this.state.newCustomItemQuantity!==''? parseFloat(this.state.newCustomItemQuantity):0,
 													title:this.state.newCustomItemTitle,
 													unit:this.state.newCustomItemUnit.id,
 													done:false,
@@ -1629,7 +1647,7 @@ export default class Rozpocet extends Component {
 						{/* ADD Buttons */}
 						{!this.state.showAddSubtask && !this.state.showAddTrip && !this.state.showAddMaterial && !this.state.showAddCustomItem && !this.props.disabled &&
 							<tr>
-								<td colSpan={(this.state.toggleTab === 1 ? 8 : 10)}>
+								<td colSpan={(this.state.toggleTab === '1' ? 8 : 10)}>
 									{!this.state.showAddSubtask &&
 										<button className="btn"
 											disabled={this.props.disabled}

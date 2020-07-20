@@ -309,7 +309,7 @@ class TaskEdit extends Component {
 			database.collection('help-task_work_trips').where("task", "==", taskID).get(),
 			database.collection('help-task_materials').where("task", "==", taskID).get(),
 			database.collection('help-task_custom_items').where("task", "==", taskID).get(),
-			database.collection('help-task_works').where("task", "==", taskID).get(),
+			database.collection('help-task_works').get(),
 			database.collection('help-repeats').doc(taskID).get(),
 			database.collection('help-task_history').where("task", "==", taskID).get(),
 		]).then(([workTrips,taskMaterials,customItems, taskWorks,repeat,history])=>{
@@ -413,18 +413,20 @@ class TaskEdit extends Component {
 			return;
 		}
 
-		let taskWorks = this.state.extraData.taskWorks.map((work, index)=>{
-			return {
-				title:work.title,
-				order: !isNaN(parseInt(work.order)) ? parseInt(work.order) : index,
-				id:work.id,
-				done:work.done===true,
-				type:work.type||work.workType,
-				quantity:work.quantity,
-				discount:work.discount,
-				assignedTo:work.assignedTo,
-			}
-		});
+		let taskWorks = this.state.extraData.taskWorks
+															.filter(work => work.task === this.props.match.params.taskID)
+															.map((work, index)=>{
+																return {
+																	title:work.title,
+																	order: !isNaN(parseInt(work.order)) ? parseInt(work.order) : index,
+																	id:work.id,
+																	done:work.done===true,
+																	type:work.type||work.workType,
+																	quantity:work.quantity,
+																	discount:work.discount,
+																	assignedTo:work.assignedTo,
+																}
+															});
 		let workTrips = this.state.extraData.workTrips.map((trip, index) => {
 			return {
 				...trip,
@@ -470,7 +472,7 @@ class TaskEdit extends Component {
 				newCompany.pricelist=pricelists[0];
 			}
 			return newCompany;
-		});;
+		}).sort((comp1, comp2) => comp1.title.toLowerCase() >= comp2.title.toLowerCase() ? 1 : -1);
 
 		this.setDefaults(task.project);
 
@@ -674,8 +676,6 @@ class TaskEdit extends Component {
 			USERS_WITH_PERMISSIONS,
 			REQUESTERS,
 		} = this.getRenderAttributes();
-
-		console.log(this.state.company);
 
 		return (
 			<div className="flex">
@@ -1054,203 +1054,6 @@ class TaskEdit extends Component {
 		)
 	}
 
-	renderSelectsLayout11(taskID, canAdd, usersWithPermissions, requesters, availableProjects){
-		return (
-			<div>
-				{/* Project, Assigned */}
-				<div className="col-lg-12">
-					{/* Project */}
-					<div className="col-lg-4">
-						<div className="row p-r-10">
-							<Label className="col-3 col-form-label">Projekt</Label>
-							<div className="col-9">
-								<Select
-									placeholder="Zadajte projekt"
-									isDisabled={ this.state.viewOnly }
-									value={ this.state.project }
-									onChange={ this.changeProject.bind(this) }
-									options={ availableProjects }
-									styles={ invisibleSelectStyleNoArrowRequired }
-									/>
-							</div>
-						</div>
-					</div>
-					{/* Assigned */}
-					{ this.state.defaultFields.assignedTo.show &&
-						<div className="col-lg-8">
-							<div className="row p-r-10">
-								<Label className="col-1-5 col-form-label">Assigned</Label>
-								<div className="col-10-5">
-									<Select
-										value={this.state.assignedTo.filter((user)=>this.state.project && this.state.project.permissions.some((permission)=>permission.user===user.id))}
-										placeholder="Select"
-										isMulti
-										isDisabled={this.state.defaultFields.assignedTo.fixed||this.state.viewOnly}
-										onChange={(users)=>this.setState({assignedTo:users},this.submitTask.bind(this))}
-										options={
-											(canAdd?[{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}]:[])
-											.concat(usersWithPermissions)
-										}
-										styles={invisibleSelectStyleNoArrowRequired}
-										/>
-								</div>
-							</div>
-						</div>
-					}
-				</div>
-				{/* Attributes */}
-				<div className="col-lg-12">
-					{/* Status, Type, Milestone */}
-					<div className="col-lg-4">
-						{/* Status */}
-						{ this.state.defaultFields.status.show &&
-							<div className="row p-r-10">
-								<Label className="col-3 col-form-label">Status</Label>
-								<div className="col-9">
-									<Select
-										placeholder="Status required"
-										value={this.state.status}
-										isDisabled={this.state.defaultFields.status.fixed||this.state.viewOnly}
-										styles={invisibleSelectStyleNoArrowColoredRequired}
-										onChange={this.changeStatus.bind(this)}
-										options={this.state.statuses.filter((status)=>status.action!=='invoiced')}
-										/>
-								</div>
-							</div>
-						}
-						{/* Type */}
-						{ this.state.defaultFields.type.show &&
-							<div className="row p-r-10">
-								<Label className="col-3 col-form-label">Typ</Label>
-								<div className="col-9">
-									<Select
-										placeholder="Zadajte typ"
-										value={this.state.type}
-										isDisabled={this.state.defaultFields.type.fixed||this.state.viewOnly}
-										styles={invisibleSelectStyleNoArrowRequired}
-										onChange={(type)=>this.setState({type},this.submitTask.bind(this))}
-										options={this.state.taskTypes}
-										/>
-								</div>
-							</div>
-						}
-						{/* Milestone */}
-						<div className="row p-r-10">
-							<Label className="col-3 col-form-label">Milestone</Label>
-							<div className="col-9">
-								<Select
-									isDisabled={this.state.viewOnly}
-									value={this.state.milestone}
-									onChange={this.changeMilestone.bind(this)}
-									options={this.state.milestones.filter((milestone)=>milestone.id===null || (this.state.project!== null && milestone.project===this.state.project.id))}
-									styles={invisibleSelectStyleNoArrow}
-									/>
-							</div>
-						</div>
-					</div>
-					{/* Requester, Company, Pausal */}
-					<div className="col-lg-4">
-						{/* Requester */}
-						{ this.state.defaultFields.requester.show &&
-							<div className="row p-r-10">
-								<Label className="col-3 col-form-label">Zadal</Label>
-								<div className="col-9">
-									<Select
-										placeholder="Zadajte žiadateľa"
-										value={this.state.requester}
-										isDisabled={this.state.defaultFields.requester.fixed||this.state.viewOnly}
-										onChange={this.changeRequester.bind(this)}
-										options={(canAdd?[{id:-1,title:'+ Add user',body:'add', label:'+ Add user',value:null}]:[]).concat(requesters)}
-										styles={invisibleSelectStyleNoArrowRequired}
-										/>
-								</div>
-							</div>
-						}
-						{/* Company */}
-						{ this.state.defaultFields.company.show &&
-							<div className="row p-r-10">
-								<Label className="col-3 col-form-label">Firma</Label>
-								<div className="col-9">
-									<Select
-										placeholder="Zadajte firmu"
-										value={this.state.company}
-										isDisabled={this.state.defaultFields.company.fixed||this.state.viewOnly}
-										onChange={ this.changeCompany.bind(this) }
-										options={(canAdd?[{id:-1,title:'+ Add company',body:'add', label:'+ Add company',value:null}]:[]).concat(this.state.companies)}
-										styles={invisibleSelectStyleNoArrowRequired}
-										/>
-								</div>
-							</div>
-						}
-						{/* Pausal */}
-						{	this.state.defaultFields.pausal.show &&
-							<div className="form-group row">
-								<label className="col-3 col-form-label">Paušál</label>
-								<div className="col-9">
-									<Select
-										value={this.state.company && parseInt(this.state.company.workPausal) === 0 && this.state.pausal.value === false ? {...this.state.pausal, label: this.state.pausal.label + " (nezmluvný)"} : this.state.pausal }
-										isDisabled={this.state.viewOnly||!this.state.company || parseInt(this.state.company.workPausal)===0||this.state.defaultFields.pausal.fixed}
-										styles={invisibleSelectStyleNoArrowRequired}
-										onChange={(pausal)=>this.setState({pausal},this.submitTask.bind(this))}
-										options={booleanSelects}
-										/>
-								</div>
-							</div>
-						}
-					</div>
-					{/* Deadline, Repeat, Overtime */}
-					<div className="col-lg-4">
-						{/* Deadline */}
-						<div className="row p-r-10">
-							<Label className="col-3 col-form-label">Deadline</Label>
-							<div className="col-9">
-								<DatePicker
-									className="form-control hidden-input"
-									selected={this.state.deadline}
-									disabled={this.state.viewOnly}
-									onChange={date => {
-										this.setState({ deadline: date },this.submitTask.bind(this));
-									}}
-									placeholderText="No deadline"
-									{...datePickerConfig}
-									/>
-							</div>
-						</div>
-						{/* Repeat */}
-						<div>
-							<Repeat
-								disabled={this.state.viewOnly}
-								taskID={taskID}
-								repeat={this.state.repeat}
-								submitRepeat={this.changeRepeat.bind(this)}
-								deleteRepeat={()=>{
-									rebase.removeDoc('/help-repeats/'+taskID);
-									this.setState({repeat:null})
-								}}
-								columns={this.props.columns}
-								/>
-						</div>
-						{/* Overtime */}
-						{	this.state.defaultFields.overtime.show &&
-							<div className="form-group row">
-								<label className="col-3 col-form-label">Mimo PH</label>
-								<div className="col-9">
-									<Select
-										value={this.state.overtime}
-										isDisabled={this.state.viewOnly||this.state.defaultFields.overtime.fixed}
-										styles={invisibleSelectStyleNoArrowRequired}
-										onChange={(overtime)=>this.setState({overtime},this.submitTask.bind(this))}
-										options={booleanSelects}
-										/>
-								</div>
-							</div>
-						}
-					</div>
-				</div>
-			</div>
-		)
-	}
-
 	renderSelectsLayout2(taskID, canAdd, usersWithPermissions, requesters, availableProjects){
 		return (
 			<div className={"task-edit-right" + (this.props.columns ? " w-250px" : "")} >
@@ -1477,6 +1280,40 @@ class TaskEdit extends Component {
 	}
 
 	renderPopis(){
+		const TOTAL_PAUSAL = this.state.company ? this.state.company.pausalPrice : 0;
+
+		let usedPausal = 0;
+		if (this.state.company && this.state.company.monthlyPausal){
+			let currentTasks = this.props.tasks.filter( task => {
+				let condition1 = this.state.company.id === task.company;
+
+				let currentDate = new Date();
+				let currentMonth = currentDate.getMonth();
+				let currentYear = currentDate.getFullYear();
+
+				if (task.closeDate === null || task.closeDate === undefined){
+					return false;
+				}
+
+				let taskCloseDate = new Date(task.closeDate);
+				let taskCloseMonth = taskCloseDate.getMonth();
+				let taskCloseYear = taskCloseDate.getFullYear();
+
+				let condition2 = (currentMonth === taskCloseMonth) && (currentYear === taskCloseYear);
+
+				return condition1 && condition2;
+			})
+
+			let taskIDs = currentTasks.map(task => task.id);
+
+
+			let currentTaskWorksQuantities = this.state.extraData.taskWorks.filter(work => taskIDs.includes(work.task)).map(task => task.quantity);
+
+			if (currentTaskWorksQuantities.length > 0){
+				usedPausal = currentTaskWorksQuantities.reduce((total, quantity) => total + quantity);
+			}
+		}
+
 		let RenderDescription = null;
 		if( this.state.viewOnly ){
 			if( this.state.description.length !== 0 ){
@@ -1514,7 +1351,13 @@ class TaskEdit extends Component {
 		}
 		return (
 			<div style={{zIndex: "9999"}}>
-				<Label className="col-form-label m-t-10">Popis úlohy</Label>
+				<div>
+				<Label className="col-form-label m-t-10 m-r-20">Popis úlohy</Label>
+				{ this.state.company && this.state.company.monthlyPausal &&
+					<span> {`Used pausal: ${usedPausal} / Total pausal: ${TOTAL_PAUSAL}`} </span>
+				}
+				</div>
+
 				{RenderDescription}
 			</div>
 		)
