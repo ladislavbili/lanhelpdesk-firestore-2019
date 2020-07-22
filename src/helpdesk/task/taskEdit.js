@@ -306,7 +306,7 @@ class TaskEdit extends Component {
 
 	fetchData(taskID){
 		Promise.all([
-			database.collection('help-task_work_trips').where("task", "==", taskID).get(),
+			database.collection('help-task_work_trips').get(),
 			database.collection('help-task_materials').where("task", "==", taskID).get(),
 			database.collection('help-task_custom_items').where("task", "==", taskID).get(),
 			database.collection('help-task_works').get(),
@@ -427,7 +427,9 @@ class TaskEdit extends Component {
 																	assignedTo:work.assignedTo,
 																}
 															});
-		let workTrips = this.state.extraData.workTrips.map((trip, index) => {
+		let workTrips = this.state.extraData.workTrips
+		.filter(work => work.task === this.props.match.params.taskID)
+		.map((trip, index) => {
 			return {
 				...trip,
 				order: !isNaN(parseInt(trip.order)) ? parseInt(trip.order) : index,
@@ -1280,9 +1282,12 @@ class TaskEdit extends Component {
 	}
 
 	renderPopis(){
-		const TOTAL_PAUSAL = this.state.company ? this.state.company.pausalPrice : 0;
+		const WORK_PAUSAL = this.state.company ? this.state.company.workPausal : 0;
+		const DRIVE_PAUSAL = this.state.company ? this.state.company.drivePausal : 0;
 
-		let usedPausal = 0;
+		let usedWorkPausal = 0;
+		let usedWorkTripPausal = 0;
+
 		if (this.state.company && this.state.company.monthlyPausal){
 			let currentTasks = this.props.tasks.filter( task => {
 				let condition1 = this.state.company.id === task.company;
@@ -1306,11 +1311,14 @@ class TaskEdit extends Component {
 
 			let taskIDs = currentTasks.map(task => task.id);
 
-
 			let currentTaskWorksQuantities = this.state.extraData.taskWorks.filter(work => taskIDs.includes(work.task)).map(task => task.quantity);
-
 			if (currentTaskWorksQuantities.length > 0){
-				usedPausal = currentTaskWorksQuantities.reduce((total, quantity) => total + quantity);
+				usedWorkPausal = currentTaskWorksQuantities.reduce((total, quantity) => total + quantity);
+			}
+
+			let currentTaskWorkTripsQuantities = this.state.extraData.workTrips.filter(trip => taskIDs.includes(trip.task)).map(task => task.quantity);
+			if (currentTaskWorkTripsQuantities.length > 0){
+				usedWorkTripPausal = currentTaskWorkTripsQuantities.reduce((total, quantity) => total + quantity);
 			}
 		}
 
@@ -1354,7 +1362,7 @@ class TaskEdit extends Component {
 				<div>
 				<Label className="col-form-label m-t-10 m-r-20">Popis úlohy</Label>
 				{ this.state.company && this.state.company.monthlyPausal &&
-					<span> {`Used pausal: ${usedPausal} / Total pausal: ${TOTAL_PAUSAL}`} </span>
+					<span> {`Pausal prace:`} <span className="warning-general"> {` ${usedWorkPausal}`} </span> {` / ${WORK_PAUSAL} Pausal vyjazdy:`} <span className="warning-general"> {` ${usedWorkTripPausal}`} </span> {` / ${DRIVE_PAUSAL}`} </span>
 				}
 				</div>
 
