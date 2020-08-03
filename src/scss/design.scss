@@ -165,6 +165,9 @@ html{
 .text-highlight{
   color: $basic-button-color !important;
 }
+.text-danger {
+  color: red !important;
+}
 .font-12{
   font-size: 12px;
 }
@@ -1759,6 +1762,16 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   height: 20px;
   width: 20px;
   border: 1px solid #eee;
+  border-radius: 0px;
+  background-color: white;
+  margin-bottom: 0px;
+}
+
+.checkbox-mark-highlight {
+  cursor: pointer;
+  height: 20px;
+  width: 20px;
+  border: 1px solid #0078D4;
   border-radius: 0px;
   background-color: white;
   margin-bottom: 0px;

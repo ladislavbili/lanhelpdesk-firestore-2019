@@ -474,7 +474,7 @@ class TaskEdit extends Component {
 				newCompany.pricelist=pricelists[0];
 			}
 			return newCompany;
-		}).sort((comp1, comp2) => comp1.title.toLowerCase() >= comp2.title.toLowerCase() ? 1 : -1);
+		});
 
 		this.setDefaults(task.project);
 
@@ -910,7 +910,7 @@ class TaskEdit extends Component {
 				</div>
 
 				{/* Attributes */}
-				<div className="hello">
+				<div>
 					{/* Status, Type, Milestone */}
 					{/* Status */}
 					{ this.state.defaultFields.status.show &&

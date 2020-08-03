@@ -123,11 +123,11 @@ class MothlyReportsAssigned extends Component {
 				finished:work.finished===true,
 				id:work.id,
 				title:work.title,
-				quantity:isNaN(parseInt(work.quantity))? 0 : parseInt(work.quantity),
+				quantity:isNaN(parseFloat(work.quantity))? 0 : parseFloat(work.quantity),
 				assignedTo:work.assignedTo,
 				task:work.task,
 				type,
-				order: !isNaN(parseInt(work.order)) ? parseInt(work.order) : index,
+				order: !isNaN(parseFloat(work.order)) ? parseFloat(work.order) : index,
 			}
 		})
 	}
@@ -142,11 +142,11 @@ class MothlyReportsAssigned extends Component {
 			return {
 				finished:trip.finished===true,
 				id:trip.id,
-				quantity:isNaN(parseInt(trip.quantity))? 0 : parseInt(trip.quantity),
+				quantity:isNaN(parseFloat(trip.quantity))? 0 : parseFloat(trip.quantity),
 				task:trip.task,
 				assignedTo:trip.assignedTo,
 				type,
-				order: !isNaN(parseInt(trip.order)) ? parseInt(trip.order) : index,
+				order: !isNaN(parseFloat(trip.order)) ? parseFloat(trip.order) : index,
 			}
 		})
 	}
@@ -245,7 +245,7 @@ class MothlyReportsAssigned extends Component {
 					workType=workTypes.find((workType)=>workType.id===work.type.id);
 				}
 				if(workType!==undefined){
-					workType.quantity += isNaN(parseInt(work.quantity)) ? 0 : parseInt(work.quantity);
+					workType.quantity += isNaN(parseFloat(work.quantity)) ? 0 : parseFloat(work.quantity);
 				}else{
 					console.log('Chybny typ prace');
 					console.log(work);
@@ -267,7 +267,7 @@ class MothlyReportsAssigned extends Component {
 					tripType=tripTypes.find((tripType)=>tripType.id===trip.type.id);
 				}
 				if(tripType!==undefined){
-					tripType.quantity += isNaN(parseInt(trip.quantity)) ? 0 : parseInt(trip.quantity);
+					tripType.quantity += isNaN(parseFloat(trip.quantity)) ? 0 : parseFloat(trip.quantity);
 				}else{
 					console.log('Chybny typ vyjazdu');
 					console.log(trip);
@@ -319,8 +319,8 @@ class MothlyReportsAssigned extends Component {
 									}).filter((agent)=> agent.works.length > 0 || agent.trips.length > 0).map((agent)=>
 									<tr key={agent.id} className="clickable" onClick={()=>this.setState({showAgent:agent})}>
 										<td>{agent.email}</td>
-										<td>{agent.works.reduce((acc,work)=>acc+((isNaN(parseInt(work.quantity)))?0:parseInt(work.quantity)),0)}</td>
-										<td>{agent.trips.reduce((acc,trips)=>acc+((isNaN(parseInt(trips.quantity)))?0:parseInt(trips.quantity)),0)}</td>
+										<td>{agent.works.reduce((acc,work)=>acc+((isNaN(parseFloat(work.quantity)))?0:parseFloat(work.quantity)),0)}</td>
+										<td>{agent.trips.reduce((acc,trips)=>acc+((isNaN(parseFloat(trips.quantity)))?0:parseFloat(trips.quantity)),0)}</td>
 									</tr>
 								)}
 							</tbody>
@@ -406,8 +406,8 @@ class MothlyReportsAssigned extends Component {
 							<p className="m-0">Spolu počet hodín: {
 								this.state.tasks.filter((task)=>this.filterWorkTask(task,statusIDs)).reduce((acc,item)=>{
 									return acc+item.works.reduce((acc,item)=>{
-										if(!isNaN(parseInt(item.quantity))){
-											return acc+parseInt(item.quantity);
+										if(!isNaN(parseFloat(item.quantity))){
+											return acc+parseFloat(item.quantity);
 										}
 										return acc;
 									},0);
@@ -417,8 +417,8 @@ class MothlyReportsAssigned extends Component {
 								Spolu počet hodín mimo pracovný čas: {
 									this.state.tasks.filter((task)=>this.filterWorkTask(task,statusIDs) && task.overtime).reduce((acc,item)=>{
 										return acc+item.works.reduce((acc,item)=>{
-											if(!isNaN(parseInt(item.quantity))){
-												return acc+parseInt(item.quantity);
+											if(!isNaN(parseFloat(item.quantity))){
+												return acc+parseFloat(item.quantity);
 											}
 											return acc;
 										},0);
@@ -499,8 +499,8 @@ class MothlyReportsAssigned extends Component {
 							<p className="m-0">Spolu počet výjazdov: {
 								this.state.tasks.filter((task)=>this.filterTripTask(task,statusIDs)).reduce((acc,item)=>{
 									return acc+item.trips.reduce((acc,item)=>{
-										if(!isNaN(parseInt(item.quantity))){
-											return acc+parseInt(item.quantity);
+										if(!isNaN(parseFloat(item.quantity))){
+											return acc+parseFloat(item.quantity);
 										}
 										return acc;
 									},0);
@@ -510,8 +510,8 @@ class MothlyReportsAssigned extends Component {
 								Spolu počet výjazdov mimo pracovný čas: {
 									this.state.tasks.filter((task)=>this.filterTripTask(task,statusIDs) && task.overtime).reduce((acc,item)=>{
 										return acc+item.trips.reduce((acc,item)=>{
-											if(!isNaN(parseInt(item.quantity))){
-												return acc+parseInt(item.quantity);
+											if(!isNaN(parseFloat(item.quantity))){
+												return acc+parseFloat(item.quantity);
 											}
 											return acc;
 										},0);
@@ -602,8 +602,8 @@ class MothlyReportsAssigned extends Component {
 							</table>
 
 					</div>}
-					<Modal isOpen={this.state.taskOpened!==null}>
-						<ModalHeader>{this.state.taskOpened!==null?('Editing: '+this.state.taskOpened.title):''}</ModalHeader>
+					<Modal isOpen={this.state.taskOpened!==null} toggle={()=>this.setState({taskOpened:null})} >
+						<ModalHeader toggle={()=>this.setState({taskOpened:null})} >{this.state.taskOpened!==null?('Editing: '+this.state.taskOpened.title):''}</ModalHeader>
 						<ModalBody>
 							{ this.state.taskOpened!==null &&
 								<TaskEdit inModal={true} columns={true} match={{params:{taskID:this.state.taskOpened.id}}} closeModal={()=>this.setState({taskOpened:null})}/>
@@ -690,8 +690,8 @@ class MothlyReportsAssigned extends Component {
 			let newCompanies = period.companies.map((group)=>{
 				//iba ponechat tasky a pridat im pausalWorks a extraWorks
 				let newCompany = {company:group.company,tasks:[]};
-				let pausal = parseInt(group.company !== null ? group.company.workPausal : 0);
-				let tripPausal = parseInt(group.company !== null ? group.company.drivePausal : 0);
+				let pausal = parseFloat(group.company !== null ? group.company.workPausal : 0);
+				let tripPausal = parseFloat(group.company !== null ? group.company.drivePausal : 0);
 				group.tasks.forEach((task)=>{
 					let works = [];
 					let trips = [];

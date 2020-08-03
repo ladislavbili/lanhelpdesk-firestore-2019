@@ -193,8 +193,8 @@ class Reports extends Component {
 			if(type===undefined){
 				type={title:'Unknown',id:Math.random(),prices:[]}
 			}
-			let dph = (company && company.dph && !isNaN(parseInt(company.dph)) && (parseInt(company.dph) > 0)) ? parseInt(company.dph) : 20;
-			let afterHours = company && company.pricelist ? parseInt(company.pricelist.afterHours) : 0;
+			let dph = (company && company.dph && !isNaN(parseFloat(company.dph)) && (parseFloat(company.dph) > 0)) ? parseFloat(company.dph) : 20;
+			let afterHours = company && company.pricelist ? parseFloat(company.pricelist.afterHours) : 0;
 			return {
 				finished: work.finished === true,
 				id:work.id,
@@ -206,7 +206,7 @@ class Reports extends Component {
 				price,
 				dph: work.finished? work.dph : dph,
 				afterHours: work.finished ? work.afterHours: afterHours,
-				order: !isNaN(parseInt(work.order)) ? parseInt(work.order) : index,
+				order: !isNaN(parseFloat(work.order)) ? parseFloat(work.order) : index,
 				type
 			}
 		})
@@ -220,7 +220,7 @@ class Reports extends Component {
 				unit:props.units.find((unit)=>unit.id===material.unit),
 				finalUnitPrice,
 				totalPrice,
-				order: !isNaN(parseInt(material.order)) ? parseInt(material.order) : index,
+				order: !isNaN(parseFloat(material.order)) ? parseFloat(material.order) : index,
 			}
 		})
 	}
@@ -233,7 +233,7 @@ class Reports extends Component {
 				unit:props.units.find((unit)=>unit.id===item.unit),
 				finalUnitPrice,
 				totalPrice,
-				order: !isNaN(parseInt(item.order)) ? parseInt(item.order) : index,
+				order: !isNaN(parseFloat(item.order)) ? parseFloat(item.order) : index,
 			}
 		})
 	}
@@ -256,8 +256,8 @@ class Reports extends Component {
 				type={title:'Unknown',id:Math.random(),prices:[]}
 			}
 
-			let dph = company && company.dph && !isNaN(parseInt(company.dph)) && parseInt(company.dph) > 0 ? parseInt(company.dph) : 20;
-			let afterHours = company && company.pricelist ? parseInt(company.pricelist.afterHours) : 0;
+			let dph = company && company.dph && !isNaN(parseFloat(company.dph)) && parseFloat(company.dph) > 0 ? parseFloat(company.dph) : 20;
+			let afterHours = company && company.pricelist ? parseFloat(company.pricelist.afterHours) : 0;
 
 
 			return {
@@ -269,7 +269,7 @@ class Reports extends Component {
 				price:trip.finished?trip.price:price,
 				dph: trip.finished?trip.dph:dph,
 				afterHours: trip.finished?trip.afterHours:afterHours,
-				order: !isNaN(parseInt(trip.order)) ? parseInt(trip.order) : index,
+				order: !isNaN(parseFloat(trip.order)) ? parseFloat(trip.order) : index,
 				type
 			}
 		})
@@ -466,7 +466,7 @@ class Reports extends Component {
 
 	//Unit prices
 	getUnitDiscountedPrice(item){
-		return parseFloat((parseFloat(item.price)*(100-parseInt(item.discount))/100).toFixed(2))
+		return parseFloat((parseFloat(item.price)*(100-parseFloat(item.discount))/100).toFixed(2))
 	}
 
 	getUnitAHExtraPrice(item){
@@ -479,11 +479,11 @@ class Reports extends Component {
 
 	//Total prices
 	getTotalPrice(item){
-		return parseFloat(parseFloat(item.price)*parseInt(item.quantity).toFixed(2))
+		return parseFloat(parseFloat(item.price)*parseFloat(item.quantity).toFixed(2))
 	}
 
 	getTotalDiscountedPrice(item){
-		return parseFloat((this.getTotalPrice(item)*(100-parseInt(item.discount))/100).toFixed(2))
+		return parseFloat((this.getTotalPrice(item)*(100-parseFloat(item.discount))/100).toFixed(2))
 	}
 
 	getTotalAHExtraPrice(item){
@@ -496,9 +496,9 @@ class Reports extends Component {
 
 	getTotalWithDPH(item,ah){
 		if(ah){
-			return parseFloat(this.getTotalAHPrice(item)*(1+parseInt(item.dph)/100).toFixed(2));
+			return parseFloat(this.getTotalAHPrice(item)*(1+parseFloat(item.dph)/100).toFixed(2));
 		}
-		return parseFloat(this.getTotalDiscountedPrice(item)*(1+parseInt(item.dph)/100).toFixed(2));
+		return parseFloat(this.getTotalDiscountedPrice(item)*(1+parseFloat(item.dph)/100).toFixed(2));
 	}
 }
 

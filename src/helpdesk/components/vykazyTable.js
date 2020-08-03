@@ -60,6 +60,7 @@ export default class Rozpocet extends Component {
 			newMaterialUnit:newMaterialUnit?newMaterialUnit:null,
 			newMaterialMargin,
 			newMaterialPrice:0,
+			newDiscountedMaterialPrice: 0,
 
 			// Custom items
 			showAddCustomItem: false,
@@ -119,6 +120,7 @@ export default class Rozpocet extends Component {
 				newMaterialUnit,
 				newMaterialMargin: props.company && props.company.pricelist ? props.company.pricelist.materialMargin : 0,
 				newMaterialPrice:0,
+				newDiscountedMaterialPrice: 0,
 				marginChanged:false,
 
 				newCustomItemTitle:'',
@@ -450,22 +452,23 @@ export default class Rozpocet extends Component {
 											<input
 												disabled={this.props.disabled}
 												style={{display: "inline", width: "60%"}}
-												type="number"
+												type="text"
+												pattern="([0-9]+.{0,1}[0-9]*,{0,1})*[0-9]"
 												className="form-control hidden-input h-30"
-												value={ parseInt(
+												value={
 													subtask.id === this.state.focusedSubtask ?
-													this.state.editedSubtaskDiscount :
-													subtask.discount
-												)}
+													this.state.editedSubtaskDiscount.toString() :
+													subtask.discount.toString()
+												}
 												onBlur={() => {
-													this.props.updateSubtask(subtask.id,{discount:isNaN(parseInt(this.state.editedSubtaskDiscount))?0:parseInt(this.state.editedSubtaskDiscount)})
+													this.props.updateSubtask(subtask.id,{discount:isNaN(parseFloat(this.state.editedSubtaskDiscount))?0:parseFloat(this.state.editedSubtaskDiscount)})
 													this.setState({ focusedSubtask: null });
 												}}
 												onFocus={() => {
 													this.onFocusSubtask(subtask);
 												}}
 												onChange={e =>{
-													this.setState({ editedSubtaskDiscount: e.target.value })
+													this.setState({ editedSubtaskDiscount: e.target.value.replace(',', '.') })
 												}}
 												/>
 											%
@@ -624,23 +627,24 @@ export default class Rozpocet extends Component {
 													-
 													<input
 														disabled={this.props.disabled}
-														type="number"
+														type="text"
+														pattern="([0-9]+.{0,1}[0-9]*,{0,1})*[0-9]"
 														style={{display: "inline", width: "60%"}}
 														className="form-control hidden-input h-30"
 														value={
 															trip.id === this.state.focusedTrip ?
-															this.state.editedTripDiscount :
-															trip.discount
+															this.state.editedTripDiscount.toString() :
+															trip.discount.toString()
 														}
 														onBlur={() => {
-															this.props.updateTrip(trip.id,{discount:isNaN(parseInt(this.state.editedTripDiscount))?0:parseInt(this.state.editedTripDiscount)})
+															this.props.updateTrip(trip.id,{discount:isNaN(parseFloat(this.state.editedTripDiscount))?0:parseFloat(this.state.editedTripDiscount)})
 															this.setState({ focusedTrip: null });
 														}}
 														onFocus={() => {
 															this.onFocusWorkTrip(trip);
 														}}
 														onChange={e =>{
-															this.setState({ editedTripDiscount: e.target.value })
+															this.setState({ editedTripDiscount: e.target.value.replace(',', '.') })
 														}}
 														/>
 													%
@@ -787,22 +791,23 @@ export default class Rozpocet extends Component {
 													</div>
 													<input
 														disabled={this.props.disabled}
-														type="number"
+														type="text"
+														pattern="([0-9]+.{0,1}[0-9]*,{0,1})*[0-9]"
 														style={{display: "inline", width: "70%", float: "right"}}
 														className="form-control hidden-input h-30"
 														value={
 															material.id === this.state.focusedMaterial
-															? this.state.editedMaterialPrice
-															: material.price
+															? this.state.editedMaterialPrice.toString()
+															: material.price.toString()
 														}
 														onBlur={() => {
 															//submit
-															this.props.updateMaterial(material.id,{price:this.state.editedMaterialPrice})
+															this.props.updateMaterial(material.id,{price: this.state.editedMaterialPrice})
 															this.setState({ focusedMaterial: null });
 														}}
 														onFocus={() => this.onFocusMaterial(material)}
 														onChange={e =>{
-															this.setState({ editedMaterialPrice: e.target.value })}
+															this.setState({ editedMaterialPrice: e.target.value.replace(",", ".") })}
 														}
 														/>
 												</span>
@@ -815,21 +820,22 @@ export default class Rozpocet extends Component {
 													+
 													<input
 														disabled={this.props.disabled}
-														type="number"
+														type="text"
+														pattern="([0-9]+.{0,1}[0-9]*,{0,1})*[0-9]"
 														style={{display: "inline", width: "60%"}}
 														className="form-control hidden-input h-30"
-														value={parseInt(
+														value={
 															material.id === this.state.focusedMaterial ?
-															this.state.editedMaterialMargin :
-															material.margin
-														)}
+															this.state.editedMaterialMargin.toString() :
+															material.margin.toString()
+														}
 														onBlur={() => {
-															this.props.updateMaterial(material.id,{margin:this.state.editedMaterialMargin})
+															this.props.updateMaterial(material.id,{margin: isNaN(parseFloat(this.state.editedMaterialMargin))?0:parseFloat(this.state.editedMaterialMargin)})
 															this.setState({ focusedMaterial: null });
 														}}
 														onFocus={() => this.onFocusMaterial(material)}
 														onChange={e =>{
-															this.setState({ editedMaterialMargin: e.target.value })
+															this.setState({ editedMaterialMargin: e.target.value.replace(',', '.') })
 														}}
 														/>
 													%
@@ -1159,9 +1165,10 @@ export default class Rozpocet extends Component {
 									<td className="table-highlight-background p-r-8 p-l-8">
 										<input
 											disabled={this.props.disabled}
-											type="number"
-											value={this.state.newSubtaskDiscount}
-											onChange={(e)=>this.setState({newSubtaskDiscount:e.target.value})}
+											type="text"
+											pattern="([0-9]+.{0,1}[0-9]*,{0,1})*[0-9]"
+											value={this.state.newSubtaskDiscount.toString()}
+											onChange={(e)=>this.setState({newSubtaskDiscount:e.target.value.replace(',', '.')})}
 											className="form-control input h-30"
 											id="inlineFormInput"
 											placeholder=""
@@ -1276,9 +1283,10 @@ export default class Rozpocet extends Component {
 									<td className="table-highlight-background p-l-8 p-r-8">
 										<input
 											disabled={this.props.disabled}
-											type="number"
-											value={this.state.newTripDiscount}
-											onChange={(e)=>this.setState({newTripDiscount:e.target.value})}
+											type="text"
+											pattern="([0-9]+.{0,1}[0-9]*,{0,1})*[0-9]"
+											value={this.state.newTripDiscount.toString()}
+											onChange={(e)=>this.setState({newTripDiscount:e.target.value.replace(',', '.')})}
 											className="form-control h-30"
 											id="inlineFormInput"
 											placeholder="Discount"
@@ -1423,10 +1431,11 @@ export default class Rozpocet extends Component {
 									<td className="table-highlight-background p-l-8 p-r-8">
 										<input
 											disabled={this.props.disabled}
-											type="number"
-											value={this.state.newMaterialPrice}
+											type="text"
+											pattern="([0-9]+.{0,1}[0-9]*,{0,1})*[0-9]"
+											value={this.state.newMaterialPrice.toString()}
 											onChange={(e)=>{
-												let newMaterialPrice = e.target.value;
+												let newMaterialPrice = e.target.value.replace(',', '.');
 												if(!this.state.marginChanged){
 													if(newMaterialPrice==='' || parseFloat(newMaterialPrice) < 50 ){
 														this.setState({newMaterialPrice,newMaterialMargin:(this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMargin : 0)});
@@ -1448,9 +1457,10 @@ export default class Rozpocet extends Component {
 									<td className="table-highlight-background p-r-8">
 										<input
 											disabled={this.props.disabled}
-											type="number"
-											value={this.state.newMaterialMargin}
-											onChange={(e)=>this.setState({newMaterialMargin:e.target.value,marginChanged:true})}
+											type="text"
+											pattern="([0-9]+.{0,1}[0-9]*,{0,1})*[0-9]"
+											value={this.state.newMaterialMargin.toString()}
+											onChange={(e)=>this.setState({newMaterialMargin:e.target.value.replace(',', '.'),marginChanged:true})}
 											className="form-control h-30"
 											id="inlineFormInput"
 											placeholder=""
@@ -1462,10 +1472,11 @@ export default class Rozpocet extends Component {
 									<td className="p-l-8 p-r-8 t-a-r">
 										<input
 											disabled={this.props.disabled}
-											type="number"
-											value={this.state.newDiscountedMaterialPrice}
+											type="text"
+											pattern="([0-9]+.{0,1}[0-9]*,{0,1})*[0-9]"
+											value={this.state.newDiscountedMaterialPrice.toString()}
 											onChange={(e)=>{
-												let newDiscountedMaterialPrice = e.target.value;
+												let newDiscountedMaterialPrice = e.target.value.replace(',', '.');
 
 												if(!this.state.marginChanged){
 													let newMaterialMargin = (this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMargin : 0);
@@ -1475,14 +1486,14 @@ export default class Rozpocet extends Component {
 														newMaterialMargin = (this.props.company && this.props.company.pricelist ? this.props.company.pricelist.materialMarginExtra : 0);
 														this.setState({
 															newMaterialPrice: this.getBasicMaterialPrice({price: newDiscountedMaterialPrice, margin: newMaterialMargin}),
-															newDiscountedMaterialPrice,
+															newDiscountedMaterialPrice: parseFloat(newDiscountedMaterialPrice),
 															newMaterialMargin,
 														});
 
 													}else{
 														this.setState({
 															newMaterialPrice:basicMaterialPrice,
-															newDiscountedMaterialPrice,
+															newDiscountedMaterialPrice: parseFloat(newDiscountedMaterialPrice),
 															newMaterialMargin,
 														});
 													}

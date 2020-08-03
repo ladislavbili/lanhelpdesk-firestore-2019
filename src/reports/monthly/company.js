@@ -203,8 +203,8 @@ class MothlyReportsCompany extends Component {
 			if(type===undefined){
 				type={title:'Unknown',id:Math.random(),prices:[]}
 			}
-			let dph = (company && company.dph && !isNaN(parseInt(company.dph)) && (parseInt(company.dph) > 0)) ? parseInt(company.dph) : 20;
-			let afterHours = company && company.pricelist ? parseInt(company.pricelist.afterHours) : 0;
+			let dph = (company && company.dph && !isNaN(parseFloat(company.dph)) && (parseFloat(company.dph) > 0)) ? parseFloat(company.dph) : 20;
+			let afterHours = company && company.pricelist ? parseFloat(company.pricelist.afterHours) : 0;
 			return {
 				finished:work.finished===true,
 				id:work.id,
@@ -233,8 +233,8 @@ class MothlyReportsCompany extends Component {
 				type={title:'Unknown',id:Math.random(),prices:[]}
 			}
 
-			let dph = company && company.dph && !isNaN(parseInt(company.dph)) && parseInt(company.dph) > 0 ? parseInt(company.dph) : 20;
-			let afterHours = company && company.pricelist ? parseInt(company.pricelist.afterHours) : 0;
+			let dph = company && company.dph && !isNaN(parseFloat(company.dph)) && parseFloat(company.dph) > 0 ? parseFloat(company.dph) : 20;
+			let afterHours = company && company.pricelist ? parseFloat(company.pricelist.afterHours) : 0;
 
 
 			return {
@@ -362,17 +362,17 @@ class MothlyReportsCompany extends Component {
 			return {
 				...company,
 				rentedCount:company.rented===undefined?0:company.rented.reduce((acc,rentedItem)=>{
-				return acc+(isNaN(parseInt(rentedItem.quantity))?0:parseInt(rentedItem.quantity))
+				return acc+(isNaN(parseFloat(rentedItem.quantity))?0:parseFloat(rentedItem.quantity))
 			},0),
 			pricelist:pricelists.find((pricelist)=>company.pricelist===pricelist.id)
 			}
 		})
-		return companies.filter((company)=>company.works.length > 0 || company.materials.length > 0 || company.customItems.length > 0 || company.trips.length > 0 || company.rentedCount);
+		return companies.filter((company)=>company.works.length > 0 || company.materials.length > 0 || company.customItems.length > 0 || company.trips.length > 0 || company.rentedCount).sort((c1, c2) => (c1.title.toLowerCase() > c2.title.toLowerCase() ? 1 : -1));
 	}
 
 	//Unit prices
 	getUnitDiscountedPrice(item){
-		return parseFloat((parseFloat(item.price)*(100-parseInt(item.discount))/100).toFixed(2))
+		return parseFloat((parseFloat(item.price)*(100-parseFloat(item.discount))/100).toFixed(2))
 	}
 
 	getUnitAHExtraPrice(item){
@@ -385,11 +385,11 @@ class MothlyReportsCompany extends Component {
 
 	//Total prices
 	getTotalPrice(item){
-		return parseFloat(parseFloat(item.price)*parseInt(item.quantity).toFixed(2))
+		return parseFloat(parseFloat(item.price)*parseFloat(item.quantity).toFixed(2))
 	}
 
 	getTotalDiscountedPrice(item){
-		return parseFloat((this.getTotalPrice(item)*(100-parseInt(item.discount))/100).toFixed(2))
+		return parseFloat((this.getTotalPrice(item)*(100-parseFloat(item.discount))/100).toFixed(2))
 	}
 
 	getTotalAHExtraPrice(item){
@@ -402,9 +402,9 @@ class MothlyReportsCompany extends Component {
 
 	getTotalWithDPH(item,ah){
 		if(ah){
-			return parseFloat(this.getTotalAHPrice(item)*(1+parseInt(item.dph)/100).toFixed(2));
+			return parseFloat(this.getTotalAHPrice(item)*(1+parseFloat(item.dph)/100).toFixed(2));
 		}
-		return parseFloat(this.getTotalDiscountedPrice(item)*(1+parseInt(item.dph)/100).toFixed(2));
+		return parseFloat(this.getTotalDiscountedPrice(item)*(1+parseFloat(item.dph)/100).toFixed(2));
 	}
 
 	getMonthDiff(props){
@@ -443,8 +443,8 @@ class MothlyReportsCompany extends Component {
 				totalPausalWorks:
 					this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id)).reduce((acc,item)=>{
 					return acc+item.pausalWorks.reduce((acc,item)=>{
-						if(!isNaN(parseInt(item.quantity))){
-							return acc+parseInt(item.quantity);
+						if(!isNaN(parseFloat(item.quantity))){
+							return acc+parseFloat(item.quantity);
 						}
 						return acc;
 					},0);
@@ -452,8 +452,8 @@ class MothlyReportsCompany extends Component {
 				totalPausalTrips:
 					this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id)).reduce((acc,item)=>{
 					return acc+item.pausalTrips.reduce((acc,item)=>{
-						if(!isNaN(parseInt(item.quantity))){
-							return acc+parseInt(item.quantity);
+						if(!isNaN(parseFloat(item.quantity))){
+							return acc+parseFloat(item.quantity);
 						}
 						return acc;
 					},0);
@@ -473,14 +473,14 @@ class MothlyReportsCompany extends Component {
 									id:work.id,
 									title:work.title,
 									type:work.type?work.type.title:'Undefined',
-									quantity:parseInt(work.quantity)
+									quantity:parseFloat(work.quantity)
 								}
 							}),
 							trips:task.pausalTrips.map((trip)=>{
 								return {
 									id:trip.id,
 									title:trip.type?trip.type.title:"Undefined",
-									quantity:parseInt(trip.quantity)
+									quantity:parseFloat(trip.quantity)
 								}
 							}),
 						}
@@ -488,16 +488,16 @@ class MothlyReportsCompany extends Component {
 				pausalInfo:{
 					worksTotalTime:this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalWorks.length!==0).reduce((acc,item)=>{
 						return acc+item.pausalWorks.reduce((acc,item)=>{
-							if(!isNaN(parseInt(item.quantity))){
-								return acc+parseInt(item.quantity);
+							if(!isNaN(parseFloat(item.quantity))){
+								return acc+parseFloat(item.quantity);
 							}
 							return acc;
 						},0);
 					},0),
 					worksTotalOvertime:this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalWorks.length!==0 && task.overtime).reduce((acc,item)=>{
 						return acc+item.pausalWorks.reduce((acc,item)=>{
-							if(!isNaN(parseInt(item.quantity))){
-								return acc+parseInt(item.quantity);
+							if(!isNaN(parseFloat(item.quantity))){
+								return acc+parseFloat(item.quantity);
 							}
 							return acc;
 						},0);
@@ -511,16 +511,16 @@ class MothlyReportsCompany extends Component {
 
 					tripsTotalTime:this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalTrips.length!==0).reduce((acc,item)=>{
 						return acc+item.pausalTrips.reduce((acc,item)=>{
-							if(!isNaN(parseInt(item.quantity))){
-								return acc+parseInt(item.quantity);
+							if(!isNaN(parseFloat(item.quantity))){
+								return acc+parseFloat(item.quantity);
 							}
 							return acc;
 						},0);
 					},0),
 					tripsTotalOvertime:this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalTrips.length!==0 && task.overtime).reduce((acc,item)=>{
 						return acc+item.pausalTrips.reduce((acc,item)=>{
-							if(!isNaN(parseInt(item.quantity))){
-								return acc+parseInt(item.quantity);
+							if(!isNaN(parseFloat(item.quantity))){
+								return acc+parseFloat(item.quantity);
 							}
 							return acc;
 						},0);
@@ -547,7 +547,7 @@ class MothlyReportsCompany extends Component {
 								id:work.id,
 								title:work.title,
 								type:work.type?work.type.title:'Undefined',
-								quantity:parseInt(work.quantity),
+								quantity:parseFloat(work.quantity),
 								unitPrice:task.overtime?this.getUnitAHPrice(work):this.getUnitDiscountedPrice(work),
 								totalPrice:task.overtime?this.getTotalAHPrice(work):this.getTotalDiscountedPrice(work)
 							}
@@ -556,7 +556,7 @@ class MothlyReportsCompany extends Component {
 							return {
 								id:trip.id,
 								title:trip.type?trip.type.title:"Undefined",
-								quantity:parseInt(trip.quantity),
+								quantity:parseFloat(trip.quantity),
 								unitPrice:task.overtime?this.getUnitAHPrice(trip):this.getUnitDiscountedPrice(trip),
 								totalPrice:task.overtime?this.getTotalAHPrice(trip):this.getTotalDiscountedPrice(trip)
 							}
@@ -566,16 +566,16 @@ class MothlyReportsCompany extends Component {
 				pausalExtraInfo:{
 					worksTotalTime:this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraWorks.length!==0).reduce((acc,item)=>{
 						return acc+item.extraWorks.reduce((acc,item)=>{
-							if(!isNaN(parseInt(item.quantity))){
-								return acc+parseInt(item.quantity);
+							if(!isNaN(parseFloat(item.quantity))){
+								return acc+parseFloat(item.quantity);
 							}
 							return acc;
 						},0);
 					},0),
 					worksTotalOvertime:this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraWorks.length!==0 && task.overtime).reduce((acc,item)=>{
 							return acc+item.extraWorks.reduce((acc,item)=>{
-								if(!isNaN(parseInt(item.quantity))){
-									return acc+parseInt(item.quantity);
+								if(!isNaN(parseFloat(item.quantity))){
+									return acc+parseFloat(item.quantity);
 								}
 								return acc;
 							},0);
@@ -602,16 +602,16 @@ class MothlyReportsCompany extends Component {
 
 					tripsTotalTime:this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraTrips.length!==0).reduce((acc,item)=>{
 						return acc+item.extraTrips.reduce((acc,item)=>{
-							if(!isNaN(parseInt(item.quantity))){
-								return acc+parseInt(item.quantity);
+							if(!isNaN(parseFloat(item.quantity))){
+								return acc+parseFloat(item.quantity);
 							}
 							return acc;
 						},0);
 					},0),
 					tripsTotalOvertime:this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraTrips.length!==0 && task.overtime).reduce((acc,item)=>{
 						return acc+item.extraTrips.reduce((acc,item)=>{
-							if(!isNaN(parseInt(item.quantity))){
-								return acc+parseInt(item.quantity);
+							if(!isNaN(parseFloat(item.quantity))){
+								return acc+parseFloat(item.quantity);
 							}
 							return acc;
 						},0);
@@ -650,7 +650,7 @@ class MothlyReportsCompany extends Component {
 								id:work.id,
 								title:work.title,
 								type:work.type?work.type.title:'Undefined',
-								quantity:parseInt(work.quantity),
+								quantity:parseFloat(work.quantity),
 								unitPrice:task.overtime?this.getUnitAHPrice(work):this.getUnitDiscountedPrice(work),
 								totalPrice:task.overtime?this.getTotalAHPrice(work):this.getTotalDiscountedPrice(work)
 							}
@@ -659,7 +659,7 @@ class MothlyReportsCompany extends Component {
 							return {
 								id:trip.id,
 								title:trip.type?trip.type.title:"Undefined",
-								quantity:parseInt(trip.quantity),
+								quantity:parseFloat(trip.quantity),
 								unitPrice:task.overtime?this.getUnitAHPrice(trip):this.getUnitDiscountedPrice(trip),
 								totalPrice:task.overtime?this.getTotalAHPrice(trip):this.getTotalDiscountedPrice(trip)
 							}
@@ -669,16 +669,16 @@ class MothlyReportsCompany extends Component {
 				projectInfo:{
 					worksTotalTime:	this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.works.length!==0).reduce((acc,item)=>{
 							return acc+item.works.reduce((acc,item)=>{
-								if(!isNaN(parseInt(item.quantity))){
-									return acc+parseInt(item.quantity);
+								if(!isNaN(parseFloat(item.quantity))){
+									return acc+parseFloat(item.quantity);
 								}
 								return acc;
 							},0);
 						},0),
 					worksTotalOvertime:	this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.works.length!==0 && task.overtime).reduce((acc,item)=>{
 							return acc+item.works.reduce((acc,item)=>{
-								if(!isNaN(parseInt(item.quantity))){
-									return acc+parseInt(item.quantity);
+								if(!isNaN(parseFloat(item.quantity))){
+									return acc+parseFloat(item.quantity);
 								}
 								return acc;
 							},0);
@@ -705,16 +705,16 @@ class MothlyReportsCompany extends Component {
 
 					tripsTotalTime:this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.trips.length!==0).reduce((acc,item)=>{
 						return acc+item.trips.reduce((acc,item)=>{
-							if(!isNaN(parseInt(item.quantity))){
-								return acc+parseInt(item.quantity);
+							if(!isNaN(parseFloat(item.quantity))){
+								return acc+parseFloat(item.quantity);
 							}
 							return acc;
 						},0);
 					},0),
 					tripsTotalOvertime:this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.trips.length!==0 && task.overtime).reduce((acc,item)=>{
 						return acc+item.trips.reduce((acc,item)=>{
-							if(!isNaN(parseInt(item.quantity))){
-								return acc+parseInt(item.quantity);
+							if(!isNaN(parseFloat(item.quantity))){
+								return acc+parseFloat(item.quantity);
 							}
 							return acc;
 						},0);
@@ -776,7 +776,7 @@ class MothlyReportsCompany extends Component {
 					},0)),
 					priceWithDPH:toFloat(this.state.allTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id)).reduce((acc,task)=>{
 						return acc+[...task.materials,...task.customItems].reduce((acc,material)=>acc+=isNaN(parseFloat(material.totalPrice))?0:parseFloat(material.totalPrice),0)
-					},0)*(1+(isNaN(parseInt(this.state.showCompany.dph))?0:parseInt(this.state.showCompany.dph))/100))
+					},0)*(1+(isNaN(parseFloat(this.state.showCompany.dph))?0:parseFloat(this.state.showCompany.dph))/100))
 				},
 
 				rented:[...this.state.showCompany.rented],
@@ -786,7 +786,7 @@ class MothlyReportsCompany extends Component {
 					},0)*this.getMonthDiff(this.props)).toFixed(2)),
 					priceWithDPH:parseFloat(((this.state.showCompany.rented===undefined ? [] : this.state.showCompany.rented).reduce((acc,rentedItem)=>{
 						return acc+(isNaN(parseFloat(rentedItem.totalPrice))?0:parseFloat(rentedItem.totalPrice))
-					},0)*this.getMonthDiff(this.props)*(1+(isNaN(parseInt(this.state.showCompany.dph))?0:parseInt(this.state.showCompany.dph))/100)).toFixed(2)),
+					},0)*this.getMonthDiff(this.props)*(1+(isNaN(parseFloat(this.state.showCompany.dph))?0:parseFloat(this.state.showCompany.dph))/100)).toFixed(2)),
 				}
 			}
 			this.setState({newInvoice, newInvoiceTitle});
@@ -842,10 +842,10 @@ class MothlyReportsCompany extends Component {
 											this.setState({showCompany:company, pickedTasks: pickedTasks.length > 0 ? pickedTasks : taskIDs });
 										}}>
 										<td>{company.title}</td>
-										<td>{company.works.reduce((acc,work)=>acc+((isNaN(parseInt(work.quantity))||!statusIDs.includes(work.statusID))?0:parseInt(work.quantity)),0)}</td>
-											<td>{company.materials.reduce((acc,materials)=>acc+((isNaN(parseInt(materials.quantity))||!statusIDs.includes(materials.statusID))?0:parseInt(materials.quantity)),0)}</td>
-											<td>{company.customItems.reduce((acc,customItems)=>acc+((isNaN(parseInt(customItems.quantity))||!statusIDs.includes(customItems.statusID))?0:parseInt(customItems.quantity)),0)}</td>
-											<td>{company.trips.reduce((acc,trips)=>acc+((isNaN(parseInt(trips.quantity))||!statusIDs.includes(trips.statusID))?0:parseInt(trips.quantity)),0)}</td>
+										<td>{company.works.reduce((acc,work)=>acc+((isNaN(parseFloat(work.quantity))||!statusIDs.includes(work.statusID))?0:parseFloat(work.quantity)),0)}</td>
+											<td>{company.materials.reduce((acc,materials)=>acc+((isNaN(parseFloat(materials.quantity))||!statusIDs.includes(materials.statusID))?0:parseFloat(materials.quantity)),0)}</td>
+											<td>{company.customItems.reduce((acc,customItems)=>acc+((isNaN(parseFloat(customItems.quantity))||!statusIDs.includes(customItems.statusID))?0:parseFloat(customItems.quantity)),0)}</td>
+											<td>{company.trips.reduce((acc,trips)=>acc+((isNaN(parseFloat(trips.quantity))||!statusIDs.includes(trips.statusID))?0:parseFloat(trips.quantity)),0)}</td>
 										<td>{company.rentedCount}</td>
 									</tr>
 								)}
@@ -887,8 +887,8 @@ class MothlyReportsCompany extends Component {
 									Počet prác vrámci paušálu: {
 										this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id)).reduce((acc,item)=>{
 										return acc+item.pausalWorks.reduce((acc,item)=>{
-											if(!isNaN(parseInt(item.quantity))){
-												return acc+parseInt(item.quantity);
+											if(!isNaN(parseFloat(item.quantity))){
+												return acc+parseFloat(item.quantity);
 											}
 											return acc;
 										},0);
@@ -897,8 +897,8 @@ class MothlyReportsCompany extends Component {
 									Počet výjazdov vrámci paušálu: {
 										this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id)).reduce((acc,item)=>{
 										return acc+item.pausalTrips.reduce((acc,item)=>{
-											if(!isNaN(parseInt(item.quantity))){
-												return acc+parseInt(item.quantity);
+											if(!isNaN(parseFloat(item.quantity))){
+												return acc+parseFloat(item.quantity);
 											}
 											return acc;
 										},0);
@@ -980,8 +980,8 @@ class MothlyReportsCompany extends Component {
 								<p className="m-0">Spolu počet hodín: {
 									this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalWorks.length!==0).reduce((acc,item)=>{
 										return acc+item.pausalWorks.reduce((acc,item)=>{
-											if(!isNaN(parseInt(item.quantity))){
-												return acc+parseInt(item.quantity);
+											if(!isNaN(parseFloat(item.quantity))){
+												return acc+parseFloat(item.quantity);
 											}
 											return acc;
 										},0);
@@ -990,8 +990,8 @@ class MothlyReportsCompany extends Component {
 								<p className="m-0">Spolu počet hodín mimo pracovný čas: {
 									this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalWorks.length!==0 && task.overtime).reduce((acc,item)=>{
 										return acc+item.pausalWorks.reduce((acc,item)=>{
-											if(!isNaN(parseInt(item.quantity))){
-												return acc+parseInt(item.quantity);
+											if(!isNaN(parseFloat(item.quantity))){
+												return acc+parseFloat(item.quantity);
 											}
 											return acc;
 										},0);
@@ -1080,8 +1080,8 @@ class MothlyReportsCompany extends Component {
 								<p className="m-0">Spolu počet výjazdov: {
 									this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalTrips.length!==0).reduce((acc,item)=>{
 										return acc+item.pausalTrips.reduce((acc,item)=>{
-											if(!isNaN(parseInt(item.quantity))){
-												return acc+parseInt(item.quantity);
+											if(!isNaN(parseFloat(item.quantity))){
+												return acc+parseFloat(item.quantity);
 											}
 											return acc;
 										},0);
@@ -1090,8 +1090,8 @@ class MothlyReportsCompany extends Component {
 								<p className="m-0">Spolu počet výjazdov mimo pracovný čas: {
 									this.state.tasks.pausalPaidTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.pausalTrips.length!==0 && task.overtime).reduce((acc,item)=>{
 										return acc+item.pausalTrips.reduce((acc,item)=>{
-											if(!isNaN(parseInt(item.quantity))){
-												return acc+parseInt(item.quantity);
+											if(!isNaN(parseFloat(item.quantity))){
+												return acc+parseFloat(item.quantity);
 											}
 											return acc;
 										},0);
@@ -1189,8 +1189,8 @@ class MothlyReportsCompany extends Component {
 								<p className="m-0">Spolu počet hodín: {
 									this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraWorks.length!==0).reduce((acc,item)=>{
 										return acc+item.extraWorks.reduce((acc,item)=>{
-											if(!isNaN(parseInt(item.quantity))){
-												return acc+parseInt(item.quantity);
+											if(!isNaN(parseFloat(item.quantity))){
+												return acc+parseFloat(item.quantity);
 											}
 											return acc;
 										},0);
@@ -1199,8 +1199,8 @@ class MothlyReportsCompany extends Component {
 								<p className="m-0">Spolu počet hodín mimo pracovný čas: {
 									this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraWorks.length!==0 && task.overtime).reduce((acc,item)=>{
 										return acc+item.extraWorks.reduce((acc,item)=>{
-											if(!isNaN(parseInt(item.quantity))){
-												return acc+parseInt(item.quantity);
+											if(!isNaN(parseFloat(item.quantity))){
+												return acc+parseFloat(item.quantity);
 											}
 											return acc;
 										},0);
@@ -1310,8 +1310,8 @@ class MothlyReportsCompany extends Component {
 								<p className="m-0">Spolu počet výjazdov: {
 									this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraTrips.length!==0).reduce((acc,item)=>{
 										return acc+item.extraTrips.reduce((acc,item)=>{
-											if(!isNaN(parseInt(item.quantity))){
-												return acc+parseInt(item.quantity);
+											if(!isNaN(parseFloat(item.quantity))){
+												return acc+parseFloat(item.quantity);
 											}
 											return acc;
 										},0);
@@ -1320,8 +1320,8 @@ class MothlyReportsCompany extends Component {
 								<p className="m-0">Spolu počet výjazdov mimo pracovný čas: {
 									this.state.tasks.extraTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.extraTrips.length!==0 && task.overtime).reduce((acc,item)=>{
 										return acc+item.extraTrips.reduce((acc,item)=>{
-											if(!isNaN(parseInt(item.quantity))){
-												return acc+parseInt(item.quantity);
+											if(!isNaN(parseFloat(item.quantity))){
+												return acc+parseFloat(item.quantity);
 											}
 											return acc;
 										},0);
@@ -1436,8 +1436,8 @@ class MothlyReportsCompany extends Component {
 								<p className="m-0">Spolu počet hodín: {
 									this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.works.length!==0).reduce((acc,item)=>{
 										return acc+item.works.reduce((acc,item)=>{
-											if(!isNaN(parseInt(item.quantity))){
-												return acc+parseInt(item.quantity);
+											if(!isNaN(parseFloat(item.quantity))){
+												return acc+parseFloat(item.quantity);
 											}
 											return acc;
 										},0);
@@ -1446,8 +1446,8 @@ class MothlyReportsCompany extends Component {
 								<p className="m-0">Spolu počet hodín mimo pracovný čas: {
 									this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.works.length!==0 && task.overtime).reduce((acc,item)=>{
 										return acc+item.works.reduce((acc,item)=>{
-											if(!isNaN(parseInt(item.quantity))){
-												return acc+parseInt(item.quantity);
+											if(!isNaN(parseFloat(item.quantity))){
+												return acc+parseFloat(item.quantity);
 											}
 											return acc;
 										},0);
@@ -1557,8 +1557,8 @@ class MothlyReportsCompany extends Component {
 								<p className="m-0">Spolu počet výjazdov: {
 									this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.trips.length!==0).reduce((acc,item)=>{
 										return acc+item.trips.reduce((acc,item)=>{
-											if(!isNaN(parseInt(item.quantity))){
-												return acc+parseInt(item.quantity);
+											if(!isNaN(parseFloat(item.quantity))){
+												return acc+parseFloat(item.quantity);
 											}
 											return acc;
 										},0);
@@ -1567,8 +1567,8 @@ class MothlyReportsCompany extends Component {
 								<p className="m-0">Spolu počet výjazdov mimo pracovný čas: {
 									this.state.tasks.projectTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id) && task.trips.length!==0 && task.overtime).reduce((acc,item)=>{
 										return acc+item.trips.reduce((acc,item)=>{
-											if(!isNaN(parseInt(item.quantity))){
-												return acc+parseInt(item.quantity);
+											if(!isNaN(parseFloat(item.quantity))){
+												return acc+parseFloat(item.quantity);
 											}
 											return acc;
 										},0);
@@ -1689,7 +1689,7 @@ class MothlyReportsCompany extends Component {
 							<p className="m-0">Spolu cena s DPH: {
 									(this.state.allTasks.filter((task)=>this.filterTask(task,statusIDs) && this.state.pickedTasks.includes(task.id)).reduce((acc,task)=>{
 									return acc+[...task.materials,...task.customItems].reduce((acc,material)=>acc+=isNaN(parseFloat(material.totalPrice))?0:parseFloat(material.totalPrice),0)
-								},0)*(1+(isNaN(parseInt(this.state.showCompany.dph))?0:parseInt(this.state.showCompany.dph))/100)).toFixed(2)} EUR</p>
+								},0)*(1+(isNaN(parseFloat(this.state.showCompany.dph))?0:parseFloat(this.state.showCompany.dph))/100)).toFixed(2)} EUR</p>
 						</div>
 						<div className="m-b-30">
 							<h3>Mesačný prenájom služieb a harware</h3>
@@ -1724,7 +1724,7 @@ class MothlyReportsCompany extends Component {
 							<p className="m-0">Spolu cena s DPH: {
 									((this.state.showCompany.rented===undefined ? [] : this.state.showCompany.rented).reduce((acc,rentedItem)=>{
 									return acc+(isNaN(parseFloat(rentedItem.totalPrice))?0:parseFloat(rentedItem.totalPrice))
-								},0)*this.getMonthDiff(this.props)*(1+(isNaN(parseInt(this.state.showCompany.dph))?0:parseInt(this.state.showCompany.dph))/100)).toFixed(2)} EUR</p>
+								},0)*this.getMonthDiff(this.props)*(1+(isNaN(parseFloat(this.state.showCompany.dph))?0:parseFloat(this.state.showCompany.dph))/100)).toFixed(2)} EUR</p>
 						</div>
 					</div>}
 					<Modal isOpen={this.state.newInvoice!==null}  toggle={()=>this.setState({newInvoice:null})} >
@@ -1810,8 +1810,8 @@ class MothlyReportsCompany extends Component {
 			let newCompanies = period.companies.map((group)=>{
 				//iba ponechat tasky a pridat im pausalWorks a extraWorks
 				let newCompany = {company:group.company,tasks:[]};
-				let workPausal = parseInt(group.company.workPausal);
-				let tripPausal = parseInt(group.company.drivePausal);
+				let workPausal = parseFloat(group.company.workPausal);
+				let tripPausal = parseFloat(group.company.drivePausal);
 				group.tasks.forEach((task)=>{
 					let pausalWorks = [];
 					let extraWorks = [];

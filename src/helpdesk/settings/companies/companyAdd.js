@@ -5,7 +5,7 @@ import {toSelArr} from '../../../helperFunctions';
 import {rebase} from '../../../index';
 
 import { connect } from "react-redux";
-import {storageHelpPricelistsStart } from '../../../redux/actions';
+import {storageHelpPricelistsStart, storageCompaniesStart} from '../../../redux/actions';
 import {sameStringForms, isEmail} from '../../../helperFunctions';
 import CompanyRents from './companyRents';
 import CompanyPriceList from './companyPriceList';
@@ -58,6 +58,11 @@ class CompanyAdd extends Component{
       oldMonthlyPausal:false,
       fakeID:0,
       newData: false,
+
+      companies: [],
+      duplicateTitle: false,
+      duplicateICO: false,
+
       loading:false,
       saving:false,
       clearCompanyRents:false,
@@ -67,6 +72,8 @@ class CompanyAdd extends Component{
     this.setData.bind(this);
     this.submit.bind(this);
     this.cancel.bind(this);
+    this.uniqueName.bind(this);
+    this.uniqueICO.bind(this);
   }
 
   getFakeID(){
@@ -76,7 +83,8 @@ class CompanyAdd extends Component{
   }
 
   storageLoaded(props){
-    return props.pricelistsLoaded;
+    return props.pricelistsLoaded &&
+    props.companiesLoaded;
   }
 
   componentWillReceiveProps(props){
@@ -89,6 +97,9 @@ class CompanyAdd extends Component{
   }
 
   componentWillMount(){
+    if(!this.props.companiesActive){
+      this.props.storageCompaniesStart();
+    }
     if(!this.props.pricelistsActive){
       this.props.storageHelpPricelistsStart();
     }
@@ -110,6 +121,7 @@ class CompanyAdd extends Component{
     }
 
     this.setState({
+      companies: props.companies,
       pricelists,
       pricelist,
       loading:false})
@@ -228,6 +240,18 @@ class CompanyAdd extends Component{
     })
   }
 
+  uniqueName(){
+    return this.state.companies.some(company => company.title.toLowerCase() === this.state.title.toLowerCase());
+  }
+
+  uniqueICO(){
+    /*this.state.companies.forEach((item, i) => {
+      console.log(item.ICO);
+    });*/
+
+    return true; // this.state.companies.some(company => company.ICO.toString() === this.state.ICO.toString());
+  }
+
   render(){
   return (
     <div className="fit-with-header-and-commandbar">
@@ -257,10 +281,22 @@ class CompanyAdd extends Component{
                 type="text"
                 placeholder="Enter company name"
                 value={this.state.title}
-                onChange={(e)=>this.setState({title: e.target.value, newData: true, })}
+                onChange={(e)=> {
+                  this.setState({
+                    title: e.target.value,
+                    newData: true,
+                    duplicateTitle: !this.uniqueName(e.target.value)
+                  })
+                }}
                 />
+                { this.state.duplicateTitle &&
+                  <div className="m-b-5 text-danger">
+                    A company with this title already exists!
+                  </div>
+                }
             </div>
           </FormGroup>
+
 
           <FormGroup className="row m-b-10">
             <div className="m-r-10 w-20">
@@ -289,8 +325,18 @@ class CompanyAdd extends Component{
                 type="text"
                 placeholder="Enter ICO"
                 value={this.state.ICO}
-                onChange={(e)=>this.setState({ICO: e.target.value, newData: true })  }
+                onChange={(e)=>
+                  this.setState({
+                    ICO: e.target.value,
+                    newData: true,
+                    duplicateICO: !this.uniqueICO(e.target.value)
+                   })  }
                 />
+              { this.state.duplicateICO &&
+                <div className="m-b-5 text-danger">
+                  A company with this ICO already exists!
+                </div>
+              }
             </div>
           </FormGroup>
 
@@ -583,10 +629,11 @@ class CompanyAdd extends Component{
   }
 }
 
-const mapStateToProps = ({ storageHelpPricelists, userReducer}) => {
+const mapStateToProps = ({ storageHelpPricelists, userReducer, storageCompanies}) => {
   const { pricelistsActive, pricelists, pricelistsLoaded } = storageHelpPricelists;
+  const { companiesActive, companies, companiesLoaded } = storageCompanies;
   const role = userReducer.userData ? userReducer.userData.role.value : 0;
-  return { pricelistsActive, pricelists, pricelistsLoaded, role };
+  return { pricelistsActive, pricelists, pricelistsLoaded, role, companiesActive, companies, companiesLoaded, };
 };
 
-export default connect(mapStateToProps, { storageHelpPricelistsStart  })(CompanyAdd);
+export default connect(mapStateToProps, { storageHelpPricelistsStart, storageCompaniesStart  })(CompanyAdd);

@@ -467,7 +467,7 @@ export default class TaskAdd extends Component{
 			const REQUESTERS =  (this.state.project && this.state.project.lockedRequester ? USERS_WITH_PERMISSIONS : this.state.users);
 
 			return(
-				<div className="row">
+				<div>
 						{this.state.viewOnly &&
 							<div className="row p-r-10">
 							<Label className="col-3 col-form-label">Projekt</Label>
@@ -513,7 +513,7 @@ export default class TaskAdd extends Component{
 						</div>
 						}
 
-				{!this.state.viewOnly && <div className="col-lg-12">
+				{!this.state.viewOnly &&
 					<div className="col-lg-12">{/*NUTNE !! INAK AK NIE JE ZOBRAZENY ASSIGNED SELECT TAK SA VZHLAD POSUVA*/}
 						<div className="col-lg-4">
 							<div className="row p-r-10">
@@ -575,48 +575,54 @@ export default class TaskAdd extends Component{
 										options={USERS_WITH_PERMISSIONS}
 										styles={invisibleSelectStyleNoArrowRequired}
 										/>
-									</div>
+								</div>
 							</div>
-						</div>}
+						</div>
+					}
 					</div>
+				}
 
-					<div className="col-lg-4">
-						{this.state.defaultFields.status.show && <div className="row p-r-10">
-							<Label className="col-3 col-form-label">Status</Label>
-							<div className="col-9">
-								<Select
-									placeholder="Select required"
-									value={this.state.status}
-									isDisabled={this.state.defaultFields.status.fixed||this.state.viewOnly}
-									styles={invisibleSelectStyleNoArrowColoredRequired}
-									onChange={(status)=>{
-										if(status.action==='pending'){
-											this.setState({
-												status,
-												pendingDate:  moment().add(1,'d'),
-											})
-										}else if(status.action==='close'||status.action==='invalid'){
-											this.setState({
-												status,
-												closeDate: moment(),
-											})
-										}
-										else{
-											this.setState({status})
-										}
-									}}
-									options={this.state.statuses.filter((status)=>status.action!=='invoiced').sort((item1,item2)=>{
-										if(item1.order &&item2.order){
-											return item1.order > item2.order? 1 :-1;
-										}
-										return -1;
-									})}
-									/>
+					{!this.state.viewOnly &&
+						<div>
+						{this.state.defaultFields.status.show &&
+							<div className="display-inline">
+								<Label className="col-3 col-form-label w-8">Status</Label>
+								<div className="display-inline-block w-25 p-r-10">
+									<Select
+										placeholder="Select required"
+										value={this.state.status}
+										isDisabled={this.state.defaultFields.status.fixed||this.state.viewOnly}
+										styles={invisibleSelectStyleNoArrowColoredRequired}
+										onChange={(status)=>{
+											if(status.action==='pending'){
+												this.setState({
+													status,
+													pendingDate:  moment().add(1,'d'),
+												})
+											}else if(status.action==='close'||status.action==='invalid'){
+												this.setState({
+													status,
+													closeDate: moment(),
+												})
+											}
+											else{
+												this.setState({status})
+											}
+										}}
+										options={this.state.statuses.filter((status)=>status.action!=='invoiced').sort((item1,item2)=>{
+											if(item1.order &&item2.order){
+												return item1.order > item2.order? 1 :-1;
+											}
+											return -1;
+										})}
+										/>
+								</div>
 							</div>
-						</div>}
-							{this.state.defaultFields.type.show && <div className="row p-r-10">
-								<Label className="col-3 col-form-label">Typ</Label>
-								<div className="col-9">
+						}
+						{this.state.defaultFields.type.show &&
+							<div className="display-inline">
+								<Label className="col-form-label w-8">Typ</Label>
+								<div className="display-inline-block w-25 p-r-10">
 									<Select
 										placeholder="Select required"
 										value={this.state.type}
@@ -626,10 +632,11 @@ export default class TaskAdd extends Component{
 										options={this.state.taskTypes}
 										/>
 								</div>
-							</div>}
-							<div className="row p-r-10">
-								<Label className="col-3 col-form-label">Milestone</Label>
-								<div className="col-9">
+							</div>
+						}
+						<div className="display-inline">
+							<Label className="col-form-label w-8">Milestone</Label>
+							<div className="display-inline-block w-25 p-r-10">
 									<Select
 										isDisabled={this.state.viewOnly}
 										placeholder="None"
@@ -648,40 +655,43 @@ export default class TaskAdd extends Component{
 										options={this.state.milestones.filter((milestone)=>milestone.id===null || (this.state.project!== null && milestone.project===this.state.project.id))}
 										styles={invisibleSelectStyleNoArrow}
 								/>
-								</div>
 							</div>
-					</div>
+					 </div>
 
-					<div className="col-lg-4">
-							{this.state.defaultFields.requester.show && <div className="row p-r-10">
-								<Label className="col-3 col-form-label">Zadal</Label>
-								<div className="col-9">
-									<Select
-										value={this.state.requester}
-										placeholder="Select required"
-										isDisabled={this.state.defaultFields.requester.fixed||this.state.viewOnly}
-										onChange={(requester)=>this.setState({requester})}
-										options={REQUESTERS}
-										styles={invisibleSelectStyleNoArrowRequired}
-										/>
+							{this.state.defaultFields.requester.show &&
+								<div className="display-inline">
+									<Label className="col-form-label w-8">Zadal</Label>
+									<div className="display-inline-block w-25 p-r-10">
+										<Select
+											value={this.state.requester}
+											placeholder="Select required"
+											isDisabled={this.state.defaultFields.requester.fixed||this.state.viewOnly}
+											onChange={(requester)=>this.setState({requester})}
+											options={REQUESTERS}
+											styles={invisibleSelectStyleNoArrowRequired}
+											/>
+									</div>
 								</div>
-							</div>}
-							{this.state.defaultFields.company.show && <div className="row p-r-10">
-								<Label className="col-3 col-form-label">Firma</Label>
-								<div className="col-9">
-									<Select
-										value={this.state.company}
-										placeholder="Select required"
-										isDisabled={this.state.defaultFields.company.fixed||this.state.viewOnly}
-										onChange={(company)=>this.setState({company, pausal:parseInt(company.workPausal)>0?booleanSelects[1]:booleanSelects[0]})}
-										options={this.state.companies}
-										styles={invisibleSelectStyleNoArrowRequired}
-										/>
+							}
+							{this.state.defaultFields.company.show &&
+								<div className="display-inline">
+									<Label className="col-form-label w-8">Firma</Label>
+									<div className="display-inline-block w-25 p-r-10">
+										<Select
+											value={this.state.company}
+											placeholder="Select required"
+											isDisabled={this.state.defaultFields.company.fixed||this.state.viewOnly}
+											onChange={(company)=>this.setState({company, pausal:parseInt(company.workPausal)>0?booleanSelects[1]:booleanSelects[0]})}
+											options={this.state.companies}
+											styles={invisibleSelectStyleNoArrowRequired}
+											/>
+									</div>
 								</div>
-							</div>}
-							{this.state.defaultFields.pausal.show && <div className="row p-r-10">
-									<Label className="col-3 col-form-label">Paušál</Label>
-									<div className="col-9">
+							}
+							{this.state.defaultFields.pausal.show &&
+								<div className="display-inline">
+									<Label className="col-form-label w-8">Paušál</Label>
+									<div className="display-inline-block w-25 p-r-10">
 										<Select
 											value={this.state.pausal}
 											placeholder="Select required"
@@ -691,7 +701,8 @@ export default class TaskAdd extends Component{
 											options={booleanSelects}
 											/>
 									</div>
-								</div>}
+								</div>
+							}
 
 							{false && <div className="row p-r-10">
 								<Label className="col-3 col-form-label">Pending</Label>
@@ -709,12 +720,10 @@ export default class TaskAdd extends Component{
 										/>
 								</div>
 							</div>}
-					</div>
 
-					<div className="col-lg-4">
-						<div className="row p-r-10">
-							<Label className="col-3 col-form-label">Deadline</Label>
-								<div className="col-9">
+							<div className="display-inline">
+								<Label className="col-form-label w-8">Deadline</Label>
+								<div className="display-inline-block w-25 p-r-10">
 									<DatePicker
 										className="form-control hidden-input"
 										selected={this.state.deadline}
@@ -727,24 +736,29 @@ export default class TaskAdd extends Component{
 										/>
 								</div>
 						</div>
-					<Repeat
-							taskID={null}
-							repeat={this.state.repeat}
-							disabled={this.state.viewOnly}
-							submitRepeat={(repeat)=>{
-								if(this.state.viewOnly){
-									return;
-								}
-								this.setState({repeat:repeat})
-							}}
-							deleteRepeat={()=>{
-								this.setState({repeat:null})
-							}}
-							columns={true}
-							/>
-							{this.state.defaultFields.overtime.show && <div className="row p-r-10">
-								<Label className="col-3 col-form-label">Mimo PH</Label>
-								<div className="col-9">
+
+		       <div className="display-inline">
+						<Repeat
+								taskID={null}
+								repeat={this.state.repeat}
+								disabled={this.state.viewOnly}
+								submitRepeat={(repeat)=>{
+									if(this.state.viewOnly){
+										return;
+									}
+									this.setState({repeat:repeat})
+								}}
+								deleteRepeat={()=>{
+									this.setState({repeat:null})
+								}}
+								columns={true}
+								/>
+						</div>
+
+							{this.state.defaultFields.overtime.show &&
+								<div className="display-inline">
+									<Label className="col-form-label w-8">Mimo PH</Label>
+									<div className="display-inline-block w-25 p-r-10">
 									<Select
 										placeholder="Select required"
 										value={this.state.overtime}
@@ -754,9 +768,10 @@ export default class TaskAdd extends Component{
 										options={booleanSelects}
 										/>
 								</div>
-							</div>}
-					</div>
-				</div>}
+							</div>
+						}
+				</div>
+			}
 			</div>
 		)}
 

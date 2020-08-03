@@ -306,6 +306,7 @@ submitEmail(){
               <Checkbox
                 className = "m-l-10 center-hor"
                 centerHor
+                highlighted
                 label = "E-mail"
                 value = { this.state.isEmail }
                 onChange={()=>{
@@ -317,6 +318,7 @@ submitEmail(){
                 <Checkbox
                   className = "m-l-10 center-hor"
                   centerHor
+                  highlighted
                   label = "Internal"
                   value = { this.state.isInternal }
                   onChange={()=>{

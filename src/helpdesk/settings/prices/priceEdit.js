@@ -197,7 +197,7 @@ class PriceEdit extends Component{
                   <Input type="text" name={item.title} id={item.title} placeholder="Enter price" value={item.price.price} onChange={(e)=>{
                       let newTaskTypes=[...this.state.taskTypes];
                       let newTaskType = {...newTaskTypes[index]};
-                      newTaskType.price.price=e.target.value;
+                      newTaskType.price.price=(e.target.value).replace(",", ".");
                       newTaskTypes[index] = newTaskType;
                       this.setState({taskTypes:newTaskTypes});
                     }} />
@@ -219,7 +219,7 @@ class PriceEdit extends Component{
                   <Input type="text" name={item.title} id={item.title} placeholder="Enter price" value={item.price.price} onChange={(e)=>{
                       let newTripTypes=[...this.state.tripTypes];
                       let newTripType = {...newTripTypes[index]};
-                      newTripType.price.price=e.target.value;
+                      newTripType.price.price=(e.target.value).replace(",", ".");
                       newTripTypes[index] = newTripType;
                       this.setState({tripTypes:newTripTypes});
                     }} />
@@ -236,7 +236,7 @@ class PriceEdit extends Component{
                 <Label for="afterPer">After hours percentage</Label>
               </div>
               <div className="flex">
-                <Input type="text" name="afterPer" id="afterPer" placeholder="Enter after hours percentage" value={this.state.afterHours} onChange={(e)=>this.setState({afterHours:e.target.value})} />
+                <Input type="text" name="afterPer" id="afterPer" placeholder="Enter after hours percentage" value={this.state.afterHours} onChange={(e)=>this.setState({afterHours: (e.target.value).replace(",", ".")})} />
               </div>
             </FormGroup>
             <FormGroup className="row m-b-10">
@@ -244,7 +244,7 @@ class PriceEdit extends Component{
                 <Label for="materMarg">Materials margin percentage 50-</Label>
               </div>
               <div className="flex">
-                <Input type="text" name="materMarg" id="materMarg" placeholder="Enter materials margin percentage" value={this.state.margin} onChange={(e)=>this.setState({margin:e.target.value})} />
+                <Input type="text" name="materMarg" id="materMarg" placeholder="Enter materials margin percentage" value={this.state.margin} onChange={(e)=>this.setState({margin: (e.target.value).replace(",", ".")})} />
               </div>
             </FormGroup>
             <FormGroup className="row m-b-10">
@@ -252,7 +252,7 @@ class PriceEdit extends Component{
                 <Label for="materMarg+">Materials margin percentage 50+</Label>
               </div>
               <div className="flex">
-                <Input type="text" name="materMarg+" id="materMarg+" placeholder="Enter materials margin percentage" value={this.state.marginExtra} onChange={(e)=>this.setState({marginExtra:e.target.value})} />
+                <Input type="text" name="materMarg+" id="materMarg+" placeholder="Enter materials margin percentage" value={this.state.marginExtra} onChange={(e)=>this.setState({marginExtra: (e.target.value).replace(",", ".")})} />
               </div>
             </FormGroup>
           </div>
@@ -270,8 +270,9 @@ class PriceEdit extends Component{
                     }
                   }
 
-                  this.state.taskTypes.concat(this.state.tripTypes).filter((item)=>item.price.id!==undefined).map((type)=>
+                  this.state.taskTypes.concat(this.state.tripTypes).filter((item)=>item.price.id!==undefined).map((type)=> {
                     rebase.updateDoc('/help-prices/'+type.price.id, {price:parseFloat(type.price.price === "" ? "0": type.price.price)})
+                  }
                   );
                   this.state.taskTypes.filter((item)=>item.price.id===undefined).map((type)=>
                     rebase.addToCollection('/help-prices', {pricelist:(this.props.match ? this.props.match.params.id : this.props.listId),type:type.id,price:parseFloat(type.price.price === "" ? "0": type.price.price)}).then((response)=>{
