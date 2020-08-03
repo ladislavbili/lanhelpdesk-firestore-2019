@@ -72,8 +72,8 @@ class CompanyAdd extends Component{
     this.setData.bind(this);
     this.submit.bind(this);
     this.cancel.bind(this);
-    this.uniqueName.bind(this);
-    this.uniqueICO.bind(this);
+    this.duplicitName.bind(this);
+    this.duplicitICO.bind(this);
   }
 
   getFakeID(){
@@ -240,11 +240,11 @@ class CompanyAdd extends Component{
     })
   }
 
-  uniqueName(){
+  duplicitName(){
     return this.state.companies.some(company => company.title.toLowerCase() === this.state.title.toLowerCase());
   }
 
-  uniqueICO(){
+  duplicitICO(){
     /*this.state.companies.forEach((item, i) => {
       console.log(item.ICO);
     });*/
@@ -285,7 +285,7 @@ class CompanyAdd extends Component{
                   this.setState({
                     title: e.target.value,
                     newData: true,
-                    duplicateTitle: !this.uniqueName(e.target.value)
+                    duplicateTitle: false, //!this.duplicitName(e.target.value)
                   })
                 }}
                 />
@@ -329,7 +329,7 @@ class CompanyAdd extends Component{
                   this.setState({
                     ICO: e.target.value,
                     newData: true,
-                    duplicateICO: !this.uniqueICO(e.target.value)
+                    duplicateICO: this.duplicitICO(e.target.value)
                    })  }
                 />
               { this.state.duplicateICO &&
