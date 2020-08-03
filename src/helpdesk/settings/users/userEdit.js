@@ -40,10 +40,15 @@ class UserEdit extends Component{
       signature:'',
       deactivated: false,
 
+      duplicateEmail: false,
+      duplicateUsername: false,
+
       deletingUser:false,
       deactivatingUser: false,
     }
     this.setData.bind(this);
+    this.duplicitEmail.bind(this);
+    this.duplicitUsername.bind(this);
   }
 
   storageLoaded(props){
@@ -159,6 +164,14 @@ class UserEdit extends Component{
     })
   }
 
+  duplicitEmail(mail){
+    return this.props.users.some(user => user.email.toLowerCase().trim() === mail.toLowerCase().trim());
+  }
+
+  duplicitUsername(username){
+    return this.props.users.some(user => user.username.toLowerCase().trim() === username.toLowerCase().trim());
+  }
+
   render(){
     return(
       <div className="scroll-visible p-20 fit-with-header-and-commandbar">
@@ -180,7 +193,22 @@ class UserEdit extends Component{
           </FormGroup>
           <FormGroup>
             <Label for="username">Username</Label>
-            <Input type="text" name="username" id="username" placeholder="Enter username" value={this.state.username} onChange={(e)=>this.setState({username:e.target.value})} />
+            <Input
+              type="text"
+              name="username"
+              id="username"
+              placeholder="Enter username"
+              value={this.state.username}
+              onChange={(e)=>this.setState({
+                username:e.target.value,
+                duplicateUsername: this.duplicitUsername(e.target.value)
+              })}
+              />
+              { this.state.duplicateUsername &&
+                <div className="m-b-5 text-danger">
+                  A user with this username already exists!
+                </div>
+              }
           </FormGroup>
           <FormGroup>
             <Label for="name">Name</Label>
@@ -192,7 +220,25 @@ class UserEdit extends Component{
           </FormGroup>
           <FormGroup>
             <Label for="email">E-mail</Label>
-            <Input type="email" name="email" id="email" disabled={true} placeholder="Enter email" value={this.state.email} onChange={(e)=>this.setState({email:e.target.value})} />
+            <Input
+              type="email"
+              name="email"
+              id="email"
+              disabled={true}
+              placeholder="Enter email"
+              value={this.state.email}
+              onChange={(e)=>
+                this.setState({
+                  email:e.target.value,
+                  duplicateEmail: this.duplicitEmail(e.target.value),
+                })
+              }
+               />
+             { this.state.duplicateEmail &&
+                 <div className="m-b-5 text-danger">
+                   A user with this email already exists!
+                 </div>
+               }
           </FormGroup>
 
           <Checkbox
@@ -220,7 +266,7 @@ class UserEdit extends Component{
           </FormGroup>
 
           <div className="row">
-            <Button className="btn m-r-5" disabled={this.state.saving|| this.state.companies.length===0||!isEmail(this.state.email)} onClick={()=>{
+            <Button className="btn m-r-5" disabled={this.state.saving|| this.state.companies.length===0||!isEmail(this.state.email) || this.state.duplicateEmail || this.state.duplicateUsername } onClick={()=>{
               this.setState({saving:true});
               let body = {
                 username:this.state.username,

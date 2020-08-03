@@ -71,6 +71,8 @@ class CompanyEdit extends Component{
       newData: false,
       loading:true,
       saving:false,
+      duplicateTitle: false,
+      duplicateICO: false,
       clearCompanyRents:false,
       deletingCompany: false,
     }
@@ -79,6 +81,8 @@ class CompanyEdit extends Component{
     this.setData.bind(this);
     this.submit.bind(this);
     this.cancel.bind(this);
+    this.duplicitName.bind(this);
+    this.duplicitICO.bind(this);
   }
 
   getFakeID(){
@@ -364,6 +368,14 @@ class CompanyEdit extends Component{
     })
   }
 
+  duplicitName(title){
+    return this.props.companies.some(company => company.title.toLowerCase().trim() === title.toLowerCase().trim());
+  }
+
+  duplicitICO(ico){
+    return this.props.companies.some(company => parseInt(company.ICO) === parseInt(ico));
+  }
+
   render(){
     return (
       <div className="fit-with-header-and-commandbar">
@@ -394,8 +406,19 @@ class CompanyEdit extends Component{
                   type="text"
                   placeholder="Enter company name"
                   value={this.state.title}
-                  onChange={(e)=>this.setState({title: e.target.value, newData: true, })}
+                  onChange={(e)=>{
+                    this.setState({
+                      title: e.target.value,
+                      newData: true,
+                      duplicateTitle: this.duplicitName(e.target.value),
+                    })
+                  }}
                   />
+                  { this.state.duplicateTitle &&
+                    <div className="m-b-5 text-danger">
+                      A company with this title already exists!
+                    </div>
+                  }
               </div>
             </FormGroup>
 
@@ -442,8 +465,18 @@ class CompanyEdit extends Component{
                 type="text"
                 placeholder="Enter DIC"
                 value={this.state.DIC}
-                onChange={(e)=>this.setState({DIC: e.target.value, newData: true }) }
+                onChange={(e)=>
+                  this.setState({
+                    ICO: e.target.value,
+                    newData: true,
+                    duplicateICO: this.duplicitICO(e.target.value),
+                   })  }
                 />
+              { this.state.duplicateICO &&
+                <div className="m-b-5 text-danger">
+                  A company with this ICO already exists!
+                </div>
+              }
             </div>
             </FormGroup>
 
@@ -697,7 +730,7 @@ class CompanyEdit extends Component{
             <Button
               className="btn m-r-5"
               disabled={this.state.saving || this.state.title.length === 0 || (this.state.pricelist.value === "0" &&
-                                                                              (this.state.priceName === "")) }
+                                                                              (this.state.priceName === ""))  || this.state.duplicateICO || this.state.duplicateTitle }
               onClick={()=>{
                 if (this.state.pricelist.value === "0" && this.state.priceName !== ""){
                   this.savePriceList();

@@ -240,16 +240,12 @@ class CompanyAdd extends Component{
     })
   }
 
-  duplicitName(){
-    return this.state.companies.some(company => company.title.toLowerCase() === this.state.title.toLowerCase());
+  duplicitName(title){
+    return this.state.companies.some(company => company.title.toLowerCase().trim() === title.toLowerCase().trim());
   }
 
-  duplicitICO(){
-    /*this.state.companies.forEach((item, i) => {
-      console.log(item.ICO);
-    });*/
-
-    return true; // this.state.companies.some(company => company.ICO.toString() === this.state.ICO.toString());
+  duplicitICO(ico){
+    return this.state.companies.some(company => parseInt(company.ICO) === parseInt(ico));
   }
 
   render(){
@@ -285,7 +281,7 @@ class CompanyAdd extends Component{
                   this.setState({
                     title: e.target.value,
                     newData: true,
-                    duplicateTitle: false, //!this.duplicitName(e.target.value)
+                    duplicateTitle: this.duplicitName(e.target.value),
                   })
                 }}
                 />
@@ -329,7 +325,7 @@ class CompanyAdd extends Component{
                   this.setState({
                     ICO: e.target.value,
                     newData: true,
-                    duplicateICO: this.duplicitICO(e.target.value)
+                    duplicateICO: this.duplicitICO(e.target.value),
                    })  }
                 />
               { this.state.duplicateICO &&
@@ -605,7 +601,7 @@ class CompanyAdd extends Component{
           {(this.state.newData  || this.props.addCompany) &&
             <Button
               className="btn"
-              disabled={this.state.saving || this.state.title.length === 0 || (this.state.pricelist.value === "0" && this.state.priceName === "") }
+              disabled={this.state.saving || this.state.title.length === 0 || (this.state.pricelist.value === "0" && this.state.priceName === "") || this.state.duplicateICO || this.state.duplicateTitle}
               onClick={()=>{
                 if (this.state.pricelist.value === "0" && this.state.priceName !== ""){
                   this.savePriceList();

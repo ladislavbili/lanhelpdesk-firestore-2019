@@ -1003,13 +1003,14 @@ export default class Rozpocet extends Component {
 													</div>
 													<input
 														disabled={this.props.disabled}
-														type="number"
+														type="text"
+														pattern="([0-9]+.{0,1}[0-9]*,{0,1})*[0-9]"
 														style={{display: "inline", width: "70%", float: "right"}}
 														className="form-control hidden-input h-30"
 														value={
 															customItem.id === this.state.focusedCustomItem
-															? this.state.editedCustomItemPrice
-															: customItem.price
+															? this.state.editedCustomItemPrice.toString()
+															: customItem.price.toString()
 														}
 														onBlur={() => {
 															this.props.updateCustomItem(customItem.id,{price:this.state.editedCustomItemPrice})
@@ -1017,7 +1018,7 @@ export default class Rozpocet extends Component {
 														}}
 														onFocus={() => this.onFocusCustomItem(customItem)}
 														onChange={e =>{
-															this.setState({ editedCustomItemPrice: e.target.value })}
+															this.setState({ editedCustomItemPrice: e.target.value.replace(",", ".") })}
 														}
 														/>
 												</span>
@@ -1607,10 +1608,11 @@ export default class Rozpocet extends Component {
 									<td className="p-l-8 p-r-8 t-a-r">
 										<input
 											disabled={this.props.disabled}
-											type="number"
-											value={this.state.newCustomItemPrice}
+											type="text"
+											pattern="([0-9]+.{0,1}[0-9]*,{0,1})*[0-9]"
+											value={this.state.newCustomItemPrice.toString()}
 											onChange={(e)=>{
-												let newCustomItemPrice = e.target.value;
+												let newCustomItemPrice = e.target.value.replace(",", ".");
 												this.setState({newCustomItemPrice});
 											}}
 											className="form-control h-30"
@@ -1626,7 +1628,7 @@ export default class Rozpocet extends Component {
 											disabled={this.state.newCustomItemUnit===null||this.props.disabled}
 											onClick={()=>{
 												let body={
-													price:this.state.newCustomItemPrice!==''?this.state.newCustomItemPrice:0,
+													price:this.state.newCustomItemPrice!==''? parseFloat(this.state.newCustomItemPrice):0,
 													quantity:this.state.newCustomItemQuantity!==''? parseFloat(this.state.newCustomItemQuantity):0,
 													title:this.state.newCustomItemTitle,
 													unit:this.state.newCustomItemUnit.id,

@@ -8,7 +8,7 @@ import {selectStyle} from "configs/components/select";
 import config from '../../../firebase';
 
 import { connect } from "react-redux";
-import {storageCompaniesStart} from '../../../redux/actions';
+import {storageCompaniesStart, storageUsersStart} from '../../../redux/actions';
 import {sameStringForms, toSelArr} from '../../../helperFunctions';
 import Checkbox from '../../../components/checkbox';
 
@@ -35,9 +35,16 @@ class UserAdd extends Component{
       mailNotifications: true,
       role:roles[1],
 
+      users: [],
+      duplicateEmail: false,
+      duplicateUsername: false,
+
       signature:'',
       signatureChanged:false,
     }
+
+    this.duplicitEmail.bind(this);
+    this.duplicitUsername.bind(this);
   }
 
   componentWillReceiveProps(props){
@@ -48,14 +55,33 @@ class UserAdd extends Component{
       let companies = toSelArr(props.companies);
       this.setState({companies,company:companies.length===0 ? null :companies[0]});
     }
+    if(!this.props.usersLoaded&&props.usersLoaded){
+      let users = toSelArr(props.users);
+      this.setState({users});
+    }
   }
 
   componentWillMount(){
     if(!this.props.companiesActive){
       this.props.storageCompaniesStart();
     }
+    if(!this.props.usersActive){
+      this.props.storageUsersStart();
+    }
     let companies = toSelArr(this.props.companies);
-    this.setState({companies,company:companies.length===0 ? null :companies[0]});
+    this.setState({
+      companies,
+      company:companies.length===0 ? null :companies[0],
+      users: this.props.users,
+    });
+  }
+
+  duplicitEmail(mail){
+    return this.state.users.some(user => user.email.toLowerCase().trim() === mail.toLowerCase().trim());
+  }
+
+  duplicitUsername(username){
+    return this.state.users.some(user => user.username.toLowerCase().trim() === username.toLowerCase().trim());
   }
 
   render(){
@@ -72,7 +98,23 @@ class UserAdd extends Component{
           </FormGroup>
           <FormGroup>
             <Label for="username">Username</Label>
-            <Input type="text" name="username" id="username" placeholder="Enter username" value={this.state.username} onChange={(e)=>this.setState({username:e.target.value})} />
+            <Input
+              type="text"
+               name="username"
+               id="username"
+               placeholder="Enter username"
+               value={this.state.username}
+               onChange={(e)=>
+                 this.setState({
+                   username:e.target.value,
+                   duplicateUsername: this.duplicitUsername(e.target.value),
+                 })}
+               />
+               { this.state.duplicateUsername &&
+                 <div className="m-b-5 text-danger">
+                   A user with this username already exists!
+                 </div>
+               }
           </FormGroup>
           <FormGroup>
             <Label for="name">Name</Label>
@@ -96,7 +138,24 @@ class UserAdd extends Component{
           </FormGroup>
           <FormGroup>
             <Label for="email">E-mail</Label>
-            <Input type="email" name="email" id="email" placeholder="Enter email" value={this.state.email} onChange={(e)=>this.setState({email:e.target.value})} />
+            <Input
+              type="email"
+              name="email"
+              id="email"
+              placeholder="Enter email"
+              value={this.state.email}
+              onChange={(e)=>
+                this.setState({
+                  email:e.target.value,
+                  duplicateEmail: this.duplicitEmail(e.target.value),
+                })
+              }
+              />
+            { this.state.duplicateEmail &&
+                <div className="m-b-5 text-danger">
+                  A user with this email already exists!
+                </div>
+              }
           </FormGroup>
           <FormGroup>
             <Label for="password">Password</Label>
@@ -132,7 +191,7 @@ class UserAdd extends Component{
             <Input type="textarea" name="signature" id="signature" placeholder="Enter signature" value={this.state.signature} onChange={(e)=>this.setState({signature:e.target.value,signatureChanged:true})} />
           </FormGroup>
 
-              <Button className="btn" disabled={this.state.saving || this.state.companies.length===0 || !isEmail(this.state.email) || this.state.password.length < 6 } onClick={()=>{
+              <Button className="btn" disabled={this.state.saving || this.state.companies.length===0 || !isEmail(this.state.email) || this.state.password.length < 6 || this.state.duplicateEmail || this.state.duplicateUsername } onClick={()=>{
                   this.setState({saving:true});
                   var secondaryApp = firebase.initializeApp(config, "Secondary");
                   secondaryApp.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).then((user) => {
@@ -182,10 +241,11 @@ class UserAdd extends Component{
   }
 }
 
-const mapStateToProps = ({ storageCompanies, userReducer}) => {
+const mapStateToProps = ({ storageCompanies, userReducer, storageUsers}) => {
   const { companiesActive, companies, companiesLoaded } = storageCompanies;
+  const { usersActive, users, usersLoaded } = storageUsers;
   const role = userReducer.userData ? userReducer.userData.role.value : 0;
-  return { companiesActive, companies, companiesLoaded, role };
+  return { companiesActive, companies, companiesLoaded, role, usersActive, users, usersLoaded };
 };
 
-export default connect(mapStateToProps, { storageCompaniesStart })(UserAdd);
+export default connect(mapStateToProps, { storageCompaniesStart, storageUsersStart })(UserAdd);
