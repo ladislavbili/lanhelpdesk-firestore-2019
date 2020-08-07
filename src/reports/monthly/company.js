@@ -740,7 +740,7 @@ class MothlyReportsCompany extends Component {
 					},0).toFixed(2)),
 				},
 
-				materialTasks:this.state.allTasks.filter((task)=>this.filterTask(task,statusIDs) && (task.materials.length > 0 || task.customStatuses.length > 0) && this.state.pickedTasks.includes(task.id)).map((task)=>{
+				materialTasks:this.state.allTasks.filter((task)=>this.filterTask(task,statusIDs) && (task.materials.length > 0 || task.customItems.length > 0) && this.state.pickedTasks.includes(task.id)).map((task)=>{
 					return {
 						id:task.id,
 						title:task.title,

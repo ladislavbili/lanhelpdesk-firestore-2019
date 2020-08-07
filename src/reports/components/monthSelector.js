@@ -54,7 +54,7 @@ class MonthSelector extends Component {
                     this.props.setReportYear(this.state.year);
                     this.props.setReportMonth(this.state.month);
                     let firstDay = new Date(this.state.year.value, this.state.month.value-1, 1).getTime();
-                    let lastDay = new Date(this.state.year.value, this.state.month.value, 1).getTime();
+                    let lastDay = new Date(this.state.year.value, this.state.month.value, 1,0,0,-1).getTime();
                     this.props.setReportFrom(firstDay);
                     this.props.setReportTo(lastDay);
                     this.setState({from: moment(firstDay), to: moment(lastDay)});
@@ -84,7 +84,7 @@ class MonthSelector extends Component {
                     className="form-control datepicker-width-185"
                     selected={this.state.to}
                     onChange={date => {
-                      this.setState({ to: date });
+                      this.setState({ to: date.add(1,'d').subtract(1, 's') });
                     }}
                     placeholderText="To"
                     {...datePickerConfig}

@@ -7,6 +7,7 @@ import { timestampToDate, toSelArr} from '../../helperFunctions';
 import {selectStyle} from 'configs/components/select';
 import CompanyInvoice from './companyInvoice';
 import CompanyInvoicePrint from './companyInvoicePrint';
+import ExcelExport from './excelExport';
 
 class CompanyReports extends Component {
 	constructor(props){
@@ -69,7 +70,10 @@ class CompanyReports extends Component {
 									<tr key={invoice.id}>
 										<td className="clickable" onClick={()=>this.setState({showInvoice:invoice})}>{invoice.title}</td>
 										<td className="clickable" onClick={()=>this.setState({showInvoice:invoice})}>{`od ${timestampToDate(invoice.from)} do ${timestampToDate(invoice.to)}`}</td>
-										<td><CompanyInvoicePrint invoice={invoice}/></td>
+										<td>
+											<CompanyInvoicePrint invoice={invoice} />
+											<ExcelExport filename={invoice.title} invoice={invoice} />
+										</td>
 									</tr>
 								)}
 							</tbody>

@@ -5,7 +5,7 @@ const months = [{value:1,label:'January'},{value:2,label:'February'},{value:3,la
 
 let date = new Date();
 let firstDay = new Date(date.getFullYear(), date.getMonth(), 1).getTime();
-let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1).getTime();
+let lastDay = new Date(date.getFullYear(), date.getMonth() + 1,  1,0,0,-1).getTime();
 
 const initialState = {
   year:{value:new Date().getFullYear(),label:new Date().getFullYear()},
