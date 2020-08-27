@@ -256,3 +256,9 @@ export const filterProjectsByPermissions = ( projects, currentUser ) => {
 export const filterIncludesText = ( source, text ) => {
   return source.toLowerCase().includes( text.toLowerCase() )
 }
+
+export const reduceTasksToIds = ( tasks ) => {
+  return tasks.reduce((acc,task)=>{
+    return acc+=task + ','
+  }," ").slice(0,-1)
+}

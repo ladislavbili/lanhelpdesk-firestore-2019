@@ -270,7 +270,7 @@ class PriceEdit extends Component{
                     }
                   }
 
-                  this.state.taskTypes.concat(this.state.tripTypes).filter((item)=>item.price.id!==undefined).map((type)=> {
+                  this.state.taskTypes.concat(this.state.tripTypes).filter((item)=>item.price.id!==undefined).forEach((type)=> {
                     rebase.updateDoc('/help-prices/'+type.price.id, {price:parseFloat(type.price.price === "" ? "0": type.price.price)})
                   }
                   );

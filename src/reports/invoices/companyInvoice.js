@@ -279,7 +279,7 @@ export default class CompanyInvoice extends Component {
 											return acc+=task + ','
 										}," ").slice(0,-1)+" )"}
 								</p>
-								<p className="m-0">Spolu prirážka za výjazdov mimo pracovných hodín: {invoice.pausalExtraInfo.tripsExtraPay} eur
+								<p className="m-0">Spolu prirážka za výjazdy mimo pracovných hodín: {invoice.pausalExtraInfo.tripsExtraPay} eur
 								</p>
 								<p className="m-0">Spolu cena bez DPH: {invoice.pausalExtraInfo.tripsPriceWithoutDPH} eur
 								</p>
@@ -439,11 +439,11 @@ export default class CompanyInvoice extends Component {
 								<thead>
 									<tr>
 										<th>ID</th>
-										<th style={{ width: '20%' }}>Name</th>
+										<th style={{ width: '20%' }}>Názov</th>
 										<th>Zadal</th>
-										<th>Riesi</th>
+										<th>Rieši</th>
 										<th>Status</th>
-										<th>Status date</th>
+										<th>Close date</th>
 										<th style={{width:'150px',paddingLeft:0}}>Material</th>
 										<th style={{width:'50px'}}>Mn.</th>
 										<th style={{width:'100px'}}>Jednotka</th>
@@ -508,7 +508,6 @@ export default class CompanyInvoice extends Component {
 							<table className="table m-b-10">
 								<thead>
 									<tr>
-										<th>ID</th>
 										<th>Názov</th>
 										<th>Mn.</th>
 										<th>Cena/ks/mesiac</th>
@@ -519,7 +518,6 @@ export default class CompanyInvoice extends Component {
 									{
 										invoice.rented.map((rentedItem)=>
 										<tr key={rentedItem.id}>
-											<td>{rentedItem.id}</td>
 											<td>{rentedItem.title}</td>
 											<td>{rentedItem.quantity}</td>
 											<td>{rentedItem.unitPrice}</td>

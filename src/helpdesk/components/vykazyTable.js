@@ -706,6 +706,7 @@ export default class Rozpocet extends Component {
 										}
 									</tr>)
 								}
+								return null
 							}
 						)}
 						{/* Materials */}
@@ -908,6 +909,7 @@ export default class Rozpocet extends Component {
 										}
 									</tr>)
 								}
+								return null;
 							}
 						)}
 						{/* Custom Items */}
@@ -1068,6 +1070,7 @@ export default class Rozpocet extends Component {
 										}
 									</tr>)
 								}
+								return null;
 							}
 						)}
 

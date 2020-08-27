@@ -14,6 +14,8 @@
     "chroma-js": "^2.1.0",
     "ckeditor4-react": "^0.1.0",
     "ckeditor5-custom-build": "file:src/components/ckeditor5",
+    "exceljs": "^4.1.1",
+    "file-saver": "^2.0.2",
     "firebase": "^5.7.1",
     "html-to-draftjs": "^1.4.0",
     "lodash": "^4.17.15",

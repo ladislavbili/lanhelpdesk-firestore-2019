@@ -71,7 +71,7 @@ class CompanyReports extends Component {
 										<td className="clickable" onClick={()=>this.setState({showInvoice:invoice})}>{invoice.title}</td>
 										<td className="clickable" onClick={()=>this.setState({showInvoice:invoice})}>{`od ${timestampToDate(invoice.from)} do ${timestampToDate(invoice.to)}`}</td>
 										<td>
-											<CompanyInvoicePrint invoice={invoice} />
+											<CompanyInvoicePrint filename={invoice.title} invoice={invoice} landscape={true} />
 											<ExcelExport filename={invoice.title} invoice={invoice} />
 										</td>
 									</tr>
